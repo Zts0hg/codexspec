@@ -1,5 +1,10 @@
 # Feature Specification
 
+<!--
+Language: Generate this document in the language specified in .codexspec/config.yml
+If not configured, use English.
+-->
+
 ## ADDED Requirements
 
 ### Requirement: <!-- requirement name -->

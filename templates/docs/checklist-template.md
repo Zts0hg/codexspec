@@ -1,5 +1,10 @@
 # Quality Checklist: [FEATURE NAME]
 
+<!--
+Language: Generate this document in the language specified in .codexspec/config.yml
+If not configured, use English.
+-->
+
 **Feature**: [Feature Name]
 **Created**: [DATE]
 **Status**: [Draft/In Progress/Complete]

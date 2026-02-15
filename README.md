@@ -17,6 +17,7 @@ CodexSpec is a toolkit that helps you build high-quality software using a struct
 - **Plan-Driven**: Technical choices come after requirements
 - **Task-Oriented**: Break down implementation into actionable tasks
 - **Quality Assurance**: Built-in review, analysis, and checklist commands
+- **Internationalization (i18n)**: Multi-language support via LLM dynamic translation
 - **Cross-Platform**: Support for both Bash and PowerShell scripts
 - **Extensible**: Plugin architecture for custom commands
 
@@ -186,6 +187,7 @@ Use `/codexspec.implement-tasks` to execute the implementation:
 | `codexspec init` | Initialize a new CodexSpec project |
 | `codexspec check` | Check for installed tools |
 | `codexspec version` | Display version information |
+| `codexspec config` | View or modify project configuration |
 
 ### `codexspec init` Options
 
@@ -194,9 +196,17 @@ Use `/codexspec.implement-tasks` to execute the implementation:
 | `PROJECT_NAME` | Name for your new project directory |
 | `--here`, `-h` | Initialize in current directory |
 | `--ai`, `-a` | AI assistant to use (default: claude) |
+| `--lang`, `-l` | Output language (e.g., en, zh-CN, ja) |
 | `--force`, `-f` | Force overwrite existing files |
 | `--no-git` | Skip git initialization |
 | `--debug`, `-d` | Enable debug output |
+
+### `codexspec config` Options
+
+| Option | Description |
+|--------|-------------|
+| `--set-lang`, `-l` | Set the output language |
+| `--list-langs` | List all supported languages |
 
 ### Slash Commands
 
@@ -233,9 +243,9 @@ After initialization, these slash commands are available in Claude Code:
 ## Workflow Overview
 
 ```
-┌─────────────────────────────────────────────────────────────┐
+┌──────────────────────────────────────────────────────────────┐
 │                    CodexSpec Workflow                        │
-├─────────────────────────────────────────────────────────────┤
+├──────────────────────────────────────────────────────────────┤
 │                                                              │
 │  1. Constitution  ──►  Define project principles             │
 │         │                                                    │
@@ -266,7 +276,7 @@ After initialization, these slash commands are available in Claude Code:
 │         ▼                                                    │
 │  10. Implement  ─────►  Execute implementation               │
 │                                                              │
-└─────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ## Project Structure
@@ -293,6 +303,84 @@ my-project/
 │   └── commands/              # Slash commands for Claude Code
 └── CLAUDE.md                  # Context for Claude Code
 ```
+
+## Internationalization (i18n)
+
+CodexSpec supports multiple languages through **LLM dynamic translation**. Instead of maintaining translated templates, we let Claude translate content at runtime based on your language configuration.
+
+### Setting Language
+
+**During initialization:**
+```bash
+# Create a project with Chinese output
+codexspec init my-project --lang zh-CN
+
+# Create a project with Japanese output
+codexspec init my-project --lang ja
+```
+
+**After initialization:**
+```bash
+# View current configuration
+codexspec config
+
+# Change language setting
+codexspec config --set-lang zh-CN
+
+# List supported languages
+codexspec config --list-langs
+```
+
+### Configuration File
+
+The `.codexspec/config.yml` file stores language settings:
+
+```yaml
+version: "1.0"
+
+language:
+  # Output language for Claude interactions and generated documents
+  output: "zh-CN"
+
+  # Template language - keep as "en" for compatibility
+  templates: "en"
+
+project:
+  ai: "claude"
+  created: "2025-02-15"
+```
+
+### Supported Languages
+
+| Code | Language |
+|------|----------|
+| `en` | English (default) |
+| `zh-CN` | Chinese (Simplified) |
+| `zh-TW` | Chinese (Traditional) |
+| `ja` | Japanese |
+| `ko` | Korean |
+| `es` | Spanish |
+| `fr` | French |
+| `de` | German |
+| `pt` | Portuguese |
+| `ru` | Russian |
+| `it` | Italian |
+| `ar` | Arabic |
+| `hi` | Hindi |
+
+### How It Works
+
+1. **Single English Templates**: All command templates remain in English
+2. **Language Configuration**: Project specifies preferred output language
+3. **Dynamic Translation**: Claude reads English instructions, outputs in target language
+4. **Context-Aware**: Technical terms (JWT, OAuth, etc.) remain in English when appropriate
+
+### Benefits
+
+- **Zero Translation Maintenance**: No need to maintain multiple template versions
+- **Always Up-to-Date**: Template updates automatically benefit all languages
+- **Context-Aware Translation**: Claude provides natural, context-appropriate translations
+- **Unlimited Languages**: Any language supported by Claude works immediately
 
 ## Extension System
 

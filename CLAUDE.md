@@ -31,7 +31,8 @@ CodexSpec helps developers:
 codexspec/
 ├── src/
 │   └── codexspec/
-│       └── __init__.py        # Main CLI implementation
+│       ├── __init__.py        # Main CLI implementation
+│       └── i18n.py            # Internationalization utilities
 ├── templates/
 │   └── commands/              # Slash command templates
 │       ├── constitution.md
@@ -83,7 +84,49 @@ def check(...): ...
 
 @app.command()
 def version(...): ...
+
+@app.command()
+def config(...): ...  # NEW: Configuration management
 ```
+
+### Internationalization (i18n) Architecture
+
+CodexSpec uses **LLM-based dynamic translation** for internationalization instead of maintaining multiple template translations.
+
+**Core Concept**: Keep templates in English, let Claude translate at runtime based on user's language preference.
+
+**Implementation**:
+1. `src/codexspec/i18n.py` - Language utilities (normalization, validation)
+2. `.codexspec/config.yml` - Per-project language configuration
+3. Template `## Language Preference` section - Instructs Claude to check config
+
+**Language Configuration**:
+```yaml
+# .codexspec/config.yml
+version: "1.0"
+language:
+  output: "zh-CN"  # Output language
+  templates: "en"  # Always "en"
+project:
+  ai: "claude"
+  created: "2025-02-15"
+```
+
+**Template Pattern**:
+```markdown
+## Language Preference
+
+**IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
+- If `language.output` is set to a language other than "en", respond and generate all content in that language
+- If not configured or set to "en", use English as default
+- Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
+```
+
+**Benefits**:
+- Zero translation maintenance overhead
+- Template updates benefit all languages immediately
+- Context-aware translations via Claude
+- Supports any language Claude understands
 
 ### Slash Command System
 
@@ -175,9 +218,10 @@ When `codexspec init` is run:
 
 | Command | Status | Notes |
 |---------|--------|-------|
-| `init` | ✅ Complete | Initializes project structure |
+| `init` | ✅ Complete | Initializes project structure, supports --lang |
 | `check` | ✅ Complete | Checks for installed tools |
 | `version` | ✅ Complete | Displays version info |
+| `config` | ✅ Complete | View/modify project configuration (NEW) |
 | `/codexspec.constitution` | ✅ Template | Template complete |
 | `/codexspec.specify` | ✅ Template | Template complete |
 | `/codexspec.generate-spec` | ✅ Template | Template complete |
@@ -353,6 +397,7 @@ uv tool install --force .
 |------|---------|
 | `pyproject.toml` | Project configuration, dependencies, entry points |
 | `src/codexspec/__init__.py` | Main CLI implementation |
+| `src/codexspec/i18n.py` | Internationalization utilities |
 | `templates/commands/*.md` | Slash command templates |
 | `scripts/bash/*.sh` | Bash helper scripts |
 | `scripts/powershell/*.ps1` | PowerShell helper scripts |
