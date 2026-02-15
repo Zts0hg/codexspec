@@ -1,0 +1,82 @@
+# CodexSpec Extension Configuration
+# Use this template to create your own extensions
+
+schema_version: "1.0"
+
+extension:
+  # CUSTOMIZE: Change 'my-extension' to your extension ID (lowercase, hyphen-separated)
+  id: "my-extension"
+
+  # CUSTOMIZE: Human-readable name for your extension
+  name: "My Extension"
+
+  # CUSTOMIZE: Update version when releasing (semantic versioning: X.Y.Z)
+  version: "1.0.0"
+
+  # CUSTOMIZE: Brief description (under 200 characters)
+  description: "Brief description of what your extension does"
+
+  # CUSTOMIZE: Your name or organization name
+  author: "Your Name"
+
+  # CUSTOMIZE: GitHub repository URL
+  repository: "https://github.com/your-org/codexspec-my-extension"
+
+  # License (MIT is recommended for open source)
+  license: "MIT"
+
+  # CUSTOMIZE: Extension homepage
+  homepage: "https://github.com/your-org/codexspec-my-extension"
+
+# Requirements for this extension
+requires:
+  # CUSTOMIZE: Minimum codexspec version required
+  codexspec_version: ">=0.1.0"
+
+  # CUSTOMIZE: Add external tools or dependencies
+  # Remove if no external tools required
+  tools: []
+  # - name: "example-tool"
+  #   version: ">=1.0.0"
+  #   required: true
+
+# Commands provided by this extension
+provides:
+  commands:
+    # CUSTOMIZE: Define your commands
+    # Pattern: codexspec.{extension-id}.{command-name}
+    - name: "codexspec.my-extension.example"
+      file: "commands/example.md"
+      description: "Example command that demonstrates functionality"
+      # Optional: Add aliases for shorter command names
+      aliases: ["codexspec.example"]
+
+  # CUSTOMIZE: Define configuration files
+  config: []
+  # - name: "my-extension-config.yml"
+  #   template: "config-template.yml"
+  #   description: "Extension configuration"
+  #   required: true
+
+# CUSTOMIZE: Define hooks (optional)
+# Remove if no hooks needed
+hooks: {}
+  # Hook that runs after /codexspec.plan-to-tasks
+  # after_tasks:
+  #   command: "codexspec.my-extension.example"
+  #   optional: true
+  #   prompt: "Run example command?"
+  #   description: "Demonstrates hook functionality"
+
+# CUSTOMIZE: Add relevant tags (2-5 recommended)
+# Used for discovery in catalog
+tags:
+  - "example"
+  - "template"
+
+# CUSTOMIZE: Default configuration values (optional)
+# These are merged with user config
+defaults: {}
+  # feature:
+  #   enabled: true
+  #   auto_sync: false
