@@ -1,0 +1,16 @@
+{
+  "$schema": "https://codexspec.dev/schemas/catalog.json",
+  "version": "1.0",
+  "extensions": [
+    {
+      "id": "template",
+      "name": "Extension Template",
+      "version": "1.0.0",
+      "description": "Template for creating new CodexSpec extensions",
+      "author": "CodexSpec Team",
+      "repository": "https://github.com/your-org/codexspec",
+      "tags": ["template", "example"],
+      "installed": false
+    }
+  ]
+}
