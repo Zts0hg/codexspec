@@ -120,6 +120,12 @@ Output:
 
 ## Example Checklist Types
 
+### Reference Templates
+
+Use the following template as reference for checklist structure:
+
+- **Standard**: `.codexspec/templates/docs/checklist-template.md` - Multi-dimensional checklist covering spec, plan, tasks, security, performance, and documentation
+
 **UX Requirements Quality:** `ux.md`
 - Visual hierarchy requirements
 - Interaction state requirements

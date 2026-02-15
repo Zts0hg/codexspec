@@ -41,6 +41,15 @@ Break down the technical implementation plan into specific, actionable tasks tha
 
 8. **Save Tasks**: Write to `.codexspec/specs/{feature-id}/tasks.md`
 
+### Reference Templates
+
+Use the following templates as reference for generating the task breakdown:
+
+- **Detailed**: `.codexspec/templates/docs/tasks-template-detailed.md` - Full format with phases, user story mapping, parallel markers, dependency graphs, and execution strategies
+- **Simple**: `.codexspec/templates/docs/tasks-template-simple.md` - Simple grouped task list format
+
+Choose the appropriate template based on project complexity.
+
 ### Template Structure
 
 ```markdown

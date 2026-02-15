@@ -45,6 +45,15 @@ Convert the feature specification into a detailed technical implementation plan.
 
 7. **Save Plan**: Write to `.codexspec/specs/{feature-id}/plan.md`
 
+### Reference Templates
+
+Use the following templates as reference for generating the implementation plan:
+
+- **Detailed**: `.codexspec/templates/docs/plan-template-detailed.md` - Full format with tech stack, architecture, data models, API contracts, phases, and decisions
+- **Simple**: `.codexspec/templates/docs/plan-template-simple.md` - Lightweight format focused on design decisions and risk assessment
+
+Choose the appropriate template based on project complexity.
+
 ### Template Structure
 
 ```markdown

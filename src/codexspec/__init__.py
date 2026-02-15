@@ -185,7 +185,18 @@ def init(
     (codexspec_dir / "memory").mkdir(exist_ok=True)
     (codexspec_dir / "specs").mkdir(exist_ok=True)
     (codexspec_dir / "templates").mkdir(exist_ok=True)
+    (codexspec_dir / "templates" / "docs").mkdir(exist_ok=True)
     (codexspec_dir / "scripts").mkdir(exist_ok=True)
+
+    # Copy docs templates
+    docs_templates_dir = get_templates_dir() / "docs"
+    if docs_templates_dir.exists():
+        for template_file in docs_templates_dir.glob("*.md"):
+            dest_file = codexspec_dir / "templates" / "docs" / template_file.name
+            dest_file.write_text(template_file.read_text())
+            console.print(f"[green]Copied template:[/green] {template_file.name}")
+    else:
+        console.print("[yellow]Warning: Docs templates directory not found[/yellow]")
 
     # Create .claude/commands directory for slash commands
     claude_commands_dir = target_dir / ".claude" / "commands"

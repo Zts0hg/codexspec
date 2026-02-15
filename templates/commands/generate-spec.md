@@ -43,6 +43,13 @@ When expanding requirements, consider:
 6. **Performance**: What are the performance expectations?
 7. **Security**: What security considerations apply?
 
+### Reference Templates
+
+Use the following templates as reference for generating the specification:
+
+- **Detailed**: `.codexspec/templates/docs/spec-template-detailed.md` - Full format with user stories, acceptance criteria, requirements, and success metrics
+- **Simple**: `.codexspec/templates/docs/spec-template-simple.md` - Lightweight format for simpler features
+
 ### Output
 
 A comprehensive specification document following the standard spec template, saved to the appropriate location in `.codexspec/specs/`.
