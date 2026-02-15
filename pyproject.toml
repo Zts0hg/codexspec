@@ -29,6 +29,11 @@ dependencies = [
     "packaging>=23.0",
 ]
 
+[project.urls]
+Homepage = "https://github.com/Zts0hg/codexspec"
+Repository = "https://github.com/Zts0hg/codexspec"
+Issues = "https://github.com/Zts0hg/codexspec/issues"
+
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0",
