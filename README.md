@@ -48,7 +48,12 @@ pip install codexspec
 Run directly without installing:
 
 ```bash
+# Create a new project
 uvx codexspec init my-project
+
+# Initialize in an existing project
+cd your-existing-project
+uvx codexspec init . --ai claude
 ```
 
 ### Option 4: Install from GitHub (Development Version)
