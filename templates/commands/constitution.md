@@ -32,6 +32,12 @@ You are tasked with creating or updating the project constitution. The constitut
 
 4. **Save the Constitution**: Write the constitution to `.codexspec/memory/constitution.md`
 
+### Reference Templates
+
+Use the following template as reference for generating the constitution:
+
+- **Standard**: `.codexspec/templates/docs/constitution-template.md` - Format with core principles, tech stack, workflow, and quality gates
+
 ### Output Format
 
 The constitution should be structured as a markdown document with clear sections and actionable guidelines.

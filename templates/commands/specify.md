@@ -35,6 +35,15 @@ You are tasked with creating a detailed feature specification. Focus on the **wh
 
 6. **Save Specification**: Write to `.codexspec/specs/{feature-id}/spec.md`
 
+### Reference Templates
+
+Use the following templates as reference for generating the specification:
+
+- **Detailed**: `.codexspec/templates/docs/spec-template-detailed.md` - Full format with user stories, acceptance criteria, requirements, and success metrics
+- **Simple**: `.codexspec/templates/docs/spec-template-simple.md` - Lightweight format for simpler features
+
+Choose the appropriate template based on feature complexity.
+
 ### Template Structure
 
 ```markdown
