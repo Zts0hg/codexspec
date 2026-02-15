@@ -1,5 +1,10 @@
 # Tasks: [FEATURE NAME]
 
+<!--
+Language: Generate this document in the language specified in .codexspec/config.yml
+If not configured, use English.
+-->
+
 ## 1. <!-- Task Group Name -->
 
 - [ ] 1.1 <!-- Task description -->

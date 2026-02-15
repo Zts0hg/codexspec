@@ -9,6 +9,7 @@ executable specifications that guide AI-assisted implementation.
 import os
 import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
@@ -16,6 +17,14 @@ import typer
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
+
+from .i18n import (
+    generate_config_content,
+    get_language_name,
+    get_supported_languages,
+    is_supported_language,
+    normalize_locale,
+)
 
 # Version info
 __version__ = "0.1.0"
@@ -104,6 +113,97 @@ def check() -> None:
 
 
 @app.command()
+def config(
+    set_lang: Optional[str] = typer.Option(
+        None,
+        "--set-lang",
+        "-l",
+        help="Set the output language (e.g., en, zh-CN, ja)",
+    ),
+    list_langs: bool = typer.Option(
+        False,
+        "--list-langs",
+        help="List all supported languages",
+    ),
+) -> None:
+    """
+    View or modify CodexSpec project configuration.
+
+    This command displays the current configuration or allows you to modify
+    settings such as the output language for internationalization.
+
+    Examples:
+        codexspec config                  # Show current configuration
+        codexspec config --set-lang zh-CN # Set language to Chinese
+        codexspec config --list-langs     # List supported languages
+    """
+    # Handle list languages
+    if list_langs:
+        table = Table(title="Supported Languages")
+        table.add_column("Code", style="cyan")
+        table.add_column("Name", style="green")
+        table.add_column("Status", style="dim")
+
+        for code, name in get_supported_languages():
+            table.add_row(code, name, "Supported")
+        console.print(table)
+        return
+
+    # Find config file
+    config_file = Path.cwd() / ".codexspec" / "config.yml"
+
+    if not config_file.exists():
+        console.print("[yellow]No CodexSpec project found in current directory.[/yellow]")
+        console.print("Run [cyan]codexspec init[/cyan] to create a new project.")
+        raise typer.Exit(1)
+
+    # Handle set language
+    if set_lang:
+        normalized = normalize_locale(set_lang)
+        if not is_supported_language(normalized):
+            console.print(f"[yellow]Warning: '{set_lang}' is not in the list of commonly supported languages.[/yellow]")
+            console.print("It may still work if Claude supports it. Run [cyan]codexspec config --list-langs[/cyan] to see supported languages.")
+
+        # Read existing config
+        config_content = config_file.read_text()
+
+        # Update language setting using simple string replacement
+        lines = config_content.split("\n")
+        new_lines = []
+        in_language_section = False
+        updated = False
+
+        for line in lines:
+            if line.strip().startswith("language:"):
+                in_language_section = True
+                new_lines.append(line)
+            elif in_language_section and line.strip().startswith("output:"):
+                # Update the output line
+                indent = len(line) - len(line.lstrip())
+                new_lines.append(" " * indent + f'output: "{normalized}"')
+                updated = True
+                in_language_section = False
+            else:
+                new_lines.append(line)
+
+        if updated:
+            config_file.write_text("\n".join(new_lines))
+            lang_name = get_language_name(normalized)
+            console.print(f"[green]Language set to:[/green] {normalized} ({lang_name})")
+        else:
+            console.print("[red]Failed to update language setting[/red]")
+            raise typer.Exit(1)
+        return
+
+    # Display current configuration
+    console.print(Panel(
+        config_file.read_text(),
+        title=f"Configuration: {config_file}",
+        border_style="blue",
+    ))
+
+
+@app.command()
 def init(
     project_name: Optional[str] = typer.Argument(
         None,
@@ -120,6 +220,12 @@ def init(
         "--ai",
         "-a",
         help="AI assistant to use (default: claude)",
+    ),
+    lang: str = typer.Option(
+        "en",
+        "--lang",
+        "-l",
+        help="Output language for Claude interactions and generated documents (e.g., en, zh-CN, ja)",
     ),
     force: bool = typer.Option(
         False,
@@ -148,6 +254,7 @@ def init(
     Examples:
         codexspec init my-project
         codexspec init my-project --ai claude
+        codexspec init my-project --lang zh-CN
         codexspec init . --ai claude
         codexspec init --here --ai claude
         codexspec init . --force --ai claude
@@ -164,6 +271,7 @@ def init(
     if debug:
         console.print(f"[dim]Target directory: {target_dir}[/dim]")
         console.print(f"[dim]AI assistant: {ai}[/dim]")
+        console.print(f"[dim]Language: {lang} (normalized: {normalize_locale(lang)})[/dim]")
 
     # Check if directory exists and handle accordingly
     if target_dir.exists() and not here and project_name != ".":
@@ -219,6 +327,18 @@ def init(
     if not constitution_file.exists():
         constitution_file.write_text(_get_default_constitution())
         console.print("[green]Created:[/green] .codexspec/memory/constitution.md")
+
+    # Create config.yml with language settings
+    config_file = codexspec_dir / "config.yml"
+    normalized_lang = normalize_locale(lang)
+    if not config_file.exists() or force:
+        config_content = generate_config_content(
+            language=normalized_lang,
+            created=datetime.now().strftime("%Y-%m-%d"),
+        )
+        config_file.write_text(config_content)
+        lang_name = get_language_name(normalized_lang)
+        console.print(f"[green]Created:[/green] .codexspec/config.yml (language: {lang_name})")
 
     # Create CLAUDE.md
     claude_md = target_dir / "CLAUDE.md"

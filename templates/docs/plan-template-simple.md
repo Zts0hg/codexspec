@@ -1,5 +1,10 @@
 # Design Document: [FEATURE NAME]
 
+<!--
+Language: Generate this document in the language specified in .codexspec/config.yml
+If not configured, use English.
+-->
+
 ## Context
 
 <!-- Background and current state -->

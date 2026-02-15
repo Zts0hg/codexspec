@@ -1,5 +1,10 @@
 # Implementation Plan: [FEATURE NAME]
 
+<!--
+Language: Generate this document in the language specified in .codexspec/config.yml
+If not configured, use English.
+-->
+
 **Related Spec**: `.codexspec/specs/{feature-id}/spec.md`
 **Created**: [DATE]
 **Status**: Draft

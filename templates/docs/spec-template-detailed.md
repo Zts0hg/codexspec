@@ -1,5 +1,10 @@
 # Feature Specification: [FEATURE NAME]
 
+<!--
+Language: Generate this document in the language specified in .codexspec/config.yml
+If not configured, use English.
+-->
+
 **Feature Branch**: `[###-feature-name]`
 **Created**: [DATE]
 **Status**: Draft
