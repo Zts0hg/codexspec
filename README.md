@@ -70,7 +70,7 @@ pip install git+https://github.com/Zts0hg/codexspec.git
 
 # Specific branch or tag
 uv tool install git+https://github.com/Zts0hg/codexspec.git@main
-uv tool install git+https://github.com/Zts0hg/codexspec.git@v0.1.0
+uv tool install git+https://github.com/Zts0hg/codexspec.git@v0.2.0
 ```
 
 ## Quick Start
@@ -347,7 +347,7 @@ language:
 
 project:
   ai: "claude"
-  created: "2025-02-15"
+  created: "2026-02-15"
 ```
 
 ### Supported Languages
@@ -457,6 +457,7 @@ CodexSpec is inspired by GitHub's spec-kit but with some key differences:
 | Checklist Command | Yes | Yes |
 | Extension System | Yes | Yes |
 | PowerShell Scripts | Yes | Yes |
+| i18n Support | No | Yes (13+ languages via LLM translation) |
 
 ## Philosophy
 
