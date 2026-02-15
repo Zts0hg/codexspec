@@ -272,7 +272,7 @@ Spec-kit supports 15+ AI agents. CodexSpec currently focuses on Claude Code but 
 The project is designed to work with `uv tool install`:
 
 ```bash
-uv tool install codexspec --from git+https://github.com/your-org/codexspec.git
+uv tool install codexspec --from git+https://github.com/Zts0hg/codexspec.git
 ```
 
 This requires:

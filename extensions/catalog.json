@@ -8,7 +8,7 @@
       "version": "1.0.0",
       "description": "Template for creating new CodexSpec extensions",
       "author": "CodexSpec Team",
-      "repository": "https://github.com/your-org/codexspec",
+      "repository": "https://github.com/Zts0hg/codexspec",
       "tags": ["template", "example"],
       "installed": false
     }

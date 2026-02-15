@@ -23,7 +23,7 @@ CodexSpec is a toolkit that helps you build high-quality software using a struct
 Install once and use everywhere:
 
 ```bash
-uv tool install codexspec --from git+https://github.com/your-org/codexspec.git
+uv tool install codexspec --from git+https://github.com/Zts0hg/codexspec.git
 ```
 
 Then use the tool directly:
@@ -47,7 +47,7 @@ codexspec version
 To upgrade:
 
 ```bash
-uv tool install codexspec --force --from git+https://github.com/your-org/codexspec.git
+uv tool install codexspec --force --from git+https://github.com/Zts0hg/codexspec.git
 ```
 
 ### Option 2: One-time Usage
@@ -55,7 +55,7 @@ uv tool install codexspec --force --from git+https://github.com/your-org/codexsp
 Run directly without installing:
 
 ```bash
-uvx --from git+https://github.com/your-org/codexspec.git codexspec init my-project
+uvx --from git+https://github.com/Zts0hg/codexspec.git codexspec init my-project
 ```
 
 ## Quick Start
@@ -285,7 +285,7 @@ See `extensions/EXTENSION-DEVELOPMENT-GUIDE.md` for details.
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/codexspec.git
+git clone https://github.com/Zts0hg/codexspec.git
 cd codexspec
 
 # Install development dependencies
