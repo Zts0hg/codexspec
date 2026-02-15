@@ -39,7 +39,7 @@ extension:
   version: "1.0.0"
   description: "What this extension does"
   author: "Your Name"
-  repository: "https://github.com/your-org/codexspec-my-extension"
+  repository: "https://github.com/Zts0hg/codexspec-my-extension"
   license: "MIT"
 
 requires:
@@ -171,4 +171,4 @@ See the `extensions/template/` directory for a complete example.
 
 ---
 
-For more information, visit: https://github.com/your-org/codexspec
+For more information, visit: https://github.com/Zts0hg/codexspec
