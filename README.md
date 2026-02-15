@@ -1,5 +1,9 @@
 # CodexSpec
 
+[![PyPI version](https://img.shields.io/pypi/v/codexspec.svg)](https://pypi.org/project/codexspec/)
+[![Python](https://img.shields.io/pypi/pyversions/codexspec.svg)](https://pypi.org/project/codexspec/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 **A Spec-Driven Development (SDD) toolkit for Claude Code**
 
 CodexSpec is a toolkit that helps you build high-quality software using a structured, specification-driven approach. It flips the script on traditional development by making specifications executable artifacts that directly guide implementation.
@@ -18,15 +22,54 @@ CodexSpec is a toolkit that helps you build high-quality software using a struct
 
 ## Installation
 
-### Option 1: Persistent Installation (Recommended)
+### Prerequisites
 
-Install once and use everywhere:
+- Python 3.11+
+- [uv](https://docs.astral.sh/uv/) (recommended) or pip
+
+### Option 1: Install with uv (Recommended)
+
+The easiest way to install CodexSpec is using uv:
 
 ```bash
-uv tool install codexspec --from git+https://github.com/Zts0hg/codexspec.git
+uv tool install codexspec
 ```
 
-Then use the tool directly:
+### Option 2: Install with pip
+
+Alternatively, you can use pip:
+
+```bash
+pip install codexspec
+```
+
+### Option 3: One-time Usage
+
+Run directly without installing:
+
+```bash
+uvx codexspec init my-project
+```
+
+### Option 4: Install from GitHub (Development Version)
+
+For the latest development version or a specific branch:
+
+```bash
+# Using uv
+uv tool install git+https://github.com/Zts0hg/codexspec.git
+
+# Using pip
+pip install git+https://github.com/Zts0hg/codexspec.git
+
+# Specific branch or tag
+uv tool install git+https://github.com/Zts0hg/codexspec.git@main
+uv tool install git+https://github.com/Zts0hg/codexspec.git@v0.1.0
+```
+
+## Quick Start
+
+After installation, you can use the CLI:
 
 ```bash
 # Create new project
@@ -44,29 +87,25 @@ codexspec check
 codexspec version
 ```
 
-To upgrade:
+To upgrade to the latest version:
 
 ```bash
-uv tool install codexspec --force --from git+https://github.com/Zts0hg/codexspec.git
+# Using uv
+uv tool install codexspec --upgrade
+
+# Using pip
+pip install --upgrade codexspec
 ```
 
-### Option 2: One-time Usage
-
-Run directly without installing:
-
-```bash
-uvx --from git+https://github.com/Zts0hg/codexspec.git codexspec init my-project
-```
-
-## Quick Start
+## Usage
 
 ### 1. Initialize a Project
 
-```bash
-# Create a new project
-codexspec init my-awesome-project
+After [installation](#installation), create or initialize your project:
 
-# Or initialize in current directory
+```bash
+codexspec init my-awesome-project
+# or in current directory
 codexspec init . --ai claude
 ```
 
