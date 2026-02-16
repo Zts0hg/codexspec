@@ -1,5 +1,5 @@
 ---
-description: Execute the implementation tasks following TDD workflow
+description: Execute implementation tasks with conditional TDD workflow (TDD for code, direct implementation for docs/config)
 argument-hint: "[tasks_path] | [spec_path plan_path tasks_path]"
 arguments:
   - name: tasks_path_or_spec
@@ -50,7 +50,7 @@ All output files (`issues.md`, progress reports) will be placed in the same dire
 
 ## Instructions
 
-As an autonomous development agent, implement all tasks in the task list following strict TDD (Test-Driven Development) principles. Work continuously until all tasks are completed.
+As an autonomous development agent, implement all tasks in the task list. Use TDD (Test-Driven Development) for implementation tasks, and direct implementation for non-testable tasks (docs, config, assets). Work continuously until all tasks are completed.
 
 ### Prerequisites Check
 
@@ -65,9 +65,29 @@ Load and understand:
 - Architecture and tech stack from plan
 - Task breakdown and dependencies
 
+### Tech Stack Detection
+
+Before implementing, identify the project's technology stack:
+
+1. **Check `plan.md`** for defined tech stack
+2. **Check project files** to confirm and detect details:
+   - `package.json` → JavaScript/TypeScript (Node.js)
+   - `pyproject.toml` / `setup.py` → Python
+   - `go.mod` → Go
+   - `Cargo.toml` → Rust
+   - `pom.xml` / `build.gradle` → Java
+   - `*.csproj` → C#/.NET
+3. **Determine project conventions**:
+   - Source directory: `src/`, `lib/`, `app/`, etc.
+   - Test directory: `tests/`, `__tests__/`, `test/`, `*_test.go` files, etc.
+   - Test command: `npm test`, `pytest`, `go test ./...`, `cargo test`, etc.
+   - Package manager: `npm`, `yarn`, `pnpm`, `pip`, `uv`, `cargo`, etc.
+
 ### TDD Workflow (Per Task)
 
-For **each task** in the task list, follow this cycle:
+For **each task** in the task list, determine the workflow based on task type:
+
+#### For Implementation Tasks (code that needs testing):
 
 1. **🔴 Red - Write Test First**
    - Write unit tests that define expected behavior
@@ -98,6 +118,42 @@ For **each task** in the task list, follow this cycle:
    - Update `tasks.md`: change `[ ]` to `[x]` for completed task
    - Record any important notes or decisions made
    - Move to the next task (respect dependencies)
+
+#### For Non-Testable Tasks (docs, config, assets):
+
+1. **Implement Directly**
+   - Create or modify the required files
+   - Follow project conventions and guidelines
+
+2. **Verify Correctness**
+   - Check syntax, formatting, and content accuracy
+   - Ensure alignment with specification and plan
+
+3. **Mark Complete**
+   - Update `tasks.md` and continue
+
+**Task types that typically don't need tests:**
+- Documentation (README, API docs, user guides, changelogs)
+- Configuration files (JSON, YAML, TOML, .env templates)
+- Static assets (images, styles, fonts)
+- Infrastructure files (Dockerfile, docker-compose, CI/CD configs)
+- Database migrations (schema changes, seed data)
+
+### Project Type Adaptation
+
+Adapt implementation approach based on project type:
+
+| Project Type | Source Dir | Test Dir/Pattern | Test Command | Notes |
+|--------------|------------|------------------|--------------|-------|
+| Python | `src/` | `tests/` | `pytest` or `uv run pytest` | Use `python -m pytest` if no uv |
+| JavaScript | `src/` | `__tests__/` or `tests/` | `npm test` | Check `package.json` scripts |
+| TypeScript | `src/` | `__tests__/` or `tests/` | `npm test` | May need `npm run test:unit` |
+| Go | `.` (pkg root) | `*_test.go` alongside source | `go test ./...` | Tests in same package |
+| Rust | `src/` | `tests/` + `#[test]` in src | `cargo test` | Unit tests in src, integration in tests/ |
+| Java | `src/main/java/` | `src/test/java/` | `mvn test` or `./gradlew test` | Mirror package structure |
+| C#/.NET | `src/` | `tests/` | `dotnet test` | Solution structure varies |
+
+**Important**: Always adapt paths and commands to the actual project structure detected
 
 ### Autonomous Mode
 
@@ -158,25 +214,31 @@ After completing each phase or significant task group, provide a brief update:
 For each task in tasks.md:
     1. Check if dependencies are complete
     2. If blocked → record in issues.md, continue to next
-    3. Write tests (Red)
-    4. Implement code (Green)
-    5. Run tests and verify
-    6. Review and refactor
-    7. Mark task complete in tasks.md
-    8. If milestone reached → commit changes
-    9. Continue to next task
+    3. Determine task type (implementation vs non-testable)
+    4. If implementation task:
+       a. Write tests (Red)
+       b. Implement code (Green)
+       c. Run tests and verify
+       d. Review and refactor
+    5. If non-testable task:
+       a. Implement directly
+       b. Verify correctness
+    6. Mark task complete in tasks.md
+    7. If milestone reached → commit changes
+    8. Continue to next task
 
 After all tasks:
-    - Run full test suite
+    - Run full test suite (if applicable)
     - Final commit if needed
     - Report completion summary
 ```
 
 ### Quality Guidelines
 
-1. **TDD First**: Never write implementation before tests
-2. **Constitution Compliance**: Follow project principles from constitution.md
-3. **Plan Adherence**: Stick to technical plan unless blocked
-4. **Clean Code**: Prioritize readability and maintainability
-5. **Test Coverage**: Aim for meaningful test coverage, not just numbers
-6. **Incremental Commits**: Commit after logical units of work
+1. **TDD for Code**: Use TDD for implementation tasks that need tests
+2. **Direct Implementation**: For non-testable tasks (docs, config), implement directly
+3. **Constitution Compliance**: Follow project principles from constitution.md
+4. **Plan Adherence**: Stick to technical plan unless blocked
+5. **Clean Code**: Prioritize readability and maintainability
+6. **Test Coverage**: Aim for meaningful test coverage on testable code
+7. **Incremental Commits**: Commit after logical units of work
