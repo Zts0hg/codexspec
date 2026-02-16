@@ -1,13 +1,13 @@
 ---
 description: Execute the implementation tasks following TDD workflow
-argument-hint: "[spec_path] [plan_path] [tasks_path]"
+argument-hint: "[tasks_path] | [spec_path plan_path tasks_path]"
 arguments:
-  - name: spec_path
-    description: Path to specification file (spec.md). Optional - defaults to .codexspec/specs/{latest}/spec.md
+  - name: tasks_path_or_spec
+    description: If only one argument provided, treated as tasks.md path. If three arguments, this is spec.md path. Optional - auto-detect if omitted.
   - name: plan_path
-    description: Path to technical plan file (plan.md). Optional - defaults to .codexspec/specs/{latest}/plan.md
+    description: Path to technical plan file (plan.md). Only used when three arguments are provided.
   - name: tasks_path
-    description: Path to tasks file (tasks.md). Optional - defaults to .codexspec/specs/{latest}/tasks.md
+    description: Path to tasks file (tasks.md). Only used when three arguments are provided.
 ---
 
 # Task Implementer
@@ -22,11 +22,31 @@ arguments:
 
 ## Input Documents
 
-- **Specification** (`spec.md`): $1
-- **Technical Plan** (`plan.md`): $2
-- **Task List** (`tasks.md`): $3
+**Usage:**
+- `/implement-tasks` → Auto-detect from `.codexspec/specs/`
+- `/implement-tasks tasks.md` → `$1` as tasks path, derive others
+- `/implement-tasks spec.md plan.md tasks.md` → All paths explicit
 
-If any argument is not provided, use default paths under `.codexspec/specs/` directory.
+### File Resolution Logic
+
+**Case 1: No arguments (`$1` is empty)**
+- Auto-detect under `.codexspec/specs/` directory:
+  1. List all subdirectories under `.codexspec/specs/`
+  2. If only one feature directory exists, use it
+  3. If multiple exist, select the most recently modified one (based on `tasks.md` mtime)
+  4. Read `spec.md`, `plan.md`, `tasks.md` from that directory
+
+**Case 2: One argument (`$1` provided, `$2` is empty)**
+- Treat `$1` as `tasks.md` path
+- Derive `spec.md` and `plan.md` from the same directory
+
+**Case 3: Three arguments (`$1`, `$2`, `$3` all provided)**
+- `$1` = spec.md path
+- `$2` = plan.md path
+- `$3` = tasks.md path
+
+**Output Location**
+All output files (`issues.md`, progress reports) will be placed in the same directory as `tasks.md`.
 
 ## Instructions
 
@@ -74,20 +94,17 @@ For **each task** in the task list, follow this cycle:
    - Remove duplication while keeping tests green
    - Ensure good testability and extensibility
 
-6. **📝 Mark Complete**
+6. **📝 Mark Complete & Continue**
    - Update `tasks.md`: change `[ ]` to `[x]` for completed task
    - Record any important notes or decisions made
-
-7. **➡️ Continue to Next Task**
-   - Move to the next task in order
-   - Respect task dependencies
+   - Move to the next task (respect dependencies)
 
 ### Autonomous Mode
 
 **Work continuously** until all tasks are completed:
 - Do not wait for user approval between tasks
 - When encountering blockers:
-  - Record the issue in `.codexspec/specs/{feature-id}/issues.md`
+  - Record the issue in `issues.md` (same directory as `tasks.md`)
   - Include: task ID, error description, attempted solutions
   - Continue to the next independent task
 - Periodically commit code (after completing significant tasks or phases)
