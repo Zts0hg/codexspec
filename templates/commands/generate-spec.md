@@ -1,8 +1,5 @@
 ---
-description: Generate a detailed specification document from high-level requirements
-handoffs:
-  - agent: claude
-    step: Transform requirements into detailed specification
+description: Generate spec.md document after requirements have been clarified
 ---
 
 # Specification Generator
@@ -15,52 +12,93 @@ handoffs:
 - Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
 - All user-facing messages, questions, and generated documents should use the configured language
 
-## User Input
+## Prerequisite
 
-$ARGUMENTS
+**All requirements should already be clarified through `/codexspec.specify` before running this command.**
 
 ## Instructions
 
-Generate a detailed specification document from the provided high-level requirements. This command is useful when you have rough ideas and want to expand them into a complete specification.
+You are now acting as a "Requirement Compiler". Execute the following operations:
 
 ### Steps
 
-1. **Analyze Input**: Parse and understand the high-level requirements provided by the user.
+1. **Determine Feature ID**: Based on existing specs in `.codexspec/specs/`, determine the next sequential number (e.g., if `001-*` exists, use `002-`).
 
-2. **Expand Requirements**: Convert high-level ideas into detailed, actionable specifications by:
-   - Identifying implied user stories
-   - Deriving functional requirements
-   - Considering non-functional requirements
-   - Identifying potential edge cases
+2. **Create Feature Directory**: Create a new directory `.codexspec/specs/{NNN}-{feature-name}/` where:
+   - `NNN` is the sequential number (001, 002, etc.)
+   - `feature-name` is a kebab-case description of the feature
 
-3. **Add Context**: Include relevant context, assumptions, and constraints.
+3. **Generate spec.md**: Create a comprehensive specification document including:
 
-4. **Structure Document**: Organize the specification following the standard template.
+   - **Feature Overview**: High-level description and goals
+   - **User Stories**: With acceptance criteria
+   - **Functional Requirements**: All discussed requirement details
+   - **Non-Functional Requirements**: Performance, security, scalability, etc.
+   - **Acceptance Criteria**: Specific test cases
+   - **Edge Cases**: Identified edge cases and handling approaches
+   - **Output Format Examples**: If applicable
+   - **Out of Scope**: Items explicitly excluded
 
-5. **Generate Document**: Create a structured specification document.
+4. **Review Constitution**: Ensure alignment with `.codexspec/memory/constitution.md`
 
-### Expansion Guidelines
+### Spec Template Structure
 
-When expanding requirements, consider:
+```markdown
+# Feature: [Feature Name]
 
-1. **User Perspectives**: Who will use this feature? What are their goals?
-2. **Use Cases**: What are the main workflows?
-3. **Data Requirements**: What data is needed? How is it structured?
-4. **Integration Points**: What external systems are involved?
-5. **Error Handling**: What could go wrong? How should errors be handled?
-6. **Performance**: What are the performance expectations?
-7. **Security**: What security considerations apply?
+## Overview
+[High-level description]
 
-### Reference Templates
+## Goals
+- [Goal 1]
+- [Goal 2]
 
-Use the following templates as reference for generating the specification:
+## User Stories
 
-- **Detailed**: `.codexspec/templates/docs/spec-template-detailed.md` - Full format with user stories, acceptance criteria, requirements, and success metrics
-- **Simple**: `.codexspec/templates/docs/spec-template-simple.md` - Lightweight format for simpler features
+### Story 1: [Title]
+**As a** [user type]
+**I want** [goal]
+**So that** [benefit]
+
+**Acceptance Criteria:**
+- [ ] [Criterion 1]
+- [ ] [Criterion 2]
+
+## Functional Requirements
+- [REQ-001] [Description]
+- [REQ-002] [Description]
+
+## Non-Functional Requirements
+- [NFR-001] [Description]
+
+## Acceptance Criteria (Test Cases)
+- [TC-001] [Test case description]
+- [TC-002] [Test case description]
+
+## Edge Cases
+- [Edge case]: [Handling approach]
+
+## Output Examples
+[If applicable, provide example outputs]
+
+## Out of Scope
+- [Item 1]
+- [Item 2]
+```
+
+### Quality Checklist
+
+Before saving, verify:
+- [ ] All user stories have acceptance criteria
+- [ ] Functional requirements are specific and testable
+- [ ] Non-functional requirements are measurable
+- [ ] Test cases are concrete and executable
+- [ ] Edge cases are documented
+- [ ] Out of scope items are listed
 
 ### Output
 
-A comprehensive specification document following the standard spec template, saved to the appropriate location in `.codexspec/specs/`.
+Save the specification to: `.codexspec/specs/{NNN}-{feature-name}/spec.md`
 
-> [!NOTE]
-> This is a placeholder command. The full implementation will be added in future versions.
+> [!IMPORTANT]
+> This command should be called after `/codexspec.specify` has clarified all requirements. It focuses on document generation, not requirement exploration.

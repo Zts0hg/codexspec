@@ -1,11 +1,9 @@
 ---
-description: Create a new feature specification describing what to build and why
-handoffs:
-  - agent: claude
-    step: Generate feature specification from user requirements
+description: Clarify requirements through interactive Q&A to explore and refine the initial idea
+argument-hint: "Describe your initial idea or requirement"
 ---
 
-# Feature Specification Generator
+# Requirement Clarification
 
 ## Language Preference
 
@@ -21,89 +19,48 @@ $ARGUMENTS
 
 ## Instructions
 
-You are tasked with creating a detailed feature specification. Focus on the **what** and **why**, not the technical implementation.
+You are an experienced software engineer and product manager. Your task is to help clarify requirements through interactive Q&A.
 
-### Steps
+### Your Role
 
-1. **Understand Requirements**: Parse the user's input to understand what feature they want to build.
+1. **Ask clarifying questions** to understand the user's initial idea
+2. **Explore edge cases** that the user might not have considered
+3. **Co-create high-quality requirements** through dialogue
+4. **Focus on "what" and "why"**, not technical implementation details
 
-2. **Review Constitution**: Read `.codexspec/memory/constitution.md` to understand project principles.
+### Key Principles
 
-3. **Create Feature Branch**: Create a new feature branch using the naming convention `NNN-feature-name` (e.g., `001-user-authentication`).
+- **DO NOT** generate `spec.md` without explicit user approval
+- Ask one topic at a time, don't overwhelm the user
+- Summarize understanding periodically to ensure alignment
+- When requirements are sufficiently clarified, ask the user if they want to generate the spec document
 
-4. **Create Feature Directory**: Create `.codexspec/specs/{feature-id}/` directory.
+### Clarification Topics
 
-5. **Generate Specification**: Create a comprehensive spec document including:
-   - Feature overview and goals
-   - User stories with acceptance criteria
-   - Functional requirements
-   - Non-functional requirements
-   - Edge cases and constraints
-   - Out of scope items
+Consider exploring these aspects (as relevant to the feature):
 
-6. **Save Specification**: Write to `.codexspec/specs/{feature-id}/spec.md`
+1. **User Perspective**: Who are the target users? What are their goals?
+2. **Use Cases**: What are the main workflows? Happy path and alternatives?
+3. **Data Requirements**: What data is involved? Input/output formats?
+4. **Integration Points**: Does this interact with existing systems?
+5. **Error Handling**: What could go wrong? How should errors be handled?
+6. **Constraints**: Time, budget, technical, or regulatory constraints?
+7. **Out of Scope**: What should this feature NOT do?
+8. **Priority**: What's essential vs nice-to-have?
 
-### Reference Templates
+### Reference Context
 
-Use the following templates as reference for generating the specification:
+Before asking questions, review:
+- Project constitution: `.codexspec/memory/constitution.md`
+- Existing specs: `.codexspec/specs/` (to avoid duplication)
 
-- **Detailed**: `.codexspec/templates/docs/spec-template-detailed.md` - Full format with user stories, acceptance criteria, requirements, and success metrics
-- **Simple**: `.codexspec/templates/docs/spec-template-simple.md` - Lightweight format for simpler features
+### When Requirements Are Clear
 
-Choose the appropriate template based on feature complexity.
+Once you believe requirements are sufficiently clarified:
 
-### Template Structure
+1. Summarize the clarified requirements
+2. Ask: "Are you satisfied with this requirement summary? If so, you can use `/codexspec.generate-spec` to generate the `spec.md` document."
+3. **Wait for user confirmation** before taking any file creation action
 
-```markdown
-# Feature: [Feature Name]
-
-## Overview
-[High-level description of the feature]
-
-## Goals
-- [Goal 1]
-- [Goal 2]
-
-## User Stories
-
-### Story 1: [Story Title]
-**As a** [user type]
-**I want** [goal]
-**So that** [benefit]
-
-**Acceptance Criteria:**
-- [ ] [Criterion 1]
-- [ ] [Criterion 2]
-
-## Functional Requirements
-- [REQ-001] [Requirement description]
-- [REQ-002] [Requirement description]
-
-## Non-Functional Requirements
-- [NFR-001] [Requirement description]
-- [NFR-002] [Requirement description]
-
-## Edge Cases
-- [Edge case 1]: [Handling approach]
-- [Edge case 2]: [Handling approach]
-
-## Constraints
-- [Constraint 1]
-- [Constraint 2]
-
-## Out of Scope
-- [Item 1]
-- [Item 2]
-```
-
-### Quality Criteria
-
-- [ ] All user stories have acceptance criteria
-- [ ] Functional requirements are specific and testable
-- [ ] Non-functional requirements are measurable
-- [ ] Edge cases are identified
-- [ ] Constraints are documented
-- [ ] Out of scope items are clearly listed
-
-> [!NOTE]
-> This is a placeholder command. The full implementation will be added in future versions.
+> [!IMPORTANT]
+> This command is for requirement clarification only. Document generation should be done via `/codexspec.generate-spec`.

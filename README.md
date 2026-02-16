@@ -132,21 +132,29 @@ Use the `/codexspec.constitution` command to create your project's governing pri
 /codexspec.constitution Create principles focused on code quality, testing standards, and clean architecture
 ```
 
-### 3. Create a Specification
+### 3. Clarify Requirements
 
-Use `/codexspec.specify` to define what you want to build:
-
-```
-/codexspec.specify Build a task management application with the following features: create tasks, assign to users, set due dates, and track progress
-```
-
-### 4. Clarify Requirements (Optional but Recommended)
-
-Use `/codexspec.clarify` to resolve ambiguities before planning:
+Use `/codexspec.specify` to **explore and clarify** your requirements through interactive Q&A:
 
 ```
-/codexspec.clarify
+/codexspec.specify I want to build a task management application
 ```
+
+This command will:
+- Ask clarifying questions to understand your idea
+- Explore edge cases you might not have considered
+- Co-create high-quality requirements through dialogue
+- **NOT** generate files automatically - you stay in control
+
+### 4. Generate Specification Document
+
+Once requirements are clarified, use `/codexspec.generate-spec` to create the `spec.md` document:
+
+```
+/codexspec.generate-spec
+```
+
+This command acts as a "requirement compiler" that transforms your clarified requirements into a structured specification document.
 
 ### 5. Create a Technical Plan
 
@@ -219,8 +227,8 @@ After initialization, these slash commands are available in Claude Code:
 | Command | Description |
 |---------|-------------|
 | `/codexspec.constitution` | Create or update project governing principles |
-| `/codexspec.specify` | Define what you want to build (requirements) |
-| `/codexspec.generate-spec` | Generate detailed specification from requirements |
+| `/codexspec.specify` | **Clarify** requirements through interactive Q&A (no file generation) |
+| `/codexspec.generate-spec` | **Generate** `spec.md` document after requirements are clarified |
 | `/codexspec.spec-to-plan` | Convert specification to technical plan |
 | `/codexspec.plan-to-tasks` | Break down plan into actionable tasks |
 | `/codexspec.implement-tasks` | Execute tasks according to breakdown |
@@ -237,7 +245,7 @@ After initialization, these slash commands are available in Claude Code:
 
 | Command | Description |
 |---------|-------------|
-| `/codexspec.clarify` | Clarify underspecified areas before planning |
+| `/codexspec.clarify` | Scan existing spec.md for ambiguities and update with clarifications |
 | `/codexspec.analyze` | Cross-artifact consistency analysis |
 | `/codexspec.checklist` | Generate quality checklists for requirements |
 | `/codexspec.tasks-to-issues` | Convert tasks to GitHub issues |
@@ -252,34 +260,87 @@ After initialization, these slash commands are available in Claude Code:
 │  1. Constitution  ──►  Define project principles             │
 │         │                                                    │
 │         ▼                                                    │
-│  2. Specify  ───────►  Create feature specification          │
+│  2. Specify  ───────►  Interactive Q&A to clarify            │
+│         │             requirements (no file created)         │
 │         │                                                    │
 │         ▼                                                    │
-│  3. Clarify  ───────►  Resolve ambiguities (optional)        │
+│  3. Generate Spec  ─►  Create spec.md document               │
+│         │             (user calls explicitly)                │
 │         │                                                    │
 │         ▼                                                    │
 │  4. Review Spec  ───►  Validate specification                │
 │         │                                                    │
 │         ▼                                                    │
-│  5. Spec to Plan  ──►  Create technical plan                 │
+│  5. Clarify  ───────►  Resolve ambiguities (optional)        │
 │         │                                                    │
 │         ▼                                                    │
-│  6. Review Plan  ───►  Validate technical plan               │
+│  6. Spec to Plan  ──►  Create technical plan                 │
 │         │                                                    │
 │         ▼                                                    │
-│  7. Plan to Tasks  ─►  Generate task breakdown               │
+│  7. Review Plan  ───►  Validate technical plan               │
 │         │                                                    │
 │         ▼                                                    │
-│  8. Analyze  ───────►  Cross-artifact consistency (optional) │
+│  8. Plan to Tasks  ─►  Generate task breakdown               │
 │         │                                                    │
 │         ▼                                                    │
-│  9. Review Tasks  ──►  Validate task breakdown               │
+│  9. Analyze  ───────►  Cross-artifact consistency (optional) │
 │         │                                                    │
 │         ▼                                                    │
-│  10. Implement  ─────►  Execute implementation               │
+│  10. Review Tasks  ─►  Validate task breakdown               │
+│         │                                                    │
+│         ▼                                                    │
+│  11. Implement  ─────►  Execute implementation               │
 │                                                              │
 └──────────────────────────────────────────────────────────────┘
 ```
+
+### Key Concept: Requirement Clarification Workflow
+
+CodexSpec provides **two distinct clarification commands** for different stages of the workflow:
+
+#### specify vs clarify: When to Use Which?
+
+| Aspect | `/codexspec.specify` | `/codexspec.clarify` |
+|--------|----------------------|----------------------|
+| **Purpose** | Initial requirement exploration | Iterative refinement of existing spec |
+| **When to Use** | Starting with a new idea, no spec.md exists | spec.md exists, need to fill gaps |
+| **Input** | Your initial idea or requirement | Existing spec.md file |
+| **Output** | None (dialogue only) | Updates spec.md with clarifications |
+| **Method** | Open-ended Q&A | Structured ambiguity scan (6 categories) |
+| **Question Limit** | Unlimited | Maximum 5 questions |
+| **Typical Use** | "I want to build a todo app" | "The spec is missing error handling details" |
+
+#### Two-Phase Specification
+
+Before generating any documentation:
+
+| Phase | Command | Purpose | Output |
+|-------|---------|---------|--------|
+| **Explore** | `/codexspec.specify` | Interactive Q&A to explore and refine requirements | None (dialogue only) |
+| **Generate** | `/codexspec.generate-spec` | Compile clarified requirements into structured document | `spec.md` |
+
+#### Iterative Clarification
+
+After spec.md is created:
+
+```
+spec.md ──► /codexspec.clarify ──► Updated spec.md (with Clarifications section)
+                │
+                └── Scans for ambiguities in 6 categories:
+                    • Functional Scope & Behavior
+                    • Domain & Data Model
+                    • Interaction & UX Flow
+                    • Non-Functional Quality Attributes
+                    • Edge Cases & Failure Handling
+                    • Conflict Resolution
+```
+
+#### Benefits of This Design
+
+- **Human-AI collaboration**: You actively participate in requirement discovery
+- **Explicit control**: Files are only created when you decide
+- **Quality focus**: Requirements are thoroughly explored before documentation
+- **Iterative refinement**: Specs can be improved incrementally as understanding deepens
 
 ## Project Structure
 
@@ -452,7 +513,8 @@ CodexSpec is inspired by GitHub's spec-kit but with some key differences:
 | CLI Name | `specify` | `codexspec` |
 | Primary AI | Multi-agent support | Claude Code focused |
 | Command Prefix | `/speckit.*` | `/codexspec.*` |
-| Workflow | specify → plan → tasks → implement | constitution → specify → clarify → plan → tasks → analyze → implement |
+| Workflow | specify → plan → tasks → implement | constitution → specify → generate-spec → plan → tasks → analyze → implement |
+| Two-Phase Spec | No | Yes (clarify + generate) |
 | Review Steps | Optional | Built-in review commands |
 | Clarify Command | Yes | Yes |
 | Analyze Command | Yes | Yes |
