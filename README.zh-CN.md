@@ -128,21 +128,29 @@ claude
 /codexspec.constitution 创建专注于代码质量、测试标准和整洁架构的原则
 ```
 
-### 3. 创建规格说明
+### 3. 澄清需求
 
-使用 `/codexspec.specify` 定义您想要构建的内容：
-
-```
-/codexspec.specify 构建一个任务管理应用，包含以下功能：创建任务、分配给用户、设置截止日期、跟踪进度
-```
-
-### 4. 澄清需求（可选但推荐）
-
-使用 `/codexspec.clarify` 在规划前解决歧义：
+使用 `/codexspec.specify` 通过交互式问答**探索和澄清**您的需求：
 
 ```
-/codexspec.clarify
+/codexspec.specify 我想构建一个任务管理应用
 ```
+
+此命令将：
+- 提出澄清性问题以理解您的想法
+- 探索您可能未考虑到的边界情况
+- 通过对话共创高质量需求
+- **不会**自动生成文件 - 您保持控制
+
+### 4. 生成规格文档
+
+需求澄清后，使用 `/codexspec.generate-spec` 创建 `spec.md` 文档：
+
+```
+/codexspec.generate-spec
+```
+
+此命令充当"需求编译器"，将您澄清的需求转换为结构化的规格文档。
 
 ### 5. 创建技术计划
 
@@ -215,8 +223,8 @@ claude
 | 命令 | 描述 |
 |------|------|
 | `/codexspec.constitution` | 创建或更新项目治理原则 |
-| `/codexspec.specify` | 定义您想要构建的内容（需求） |
-| `/codexspec.generate-spec` | 从需求生成详细规格 |
+| `/codexspec.specify` | 通过交互式问答**澄清**需求（不生成文件） |
+| `/codexspec.generate-spec` | 需求澄清后**生成** `spec.md` 文档 |
 | `/codexspec.spec-to-plan` | 将规格转换为技术计划 |
 | `/codexspec.plan-to-tasks` | 将计划分解为可执行任务 |
 | `/codexspec.implement-tasks` | 按分解执行任务 |
@@ -233,7 +241,7 @@ claude
 
 | 命令 | 描述 |
 |------|------|
-| `/codexspec.clarify` | 在规划前澄清不明确的区域 |
+| `/codexspec.clarify` | 扫描现有spec.md中的模糊区域并更新澄清内容 |
 | `/codexspec.analyze` | 跨产物一致性分析 |
 | `/codexspec.checklist` | 为需求生成质量检查清单 |
 | `/codexspec.tasks-to-issues` | 将任务转换为 GitHub issues |
@@ -248,34 +256,87 @@ claude
 │  1. Constitution  ──►  定义项目原则                           │
 │         │                                                    │
 │         ▼                                                    │
-│  2. Specify  ───────►  创建功能规格                           │
+│  2. Specify  ───────►  交互式问答澄清                         │
+│         │             需求（不创建文件）                       │
 │         │                                                    │
 │         ▼                                                    │
-│  3. Clarify  ───────►  解决歧义（可选）                        │
+│  3. Generate Spec  ─►  创建 spec.md 文档                      │
+│         │             （用户明确调用）                         │
 │         │                                                    │
 │         ▼                                                    │
 │  4. Review Spec  ───►  验证规格                               │
 │         │                                                    │
 │         ▼                                                    │
-│  5. Spec to Plan  ──►  创建技术计划                           │
+│  5. Clarify  ───────►  解决歧义（可选）                        │
 │         │                                                    │
 │         ▼                                                    │
-│  6. Review Plan  ───►  验证技术计划                           │
+│  6. Spec to Plan  ──►  创建技术计划                           │
 │         │                                                    │
 │         ▼                                                    │
-│  7. Plan to Tasks  ─►  生成任务分解                           │
+│  7. Review Plan  ───►  验证技术计划                           │
 │         │                                                    │
 │         ▼                                                    │
-│  8. Analyze  ───────►  跨产物一致性（可选）                    │
+│  8. Plan to Tasks  ─►  生成任务分解                           │
 │         │                                                    │
 │         ▼                                                    │
-│  9. Review Tasks  ──►  验证任务分解                           │
+│  9. Analyze  ───────►  跨产物一致性（可选）                    │
 │         │                                                    │
 │         ▼                                                    │
-│  10. Implement  ─────►  执行实现                              │
+│  10. Review Tasks  ─►  验证任务分解                           │
+│         │                                                    │
+│         ▼                                                    │
+│  11. Implement  ─────►  执行实现                              │
 │                                                              │
 └──────────────────────────────────────────────────────────────┘
 ```
+
+### 核心概念：需求澄清工作流
+
+CodexSpec 为工作流的不同阶段提供了**两个不同的澄清命令**：
+
+#### specify 与 clarify：何时使用哪个？
+
+| 方面 | `/codexspec.specify` | `/codexspec.clarify` |
+|------|----------------------|----------------------|
+| **目的** | 初始需求探索 | 现有规格的迭代细化 |
+| **何时使用** | 从新想法开始，没有spec.md | spec.md已存在，需要填补空白 |
+| **输入** | 您的初步想法或需求 | 现有的spec.md文件 |
+| **输出** | 无（仅对话） | 更新spec.md并添加澄清内容 |
+| **方法** | 开放式问答 | 结构化模糊扫描（6个类别） |
+| **问题限制** | 无限制 | 最多5个问题 |
+| **典型用途** | "我想构建一个待办应用" | "规格缺少错误处理细节" |
+
+#### 两阶段规格说明
+
+在生成任何文档之前：
+
+| 阶段 | 命令 | 目的 | 输出 |
+|------|------|------|------|
+| **探索** | `/codexspec.specify` | 交互式问答探索和细化需求 | 无（仅对话） |
+| **生成** | `/codexspec.generate-spec` | 将澄清的需求编译成结构化文档 | `spec.md` |
+
+#### 迭代澄清
+
+spec.md创建之后：
+
+```
+spec.md ──► /codexspec.clarify ──► 更新的spec.md（包含Clarifications章节）
+                │
+                └── 扫描6个类别的模糊区域：
+                    • 功能范围与行为
+                    • 领域与数据模型
+                    • 交互与UX流程
+                    • 非功能质量属性
+                    • 边界情况与失败处理
+                    • 冲突解决
+```
+
+#### 此设计的优势
+
+- **人机协同**：您积极参与需求发现
+- **明确控制**：只有您决定时才创建文件
+- **质量聚焦**：在文档化之前充分探索需求
+- **迭代细化**：随着理解加深，规格可以逐步改进
 
 ## 项目结构
 
@@ -448,7 +509,8 @@ CodexSpec 灵感来源于 GitHub 的 spec-kit，但有一些关键差异：
 | CLI 名称 | `specify` | `codexspec` |
 | 主要 AI | 多代理支持 | 专注于 Claude Code |
 | 命令前缀 | `/speckit.*` | `/codexspec.*` |
-| 工作流 | specify → plan → tasks → implement | constitution → specify → clarify → plan → tasks → analyze → implement |
+| 工作流 | specify → plan → tasks → implement | constitution → specify → generate-spec → plan → tasks → analyze → implement |
+| 两阶段规格 | 否 | 是（澄清 + 生成） |
 | 审查步骤 | 可选 | 内置审查命令 |
 | Clarify 命令 | 是 | 是 |
 | Analyze 命令 | 是 | 是 |

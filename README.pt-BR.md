@@ -128,21 +128,29 @@ Use o comando `/codexspec.constitution` para criar os princípios de governança
 /codexspec.constitution Criar princípios focados em qualidade de código, padrões de teste e arquitetura limpa
 ```
 
-### 3. Criar uma Especificação
+### 3. Clarificar Requisitos
 
-Use `/codexspec.specify` para definir o que você quer construir:
-
-```
-/codexspec.specify Construir uma aplicação de gerenciamento de tarefas com as seguintes funcionalidades: criar tarefas, atribuir a usuários, definir datas de vencimento e rastrear progresso
-```
-
-### 4. Clarificar Requisitos (Opcional mas Recomendado)
-
-Use `/codexspec.clarify` para resolver ambiguidades antes do planejamento:
+Use `/codexspec.specify` para **explorar e clarificar** seus requisitos através de Q&A interativo:
 
 ```
-/codexspec.clarify
+/codexspec.specify Quero construir uma aplicação de gerenciamento de tarefas
 ```
+
+Este comando irá:
+- Fazer perguntas de clarificação para entender sua ideia
+- Explorar casos de borda que você pode não ter considerado
+- Co-criar requisitos de alta qualidade através de diálogo
+- **NÃO** gerar arquivos automaticamente - você mantém o controle
+
+### 4. Gerar Documento de Especificação
+
+Uma vez que os requisitos estão clarificados, use `/codexspec.generate-spec` para criar o documento `spec.md`:
+
+```
+/codexspec.generate-spec
+```
+
+Este comando atua como um "compilador de requisitos" que transforma seus requisitos clarificados em um documento de especificação estruturado.
 
 ### 5. Criar um Plano Técnico
 
@@ -215,8 +223,8 @@ Após a inicialização, estes comandos slash estão disponíveis no Claude Code
 | Comando | Descrição |
 |---------|-----------|
 | `/codexspec.constitution` | Criar ou atualizar princípios de governança do projeto |
-| `/codexspec.specify` | Definir o que você quer construir (requisitos) |
-| `/codexspec.generate-spec` | Gerar especificação detalhada a partir de requisitos |
+| `/codexspec.specify` | **Clarificar** requisitos através de Q&A interativo (sem geração de arquivo) |
+| `/codexspec.generate-spec` | **Gerar** documento `spec.md` após clarificação de requisitos |
 | `/codexspec.spec-to-plan` | Converter especificação em plano técnico |
 | `/codexspec.plan-to-tasks` | Decompor plano em tarefas acionáveis |
 | `/codexspec.implement-tasks` | Executar tarefas conforme decomposição |
@@ -233,7 +241,7 @@ Após a inicialização, estes comandos slash estão disponíveis no Claude Code
 
 | Comando | Descrição |
 |---------|-----------|
-| `/codexspec.clarify` | Clarificar áreas subespecificadas antes do planejamento |
+| `/codexspec.clarify` | Escanear spec.md existente por ambiguidades e atualizar com clarificações |
 | `/codexspec.analyze` | Análise de consistência entre artefatos |
 | `/codexspec.checklist` | Gerar checklists de qualidade para requisitos |
 | `/codexspec.tasks-to-issues` | Converter tarefas em GitHub issues |
@@ -248,34 +256,87 @@ Após a inicialização, estes comandos slash estão disponíveis no Claude Code
 │  1. Constitution  ──►  Definir princípios do projeto         │
 │         │                                                    │
 │         ▼                                                    │
-│  2. Specify  ───────►  Criar especificação de funcionalidade │
+│  2. Specify  ───────►  Q&A interativo para clarificar        │
+│         │             requisitos (sem criar arquivo)         │
 │         │                                                    │
 │         ▼                                                    │
-│  3. Clarify  ───────►  Resolver ambiguidades (opcional)      │
+│  3. Generate Spec  ─►  Criar documento spec.md               │
+│         │             (usuário chama explicitamente)         │
 │         │                                                    │
 │         ▼                                                    │
 │  4. Review Spec  ───►  Validar especificação                 │
 │         │                                                    │
 │         ▼                                                    │
-│  5. Spec to Plan  ──►  Criar plano técnico                   │
+│  5. Clarify  ───────►  Resolver ambiguidades (opcional)      │
 │         │                                                    │
 │         ▼                                                    │
-│  6. Review Plan  ───►  Validar plano técnico                 │
+│  6. Spec to Plan  ──►  Criar plano técnico                   │
 │         │                                                    │
 │         ▼                                                    │
-│  7. Plan to Tasks  ─►  Gerar decomposição de tarefas         │
+│  7. Review Plan  ───►  Validar plano técnico                 │
 │         │                                                    │
 │         ▼                                                    │
-│  8. Analyze  ───────►  Consistência entre artefatos (opc.)   │
+│  8. Plan to Tasks  ─►  Gerar decomposição de tarefas         │
 │         │                                                    │
 │         ▼                                                    │
-│  9. Review Tasks  ──►  Validar decomposição de tarefas       │
+│  9. Analyze  ───────►  Consistência entre artefatos (opc.)   │
 │         │                                                    │
 │         ▼                                                    │
-│  10. Implement  ─────►  Executar implementação               │
+│  10. Review Tasks  ─►  Validar decomposição de tarefas       │
+│         │                                                    │
+│         ▼                                                    │
+│  11. Implement  ─────►  Executar implementação               │
 │                                                              │
 └──────────────────────────────────────────────────────────────┘
 ```
+
+### Conceito Chave: Fluxo de Trabalho de Clarificação de Requisitos
+
+O CodexSpec fornece **dois comandos de clarificação distintos** para diferentes estágios do fluxo de trabalho:
+
+#### specify vs clarify: Quando Usar Qual?
+
+| Aspecto | `/codexspec.specify` | `/codexspec.clarify` |
+|---------|----------------------|----------------------|
+| **Propósito** | Exploração inicial de requisitos | Refinamento iterativo de specs existentes |
+| **Quando Usar** | Começar com nova ideia, sem spec.md | spec.md existe, precisa preencher lacunas |
+| **Entrada** | Sua ideia ou requisito inicial | Arquivo spec.md existente |
+| **Saída** | Nenhuma (apenas diálogo) | Atualiza spec.md com clarificações |
+| **Método** | Q&A aberto | Escaneamento de ambiguidade estruturado (6 categorias) |
+| **Limite de Perguntas** | Ilimitado | Máximo 5 perguntas |
+| **Uso Típico** | "Quero construir um app de tarefas" | "A spec carece de detalhes de tratamento de erros" |
+
+#### Especificação em Duas Fases
+
+Antes de gerar qualquer documentação:
+
+| Fase | Comando | Propósito | Saída |
+|------|---------|-----------|-------|
+| **Exploração** | `/codexspec.specify` | Q&A interativo para explorar e refinar requisitos | Nenhuma (apenas diálogo) |
+| **Geração** | `/codexspec.generate-spec` | Compilar requisitos clarificados em documento estruturado | `spec.md` |
+
+#### Clarificação Iterativa
+
+Após criar spec.md:
+
+```
+spec.md ──► /codexspec.clarify ──► spec.md atualizado (com seção Clarifications)
+                │
+                └── Escaneia ambiguidades em 6 categorias:
+                    • Escopo funcional e comportamento
+                    • Domínio e modelo de dados
+                    • Interação e fluxo UX
+                    • Atributos de qualidade não funcionais
+                    • Casos de borda e tratamento de falhas
+                    • Resolução de conflitos
+```
+
+#### Benefícios deste Design
+
+- **Colaboração humano-AI**: Você participa ativamente da descoberta de requisitos
+- **Controle explícito**: Arquivos só são criados quando você decide
+- **Foco em qualidade**: Requisitos são completamente explorados antes da documentação
+- **Refinamento iterativo**: Specs podem ser melhoradas incrementalmente
 
 ## Estrutura do Projeto
 
@@ -448,7 +509,8 @@ CodexSpec é inspirado no spec-kit do GitHub, mas com algumas diferenças import
 | Nome do CLI | `specify` | `codexspec` |
 | IA Principal | Suporte multi-agente | Focado em Claude Code |
 | Prefixo de Comando | `/speckit.*` | `/codexspec.*` |
-| Fluxo de Trabalho | specify → plan → tasks → implement | constitution → specify → clarify → plan → tasks → analyze → implement |
+| Fluxo de Trabalho | specify → plan → tasks → implement | constitution → specify → generate-spec → plan → tasks → analyze → implement |
+| Especificação em Duas Fases | Não | Sim (clarificação + geração) |
 | Passos de Revisão | Opcional | Comandos de revisão integrados |
 | Comando Clarify | Sim | Sim |
 | Comando Analyze | Sim | Sim |
