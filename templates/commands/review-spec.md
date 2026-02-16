@@ -1,5 +1,6 @@
 ---
-description: Review and validate a feature specification for completeness and quality
+description: Review and validate a feature specification for completeness, clarity, and quality
+argument-hint: "[path_to_spec.md] (optional, defaults to .codexspec/specs/{feature-id}/)"
 handoffs:
   - agent: claude
     step: Review specification against quality criteria
@@ -19,89 +20,173 @@ handoffs:
 
 $ARGUMENTS
 
+## Role
+
+You are a **Senior Product Manager and Business Analyst**. Your responsibility is to critically review specifications for completeness, clarity, consistency, and readiness for technical planning.
+
 ## Instructions
 
-Review the feature specification for completeness, clarity, and consistency. This command helps ensure specifications are ready for planning.
+Review the feature specification for quality and readiness. This command ensures specifications are well-defined before investing time in technical planning.
+
+### File Resolution
+
+- **With argument**: Treat `$1` as the path to `spec.md`
+- **Without argument**: Auto-detect the latest/only feature under `.codexspec/specs/`
 
 ### Steps
 
-1. **Load Specification**: Read the spec from `.codexspec/specs/{feature-id}/spec.md`.
+1. **Load Context**
+   - Read the specification from the located path
+   - Read `.codexspec/memory/constitution.md` for project quality standards (if exists)
+   - Check for existing specs in `.codexspec/specs/` to identify potential overlaps or conflicts
 
-2. **Load Constitution**: Read `.codexspec/memory/constitution.md` for quality standards.
+2. **Completeness Check**: Verify all required sections are present and substantive:
+   - [ ] **Feature Overview**: Clear description of what is being built
+   - [ ] **Goals**: Measurable objectives (at least 2-3)
+   - [ ] **User Stories**: Complete with "As a/I want/So that" format
+   - [ ] **Acceptance Criteria**: Each user story has specific, testable criteria
+   - [ ] **Functional Requirements**: Numbered and specific (REQ-XXX format)
+   - [ ] **Non-Functional Requirements**: Measurable (e.g., "< 200ms response time")
+   - [ ] **Edge Cases**: Identified with handling approaches
+   - [ ] **Out of Scope**: Clear boundaries defined
 
-3. **Completeness Check**: Verify all required sections are present:
-   - [ ] Feature overview
-   - [ ] Goals
-   - [ ] User stories with acceptance criteria
-   - [ ] Functional requirements
-   - [ ] Non-functional requirements
-   - [ ] Edge cases
-   - [ ] Constraints
+3. **Clarity Check**: Ensure requirements are unambiguous:
+   - [ ] No vague language ("fast", "good", "user-friendly", "scalable" without metrics)
+   - [ ] Each requirement has a single, clear interpretation
+   - [ ] Technical terms are defined or linked to documentation
+   - [ ] User roles and personas are clearly defined
+   - [ ] Input/output formats are specified where applicable
 
-4. **Clarity Check**: Ensure requirements are clear and unambiguous:
-   - [ ] No vague language ("fast", "good", "user-friendly")
-   - [ ] Specific, measurable criteria
-   - [ ] Clear boundaries and scope
-
-5. **Consistency Check**: Verify no contradictions:
+4. **Consistency Check**: Verify no internal contradictions:
    - [ ] Requirements don't conflict with each other
-   - [ ] User stories align with goals
-   - [ ] Constraints are realistic
+   - [ ] User stories align with stated goals
+   - [ ] Non-functional requirements don't contradict functional requirements
+   - [ ] Scope boundaries are consistent with goals
 
-6. **Constitution Alignment**: Check alignment with project principles:
-   - [ ] Requirements support constitution goals
+5. **Testability Check**: Verify requirements can be verified:
+   - [ ] Each functional requirement can be tested
+   - [ ] Acceptance criteria are concrete and executable
+   - [ ] Edge cases have expected behaviors defined
+   - [ ] Error conditions have specified responses
+
+6. **Constitution Alignment** (if constitution exists):
+   - [ ] Requirements support constitution's project goals
    - [ ] Quality standards are addressed
-   - [ ] Workflow guidelines are followed
-
-7. **Generate Report**: Create a review report.
+   - [ ] Naming conventions are followed (if specified)
+   - [ ] Workflow guidelines are considered
 
 ### Report Template
 
 ```markdown
 # Specification Review Report
 
+## Meta Information
+- **Specification**: {feature-id}/spec.md
+- **Review Date**: {date}
+- **Reviewer Role**: Senior Product Manager / Business Analyst
+
 ## Summary
-- **Specification**: {feature-id}
-- **Status**: ✅ Pass / ⚠️ Needs Work / ❌ Fail
-- **Overall Score**: X/100
+- **Overall Status**: ✅ Pass / ⚠️ Needs Work / ❌ Fail
+- **Quality Score**: X/100
+- **Readiness**: Ready for Planning / Needs Revision / Major Rework Required
 
-## Completeness
+## Section Analysis
 
-| Section | Status | Notes |
-|---------|--------|-------|
-| Overview | ✅ | Present and clear |
-| Goals | ✅ | 3 goals defined |
-| User Stories | ⚠️ | Missing acceptance criteria for Story 2 |
-| Functional Reqs | ✅ | 5 requirements defined |
-| Non-Functional Reqs | ⚠️ | Missing performance requirements |
-| Edge Cases | ❌ | Section not present |
-| Constraints | ✅ | 2 constraints defined |
+| Section | Status | Completeness | Quality | Notes |
+|---------|--------|--------------|---------|-------|
+| Overview | ✅/⚠️/❌ | 100% | High/Medium/Low | [Specific feedback] |
+| Goals | ✅/⚠️/❌ | 100% | High/Medium/Low | [Specific feedback] |
+| User Stories | ✅/⚠️/❌ | 80% | Medium | [Specific feedback] |
+| Acceptance Criteria | ✅/⚠️/❌ | 60% | Low | [Specific feedback] |
+| Functional Requirements | ✅/⚠️/❌ | 100% | High | [Specific feedback] |
+| Non-Functional Requirements | ✅/⚠️/❌ | 50% | Medium | [Specific feedback] |
+| Edge Cases | ✅/⚠️/❌ | 0% | N/A | [Section missing] |
+| Out of Scope | ✅/⚠️/❌ | 100% | High | [Specific feedback] |
 
-## Issues Found
+## Detailed Findings
 
-### Critical
-- [ ] Edge cases section is missing
+### Critical Issues (Must Fix)
+- [ ] **[SPEC-001]**: [Issue description with specific location]
+  - **Impact**: [Why this matters]
+  - **Suggestion**: [How to fix it]
 
-### Warning
-- [ ] User Story 2 lacks acceptance criteria
-- [ ] Performance requirements not specified
+### Warnings (Should Fix)
+- [ ] **[SPEC-002]**: [Issue description]
+  - **Impact**: [Potential risk]
+  - **Suggestion**: [Recommended fix]
 
-### Suggestion
-- [ ] Consider adding error handling requirements
+### Suggestions (Nice to Have)
+- [ ] **[SPEC-003]**: [Enhancement description]
+  - **Benefit**: [Value of making this change]
+
+## Clarity Assessment
+
+| Aspect | Rating | Notes |
+|--------|--------|-------|
+| Ambiguity Level | Low/Medium/High | [Examples of vague terms if any] |
+| Technical Precision | High/Medium/Low | [Areas needing clarification] |
+| Stakeholder Readability | High/Medium/Low | [Jargon that may need explanation] |
+
+## Testability Assessment
+
+| Requirement | Testable? | Notes |
+|-------------|-----------|-------|
+| REQ-001 | ✅ | Clear test case possible |
+| REQ-002 | ⚠️ | Needs more specific acceptance criteria |
+| REQ-003 | ❌ | Cannot verify without metrics |
+
+## Constitution Alignment
+
+> [!NOTE]
+> If no constitution exists, state "No project constitution found - using general best practices."
+
+| Principle | Alignment | Notes |
+|-----------|-----------|-------|
+| [Principle 1] | ✅/⚠️/❌ | [How spec aligns or conflicts] |
+| [Principle 2] | ✅/⚠️/❌ | [How spec aligns or conflicts] |
+
+## Scoring Breakdown
+
+| Category | Weight | Score | Weighted |
+|----------|--------|-------|----------|
+| Completeness | 25% | X/100 | X |
+| Clarity | 25% | X/100 | X |
+| Consistency | 20% | X/100 | X |
+| Testability | 20% | X/100 | X |
+| Constitution Alignment | 10% | X/100 | X |
+| **Total** | **100%** | | **X/100** |
 
 ## Recommendations
 
-1. Add edge cases section with at least 3 scenarios
-2. Complete acceptance criteria for all user stories
-3. Add specific performance metrics (e.g., "response time < 200ms")
+### Priority 1: Before Planning
+1. [Most critical action item]
+2. [Second most critical]
+
+### Priority 2: Quality Improvements
+1. [Important improvement]
+2. [Another improvement]
+
+### Priority 3: Future Considerations
+1. [Nice-to-have enhancement]
+
+## Available Follow-up Commands
+
+Based on the review result, the user may consider:
+- **Pass**: `/codexspec.spec-to-plan` - to generate technical implementation plan
+- **Needs Work**: `/codexspec.clarify` - to address ambiguities and gaps, then re-run this review
+- **Fail**: `/codexspec.clarify` - to systematically identify and fix specification issues
 ```
 
 ### Quality Criteria
 
-- [ ] Report covers all aspects
-- [ ] Issues are prioritized (Critical/Warning/Suggestion)
-- [ ] Recommendations are actionable
-- [ ] Score reflects actual quality
+Before completing the review, verify:
+- [ ] All sections of the spec have been examined
+- [ ] Issues are categorized by severity (Critical/Warning/Suggestion)
+- [ ] Each issue has a clear, actionable suggestion
+- [ ] Score reflects actual quality accurately
+- [ ] Recommendations are prioritized
+- [ ] Next steps are clear and appropriate
 
-> [!NOTE]
-> This is a placeholder command. The full implementation will be added in future versions.
+### Output
+
+Save the review report to: `.codexspec/specs/{feature-id}/review-spec.md`
