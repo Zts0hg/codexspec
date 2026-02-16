@@ -10,15 +10,61 @@
 
 CodexSpec ist ein Toolkit, das Ihnen hilft, hochwertige Software mit einem strukturierten, spezifikationsgesteuerten Ansatz zu erstellen. Es kehrt die traditionelle Entwicklung um, indem es Spezifikationen in ausführbare Artefakte verwandelt, die die Implementierung direkt leiten.
 
+## Design-Philosophie: Mensch-KI-Zusammenarbeit
+
+CodexSpec basiert auf der Überzeugung, dass **effektive KI-gestützte Entwicklung aktive menschliche Beteiligung auf jeder Stufe erfordert**. Das Toolkit ist um ein Kernprinzip herum konzipiert:
+
+> **Jedes Artefakt überprüfen und validieren, bevor weitergemacht wird.**
+
+### Warum menschliche Aufsicht wichtig ist
+
+Bei der KI-gestützten Entwicklung führt das Überspringen von Review-Phasen zu:
+
+| Problem | Konsequenz |
+|---------|------------|
+| Unklare Anforderungen | KI trifft Annahmen, die von Ihrer Absicht abweichen |
+| Unvollständige Spezifikationen | Features werden ohne kritische Edge Cases entwickelt |
+| Fehlausgerichtete technische Pläne | Architektur passt nicht zu den Geschäftsanforderungen |
+| Vage Aufgabenverteilungen | Implementierung gerät vom Kurs, erfordert teure Überarbeitung |
+
+### Der CodexSpec-Ansatz
+
+CodexSpec strukturiert die Entwicklung in **überprüfbare Checkpoints**:
+
+```
+Idee → Klären → Review → Plan → Review → Aufgaben → Review → Analysieren → Implementieren
+              ↑                ↑                ↑
+           Mensch prüft    Mensch prüft    Mensch prüft
+```
+
+**Jedes Artefakt hat einen entsprechenden Review-Befehl:**
+- `spec.md` → `/codexspec.review-spec`
+- `plan.md` → `/codexspec.review-plan`
+- `tasks.md` → `/codexspec.review-tasks`
+- Alle Artefakte → `/codexspec.analyze`
+
+Dieser systematische Review-Prozess gewährleistet:
+- **Frühe Fehlererkennung**: Missverständnisse erfassen, bevor Code geschrieben wird
+- **Abstimmungsverifikation**: Bestätigen, dass die Interpretation der KI Ihrer Absicht entspricht
+- **Qualitätstore**: Vollständigkeit, Klarheit und Machbarkeit auf jeder Stufe validieren
+- **Reduzierte Überarbeitung**: Minuten in Review investieren, um Stunden an Neuimplementierung zu sparen
+
 ## Funktionen
 
-- **Strukturierter Workflow**: Klare Befehle für jede Entwicklungsphase
+### Kern-SDD-Workflow
+- **Verfassungsbasiert**: Projektprinzipien etablieren, die alle nachfolgenden Entscheidungen leiten
+- **Zwei-Phasen-Spezifikation**: Interaktive Klärung (`/specify`) gefolgt von Dokumentgenerierung (`/generate-spec`)
+- **Plan-getriebene Entwicklung**: Technische Entscheidungen kommen nach validierten Anforderungen
+- **TDD-bereite Aufgaben**: Aufgabenverteilungen erzwingen Test-First-Methodik
+
+### Mensch-KI-Zusammenarbeit
+- **Review-Befehle**: Dedizierte Review-Befehle für Spec, Plan und Aufgaben zur Validierung der KI-Ausgabe
+- **Interaktive Klärung**: Q&A-basierte Anforderungsverfeinerung mit sofortigem Feedback
+- **Artefaktübergreifende Analyse**: Inkonsistenzen zwischen Spec, Plan und Aufgaben vor der Implementierung erkennen
+- **Qualitätschecklisten**: Automatisierte Qualitätsbewertung für Anforderungen
+
+### Entwicklererfahrung
 - **Claude Code Integration**: Native Slash-Befehle für Claude Code
-- **Verfassungsbasiert**: Projektprinzipien leiten alle Entscheidungen
-- **Spezifikation zuerst**: Definieren Sie was und warum vor dem wie
-- **Plan-getrieben**: Technische Entscheidungen kommen nach den Anforderungen
-- **Aufgabenorientiert**: Implementierung in ausführbare Aufgaben aufteilen
-- **Qualitätssicherung**: Integrierte Review-, Analyse- und Checklisten-Befehle
 - **Internationalisierung (i18n)**: Mehrsprachige Unterstützung durch LLM-Dynamische Übersetzung
 - **Plattformübergreifend**: Unterstützung für Bash- und PowerShell-Skripte
 - **Erweiterbar**: Plugin-Architektur für benutzerdefinierte Befehle
@@ -80,11 +126,13 @@ uv tool install git+https://github.com/Zts0hg/codexspec.git@v0.2.0
 Nach der Installation können Sie die CLI verwenden:
 
 ```bash
-# Neues Projekt erstellen (deutsche Ausgabe)
-codexspec init my-project --lang de
+# Neues Projekt erstellen
+codexspec init my-project
 
 # In bestehendem Projekt initialisieren
 codexspec init . --ai claude
+# oder
+codexspec init --here --ai claude
 
 # Installierte Tools überprüfen
 codexspec check
@@ -110,7 +158,9 @@ pip install --upgrade codexspec
 Nach der [Installation](#installation) erstellen oder initialisieren Sie Ihr Projekt:
 
 ```bash
-codexspec init my-awesome-project --lang de
+codexspec init my-awesome-project
+# oder im aktuellen Verzeichnis
+codexspec init . --ai claude
 ```
 
 ### 2. Projektprinzipien festlegen
@@ -152,7 +202,21 @@ Sobald die Anforderungen geklärt sind, verwenden Sie `/codexspec.generate-spec`
 
 Dieser Befehl fungiert als "Anforderungscompiler", der Ihre geklärten Anforderungen in ein strukturiertes Spezifikationsdokument umwandelt.
 
-### 5. Technischen Plan erstellen
+### 5. Spezifikation überprüfen (Empfohlen)
+
+**Bevor mit der Planung fortgefahren wird, die Spezifikation validieren:**
+
+```
+/codexspec.review-spec
+```
+
+Dieser Befehl generiert einen detaillierten Review-Bericht mit:
+- Analyse der Abschnittsvollständigkeit
+- Bewertung der Klarheit und Testbarkeit
+- Abstimmungsprüfung mit der Verfassung
+- Priorisierte Empfehlungen
+
+### 6. Technischen Plan erstellen
 
 Verwenden Sie `/codexspec.spec-to-plan`, um zu definieren, wie implementiert werden soll:
 
@@ -160,7 +224,23 @@ Verwenden Sie `/codexspec.spec-to-plan`, um zu definieren, wie implementiert wer
 /codexspec.spec-to-plan Python mit FastAPI für das Backend, PostgreSQL für die Datenbank und React für das Frontend verwenden
 ```
 
-### 6. Aufgaben generieren
+Der Befehl beinhaltet **Konstitutionalitäts-Review** - Verifizierung, dass der Plan mit den Projektprinzipien übereinstimmt.
+
+### 7. Plan überprüfen (Empfohlen)
+
+**Bevor Aufgaben erstellt werden, den technischen Plan validieren:**
+
+```
+/codexspec.review-plan
+```
+
+Dies verifiziert:
+- Spezifikationsabstimmung
+- Architekturqualität
+- Technologie-Stack-Angemessenheit
+- Verfassungskonformität
+
+### 8. Aufgaben generieren
 
 Verwenden Sie `/codexspec.plan-to-tasks`, um den Plan aufzuteilen:
 
@@ -168,7 +248,26 @@ Verwenden Sie `/codexspec.plan-to-tasks`, um den Plan aufzuteilen:
 /codexspec.plan-to-tasks
 ```
 
-### 7. Analysieren (Optional aber empfohlen)
+Aufgaben sind in Standardphasen organisiert mit:
+- **TDD-Erzwingung**: Test-Aufgaben vor Implementierungs-Aufgaben
+- **Parallel-Marker `[P]`**: Unabhängige Aufgaben identifizieren
+- **Dateipfad-Spezifikationen**: Klare Ergebnisse pro Aufgabe
+
+### 9. Aufgaben überprüfen (Empfohlen)
+
+**Bevor mit der Implementierung begonnen wird, die Aufgabenverteilung validieren:**
+
+```
+/codexspec.review-tasks
+```
+
+Dies überprüft:
+- Plan-Abdeckung
+- TDD-Konformität
+- Abhängigkeitskorrektheit
+- Aufgabengranularität
+
+### 10. Analysieren (Optional aber empfohlen)
 
 Verwenden Sie `/codexspec.analyze` für artefaktübergreifende Konsistenzprüfung:
 
@@ -176,13 +275,23 @@ Verwenden Sie `/codexspec.analyze` für artefaktübergreifende Konsistenzprüfun
 /codexspec.analyze
 ```
 
-### 8. Implementieren
+Dies erkennt Probleme über Spec, Plan und Aufgaben:
+- Abdeckungslücken (Anforderungen ohne Aufgaben)
+- Duplikate und Inkonsistenzen
+- Verfassungsverletzungen
+- Unterspezifizierte Elemente
+
+### 11. Implementieren
 
 Verwenden Sie `/codexspec.implement-tasks`, um die Implementierung auszuführen:
 
 ```
 /codexspec.implement-tasks
 ```
+
+Die Implementierung folgt dem **bedingten TDD-Workflow**:
+- Code-Aufgaben: Test-First (Red → Green → Verifizieren → Refaktorieren)
+- Nicht-testbare Aufgaben (Dokumentation, Konfiguration): Direkte Implementierung
 
 ## Verfügbare Befehle
 
@@ -202,7 +311,7 @@ Verwenden Sie `/codexspec.implement-tasks`, um die Implementierung auszuführen:
 | `PROJECT_NAME` | Name für Ihr neues Projektverzeichnis |
 | `--here`, `-h` | Im aktuellen Verzeichnis initialisieren |
 | `--ai`, `-a` | Zu verwendender KI-Assistent (Standard: claude) |
-| `--lang`, `-l` | Ausgabesprache (z.B. en, de, zh-CN, ja) |
+| `--lang`, `-l` | Ausgabesprache (z.B. en, zh-CN, ja) |
 | `--force`, `-f` | Bestehende Dateien überschreiben |
 | `--no-git` | Git-Initialisierung überspringen |
 | `--debug`, `-d` | Debug-Ausgabe aktivieren |
@@ -218,77 +327,90 @@ Verwenden Sie `/codexspec.implement-tasks`, um die Implementierung auszuführen:
 
 Nach der Initialisierung sind diese Slash-Befehle in Claude Code verfügbar:
 
-#### Kernbefehle
+#### Kern-Workflow-Befehle
 
 | Befehl | Beschreibung |
 |--------|--------------|
-| `/codexspec.constitution` | Projekt-Governance-Prinzipien erstellen oder aktualisieren |
+| `/codexspec.constitution` | Projekt-Verfassung erstellen oder aktualisieren mit artefaktübergreifender Validierung und Sync-Impact-Reporting |
 | `/codexspec.specify` | Anforderungen durch interaktives Q&A **klären** (keine Dateigenerierung) |
 | `/codexspec.generate-spec` | `spec.md` Dokument nach Anforderungsklärung **generieren** |
-| `/codexspec.spec-to-plan` | Spezifikation in technischen Plan umwandeln |
-| `/codexspec.plan-to-tasks` | Plan in ausführbare Aufgaben aufteilen |
-| `/codexspec.implement-tasks` | Aufgaben gemäß Aufteilung ausführen |
+| `/codexspec.spec-to-plan` | Spezifikation in technischen Plan umwandeln mit Konstitutionalitäts-Review und Modul-Abhängigkeitsgraph |
+| `/codexspec.plan-to-tasks` | Plan in atomare, TDD-erzwungene Aufgaben mit Parallel-Markern `[P]` aufteilen |
+| `/codexspec.implement-tasks` | Aufgaben mit bedingtem TDD-Workflow ausführen (TDD für Code, direkt für Docs/Konfiguration) |
 
-#### Review-Befehle
+#### Review-Befehle (Qualitätstore)
 
 | Befehl | Beschreibung |
 |--------|--------------|
-| `/codexspec.review-spec` | Vollständigkeit der Spezifikation überprüfen |
-| `/codexspec.review-plan` | Machbarkeit des technischen Plans überprüfen |
-| `/codexspec.review-tasks` | Vollständigkeit der Aufgabenverteilung überprüfen |
+| `/codexspec.review-spec` | Spezifikation auf Vollständigkeit, Klarheit, Konsistenz und Testbarkeit mit Bewertung validieren |
+| `/codexspec.review-plan` | Technischen Plan auf Machbarkeit, Architekturqualität und Verfassungsabstimmung überprüfen |
+| `/codexspec.review-tasks` | Aufgabenverteilung auf Plan-Abdeckung, TDD-Konformität, Abhängigkeiten und Granularität validieren |
 
 #### Erweiterte Befehle
 
 | Befehl | Beschreibung |
 |--------|--------------|
-| `/codexspec.clarify` | Vorhandene spec.md nach Unklarheiten durchsuchen und mit Klärungen aktualisieren |
-| `/codexspec.analyze` | Artefaktübergreifende Konsistenzanalyse |
-| `/codexspec.checklist` | Qualitätschecklisten für Anforderungen generieren |
-| `/codexspec.tasks-to-issues` | Aufgaben in GitHub-Issues umwandeln |
+| `/codexspec.clarify` | Vorhandene spec.md nach Unklarheiten durchsuchen mit 4 fokussierten Kategorien, Integration mit Review-Ergebnissen |
+| `/codexspec.analyze` | Nicht-destruktive artefaktübergreifende Analyse (Spec, Plan, Aufgaben) mit schweregradbasierter Problemeerkennung |
+| `/codexspec.checklist` | Qualitätschecklisten für Anforderungsvalidierung generieren |
+| `/codexspec.tasks-to-issues` | Aufgaben in GitHub-Issues für Projektmanagement-Integration umwandeln |
 
 ## Workflow-Übersicht
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│                    CodexSpec Workflow                        │
-├──────────────────────────────────────────────────────────────┤
-│                                                              │
-│  1. Constitution  ──►  Projektprinzipien definieren          │
-│         │                                                    │
-│         ▼                                                    │
-│  2. Specify  ───────►  Interaktives Q&A zur                  │
-│         │             Anforderungsklärung (kein Datei)       │
-│         │                                                    │
-│         ▼                                                    │
-│  3. Generate Spec  ─►  spec.md Dokument erstellen            │
-│         │             (Benutzer ruft explizit auf)           │
-│         │                                                    │
-│         ▼                                                    │
-│  4. Review Spec  ───►  Spezifikation validieren              │
-│         │                                                    │
-│         ▼                                                    │
-│  5. Clarify  ───────►  Unklarheiten klären (optional)        │
-│         │                                                    │
-│         ▼                                                    │
-│  6. Spec to Plan  ──►  Technischen Plan erstellen            │
-│         │                                                    │
-│         ▼                                                    │
-│  7. Review Plan  ───►  Technischen Plan validieren           │
-│         │                                                    │
-│         ▼                                                    │
-│  8. Plan to Tasks  ─►  Aufgabenverteilung generieren         │
-│         │                                                    │
-│         ▼                                                    │
-│  9. Analyze  ───────►  Artefaktübergreifende Konsistenz (optional) │
-│         │                                                    │
-│         ▼                                                    │
-│  10. Review Tasks  ─►  Aufgabenverteilung validieren         │
-│         │                                                    │
-│         ▼                                                    │
-│  11. Implement  ─────►  Implementierung ausführen            │
-│                                                              │
-└──────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────┐
+│                    CodexSpec Mensch-KI-Zusammenarbeit Workflow           │
+├──────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  1. Constitution  ──►  Projektprinzipien definieren                      │
+│         │                         mit artefaktübergreifender Validierung │
+│         ▼                                                                │
+│  2. Specify  ───────►  Interaktives Q&A zur Anforderungsklärung          │
+│         │               (keine Datei erstellt - menschliche Kontrolle)   │
+│         ▼                                                                │
+│  3. Generate Spec  ─►  spec.md Dokument erstellen                        │
+│         │                                                                │
+│         ▼                                                                │
+│  ╔═══════════════════════════════════════════════════════════════════╗   │
+│  ║  ★ REVIEW-TOR 1: /codexspec.review-spec ★                         ║   │
+│  ║  Validieren: Vollständigkeit, Klarheit, Testbarkeit, Verfassung   ║   │
+│  ╚═══════════════════════════════════════════════════════════════════╝   │
+│         │                                                                │
+│         ▼                                                                │
+│  4. Clarify  ───────►  Unklarheiten klären (iterativ)                    │
+│         │               4 fokussierte Kategorien, max 5 Fragen           │
+│         ▼                                                                │
+│  5. Spec to Plan  ──►  Technischen Plan erstellen mit:                   │
+│         │               • Konstitutionalitäts-Review (PFLICHT)           │
+│         │               • Modul-Abhängigkeitsgraph                        │
+│         ▼                                                                │
+│  ╔═══════════════════════════════════════════════════════════════════╗   │
+│  ║  ★ REVIEW-TOR 2: /codexspec.review-plan ★                         ║   │
+│  ║  Validieren: Spec-Abstimmung, Architektur, Tech-Stack, Phasen     ║   │
+│  ╚═══════════════════════════════════════════════════════════════════╝   │
+│         │                                                                │
+│         ▼                                                                │
+│  6. Plan to Tasks  ─►  Atomare Aufgaben generieren mit:                  │
+│         │               • TDD-Erzwingung (Tests vor Implementierung)     │
+│         │               • Parallel-Marker [P]                            │
+│         │               • Dateipfad-Spezifikationen                       │
+│         ▼                                                                │
+│  ╔═══════════════════════════════════════════════════════════════════╗   │
+│  ║  ★ REVIEW-TOR 3: /codexspec.review-tasks ★                        ║   │
+│  ║  Validieren: Abdeckung, TDD-Konformität, Abhängigkeiten, Granularität ║ │
+│  ╚═══════════════════════════════════════════════════════════════════╝   │
+│         │                                                                │
+│         ▼                                                                │
+│  7. Analyze  ───────►  Artefaktübergreifende Konsistenzprüfung           │
+│         │               Lücken, Duplikate, Verfassungsprobleme erkennen  │
+│         ▼                                                                │
+│  8. Implement  ─────►  Mit bedingtem TDD-Workflow ausführen              │
+│                          Code: Test-First | Docs/Konfiguration: Direkt   │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
 ```
+
+**Schlüsselerkenntnis**: Jedes Review-Tor (★) ist ein **menschlicher Checkpoint**, an dem Sie die KI-Ausgabe validieren, bevor Sie mehr Zeit investieren. Das Überspringen dieser Tore führt oft zu kostspieliger Überarbeitung.
 
 ### Schlüsselkonzept: Anforderungsklärungs-Workflow
 
@@ -299,10 +421,10 @@ CodexSpec bietet **zwei unterschiedliche Klärungsbefehle** für verschiedene Ph
 | Aspekt | `/codexspec.specify` | `/codexspec.clarify` |
 |--------|----------------------|----------------------|
 | **Zweck** | Initiale Anforderungsexploration | Iterative Verfeinerung existierender Specs |
-| **Wann verwenden** | Mit neuer Idee starten, kein spec.md | spec.md existiert, Lücken füllen |
+| **Wann verwenden** | Mit neuer Idee starten, kein spec.md existiert | spec.md existiert, Lücken füllen |
 | **Eingabe** | Ihre ursprüngliche Idee oder Anforderung | Existierende spec.md-Datei |
 | **Ausgabe** | Keine (nur Dialog) | Aktualisiert spec.md mit Klärungen |
-| **Methode** | Offenes Q&A | Strukturierter Unklarheiten-Scan (6 Kategorien) |
+| **Methode** | Offenes Q&A | Strukturierter Unklarheiten-Scan (4 Kategorien) |
 | **Fragenlimit** | Unbegrenzt | Maximal 5 Fragen |
 | **Typische Verwendung** | "Ich möchte eine Todo-App erstellen" | "Spec fehlen Fehlerbehandlungsdetails" |
 
@@ -312,7 +434,7 @@ Vor der Dokumentgenerierung:
 
 | Phase | Befehl | Zweck | Ausgabe |
 |-------|--------|-------|---------|
-| **Exploration** | `/codexspec.specify` | Interaktives Q&A zur Anforderungsexploration | Keine (nur Dialog) |
+| **Exploration** | `/codexspec.specify` | Interaktives Q&A zur Anforderungsexploration und -verfeinerung | Keine (nur Dialog) |
 | **Generierung** | `/codexspec.generate-spec` | Geklärte Anforderungen in strukturiertes Dokument kompilieren | `spec.md` |
 
 #### Iterative Klärung
@@ -322,13 +444,11 @@ Nach Erstellung von spec.md:
 ```
 spec.md ──► /codexspec.clarify ──► Aktualisiertes spec.md (mit Clarifications-Abschnitt)
                 │
-                └── Scannt nach Unklarheiten in 6 Kategorien:
-                    • Funktionsumfang und Verhalten
-                    • Domäne und Datenmodell
-                    • Interaktion und UX-Flow
-                    • Nicht-funktionale Qualitätsattribute
-                    • Edge Cases und Fehlerbehandlung
-                    • Konfliktlösung
+                └── Scannt nach Unklarheiten in 4 fokussierten Kategorien:
+                    • Vollständigkeitslücken - Fehlende Abschnitte, leerer Inhalt
+                    • Spezifitätsprobleme - Vage Begriffe, undefinierte Einschränkungen
+                    • Verhaltensklarheit - Fehlerbehandlung, Zustandsübergänge
+                    • Messbarkeitsprobleme - Nicht-funktionale Anforderungen ohne Metriken
 ```
 
 #### Vorteile dieses Designs
@@ -505,30 +625,61 @@ CodexSpec ist von GitHub's spec-kit inspiriert, aber mit einigen wichtigen Unter
 
 | Funktion | spec-kit | CodexSpec |
 |----------|----------|-----------|
-| Kernphilosophie | Spezifikationsgesteuerte Entwicklung | Spezifikationsgesteuerte Entwicklung |
+| Kernphilosophie | Spezifikationsgesteuerte Entwicklung | Spezifikationsgesteuerte Entwicklung + Mensch-KI-Zusammenarbeit |
 | CLI-Name | `specify` | `codexspec` |
 | Primäre KI | Multi-Agent-Unterstützung | Claude Code fokussiert |
 | Befehlspräfix | `/speckit.*` | `/codexspec.*` |
-| Workflow | specify → plan → tasks → implement | constitution → specify → generate-spec → plan → tasks → analyze → implement |
+| Verfassungssystem | Basis | Volle Verfassung mit artefaktübergreifender Validierung |
 | Zwei-Phasen-Spezifikation | Nein | Ja (Klärung + Generierung) |
-| Review-Schritte | Optional | Integrierte Review-Befehle |
-| Clarify-Befehl | Ja | Ja |
-| Analyze-Befehl | Ja | Ja |
-| Checklist-Befehl | Ja | Ja |
+| Review-Befehle | Optional | 3 dedizierte Review-Befehle mit Bewertung |
+| Clarify-Befehl | Ja | 4 fokussierte Kategorien, Review-Integration |
+| Analyze-Befehl | Ja | Nur-Lese, schweregradbasiert, verfassungsbewusst |
+| TDD in Aufgaben | Optional | Erzwungen (Tests vor Implementierung) |
+| Implementierung | Standard | Bedingtes TDD (Code vs Docs/Konfiguration) |
 | Erweiterungssystem | Ja | Ja |
 | PowerShell-Skripte | Ja | Ja |
 | i18n-Unterstützung | Nein | Ja (13+ Sprachen via LLM-Übersetzung) |
+
+### Hauptunterschiede
+
+1. **Review-First-Kultur**: Jedes wichtige Artefakt hat einen dedizierten Review-Befehl
+2. **Verfassungs-Governance**: Prinzipien werden validiert, nicht nur dokumentiert
+3. **TDD als Standard**: Test-First-Methodik in Aufgabengenerierung erzwungen
+4. **Menschliche Checkpoints**: Workflow um Validierungstore herum konzipiert
 
 ## Philosophie
 
 CodexSpec folgt diesen Kernprinzipien:
 
+### SDD-Grundlagen
+
 1. **Absichtsgesteuerte Entwicklung**: Spezifikationen definieren das "Was" vor dem "Wie"
 2. **Umfangreiche Spezifikationserstellung**: Guardrails und Organisationsprinzipien verwenden
 3. **Mehrstufige Verfeinerung**: Statt One-Shot-Codegenerierung
-4. **Hohe KI-Abhängigkeit**: KI für Spezifikationsinterpretation nutzen
-5. **Review-orientiert**: Jedes Artefakt validieren, bevor weitergemacht wird
-6. **Qualität zuerst**: Integrierte Checklisten und Analysen für Anforderungsqualität
+4. **Verfassungs-Governance**: Projektprinzipien leiten alle Entscheidungen
+
+### Mensch-KI-Zusammenarbeit
+
+5. **Mensch-in-der-Schleife**: KI generiert Artefakte, Menschen validieren sie
+6. **Review-orientiert**: Jedes Artefakt validieren, bevor weitergemacht wird
+7. **Progressive Offenlegung**: Komplexe Informationen schrittweise enthüllen
+8. **Explizit vor implizit**: Anforderungen sollten klar sein, nicht angenommen
+
+### Qualitätssicherung
+
+9. **Test-getrieben als Standard**: TDD-Workflow in Aufgabengenerierung integriert
+10. **Artefaktübergreifende Konsistenz**: Spec, Plan und Aufgaben gemeinsam analysieren
+11. **Verfassungsabstimmung**: Alle Artefakte respektieren Projektprinzipien
+
+### Warum Review wichtig ist
+
+| Ohne Review | Mit Review |
+|-------------|------------|
+| KI trifft falsche Annahmen | Mensch erfasst Fehlinterpretationen früh |
+| Unvollständige Anforderungen propagieren sich | Lücken vor Implementierung identifiziert |
+| Architektur driftet von Absicht ab | Abstimmung auf jeder Stufe verifiziert |
+| Aufgaben verpassen kritische Funktionalität | Abdeckung systematisch validiert |
+| **Ergebnis: Überarbeitung, verschwendeter Aufwand** | **Ergebnis: Beim ersten Mal richtig** |
 
 ## Mitwirken
 
