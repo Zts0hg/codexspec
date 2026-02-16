@@ -34,14 +34,14 @@ Analyze the provided spec and plan documents, then break down the technical impl
 
 2. **TDD Enforcement**: Per the project constitution's "Test-First Principle", **testing tasks MUST precede implementation tasks** for each component.
 
-3. **Parallel Marking**: Mark tasks with no dependencies using `[P]` to indicate they can run in parallel.
+3. **Parallel Marking**: Mark tasks that can be executed in parallel with other tasks at the same level using `[P]`. Note: tasks with `[P]` may still have dependencies on earlier phases.
 
-4. **Phase Organization**: Even if the plan contains rough phase divisions, organize tasks into these standard phases (adjust names as appropriate for the project):
-   - **Phase 1: Foundation** - Project structure, configuration, data models
+4. **Phase Organization**: Organize tasks into these standard phases (adjust names as appropriate for the project):
+   - **Phase 1: Foundation** - Project structure, configuration, base modules
    - **Phase 2: Core Implementation** - Primary business logic (TDD)
    - **Phase 3: Integration** - External APIs, services, connectors
    - **Phase 4: Interface** - CLI, API endpoints, UI components
-   - **Phase 5: Testing & Documentation** - Integration tests, docs
+   - **Phase 5: Testing & Documentation** - End-to-end tests, documentation
 
 ### Steps
 
@@ -90,12 +90,26 @@ Estimated phases: [K]
 
 ### Task 1.1: Setup Project Structure
 - **Type**: Setup
-- **Files**: `src/__init__.py`, `src/api/__init__.py`, `src/models/__init__.py`
-- **Description**: Create the basic project directory structure
+- **Files**: `src/__init__.py`
+- **Description**: Create the main source package with basic structure
 - **Dependencies**: None
 - **Est. Complexity**: Low
 
-### Task 1.2: Configure Dependencies
+### Task 1.2: Create API Module [P]
+- **Type**: Setup
+- **Files**: `src/api/__init__.py`
+- **Description**: Create API subpackage
+- **Dependencies**: Task 1.1
+- **Est. Complexity**: Low
+
+### Task 1.3: Create Models Module [P]
+- **Type**: Setup
+- **Files**: `src/models/__init__.py`
+- **Description**: Create models subpackage
+- **Dependencies**: Task 1.1
+- **Est. Complexity**: Low
+
+### Task 1.4: Configure Dependencies
 - **Type**: Setup
 - **Files**: `pyproject.toml`
 - **Description**: Add all required dependencies to the project
@@ -108,7 +122,7 @@ Estimated phases: [K]
 - **Type**: Testing
 - **Files**: `tests/test_user_model.py`
 - **Description**: Write unit tests for User model (before implementation)
-- **Dependencies**: Task 1.1
+- **Dependencies**: Task 1.3
 - **Est. Complexity**: Low
 
 ### Task 2.2: Implement User Model
@@ -136,7 +150,7 @@ Estimated phases: [K]
 - **Type**: Testing
 - **Files**: `tests/test_task_model.py`
 - **Description**: Write unit tests for Task model (before implementation)
-- **Dependencies**: Task 1.1
+- **Dependencies**: Task 1.3
 - **Est. Complexity**: Low
 
 ### Task 2.6: Implement Task Model
@@ -178,16 +192,41 @@ Estimated phases: [K]
 - **Dependencies**: Task 4.1
 - **Est. Complexity**: Medium
 
+## Phase 5: Testing & Documentation
+
+### Task 5.1: Write End-to-End Tests
+- **Type**: Testing
+- **Files**: `tests/test_e2e.py`
+- **Description**: Write end-to-end tests covering complete user workflows
+- **Dependencies**: Task 4.2
+- **Est. Complexity**: High
+
+### Task 5.2: Write API Documentation [P]
+- **Type**: Documentation
+- **Files**: `docs/api.md`
+- **Description**: Document all public APIs and their usage
+- **Dependencies**: Task 4.2
+- **Est. Complexity**: Low
+
+### Task 5.3: Write User Guide [P]
+- **Type**: Documentation
+- **Files**: `docs/user-guide.md`
+- **Description**: Write user-facing documentation and usage examples
+- **Dependencies**: Task 4.2
+- **Est. Complexity**: Medium
+
 ## Execution Order
 
 ```
-Phase 1: Task 1.1 ──► Task 1.2
-                         │
-Phase 2: ┌───────────────┴───────────────┐
-         │                               │
-    Task 2.1 [P]                    Task 2.5 [P]
-         │                               │
-    Task 2.2 ──► Task 2.3 [P]       Task 2.6
+Phase 1: Task 1.1 ──► ┌─► Task 1.2 [P]
+                       │
+                       └─► Task 1.3 [P] ──► Task 1.4
+                                                │
+Phase 2: ┌───────────────────────────────────────┴───────────────┐
+         │                                                       │
+    Task 2.1 [P]                                            Task 2.5 [P]
+         │                                                       │
+    Task 2.2 ──► Task 2.3 [P]                              Task 2.6
                      │
                 Task 2.4
                      │
@@ -198,14 +237,21 @@ Phase 3: ┌───────────┴──────────�
     Task 3.2
          │
 Phase 4: Task 4.1 ──► Task 4.2
+                         │
+Phase 5: ┌───────────────┴───────────────┐
+         │                               │
+    Task 5.1                        Task 5.2 [P]
+                                         │
+                                    Task 5.3 [P]
 ```
 
 ## Checkpoints
 
-- [ ] **Checkpoint 1**: After Phase 1 - Verify project structure and dependencies
+- [ ] **Checkpoint 1**: After Phase 1 - Verify project structure and module setup
 - [ ] **Checkpoint 2**: After Phase 2 - Verify all core tests pass
 - [ ] **Checkpoint 3**: After Phase 3 - Verify integration tests pass
-- [ ] **Checkpoint 4**: After Phase 4 - Verify end-to-end functionality
+- [ ] **Checkpoint 4**: After Phase 4 - Verify CLI functionality
+- [ ] **Checkpoint 5**: After Phase 5 - Verify end-to-end tests and documentation
 ```
 
 ### Quality Criteria
