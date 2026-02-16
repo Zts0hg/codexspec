@@ -44,13 +44,29 @@ def get_version() -> str:
 
 
 def get_templates_dir() -> Path:
-    """Get the templates directory path."""
-    # When installed via uv/pip, templates are in the package
-    package_dir = Path(__file__).parent.parent.parent / "templates"
-    if package_dir.exists():
-        return package_dir
-    # Fallback to src layout
-    return Path(__file__).parent.parent / "templates"
+    """Get the templates directory path.
+
+    This function handles multiple installation scenarios:
+    1. Wheel install: templates are in codexspec/templates (same level as __init__.py)
+    2. Development: templates are in project root (../templates from src/codexspec)
+    3. Editable install: templates are in project root
+    """
+    # Path 1: Wheel install - templates packaged inside codexspec package
+    # __file__ = site-packages/codexspec/__init__.py
+    # parent / "templates" = site-packages/codexspec/templates
+    installed_templates = Path(__file__).parent / "templates"
+    if installed_templates.exists():
+        return installed_templates
+
+    # Path 2: Development/editable install - templates in project root
+    # __file__ = .../src/codexspec/__init__.py
+    # parent.parent.parent = .../ (project root)
+    dev_templates = Path(__file__).parent.parent.parent / "templates"
+    if dev_templates.exists():
+        return dev_templates
+
+    # Path 3: Fallback - return the installed path (will trigger warning if not exists)
+    return installed_templates
 
 
 def check_command_exists(command: str) -> bool:
