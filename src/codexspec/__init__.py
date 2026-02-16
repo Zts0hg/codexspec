@@ -27,7 +27,7 @@ from .i18n import (
 )
 
 # Version info
-__version__ = "0.2.1"
+__version__ = "0.2.2"
 __author__ = "CodexSpec Team"
 
 app = typer.Typer(
@@ -330,7 +330,8 @@ def init(
     templates_dir = get_templates_dir() / "commands"
     if templates_dir.exists():
         for template_file in templates_dir.glob("*.md"):
-            dest_file = claude_commands_dir / template_file.name
+            # Prepend "codexspec." to the filename so commands are invoked as /codexspec.{name}
+            dest_file = claude_commands_dir / f"codexspec.{template_file.name}"
             dest_file.write_text(template_file.read_text())
             console.print(f"[green]Installed command:[/green] /codexspec.{template_file.stem}")
     else:
@@ -403,7 +404,8 @@ def _create_default_commands(commands_dir: Path) -> None:
     }
 
     for name, content in commands.items():
-        cmd_file = commands_dir / f"{name}.md"
+        # Prepend "codexspec." to the filename so commands are invoked as /codexspec.{name}
+        cmd_file = commands_dir / f"codexspec.{name}.md"
         cmd_file.write_text(content)
         console.print(f"[green]Installed command:[/green] /codexspec.{name}")
 
