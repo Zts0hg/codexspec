@@ -39,9 +39,11 @@ Analyze the provided spec and plan documents, then break down the technical impl
 4. **Phase Organization**: Organize tasks into these standard phases (adjust names as appropriate for the project):
    - **Phase 1: Foundation** - Project structure, configuration, base modules
    - **Phase 2: Core Implementation** - Primary business logic (TDD)
-   - **Phase 3: Integration** - External APIs, services, connectors
-   - **Phase 4: Interface** - CLI, API endpoints, UI components
+   - **Phase 3: Integration** - External services, APIs, connectors
+   - **Phase 4: Interface Layer** - User-facing interfaces (CLI, Web API, UI, etc.)
    - **Phase 5: Testing & Documentation** - End-to-end tests, documentation
+
+5. **Technology Stack Adaptation**: Adapt file paths, directory structure, naming conventions, and testing frameworks to match the project's technology stack as specified in the constitution or plan (e.g., Python uses `src/`, `tests/`; JavaScript uses `src/`, `__tests__/`; Go uses internal packages, etc.).
 
 ### Steps
 
@@ -78,6 +80,8 @@ Choose the appropriate template based on project complexity.
 
 ### Template Structure
 
+**Note**: The example below uses generic placeholders. You MUST adapt file paths, module names, and directory structure to match the project's technology stack (e.g., Python: `src/`, `tests/`, `pyproject.toml`; JavaScript: `src/`, `__tests__/`, `package.json`; Go: internal packages, `go.mod`; etc.).
+
 ```markdown
 # Task Breakdown: [Feature Name]
 
@@ -90,105 +94,105 @@ Estimated phases: [K]
 
 ### Task 1.1: Setup Project Structure
 - **Type**: Setup
-- **Files**: `src/__init__.py`
-- **Description**: Create the main source package with basic structure
+- **Files**: `[source-dir]/[main-entry]`
+- **Description**: Create the main project structure with entry point
 - **Dependencies**: None
 - **Est. Complexity**: Low
 
-### Task 1.2: Create API Module [P]
+### Task 1.2: Create Core Module [P]
 - **Type**: Setup
-- **Files**: `src/api/__init__.py`
-- **Description**: Create API subpackage
+- **Files**: `[source-dir]/core/[module-init]`
+- **Description**: Create core module with basic structure
 - **Dependencies**: Task 1.1
 - **Est. Complexity**: Low
 
-### Task 1.3: Create Models Module [P]
+### Task 1.3: Create Data Module [P]
 - **Type**: Setup
-- **Files**: `src/models/__init__.py`
-- **Description**: Create models subpackage
+- **Files**: `[source-dir]/data/[module-init]`
+- **Description**: Create data layer module
 - **Dependencies**: Task 1.1
 - **Est. Complexity**: Low
 
 ### Task 1.4: Configure Dependencies
 - **Type**: Setup
-- **Files**: `pyproject.toml`
+- **Files**: `[config-file]`
 - **Description**: Add all required dependencies to the project
 - **Dependencies**: Task 1.1
 - **Est. Complexity**: Low
 
 ## Phase 2: Core Implementation (TDD)
 
-### Task 2.1: Write Tests for User Model [P]
+### Task 2.1: Write Tests for Entity A [P]
 - **Type**: Testing
-- **Files**: `tests/test_user_model.py`
-- **Description**: Write unit tests for User model (before implementation)
+- **Files**: `[test-dir]/[entity-a-test]`
+- **Description**: Write unit tests for Entity A (before implementation)
 - **Dependencies**: Task 1.3
 - **Est. Complexity**: Low
 
-### Task 2.2: Implement User Model
+### Task 2.2: Implement Entity A
 - **Type**: Implementation
-- **Files**: `src/models/user.py`
-- **Description**: Implement User model to pass tests in Task 2.1
+- **Files**: `[source-dir]/data/[entity-a-file]`
+- **Description**: Implement Entity A to pass tests in Task 2.1
 - **Dependencies**: Task 2.1
 - **Est. Complexity**: Low
 
-### Task 2.3: Write Tests for User Service [P]
+### Task 2.3: Write Tests for Service A [P]
 - **Type**: Testing
-- **Files**: `tests/test_user_service.py`
-- **Description**: Write unit tests for UserService (before implementation)
+- **Files**: `[test-dir]/[service-a-test]`
+- **Description**: Write unit tests for Service A (before implementation)
 - **Dependencies**: Task 2.2
 - **Est. Complexity**: Medium
 
-### Task 2.4: Implement User Service
+### Task 2.4: Implement Service A
 - **Type**: Implementation
-- **Files**: `src/services/user_service.py`
-- **Description**: Implement UserService to pass tests in Task 2.3
+- **Files**: `[source-dir]/services/[service-a-file]`
+- **Description**: Implement Service A to pass tests in Task 2.3
 - **Dependencies**: Task 2.3
 - **Est. Complexity**: Medium
 
-### Task 2.5: Write Tests for Task Model [P]
+### Task 2.5: Write Tests for Entity B [P]
 - **Type**: Testing
-- **Files**: `tests/test_task_model.py`
-- **Description**: Write unit tests for Task model (before implementation)
+- **Files**: `[test-dir]/[entity-b-test]`
+- **Description**: Write unit tests for Entity B (before implementation)
 - **Dependencies**: Task 1.3
 - **Est. Complexity**: Low
 
-### Task 2.6: Implement Task Model
+### Task 2.6: Implement Entity B
 - **Type**: Implementation
-- **Files**: `src/models/task.py`
-- **Description**: Implement Task model to pass tests in Task 2.5
+- **Files**: `[source-dir]/data/[entity-b-file]`
+- **Description**: Implement Entity B to pass tests in Task 2.5
 - **Dependencies**: Task 2.5
 - **Est. Complexity**: Low
 
 ## Phase 3: Integration
 
-### Task 3.1: Write Tests for API Client [P]
+### Task 3.1: Write Tests for External Client [P]
 - **Type**: Testing
-- **Files**: `tests/test_api_client.py`
-- **Description**: Write integration tests for external API client
+- **Files**: `[test-dir]/[client-test]`
+- **Description**: Write integration tests for external service client
 - **Dependencies**: Task 2.4
 - **Est. Complexity**: Medium
 
-### Task 3.2: Implement API Client
+### Task 3.2: Implement External Client
 - **Type**: Implementation
-- **Files**: `src/clients/api_client.py`
-- **Description**: Implement API client to pass tests in Task 3.1
+- **Files**: `[source-dir]/clients/[client-file]`
+- **Description**: Implement external client to pass tests in Task 3.1
 - **Dependencies**: Task 3.1
 - **Est. Complexity**: High
 
-## Phase 4: Interface
+## Phase 4: Interface Layer
 
-### Task 4.1: Write Tests for CLI Commands
+### Task 4.1: Write Tests for Interface Handlers
 - **Type**: Testing
-- **Files**: `tests/test_cli.py`
-- **Description**: Write tests for CLI command handlers
+- **Files**: `[test-dir]/[interface-test]`
+- **Description**: Write tests for interface handlers (CLI/Web API/UI)
 - **Dependencies**: Task 3.2
 - **Est. Complexity**: Medium
 
-### Task 4.2: Implement CLI Entry Point
+### Task 4.2: Implement Interface Entry Point
 - **Type**: Implementation
-- **Files**: `src/cli.py`
-- **Description**: Implement CLI commands to pass tests in Task 4.1
+- **Files**: `[source-dir]/[interface-entry]`
+- **Description**: Implement interface handlers to pass tests in Task 4.1
 - **Dependencies**: Task 4.1
 - **Est. Complexity**: Medium
 
@@ -196,21 +200,21 @@ Estimated phases: [K]
 
 ### Task 5.1: Write End-to-End Tests
 - **Type**: Testing
-- **Files**: `tests/test_e2e.py`
+- **Files**: `[test-dir]/[e2e-test]`
 - **Description**: Write end-to-end tests covering complete user workflows
 - **Dependencies**: Task 4.2
 - **Est. Complexity**: High
 
 ### Task 5.2: Write API Documentation [P]
 - **Type**: Documentation
-- **Files**: `docs/api.md`
+- **Files**: `[docs-dir]/api.md`
 - **Description**: Document all public APIs and their usage
 - **Dependencies**: Task 4.2
 - **Est. Complexity**: Low
 
 ### Task 5.3: Write User Guide [P]
 - **Type**: Documentation
-- **Files**: `docs/user-guide.md`
+- **Files**: `[docs-dir]/user-guide.md`
 - **Description**: Write user-facing documentation and usage examples
 - **Dependencies**: Task 4.2
 - **Est. Complexity**: Medium
@@ -250,7 +254,7 @@ Phase 5: ┌───────────────┴──────�
 - [ ] **Checkpoint 1**: After Phase 1 - Verify project structure and module setup
 - [ ] **Checkpoint 2**: After Phase 2 - Verify all core tests pass
 - [ ] **Checkpoint 3**: After Phase 3 - Verify integration tests pass
-- [ ] **Checkpoint 4**: After Phase 4 - Verify CLI functionality
+- [ ] **Checkpoint 4**: After Phase 4 - Verify interface layer functionality
 - [ ] **Checkpoint 5**: After Phase 5 - Verify end-to-end tests and documentation
 ```
 
