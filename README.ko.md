@@ -128,21 +128,29 @@ claude
 /codexspec.constitution 코드 품질, 테스트 표준 및 클린 아키텍처에 중점을 둔 원칙 생성
 ```
 
-### 3. 스펙 생성
+### 3. 요구사항 명확화
 
-`/codexspec.specify`를 사용하여 구축할 내용을 정의합니다:
-
-```
-/codexspec.specify 다음 기능을 갖춘 태스크 관리 애플리케이션 구축: 태스크 생성, 사용자 할당, 마감일 설정, 진행 상황 추적
-```
-
-### 4. 요구사항 명확화 (선택사항이지만 권장)
-
-`/codexspec.clarify`를 사용하여 계획 전에 모호성을 해결합니다:
+`/codexspec.specify`를 사용하여 대화형 Q&A로 요구사항을 **탐색하고 명확화**합니다:
 
 ```
-/codexspec.clarify
+/codexspec.specify 태스크 관리 애플리케이션을 구축하고 싶습니다
 ```
+
+이 명령은:
+- 아이디어를 이해하기 위한 명확화 질문을 합니다
+- 고려하지 않았을 수 있는 엣지 케이스를 탐색합니다
+- 대화를 통해 고품질 요구사항을 공동 창작합니다
+- 파일을 자동으로 생성하지 **않음** - 사용자가 제어
+
+### 4. 스펙 문서 생성
+
+요구사항이 명확해지면, `/codexspec.generate-spec`을 사용하여 `spec.md` 문서를 생성합니다:
+
+```
+/codexspec.generate-spec
+```
+
+이 명령은 명확화된 요구사항을 구조화된 스펙 문서로 변환하는 "요구사항 컴파일러" 역할을 합니다.
 
 ### 5. 기술 계획 생성
 
@@ -215,8 +223,8 @@ claude
 | 명령어 | 설명 |
 |--------|------|
 | `/codexspec.constitution` | 프로젝트 거버넌스 원칙 생성 또는 업데이트 |
-| `/codexspec.specify` | 구축할 내용 정의 (요구사항) |
-| `/codexspec.generate-spec` | 요구사항에서 상세 스펙 생성 |
+| `/codexspec.specify` | 대화형 Q&A로 요구사항 **명확화** (파일 생성 없음) |
+| `/codexspec.generate-spec` | 요구사항 명확화 후 `spec.md` 문서 **생성** |
 | `/codexspec.spec-to-plan` | 스펙을 기술 계획으로 변환 |
 | `/codexspec.plan-to-tasks` | 계획을 실행 가능한 태스크로 분해 |
 | `/codexspec.implement-tasks` | 분해에 따라 태스크 실행 |
@@ -233,7 +241,7 @@ claude
 
 | 명령어 | 설명 |
 |--------|------|
-| `/codexspec.clarify` | 계획 전에 불명확한 영역 명확화 |
+| `/codexspec.clarify` | 기존 spec.md를 스캔하여 모호한 영역을 찾고 명확화 내용으로 업데이트 |
 | `/codexspec.analyze` | 아티팩트 간 일관성 분석 |
 | `/codexspec.checklist` | 요구사항용 품질 체크리스트 생성 |
 | `/codexspec.tasks-to-issues` | 태스크를 GitHub issues로 변환 |
@@ -248,34 +256,87 @@ claude
 │  1. Constitution  ──►  프로젝트 원칙 정의                     │
 │         │                                                    │
 │         ▼                                                    │
-│  2. Specify  ───────►  기능 스펙 생성                         │
+│  2. Specify  ───────►  대화형 Q&A로 요구사항                  │
+│         │             명확화 (파일 생성 없음)                 │
 │         │                                                    │
 │         ▼                                                    │
-│  3. Clarify  ───────►  모호성 해결 (선택사항)                 │
+│  3. Generate Spec  ─►  spec.md 문서 생성                     │
+│         │             (사용자가 명시적으로 호출)              │
 │         │                                                    │
 │         ▼                                                    │
 │  4. Review Spec  ───►  스펙 검증                              │
 │         │                                                    │
 │         ▼                                                    │
-│  5. Spec to Plan  ──►  기술 계획 생성                         │
+│  5. Clarify  ───────►  모호성 해결 (선택사항)                 │
 │         │                                                    │
 │         ▼                                                    │
-│  6. Review Plan  ───►  기술 계획 검증                         │
+│  6. Spec to Plan  ──►  기술 계획 생성                         │
 │         │                                                    │
 │         ▼                                                    │
-│  7. Plan to Tasks  ─►  태스크 분해 생성                       │
+│  7. Review Plan  ───►  기술 계획 검증                         │
 │         │                                                    │
 │         ▼                                                    │
-│  8. Analyze  ───────►  아티팩트 간 일관성 (선택사항)           │
+│  8. Plan to Tasks  ─►  태스크 분해 생성                       │
 │         │                                                    │
 │         ▼                                                    │
-│  9. Review Tasks  ──►  태스크 분해 검증                       │
+│  9. Analyze  ───────►  아티팩트 간 일관성 (선택사항)           │
 │         │                                                    │
 │         ▼                                                    │
-│  10. Implement  ─────►  구현 실행                             │
+│  10. Review Tasks  ─►  태스크 분해 검증                       │
+│         │                                                    │
+│         ▼                                                    │
+│  11. Implement  ─────►  구현 실행                             │
 │                                                              │
 └──────────────────────────────────────────────────────────────┘
 ```
+
+### 핵심 개념: 요구사항 명확화 워크플로우
+
+CodexSpec은 워크플로우의 다른 단계를 위해 **두 개의 별도 명령어**를 제공합니다:
+
+#### specify vs clarify: 언제 어떤 것을 사용할까?
+
+| 측면 | `/codexspec.specify` | `/codexspec.clarify` |
+|------|----------------------|----------------------|
+| **목적** | 초기 요구사항 탐색 | 기존 스펙의 반복적 정제 |
+| **사용 시기** | 새 아이디어로 시작, spec.md 없음 | spec.md 존재, 간극 채우기 필요 |
+| **입력** | 초기 아이디어 또는 요구사항 | 기존 spec.md 파일 |
+| **출력** | 없음 (대화만) | 명확화 내용으로 spec.md 업데이트 |
+| **방법** | 개방형 Q&A | 구조화된 모호성 스캔 (6개 카테고리) |
+| **질문 제한** | 무제한 | 최대 5개 질문 |
+| **일반적 용도** | "할일 앱을 구축하고 싶다" | "스펙에 에러 처리 세부사항이 없다" |
+
+#### 2단계 스펙 작성
+
+문서 생성 전:
+
+| 단계 | 명령어 | 목적 | 출력 |
+|------|--------|------|------|
+| **탐색** | `/codexspec.specify` | 대화형 Q&A로 요구사항 탐색 및 정제 | 없음 (대화만) |
+| **생성** | `/codexspec.generate-spec` | 명확화된 요구사항을 구조화된 문서로 컴파일 | `spec.md` |
+
+#### 반복적 명확화
+
+spec.md 생성 후:
+
+```
+spec.md ──► /codexspec.clarify ──► 업데이트된 spec.md (Clarifications 섹션 포함)
+                │
+                └── 6개 카테고리의 모호성 스캔:
+                    • 기능 범위 및 동작
+                    • 도메인 및 데이터 모델
+                    • 상호작용 및 UX 흐름
+                    • 비기능적 품질 속성
+                    • 엣지 케이스 및 실패 처리
+                    • 충돌 해결
+```
+
+#### 이 설계의 이점
+
+- **인간-AI 협업**: 요구사항 발견에 적극적으로 참여
+- **명시적 제어**: 사용자가 결정할 때만 파일 생성
+- **품질 중심**: 문서화 전에 요구사항을 철저히 탐색
+- **반복적 정제**: 이해가 깊어짐에 따라 스펙을 점진적으로 개선
 
 ## 프로젝트 구조
 
@@ -448,7 +509,8 @@ CodexSpec은 GitHub의 spec-kit에서 영감을 받았지만 몇 가지 주요 �
 | CLI 이름 | `specify` | `codexspec` |
 | 주요 AI | 멀티 에이전트 지원 | Claude Code 중심 |
 | 명령어 접두사 | `/speckit.*` | `/codexspec.*` |
-| 워크플로우 | specify → plan → tasks → implement | constitution → specify → clarify → plan → tasks → analyze → implement |
+| 워크플로우 | specify → plan → tasks → implement | constitution → specify → generate-spec → plan → tasks → analyze → implement |
+| 2단계 스펙 | 없음 | 있음 (명확화 + 생성) |
 | 리뷰 단계 | 선택사항 | 리뷰 명령어 내장 |
 | Clarify 명령어 | 있음 | 있음 |
 | Analyze 명령어 | 있음 | 있음 |
