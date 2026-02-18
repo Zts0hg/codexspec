@@ -384,6 +384,11 @@ def init(
         title="Success",
     ))
 
+    # Remind user to customize constitution
+    console.print()
+    console.print("[yellow]Important:[/yellow] The constitution is the foundation of your SDD workflow.")
+    console.print("[yellow]Run [bold]/codexspec.constitution[/bold] to customize it for your project and team.[/yellow]")
+
 
 def _create_default_commands(commands_dir: Path) -> None:
     """Create default slash commands."""
