@@ -129,6 +129,9 @@ uv tool install git+https://github.com/Zts0hg/codexspec.git@v0.2.0
 # 创建新项目
 codexspec init my-project
 
+# 创建使用中文输出的项目
+codexspec init my-project --lang zh-CN
+
 # 在现有项目中初始化
 codexspec init . --ai claude
 # 或
