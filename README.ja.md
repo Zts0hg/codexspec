@@ -129,6 +129,9 @@ uv tool install git+https://github.com/Zts0hg/codexspec.git@v0.2.0
 # 新しいプロジェクトを作成
 codexspec init my-project
 
+# 日本語出力でプロジェクトを作成
+codexspec init my-project --lang ja
+
 # 既存のプロジェクトで初期化
 codexspec init . --ai claude
 # または
