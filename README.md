@@ -564,6 +564,16 @@ project:
 - **Context-Aware Translation**: Claude provides natural, context-appropriate translations
 - **Unlimited Languages**: Any language supported by Claude works immediately
 
+### Constitution and Generated Documents
+
+When you use `/codexspec.constitution` to create your project constitution, it will be generated in the language specified in your configuration:
+
+- **Single File Approach**: Constitution is generated in one language only
+- **Claude Understands All Languages**: Claude can work with constitution files in any supported language
+- **Team Collaboration**: Teams should use a consistent working language
+
+This design avoids synchronization issues between multiple language versions and reduces maintenance overhead.
+
 ## Extension System
 
 CodexSpec supports a plugin architecture for adding custom commands:
