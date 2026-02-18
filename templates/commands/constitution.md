@@ -1,5 +1,21 @@
 ---
 description: Create or update the project constitution from interactive or provided principle inputs, ensuring all dependent templates stay in sync.
+argument-hint: |
+  [quick|deep | project principles] (optional)
+
+  This command creates/updates the project constitution at .codexspec/memory/constitution.md.
+
+  Three ways to use:
+  1. No arguments → Interactive mode: choose exploration depth (quick/deep)
+  2. quick → Lightweight exploration: config files + README + core entry points (~5-10 files)
+  3. deep → Full exploration: all of above + source code analysis + architecture patterns
+  4. <description> → Skip exploration, use your principles directly
+
+  Examples:
+    /codexspec.constitution
+    /codexspec.constitution quick
+    /codexspec.constitution deep
+    /codexspec.constitution Python FastAPI backend with pytest, focus on type safety
 handoffs:
   - agent: codexspec.specify
     step: Create a feature specification based on the updated constitution
@@ -18,7 +34,110 @@ handoffs:
 $ARGUMENTS
 ```
 
+## Input Mode Detection
+
+Parse `$ARGUMENTS` to determine execution mode:
+
+**Mode A: No Arguments**
+→ Present exploration options and let user choose
+
+**Mode B: Exploration Keyword (`quick` or `deep`)**
+→ Execute the corresponding exploration mode
+
+**Mode C: Project Principles Description**
+→ Use provided principles directly, skip exploration
+
+---
+
+### Mode A: No Arguments - Present Options
+
+Output the following and wait for user response:
+
+> 📋 **Constitution 创建向导**
+>
+> 检测到无参数输入。我将探索项目来生成 constitution，请选择探索深度：
+>
+> | 模式 | 探索范围 | 适用场景 |
+> |------|----------|----------|
+> | `quick` | 项目结构、配置文件、README/CLAUDE.md、核心入口代码（约 5-10 个关键文件） | 新初始化项目、快速创建基础 constitution |
+> | `deep` | 上述内容 + 完整源代码分析、代码风格、架构模式、测试策略（可能分析数十到上百个文件） | 成熟项目、需要全面捕捉项目现状 |
+>
+> 请回复 `quick` 或 `deep`，或直接描述你的项目原则（例如："Python Flask 后端项目，注重测试覆盖率"）。
+
+After user responds, proceed to Mode B or Mode C accordingly.
+
+---
+
+### Mode B: Exploration Mode
+
+#### Quick Exploration Protocol
+
+When user selects `quick`, explore the following in order:
+
+1. **Project Root Structure**
+   - List top-level directories and files
+   - Identify project type (web app, CLI, library, etc.)
+
+2. **Configuration Files** (read all that exist)
+   - `pyproject.toml` / `setup.py` / `requirements.txt`
+   - `package.json` / `Cargo.toml` / `go.mod`
+   - `.eslintrc.*` / `ruff.toml` / `.prettierrc.*`
+
+3. **Documentation** (read all that exist)
+   - `README.md`
+   - `CLAUDE.md`
+   - `docs/` directory overview
+
+4. **Core Entry Points** (sample 1-2 files)
+   - `src/**/__init__.py` or `src/**/main.*`
+   - `index.*` or `app.*`
+
+**Based on exploration findings, generate constitution draft covering:**
+- Technology Stack (from config files)
+- Code Standards (from linter configs)
+- Basic Principles (from documentation)
+
+#### Deep Exploration Protocol
+
+When user selects `deep`, perform quick exploration PLUS:
+
+5. **Source Code Analysis**
+   - Scan all source files in `src/`, `lib/`, `app/` directories
+   - Identify coding patterns (functional vs OOP, async patterns, etc.)
+   - Extract naming conventions from actual code
+
+6. **Test Coverage Analysis**
+   - Check `tests/`, `test/`, `__tests__/` directories
+   - Identify testing frameworks and patterns
+   - Assess test organization
+
+7. **Architecture Patterns**
+   - Identify layer separation (if any)
+   - Find dependency injection patterns
+   - Analyze module organization
+
+**Based on deep exploration, also include in constitution:**
+- Detailed Code Standards with examples from actual code
+- Architecture Patterns section
+- Testing Requirements based on existing test patterns
+
+---
+
+### Mode C: Direct Principles Input
+
+When user provides project principles directly:
+- Skip exploration phase
+- Use provided principles as foundation
+- Still check for existing `.codexspec/memory/constitution.md`
+- Proceed to Step 1 in Execution Flow
+
+---
+
 ## Execution Flow
+
+> **Prerequisite**: Ensure you have completed Input Mode Detection above and have either:
+> - Explored the project (quick/deep mode) and have findings ready, OR
+> - Received direct principles input from user
 
 You are creating or updating the project constitution at `.codexspec/memory/constitution.md`.
 
