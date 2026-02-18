@@ -128,6 +128,21 @@ project:
 - Context-aware translations via Claude
 - Supports any language Claude understands
 
+### Constitution Language
+
+The `constitution.md` file is generated in the language specified by `language.output` configuration. This is an intentional design decision:
+
+- Claude can understand constitution files in any major language (English, Chinese, Japanese, Korean, etc.)
+- A single file avoids synchronization issues between multiple language versions
+- Teams should use a consistent working language for collaboration
+
+**Design Rationale**:
+1. Prevents content inconsistency across multiple file versions
+2. Claude and other major AI models have sufficient multilingual understanding capabilities
+3. Reduces maintenance overhead by eliminating the need to manage multiple translations
+
+If an English reference version is needed for international teams, a manual translation copy can be created.
+
 ### Slash Command System
 
 Slash commands are Markdown files with YAML frontmatter:
