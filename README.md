@@ -129,6 +129,9 @@ After installation, you can use the CLI:
 # Create new project
 codexspec init my-project
 
+# Create project with Chinese output
+codexspec init my-project --lang zh-CN
+
 # Initialize in existing project
 codexspec init . --ai claude
 # or
