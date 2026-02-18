@@ -129,6 +129,9 @@ Después de la instalación, puedes usar el CLI:
 # Crear nuevo proyecto
 codexspec init my-project
 
+# Crear proyecto con salida en español
+codexspec init my-project --lang es
+
 # Inicializar en proyecto existente
 codexspec init . --ai claude
 # o
