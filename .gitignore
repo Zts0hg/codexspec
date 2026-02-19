@@ -223,8 +223,8 @@ venv.bak/
 # Rope project settings
 .ropeproject
 
-# mkdocs documentation
-/site
+# MkDocs documentation
+site/
 
 # mypy
 .mypy_cache/
