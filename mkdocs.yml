@@ -5,6 +5,10 @@ repo_url: https://github.com/Zts0hg/codexspec
 repo_name: Zts0hg/codexspec
 edit_uri: edit/main/docs/
 
+# Exclude internal planning documents from build
+exclude_docs: |
+  /plans/
+
 theme:
   name: material
   palette:
