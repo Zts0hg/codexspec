@@ -2,7 +2,7 @@
 
 This is the reference for CodexSpec's slash commands. These commands are invoked in Claude Code's chat interface.
 
-For workflow patterns and when to use each command, see [Workflows](workflows.md). For CLI commands, see [CLI](cli.md).
+For workflow patterns and when to use each command, see [Workflow](workflow.md). For CLI commands, see [CLI](../reference/cli.md).
 
 ## Quick Reference
 
@@ -1056,6 +1056,5 @@ The `/codexspec.tasks-to-issues` command requires GitHub authentication.
 
 ## Next Steps
 
-- [Workflows](workflows.md) - Common patterns and when to use each command
-- [CLI](cli.md) - Terminal commands for project initialization
-- [Architecture](architecture.md) - Understanding CodexSpec's design principles
+- [Workflow](workflow.md) - Common patterns and when to use each command
+- [CLI](../reference/cli.md) - Terminal commands for project initialization
