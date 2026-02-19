@@ -1,0 +1,22 @@
+/* Custom styles for CodexSpec docs */
+
+/* Make code blocks more prominent */
+.highlight {
+  margin: 1em 0;
+}
+
+/* Admonition styling */
+.admonition {
+  margin: 1em 0;
+}
+
+/* Better table styling */
+.md-typeset table:not([class]) {
+  display: table;
+  width: 100%;
+}
+
+/* Improve task list styling */
+.md-typeset .task-list-item {
+  margin: 0.5em 0;
+}
