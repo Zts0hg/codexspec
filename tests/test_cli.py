@@ -13,7 +13,7 @@ from codexspec import __version__, app, get_templates_dir, get_version
 @pytest.fixture
 def runner() -> CliRunner:
     """Create a CLI test runner."""
-    return CliRunner(mix_stderr=False)
+    return CliRunner()
 
 
 @pytest.fixture
