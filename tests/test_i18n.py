@@ -181,7 +181,7 @@ class TestGenerateConfigContent:
         """Default config should use English."""
         content = generate_config_content()
         assert 'output: "en"' in content
-        assert "version: \"1.0\"" in content
+        assert 'version: "1.0"' in content
 
     def test_custom_language(self) -> None:
         """Custom language should be normalized and included."""
