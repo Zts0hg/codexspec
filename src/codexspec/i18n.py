@@ -134,7 +134,7 @@ def get_language_name(lang_code: str) -> str:
     Returns:
         Human-readable language name
     """
-    LANGUAGE_NAMES = {
+    language_names = {
         "en": "English",
         "zh-CN": "Chinese (Simplified)",
         "zh-TW": "Chinese (Traditional)",
@@ -150,7 +150,7 @@ def get_language_name(lang_code: str) -> str:
         "hi": "Hindi",
     }
     normalized = normalize_locale(lang_code)
-    return LANGUAGE_NAMES.get(normalized, normalized)
+    return language_names.get(normalized, normalized)
 
 
 def get_supported_languages() -> list[tuple[str, str]]:
@@ -160,10 +160,7 @@ def get_supported_languages() -> list[tuple[str, str]]:
     Returns:
         List of (code, name) tuples for all supported languages
     """
-    return [
-        (code, get_language_name(code))
-        for code in LANGUAGE_ALIASES.keys()
-    ]
+    return [(code, get_language_name(code)) for code in LANGUAGE_ALIASES.keys()]
 
 
 # Default config.yml template
@@ -207,7 +204,4 @@ def generate_config_content(language: str = "en", created: str = None) -> str:
     if created is None:
         created = datetime.now().strftime("%Y-%m-%d")
 
-    return CONFIG_TEMPLATE.format(
-        language=normalized_lang,
-        created=created
-    )
+    return CONFIG_TEMPLATE.format(language=normalized_lang, created=created)
