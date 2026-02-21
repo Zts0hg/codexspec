@@ -6,7 +6,6 @@ This toolkit provides a structured approach to software development using
 executable specifications that guide AI-assisted implementation.
 """
 
-import os
 import subprocess
 import sys
 from datetime import datetime
@@ -85,12 +84,14 @@ def check_command_exists(command: str) -> bool:
 @app.command()
 def version() -> None:
     """Display version and system information."""
-    console.print(Panel.fit(
-        f"[bold blue]CodexSpec[/bold blue] version [green]{__version__}[/green]\n"
-        f"Python: {sys.version.split()[0]}\n"
-        f"Platform: {sys.platform}",
-        title="Version Info",
-    ))
+    console.print(
+        Panel.fit(
+            f"[bold blue]CodexSpec[/bold blue] version [green]{__version__}[/green]\n"
+            f"Python: {sys.version.split()[0]}\n"
+            f"Platform: {sys.platform}",
+            title="Version Info",
+        )
+    )
 
 
 @app.command()
@@ -178,7 +179,10 @@ def config(
         normalized = normalize_locale(set_lang)
         if not is_supported_language(normalized):
             console.print(f"[yellow]Warning: '{set_lang}' is not in the list of commonly supported languages.[/yellow]")
-            console.print("It may still work if Claude supports it. Run [cyan]codexspec config --list-langs[/cyan] to see supported languages.")
+            console.print(
+                "It may still work if Claude supports it. "
+                "Run [cyan]codexspec config --list-langs[/cyan] to see supported languages."
+            )
 
         # Read existing config
         config_content = config_file.read_text()
@@ -212,11 +216,13 @@ def config(
         return
 
     # Display current configuration
-    console.print(Panel(
-        config_file.read_text(),
-        title=f"Configuration: {config_file}",
-        border_style="blue",
-    ))
+    console.print(
+        Panel(
+            config_file.read_text(),
+            title=f"Configuration: {config_file}",
+            border_style="blue",
+        )
+    )
 
 
 @app.command()
@@ -373,21 +379,26 @@ def init(
 
     # Print success message
     console.print()
-    console.print(Panel.fit(
-        "[bold green]CodexSpec project initialized successfully![/bold green]\n\n"
-        f"Project directory: [cyan]{target_dir}[/cyan]\n\n"
-        "[bold]Next steps:[/bold]\n"
-        "1. Navigate to your project: [cyan]cd " + (project_name if project_name and project_name != "." else ".") + "[/cyan]\n"
-        "2. Start Claude Code: [cyan]claude[/cyan]\n"
-        "3. Use [cyan]/codexspec.constitution[/cyan] to establish project principles\n"
-        "4. Use [cyan]/codexspec.specify[/cyan] to create your first specification",
-        title="Success",
-    ))
+    project_nav = project_name if project_name and project_name != "." else "."
+    console.print(
+        Panel.fit(
+            "[bold green]CodexSpec project initialized successfully![/bold green]\n\n"
+            f"Project directory: [cyan]{target_dir}[/cyan]\n\n"
+            "[bold]Next steps:[/bold]\n"
+            f"1. Navigate to your project: [cyan]cd {project_nav}[/cyan]\n"
+            "2. Start Claude Code: [cyan]claude[/cyan]\n"
+            "3. Use [cyan]/codexspec.constitution[/cyan] to establish project principles\n"
+            "4. Use [cyan]/codexspec.specify[/cyan] to create your first specification",
+            title="Success",
+        )
+    )
 
     # Remind user to customize constitution
     console.print()
     console.print("[yellow]Important:[/yellow] The constitution is the foundation of your SDD workflow.")
-    console.print("[yellow]Run [bold]/codexspec.constitution[/bold] to customize it for your project and team.[/yellow]")
+    console.print(
+        "[yellow]Run [bold]/codexspec.constitution[/bold] to customize it for your project and team.[/yellow]"
+    )
 
 
 def _create_default_commands(commands_dir: Path) -> None:
@@ -417,7 +428,7 @@ def _create_default_commands(commands_dir: Path) -> None:
 
 def _get_constitution_command() -> str:
     """Return the constitution command template."""
-    return '''---
+    return """---
 description: Create or update the project constitution - the governing principles that guide all development decisions
 handoffs:
   - agent: claude
@@ -432,11 +443,14 @@ $ARGUMENTS
 
 ## Instructions
 
-You are tasked with creating or updating the project constitution. The constitution serves as the foundational document that guides all technical decisions and implementation choices throughout the project lifecycle.
+You are tasked with creating or updating the project constitution.
+The constitution serves as the foundational document that guides all technical decisions
+and implementation choices throughout the project lifecycle.
 
 ### Steps
 
-1. **Analyze the Request**: Understand the user's requirements for project principles, coding standards, and governance rules.
+1. **Analyze the Request**: Understand the user's requirements for project principles,
+   coding standards, and governance rules.
 
 2. **Review Existing Context**: Check `.codexspec/memory/constitution.md` if it exists for current principles.
 
@@ -457,12 +471,12 @@ The constitution should be structured as a markdown document with clear sections
 
 > [!NOTE]
 > This is a placeholder command. The full implementation will be added in future versions.
-'''
+"""
 
 
 def _get_specify_command() -> str:
     """Return the specify command template."""
-    return '''---
+    return """---
 description: Create a new feature specification describing what to build and why
 handoffs:
   - agent: claude
@@ -477,7 +491,8 @@ $ARGUMENTS
 
 ## Instructions
 
-You are tasked with creating a detailed feature specification. Focus on the **what** and **why**, not the technical implementation.
+You are tasked with creating a detailed feature specification.
+Focus on the **what** and **why**, not the technical implementation.
 
 ### Steps
 
@@ -501,12 +516,12 @@ The specification should follow the template in `.codexspec/templates/spec-templ
 
 > [!NOTE]
 > This is a placeholder command. The full implementation will be added in future versions.
-'''
+"""
 
 
 def _get_generate_spec_command() -> str:
     """Return the generate-spec command template."""
-    return '''---
+    return """---
 description: Generate a detailed specification document from high-level requirements
 handoffs:
   - agent: claude
@@ -539,12 +554,12 @@ A comprehensive specification document saved to the appropriate location.
 
 > [!NOTE]
 > This is a placeholder command. The full implementation will be added in future versions.
-'''
+"""
 
 
 def _get_spec_to_plan_command() -> str:
     """Return the spec-to-plan command template."""
-    return '''---
+    return """---
 description: Convert a feature specification into a technical implementation plan
 handoffs:
   - agent: claude
@@ -585,12 +600,12 @@ A detailed technical implementation plan.
 
 > [!NOTE]
 > This is a placeholder command. The full implementation will be added in future versions.
-'''
+"""
 
 
 def _get_plan_to_tasks_command() -> str:
     """Return the plan-to-tasks command template."""
-    return '''---
+    return """---
 description: Break down a technical implementation plan into actionable tasks
 handoffs:
   - agent: claude
@@ -632,12 +647,12 @@ A structured task list ready for implementation.
 
 > [!NOTE]
 > This is a placeholder command. The full implementation will be added in future versions.
-'''
+"""
 
 
 def _get_review_spec_command() -> str:
     """Return the review-spec command template."""
-    return '''---
+    return """---
 description: Review and validate a feature specification for completeness and quality
 handoffs:
   - agent: claude
@@ -676,12 +691,12 @@ A comprehensive review report with actionable feedback.
 
 > [!NOTE]
 > This is a placeholder command. The full implementation will be added in future versions.
-'''
+"""
 
 
 def _get_review_plan_command() -> str:
     """Return the review-plan command template."""
-    return '''---
+    return """---
 description: Review and validate a technical implementation plan
 handoffs:
   - agent: claude
@@ -720,12 +735,12 @@ A comprehensive review report with actionable feedback.
 
 > [!NOTE]
 > This is a placeholder command. The full implementation will be added in future versions.
-'''
+"""
 
 
 def _get_review_tasks_command() -> str:
     """Return the review-tasks command template."""
-    return '''---
+    return """---
 description: Review and validate the task breakdown for completeness and correct ordering
 handoffs:
   - agent: claude
@@ -764,12 +779,12 @@ A comprehensive review report with actionable feedback.
 
 > [!NOTE]
 > This is a placeholder command. The full implementation will be added in future versions.
-'''
+"""
 
 
 def _get_implement_tasks_command() -> str:
     """Return the implement-tasks command template."""
-    return '''---
+    return """---
 description: Execute the implementation tasks according to the task breakdown
 handoffs:
   - agent: claude
@@ -808,12 +823,12 @@ Complete implementation of all tasks with progress reporting.
 
 > [!NOTE]
 > This is a placeholder command. The full implementation will be added in future versions.
-'''
+"""
 
 
 def _get_clarify_command() -> str:
     """Return the clarify command template."""
-    return '''---
+    return """---
 description: Identify underspecified areas in the current feature spec by asking targeted clarification questions
 handoffs:
   - agent: claude
@@ -846,12 +861,12 @@ You are tasked with identifying and resolving ambiguities in the feature specifi
 
 > [!NOTE]
 > This command should run BEFORE `/codexspec.spec-to-plan`.
-'''
+"""
 
 
 def _get_analyze_command() -> str:
     """Return the analyze command template."""
-    return '''---
+    return """---
 description: Perform cross-artifact consistency and quality analysis across spec.md, plan.md, and tasks.md
 ---
 
@@ -879,12 +894,12 @@ A structured analysis report with severity levels (CRITICAL, HIGH, MEDIUM, LOW).
 
 > [!NOTE]
 > This command runs AFTER `/codexspec.plan-to-tasks` and BEFORE `/codexspec.implement-tasks`.
-'''
+"""
 
 
 def _get_checklist_command() -> str:
     """Return the checklist command template."""
-    return '''---
+    return """---
 description: Generate a custom quality checklist for validating requirements completeness and clarity
 ---
 
@@ -915,12 +930,12 @@ Example:
 
 > [!NOTE]
 > Checklists test the REQUIREMENTS quality, NOT the implementation.
-'''
+"""
 
 
 def _get_tasks_to_issues_command() -> str:
     """Return the tasks-to-issues command template."""
-    return '''---
+    return """---
 description: Convert existing tasks into actionable GitHub issues
 ---
 
@@ -947,12 +962,12 @@ Convert tasks from tasks.md into GitHub issues.
 
 > [!NOTE]
 > Requires GitHub CLI (`gh`) to be installed and authenticated.
-'''
+"""
 
 
 def _get_default_constitution() -> str:
     """Return the default constitution content."""
-    return '''# Project Constitution
+    return """# Project Constitution
 
 This document defines the governing principles and development guidelines for this project.
 
@@ -1014,18 +1029,19 @@ When making technical decisions, prioritize:
 ---
 
 *This constitution should be updated as the project evolves and new guidelines are established.*
-'''
+"""
 
 
 def _get_claude_md_content() -> str:
     """Return the CLAUDE.md content."""
-    return '''# CLAUDE.md - CodexSpec Project Guidelines
+    return """# CLAUDE.md - CodexSpec Project Guidelines
 
 This document provides context and guidelines for Claude Code when working with this CodexSpec project.
 
 ## Project Overview
 
-This project uses the **CodexSpec** methodology - a Spec-Driven Development (SDD) approach that emphasizes specifications as executable artifacts that directly guide implementation.
+This project uses the **CodexSpec** methodology - a Spec-Driven Development (SDD) approach
+that emphasizes specifications as executable artifacts that directly guide implementation.
 
 ## Available Commands
 
@@ -1106,7 +1122,7 @@ The following slash commands are available in this project:
 ---
 
 *This file is maintained by CodexSpec. Manual edits should be made with care.*
-'''
+"""
 
 
 def main() -> None:

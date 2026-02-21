@@ -84,9 +84,7 @@ class TestConfig:
 class TestInit:
     """Tests for init command."""
 
-    def test_init_requires_project_name_or_here(
-        self, isolated_runner: Path, runner: CliRunner
-    ) -> None:
+    def test_init_requires_project_name_or_here(self, isolated_runner: Path, runner: CliRunner) -> None:
         """init command should require project name or --here flag."""
         result = runner.invoke(app, ["init"])
         assert result.exit_code == 1
