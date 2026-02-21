@@ -185,7 +185,7 @@ def config(
             )
 
         # Read existing config
-        config_content = config_file.read_text()
+        config_content = config_file.read_text(encoding="utf-8")
 
         # Update language setting using simple string replacement
         lines = config_content.split("\n")
@@ -207,7 +207,7 @@ def config(
                 new_lines.append(line)
 
         if updated:
-            config_file.write_text("\n".join(new_lines))
+            config_file.write_text("\n".join(new_lines), encoding="utf-8")
             lang_name = get_language_name(normalized)
             console.print(f"[green]Language set to:[/green] {normalized} ({lang_name})")
         else:
@@ -218,7 +218,7 @@ def config(
     # Display current configuration
     console.print(
         Panel(
-            config_file.read_text(),
+            config_file.read_text(encoding="utf-8"),
             title=f"Configuration: {config_file}",
             border_style="blue",
         )
@@ -323,7 +323,7 @@ def init(
     if docs_templates_dir.exists():
         for template_file in docs_templates_dir.glob("*.md"):
             dest_file = codexspec_dir / "templates" / "docs" / template_file.name
-            dest_file.write_text(template_file.read_text())
+            dest_file.write_text(template_file.read_text(encoding="utf-8"), encoding="utf-8")
             console.print(f"[green]Copied template:[/green] {template_file.name}")
     else:
         console.print("[yellow]Warning: Docs templates directory not found[/yellow]")
@@ -338,7 +338,7 @@ def init(
         for template_file in templates_dir.glob("*.md"):
             # Prepend "codexspec." to the filename so commands are invoked as /codexspec.{name}
             dest_file = claude_commands_dir / f"codexspec.{template_file.name}"
-            dest_file.write_text(template_file.read_text())
+            dest_file.write_text(template_file.read_text(encoding="utf-8"), encoding="utf-8")
             console.print(f"[green]Installed command:[/green] /codexspec.{template_file.stem}")
     else:
         # Create default commands if templates don't exist
@@ -348,7 +348,7 @@ def init(
     # Create constitution template
     constitution_file = codexspec_dir / "memory" / "constitution.md"
     if not constitution_file.exists():
-        constitution_file.write_text(_get_default_constitution())
+        constitution_file.write_text(_get_default_constitution(), encoding="utf-8")
         console.print("[green]Created:[/green] .codexspec/memory/constitution.md")
 
     # Create config.yml with language settings
@@ -359,14 +359,14 @@ def init(
             language=normalized_lang,
             created=datetime.now().strftime("%Y-%m-%d"),
         )
-        config_file.write_text(config_content)
+        config_file.write_text(config_content, encoding="utf-8")
         lang_name = get_language_name(normalized_lang)
         console.print(f"[green]Created:[/green] .codexspec/config.yml (language: {lang_name})")
 
     # Create CLAUDE.md
     claude_md = target_dir / "CLAUDE.md"
     if not claude_md.exists() or force:
-        claude_md.write_text(_get_claude_md_content())
+        claude_md.write_text(_get_claude_md_content(), encoding="utf-8")
         console.print("[green]Created:[/green] CLAUDE.md")
 
     # Initialize git if requested
@@ -422,7 +422,7 @@ def _create_default_commands(commands_dir: Path) -> None:
     for name, content in commands.items():
         # Prepend "codexspec." to the filename so commands are invoked as /codexspec.{name}
         cmd_file = commands_dir / f"codexspec.{name}.md"
-        cmd_file.write_text(content)
+        cmd_file.write_text(content, encoding="utf-8")
         console.print(f"[green]Installed command:[/green] /codexspec.{name}")
 
 
