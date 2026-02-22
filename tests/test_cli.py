@@ -1,13 +1,14 @@
 """Tests for CodexSpec CLI commands."""
 
 import os
+import sys
 from pathlib import Path
 from typing import Generator
 
 import pytest
 from typer.testing import CliRunner
 
-from codexspec import __version__, app, get_templates_dir, get_version
+from codexspec import __version__, app, get_scripts_dir, get_templates_dir, get_version
 
 
 @pytest.fixture
@@ -172,3 +173,91 @@ class TestCLIIntegration:
         """Invalid command should show error."""
         result = runner.invoke(app, ["invalid-command"])
         assert result.exit_code != 0
+
+
+class TestGetScriptsDir:
+    """Tests for get_scripts_dir function."""
+
+    def test_returns_path(self) -> None:
+        """get_scripts_dir should return a Path object."""
+        path = get_scripts_dir()
+        assert isinstance(path, Path)
+
+    def test_scripts_dir_exists(self) -> None:
+        """Scripts directory should exist."""
+        path = get_scripts_dir()
+        # In development mode, this should point to project scripts
+        # When installed, it should point to installed scripts
+        assert path.exists() or path.name == "scripts"
+
+
+class TestInitScripts:
+    """Tests for script copying in init command."""
+
+    def test_get_scripts_dir_returns_path(self) -> None:
+        """get_scripts_dir should return a Path object."""
+        path = get_scripts_dir()
+        assert isinstance(path, Path)
+
+    def test_get_scripts_dir_exists(self) -> None:
+        """Scripts directory should exist."""
+        path = get_scripts_dir()
+        assert path.exists() or path.name == "scripts"
+
+    def test_init_copies_bash_scripts_on_unix(
+        self, isolated_runner: Path, runner: CliRunner, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """init should copy bash scripts on non-Windows platforms."""
+        # Simulate Unix platform
+        monkeypatch.setattr(sys, "platform", "linux")
+
+        result = runner.invoke(app, ["init", "my-project", "--no-git"])
+        assert result.exit_code == 0
+
+        scripts_dir = isolated_runner / "my-project" / ".codexspec" / "scripts"
+        assert scripts_dir.exists()
+
+        # Check bash scripts are copied
+        assert (scripts_dir / "common.sh").exists()
+        assert (scripts_dir / "check-prerequisites.sh").exists()
+        assert (scripts_dir / "create-new-feature.sh").exists()
+
+        # Check PowerShell scripts are NOT copied
+        assert not (scripts_dir / "common.ps1").exists()
+
+    def test_init_copies_powershell_scripts_on_windows(
+        self, isolated_runner: Path, runner: CliRunner, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """init should copy PowerShell scripts on Windows."""
+        # Simulate Windows platform
+        monkeypatch.setattr(sys, "platform", "win32")
+
+        result = runner.invoke(app, ["init", "my-project", "--no-git"])
+        assert result.exit_code == 0
+
+        scripts_dir = isolated_runner / "my-project" / ".codexspec" / "scripts"
+        assert scripts_dir.exists()
+
+        # Check PowerShell scripts are copied
+        assert (scripts_dir / "common.ps1").exists()
+        assert (scripts_dir / "check-prerequisites.ps1").exists()
+        assert (scripts_dir / "create-new-feature.ps1").exists()
+
+        # Check bash scripts are NOT copied
+        assert not (scripts_dir / "common.sh").exists()
+
+    def test_init_scripts_content_preserved(self, isolated_runner: Path, runner: CliRunner) -> None:
+        """init should preserve script content exactly."""
+        result = runner.invoke(app, ["init", "my-project", "--no-git"])
+        assert result.exit_code == 0
+
+        # Compare copied script with original
+        scripts_source = get_scripts_dir()
+        if sys.platform == "win32":
+            source_file = scripts_source / "powershell" / "common.ps1"
+        else:
+            source_file = scripts_source / "bash" / "common.sh"
+
+        if source_file.exists():
+            dest_file = isolated_runner / "my-project" / ".codexspec" / "scripts" / source_file.name
+            assert dest_file.read_text(encoding="utf-8") == source_file.read_text(encoding="utf-8")

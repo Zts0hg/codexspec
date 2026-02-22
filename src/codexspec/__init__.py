@@ -68,6 +68,28 @@ def get_templates_dir() -> Path:
     return installed_templates
 
 
+def get_scripts_dir() -> Path:
+    """Get the scripts directory path.
+
+    Similar to get_templates_dir(), handles multiple installation scenarios:
+    1. Wheel install: scripts are in codexspec/scripts (same level as __init__.py)
+    2. Development: scripts are in project root (../scripts from src/codexspec)
+    3. Editable install: scripts are in project root
+    """
+    # Path 1: Wheel install - scripts packaged inside codexspec package
+    installed_scripts = Path(__file__).parent / "scripts"
+    if installed_scripts.exists():
+        return installed_scripts
+
+    # Path 2: Development/editable install - scripts in project root
+    dev_scripts = Path(__file__).parent.parent.parent / "scripts"
+    if dev_scripts.exists():
+        return dev_scripts
+
+    # Path 3: Fallback - return the installed path (will trigger warning if not exists)
+    return installed_scripts
+
+
 def check_command_exists(command: str) -> bool:
     """Check if a command is available in PATH."""
     try:
@@ -317,6 +339,32 @@ def init(
     (codexspec_dir / "templates").mkdir(exist_ok=True)
     (codexspec_dir / "templates" / "docs").mkdir(exist_ok=True)
     (codexspec_dir / "scripts").mkdir(exist_ok=True)
+
+    # Copy helper scripts based on platform
+    scripts_source_dir = get_scripts_dir()
+    if scripts_source_dir.exists():
+        if sys.platform == "win32":
+            # Windows: copy PowerShell scripts
+            ps_scripts = scripts_source_dir / "powershell"
+            if ps_scripts.exists():
+                for script_file in ps_scripts.glob("*.ps1"):
+                    dest_file = codexspec_dir / "scripts" / script_file.name
+                    dest_file.write_text(script_file.read_text(encoding="utf-8"), encoding="utf-8")
+                    console.print(f"[green]Copied script:[/green] {script_file.name}")
+            else:
+                console.print("[yellow]Warning: PowerShell scripts directory not found[/yellow]")
+        else:
+            # macOS/Linux: copy Bash scripts
+            bash_scripts = scripts_source_dir / "bash"
+            if bash_scripts.exists():
+                for script_file in bash_scripts.glob("*.sh"):
+                    dest_file = codexspec_dir / "scripts" / script_file.name
+                    dest_file.write_text(script_file.read_text(encoding="utf-8"), encoding="utf-8")
+                    console.print(f"[green]Copied script:[/green] {script_file.name}")
+            else:
+                console.print("[yellow]Warning: Bash scripts directory not found[/yellow]")
+    else:
+        console.print("[yellow]Warning: Scripts directory not found[/yellow]")
 
     # Copy docs templates
     docs_templates_dir = get_templates_dir() / "docs"
