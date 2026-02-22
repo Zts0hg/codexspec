@@ -1,0 +1,52 @@
+# Pre-commit configuration for CodexSpec
+# Install: uv run pre-commit install
+# Run manually: uv run pre-commit run --all-files
+
+repos:
+  # Ruff - Fast Python linter and formatter
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.10
+    hooks:
+      # Linter
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      # Formatter
+      - id: ruff-format
+
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      # Remove trailing whitespace
+      - id: trailing-whitespace
+      # Ensure files end with newline
+      - id: end-of-file-fixer
+      # Check YAML files
+      - id: check-yaml
+        args: [--unsafe]  # Allow custom YAML tags
+      # Check for large files
+      - id: check-added-large-files
+        args: ['--maxkb=500']
+      # Check for merge conflicts
+      - id: check-merge-conflict
+      # Check for debug statements
+      - id: debug-statements
+      # Sort requirements.txt (if exists)
+      - id: requirements-txt-fixer
+        files: requirements.*\.txt$
+
+  # Type checking (optional, comment out if not needed)
+  # - repo: https://github.com/pre-commit/mirrors-mypy
+  #   rev: v1.15.0
+  #   hooks:
+  #     - id: mypy
+  #       additional_dependencies: [types-PyYAML]
+  #       args: [--ignore-missing-imports]
+
+# CI configuration
+ci:
+  autofix_prs: true
+  autofix_commit_msg: "style: auto-fix pre-commit issues"
+  autoupdate_branch: main
+  autoupdate_commit_msg: "chore: pre-commit autoupdate"
+  autoupdate_schedule: weekly
