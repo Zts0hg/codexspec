@@ -18,7 +18,7 @@ on:
 
 jobs:
   lint:
-    name: Lint
+    name: Lint (Pre-commit)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,13 +33,10 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install ruff
+          pip install pre-commit
 
-      - name: Run Ruff lint
-        run: ruff check src/ tests/
-
-      - name: Run Ruff format check
-        run: ruff format --check src/ tests/
+      - name: Run pre-commit
+        run: pre-commit run --all-files --show-diff-on-failure
 
   test:
     name: Test (Python ${{ matrix.python-version }}, ${{ matrix.os }})
