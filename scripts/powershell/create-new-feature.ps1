@@ -217,18 +217,24 @@ if ($branchName.Length -gt $maxBranchLength) {
     $originalBranchName = $branchName
     $branchName = "$featureNum-$truncatedSuffix"
 
-    Write-Warning "[codexspec] Branch name exceeded GitHub's 244-byte limit"
-    Write-Warning "[codexspec] Truncated to: $branchName"
+    if (-not $Json) {
+        Write-Warning "[codexspec] Branch name exceeded GitHub's 244-byte limit"
+        Write-Warning "[codexspec] Truncated to: $branchName"
+    }
 }
 
 if ($hasGit) {
     try {
         git checkout -b $branchName | Out-Null
     } catch {
-        Write-Warning "Failed to create git branch: $branchName"
+        if (-not $Json) {
+            Write-Warning "Failed to create git branch: $branchName"
+        }
     }
 } else {
-    Write-Warning "[codexspec] Warning: Git repository not detected; skipped branch creation for $branchName"
+    if (-not $Json) {
+        Write-Warning "[codexspec] Warning: Git repository not detected; skipped branch creation for $branchName"
+    }
 }
 
 $featureDir = Join-Path $specsDir $branchName
