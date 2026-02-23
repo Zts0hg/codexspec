@@ -6,8 +6,8 @@ param(
     [string]$ShortName,
     [int]$Number = 0,
     [switch]$Help,
-    [Parameter(ValueFromRemainingArguments = $true)]
-    [string[]]$FeatureDescription
+    [Parameter(Position = 0)]
+    [string]$FeatureDescription
 )
 $ErrorActionPreference = 'Stop'
 
@@ -28,12 +28,12 @@ if ($Help) {
 }
 
 # Check if feature description provided
-if (-not $FeatureDescription -or $FeatureDescription.Count -eq 0) {
+if (-not $FeatureDescription) {
     Write-Error "Usage: ./create-new-feature.ps1 [-Json] [-ShortName <name>] <feature description>"
     exit 1
 }
 
-$featureDesc = ($FeatureDescription -join ' ').Trim()
+$featureDesc = $FeatureDescription.Trim()
 
 # Resolve repository root
 function Find-RepositoryRoot {
