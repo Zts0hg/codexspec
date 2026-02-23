@@ -44,7 +44,7 @@ class TestCreateNewFeature:
         """Creates feature directory with correct name."""
         script_path = powershell_scripts_dir / "create-new-feature.ps1"
         result = subprocess.run(
-            ["pwsh", "-File", str(script_path), "'user authentication'"],
+            ["pwsh", "-File", str(script_path), "user authentication"],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
@@ -60,7 +60,7 @@ class TestCreateNewFeature:
         """Creates spec.md file in feature directory."""
         script_path = powershell_scripts_dir / "create-new-feature.ps1"
         result = subprocess.run(
-            ["pwsh", "-File", str(script_path), "'test feature'"],
+            ["pwsh", "-File", str(script_path), "test feature"],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
@@ -77,7 +77,7 @@ class TestCreateNewFeature:
         """First feature gets number 001."""
         script_path = powershell_scripts_dir / "create-new-feature.ps1"
         result = subprocess.run(
-            ["pwsh", "-File", str(script_path), "'first feature'"],
+            ["pwsh", "-File", str(script_path), "first feature"],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
@@ -91,7 +91,7 @@ class TestCreateNewFeature:
 
         # Create first feature
         result1 = subprocess.run(
-            ["pwsh", "-File", str(script_path), "'first feature'"],
+            ["pwsh", "-File", str(script_path), "first feature"],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
@@ -101,7 +101,7 @@ class TestCreateNewFeature:
 
         # Create second feature
         result2 = subprocess.run(
-            ["pwsh", "-File", str(script_path), "'second feature'"],
+            ["pwsh", "-File", str(script_path), "second feature"],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
@@ -113,7 +113,7 @@ class TestCreateNewFeature:
         """Custom number can be specified with -Number parameter."""
         script_path = powershell_scripts_dir / "create-new-feature.ps1"
         result = subprocess.run(
-            ["pwsh", "-File", str(script_path), "-Number", "42", "'custom feature'"],
+            ["pwsh", "-File", str(script_path), "-Number", "42", "custom feature"],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
@@ -129,7 +129,7 @@ class TestCreateNewFeature:
         """-Json outputs valid JSON format."""
         script_path = powershell_scripts_dir / "create-new-feature.ps1"
         result = subprocess.run(
-            ["pwsh", "-File", str(script_path), "-Json", "'json test feature'"],
+            ["pwsh", "-File", str(script_path), "-Json", "json test feature"],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
@@ -152,7 +152,7 @@ class TestCreateNewFeature:
                 str(script_path),
                 "-ShortName",
                 "custom-auth",
-                "'user authentication system'",
+                "user authentication system",
             ],
             capture_output=True,
             text=True,
@@ -166,7 +166,7 @@ class TestCreateNewFeature:
         """Branch name is generated from description."""
         script_path = powershell_scripts_dir / "create-new-feature.ps1"
         result = subprocess.run(
-            ["pwsh", "-File", str(script_path), "'Add user authentication'"],
+            ["pwsh", "-File", str(script_path), "Add user authentication"],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
@@ -182,7 +182,7 @@ class TestCreateNewFeature:
         """Creates git branch when in a git repository."""
         script_path = powershell_scripts_dir / "create-new-feature.ps1"
         result = subprocess.run(
-            ["pwsh", "-File", str(script_path), "'git test feature'"],
+            ["pwsh", "-File", str(script_path), "git test feature"],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_git_project,
@@ -203,7 +203,7 @@ class TestCreateNewFeature:
         """Warns when git is not available but still creates feature."""
         script_path = powershell_scripts_dir / "create-new-feature.ps1"
         result = subprocess.run(
-            ["pwsh", "-File", str(script_path), "'no git feature'"],
+            ["pwsh", "-File", str(script_path), "no git feature"],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
@@ -215,7 +215,7 @@ class TestCreateNewFeature:
         """Output contains BRANCH_NAME."""
         script_path = powershell_scripts_dir / "create-new-feature.ps1"
         result = subprocess.run(
-            ["pwsh", "-File", str(script_path), "'output test'"],
+            ["pwsh", "-File", str(script_path), "output test"],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
@@ -231,7 +231,7 @@ class TestCreateNewFeature:
 
         # Create a feature with explicit number 010
         result1 = subprocess.run(
-            ["pwsh", "-File", str(script_path), "-Number", "10", "'tenth feature'"],
+            ["pwsh", "-File", str(script_path), "-Number", "10", "tenth feature"],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
@@ -240,7 +240,7 @@ class TestCreateNewFeature:
 
         # Next feature should be 011
         result2 = subprocess.run(
-            ["pwsh", "-File", str(script_path), "'next feature'"],
+            ["pwsh", "-File", str(script_path), "next feature"],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
@@ -256,7 +256,7 @@ class TestCreateNewFeature:
             "a branch name that needs to be truncated to fit within GitHub limits"
         )
         result = subprocess.run(
-            ["pwsh", "-File", str(script_path), f"'{long_description}'"],
+            ["pwsh", "-File", str(script_path), long_description],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
