@@ -1,9 +1,16 @@
 """Tests for scripts/bash/create-new-feature.sh."""
 
 import subprocess
+import sys
 from pathlib import Path
 
+import pytest
 
+
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="Bash tests only run on Unix-like systems (macOS/Linux)",
+)
 class TestCreateNewFeature:
     """Tests for create-new-feature.sh script."""
 
