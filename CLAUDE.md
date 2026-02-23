@@ -229,6 +229,31 @@ When `codexspec init` is run:
 - Use pytest fixtures for common setup
 - Test edge cases and error conditions
 
+### Script Testing
+
+Scripts are tested via pytest subprocess calls:
+
+- **Bash scripts**: `tests/scripts/bash/`
+- **PowerShell scripts**: `tests/scripts/powershell/`
+
+Run script tests:
+
+```bash
+# All script tests
+uv run pytest tests/scripts/ -v
+
+# Bash only
+uv run pytest tests/scripts/bash/ -v
+
+# PowerShell only (requires pwsh installed)
+uv run pytest tests/scripts/powershell/ -v
+```
+
+**Prerequisites for PowerShell tests:**
+
+- Install PowerShell: https://learn.microsoft.com/powershell/
+- Tests are automatically skipped if pwsh is not available
+
 ## Commands Implementation Status
 
 | Command | Status | Notes |
