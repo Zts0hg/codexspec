@@ -26,7 +26,11 @@ class TestGetRepoRoot:
             text=True,
             cwd=temp_git_repo,
         )
-        assert str(temp_git_repo) in result.stdout
+        # Normalize paths for cross-platform comparison
+        # Windows uses backslashes, PowerShell may output forward slashes
+        expected_path = str(temp_git_repo).replace("\\", "/")
+        actual_path = result.stdout.strip().replace("\\", "/")
+        assert expected_path in actual_path or str(temp_git_repo) in result.stdout
 
     def test_get_repo_root_fallback(self, powershell_scripts_dir: Path, tmp_path: Path):
         """Fallback for non-git repository."""
@@ -196,7 +200,9 @@ class TestGetFeatureDir:
             text=True,
             cwd=tmp_path,
         )
-        assert "/test/repo/.codexspec/specs/001-my-feature" in result.stdout
+        # Normalize path for cross-platform comparison
+        normalized_output = result.stdout.replace("\\", "/")
+        assert "/test/repo/.codexspec/specs/001-my-feature" in normalized_output
 
 
 @pytest.mark.skipif(
@@ -233,10 +239,12 @@ class TestGetFeaturePathsEnv:
             text=True,
             cwd=temp_codexspec_git_project,
         )
-        assert ".codexspec/specs/003-test-feature" in result.stdout
-        assert "spec.md" in result.stdout
-        assert "plan.md" in result.stdout
-        assert "tasks.md" in result.stdout
+        # Normalize paths for cross-platform comparison
+        normalized_output = result.stdout.replace("\\", "/")
+        assert ".codexspec/specs/003-test-feature" in normalized_output
+        assert "spec.md" in normalized_output
+        assert "plan.md" in normalized_output
+        assert "tasks.md" in normalized_output
 
 
 @pytest.mark.skipif(
