@@ -1,9 +1,16 @@
 """Tests for scripts/bash/common.sh."""
 
 import subprocess
+import sys
 from pathlib import Path
 
+import pytest
 
+
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="Bash tests only run on Unix-like systems (macOS/Linux)",
+)
 class TestLoggingFunctions:
     """Tests for logging functions."""
 
@@ -52,6 +59,10 @@ log_error "something went wrong"
         assert "something went wrong" in result.stdout
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="Bash tests only run on Unix-like systems (macOS/Linux)",
+)
 class TestCommandExists:
     """Tests for command_exists function."""
 
@@ -80,6 +91,10 @@ fi
         assert "NOT_FOUND" in result.stdout
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="Bash tests only run on Unix-like systems (macOS/Linux)",
+)
 class TestGetFeatureId:
     """Tests for get_feature_id function."""
 
@@ -143,6 +158,10 @@ fi
         assert "EMPTY" in result.stdout
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="Bash tests only run on Unix-like systems (macOS/Linux)",
+)
 class TestGetSpecsDir:
     """Tests for get_specs_dir function."""
 
@@ -167,6 +186,10 @@ echo "$(get_specs_dir "/custom/path")"
         assert "/custom/path/.codexspec/specs" in result.stdout
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="Bash tests only run on Unix-like systems (macOS/Linux)",
+)
 class TestIsCodexspecProject:
     """Tests for is_codexspec_project function."""
 
@@ -208,6 +231,10 @@ fi
         assert "NOT_PROJECT" in result.stdout
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="Bash tests only run on Unix-like systems (macOS/Linux)",
+)
 class TestRequireCodexspecProject:
     """Tests for require_codexspec_project function."""
 
