@@ -165,7 +165,7 @@ function Get-BranchName {
     }
 }
 
-$fallbackRoot = (Find-RepositoryRoot -StartDir $PSScriptRoot)
+$fallbackRoot = (Find-RepositoryRoot -StartDir $PWD)
 if (-not $fallbackRoot) {
     Write-Error "Error: Could not determine repository root. Please run this script from within the repository."
     exit 1
