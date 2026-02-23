@@ -22,7 +22,9 @@ You are now acting as a "Requirement Compiler". Execute the following operations
 
 ### Steps
 
-1. **Determine Feature ID**: Based on existing specs in `.codexspec/specs/`, determine the next sequential number (e.g., if `001-*` exists, use `002-`).
+1. **Determine Feature ID**: List directories in `.codexspec/specs/` using `ls` command to find existing spec directories (each spec is a directory named `{NNN}-{feature-name}/`). Determine the next sequential number (e.g., if `001-*` directory exists, use `002-`).
+
+   > **IMPORTANT**: Do NOT use Glob to detect existing specs - Glob only matches files, not directories. Use `ls` or `Bash` tool instead.
 
 2. **Create Feature Directory**: Create a new directory `.codexspec/specs/{NNN}-{feature-name}/` where:
    - `NNN` is the sequential number (001, 002, etc.)
