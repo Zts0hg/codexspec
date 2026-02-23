@@ -27,7 +27,7 @@ def temp_codexspec_project(tmp_path: Path) -> Generator[Path, None, None]:
 
 @pytest.fixture
 def temp_git_repo(tmp_path: Path) -> Generator[Path, None, None]:
-    """Create a temporary git repository with basic configuration."""
+    """Create a temporary git repository with basic configuration and initial commit."""
     repo = tmp_path / "git-repo"
     repo.mkdir()
     subprocess.run(["git", "init"], cwd=repo, check=True, capture_output=True)
@@ -43,6 +43,20 @@ def temp_git_repo(tmp_path: Path) -> Generator[Path, None, None]:
         check=True,
         capture_output=True,
     )
+    # Set default branch name to main for consistency
+    subprocess.run(
+        ["git", "checkout", "-b", "main"],
+        cwd=repo,
+        check=True,
+        capture_output=True,
+    )
+    # Create initial commit so git branch operations work properly
+    subprocess.run(
+        ["git", "commit", "--allow-empty", "-m", "Initial commit"],
+        cwd=repo,
+        check=True,
+        capture_output=True,
+    )
     yield repo
 
 
@@ -50,7 +64,7 @@ def temp_git_repo(tmp_path: Path) -> Generator[Path, None, None]:
 def temp_codexspec_git_project(
     tmp_path: Path,
 ) -> Generator[Path, None, None]:
-    """Create a temporary CodexSpec project with git initialized."""
+    """Create a temporary CodexSpec project with git initialized and initial commit."""
     project = tmp_path / "test-git-project"
     project.mkdir()
     (project / ".codexspec").mkdir()
@@ -65,6 +79,20 @@ def temp_codexspec_git_project(
     )
     subprocess.run(
         ["git", "config", "user.name", "Test User"],
+        cwd=project,
+        check=True,
+        capture_output=True,
+    )
+    # Set default branch name to main for consistency
+    subprocess.run(
+        ["git", "checkout", "-b", "main"],
+        cwd=project,
+        check=True,
+        capture_output=True,
+    )
+    # Create initial commit so git branch operations work properly
+    subprocess.run(
+        ["git", "commit", "--allow-empty", "-m", "Initial commit"],
         cwd=project,
         check=True,
         capture_output=True,
