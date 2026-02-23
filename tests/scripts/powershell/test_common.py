@@ -1,14 +1,15 @@
 """Tests for scripts/powershell/common.ps1."""
 
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
 
 
 @pytest.mark.skipif(
-    not __import__("shutil", fromlist=["which"]).which("pwsh"),
-    reason="PowerShell not available",
+    sys.platform != "win32",
+    reason="PowerShell tests only run on Windows",
 )
 class TestGetRepoRoot:
     """Tests for Get-RepoRoot function."""
@@ -47,8 +48,8 @@ class TestGetRepoRoot:
 
 
 @pytest.mark.skipif(
-    not __import__("shutil", fromlist=["which"]).which("pwsh"),
-    reason="PowerShell not available",
+    sys.platform != "win32",
+    reason="PowerShell tests only run on Windows",
 )
 class TestGetCurrentBranch:
     """Tests for Get-CurrentBranch function."""
@@ -88,8 +89,8 @@ class TestGetCurrentBranch:
 
 
 @pytest.mark.skipif(
-    not __import__("shutil", fromlist=["which"]).which("pwsh"),
-    reason="PowerShell not available",
+    sys.platform != "win32",
+    reason="PowerShell tests only run on Windows",
 )
 class TestHasGit:
     """Tests for Test-HasGit function."""
@@ -127,8 +128,8 @@ class TestHasGit:
 
 
 @pytest.mark.skipif(
-    not __import__("shutil", fromlist=["which"]).which("pwsh"),
-    reason="PowerShell not available",
+    sys.platform != "win32",
+    reason="PowerShell tests only run on Windows",
 )
 class TestFeatureBranch:
     """Tests for Test-FeatureBranch function."""
@@ -180,8 +181,8 @@ class TestFeatureBranch:
 
 
 @pytest.mark.skipif(
-    not __import__("shutil", fromlist=["which"]).which("pwsh"),
-    reason="PowerShell not available",
+    sys.platform != "win32",
+    reason="PowerShell tests only run on Windows",
 )
 class TestGetFeatureDir:
     """Tests for Get-FeatureDir function."""
@@ -199,8 +200,8 @@ class TestGetFeatureDir:
 
 
 @pytest.mark.skipif(
-    not __import__("shutil", fromlist=["which"]).which("pwsh"),
-    reason="PowerShell not available",
+    sys.platform != "win32",
+    reason="PowerShell tests only run on Windows",
 )
 class TestGetFeaturePathsEnv:
     """Tests for Get-FeaturePathsEnv function."""
@@ -239,8 +240,8 @@ class TestGetFeaturePathsEnv:
 
 
 @pytest.mark.skipif(
-    not __import__("shutil", fromlist=["which"]).which("pwsh"),
-    reason="PowerShell not available",
+    sys.platform != "win32",
+    reason="PowerShell tests only run on Windows",
 )
 class TestFileExists:
     """Tests for Test-FileExists function."""

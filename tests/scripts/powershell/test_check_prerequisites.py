@@ -2,14 +2,15 @@
 
 import json
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
 
 
 @pytest.mark.skipif(
-    not __import__("shutil", fromlist=["which"]).which("pwsh"),
-    reason="PowerShell not available",
+    sys.platform != "win32",
+    reason="PowerShell tests only run on Windows",
 )
 class TestCheckPrerequisites:
     """Tests for check-prerequisites.ps1 script."""
