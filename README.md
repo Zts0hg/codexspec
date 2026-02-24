@@ -360,6 +360,13 @@ After initialization, these slash commands are available in Claude Code:
 | `/codexspec.checklist` | Generate quality checklists for requirements validation |
 | `/codexspec.tasks-to-issues` | Convert tasks to GitHub issues for project management integration |
 
+#### Git Workflow Commands
+
+| Command | Description |
+|---------|-------------|
+| `/codexspec.commit` | Generate Conventional Commits messages based on git status and session context |
+| `/codexspec.commit-staged` | Generate commit message from staged changes only |
+
 ## Workflow Overview
 
 ```
