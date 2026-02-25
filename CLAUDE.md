@@ -106,6 +106,7 @@ CodexSpec uses **LLM-based dynamic translation** for internationalization instea
 version: "1.0"
 language:
   output: "zh-CN"  # Output language
+  commit: "zh-CN"  # Commit message language (defaults to output)
   templates: "en"  # Always "en"
 project:
   ai: "claude"

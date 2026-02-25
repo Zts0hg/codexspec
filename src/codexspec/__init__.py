@@ -159,6 +159,12 @@ def config(
         "-l",
         help="Set the output language (e.g., en, zh-CN, ja)",
     ),
+    set_commit_lang: Optional[str] = typer.Option(
+        None,
+        "--set-commit-lang",
+        "-c",
+        help="Set the commit message language (defaults to output language)",
+    ),
     list_langs: bool = typer.Option(
         False,
         "--list-langs",
@@ -172,9 +178,10 @@ def config(
     settings such as the output language for internationalization.
 
     Examples:
-        codexspec config                  # Show current configuration
-        codexspec config --set-lang zh-CN # Set language to Chinese
-        codexspec config --list-langs     # List supported languages
+        codexspec config                       # Show current configuration
+        codexspec config --set-lang zh-CN      # Set language to Chinese
+        codexspec config --set-commit-lang en  # Set commit messages to English
+        codexspec config --list-langs          # List supported languages
     """
     # Handle list languages
     if list_langs:
@@ -235,6 +242,64 @@ def config(
         else:
             console.print("[red]Failed to update language setting[/red]")
             raise typer.Exit(1)
+        return
+
+    # Handle set commit language
+    if set_commit_lang:
+        normalized = normalize_locale(set_commit_lang)
+        if not is_supported_language(normalized):
+            console.print(
+                f"[yellow]Warning: '{set_commit_lang}' is not in the list of commonly supported languages.[/yellow]"
+            )
+            console.print(
+                "It may still work if Claude supports it. "
+                "Run [cyan]codexspec config --list-langs[/cyan] to see supported languages."
+            )
+
+        # Read existing config
+        config_content = config_file.read_text(encoding="utf-8")
+
+        # Update or add commit language setting
+        lines = config_content.split("\n")
+        new_lines = []
+        in_language_section = False
+        found_commit = False
+        output_indent = 2  # Default indent for language section
+
+        for i, line in enumerate(lines):
+            if line.strip().startswith("language:"):
+                in_language_section = True
+                new_lines.append(line)
+            elif in_language_section and line.strip().startswith("output:"):
+                output_indent = len(line) - len(line.lstrip())
+                new_lines.append(line)
+            elif in_language_section and line.strip().startswith("commit:"):
+                # Update existing commit line
+                indent = len(line) - len(line.lstrip())
+                new_lines.append(" " * indent + f'commit: "{normalized}"')
+                found_commit = True
+                in_language_section = False
+            elif in_language_section and (
+                line.strip().startswith("templates:")
+                or (not line.strip().startswith(" ") and line.strip() and not line.strip().startswith("#"))
+            ):
+                # We've reached templates or another section without finding commit
+                # Insert commit before templates
+                if not found_commit:
+                    new_lines.append(" " * output_indent + f'commit: "{normalized}"')
+                    found_commit = True
+                new_lines.append(line)
+                in_language_section = False
+            else:
+                new_lines.append(line)
+
+        # If we never found a place to add commit, append it after output
+        if not found_commit and in_language_section:
+            new_lines.append(" " * output_indent + f'commit: "{normalized}"')
+
+        config_file.write_text("\n".join(new_lines), encoding="utf-8")
+        lang_name = get_language_name(normalized)
+        console.print(f"[green]Commit message language set to:[/green] {normalized} ({lang_name})")
         return
 
     # Display current configuration
