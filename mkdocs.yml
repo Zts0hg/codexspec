@@ -49,8 +49,8 @@ nav:
     - Workflow: user-guide/workflow.md
     - Commands: user-guide/commands.md
     - Internationalization: user-guide/i18n.md
-  - Guides:
-    - Case Study - PR Command: guides/case-study-pr-description-generator.md
+  - Case Studies:
+    - PR Description Generator: case-studies/case-study-pr-description-generator.md
   - Reference:
     - CLI: reference/cli.md
     - Configuration: reference/configuration.md
