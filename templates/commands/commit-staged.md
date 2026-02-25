@@ -1,5 +1,6 @@
 ---
 description: Analyze staged git changes and generate Conventional Commits compliant commit messages
+argument-hint: "[-p] Use -p to only preview the message without committing"
 allowed-tools: Bash(git diff:*), Bash(git commit:*)
 ---
 
@@ -17,6 +18,12 @@ allowed-tools: Bash(git diff:*), Bash(git commit:*)
 - Only the description part should use the configured language
 - Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
 
+## Parameter Check
+
+Check if `$ARGUMENTS` contains `-p`:
+- **If `-p` is present**: Preview mode - only output the commit message, do not execute `git commit`
+- **If `-p` is NOT present**: Execute mode - generate the message and execute `git commit` directly
+
 ## Instructions
 
 1. Execute `git diff --staged` to retrieve staged changes.
@@ -29,12 +36,14 @@ allowed-tools: Bash(git diff:*), Bash(git commit:*)
    - Do not add `Co-Authored-By` lines or any references to AI tools/agents
    - The commit message should focus solely on describing the changes
 
-3. Present the generated commit message to the user and ask for confirmation.
+3. **If preview mode (`-p`)**: Display the generated commit message and stop.
 
-4. If confirmed, execute `git commit -m "..."` with the generated message.
+4. **If execute mode (default)**: Execute `git commit -m "..."` directly with the generated message.
 
 ## Important Notes
 
+- In execute mode (default), execute `git commit` directly after generating the message
+- In preview mode (`-p`), only display the commit message without executing
 - If no staged changes exist, inform the user and suggest using `git add` first
 - For breaking changes, include `BREAKING CHANGE:` in the commit body
 - Keep the description concise and in imperative mood (e.g., "add feature" not "added feature")
