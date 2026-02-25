@@ -123,6 +123,55 @@ uv tool install git+https://github.com/Zts0hg/codexspec.git@main
 uv tool install git+https://github.com/Zts0hg/codexspec.git@v0.2.0
 ```
 
+## Windows ユーザーの方へ
+
+### 推奨：PowerShell を使用
+
+**Windows ユーザーは PowerShell を使用して CodexSpec をインストール・実行してください**：
+
+```powershell
+# 1. uv をインストール（まだの場合）
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# 2. PowerShell を再起動し、codexspec をインストール
+uv tool install codexspec
+
+# 3. インストールを確認
+codexspec --version
+```
+
+### CMD ユーザー向けトラブルシューティング
+
+CMD で「アクセスが拒否されました」または「spawn codexspec アクセス拒否 (OSError 5)」エラーが発生する場合：
+
+**解決策 1：環境変数を更新**
+```cmd
+# すべての CMD ウィンドウを閉じて、新しいものを開く
+# または手動で PATH を更新
+set PATH=%PATH%;%USERPROFILE%\.local\bin
+codexspec --version
+```
+
+**解決策 2：フルパスを使用**
+```cmd
+%USERPROFILE%\.local\bin\codexspec.exe --version
+```
+
+**解決策 3：uv tool の代わりに pipx を使用**
+```cmd
+pip install pipx
+pipx ensurepath
+# CMD を再起動
+pipx install codexspec
+```
+
+### よくある質問
+
+**Q: なぜ PowerShell では動作するのに CMD では動作しないのですか？**
+A: PowerShell と CMD はユーザー環境変数の処理方法が異なります。uv がパスをユーザー PATH に追加した後、PowerShell は通常すぐに認識しますが、CMD は再起動または手動更新が必要な場合があります。
+
+詳細は [Windows トラブルシューティングガイド](docs/WINDOWS-TROUBLESHOOTING.md)（英語）をご覧ください。
+
 ## クイックスタート
 
 インストール後、CLI を使用できます：
