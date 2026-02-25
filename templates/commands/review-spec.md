@@ -172,8 +172,15 @@ Review the feature specification for quality and readiness. This command ensures
 ## Available Follow-up Commands
 
 Based on the review result, the user may consider:
-- **Pass**: `/codexspec.spec-to-plan` - to generate technical implementation plan
-- **Needs Work**: `/codexspec.clarify` - to address ambiguities and gaps, then re-run this review
+
+### If Issues Found (Warnings or Suggestions)
+- **Direct Fix**: Simply describe the changes you want to make (e.g., "Fix SPEC-001 and update the acceptance criteria") and I will update the specification accordingly
+- **Re-run Review**: `/codexspec.review-spec` - to verify changes after fixing issues
+- **Proceed Anyway**: If you decide the warnings/suggestions are not critical or out of scope for the current iteration, you can proceed directly to `/codexspec.spec-to-plan`
+
+### Next Steps Based on Review Result
+- **Pass**: `/codexspec.spec-to-plan` - to proceed with technical implementation planning
+- **Needs Work**: Fix the identified issues first, then re-run `/codexspec.review-spec` to verify, or proceed anyway if issues are acceptable
 - **Fail**: `/codexspec.clarify` - to systematically identify and fix specification issues
 ```
 

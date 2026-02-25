@@ -268,3 +268,9 @@ Phase 5: ┌───────────────┴──────�
 - [ ] File paths are specific and accurate
 - [ ] Complexity estimates are reasonable
 - [ ] Checkpoints are defined at phase boundaries
+
+## Available Follow-up Commands
+
+After generating the task breakdown, the user may consider:
+- `/codexspec.review-tasks` - to validate the task breakdown quality before implementation
+- `/codexspec.implement-tasks` - to proceed directly with implementing the tasks
