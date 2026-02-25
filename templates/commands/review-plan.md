@@ -232,8 +232,15 @@ Review the technical implementation plan for quality and readiness. This command
 ## Available Follow-up Commands
 
 Based on the review result, the user may consider:
-- **Pass**: `/codexspec.plan-to-tasks` - to generate task breakdown
-- **Needs Work**: Fix the identified issues, then re-run this review command
+
+### If Issues Found (Warnings or Suggestions)
+- **Direct Fix**: Simply describe the changes you want to make (e.g., "Fix PLAN-001 and add the missing API endpoints") and I will update the plan accordingly
+- **Re-run Review**: `/codexspec.review-plan` - to verify changes after fixing issues
+- **Proceed Anyway**: If you decide the warnings/suggestions are not critical or out of scope for the current iteration, you can proceed directly to `/codexspec.plan-to-tasks`
+
+### Next Steps Based on Review Result
+- **Pass**: `/codexspec.plan-to-tasks` - to proceed with task breakdown
+- **Needs Work**: Fix the identified issues first, then re-run `/codexspec.review-plan` to verify, or proceed anyway if issues are acceptable
 - **Fail**: `/codexspec.spec-to-plan` - to regenerate the technical plan
 ```
 
