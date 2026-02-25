@@ -19,6 +19,9 @@ allowed-tools: Bash(git diff:*), Bash(git commit:*)
    - Format: `type(scope): description`
    - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
    - If the project has a `CLAUDE.md` with custom commit conventions, follow those instead
+   - **DO NOT** include any AI attribution in the commit message
+   - Do not add `Co-Authored-By` lines or any references to AI tools/agents
+   - The commit message should focus solely on describing the changes
 
 3. Present the generated commit message to the user and ask for confirmation.
 
