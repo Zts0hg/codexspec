@@ -6,6 +6,8 @@
 [![Python](https://img.shields.io/pypi/pyversions/codexspec.svg)](https://pypi.org/project/codexspec/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+**[📖 Dokumentation](https://zts0hg.github.io/codexspec/)**
+
 **Ein Spec-Driven Development (SDD) Toolkit für Claude Code**
 
 CodexSpec ist ein Toolkit, das Ihnen hilft, hochwertige Software mit einem strukturierten, spezifikationsgesteuerten Ansatz zu erstellen. Es kehrt die traditionelle Entwicklung um, indem es Spezifikationen in ausführbare Artefakte verwandelt, die die Implementierung direkt leiten.
@@ -324,6 +326,7 @@ Die Implementierung folgt dem **bedingten TDD-Workflow**:
 | Option | Beschreibung |
 |--------|--------------|
 | `--set-lang`, `-l` | Ausgabesprache festlegen |
+| `--set-commit-lang`, `-c` | Commit-Nachrichten-Sprache festlegen (Standard: Ausgabesprache) |
 | `--list-langs` | Alle unterstützten Sprachen auflisten |
 
 ### Slash-Befehle
@@ -357,6 +360,13 @@ Nach der Initialisierung sind diese Slash-Befehle in Claude Code verfügbar:
 | `/codexspec.analyze` | Nicht-destruktive artefaktübergreifende Analyse (Spec, Plan, Aufgaben) mit schweregradbasierter Problemeerkennung |
 | `/codexspec.checklist` | Qualitätschecklisten für Anforderungsvalidierung generieren |
 | `/codexspec.tasks-to-issues` | Aufgaben in GitHub-Issues für Projektmanagement-Integration umwandeln |
+
+#### Git-Workflow-Befehle
+
+| Befehl | Beschreibung |
+|--------|--------------|
+| `/codexspec.commit` | Conventional Commits-Nachrichten basierend auf Git-Status und Sitzungskontext generieren |
+| `/codexspec.commit-staged` | Commit-Nachricht nur aus gestageten Änderungen generieren |
 
 ## Workflow-Übersicht
 
@@ -513,6 +523,23 @@ codexspec config --set-lang zh-CN
 codexspec config --list-langs
 ```
 
+### Commit-Nachrichten-Sprache
+
+Sie können eine andere Sprache für Commit-Nachrichten als für die Ausgabe konfigurieren:
+
+```bash
+# Deutsch für Interaktionen, Englisch für Commit-Nachrichten
+codexspec config --set-lang de
+codexspec config --set-commit-lang en
+```
+
+**Sprachpriorität für Commit-Nachrichten:**
+1. `language.commit` Einstellung (falls angegeben)
+2. `language.output` (Alternative)
+3. `"en"` (Standard)
+
+**Hinweis:** Der Commit-Typ (feat, fix, docs usw.) und der Scope bleiben immer auf Englisch. Nur der Beschreibungsteil verwendet die konfigurierte Sprache.
+
 ### Konfigurationsdatei
 
 Die Datei `.codexspec/config.yml` speichert die Spracheinstellungen:
@@ -523,6 +550,10 @@ version: "1.0"
 language:
   # Ausgabesprache für Claude-Interaktionen und generierte Dokumente
   output: "zh-CN"
+
+  # Commit-Nachrichten-Sprache (Standard: Ausgabesprache)
+  # Auf "en" setzen für englische Commit-Nachrichten unabhängig von der Ausgabesprache
+  commit: "zh-CN"
 
   # Vorlagensprache - als "en" belassen für Kompatibilität
   templates: "en"
@@ -563,6 +594,16 @@ project:
 - **Immer aktuell**: Vorlagen-Updates kommen automatisch allen Sprachen zugute
 - **Kontextbewusste Übersetzung**: Claude liefert natürliche, kontextgerechte Übersetzungen
 - **Unbegrenzte Sprachen**: Jede von Claude unterstützte Sprache funktioniert sofort
+
+### Constitution und Generierte Dokumente
+
+Wenn Sie `/codexspec.constitution` verwenden, um Ihre Projekt-Verfassung zu erstellen, wird sie in der in Ihrer Konfiguration angegebenen Sprache generiert:
+
+- **Ein-Datei-Ansatz**: Die Verfassung wird nur in einer Sprache generiert
+- **Claude Versteht Alle Sprachen**: Claude kann mit Verfassungsdateien in jeder unterstützten Sprache arbeiten
+- **Team-Zusammenarbeit**: Teams sollten eine konsistente Arbeitssprache verwenden
+
+Dieses Design vermeidet Synchronisationsprobleme zwischen mehreren Sprachversionen und reduziert den Wartungsaufwand.
 
 ## Erweiterungssystem
 

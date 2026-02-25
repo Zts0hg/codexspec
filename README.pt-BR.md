@@ -6,6 +6,8 @@
 [![Python](https://img.shields.io/pypi/pyversions/codexspec.svg)](https://pypi.org/project/codexspec/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+**[📖 Documentação](https://zts0hg.github.io/codexspec/)**
+
 **Um toolkit de Desenvolvimento Orientado a Especificações (SDD) para Claude Code**
 
 CodexSpec e um toolkit que ajuda voce a construir software de alta qualidade usando uma abordagem estruturada e orientada a especificacoes. Ele inverte o script do desenvolvimento tradicional, transformando especificacoes em artefatos executaveis que guiam diretamente a implementacao.
@@ -324,6 +326,7 @@ A implementacao segue **workflow TDD condicional**:
 | Opcao | Descricao |
 |-------|-----------|
 | `--set-lang`, `-l` | Definir o idioma de saida |
+| `--set-commit-lang`, `-c` | Definir o idioma das mensagens de commit (padrao: idioma de saida) |
 | `--list-langs` | Listar todos os idiomas suportados |
 
 ### Comandos Slash
@@ -357,6 +360,13 @@ Apos a inicializacao, estes comandos slash estao disponiveis no Claude Code:
 | `/codexspec.analyze` | Analise cross-artefato nao destrutiva (spec, plan, tasks) com deteccao de problemas baseada em severidade |
 | `/codexspec.checklist` | Gerar checklists de qualidade para validacao de requisitos |
 | `/codexspec.tasks-to-issues` | Converter tarefas em GitHub issues para integracao com gerenciamento de projetos |
+
+#### Comandos de Fluxo de Trabalho Git
+
+| Comando | Descricao |
+|---------|-----------|
+| `/codexspec.commit` | Gerar mensagens de Conventional Commits com base no status do git e contexto da sessao |
+| `/codexspec.commit-staged` | Gerar mensagem de commit apenas das alteracoes preparadas |
 
 ## Visao Geral do Fluxo de Trabalho
 
@@ -513,6 +523,23 @@ codexspec config --set-lang zh-CN
 codexspec config --list-langs
 ```
 
+### Idioma das Mensagens de Commit
+
+Voce pode configurar um idioma diferente para mensagens de commit do que o idioma de saida:
+
+```bash
+# Usar portugues para interacoes mas ingles para mensagens de commit
+codexspec config --set-lang pt-BR
+codexspec config --set-commit-lang en
+```
+
+**Prioridade de idioma para mensagens de commit:**
+1. Configuracao `language.commit` (se especificado)
+2. `language.output` (alternativa)
+3. `"en"` (padrao)
+
+**Nota:** O tipo de commit (feat, fix, docs, etc.) e o escopo sempre permanecem em ingles. Apenas a parte da descricao usa o idioma configurado.
+
 ### Arquivo de Configuracao
 
 O arquivo `.codexspec/config.yml` armazena as configuracoes de idioma:
@@ -523,6 +550,10 @@ version: "1.0"
 language:
   # Idioma de saida para interacoes Claude e documentos gerados
   output: "zh-CN"
+
+  # Idioma das mensagens de commit (padrao: idioma de saida)
+  # Definir como "en" para mensagens de commit em ingles independentemente do idioma de saida
+  commit: "zh-CN"
 
   # Idioma dos templates - mantenha como "en" para compatibilidade
   templates: "en"
@@ -563,6 +594,16 @@ project:
 - **Sempre atualizado**: Atualizacoes de templates beneficiam automaticamente todos os idiomas
 - **Traducao consciente do contexto**: Claude fornece traducoes naturais e apropriadas ao contexto
 - **Idiomas ilimitados**: Qualquer idioma suportado pelo Claude funciona imediatamente
+
+### Constituicao e Documentos Gerados
+
+Quando voce usa `/codexspec.constitution` para criar a constituicao do seu projeto, ela sera gerada no idioma especificado na sua configuracao:
+
+- **Abordagem de Arquivo Unico**: A constituicao e gerada em apenas um idioma
+- **Claude Entende Todos os Idiomas**: Claude pode trabalhar com arquivos de constituicao em qualquer idioma suportado
+- **Colaboracao em Equipe**: Equipes devem usar um idioma de trabalho consistente
+
+Este design evita problemas de sincronizacao entre multiplas versoes de idiomas e reduz a sobrecarga de manutencao.
 
 ## Sistema de Extensoes
 

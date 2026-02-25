@@ -6,6 +6,8 @@
 [![Python](https://img.shields.io/pypi/pyversions/codexspec.svg)](https://pypi.org/project/codexspec/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+**[📖 文档](https://zts0hg.github.io/codexspec/)**
+
 **面向 Claude Code 的规格驱动开发 (SDD) 工具包**
 
 CodexSpec 是一个帮助您使用结构化、规格驱动方法构建高质量软件的工具包。它颠覆了传统开发模式，将规格说明转化为直接指导实现的可执行产物。
@@ -324,6 +326,7 @@ claude
 | 选项 | 描述 |
 |------|------|
 | `--set-lang`, `-l` | 设置输出语言 |
+| `--set-commit-lang`, `-c` | 设置提交消息语言（默认为输出语言） |
 | `--list-langs` | 列出所有支持的语言 |
 
 ### 斜杠命令
@@ -357,6 +360,13 @@ claude
 | `/codexspec.analyze` | 非破坏性的跨产物分析（规格、计划、任务），基于严重性检测问题 |
 | `/codexspec.checklist` | 为需求验证生成质量检查清单 |
 | `/codexspec.tasks-to-issues` | 将任务转换为 GitHub issues，用于项目管理集成 |
+
+#### Git 工作流命令
+
+| 命令 | 描述 |
+|------|------|
+| `/codexspec.commit` | 根据 git 状态和会话上下文生成 Conventional Commits 消息 |
+| `/codexspec.commit-staged` | 仅根据暂存的更改生成提交消息 |
 
 ## 工作流概览
 
@@ -513,6 +523,23 @@ codexspec config --set-lang zh-CN
 codexspec config --list-langs
 ```
 
+### 提交消息语言
+
+您可以为提交消息配置与输出语言不同的语言：
+
+```bash
+# 交互使用中文，但提交消息使用英文
+codexspec config --set-lang zh-CN
+codexspec config --set-commit-lang en
+```
+
+**提交消息的语言优先级：**
+1. `language.commit` 设置（如果指定）
+2. `language.output`（回退）
+3. `"en"`（默认）
+
+**注意：** 提交类型（feat、fix、docs 等）和范围始终保持英文。只有描述部分使用配置的语言。
+
 ### 配置文件
 
 `.codexspec/config.yml` 文件存储语言设置：
@@ -523,6 +550,10 @@ version: "1.0"
 language:
   # Claude 交互和生成文档的输出语言
   output: "zh-CN"
+
+  # 提交消息语言（默认为输出语言）
+  # 设置为 "en" 可使提交消息始终为英文
+  commit: "zh-CN"
 
   # 模板语言 - 保持 "en" 以获得最佳兼容性
   templates: "en"
@@ -563,6 +594,16 @@ project:
 - **始终保持最新**: 模板更新自动惠及所有语言
 - **上下文感知翻译**: Claude 提供自然、符合上下文的翻译
 - **无限语言**: Claude 支持的任何语言都可以立即使用
+
+### Constitution 和生成文档
+
+当您使用 `/codexspec.constitution` 创建项目 constitution 时，它将按照您配置中指定的语言生成：
+
+- **单文件方法**：Constitution 仅以一种语言生成
+- **Claude 理解所有语言**：Claude 可以处理任何支持语言的 constitution 文件
+- **团队协作**：团队应使用一致的工作语言
+
+这种设计避免了多个语言版本之间的同步问题，并减少了维护开销。
 
 ## 扩展系统
 
