@@ -326,6 +326,7 @@ The implementation follows **conditional TDD workflow**:
 | Option | Description |
 |--------|-------------|
 | `--set-lang`, `-l` | Set the output language |
+| `--set-commit-lang`, `-c` | Set the commit message language (defaults to output language) |
 | `--list-langs` | List all supported languages |
 
 ### Slash Commands
@@ -515,12 +516,32 @@ codexspec init my-project --lang ja
 # View current configuration
 codexspec config
 
-# Change language setting
+# Change output language setting
 codexspec config --set-lang zh-CN
+
+# Set commit messages to English (while keeping output in Chinese)
+codexspec config --set-commit-lang en
 
 # List supported languages
 codexspec config --list-langs
 ```
+
+### Commit Message Language
+
+You can configure a different language for commit messages than the output language:
+
+```bash
+# Use Chinese for interactions but English for commit messages
+codexspec config --set-lang zh-CN
+codexspec config --set-commit-lang en
+```
+
+**Language priority for commit messages:**
+1. `language.commit` setting (if specified)
+2. `language.output` (fallback)
+3. `"en"` (default)
+
+**Note:** The commit type (feat, fix, docs, etc.) and scope always remain in English. Only the description part uses the configured language.
 
 ### Configuration File
 
@@ -532,6 +553,10 @@ version: "1.0"
 language:
   # Output language for Claude interactions and generated documents
   output: "zh-CN"
+
+  # Commit message language (defaults to output language)
+  # Set to "en" for English commit messages regardless of output language
+  commit: "zh-CN"
 
   # Template language - keep as "en" for compatibility
   templates: "en"

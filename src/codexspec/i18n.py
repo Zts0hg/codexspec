@@ -176,6 +176,11 @@ language:
   # Common values: en, zh-CN, zh-TW, ja, ko, es, fr, de, pt, ru
   output: "{language}"
 
+  # Commit message language - language for git commit messages
+  # Defaults to output language if not specified
+  # Set to "en" for English commit messages regardless of output language
+  commit: "{language}"
+
   # Template language - keep as "en" for best compatibility
   # All command templates are in English and translated dynamically
   templates: "en"

@@ -5,11 +5,22 @@ allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git branch:*), Bash(gi
 
 ## Language Preference
 
-**IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
-- If `language.output` is set to a language other than "en", respond and generate all content in that language
-- If not configured or set to "en", use English as default
+**IMPORTANT**: Before generating commit messages, read the project's language configuration from `.codexspec/config.yml`.
+
+**Commit message language priority**:
+1. If `language.commit` is set, use that language for the commit message description
+2. Otherwise, use `language.output` as fallback
+3. If neither is configured, default to English
+
+**Note**:
+- The commit type (feat, fix, docs, etc.) and scope should always remain in English
+- Only the description part should use the configured language
 - Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
-- All user-facing messages, commit messages, and interactions should use the configured language
+
+**Examples**:
+- `output: "zh-CN"` + `commit: "en"` → Chinese interactions, English commits
+- `output: "zh-CN"` + `commit: "zh-CN"` → Chinese for both
+- `output: "zh-CN"` + no `commit` setting → Chinese for both (fallback)
 
 ## Git Context Collection
 
