@@ -201,6 +201,14 @@ When `codexspec init` is run:
 | `/codexspec.checklist` | Generate requirements quality checklists |
 | `/codexspec.tasks-to-issues` | Convert tasks to GitHub issues |
 
+### Git Workflow Commands
+
+| Command | Description |
+|---------|-------------|
+| `/codexspec.commit` | Generate Conventional Commits messages |
+| `/codexspec.commit-staged` | Generate commit from staged changes |
+| `/codexspec.pr` | Generate PR/MR descriptions |
+
 ## Development Guidelines
 
 ### Code Style
@@ -276,6 +284,9 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec.analyze` | ✅ Template | NEW - Template complete |
 | `/codexspec.checklist` | ✅ Template | NEW - Template complete |
 | `/codexspec.tasks-to-issues` | ✅ Template | NEW - Template complete |
+| `/codexspec.commit` | ✅ Template | Generate commit messages |
+| `/codexspec.commit-staged` | ✅ Template | Generate commit from staged |
+| `/codexspec.pr` | ✅ Template | NEW - Generate PR/MR descriptions |
 
 ## Extension System
 
