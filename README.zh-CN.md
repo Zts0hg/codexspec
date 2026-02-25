@@ -123,6 +123,55 @@ uv tool install git+https://github.com/Zts0hg/codexspec.git@main
 uv tool install git+https://github.com/Zts0hg/codexspec.git@v0.2.0
 ```
 
+## Windows 用户注意事项
+
+### 推荐：使用 PowerShell
+
+**Windows 用户请使用 PowerShell 安装和运行 CodexSpec**：
+
+```powershell
+# 1. 安装 uv（如果尚未安装）
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# 2. 重启 PowerShell，然后安装 codexspec
+uv tool install codexspec
+
+# 3. 验证安装
+codexspec --version
+```
+
+### CMD 用户故障排除
+
+如果在 CMD 中遇到"拒绝访问"或"spawn codexspec 拒绝访问 (OSError 5)"错误：
+
+**解决方案 1：刷新环境变量**
+```cmd
+# 关闭所有 CMD 窗口，重新打开一个新的
+# 或者手动刷新 PATH
+set PATH=%PATH%;%USERPROFILE%\.local\bin
+codexspec --version
+```
+
+**解决方案 2：使用完整路径**
+```cmd
+%USERPROFILE%\.local\bin\codexspec.exe --version
+```
+
+**解决方案 3：使用 pipx 代替 uv tool**
+```cmd
+pip install pipx
+pipx ensurepath
+# 重启 CMD
+pipx install codexspec
+```
+
+### 常见问题
+
+**问：为什么 PowerShell 能正常工作，CMD 不行？**
+答：PowerShell 和 CMD 处理用户环境变量的方式不同。uv 将路径添加到用户 PATH 后，PowerShell 通常能立即识别，而 CMD 可能需要重启或手动刷新。
+
+更多详情请参阅 [Windows 故障排除指南](docs/WINDOWS-TROUBLESHOOTING.md)。
+
 ## 快速开始
 
 安装后，您可以使用 CLI：
