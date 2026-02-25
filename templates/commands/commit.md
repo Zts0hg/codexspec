@@ -53,6 +53,9 @@ Generate commit messages following **Conventional Commits** specification:
 - If the project has a `CLAUDE.md` with custom commit conventions, follow those instead
 - For breaking changes, include `BREAKING CHANGE:` in the commit body
 - Keep the description concise and in imperative mood (e.g., "add feature" not "added feature")
+- **DO NOT** include any AI attribution in the commit message
+- Do not add `Co-Authored-By` lines or any references to AI tools/agents
+- The commit message should focus solely on describing the changes
 
 ## Session Context Awareness
 
