@@ -6,6 +6,8 @@
 [![Python](https://img.shields.io/pypi/pyversions/codexspec.svg)](https://pypi.org/project/codexspec/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+**[📖 Documentation](https://zts0hg.github.io/codexspec/)**
+
 **Une boîte à outils de Développement Piloté par les Spécifications (SDD) pour Claude Code**
 
 CodexSpec est une boîte à outils qui vous aide à construire des logiciels de haute qualité en utilisant une approche structurée et pilotée par les spécifications. Elle redéfinit l'approche du développement traditionnel en transformant les spécifications en artefacts exécutables qui guident directement l'implémentation.
@@ -325,6 +327,7 @@ L'implémentation suit le **workflow TDD conditionnel** :
 | Option | Description |
 |--------|-------------|
 | `--set-lang`, `-l` | Définir la langue de sortie |
+| `--set-commit-lang`, `-c` | Définir la langue des messages de commit (par défaut : langue de sortie) |
 | `--list-langs` | Lister toutes les langues supportées |
 
 ### Commandes Slash
@@ -358,6 +361,13 @@ Après l'initialisation, ces commandes slash sont disponibles dans Claude Code :
 | `/codexspec.analyze` | Analyse inter-artefacts non-destructive (spec, plan, tasks) avec détection de problèmes basée sur la sévérité |
 | `/codexspec.checklist` | Générer des checklists de qualité pour la validation des exigences |
 | `/codexspec.tasks-to-issues` | Convertir les tâches en GitHub issues pour l'intégration de gestion de projet |
+
+#### Commandes de Flux de Travail Git
+
+| Commande | Description |
+|----------|-------------|
+| `/codexspec.commit` | Générer des messages Conventional Commits basés sur l'état git et le contexte de session |
+| `/codexspec.commit-staged` | Générer un message de commit uniquement à partir des changements indexés |
 
 ## Aperçu du Flux de Travail
 
@@ -514,6 +524,23 @@ codexspec config --set-lang zh-CN
 codexspec config --list-langs
 ```
 
+### Langue des Messages de Commit
+
+Vous pouvez configurer une langue différente pour les messages de commit que la langue de sortie :
+
+```bash
+# Utiliser le français pour les interactions mais l'anglais pour les commits
+codexspec config --set-lang fr
+codexspec config --set-commit-lang en
+```
+
+**Priorité de langue pour les messages de commit :**
+1. Paramètre `language.commit` (si spécifié)
+2. `language.output` (alternative)
+3. `"en"` (par défaut)
+
+**Note :** Le type de commit (feat, fix, docs, etc.) et la portée restent toujours en anglais. Seule la partie description utilise la langue configurée.
+
 ### Fichier de Configuration
 
 Le fichier `.codexspec/config.yml` stocke les paramètres linguistiques :
@@ -524,6 +551,10 @@ version: "1.0"
 language:
   # Langue de sortie pour les interactions Claude et les documents générés
   output: "zh-CN"
+
+  # Langue des messages de commit (par défaut : langue de sortie)
+  # Définir comme "en" pour des messages de commit en anglais quelle que soit la langue de sortie
+  commit: "zh-CN"
 
   # Langue des modèles - garder "en" pour la compatibilité
   templates: "en"
@@ -564,6 +595,16 @@ project:
 - **Toujours à jour** : Les mises à jour des modèles bénéficient automatiquement à toutes les langues
 - **Traduction sensibilisée au contexte** : Claude fournit des traductions naturelles et appropriées au contexte
 - **Langues illimitées** : Toute langue supportée par Claude fonctionne immédiatement
+
+### Constitution et Documents Générés
+
+Lorsque vous utilisez `/codexspec.constitution` pour créer la constitution de votre projet, elle sera générée dans la langue spécifiée dans votre configuration :
+
+- **Approche Fichier Unique** : La constitution est générée dans une seule langue
+- **Claude Comprend Toutes les Langues** : Claude peut travailler avec des fichiers de constitution dans n'importe quelle langue supportée
+- **Collaboration d'Équipe** : Les équipes doivent utiliser une langue de travail cohérente
+
+Cette conception évite les problèmes de synchronisation entre plusieurs versions linguistiques et réduit la charge de maintenance.
 
 ## Système d'Extensions
 
