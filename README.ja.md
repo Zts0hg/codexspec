@@ -6,6 +6,8 @@
 [![Python](https://img.shields.io/pypi/pyversions/codexspec.svg)](https://pypi.org/project/codexspec/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+**[📖 ドキュメント](https://zts0hg.github.io/codexspec/)**
+
 **Claude Code 向けスペック駆動開発 (SDD) ツールキット**
 
 CodexSpec は、構造化されたスペック駆動アプローチを使用して高品質なソフトウェアを構築するのに役立つツールキットです。仕様を実行可能なアーティファクトに変換し、実装を直接ガイドすることで、従来の開発手法を一新します。
@@ -324,6 +326,7 @@ claude
 | オプション | 説明 |
 |------------|------|
 | `--set-lang`, `-l` | 出力言語を設定 |
+| `--set-commit-lang`, `-c` | コミットメッセージ言語を設定（デフォルトは出力言語） |
 | `--list-langs` | サポートされている言語を一覧表示 |
 
 ### スラッシュコマンド
@@ -357,6 +360,13 @@ claude
 | `/codexspec.analyze` | 重要度ベースの問題検出付きで非破壊的クロスアーティファクト分析（スペック、計画、タスク） |
 | `/codexspec.checklist` | 要件検証用の品質チェックリストを生成 |
 | `/codexspec.tasks-to-issues` | プロジェクト管理統合のためにタスクをGitHub issuesに変換 |
+
+#### Git ワークフローコマンド
+
+| コマンド | 説明 |
+|----------|------|
+| `/codexspec.commit` | gitステータスとセッションコンテキストに基づいてConventional Commitsメッセージを生成 |
+| `/codexspec.commit-staged` | ステージ済みの変更のみからコミットメッセージを生成 |
 
 ## ワークフロー概要
 
@@ -513,6 +523,23 @@ codexspec config --set-lang zh-CN
 codexspec config --list-langs
 ```
 
+### コミットメッセージ言語
+
+出力言語とは別にコミットメッセージの言語を設定できます：
+
+```bash
+# インタラクションは日本語、コミットメッセージは英語
+codexspec config --set-lang ja
+codexspec config --set-commit-lang en
+```
+
+**コミットメッセージの言語優先順位：**
+1. `language.commit` 設定（指定されている場合）
+2. `language.output`（フォールバック）
+3. `"en"`（デフォルト）
+
+**注意：** コミットタイプ（feat、fix、docsなど）とスコープは常に英語のままです。説明部分のみが設定された言語を使用します。
+
 ### 設定ファイル
 
 `.codexspec/config.yml` ファイルに言語設定が保存されます：
@@ -523,6 +550,10 @@ version: "1.0"
 language:
   # Claude のやり取りと生成ドキュメントの出力言語
   output: "zh-CN"
+
+  # コミットメッセージ言語（デフォルトは出力言語）
+  # 出力言語に関わらず英語のコミットメッセージにする場合は "en" に設定
+  commit: "zh-CN"
 
   # テンプレート言語 - 互換性のため "en" を維持
   templates: "en"
@@ -563,6 +594,16 @@ project:
 - **常に最新**: テンプレートの更新は自動的にすべての言語に反映
 - **コンテキスト認識翻訳**: Claude が自然で状況に適した翻訳を提供
 - **無制限の言語**: Claude がサポートする任意の言語が即座に利用可能
+
+### Constitution と生成ドキュメント
+
+`/codexspec.constitution` を使用してプロジェクトの constitution を作成すると、設定で指定した言語で生成されます：
+
+- **単一ファイルアプローチ**: Constitution は1つの言語でのみ生成されます
+- **Claude は全言語を理解**: Claude はサポートされている任意の言語の constitution ファイルを処理できます
+- **チームコラボレーション**: チームは一貫した作業言語を使用すべきです
+
+この設計により、複数の言語バージョン間の同期問題を回避し、メンテナンスのオーバーヘッドを削減できます。
 
 ## 拡張システム
 

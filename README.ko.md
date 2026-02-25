@@ -6,6 +6,8 @@
 [![Python](https://img.shields.io/pypi/pyversions/codexspec.svg)](https://pypi.org/project/codexspec/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+**[📖 문서](https://zts0hg.github.io/codexspec/)**
+
 **Claude Code를 위한 스펙 주도 개발 (SDD) 툴킷**
 
 CodexSpec은 구조화되고 스펙 주도적인 접근 방식을 사용하여 고품질 소프트웨어를 구축하는 데 도움이 되는 툴킷입니다. 명세를 실행 가능한 아티팩트로 변환하여 구현을 직접 안내함으로써 전통적인 개발 방식을 역전시킵니다.
@@ -324,6 +326,7 @@ claude
 | 옵션 | 설명 |
 |------|------|
 | `--set-lang`, `-l` | 출력 언어 설정 |
+| `--set-commit-lang`, `-c` | 커밋 메시지 언어 설정 (기본값: 출력 언어) |
 | `--list-langs` | 지원되는 모든 언어 나열 |
 
 ### 슬래시 명령어
@@ -357,6 +360,13 @@ claude
 | `/codexspec.analyze` | 심각도 기반 문제 감지와 함께 비파괴적 교차 아티팩트 분석 (스펙, 계획, 태스크) |
 | `/codexspec.checklist` | 요구사항 검증을 위한 품질 체크리스트 생성 |
 | `/codexspec.tasks-to-issues` | 프로젝트 관리 통합을 위해 태스크를 GitHub 이슈로 변환 |
+
+#### Git 워크플로우 명령어
+
+| 명령어 | 설명 |
+|--------|------|
+| `/codexspec.commit` | git 상태와 세션 컨텍스트를 기반으로 Conventional Commits 메시지 생성 |
+| `/codexspec.commit-staged` | 스테이징된 변경사항만으로 커밋 메시지 생성 |
 
 ## 워크플로우 개요
 
@@ -513,6 +523,23 @@ codexspec config --set-lang zh-CN
 codexspec config --list-langs
 ```
 
+### 커밋 메시지 언어
+
+출력 언어와 다른 언어로 커밋 메시지를 구성할 수 있습니다:
+
+```bash
+# 상호작용은 한국어, 커밋 메시지는 영어
+codexspec config --set-lang ko
+codexspec config --set-commit-lang en
+```
+
+**커밋 메시지의 언어 우선순위:**
+1. `language.commit` 설정 (지정된 경우)
+2. `language.output` (대체)
+3. `"en"` (기본값)
+
+**참고:** 커밋 타입 (feat, fix, docs 등)과 스코프는 항상 영어로 유지됩니다. 설명 부분만 구성된 언어를 사용합니다.
+
 ### 설정 파일
 
 `.codexspec/config.yml` 파일에 언어 설정이 저장됩니다:
@@ -523,6 +550,10 @@ version: "1.0"
 language:
   # Claude 상호작용 및 생성된 문서의 출력 언어
   output: "zh-CN"
+
+  # 커밋 메시지 언어 (기본값: 출력 언어)
+  # 출력 언어와 관계없이 영어 커밋 메시지를 원하면 "en"으로 설정
+  commit: "zh-CN"
 
   # 템플릿 언어 - 호환성을 위해 "en" 유지
   templates: "en"
@@ -563,6 +594,16 @@ project:
 - **항상 최신 상태**: 템플릿 업데이트는 모든 언어에 자동으로 적용됩니다
 - **컨텍스트 인식 번역**: Claude가 자연스럽고 상황에 적절한 번역을 제공합니다
 - **무제한 언어**: Claude가 지원하는 모든 언어가 즉시 작동합니다
+
+### Constitution 및 생성된 문서
+
+`/codexspec.constitution`을 사용하여 프로젝트 constitution을 생성하면, 구성에 지정된 언어로 생성됩니다:
+
+- **단일 파일 접근법**: Constitution은 하나의 언어로만 생성됩니다
+- **Claude는 모든 언어 이해**: Claude는 지원되는 모든 언어의 constitution 파일을 처리할 수 있습니다
+- **팀 협업**: 팀은 일관된 작업 언어를 사용해야 합니다
+
+이 설계는 여러 언어 버전 간의 동기화 문제를 피하고 유지보수 오버헤드를 줄입니다.
 
 ## 확장 시스템
 
