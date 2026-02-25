@@ -281,3 +281,9 @@ Before saving, verify:
 
 > [!TIP]
 > If the specification path is not provided, look for `spec.md` files in `.codexspec/specs/` and ask the user which one to use.
+
+## Available Follow-up Commands
+
+After generating the technical plan, the user may consider:
+- `/codexspec.review-plan` - to validate the plan quality before task breakdown
+- `/codexspec.plan-to-tasks` - to proceed directly with breaking down into actionable tasks
