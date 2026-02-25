@@ -123,6 +123,55 @@ uv tool install git+https://github.com/Zts0hg/codexspec.git@main
 uv tool install git+https://github.com/Zts0hg/codexspec.git@v0.2.0
 ```
 
+## Windows Users
+
+### Recommended: Use PowerShell
+
+**Windows users should use PowerShell for installation and running CodexSpec**:
+
+```powershell
+# 1. Install uv (if not already installed)
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# 2. Restart PowerShell, then install codexspec
+uv tool install codexspec
+
+# 3. Verify installation
+codexspec --version
+```
+
+### Troubleshooting for CMD Users
+
+If you encounter "Access denied" or "spawn codexspec access denied (OSError 5)" errors in CMD:
+
+**Solution 1: Refresh environment variables**
+```cmd
+# Close all CMD windows and open a new one
+# Or manually refresh PATH
+set PATH=%PATH%;%USERPROFILE%\.local\bin
+codexspec --version
+```
+
+**Solution 2: Use full path**
+```cmd
+%USERPROFILE%\.local\bin\codexspec.exe --version
+```
+
+**Solution 3: Use pipx instead of uv tool**
+```cmd
+pip install pipx
+pipx ensurepath
+# Restart CMD
+pipx install codexspec
+```
+
+### FAQ
+
+**Q: Why does PowerShell work but CMD doesn't?**
+A: PowerShell and CMD handle user environment variables differently. When uv adds paths to user PATH, PowerShell typically recognizes them immediately, while CMD may require a restart or manual refresh.
+
+For more details, see [Windows Troubleshooting Guide](docs/WINDOWS-TROUBLESHOOTING.md).
+
 ## Quick Start
 
 After installation, you can use the CLI:
