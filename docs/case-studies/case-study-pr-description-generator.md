@@ -1,4 +1,4 @@
-# CodexSpec 使用案例：为项目添加 PR 揑息生成功能
+# CodexSpec 使用案例：为项目添加 PR 描述信息生成功能
 
 > 本文档记录了使用 CodexSpec 工具链为 CodexSpec 项目本身添加新功能的完整过程，展示了 Spec-Driven Development (SDD) 的实际应用。
 
@@ -12,12 +12,12 @@
 
 ---
 
-## 阶段 1: 鎟始需求澄清 (`/codexspec.specify`)
+## 阶段 1: 原始需求澄清 (`/codexspec.specify`)
 
 ### 用户初始输入
 
 ```
-我希望为项目增加一个功能：提供一个新的git相关的指令用来生成准确详细且符合规范的github pr信息（或者mr信息，针对gitlab）。以下是我在其他项目中使用过的两个pr指令内容，提供给你参考。
+我希望为项目增加一个功能：提供一个新的 Git 相关的指令用来生成准确详细且符合规范的 GitHub PR 信息（或者 MR 信息，针对 GitLab）。以下是我在其他项目中使用过的两个 PR 指令内容，提供给你参考。
 
 [参考示例 1 - 结构化描述]
 现在，请扮演项目维护者的角色，基于我们到目前为止的所有工作，为这次提交撰写一份清晰的Pull Request描述。
@@ -28,7 +28,7 @@ PR描述需要面向团队的其他审查者，包含以下几个部分：
 4. 如何手动验证（How to Verify）
 
 [参考示例 2 - 简单描述]
-请你根据当前分支与origin/main分支的代码差异，使用markdown格式整理一份符合git规范的merge request的title和description。（使用中文描述）
+请你根据当前分支与 origin/main 分支的代码差异，使用 Markdown 格式整理一份符合 Git 规范的 Merge Request 的 title 和 description。（使用中文描述）
 ```
 
 ### 澄清过程
