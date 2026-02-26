@@ -85,6 +85,10 @@ plugins:
             show_source: true
             show_root_heading: true
 
+# Site verification for search engines
+site_verification:
+  google: Ftyzif0Z7B-TWvDc99ekL4Iti_K-mIICUh6yzYc3TMQ
+
 extra:
   social:
     - icon: fontawesome/brands/github
