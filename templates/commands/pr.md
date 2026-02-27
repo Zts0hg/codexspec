@@ -258,59 +258,170 @@ If `--sections` is specified, only include listed sections:
 
 ## Output Format
 
+**IMPORTANT**: Generate PR descriptions using proper Markdown formatting for optimal rendering across all platforms (GitHub, GitLab, Bitbucket, etc.).
+
+### Markdown Structure Guidelines
+
+1. **Title**: Use `##` for the PR title (first line of description)
+2. **Sections**: Use `###` for main sections (Context, Implementation, Testing, etc.)
+3. **Subsections**: Use `####` for subsections within main sections
+4. **Lists**: Use proper bullet points `-` or numbered lists `1.`
+5. **Code**: Use fenced code blocks with language hints (```bash, ```python, etc.)
+6. **Tables**: Use Markdown tables for structured data (file changes, test results, etc.)
+7. **Emphasis**: Use `**bold**` for key terms, `*italic*` for subtle emphasis
+8. **Links**: Use `[text](url)` format for references
+9. **Task Lists**: Use `- [ ]` and `- [x]` for verification checklists
+
 ### GitHub PR Format
 
 ```markdown
-## Pull Request: type(scope): description
+## type(scope): description
 
-### Context
-[Background from spec.md if --spec used]
+> Brief summary of what this PR accomplishes (1-2 sentences)
 
-### Implementation
-[Technical changes summary]
+### Summary
 
-**Key Files Changed:**
-- `path/to/file.py` - [Brief description]
-- `path/to/another.py` - [Brief description]
+[High-level overview of changes and motivation]
+
+### Changes
+
+#### Key Modifications
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `path/to/file.py` | Modified | Brief description of change |
+| `path/to/another.py` | Added | Brief description of new file |
+
+#### Technical Details
+[Detailed explanation of implementation approach, architectural decisions, etc.]
 
 ### Testing
-[Test coverage and methodology]
 
-**Test Commands:**
+**Test Coverage:**
+- [ ] Unit tests added/updated
+- [ ] Integration tests added/updated
+- [ ] Manual testing completed
+
+**Run Tests:**
 ```bash
 [project-specific test commands]
 ```
 
 ### How to Verify
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
-...
-```
 
-**Title Examples**:
-- `feat(auth): add OAuth2 login support`
-- `fix(api): resolve timeout issue in user endpoint`
-- `refactor(core): improve caching mechanism`
-- `docs: update API documentation`
+1. [Step 1 - e.g., Checkout the branch]
+2. [Step 2 - e.g., Install dependencies]
+3. [Step 3 - e.g., Run tests with specific command]
+4. [Step 4 - e.g., Verify expected behavior]
+
+### Checklist
+
+- [ ] Code follows project style guidelines
+- [ ] Self-review completed
+- [ ] Documentation updated (if applicable)
+- [ ] No new warnings introduced
+- [ ] Tests pass locally
+
+### Notes
+
+[Any additional notes, breaking changes, or migration instructions]
+
+---
+*Related: #[issue-number]* (if applicable)
+```
 
 ### GitLab MR Format
 
 ```markdown
-## Merge Request: type(scope): description
+## type(scope): description
 
-### Context
-...
+> Brief summary of what this MR accomplishes (1-2 sentences)
 
-### Implementation
-...
+### Summary
+
+[High-level overview of changes and motivation]
+
+### Changes
+
+| File | Change Type | Description |
+|------|-------------|-------------|
+| `path/to/file.py` | Modified | Brief description of change |
+
+#### Technical Details
+[Detailed explanation of implementation approach]
 
 ### Testing
-...
+
+**Test Coverage:**
+- [ ] Unit tests added/updated
+- [ ] Integration tests added/updated
+
+**Run Tests:**
+```bash
+[project-specific test commands]
+```
 
 ### How to Verify
-...
+
+1. [Step 1 - e.g., Checkout the branch]
+2. [Step 2 - e.g., Install dependencies]
+3. [Step 3 - e.g., Run tests]
+
+### Checklist
+
+- [ ] Code follows project style guidelines
+- [ ] Self-review completed
+- [ ] Documentation updated (if applicable)
+
+### Notes
+
+[Any additional notes or breaking changes]
+
+/label ~"[label]" @reviewer (if applicable)
 ```
+
+### Section Content Guidelines
+
+#### Summary Section
+- Keep to 2-3 sentences maximum
+- Answer "What" and "Why" (not "How")
+- Use plain language accessible to all reviewers
+
+#### Changes Section
+- Use tables for file changes (improves readability)
+- Group related changes logically
+- Include change type: Added, Modified, Deleted, Renamed
+
+#### Testing Section
+- Use task lists for test coverage status
+- Include exact commands to run tests
+- Note any special test requirements
+
+#### How to Verify Section
+- Use numbered list for step-by-step verification
+- Include specific commands to run
+- Be precise and actionable (e.g., "Run `pytest tests/auth/`")
+- Include expected outcomes where helpful
+
+#### Checklist Section
+- Use GitHub/GitLab task list syntax `- [ ]`
+- Include project-specific checklist items
+- Focus on author self-confirmation before merge
+
+#### Notes Section
+- Highlight breaking changes with `**Breaking Change:**` prefix
+- Include migration instructions if needed
+- Link to related issues/PRs
+
+### Title Examples
+
+| Type | Example Title |
+|------|---------------|
+| Feature | `feat(auth): add OAuth2 login support` |
+| Bug Fix | `fix(api): resolve timeout issue in user endpoint` |
+| Refactor | `refactor(core): improve caching mechanism` |
+| Documentation | `docs: update API documentation` |
+| Performance | `perf(db): optimize query performance` |
+| Test | `test(auth): add unit tests for password validation` |
 
 ## Edge Cases
 
