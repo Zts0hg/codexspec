@@ -39,13 +39,15 @@ Parse `$ARGUMENTS` for the following optional parameters:
 | `--spec <path>` | (none) | Enable spec.md integration (opt-in) |
 
 ### `--sections` Values
-- `context` - Background and problem statement
-- `implementation` - Technical approach
+- `summary` - High-level overview of changes
+- `changes` - Detailed file changes and technical approach
 - `testing` - Test coverage information
 - `verify` - Verification steps
+- `checklist` - Pre-merge checklist
+- `notes` - Additional notes and breaking changes
 - `all` - Include all sections (default)
 
-Example: `--sections context,implementation,verify`
+Example: `--sections summary,changes,testing`
 
 ### `--spec` Usage (Opt-in)
 
@@ -221,40 +223,65 @@ Detect project-specific test commands for "How to Verify" section:
 
 Generate PR sections based on gathered information:
 
-### Context Section
-- **Include**: Only if `--spec` is provided and spec.md found
-- **Content**: Extract from spec.md (User Stories, Goals, Overview)
-- **Skip**: If no spec or extraction fails
+### Summary Section
+**Format:** `### Summary`
+**Source:** Git diff analysis + commit messages
+**Content:**
+- High-level overview of changes and motivation
+- 2-3 sentences maximum, answer "What" and "Why"
 
-### Implementation Section
-- **Source**: Git diff analysis
-- **Content**:
-  - Summary of technical changes
-  - Key files changed with brief descriptions
-  - Architectural decisions if apparent
+### Changes Section
+**Format:** `### Changes`
+**Source:** Git diff analysis
+**Content:**
+- Table of files changed with change type and description
+- Technical details subsection with implementation approach
+- Architectural decisions if apparent
 
 ### Testing Section
-- **Source**: Test file discovery + commit messages
-- **Content**:
-  - Test files discovered
-  - Test coverage information (if available in commits)
-  - Test commands to run
+**Format:** `### Testing`
+**Source:** Test file discovery + commit messages
+**Content:**
+- Task list for test coverage status
+- Test files discovered
+- Exact commands to run tests
 
 ### How to Verify Section
-- **Source**: Project command detection
-- **Content**:
-  - Step-by-step verification instructions
-  - Project-specific test commands
-  - Manual verification steps if applicable
+**Format:** `### How to Verify`
+**Source:** Project command detection
+**Content:**
+- Numbered list of step-by-step verification instructions
+- Project-specific test commands
+- Manual verification steps if applicable
+
+### Checklist Section
+**Format:** `### Checklist`
+**Source:** Standard checklist items
+**Content:**
+- GitHub/GitLab task list syntax (`- [ ]`)
+- Project-specific checklist items
+- Focus on author self-confirmation before merge
+
+### Notes Section
+**Format:** `### Notes`
+**Source:** Manual or detected from commits
+**Content:**
+- Breaking changes with `**Breaking Change:**` prefix
+- Migration instructions if needed
+- Links to related issues/PRs
 
 ## Section Selection
 
 If `--sections` is specified, only include listed sections:
-- `context` → Include Context section
-- `implementation` → Include Implementation section
+- `summary` → Include Summary section
+- `changes` → Include Changes section
 - `testing` → Include Testing section
 - `verify` → Include How to Verify section
+- `checklist` → Include Checklist section
+- `notes` → Include Notes section
 - `all` → Include all sections (default)
+
+Example: `--sections summary,changes,testing`
 
 ## Output Format
 
