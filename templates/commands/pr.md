@@ -128,26 +128,56 @@ If `--spec` path doesn't exist:
 
 ## PR Title Generation
 
-Generate the PR title using a **comprehensive approach**:
+Generate the PR title following **Conventional Commits** specification:
+
+- Format: `type(scope): description`
+- Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
+- If the project has a `CLAUDE.md` with custom commit conventions, follow those instead
+
+### Generation Process
 
 1. **Primary Source**: Analyze git diff content
    - Identify main components/modules changed
    - Understand the nature of changes (feature, fix, refactor, etc.)
+   - Determine the appropriate **type** prefix
 
 2. **Supporting Sources**:
    - Branch name (extract feature/fix hints)
-   - Commit messages (understand intent)
+   - Commit messages (understand intent, look for existing type prefixes)
 
 3. **Synthesis**:
    - Combine insights into a single descriptive title
    - Keep it concise but informative
    - Use imperative mood (e.g., "Add" not "Added")
 
+### Type Determination Rules
+
+| Type | When to Use |
+|------|-------------|
+| `feat` | New feature or functionality |
+| `fix` | Bug fix |
+| `docs` | Documentation changes only |
+| `style` | Code style changes (formatting, semicolons, etc.) |
+| `refactor` | Code refactoring without changing behavior |
+| `perf` | Performance improvements |
+| `test` | Adding or modifying tests |
+| `build` | Build system or dependency changes |
+| `ci` | CI/CD configuration changes |
+| `chore` | Other changes that don't modify src or test files |
+| `revert` | Reverting a previous commit |
+
+### Scope (Optional)
+
+Add scope when changes are focused on a specific module/component:
+- `feat(auth): add OAuth2 support`
+- `fix(api): handle timeout errors`
+- `refactor(core): improve caching mechanism`
+
 **Example**:
 - Branch: `feature/auth-cleanup`
 - First commit: "Add password validation"
 - Actual changes: Full authentication refactor
-- **Generated title**: "Refactor Authentication System with JWT and Session Management"
+- **Generated title**: `refactor(auth): improve authentication system with JWT and session management`
 
 ## Test File Discovery
 
@@ -231,7 +261,7 @@ If `--sections` is specified, only include listed sections:
 ### GitHub PR Format
 
 ```markdown
-## Pull Request: [Title]
+## Pull Request: type(scope): description
 
 ### Context
 [Background from spec.md if --spec used]
@@ -258,10 +288,16 @@ If `--sections` is specified, only include listed sections:
 ...
 ```
 
+**Title Examples**:
+- `feat(auth): add OAuth2 login support`
+- `fix(api): resolve timeout issue in user endpoint`
+- `refactor(core): improve caching mechanism`
+- `docs: update API documentation`
+
 ### GitLab MR Format
 
 ```markdown
-## Merge Request: [Title]
+## Merge Request: type(scope): description
 
 ### Context
 ...
