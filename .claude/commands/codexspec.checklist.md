@@ -7,6 +7,17 @@ scripts:
 
 # Requirements Quality Checklist Generator
 
+## Constitution Compliance (MANDATORY)
+
+**Before generating checklists:**
+
+1. **Check for Constitution File**: Look for `.codexspec/memory/constitution.md`
+2. **If Constitution Exists**:
+   - Load and read quality standards and project principles
+   - Use constitution quality standards as baseline for checklist items
+   - Include constitution-specific checklist items where relevant
+3. **If No Constitution Exists**: Use general best practices for requirements quality
+
 ## Language Preference
 
 **IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
