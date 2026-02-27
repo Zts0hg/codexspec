@@ -479,10 +479,29 @@ Example: `--sections summary,changes,testing`
 ## Output Modes
 
 ### Terminal Output (Default)
-Print the generated PR description to stdout for copy-paste.
+
+**CRITICAL**: When outputting to terminal, you MUST wrap the entire PR description in a markdown code block to preserve raw markdown formatting:
+
+````text
+```markdown
+## type(scope): description
+
+> Brief summary...
+
+### Summary
+[content]
+
+### Changes
+[content]
+
+... (all sections)
+```
+````
+
+This ensures users see the raw markdown source code, not the rendered output. Users can then copy the content inside the code block and paste it directly into GitHub/GitLab.
 
 ### File Output (`--output`)
-Save the PR description to the specified file path.
+When saving to a file, output the raw markdown content directly (without code block wrapper). The file will contain the actual PR description ready for use.
 
 ## Important Notes
 
