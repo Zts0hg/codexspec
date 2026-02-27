@@ -1,7 +1,19 @@
 ---
-description: Generate Conventional Commits compliant commit messages based on git status and session context
+description: Generate and execute Conventional Commits compliant commit messages based on git status and session context
+argument-hint: "[-p] Use -p to only preview the message without committing"
 allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git branch:*), Bash(git add:*), Bash(git commit:*)
 ---
+
+## Constitution Compliance (MANDATORY)
+
+**Before generating commit messages:**
+
+1. **Check for Constitution File**: Look for `.codexspec/memory/constitution.md`
+2. **If Constitution Exists**:
+   - Load and read relevant principles (especially coding standards, commit conventions)
+   - Ensure commit message style aligns with constitutional guidelines
+   - Verify that the changes being committed don't violate any principles
+3. **If No Constitution Exists**: Proceed with default Conventional Commits format
 
 ## Language Preference
 
@@ -31,6 +43,12 @@ Execute the following commands to gather git context:
 3. **Staged Changes**: `git diff --staged`
 4. **Unstaged Changes**: `git diff`
 
+## Parameter Check
+
+Check if `$ARGUMENTS` contains `-p`:
+- **If `-p` is present**: Preview mode - only output the commit message, do not execute `git commit`
+- **If `-p` is NOT present**: Execute mode - generate the message and execute `git commit` directly
+
 ## Decision Logic
 
 Based on the git context, follow this priority order:
@@ -40,8 +58,8 @@ Based on the git context, follow this priority order:
 1. Ignore unstaged changes
 2. Generate a commit message based on staged changes only
 3. Consider the current session conversation history to understand the intent and context
-4. Present the commit message to user for confirmation
-5. If confirmed, execute `git commit -m "..."`
+4. **If preview mode (`-p`)**: Display the commit message and stop
+5. **If execute mode (default)**: Execute `git commit -m "..."` directly
 
 ### Case B: No Staged Changes, But Unstaged Changes Exist
 
@@ -49,7 +67,9 @@ Based on the git context, follow this priority order:
 2. Analyze the unstaged changes
 3. Generate a **suggested** commit message
 4. **REMINDER**: After displaying the commit message, repeat the reminder: "Remember: You must stage changes with `git add` before committing."
-5. Ask user if they want to stage all changes and commit
+5. **STOP here** - Do NOT execute any git commands. The user must manually stage the appropriate changes first.
+
+**Rationale**: When staging area is empty, we cannot safely assume which changes should be committed. The user may only want to commit a subset of the changes, or may need to split changes into multiple commits. Always require explicit user action to stage changes.
 
 ### Case C: No Changes At All
 
@@ -79,6 +99,7 @@ This context helps generate more meaningful commit messages that reflect the "wh
 
 ## Important Notes
 
-- Always confirm with user before executing `git commit`
-- For Case B, display a prominent reminder at the **beginning** before showing the suggested commit message, AND repeat the reminder at the **end** after displaying the message. This ensures the user is aware that the commit message is generated based on unstaged changes (not staged changes), so they can take appropriate action: proceed if intentional, or re-stage specific files and run the command again if they forgot to stage.
+- In execute mode (default), execute `git commit` directly after generating the message (only for Case A with staged changes)
+- In preview mode (`-p`), only display the commit message without executing
+- For Case B (no staged changes), always display the suggested message and stop - never auto-stage or auto-commit
 - Do not make assumptions about change intent without context
