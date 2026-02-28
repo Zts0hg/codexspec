@@ -2,6 +2,18 @@
 
 This document provides comprehensive context and guidelines for Claude Code when working on the CodexSpec project itself.
 
+## MANDATORY: Constitution Compliance
+
+**CRITICAL**: Before ANY code change in this CodexSpec project:
+
+1. Check for `.codexspec/memory/constitution.md`
+2. If exists, LOAD IT FIRST and ensure compliance
+3. All outputs must align with constitutional principles
+
+The constitution is the SUPREME AUTHORITY for this project.
+
+---
+
 ## Project Overview
 
 **CodexSpec** is a Spec-Driven Development (SDD) toolkit for Claude Code. It is a Python CLI tool that can be installed via `uv tool install` and provides structured slash commands for AI-assisted software development.

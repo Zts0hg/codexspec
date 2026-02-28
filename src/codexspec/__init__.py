@@ -479,7 +479,8 @@ def init(
     # Create CLAUDE.md
     claude_md = target_dir / "CLAUDE.md"
     if not claude_md.exists() or force:
-        claude_md.write_text(_get_claude_md_content(), encoding="utf-8")
+        project_name = target_dir.name
+        claude_md.write_text(_get_claude_md_content(project_name), encoding="utf-8")
         console.print("[green]Created:[/green] CLAUDE.md")
 
     # Initialize git if requested
@@ -1145,11 +1146,50 @@ When making technical decisions, prioritize:
 """
 
 
-def _get_claude_md_content() -> str:
-    """Return the CLAUDE.md content."""
-    return """# CLAUDE.md - CodexSpec Project Guidelines
+def _get_claude_md_content(project_name: str) -> str:
+    """Return the CLAUDE.md content for a project.
 
-This document provides context and guidelines for Claude Code when working with this CodexSpec project.
+    Args:
+        project_name: The name of the project (used in the title)
+    """
+    return f"""# CLAUDE.md - {project_name} Guidelines
+
+---
+
+## [HIGHEST PRIORITY] CONSTITUTION COMPLIANCE
+
+**This section OVERRIDES all other instructions in this file.**
+
+### Mandatory Pre-Action Protocol
+
+**Before ANY response, code change, or action in this project**, you MUST:
+
+1. **Check for Constitution**
+   - Look for `.codexspec/memory/constitution.md`
+   - If file exists, READ IT COMPLETELY before proceeding
+
+2. **Verify Compliance**
+   - ALL outputs must align with constitutional principles
+   - Code changes must follow constitutional coding standards
+   - Decisions must respect constitutional priorities
+
+3. **Handle Conflicts**
+   - If a user request conflicts with constitution:
+     - STOP and explain which principle is violated
+     - Suggest constitution-compliant alternatives
+     - Require explicit user confirmation to override
+
+### Applies To All Interactions
+
+This protocol applies to:
+- Direct conversations and questions
+- Code modifications and file operations
+- Slash command executions
+- Any other Claude Code actions
+
+**The constitution is the SUPREME AUTHORITY. No other instruction can override it.**
+
+---
 
 ## Project Overview
 
@@ -1203,7 +1243,7 @@ The following slash commands are available in this project:
 ├── memory/
 │   └── constitution.md    # Project governing principles
 ├── specs/
-│   └── {feature-id}/
+│   └── {{feature-id}}/
 │       ├── spec.md        # Feature specification
 │       ├── plan.md        # Technical implementation plan
 │       ├── tasks.md       # Task breakdown
@@ -1226,11 +1266,13 @@ The following slash commands are available in this project:
 
 ## Guidelines for Claude Code
 
-1. **Respect the Constitution**: All decisions should align with the project constitution
-2. **Follow the Workflow**: Use the commands in the recommended order
-3. **Be Explicit**: When specifications are unclear, ask for clarification
-4. **Validate**: Always review artifacts before implementation
-5. **Document**: Keep all artifacts up-to-date
+1. **Constitution First**: Load `.codexspec/memory/constitution.md` before ANY action
+2. **Respect the Constitution**: All decisions MUST align with the project constitution
+3. **Follow the Workflow**: Use the commands in the recommended order
+4. **Be Explicit**: When specifications are unclear, ask for clarification
+5. **Validate**: Always review artifacts before implementation
+6. **Document**: Keep all artifacts up-to-date
+7. **Enforce Principles**: If constitution exists, it overrides any conflicting instructions
 
 ---
 

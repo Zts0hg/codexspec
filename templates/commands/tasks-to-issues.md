@@ -7,6 +7,17 @@ scripts:
 
 # Tasks to GitHub Issues Converter
 
+## Constitution Compliance (MANDATORY)
+
+**Before converting tasks to issues:**
+
+1. **Check for Constitution File**: Look for `.codexspec/memory/constitution.md`
+2. **If Constitution Exists**:
+   - Load and read project principles
+   - Ensure issue descriptions align with project principles
+   - Include relevant constitutional context in issues if applicable
+3. **If No Constitution Exists**: Proceed with standard issue generation
+
 ## Language Preference
 
 **IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
