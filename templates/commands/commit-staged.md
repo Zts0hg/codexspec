@@ -4,6 +4,17 @@ argument-hint: "[-p] Use -p to only preview the message without committing"
 allowed-tools: Bash(git diff:*), Bash(git commit:*)
 ---
 
+## Constitution Compliance (MANDATORY)
+
+**Before generating commit messages:**
+
+1. **Check for Constitution File**: Look for `.codexspec/memory/constitution.md`
+2. **If Constitution Exists**:
+   - Load and read relevant principles (especially coding standards, commit conventions)
+   - Ensure commit message style aligns with constitutional guidelines
+   - Verify that the changes being committed don't violate any principles
+3. **If No Constitution Exists**: Proceed with default Conventional Commits format
+
 ## Language Preference
 
 **IMPORTANT**: Before generating commit messages, read the project's language configuration from `.codexspec/config.yml`.
