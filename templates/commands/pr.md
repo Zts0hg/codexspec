@@ -3,6 +3,17 @@ description: Generate structured Pull Request (GitHub) or Merge Request (GitLab)
 allowed-tools: Bash(git branch:*), Bash(git diff:*), Bash(git log:*), Bash(git remote:*), Bash(git rev-parse:*), Bash(ls:*), Bash(cat:*)
 ---
 
+## Constitution Compliance (MANDATORY)
+
+**Before generating PR description:**
+
+1. **Check for Constitution File**: Look for `.codexspec/memory/constitution.md`
+2. **If Constitution Exists**:
+   - Load and read relevant principles (especially documentation standards, code review guidelines)
+   - Ensure PR description reflects constitutional principles
+   - Verify that the changes align with project quality standards
+3. **If No Constitution Exists**: Proceed with standard PR generation
+
 ## Language Preference
 
 **IMPORTANT**: Before generating PR descriptions, read the project's language configuration from `.codexspec/config.yml`.

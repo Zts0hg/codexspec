@@ -62,6 +62,7 @@ If no valid spec.md is found, abort and instruct user to run `/codexspec.generat
 #### 1. Initialize Context & Load Review Findings
 
 Load and analyze:
+- **Project constitution**: `.codexspec/memory/constitution.md` (CRITICAL - guides all clarification priorities)
 - The feature specification from the located path
 
 **Review-Spec Integration** (if `review-spec.md` exists in the same directory as `spec.md`):
