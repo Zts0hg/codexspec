@@ -279,11 +279,11 @@ uv run pytest tests/scripts/powershell/ -v
 
 | Command | Status | Notes |
 |---------|--------|-------|
-| `init` | ✅ Complete | Initializes project structure, supports --lang |
+| `init` | ✅ Complete | Initializes project structure, supports --lang, Constitution Compliance check |
 | `check` | ✅ Complete | Checks for installed tools |
 | `version` | ✅ Complete | Displays version info |
 | `config` | ✅ Complete | View/modify project configuration (NEW) |
-| `/codexspec.constitution` | ✅ Template | Template complete |
+| `/codexspec.constitution` | ✅ Template | Template complete, CLAUDE.md Compliance check on first-time creation |
 | `/codexspec.specify` | ✅ Template | Template complete |
 | `/codexspec.generate-spec` | ✅ Template | Template complete |
 | `/codexspec.spec-to-plan` | ✅ Template | Template complete |
@@ -299,6 +299,19 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec.commit` | ✅ Template | Generate commit messages |
 | `/codexspec.commit-staged` | ✅ Template | Generate commit from staged |
 | `/codexspec.pr` | ✅ Template | NEW - Generate PR/MR descriptions |
+
+### Constitution Compliance Feature (NEW)
+
+The `init` and `/codexspec.constitution` commands now include a **dual safeguard mechanism** to ensure CLAUDE.md contains the Constitution Compliance section:
+
+- **init command**: Checks existing CLAUDE.md for compliance section; prompts user to add if missing
+- **constitution command**: On first-time creation, checks CLAUDE.md and offers to prepend compliance section
+
+**Helper Functions** (in `src/codexspec/__init__.py`):
+- `has_compliance_section(Path) -> bool`: Check if CLAUDE.md has compliance section
+- `prepend_compliance_section(Path) -> None`: Prepend compliance section to existing CLAUDE.md
+- `confirm_add_compliance() -> bool`: User confirmation prompt
+- `_get_compliance_section_content() -> str`: Get compliance section content
 
 ## Extension System
 
