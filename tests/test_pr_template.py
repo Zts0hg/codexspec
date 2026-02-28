@@ -138,8 +138,8 @@ class TestParameterDocumentation:
     def test_sections_parameter_documented(self, template_content):
         """Verify --sections parameter is documented with valid values."""
         assert "--sections" in template_content, "--sections parameter must be documented"
-        # Check for valid section values
-        valid_sections = ["context", "implementation", "testing", "verify", "all"]
+        # Check for valid section values (updated to match new section names)
+        valid_sections = ["summary", "changes", "testing", "verify", "checklist", "notes", "all"]
         for section in valid_sections:
             assert section in template_content.lower(), f"Section value '{section}' must be documented"
 
