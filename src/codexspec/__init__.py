@@ -482,6 +482,12 @@ def init(
         project_name = target_dir.name
         claude_md.write_text(_get_claude_md_content(project_name), encoding="utf-8")
         console.print("[green]Created:[/green] CLAUDE.md")
+    else:
+        # Check if existing CLAUDE.md has compliance section
+        if not has_compliance_section(claude_md):
+            if confirm_add_compliance():
+                prepend_compliance_section(claude_md)
+                console.print("[green]Updated:[/green] CLAUDE.md (added Constitution Compliance section)")
 
     # Initialize git if requested
     if not no_git and not (target_dir / ".git").exists():
@@ -1144,6 +1150,106 @@ When making technical decisions, prioritize:
 
 *This constitution should be updated as the project evolves and new guidelines are established.*
 """
+
+
+# ============================================================================
+# Constitution Compliance Functions
+# ============================================================================
+
+
+def _get_compliance_section_content() -> str:
+    """Return the Constitution Compliance section content.
+
+    This content should be prepended to existing CLAUDE.md files to ensure
+    constitution compliance is enforced.
+
+    Returns:
+        The complete compliance section text that can be prepended to CLAUDE.md
+    """
+    return """## [HIGHEST PRIORITY] CONSTITUTION COMPLIANCE
+
+**This section OVERRIDES all other instructions in this file.**
+
+### Mandatory Pre-Action Protocol
+
+**Before ANY response, code change, or action in this project**, you MUST:
+
+1. **Check for Constitution**
+   - Look for `.codexspec/memory/constitution.md`
+   - If file exists, READ IT COMPLETELY before proceeding
+
+2. **Verify Compliance**
+   - ALL outputs must align with constitutional principles
+   - Code changes must follow constitutional coding standards
+   - Decisions must respect constitutional priorities
+
+3. **Handle Conflicts**
+   - If a user request conflicts with constitution:
+     - STOP and explain which principle is violated
+     - Suggest constitution-compliant alternatives
+     - Require explicit user confirmation to override
+
+### Applies To All Interactions
+
+This protocol applies to:
+- Direct conversations and questions
+- Code modifications and file operations
+- Slash command executions
+- Any other Claude Code actions
+
+**The constitution is the SUPREME AUTHORITY. No other instruction can override it.**
+"""
+
+
+def has_compliance_section(claude_md_path: Path) -> bool:
+    """Check if CLAUDE.md already contains the compliance section.
+
+    This function checks for the presence of `.codexspec/memory/constitution.md`
+    in the file content to determine if compliance section exists.
+
+    Args:
+        claude_md_path: Path to the CLAUDE.md file
+
+    Returns:
+        True if the file contains the compliance section marker, False otherwise
+    """
+    if not claude_md_path.exists():
+        return False
+    content = claude_md_path.read_text(encoding="utf-8")
+    return ".codexspec/memory/constitution.md" in content
+
+
+def prepend_compliance_section(claude_md_path: Path) -> None:
+    """Prepend the Constitution Compliance section to CLAUDE.md.
+
+    This function adds the compliance section at the beginning of the file,
+    preserving all existing content. A separator is added between the compliance
+    section and the original content.
+
+    Args:
+        claude_md_path: Path to the CLAUDE.md file
+    """
+    existing_content = claude_md_path.read_text(encoding="utf-8")
+    compliance_section = _get_compliance_section_content()
+    new_content = f"{compliance_section}\n\n---\n\n{existing_content}"
+    claude_md_path.write_text(new_content, encoding="utf-8")
+
+
+def confirm_add_compliance() -> bool:
+    """Ask user whether to add the Constitution Compliance section.
+
+    Uses typer.confirm() to interactively ask the user for confirmation.
+    Default value is False (safe exit) to prevent accidental modifications.
+
+    Returns:
+        True if user confirms, False otherwise
+    """
+    return typer.confirm(
+        "CLAUDE.md already exists without Constitution Compliance section.\n"
+        "The Constitution Compliance section ensures Claude follows your project's constitution.\n"
+        "? Would you like to add the Constitution Compliance section?",
+        default=False,
+    )
 
 
 def _get_claude_md_content(project_name: str) -> str:

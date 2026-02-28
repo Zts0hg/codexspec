@@ -273,6 +273,91 @@ Before writing, verify:
 - [ ] Dates use ISO format (YYYY-MM-DD)
 - [ ] Principles use declarative language (MUST/MUST NOT/SHALL, avoid vague "should")
 
+### Step 6.5: CLAUDE.md Constitution Compliance Check (First-Time Creation Only)
+
+> **Important**: This step ONLY applies when creating a NEW constitution (`.codexspec/memory/constitution.md` does not exist).
+> If updating an existing constitution, SKIP this step entirely.
+
+**When to execute this step:**
+- Check if `.codexspec/memory/constitution.md` exists
+- **If EXISTS**: Skip to Step 7 (this is an update, not first-time creation)
+- **If NOT EXISTS**: Continue with the CLAUDE.md compliance check below
+
+**CLAUDE.md Compliance Check Procedure:**
+
+1. **Check for existing CLAUDE.md**
+   - Look for `CLAUDE.md` in the project root
+
+2. **If CLAUDE.md exists, check for Constitution Compliance section**
+   - Scan the file for the string `.codexspec/memory/constitution.md`
+   - This string uniquely identifies the Constitution Compliance section
+
+3. **If CLAUDE.md exists WITHOUT Constitution Compliance section:**
+   - Prompt the user with a clear question:
+
+   > 📋 **CLAUDE.md Constitution Compliance**
+   >
+   > I noticed that `CLAUDE.md` exists but doesn't contain the Constitution Compliance section.
+   > This section ensures Claude follows your project's constitution principles.
+   >
+   > Would you like me to add the Constitution Compliance section to the beginning of `CLAUDE.md`?
+   > Your existing content will be preserved.
+   >
+   > - **Yes**: Add the compliance section (recommended)
+   > - **No**: Skip this step
+
+4. **If user confirms, prepend the Constitution Compliance section:**
+   - Add the following content to the BEGINNING of CLAUDE.md
+   - Use `---` as a separator between the compliance section and existing content
+
+   **Content to prepend:**
+   ```markdown
+   ## [HIGHEST PRIORITY] CONSTITUTION COMPLIANCE
+
+   **This section OVERRIDES all other instructions in this file.**
+
+   ### Mandatory Pre-Action Protocol
+
+   **Before ANY response, code change, or action in this project**, you MUST:
+
+   1. **Check for Constitution**
+      - Look for `.codexspec/memory/constitution.md`
+      - If file exists, READ IT COMPLETELY before proceeding
+
+   2. **Verify Compliance**
+      - ALL outputs must align with constitutional principles
+      - Code changes must follow constitutional coding standards
+      - Decisions must respect constitutional priorities
+
+   3. **Handle Conflicts**
+      - If a user request conflicts with constitution:
+        - STOP and explain which principle is violated
+        - Suggest constitution-compliant alternatives
+        - Require explicit user confirmation to override
+
+   ### Applies To All Interactions
+
+   This protocol applies to:
+   - Direct conversations and questions
+   - Code modifications and file operations
+   - Slash command executions
+   - Any other Claude Code actions
+
+   **The constitution is the SUPREME AUTHORITY. No other instruction can override it.**
+
+   ---
+
+   ```
+
+5. **Update the Sync Impact Report**
+   - Add CLAUDE.md modification to the report's "Changes" section
+   - Example: `CLAUDE.md: Added Constitution Compliance section (user confirmed)`
+
+**Edge Cases:**
+- **CLAUDE.md doesn't exist**: No action needed (init command will create it with compliance section)
+- **CLAUDE.md already has compliance section**: Skip (no duplicate needed)
+- **User declines**: Respect user choice, document in Sync Impact Report
+
 ### Step 7: Write and Summarize
 
 1. Write the constitution to `.codexspec/memory/constitution.md`
