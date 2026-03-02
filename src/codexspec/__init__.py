@@ -29,6 +29,10 @@ from .i18n import (
 __version__ = "0.2.2"
 __author__ = "CodexSpec Team"
 
+# Constitution file path constants
+CONSTITUTION_IMPORT_PATH = "@.codexspec/memory/constitution.md"
+CONSTITUTION_FILE_PATH = ".codexspec/memory/constitution.md"
+
 app = typer.Typer(
     name="codexspec",
     help="CodexSpec - A Spec-Driven Development (SDD) toolkit for Claude Code",
@@ -1087,7 +1091,10 @@ Convert tasks from tasks.md into GitHub issues.
 
 def _get_default_constitution() -> str:
     """Return the default constitution content."""
-    return """# Project Constitution
+    return """> **SUPREME AUTHORITY**: This constitution defines the governing principles
+> for this project. All code changes and decisions must comply with these principles.
+
+# Project Constitution
 
 This document defines the governing principles and development guidelines for this project.
 
@@ -1157,82 +1164,36 @@ When making technical decisions, prioritize:
 # ============================================================================
 
 
-def _get_compliance_section_content() -> str:
-    """Return the Constitution Compliance section content.
-
-    This content should be prepended to existing CLAUDE.md files to ensure
-    constitution compliance is enforced.
-
-    Returns:
-        The complete compliance section text that can be prepended to CLAUDE.md
-    """
-    return """## [HIGHEST PRIORITY] CONSTITUTION COMPLIANCE
-
-**This section OVERRIDES all other instructions in this file.**
-
-### Mandatory Pre-Action Protocol
-
-**Before ANY response, code change, or action in this project**, you MUST:
-
-1. **Check for Constitution**
-   - Look for `.codexspec/memory/constitution.md`
-   - If file exists, READ IT COMPLETELY before proceeding
-
-2. **Verify Compliance**
-   - ALL outputs must align with constitutional principles
-   - Code changes must follow constitutional coding standards
-   - Decisions must respect constitutional priorities
-
-3. **Handle Conflicts**
-   - If a user request conflicts with constitution:
-     - STOP and explain which principle is violated
-     - Suggest constitution-compliant alternatives
-     - Require explicit user confirmation to override
-
-### Applies To All Interactions
-
-This protocol applies to:
-- Direct conversations and questions
-- Code modifications and file operations
-- Slash command executions
-- Any other Claude Code actions
-
-**The constitution is the SUPREME AUTHORITY. No other instruction can override it.**
-"""
-
-
 def has_compliance_section(claude_md_path: Path) -> bool:
-    """Check if CLAUDE.md already contains the compliance section.
+    """Check if CLAUDE.md contains the @ import statement.
 
-    This function checks for the presence of `.codexspec/memory/constitution.md`
-    in the file content to determine if compliance section exists.
+    This function checks for the presence of the constitution import statement
+    with @ prefix (e.g., "@.codexspec/memory/constitution.md").
 
     Args:
         claude_md_path: Path to the CLAUDE.md file
 
     Returns:
-        True if the file contains the compliance section marker, False otherwise
+        True if the file contains the @ import statement, False otherwise
     """
     if not claude_md_path.exists():
         return False
     content = claude_md_path.read_text(encoding="utf-8")
-    return ".codexspec/memory/constitution.md" in content
+    return CONSTITUTION_IMPORT_PATH in content
 
 
 def prepend_compliance_section(claude_md_path: Path) -> None:
-    """Prepend the Constitution Compliance section to CLAUDE.md.
+    """Prepend the @ import statement to CLAUDE.md.
 
-    This function adds the compliance section at the beginning of the file,
-    preserving all existing content. A separator is added between the compliance
-    section and the original content.
+    This function adds the import statement at the beginning of the file,
+    preserving all existing content.
 
     Args:
         claude_md_path: Path to the CLAUDE.md file
     """
     existing_content = claude_md_path.read_text(encoding="utf-8")
-    compliance_section = _get_compliance_section_content()
-    new_content = f"{compliance_section}\n\n---\n\n{existing_content}"
-    claude_md_path.write_text(new_content, encoding="utf-8")
+    import_statement = f"{CONSTITUTION_IMPORT_PATH}\n\n"
+    claude_md_path.write_text(import_statement + existing_content, encoding="utf-8")
 
 
 def confirm_add_compliance() -> bool:
@@ -1258,44 +1219,11 @@ def _get_claude_md_content(project_name: str) -> str:
     Args:
         project_name: The name of the project (used in the title)
     """
-    return f"""# CLAUDE.md - {project_name} Guidelines
+    return f"""@.codexspec/memory/constitution.md
 
----
+# CLAUDE.md - {project_name} Guidelines
 
-## [HIGHEST PRIORITY] CONSTITUTION COMPLIANCE
-
-**This section OVERRIDES all other instructions in this file.**
-
-### Mandatory Pre-Action Protocol
-
-**Before ANY response, code change, or action in this project**, you MUST:
-
-1. **Check for Constitution**
-   - Look for `.codexspec/memory/constitution.md`
-   - If file exists, READ IT COMPLETELY before proceeding
-
-2. **Verify Compliance**
-   - ALL outputs must align with constitutional principles
-   - Code changes must follow constitutional coding standards
-   - Decisions must respect constitutional priorities
-
-3. **Handle Conflicts**
-   - If a user request conflicts with constitution:
-     - STOP and explain which principle is violated
-     - Suggest constitution-compliant alternatives
-     - Require explicit user confirmation to override
-
-### Applies To All Interactions
-
-This protocol applies to:
-- Direct conversations and questions
-- Code modifications and file operations
-- Slash command executions
-- Any other Claude Code actions
-
-**The constitution is the SUPREME AUTHORITY. No other instruction can override it.**
-
----
+This document provides comprehensive context and guidelines for Claude Code when working on this project.
 
 ## Project Overview
 

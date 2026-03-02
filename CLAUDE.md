@@ -1,18 +1,8 @@
+@.codexspec/memory/constitution.md
+
 # CLAUDE.md - CodexSpec Development Guide
 
 This document provides comprehensive context and guidelines for Claude Code when working on the CodexSpec project itself.
-
-## MANDATORY: Constitution Compliance
-
-**CRITICAL**: Before ANY code change in this CodexSpec project:
-
-1. Check for `.codexspec/memory/constitution.md`
-2. If exists, LOAD IT FIRST and ensure compliance
-3. All outputs must align with constitutional principles
-
-The constitution is the SUPREME AUTHORITY for this project.
-
----
 
 ## Project Overview
 
