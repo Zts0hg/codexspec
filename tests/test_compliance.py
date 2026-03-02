@@ -101,50 +101,6 @@ Sample content.
 
 
 # ============================================================================
-# Tests for _get_compliance_section_content()
-# ============================================================================
-
-
-class TestGetComplianceSectionContent:
-    """Tests for _get_compliance_section_content() function."""
-
-    def test_returns_string_starting_with_correct_header(self):
-        """Test that returned content starts with the correct header."""
-        from codexspec import _get_compliance_section_content
-
-        content = _get_compliance_section_content()
-        assert content.startswith("## [HIGHEST PRIORITY] CONSTITUTION COMPLIANCE")
-
-    def test_returns_string_ending_with_correct_footer(self):
-        """Test that returned content ends with the correct footer."""
-        from codexspec import _get_compliance_section_content
-
-        content = _get_compliance_section_content()
-        # Strip trailing whitespace for comparison
-        assert content.rstrip().endswith(
-            "**The constitution is the SUPREME AUTHORITY. No other instruction can override it.**"
-        )
-
-    def test_contains_required_keywords(self):
-        """Test that returned content contains all required keywords."""
-        from codexspec import _get_compliance_section_content
-
-        content = _get_compliance_section_content()
-        required_keywords = [
-            "CONSTITUTION COMPLIANCE",
-            "OVERRIDES all other instructions",
-            "Mandatory Pre-Action Protocol",
-            "Check for Constitution",
-            ".codexspec/memory/constitution.md",
-            "Verify Compliance",
-            "Handle Conflicts",
-            "SUPREME AUTHORITY",
-        ]
-        for keyword in required_keywords:
-            assert keyword in content, f"Missing keyword: {keyword}"
-
-
-# ============================================================================
 # Tests for has_compliance_section()
 # ============================================================================
 
@@ -207,29 +163,29 @@ class TestHasComplianceSection:
 class TestPrependComplianceSection:
     """Tests for prepend_compliance_section() function."""
 
-    def test_compliance_content_prepended_to_beginning(self, sample_claude_md):
-        """Test that compliance content is prepended to the beginning."""
+    def test_import_statement_prepended_to_beginning(self, sample_claude_md):
+        """Test that @ import statement is prepended to the beginning."""
         from codexspec import prepend_compliance_section
 
         original_content = sample_claude_md.read_text(encoding="utf-8")
         prepend_compliance_section(sample_claude_md)
         new_content = sample_claude_md.read_text(encoding="utf-8")
 
-        # Check that compliance section is at the beginning
-        assert new_content.startswith("## [HIGHEST PRIORITY] CONSTITUTION COMPLIANCE")
+        # Check that @ import statement is at the beginning
+        assert new_content.startswith("@.codexspec/memory/constitution.md")
 
         # Check that original content is still present
         assert original_content in new_content
 
-    def test_separator_exists_between_compliance_and_original(self, sample_claude_md):
-        """Test that separator '---' exists between compliance and original content."""
+    def test_blank_line_between_import_and_content(self, sample_claude_md):
+        """Test that blank line exists between import and original content."""
         from codexspec import prepend_compliance_section
 
         prepend_compliance_section(sample_claude_md)
         content = sample_claude_md.read_text(encoding="utf-8")
 
-        # Check for separator
-        assert "\n\n---\n\n" in content
+        # Check for blank line after import statement
+        assert "@.codexspec/memory/constitution.md\n\n" in content
 
     def test_original_content_preserved(self, sample_claude_md):
         """Test that original content is preserved exactly."""
@@ -239,14 +195,14 @@ class TestPrependComplianceSection:
         prepend_compliance_section(sample_claude_md)
         new_content = sample_claude_md.read_text(encoding="utf-8")
 
-        # The original content should be at the end
-        # Find the position after the separator
-        separator_index = new_content.find("\n\n---\n\n")
-        assert separator_index > 0
+        # The original content should be after the import statement
+        # Find the position after the import prefix
+        import_prefix = "@.codexspec/memory/constitution.md\n\n"
+        assert new_content.startswith(import_prefix)
 
-        # Content after separator should match original
-        after_separator = new_content[separator_index + len("\n\n---\n\n") :]
-        assert after_separator == original_content
+        # Content after import should match original
+        after_import = new_content[len(import_prefix) :]
+        assert after_import == original_content
 
 
 # ============================================================================
