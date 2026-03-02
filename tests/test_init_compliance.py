@@ -274,21 +274,20 @@ class TestEdgeCases:
         # Comment-only file has no compliance section
         assert has_compliance_section(claude_md) is False
 
-    def test_path_in_content_detected(self, temp_project_dir):
-        """EC-003: Path in content should be detected (intentional false positive)."""
+    def test_import_in_content_detected(self, temp_project_dir):
+        """EC-003: @ import statement in content should be detected."""
         claude_md = temp_project_dir / "CLAUDE.md"
         claude_md.write_text(
             """# CLAUDE.md
 
-See .codexspec/memory/constitution.md for principles.
+@.codexspec/memory/constitution.md
 
 ## Project Overview
 """,
             encoding="utf-8",
         )
 
-        # This is intentionally detected as having compliance
-        # (false positive is acceptable to avoid duplicates)
+        # File with @ import statement is detected as having compliance
         assert has_compliance_section(claude_md) is True
 
     def test_prepend_preserves_content(self, project_with_claude_md):
@@ -300,7 +299,9 @@ See .codexspec/memory/constitution.md for principles.
         content = claude_md.read_text(encoding="utf-8")
         # Original content should be preserved
         assert "Existing Project" in content
-        # Should have import statement at top
-        assert content.startswith("@.codexspec/memory/constitution.md")
+        # Should have markdownlint-disable comment at top
+        assert content.startswith("<!-- markdownlint-disable MD041 -->")
+        # Should have import statement after comment
+        assert "@.codexspec/memory/constitution.md" in content
         # Should have blank line between import and content
         assert "@.codexspec/memory/constitution.md\n\n" in content

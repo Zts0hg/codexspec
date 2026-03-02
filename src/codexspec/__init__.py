@@ -32,6 +32,7 @@ __author__ = "CodexSpec Team"
 # Constitution file path constants
 CONSTITUTION_IMPORT_PATH = "@.codexspec/memory/constitution.md"
 CONSTITUTION_FILE_PATH = ".codexspec/memory/constitution.md"
+MARKDOWNLINT_DISABLE_MD041 = "<!-- markdownlint-disable MD041 -->\n"
 
 app = typer.Typer(
     name="codexspec",
@@ -1186,13 +1187,13 @@ def prepend_compliance_section(claude_md_path: Path) -> None:
     """Prepend the @ import statement to CLAUDE.md.
 
     This function adds the import statement at the beginning of the file,
-    preserving all existing content.
+    with a markdownlint-disable comment to suppress MD041 warnings.
 
     Args:
         claude_md_path: Path to the CLAUDE.md file
     """
     existing_content = claude_md_path.read_text(encoding="utf-8")
-    import_statement = f"{CONSTITUTION_IMPORT_PATH}\n\n"
+    import_statement = f"{MARKDOWNLINT_DISABLE_MD041}{CONSTITUTION_IMPORT_PATH}\n\n"
     claude_md_path.write_text(import_statement + existing_content, encoding="utf-8")
 
 
@@ -1219,7 +1220,8 @@ def _get_claude_md_content(project_name: str) -> str:
     Args:
         project_name: The name of the project (used in the title)
     """
-    return f"""@.codexspec/memory/constitution.md
+    return f"""<!-- markdownlint-disable MD041 -->
+@.codexspec/memory/constitution.md
 
 # CLAUDE.md - {project_name} Guidelines
 
