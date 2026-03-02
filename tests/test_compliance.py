@@ -46,11 +46,7 @@ def claude_md_with_compliance(temp_dir):
     """Create a CLAUDE.md file that already has compliance section."""
     claude_md = temp_dir / "CLAUDE.md"
     claude_md.write_text(
-        """## [HIGHEST PRIORITY] CONSTITUTION COMPLIANCE
-
-**This section OVERRIDES all other instructions in this file.**
-
-Look for `.codexspec/memory/constitution.md`
+        """@.codexspec/memory/constitution.md
 
 ## Project Overview
 
@@ -84,12 +80,12 @@ def comment_only_claude_md(temp_dir):
 
 @pytest.fixture
 def path_in_comment_claude_md(temp_dir):
-    """Create a CLAUDE.md file with constitution path in a comment."""
+    """Create a CLAUDE.md file with constitution import in a comment."""
     claude_md = temp_dir / "CLAUDE.md"
     claude_md.write_text(
         """# CLAUDE.md
 
-<!-- TODO: Check .codexspec/memory/constitution.md for principles -->
+<!-- Import: @.codexspec/memory/constitution.md -->
 
 ## Project Overview
 
@@ -144,10 +140,10 @@ class TestHasComplianceSection:
         result = has_compliance_section(comment_only_claude_md)
         assert result is False
 
-    def test_returns_true_when_path_in_comment(self, path_in_comment_claude_md):
-        """Test that returns True when path is in a comment (EC-003).
+    def test_returns_true_when_import_in_comment(self, path_in_comment_claude_md):
+        """Test that returns True when @ import is in a comment (EC-003).
 
-        This is intentional - we prefer false positives over duplicates.
+        The function detects the @ import statement even in comments.
         """
         from codexspec import has_compliance_section
 
@@ -171,8 +167,11 @@ class TestPrependComplianceSection:
         prepend_compliance_section(sample_claude_md)
         new_content = sample_claude_md.read_text(encoding="utf-8")
 
-        # Check that @ import statement is at the beginning
-        assert new_content.startswith("@.codexspec/memory/constitution.md")
+        # Check that markdownlint-disable comment is at the very beginning
+        assert new_content.startswith("<!-- markdownlint-disable MD041 -->")
+
+        # Check that @ import statement follows
+        assert "@.codexspec/memory/constitution.md" in new_content
 
         # Check that original content is still present
         assert original_content in new_content
@@ -187,6 +186,20 @@ class TestPrependComplianceSection:
         # Check for blank line after import statement
         assert "@.codexspec/memory/constitution.md\n\n" in content
 
+    def test_markdownlint_disable_comment_present(self, sample_claude_md):
+        """Test that markdownlint-disable MD041 comment is present."""
+        from codexspec import prepend_compliance_section
+
+        prepend_compliance_section(sample_claude_md)
+        content = sample_claude_md.read_text(encoding="utf-8")
+
+        # Check for markdownlint-disable comment
+        assert "<!-- markdownlint-disable MD041 -->" in content
+
+        # Check that it's on the first line
+        first_line = content.split("\n")[0]
+        assert first_line == "<!-- markdownlint-disable MD041 -->"
+
     def test_original_content_preserved(self, sample_claude_md):
         """Test that original content is preserved exactly."""
         from codexspec import prepend_compliance_section
@@ -196,8 +209,8 @@ class TestPrependComplianceSection:
         new_content = sample_claude_md.read_text(encoding="utf-8")
 
         # The original content should be after the import statement
-        # Find the position after the import prefix
-        import_prefix = "@.codexspec/memory/constitution.md\n\n"
+        # Find the position after the import prefix (including markdownlint-disable)
+        import_prefix = "<!-- markdownlint-disable MD041 -->\n@.codexspec/memory/constitution.md\n\n"
         assert new_content.startswith(import_prefix)
 
         # Content after import should match original
