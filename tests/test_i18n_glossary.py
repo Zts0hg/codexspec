@@ -13,8 +13,8 @@ from pathlib import Path
 import pytest
 import yaml
 
-# Path to the glossary configuration file
-GLOSSARY_PATH = Path(".codexspec/i18n/glossary.yml")
+# Path to the glossary configuration file (project-level for CodexSpec docs translation)
+GLOSSARY_PATH = Path("docs/i18n/glossary.yml")
 
 
 @pytest.fixture
@@ -30,7 +30,7 @@ class TestGlossaryStructure:
     """Tests for valid glossary YAML structure."""
 
     def test_glossary_file_exists(self):
-        """Glossary file should exist at .codexspec/i18n/glossary.yml."""
+        """Glossary file should exist at docs/i18n/glossary.yml."""
         assert GLOSSARY_PATH.exists(), f"Glossary file not found at {GLOSSARY_PATH}"
 
     def test_glossary_is_valid_yaml(self):
