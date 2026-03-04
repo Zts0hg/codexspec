@@ -5,6 +5,9 @@ repo_url: https://github.com/Zts0hg/codexspec
 repo_name: Zts0hg/codexspec
 edit_uri: edit/main/docs/
 
+# Documentation directory (English as source)
+docs_dir: docs/en
+
 # Exclude internal planning documents from build
 exclude_docs: |
   /plans/
@@ -56,6 +59,7 @@ nav:
     - Configuration: reference/configuration.md
   - Development:
     - Contributing: development/contributing.md
+    - Scripts Architecture: development/scripts-architecture.md
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -84,11 +88,47 @@ plugins:
           options:
             show_source: true
             show_root_heading: true
+  - i18n:
+      default_language: en
+      languages:
+        en: English
+        zh: 中文简体
+        ja: 日本語
+        ko: 한국어
+        es: Español
+        fr: Français
+        de: Deutsch
+        pt-BR: Português (Brasil)
 
 extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/Zts0hg/codexspec
+  alternate:
+    - name: English
+      link: /en/
+      lang: en
+    - name: 中文简体
+      link: /zh/
+      lang: zh
+    - name: 日本語
+      link: /ja/
+      lang: ja
+    - name: 한국어
+      link: /ko/
+      lang: ko
+    - name: Español
+      link: /es/
+      lang: es
+    - name: Français
+      link: /fr/
+      lang: fr
+    - name: Deutsch
+      link: /de/
+      lang: de
+    - name: Português (Brasil)
+      link: /pt-BR/
+      lang: pt-BR
 
 extra_css:
   - assets/stylesheets/extra.css

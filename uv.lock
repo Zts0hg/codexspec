@@ -152,7 +152,7 @@ wheels = [
 
 [[package]]
 name = "codexspec"
-version = "0.3.9"
+version = "0.3.13"
 source = { editable = "." }
 dependencies = [
     { name = "httpx" },
@@ -172,6 +172,7 @@ dev = [
 ]
 docs = [
     { name = "mkdocs" },
+    { name = "mkdocs-i18n" },
     { name = "mkdocs-material" },
     { name = "mkdocstrings", extra = ["python"] },
 ]
@@ -180,6 +181,7 @@ docs = [
 requires-dist = [
     { name = "httpx", specifier = ">=0.25.0" },
     { name = "mkdocs", marker = "extra == 'docs'", specifier = ">=1.5.0" },
+    { name = "mkdocs-i18n", marker = "extra == 'docs'", specifier = ">=0.4.0" },
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = ">=9.5.0" },
     { name = "mkdocstrings", extras = ["python"], marker = "extra == 'docs'", specifier = ">=0.24.0" },
     { name = "packaging", specifier = ">=23.0" },
@@ -608,6 +610,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/98/f5/ed29cd50067784976f25ed0ed6fcd3c2ce9eb90650aa3b2796ddf7b6870b/mkdocs_get_deps-0.2.0.tar.gz", hash = "sha256:162b3d129c7fad9b19abfdcb9c1458a651628e4b1dea628ac68790fb3061c60c", size = 10239, upload-time = "2023-11-20T17:51:09.981Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/9f/d4/029f984e8d3f3b6b726bd33cafc473b75e9e44c0f7e80a5b29abc466bdea/mkdocs_get_deps-0.2.0-py3-none-any.whl", hash = "sha256:2bf11d0b133e77a0dd036abeeb06dec8775e46efa526dc70667d8863eefc6134", size = 9521, upload-time = "2023-11-20T17:51:08.587Z" },
+]
+
+[[package]]
+name = "mkdocs-i18n"
+version = "0.4.6"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "mkdocs" },
+    { name = "mkdocs-material" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/6b/31/6aad3256057551b1b8b2c8447a3669bfb3c1f99f833280e167b8fedd1d97/mkdocs-i18n-0.4.6.tar.gz", hash = "sha256:977736ac643e6a9fece2f331c72168dda298b09ed55049a9c3bb6be33e099af0", size = 24232, upload-time = "2023-04-27T11:48:09.43Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/40/d0/9523dcdfaa9f6968a85e967225213e9ea79e046e8da65282af56e8dbd4c1/mkdocs_i18n-0.4.6-py3-none-any.whl", hash = "sha256:44054cd7de6150f8e03aa074fc46d9ea661e660c9df0aab802115dd30636bc08", size = 17730, upload-time = "2023-04-27T11:48:07.445Z" },
 ]
 
 [[package]]
