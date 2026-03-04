@@ -1,12 +1,19 @@
 """Tests for i18n completeness check script."""
 
 import subprocess
+import sys
 from pathlib import Path
+
+import pytest
 
 # Get the project root directory
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="Bash tests only run on Unix-like systems (macOS/Linux)",
+)
 class TestCheckI18nCompleteness:
     """Tests for the translation completeness check script."""
 
@@ -31,8 +38,8 @@ class TestCheckI18nCompleteness:
         zh_dir.mkdir(parents=True)
 
         # Create fully translated content
-        (en_dir / "index.md").write_text("# Welcome\nThis is English content.")
-        (zh_dir / "index.md").write_text("# 欢迎\n这是中文内容。")
+        (en_dir / "index.md").write_text("# Welcome\nThis is English content.", encoding="utf-8")
+        (zh_dir / "index.md").write_text("# 欢迎\n这是中文内容。", encoding="utf-8")
 
         script_path = PROJECT_ROOT / "scripts/bash/check-i18n-completeness.sh"
         if script_path.exists():
@@ -50,9 +57,10 @@ class TestCheckI18nCompleteness:
         zh_dir.mkdir(parents=True)
 
         # Create content with clear untranslated English paragraph (not mixed with Chinese)
-        (en_dir / "index.md").write_text("# Welcome\n\nThis is English content.\n\nMore text here.")
+        (en_dir / "index.md").write_text("# Welcome\n\nThis is English content.\n\nMore text here.", encoding="utf-8")
         (zh_dir / "index.md").write_text(
-            "# 欢迎\n\nThis paragraph was not translated at all.\n\nAnother untranslated sentence here."
+            "# 欢迎\n\nThis paragraph was not translated at all.\n\nAnother untranslated sentence here.",
+            encoding="utf-8",
         )
 
         script_path = PROJECT_ROOT / "scripts/bash/check-i18n-completeness.sh"
@@ -74,8 +82,8 @@ class TestCheckI18nCompleteness:
         zh_dir.mkdir(parents=True)
 
         # Create content with code block (should be ignored)
-        (en_dir / "index.md").write_text("# Welcome\n```bash\necho 'hello'\n```\nSome text.")
-        (zh_dir / "index.md").write_text("# 欢迎\n```bash\necho 'hello'\n```\n一些文本。")
+        (en_dir / "index.md").write_text("# Welcome\n```bash\necho 'hello'\n```\nSome text.", encoding="utf-8")
+        (zh_dir / "index.md").write_text("# 欢迎\n```bash\necho 'hello'\n```\n一些文本。", encoding="utf-8")
 
         script_path = PROJECT_ROOT / "scripts/bash/check-i18n-completeness.sh"
         if script_path.exists():
@@ -93,8 +101,8 @@ class TestCheckI18nCompleteness:
         zh_dir.mkdir(parents=True)
 
         # Create content with inline code (should be ignored)
-        (en_dir / "index.md").write_text("# Welcome\nUse `pip install` to install.\nSome text.")
-        (zh_dir / "index.md").write_text("# 欢迎\n使用 `pip install` 安装。\n一些文本。")
+        (en_dir / "index.md").write_text("# Welcome\nUse `pip install` to install.\nSome text.", encoding="utf-8")
+        (zh_dir / "index.md").write_text("# 欢迎\n使用 `pip install` 安装。\n一些文本。", encoding="utf-8")
 
         script_path = PROJECT_ROOT / "scripts/bash/check-i18n-completeness.sh"
         if script_path.exists():
@@ -112,8 +120,8 @@ class TestCheckI18nCompleteness:
         zh_dir.mkdir(parents=True)
 
         # Create content with URLs on separate lines (should be ignored)
-        (en_dir / "index.md").write_text("# Welcome\n\nhttps://example.com\n\nSome text.")
-        (zh_dir / "index.md").write_text("# 欢迎\n\nhttps://example.com\n\n一些文本。")
+        (en_dir / "index.md").write_text("# Welcome\n\nhttps://example.com\n\nSome text.", encoding="utf-8")
+        (zh_dir / "index.md").write_text("# 欢迎\n\nhttps://example.com\n\n一些文本。", encoding="utf-8")
 
         script_path = PROJECT_ROOT / "scripts/bash/check-i18n-completeness.sh"
         if script_path.exists():
@@ -133,9 +141,9 @@ class TestCheckI18nCompleteness:
         ja_dir.mkdir(parents=True)
 
         # Create content
-        (en_dir / "index.md").write_text("# Welcome\nHello world.")
-        (zh_dir / "index.md").write_text("# 欢迎\n你好世界。")
-        (ja_dir / "index.md").write_text("# ようこそ\nハローワールド。")
+        (en_dir / "index.md").write_text("# Welcome\nHello world.", encoding="utf-8")
+        (zh_dir / "index.md").write_text("# 欢迎\n你好世界。", encoding="utf-8")
+        (ja_dir / "index.md").write_text("# ようこそ\nハローワールド。", encoding="utf-8")
 
         script_path = PROJECT_ROOT / "scripts/bash/check-i18n-completeness.sh"
         if script_path.exists():
