@@ -1,0 +1,339 @@
+# GitHub Actions workflow for automated documentation translation
+# This workflow triggers AI-assisted translation when English docs are updated
+
+name: Docs i18n Translation
+
+on:
+  # Trigger on push to main when docs/en/ changes
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/en/**'
+      - '.codexspec/i18n/glossary.yml'
+
+  # Allow manual trigger with language selection
+  workflow_dispatch:
+    inputs:
+      languages:
+          description: 'Target languages (comma-separated, e.g., "zh,ja,ko" or "all")'
+          required: false
+          default: 'all'
+      dry_run:
+          description: 'Preview mode - no commits will be made'
+          required: false
+          default: 'false'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  # Claude Code Action requires ANTHROPIC_API_KEY secret
+  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+jobs:
+  # Detect which files changed
+  detect-changes:
+      runs-on: ubuntu-latest
+      outputs:
+          changed_files: ${{ steps.detect.outputs.changed_files }}
+          needs_translation: ${{ steps.detect.outputs.needs_translation }}
+      steps:
+          - name: Checkout
+            uses: actions/checkout@v4
+            with:
+                fetch-depth: 2
+
+          - name: Detect changed files
+            id: detect
+            run: |
+                # Get list of changed files in docs/en/
+                CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD -- 'docs/en/*.md' 'docs/en/**/*.md' | tr '\n' ' ' || true)
+                echo "changed_files=$CHANGED_FILES" >> $GITHUB_OUTPUT
+
+                # Check if translation is needed
+                if [ -n "$CHANGED_FILES" ]; then
+                    echo "needs_translation=true" >> $GITHUB_OUTPUT
+                else
+                    echo "needs_translation=false" >> $GITHUB_OUTPUT
+                fi
+
+  # Translation job using matrix strategy for parallelization
+  translate:
+      needs: detect-changes
+      if: needs.needs_translation == 'true'
+      runs-on: ubuntu-latest
+      strategy:
+          fail-fast: false
+          matrix:
+              language:
+                  - zh
+                  - ja
+                  - ko
+                  - es
+                  - fr
+                  - de
+                  - pt-BR
+      steps:
+          - name: Checkout
+            uses: actions/checkout@v4
+
+          - name: Setup Python
+            uses: actions/setup-python@v5
+            with:
+                python-version: '3.11'
+
+          - name: Install uv
+            run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+          - name: Install dependencies
+            run: uv sync --extra docs
+
+          - name: Translate documentation
+            uses: anthropics/claude-code-action@v1
+            with:
+                # Use the translate-docs slash command
+                prompt: |
+                    Execute document translation for language: ${{ matrix.language }}
+
+                    Use the /codexspec.translate-docs command with --lang ${{ matrix.language }} --incremental
+
+                    Follow the translation guidelines from .codexspec/i18n/glossary.yml
+
+                    Target directory: docs/${{ matrix.language }}/
+                    Source directory: docs/en/
+
+                    Translate all changed markdown files while:
+                    1. Preserving Markdown formatting
+                    2. Following glossary terminology
+                    3. Keeping code blocks untranslated
+                    4. Translating technical terms consistently
+
+          - name: Verify translation
+            run: |
+                # Check if translation files were created
+                if [ -d "docs/${{ matrix.language }}" ]; then
+                    echo "✅ Translation to ${{ matrix.language }} completed"
+                    # Count translated files
+                    FILE_COUNT=$(find docs/${{ matrix.language }} -name "*.md" | wc -l)
+                    echo "Translated $FILE_COUNT files"
+                else
+                    echo "❌ Translation to ${{ matrix.language }} failed"
+                    exit 1
+                fi
+
+  # Quality check job - MUST pass before deployment
+  quality-check:
+      needs: translate
+      runs-on: ubuntu-latest
+      outputs:
+          structure_status: ${{ steps.structure_check.outcome }}
+          completeness_status: ${{ steps.completeness_check.outcome }}
+          has_issues: ${{ steps.report.outputs.has_issues }}
+      steps:
+          - name: Checkout
+            uses: actions/checkout@v4
+
+          - name: Setup Python
+            uses: actions/setup-python@v5
+            with:
+                python-version: '3.11'
+
+          - name: Install uv
+            run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+          - name: Install dependencies
+            run: uv sync --extra docs
+
+          - name: Structure check
+            id: structure_check
+            run: |
+                # Check that all language directories have the same structure
+                chmod +x scripts/bash/check-i18n-structure.sh 2>/dev/null || true
+                if [ -f "scripts/bash/check-i18n-structure.sh" ]; then
+                    echo "Running structure consistency check..."
+                    ./scripts/bash/check-i18n-structure.sh 2>&1 | tee structure_report.txt
+                else
+                    echo "⚠️ Structure check script not found, skipping..."
+                    echo "skipped" > structure_report.txt
+                fi
+
+          - name: Completeness check
+            id: completeness_check
+            run: |
+                # Check for untranslated content
+                chmod +x scripts/bash/check-i18n-completeness.sh 2>/dev/null || true
+                if [ -f "scripts/bash/check-i18n-completeness.sh" ]; then
+                    echo "Running translation completeness check..."
+                    ./scripts/bash/check-i18n-completeness.sh 2>&1 | tee completeness_report.txt
+                else
+                    echo "⚠️ Completeness check script not found, skipping..."
+                    echo "skipped" > completeness_report.txt
+                fi
+
+          - name: Generate quality report
+            id: report
+            run: |
+                # Determine if there are issues
+                HAS_ISSUES="false"
+
+                # Check structure result
+                if [ -f "structure_report.txt" ] && grep -q "FAILED" structure_report.txt; then
+                    HAS_ISSUES="true"
+                    echo "❌ Structure check failed" >> quality_summary.md
+                elif [ -f "structure_report.txt" ] && grep -q "PASSED" structure_report.txt; then
+                    echo "✅ Structure check passed" >> quality_summary.md
+                else
+                    echo "⚠️ Structure check skipped" >> quality_summary.md
+                fi
+
+                # Check completeness result
+                if [ -f "completeness_report.txt" ] && grep -q "FAILED" completeness_report.txt; then
+                    HAS_ISSUES="true"
+                    echo "❌ Completeness check failed" >> quality_summary.md
+                elif [ -f "completeness_report.txt" ] && grep -q "PASSED" completeness_report.txt; then
+                    echo "✅ Completeness check passed" >> quality_summary.md
+                else
+                    echo "⚠️ Completeness check skipped" >> quality_summary.md
+                fi
+
+                echo "has_issues=$HAS_ISSUES" >> $GITHUB_OUTPUT
+                echo "## i18n Quality Check Summary" >> $GITHUB_STEP_SUMMARY
+                cat quality_summary.md >> $GITHUB_STEP_SUMMARY
+
+                # Fail if there are issues (deployment blocking)
+                if [ "$HAS_ISSUES" = "true" ]; then
+                    echo "::error::Quality checks failed - blocking deployment"
+                    exit 1
+                fi
+
+          - name: Upload quality reports
+            uses: actions/upload-artifact@v4
+            if: always()
+            with:
+                name: quality-reports
+                path: |
+                    structure_report.txt
+                    completeness_report.txt
+                    quality_summary.md
+                retention-days: 30
+
+  # Commit and push translations
+  commit-translations:
+      needs: quality-check
+      runs-on: ubuntu-latest
+      if: |
+          (github.event_name != 'workflow_dispatch' || github.event.inputs.dry_run != 'true') &&
+          needs.quality-check.outputs.has_issues != 'true'
+      steps:
+          - name: Checkout
+            uses: actions/checkout@v4
+            with:
+                token: ${{ secrets.GITHUB_TOKEN }}
+
+          - name: Configure git
+            run: |
+                git config user.name "github-actions[bot]"
+                git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          - name: Commit translations
+            run: |
+                # Add all translation files
+                git add docs/zh docs/ja docs/ko docs/es docs/fr docs/de docs/pt-BR
+
+                # Check if there are changes to commit
+                if git diff --staged --quiet; then
+                    echo "No translation changes to commit"
+                    exit 0
+                fi
+
+                # Commit
+                git commit -m "$(cat <<'EOF'
+                docs(i18n): update translations via CI automation
+
+                - Automated translation update triggered by docs/en/ changes
+                - Languages: zh, ja, ko, es, fr, de, pt-BR
+
+                Co-Authored-By: Claude <noreply@anthropic.com>
+                EOF
+                )"
+
+                # Push
+                git push
+
+          - name: Create Issue on Quality Check Failure
+            if: needs.quality-check.outputs.has_issues == 'true'
+            uses: actions/github-script@v7
+            with:
+                script: |
+                    const fs = require('fs');
+
+                    // Download quality reports artifact
+                    const reportBody = `## i18n Quality Check Failed
+
+                    The automated translation quality checks have detected issues that need attention.
+
+                    ### Check Results
+                    - Structure Check: \`${{ needs.quality-check.outputs.structure_status }}\`
+                    - Completeness Check: \`${{ needs.quality-check.outputs.completeness_status }}\`
+
+                    ### Action Required
+                    Please review the [workflow logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) and download the quality-reports artifact for detailed information.
+
+                    ### Files to Check
+                    - \`structure_report.txt\` - File structure consistency issues
+                    - \`completeness_report.txt\` - Untranslated content detection
+
+                    > This issue was automatically created by the docs-i18n workflow.
+                    `;
+
+                    github.rest.issues.create({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        title: '📚 i18n Quality Check Failed - Action Required',
+                        body: reportBody,
+                        labels: ['documentation', 'i18n', 'automated', 'needs-attention']
+                    })
+
+          - name: Create Issue on General Failure
+            if: failure()
+            uses: actions/github-script@v7
+            with:
+                script: |
+                    github.rest.issues.create({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        title: 'Translation workflow failed',
+                        body: `The docs-i18n translation workflow failed. Please check the [workflow logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.`,
+                        labels: ['documentation', 'i18n', 'automated']
+                    })
+
+  # Build verification
+  verify-build:
+      needs: quality-check
+      runs-on: ubuntu-latest
+      steps:
+          - name: Checkout
+            uses: actions/checkout@v4
+
+          - name: Setup Python
+            uses: actions/setup-python@v5
+            with:
+                python-version: '3.11'
+
+          - name: Install uv
+            run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+          - name: Install dependencies
+            run: uv sync --extra docs
+
+          - name: Build all language versions
+            run: uv run mkdocs build --strict
+
+          - name: Upload build artifacts
+            uses: actions/upload-artifact@v4
+            with:
+                name: site-build
+                path: site/
+                retention-days: 7
