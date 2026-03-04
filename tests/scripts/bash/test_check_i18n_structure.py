@@ -1,12 +1,19 @@
 """Tests for i18n structure check script."""
 
 import subprocess
+import sys
 from pathlib import Path
+
+import pytest
 
 # Get the project root directory
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 
 
+@pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="Bash tests only run on Unix-like systems (macOS/Linux)",
+)
 class TestCheckI18nStructure:
     """Tests for the structure consistency check script."""
 
@@ -33,10 +40,10 @@ class TestCheckI18nStructure:
         zh_dir.mkdir(parents=True)
 
         # Create matching files
-        (en_dir / "index.md").write_text("# Test\nContent")
-        (en_dir / "guide.md").write_text("# Guide\nContent")
-        (zh_dir / "index.md").write_text("# 测试\n内容")
-        (zh_dir / "guide.md").write_text("# 指南\n内容")
+        (en_dir / "index.md").write_text("# Test\nContent", encoding="utf-8")
+        (en_dir / "guide.md").write_text("# Guide\nContent", encoding="utf-8")
+        (zh_dir / "index.md").write_text("# 测试\n内容", encoding="utf-8")
+        (zh_dir / "guide.md").write_text("# 指南\n内容", encoding="utf-8")
 
         script_path = PROJECT_ROOT / "scripts/bash/check-i18n-structure.sh"
         if script_path.exists():
@@ -52,9 +59,9 @@ class TestCheckI18nStructure:
         zh_dir.mkdir(parents=True)
 
         # Create files in en but not in zh
-        (en_dir / "index.md").write_text("# Test\nContent")
-        (en_dir / "guide.md").write_text("# Guide\nContent")
-        (zh_dir / "index.md").write_text("# 测试\n内容")
+        (en_dir / "index.md").write_text("# Test\nContent", encoding="utf-8")
+        (en_dir / "guide.md").write_text("# Guide\nContent", encoding="utf-8")
+        (zh_dir / "index.md").write_text("# 测试\n内容", encoding="utf-8")
         # guide.md missing in zh
 
         script_path = PROJECT_ROOT / "scripts/bash/check-i18n-structure.sh"
@@ -71,10 +78,10 @@ class TestCheckI18nStructure:
         zh_dir.mkdir(parents=True)
 
         # Create matching files
-        (en_dir / "index.md").write_text("# Test\nContent")
-        (zh_dir / "index.md").write_text("# 测试\n内容")
+        (en_dir / "index.md").write_text("# Test\nContent", encoding="utf-8")
+        (zh_dir / "index.md").write_text("# 测试\n内容", encoding="utf-8")
         # Extra file in zh
-        (zh_dir / "extra.md").write_text("# 额外\n内容")
+        (zh_dir / "extra.md").write_text("# 额外\n内容", encoding="utf-8")
 
         script_path = PROJECT_ROOT / "scripts/bash/check-i18n-structure.sh"
         if script_path.exists():
