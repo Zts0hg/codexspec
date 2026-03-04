@@ -15,8 +15,17 @@ from typing import Optional
 import typer
 from rich.console import Console
 from rich.panel import Panel
+from rich.prompt import Confirm
 from rich.table import Table
 
+from .commands.installer import (
+    COMMANDS_SUBDIR,
+    detect_old_structure,
+    get_commands_metadata,
+    install_commands_to_subdir,
+    migrate_old_commands,
+    should_update_commands,
+)
 from .i18n import (
     generate_config_content,
     get_language_name,
@@ -317,6 +326,46 @@ def config(
     )
 
 
+@app.command("list-commands")
+def list_commands() -> None:
+    """List all available CodexSpec slash commands.
+
+    This command displays all available CodexSpec slash commands grouped by category,
+    showing their display names and descriptions.
+    """
+    metadata = get_commands_metadata()
+
+    # Group by category
+    categories: dict[str, list] = {
+        "core": [],
+        "enhanced": [],
+        "git": [],
+    }
+    for cmd in metadata:
+        cat = cmd["category"]
+        if cat in categories:
+            categories[cat].append(cmd)
+
+    category_names = {
+        "core": "核心命令 (Core Commands)",
+        "enhanced": "增强命令 (Enhanced Commands)",
+        "git": "Git 工作流 (Git Workflow)",
+    }
+
+    console.print()
+    console.print(f"[bold]CodexSpec 可用命令 ({len(metadata)} 个)[/bold]")
+    console.print()
+
+    for cat, commands in categories.items():
+        if commands:
+            console.print(f"[bold cyan]{category_names[cat]} ({len(commands)})[/bold cyan]")
+            for cmd in commands:
+                console.print(f"  {cmd['display_name']:<30} [dim]{cmd['description']}[/dim]")
+            console.print()
+
+    console.print("[dim]使用 /codexspec.<command> 来调用这些命令[/dim]")
+
+
 @app.command()
 def init(
     project_name: Optional[str] = typer.Argument(
@@ -447,21 +496,52 @@ def init(
         console.print("[yellow]Warning: Docs templates directory not found[/yellow]")
 
     # Create .claude/commands directory for slash commands
-    claude_commands_dir = target_dir / ".claude" / "commands"
+    claude_dir = target_dir / ".claude"
+    claude_commands_dir = claude_dir / "commands"
     claude_commands_dir.mkdir(parents=True, exist_ok=True)
 
-    # Copy slash command templates
+    # Target subdirectory for CodexSpec commands
+    codexspec_commands_dir = claude_commands_dir / COMMANDS_SUBDIR
+
+    # Get templates directory
     templates_dir = get_templates_dir() / "commands"
-    if templates_dir.exists():
-        for template_file in templates_dir.glob("*.md"):
-            # Prepend "codexspec." to the filename so commands are invoked as /codexspec.{name}
-            dest_file = claude_commands_dir / f"codexspec.{template_file.name}"
-            dest_file.write_text(template_file.read_text(encoding="utf-8"), encoding="utf-8")
-            console.print(f"[green]Installed command:[/green] /codexspec.{template_file.stem}")
+
+    # Check for old structure and migrate if needed
+    old_files = detect_old_structure(claude_dir)
+    migration_happened = False
+    if old_files:
+        console.print()
+        console.print(f"[yellow]发现 {len(old_files)} 个旧结构命令文件[/yellow]")
+        console.print("[dim]旧结构: .claude/commands/codexspec.*.md[/dim]")
+        console.print("[dim]新结构: .claude/commands/codexspec/*.md[/dim]")
+
+        if Confirm.ask("是否迁移到新结构?", default=True):
+            if migrate_old_commands(claude_dir, old_files):
+                console.print("[green]✓ 迁移完成[/green]")
+                migration_happened = True
+            else:
+                console.print("[red]✗ 迁移失败[/red]")
+        else:
+            console.print("[dim]跳过迁移[/dim]")
+
+    # Install or update commands (skip if migration just happened)
+    if migration_happened:
+        # Migration already installed the commands, just show summary
+        console.print("[dim]已迁移命令，跳过模板安装[/dim]")
+    elif should_update_commands(codexspec_dir):
+        console.print()
+        if Confirm.ask("是否更新命令模板?", default=True):
+            count = install_commands_to_subdir(codexspec_commands_dir, templates_dir, force=True)
+            console.print(f"[green]✓ 已更新 {count} 个命令[/green]")
     else:
-        # Create default commands if templates don't exist
-        console.print("[yellow]Warning: Templates directory not found, creating default commands[/yellow]")
-        _create_default_commands(claude_commands_dir)
+        if templates_dir.exists():
+            count = install_commands_to_subdir(codexspec_commands_dir, templates_dir)
+            console.print(f"[green]✓ 已安装 {count} 个命令到 .claude/commands/{COMMANDS_SUBDIR}/[/green]")
+        else:
+            # Create default commands if templates don't exist
+            console.print("[yellow]Warning: Templates directory not found, creating default commands[/yellow]")
+            codexspec_commands_dir.mkdir(parents=True, exist_ok=True)
+            _create_default_commands(codexspec_commands_dir)
 
     # Create constitution template
     constitution_file = codexspec_dir / "memory" / "constitution.md"
@@ -502,8 +582,10 @@ def init(
         except subprocess.CalledProcessError:
             console.print("[yellow]Warning: Failed to initialize git repository[/yellow]")
 
-    # Print success message
+    # Print success message with command summary
     console.print()
+    _print_command_summary()
+
     project_nav = project_name if project_name and project_name != "." else "."
     console.print(
         Panel.fit(
@@ -518,6 +600,13 @@ def init(
         )
     )
 
+    # Git management tip
+    console.print()
+    console.print("[bold]💡 提示:[/bold]")
+    console.print("   - 建议将 .claude/ 目录纳入 Git 管理: [cyan]git add .claude/[/cyan]")
+    console.print("   - 运行 [cyan]codexspec list-commands[/cyan] 查看所有可用命令")
+    console.print("   - 直接编辑 .md 文件自定义命令行为")
+
     # Remind user to customize constitution
     console.print()
     console.print("[yellow]Important:[/yellow] The constitution is the foundation of your SDD workflow.")
@@ -526,8 +615,40 @@ def init(
     )
 
 
+def _print_command_summary() -> None:
+    """Print a summary of installed commands grouped by category."""
+    metadata = get_commands_metadata()
+
+    # Group by category
+    categories: dict[str, list] = {
+        "core": [],
+        "enhanced": [],
+        "git": [],
+    }
+    for cmd in metadata:
+        cat = cmd["category"]
+        if cat in categories:
+            categories[cat].append(cmd)
+
+    category_names = {
+        "core": "核心命令 (Core Commands)",
+        "enhanced": "增强命令 (Enhanced Commands)",
+        "git": "Git 工作流 (Git Workflow)",
+    }
+
+    console.print(f"[bold]📁 已安装 {len(metadata)} 个命令到 .claude/commands/{COMMANDS_SUBDIR}/[/bold]")
+    console.print()
+
+    for cat, commands in categories.items():
+        if commands:
+            console.print(f"  [bold]{category_names[cat]} ({len(commands)})[/bold]")
+            for cmd in commands:
+                console.print(f"    [cyan]{cmd['display_name']}[/cyan]")
+            console.print()
+
+
 def _create_default_commands(commands_dir: Path) -> None:
-    """Create default slash commands."""
+    """Create default slash commands in subdirectory (without prefix)."""
     commands = {
         "constitution": _get_constitution_command(),
         "specify": _get_specify_command(),
@@ -542,11 +663,14 @@ def _create_default_commands(commands_dir: Path) -> None:
         "analyze": _get_analyze_command(),
         "checklist": _get_checklist_command(),
         "tasks-to-issues": _get_tasks_to_issues_command(),
+        "commit": _get_commit_command(),
+        "commit-staged": _get_commit_staged_command(),
+        "pr": _get_pr_command(),
     }
 
     for name, content in commands.items():
-        # Prepend "codexspec." to the filename so commands are invoked as /codexspec.{name}
-        cmd_file = commands_dir / f"codexspec.{name}.md"
+        # Install directly to subdirectory without prefix
+        cmd_file = commands_dir / f"{name}.md"
         cmd_file.write_text(content, encoding="utf-8")
         console.print(f"[green]Installed command:[/green] /codexspec.{name}")
 
@@ -1087,6 +1211,142 @@ Convert tasks from tasks.md into GitHub issues.
 
 > [!NOTE]
 > Requires GitHub CLI (`gh`) to be installed and authenticated.
+"""
+
+
+def _get_commit_command() -> str:
+    """Return the commit command template."""
+    return """---
+description: Generate a Conventional Commits compliant commit message from current changes
+handoffs:
+  - agent: claude
+    step: Analyze changes and generate commit message
+---
+
+# Commit Message Generator
+
+## User Input
+
+$ARGUMENTS
+
+## Instructions
+
+Generate a Conventional Commits compliant commit message based on the current git status and staged changes.
+
+### Steps
+
+1. **Check Status**: Run `git status` to see current changes
+2. **Analyze Diff**: Review `git diff` for unstaged changes
+3. **Generate Message**: Create a commit message following Conventional Commits format:
+   - type: feat, fix, docs, style, refactor, test, chore
+   - scope: optional module/component
+   - description: concise summary
+
+### Format
+
+```
+type(scope): description
+
+[optional body]
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+> [!NOTE]
+> This command helps maintain consistent commit history.
+"""
+
+
+def _get_commit_staged_command() -> str:
+    """Return the commit-staged command template."""
+    return """---
+description: Generate a commit message from staged changes only
+handoffs:
+  - agent: claude
+    step: Analyze staged changes and generate commit message
+---
+
+# Staged Commit Generator
+
+## User Input
+
+$ARGUMENTS
+
+## Instructions
+
+Generate a Conventional Commits compliant commit message from staged changes only.
+
+### Steps
+
+1. **Check Staged**: Run `git diff --staged` to see staged changes
+2. **Analyze**: Understand what changes are being committed
+3. **Generate**: Create commit message following Conventional Commits format
+
+### Format
+
+```
+type(scope): description
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+> [!NOTE]
+> This command only considers staged changes, not unstaged ones.
+"""
+
+
+def _get_pr_command() -> str:
+    """Return the pr command template."""
+    return """---
+description: Generate a Pull Request or Merge Request description
+handoffs:
+  - agent: claude
+    step: Analyze branch changes and generate PR description
+---
+
+# PR/MR Description Generator
+
+## User Input
+
+$ARGUMENTS
+
+## Instructions
+
+Generate a comprehensive Pull Request or Merge Request description based on branch changes.
+
+### Steps
+
+1. **Get Base**: Determine the target branch (main/master)
+2. **Get Diff**: Run `git diff base...HEAD` to see all changes
+3. **Get Log**: Run `git log base..HEAD --oneline` to see commits
+4. **Generate**: Create PR description with:
+   - Summary of changes
+   - List of commits
+   - Testing instructions
+   - Checklist items
+
+### Output Format
+
+```markdown
+## Summary
+[Brief description of what this PR does]
+
+## Changes
+- [Change 1]
+- [Change 2]
+
+## Test Plan
+- [ ] [Test step 1]
+- [ ] [Test step 2]
+
+## Checklist
+- [ ] Tests pass
+- [ ] Code reviewed
+- [ ] Documentation updated
+```
+
+> [!NOTE]
+> This command helps create standardized PR descriptions.
 """
 
 

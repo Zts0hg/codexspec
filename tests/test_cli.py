@@ -261,3 +261,153 @@ class TestInitScripts:
         if source_file.exists():
             dest_file = isolated_runner / "my-project" / ".codexspec" / "scripts" / source_file.name
             assert dest_file.read_text(encoding="utf-8") == source_file.read_text(encoding="utf-8")
+
+
+class TestInitSubdirectoryStructure:
+    """Tests for init command with new subdirectory structure."""
+
+    def test_init_creates_commands_subdirectory(self, isolated_runner: Path, runner: CliRunner) -> None:
+        """init should create commands in .claude/commands/codexspec/ subdirectory."""
+        result = runner.invoke(app, ["init", "my-project", "--no-git"])
+        assert result.exit_code == 0
+
+        # Check subdirectory exists
+        subcommands_dir = isolated_runner / "my-project" / ".claude" / "commands" / "codexspec"
+        assert subcommands_dir.exists()
+        assert subcommands_dir.is_dir()
+
+    def test_init_installs_commands_to_subdirectory(self, isolated_runner: Path, runner: CliRunner) -> None:
+        """init should install command templates to subdirectory without prefix."""
+        result = runner.invoke(app, ["init", "my-project", "--no-git"])
+        assert result.exit_code == 0
+
+        subcommands_dir = isolated_runner / "my-project" / ".claude" / "commands" / "codexspec"
+
+        # Check some commands exist without prefix
+        assert (subcommands_dir / "constitution.md").exists()
+        assert (subcommands_dir / "specify.md").exists()
+        assert (subcommands_dir / "commit.md").exists()
+
+    def test_init_no_root_commands(self, isolated_runner: Path, runner: CliRunner) -> None:
+        """init should NOT create codexspec.*.md files in root commands directory."""
+        result = runner.invoke(app, ["init", "my-project", "--no-git"])
+        assert result.exit_code == 0
+
+        commands_dir = isolated_runner / "my-project" / ".claude" / "commands"
+
+        # No prefixed files in root
+        prefixed_files = list(commands_dir.glob("codexspec.*.md"))
+        assert len(prefixed_files) == 0
+
+    def test_init_shows_command_summary(self, isolated_runner: Path, runner: CliRunner) -> None:
+        """init output should include command summary."""
+        result = runner.invoke(app, ["init", "my-project", "--no-git"])
+        assert result.exit_code == 0
+
+        # Should show installed commands summary
+        assert "16" in result.stdout or "command" in result.stdout.lower()
+
+
+class TestInitMigration:
+    """Tests for init command migration flow."""
+
+    def test_init_detects_old_structure(self, isolated_runner: Path, runner: CliRunner) -> None:
+        """init should detect old structure files."""
+        # Create old structure first
+        commands_dir = isolated_runner / ".claude" / "commands"
+        commands_dir.mkdir(parents=True)
+        old_file = commands_dir / "codexspec.constitution.md"
+        old_file.write_text("# Old Constitution")
+
+        # Run init with --here to use current directory
+        # Provide 'y' input for the migration confirmation prompt
+        result = runner.invoke(app, ["init", "--here", "--no-git"], input="y\n")
+        assert result.exit_code == 0
+
+        # Should mention migration in output
+        assert (
+            "migrate" in result.stdout.lower() or "migration" in result.stdout.lower() or "old" in result.stdout.lower()
+        )
+
+    def test_init_migrates_old_files(self, isolated_runner: Path, runner: CliRunner) -> None:
+        """init should migrate old structure files to subdirectory."""
+        # Create old structure
+        commands_dir = isolated_runner / ".claude" / "commands"
+        commands_dir.mkdir(parents=True)
+        old_content = "# My Custom Constitution"
+        old_file = commands_dir / "codexspec.constitution.md"
+        old_file.write_text(old_content)
+
+        # Run init - it should migrate with single 'y' input
+        result = runner.invoke(app, ["init", "--here", "--no-git"], input="y\n")
+        assert result.exit_code == 0
+
+        # Old file should be gone
+        assert not old_file.exists()
+
+        # New file should exist with preserved content
+        new_file = commands_dir / "codexspec" / "constitution.md"
+        assert new_file.exists()
+        assert new_file.read_text() == old_content
+
+    def test_init_preserves_custom_content(self, isolated_runner: Path, runner: CliRunner) -> None:
+        """init should preserve user's custom content during migration."""
+        commands_dir = isolated_runner / ".claude" / "commands"
+        commands_dir.mkdir(parents=True)
+        custom_content = "# My Very Custom Constitution\n\nCustom rules here."
+        old_file = commands_dir / "codexspec.constitution.md"
+        old_file.write_text(custom_content)
+
+        result = runner.invoke(app, ["init", "--here", "--no-git"], input="y\n")
+        assert result.exit_code == 0
+
+        new_file = commands_dir / "codexspec" / "constitution.md"
+        assert new_file.read_text() == custom_content
+
+
+class TestInitUpdate:
+    """Tests for init command update flow."""
+
+    def test_init_detects_existing_subdirectory(self, isolated_runner: Path, runner: CliRunner) -> None:
+        """init should detect existing subdirectory and offer update."""
+        # First init
+        result = runner.invoke(app, ["init", "my-project", "--no-git"])
+        assert result.exit_code == 0
+
+        # Second init should detect existing
+        os.chdir(isolated_runner / "my-project")
+        result = runner.invoke(app, ["init", "--here", "--no-git"], input="n\n")
+        assert result.exit_code == 0
+
+        # Should mention update (in English or Chinese)
+        output_lower = result.stdout.lower()
+        assert (
+            "update" in output_lower
+            or "更新" in result.stdout
+            or "overwrite" in output_lower
+            or "exists" in output_lower
+        )
+
+
+class TestListCommands:
+    """Tests for list-commands command."""
+
+    def test_list_commands_exists(self, runner: CliRunner) -> None:
+        """list-commands command should be available."""
+        result = runner.invoke(app, ["list-commands", "--help"])
+        # Should not error - command exists
+        assert "list-commands" in result.stdout.lower() or result.exit_code == 0
+
+    def test_list_commands_shows_core(self, runner: CliRunner) -> None:
+        """list-commands should show core commands."""
+        result = runner.invoke(app, ["list-commands"])
+        assert result.exit_code == 0
+        # Should show constitution command
+        assert "constitution" in result.stdout.lower()
+
+    def test_list_commands_shows_count(self, runner: CliRunner) -> None:
+        """list-commands should show total count."""
+        result = runner.invoke(app, ["list-commands"])
+        assert result.exit_code == 0
+        # Should show 16 commands
+        assert "16" in result.stdout

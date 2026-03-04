@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD041 -->
 @.codexspec/memory/constitution.md
 
 # CLAUDE.md - CodexSpec Development Guide
@@ -182,34 +183,34 @@ When `codexspec init` is run:
 
 ### Core Commands (9)
 
-| Command | Description |
-|---------|-------------|
-| `/codexspec.constitution` | Create/update project constitution |
-| `/codexspec.specify` | Create feature specification |
-| `/codexspec.generate-spec` | Generate detailed spec from requirements |
-| `/codexspec.spec-to-plan` | Convert spec to technical plan |
-| `/codexspec.plan-to-tasks` | Break down plan into tasks |
-| `/codexspec.review-spec` | Review specification |
-| `/codexspec.review-plan` | Review technical plan |
-| `/codexspec.review-tasks` | Review task breakdown |
-| `/codexspec.implement-tasks` | Execute implementation |
+| Command                      | Description                              |
+| ---------------------------- | ---------------------------------------- |
+| `/codexspec.constitution`    | Create/update project constitution       |
+| `/codexspec.specify`         | Create feature specification             |
+| `/codexspec.generate-spec`   | Generate detailed spec from requirements |
+| `/codexspec.spec-to-plan`    | Convert spec to technical plan           |
+| `/codexspec.plan-to-tasks`   | Break down plan into tasks               |
+| `/codexspec.review-spec`     | Review specification                     |
+| `/codexspec.review-plan`     | Review technical plan                    |
+| `/codexspec.review-tasks`    | Review task breakdown                    |
+| `/codexspec.implement-tasks` | Execute implementation                   |
 
 ### Enhanced Commands (4) - NEW
 
-| Command | Description |
-|---------|-------------|
-| `/codexspec.clarify` | Ask clarification questions before planning |
-| `/codexspec.analyze` | Cross-artifact consistency analysis |
-| `/codexspec.checklist` | Generate requirements quality checklists |
-| `/codexspec.tasks-to-issues` | Convert tasks to GitHub issues |
+| Command                      | Description                                 |
+| ---------------------------- | ------------------------------------------- |
+| `/codexspec.clarify`         | Ask clarification questions before planning |
+| `/codexspec.analyze`         | Cross-artifact consistency analysis         |
+| `/codexspec.checklist`       | Generate requirements quality checklists    |
+| `/codexspec.tasks-to-issues` | Convert tasks to GitHub issues              |
 
 ### Git Workflow Commands
 
-| Command | Description |
-|---------|-------------|
-| `/codexspec.commit` | Generate Conventional Commits messages |
-| `/codexspec.commit-staged` | Generate commit from staged changes |
-| `/codexspec.pr` | Generate PR/MR descriptions |
+| Command                    | Description                            |
+| -------------------------- | -------------------------------------- |
+| `/codexspec.commit`        | Generate Conventional Commits messages |
+| `/codexspec.commit-staged` | Generate commit from staged changes    |
+| `/codexspec.pr`            | Generate PR/MR descriptions            |
 
 ## Development Guidelines
 
@@ -267,28 +268,28 @@ uv run pytest tests/scripts/powershell/ -v
 
 ## Commands Implementation Status
 
-| Command | Status | Notes |
-|---------|--------|-------|
-| `init` | ✅ Complete | Initializes project structure, supports --lang, Constitution Compliance check |
-| `check` | ✅ Complete | Checks for installed tools |
-| `version` | ✅ Complete | Displays version info |
-| `config` | ✅ Complete | View/modify project configuration (NEW) |
-| `/codexspec.constitution` | ✅ Template | Template complete, CLAUDE.md Compliance check on first-time creation |
-| `/codexspec.specify` | ✅ Template | Template complete |
-| `/codexspec.generate-spec` | ✅ Template | Template complete |
-| `/codexspec.spec-to-plan` | ✅ Template | Template complete |
-| `/codexspec.plan-to-tasks` | ✅ Template | Template complete |
-| `/codexspec.review-spec` | ✅ Template | Template complete |
-| `/codexspec.review-plan` | ✅ Template | Template complete |
-| `/codexspec.review-tasks` | ✅ Template | Template complete |
-| `/codexspec.implement-tasks` | ✅ Template | Template complete |
-| `/codexspec.clarify` | ✅ Template | NEW - Template complete |
-| `/codexspec.analyze` | ✅ Template | NEW - Template complete |
-| `/codexspec.checklist` | ✅ Template | NEW - Template complete |
-| `/codexspec.tasks-to-issues` | ✅ Template | NEW - Template complete |
-| `/codexspec.commit` | ✅ Template | Generate commit messages |
-| `/codexspec.commit-staged` | ✅ Template | Generate commit from staged |
-| `/codexspec.pr` | ✅ Template | NEW - Generate PR/MR descriptions |
+| Command                      | Status     | Notes                                                                         |
+| ---------------------------- | ---------- | ----------------------------------------------------------------------------- |
+| `init`                       | ✅ Complete | Initializes project structure, supports --lang, Constitution Compliance check |
+| `check`                      | ✅ Complete | Checks for installed tools                                                    |
+| `version`                    | ✅ Complete | Displays version info                                                         |
+| `config`                     | ✅ Complete | View/modify project configuration (NEW)                                       |
+| `/codexspec.constitution`    | ✅ Template | Template complete, CLAUDE.md Compliance check on first-time creation          |
+| `/codexspec.specify`         | ✅ Template | Template complete                                                             |
+| `/codexspec.generate-spec`   | ✅ Template | Template complete                                                             |
+| `/codexspec.spec-to-plan`    | ✅ Template | Template complete                                                             |
+| `/codexspec.plan-to-tasks`   | ✅ Template | Template complete                                                             |
+| `/codexspec.review-spec`     | ✅ Template | Template complete                                                             |
+| `/codexspec.review-plan`     | ✅ Template | Template complete                                                             |
+| `/codexspec.review-tasks`    | ✅ Template | Template complete                                                             |
+| `/codexspec.implement-tasks` | ✅ Template | Template complete                                                             |
+| `/codexspec.clarify`         | ✅ Template | NEW - Template complete                                                       |
+| `/codexspec.analyze`         | ✅ Template | NEW - Template complete                                                       |
+| `/codexspec.checklist`       | ✅ Template | NEW - Template complete                                                       |
+| `/codexspec.tasks-to-issues` | ✅ Template | NEW - Template complete                                                       |
+| `/codexspec.commit`          | ✅ Template | Generate commit messages                                                      |
+| `/codexspec.commit-staged`   | ✅ Template | Generate commit from staged                                                   |
+| `/codexspec.pr`              | ✅ Template | NEW - Generate PR/MR descriptions                                             |
 
 ### Constitution Compliance Feature (NEW)
 
@@ -345,15 +346,15 @@ See `extensions/EXTENSION-DEVELOPMENT-GUIDE.md` for details.
 
 Spec-kit supports 15+ AI agents. CodexSpec currently focuses on Claude Code but could be extended to support:
 
-| Agent | Notes |
-|-------|-------|
-| Gemini CLI | Google's AI assistant |
-| GitHub Copilot | VS Code integration |
-| Cursor | AI-powered IDE |
-| Windsurf | Codeium's IDE |
-| Codex CLI | OpenAI's CLI |
-| Amazon Q Developer | AWS AI assistant |
-| Others | See spec-kit for full list |
+| Agent              | Notes                      |
+| ------------------ | -------------------------- |
+| Gemini CLI         | Google's AI assistant      |
+| GitHub Copilot     | VS Code integration        |
+| Cursor             | AI-powered IDE             |
+| Windsurf           | Codeium's IDE              |
+| Codex CLI          | OpenAI's CLI               |
+| Amazon Q Developer | AWS AI assistant           |
+| Others             | See spec-kit for full list |
 
 **Implementation Considerations:**
 1. Different command directory structures:
@@ -460,17 +461,17 @@ uv tool install --force .
 
 ### Important Files
 
-| File | Purpose |
-|------|---------|
-| `pyproject.toml` | Project configuration, dependencies, entry points |
-| `src/codexspec/__init__.py` | Main CLI implementation |
-| `src/codexspec/i18n.py` | Internationalization utilities |
-| `templates/commands/*.md` | Slash command templates |
-| `scripts/bash/*.sh` | Bash helper scripts |
-| `scripts/powershell/*.ps1` | PowerShell helper scripts |
-| `extensions/` | Extension system |
-| `README.md` | User documentation |
-| `CLAUDE.md` | This file - AI development context |
+| File                        | Purpose                                           |
+| --------------------------- | ------------------------------------------------- |
+| `pyproject.toml`            | Project configuration, dependencies, entry points |
+| `src/codexspec/__init__.py` | Main CLI implementation                           |
+| `src/codexspec/i18n.py`     | Internationalization utilities                    |
+| `templates/commands/*.md`   | Slash command templates                           |
+| `scripts/bash/*.sh`         | Bash helper scripts                               |
+| `scripts/powershell/*.ps1`  | PowerShell helper scripts                         |
+| `extensions/`               | Extension system                                  |
+| `README.md`                 | User documentation                                |
+| `CLAUDE.md`                 | This file - AI development context                |
 
 ---
 
