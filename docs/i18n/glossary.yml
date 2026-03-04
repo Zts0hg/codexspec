@@ -1,0 +1,293 @@
+# CodexSpec 文档翻译术语表
+# This glossary defines translation rules for documentation internationalization
+
+version: "1.0"
+description: "CodexSpec documentation translation glossary"
+
+# Terms that should remain in English (not translated)
+keep_english:
+  # Tool names
+  - uv
+  - pip
+  - pytest
+  - ruff
+  - MkDocs
+  - MkDocs Material
+  - mkdocstrings
+  - Typer
+  - Rich
+
+  # File formats
+  - JSON
+  - YAML
+  - TOML
+  - Markdown
+  - HTML
+  - CSS
+
+  # Code-related terms
+  - CLI
+  - API
+  - SDK
+  - TDD
+  - CI/CD
+
+  # Protocols and standards
+  - HTTP
+  - HTTPS
+  - REST
+  - OAuth
+  - JWT
+
+  # Platform and services
+  - GitHub
+  - GitHub Actions
+  - GitHub Pages
+  - PyPI
+
+  # Project files
+  - spec.md
+  - plan.md
+  - tasks.md
+  - CLAUDE.md
+  - README.md
+  - pyproject.toml
+  - mkdocs.yml
+
+  # Common abbreviations
+  - PR
+  - MR
+  - IDE
+  - LLM
+  - AI
+
+  # File extensions
+  - .md
+  - .yml
+  - .yaml
+  - .toml
+  - .py
+  - .sh
+  - .ps1
+
+  # Platform-specific
+  - Windows
+  - macOS
+  - Linux
+
+# Specific translations for key terms
+translations:
+  Constitution:
+    zh: 项目宪法
+    ja: プロジェクト憲法
+    ko: 프로젝트 헌법
+    es: Constitución del Proyecto
+    fr: Constitution du Projet
+    de: Projektverfassung
+    pt-BR: Constituição do Projeto
+
+  Specification:
+    zh: 规格文档
+    ja: 仕様書
+    ko: 명세서
+    es: Especificación
+    fr: Spécification
+    de: Spezifikation
+    pt-BR: Especificação
+
+  Task:
+    zh: 任务
+    ja: タスク
+    ko: 태스크
+    es: Tarea
+    fr: Tâche
+    de: Aufgabe
+    pt-BR: Tarefa
+
+  Workflow:
+    zh: 工作流
+    ja: ワークフロー
+    ko: 워크플로우
+    es: Flujo de trabajo
+    fr: Flux de travail
+    de: Workflow
+    pt-BR: Fluxo de trabalho
+
+  Repository:
+    zh: 仓库
+    ja: リポジトリ
+    ko: 리포지토리
+    es: Repositorio
+    fr: Dépôt
+    de: Repository
+    pt-BR: Repositório
+
+  Branch:
+    zh: 分支
+    ja: ブランチ
+    ko: 브랜치
+    es: Rama
+    fr: Branche
+    de: Branch
+    pt-BR: Branch
+
+  Commit:
+    zh: 提交
+    ja: コミット
+    ko: 커밋
+    es: Commit
+    fr: Commit
+    de: Commit
+    pt-BR: Commit
+
+  Pull Request:
+    zh: 拉取请求
+    ja: プルリクエスト
+    ko: 풀 리퀘스트
+    es: Pull Request
+    fr: Pull Request
+    de: Pull Request
+    pt-BR: Pull Request
+
+  Merge Request:
+    zh: 合并请求
+    ja: マージリクエスト
+    ko: 머지 리퀘스트
+    es: Merge Request
+    fr: Merge Request
+    de: Merge Request
+    pt-BR: Merge Request
+
+  Template:
+    zh: 模板
+    ja: テンプレート
+    ko: 템플릿
+    es: Plantilla
+    fr: Modèle
+    de: Vorlage
+    pt-BR: Modelo
+
+  Command:
+    zh: 命令
+    ja: コマンド
+    ko: 명령어
+    es: Comando
+    fr: Commande
+    de: Befehl
+    pt-BR: Comando
+
+  Configuration:
+    zh: 配置
+    ja: 設定
+    ko: 설정
+    es: Configuración
+    fr: Configuration
+    de: Konfiguration
+    pt-BR: Configuração
+
+  Internationalization:
+    zh: 国际化
+    ja: 国際化
+    ko: 국제화
+    es: Internacionalización
+    fr: Internationalisation
+    de: Internationalisierung
+    pt-BR: Internacionalização
+
+  Localization:
+    zh: 本地化
+    ja: ローカライゼーション
+    ko: 현지화
+    es: Localización
+    fr: Localisation
+    de: Lokalisierung
+    pt-BR: Localização
+
+  Documentation:
+    zh: 文档
+    ja: ドキュメント
+    ko: 문서
+    es: Documentación
+    fr: Documentation
+    de: Dokumentation
+    pt-BR: Documentação
+
+  User Guide:
+    zh: 用户指南
+    ja: ユーザーガイド
+    ko: 사용자 가이드
+    es: Guía de usuario
+    fr: Guide utilisateur
+    de: Benutzerhandbuch
+    pt-BR: Guia do usuário
+
+  Getting Started:
+    zh: 快速开始
+    ja: はじめに
+    ko: 시작하기
+    es: Primeros pasos
+    fr: Démarrage
+    de: Erste Schritte
+    pt-BR: Primeiros passos
+
+  Installation:
+    zh: 安装
+    ja: インストール
+    ko: 설치
+    es: Instalación
+    fr: Installation
+    de: Installation
+    pt-BR: Instalação
+
+  Quick Start:
+    zh: 快速入门
+    ja: クイックスタート
+    ko: 빠른 시작
+    es: Inicio rápido
+    fr: Démarrage rapide
+    de: Schnellstart
+    pt-BR: Início rápido
+
+  Development:
+    zh: 开发
+    ja: 開発
+    ko: 개발
+    es: Desarrollo
+    fr: Développement
+    de: Entwicklung
+    pt-BR: Desenvolvimento
+
+  Contributing:
+    zh: 贡献指南
+    ja: 貢献
+    ko: 기여
+    es: Contribuir
+    fr: Contribuer
+    de: Beitragen
+    pt-BR: Contribuir
+
+# AI intelligent judgment rules
+rules:
+  - pattern: "^[A-Z]{2,}$"
+    description: "All-caps abbreviations should be kept in English"
+    action: keep
+
+  - pattern: "^/[a-z-]+"
+    description: "Slash commands should be kept as-is"
+    action: keep
+
+  - pattern: "^[a-z]+\\.[a-z]+$"
+    description: "File extensions should be kept in English"
+    action: keep
+
+  - pattern: "\\b\\d+\\.\\d+\\.\\d+\\b"
+    description: "Version numbers should be kept as-is"
+    action: keep
+
+  - pattern: "```[\\s\\S]*?```"
+    description: "Code blocks should not be translated"
+    action: keep
+
+  - pattern: "`[^`]+`"
+    description: "Inline code should not be translated"
+    action: keep
