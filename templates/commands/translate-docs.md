@@ -69,7 +69,7 @@ Supported language codes:
 
 ### 2. Load Glossary
 
-Read `.codexspec/i18n/glossary.yml` and extract:
+Read `docs/i18n/glossary.yml` and extract:
 - **keep_english**: Terms that should NOT be translated
 - **translations**: Pre-defined translations for specific terms
 - **rules**: Patterns for intelligent term handling
