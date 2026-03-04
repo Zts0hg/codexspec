@@ -10,7 +10,7 @@ on:
       - main
     paths:
       - 'docs/en/**'
-      - '.codexspec/i18n/glossary.yml'
+      - 'docs/i18n/glossary.yml'
 
   # Allow manual trigger with language selection
   workflow_dispatch:
