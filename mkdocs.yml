@@ -5,12 +5,13 @@ repo_url: https://github.com/Zts0hg/codexspec
 repo_name: Zts0hg/codexspec
 edit_uri: edit/main/docs/
 
-# Documentation directory (English as source)
-docs_dir: docs/en
+# Documentation directory (parent folder containing all language subdirectories)
+docs_dir: docs
 
-# Exclude internal planning documents from build
+# Exclude internal planning documents and i18n config from build
 exclude_docs: |
   /plans/
+  /i18n/
 
 theme:
   name: material
