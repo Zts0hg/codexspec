@@ -106,28 +106,28 @@ extra:
       link: https://github.com/Zts0hg/codexspec
   alternate:
     - name: English
-      link: /en/
+      link: /codexspec/en/
       lang: en
     - name: 中文简体
-      link: /zh/
+      link: /codexspec/zh/
       lang: zh
     - name: 日本語
-      link: /ja/
+      link: /codexspec/ja/
       lang: ja
     - name: 한국어
-      link: /ko/
+      link: /codexspec/ko/
       lang: ko
     - name: Español
-      link: /es/
+      link: /codexspec/es/
       lang: es
     - name: Français
-      link: /fr/
+      link: /codexspec/fr/
       lang: fr
     - name: Deutsch
-      link: /de/
+      link: /codexspec/de/
       lang: de
     - name: Português (Brasil)
-      link: /pt-BR/
+      link: /codexspec/pt-BR/
       lang: pt-BR
 
 extra_css:
