@@ -8,6 +8,7 @@ on:
       - 'mkdocs.yml'
       - 'src/**'
       - 'pyproject.toml'
+      - 'hooks/**'
   workflow_dispatch:
 
 permissions:
