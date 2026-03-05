@@ -12,11 +12,16 @@ def on_post_build(config, **kwargs):
 
     Also fixes 404.html to use English (default language) instead of the last
     language in the configuration list, which mkdocs-static-i18n uses as fallback.
+
+    Also generates robots.txt for SEO and search engine indexing.
     """
     site_dir = Path(config.site_dir)
 
     # Fix 404.html to use English (default language) instead of last language
     _fix_404_language(site_dir)
+
+    # Generate robots.txt for search engines
+    _generate_robots_txt(site_dir, config)
 
     # Handle root redirect if needed
     root_index = site_dir / "index.html"
@@ -71,3 +76,23 @@ def _fix_404_language(site_dir: Path) -> None:
         print("Fixed 404.html language to English (default)")
     else:
         print("404.html already using default language, no changes needed")
+
+
+def _generate_robots_txt(site_dir: Path, config) -> None:
+    """Generate robots.txt for search engine crawlers.
+
+    Creates a robots.txt file that:
+    - Allows all crawlers to access the site
+    - Points to the sitemap.xml location
+    """
+    site_url = config.site_url.rstrip("/")
+
+    robots_content = f"""User-agent: *
+Allow: /
+
+Sitemap: {site_url}/sitemap.xml
+"""
+
+    robots_path = site_dir / "robots.txt"
+    robots_path.write_text(robots_content)
+    print(f"Generated robots.txt at {robots_path}")
