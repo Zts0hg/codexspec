@@ -24,7 +24,7 @@ project:
 
 O idioma para interações do Claude e documentos gerados.
 
-**Valores suportados:** Consulte [Internacionalização](../user-guide/i18n.md#idiomas-suportados)
+**Valores suportados:** Consulte [Internacionalização](../user-guide/i18n.md#supported-languages)
 
 ### `language.templates`
 

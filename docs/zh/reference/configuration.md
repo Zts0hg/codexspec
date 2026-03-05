@@ -24,7 +24,7 @@ project:
 
 Claude 交互和生成文档的语言。
 
-**支持的值：** 参见[国际化](../user-guide/i18n.md#支持的语言)
+**支持的值：** 参见[国际化](../user-guide/i18n.md#supported-languages)
 
 ### `language.templates`
 

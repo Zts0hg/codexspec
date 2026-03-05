@@ -31,7 +31,6 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
   features:
-    - navigation.instant
     - navigation.tracking
     - navigation.tabs
     - navigation.sections
@@ -90,16 +89,36 @@ plugins:
             show_source: true
             show_root_heading: true
   - i18n:
-      default_language: en
+      docs_structure: folder
       languages:
-        en: English
-        zh: 中文简体
-        ja: 日本語
-        ko: 한국어
-        es: Español
-        fr: Français
-        de: Deutsch
-        pt-BR: Português (Brasil)
+        - locale: en
+          name: English
+          default: true
+          build: true
+        - locale: zh
+          name: 中文简体
+          build: true
+        - locale: ja
+          name: 日本語
+          build: true
+        - locale: ko
+          name: 한국어
+          build: true
+        - locale: es
+          name: Español
+          build: true
+        - locale: fr
+          name: Français
+          build: true
+        - locale: de
+          name: Deutsch
+          build: true
+        - locale: pt-BR
+          name: Português (Brasil)
+          build: true
+
+hooks:
+  - hooks/post_build.py
 
 extra:
   social:
