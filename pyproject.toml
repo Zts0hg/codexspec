@@ -50,6 +50,9 @@ docs = [
     "mkdocstrings[python]>=0.24.0",
     "mkdocs-static-i18n>=1.0.0",
 ]
+monitor = [
+    "watchdog>=3.0.0",
+]
 
 [project.scripts]
 codexspec = "codexspec:main"
