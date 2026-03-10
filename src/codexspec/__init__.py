@@ -431,10 +431,13 @@ def init(
         console.print("[red]Error: Please provide a project name or use --here flag[/red]")
         raise typer.Exit(1)
 
+    # Normalize language code early for use throughout the function
+    normalized_lang = normalize_locale(lang)
+
     if debug:
         console.print(f"[dim]Target directory: {target_dir}[/dim]")
         console.print(f"[dim]AI assistant: {ai}[/dim]")
-        console.print(f"[dim]Language: {lang} (normalized: {normalize_locale(lang)})[/dim]")
+        console.print(f"[dim]Language: {lang} (normalized: {normalized_lang})[/dim]")
 
     # Check if directory exists and handle accordingly
     if target_dir.exists() and not here and project_name != ".":
@@ -531,11 +534,13 @@ def init(
     elif should_update_commands(codexspec_dir):
         console.print()
         if Confirm.ask("是否更新命令模板?", default=True):
-            count = install_commands_to_subdir(codexspec_commands_dir, templates_dir, force=True)
+            count = install_commands_to_subdir(
+                codexspec_commands_dir, templates_dir, force=True, language=normalized_lang
+            )
             console.print(f"[green]✓ 已更新 {count} 个命令[/green]")
     else:
         if templates_dir.exists():
-            count = install_commands_to_subdir(codexspec_commands_dir, templates_dir)
+            count = install_commands_to_subdir(codexspec_commands_dir, templates_dir, language=normalized_lang)
             console.print(f"[green]✓ 已安装 {count} 个命令到 .claude/commands/{COMMANDS_SUBDIR}/[/green]")
         else:
             # Create default commands if templates don't exist
@@ -551,7 +556,6 @@ def init(
 
     # Create config.yml with language settings
     config_file = codexspec_dir / "config.yml"
-    normalized_lang = normalize_locale(lang)
     if not config_file.exists() or force:
         config_content = generate_config_content(
             language=normalized_lang,
