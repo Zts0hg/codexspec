@@ -609,7 +609,7 @@ class ClaudeSessionMonitor(FileSystemEventHandler):
             print(output)
         print(f"{'=' * 60}\n")
 
-    def start(self):
+    def start(self, json_mode: bool = False):
         """启动监听"""
         # 先初始化现有文件的状态
         self._initialize_from_existing_files()
@@ -619,11 +619,30 @@ class ClaudeSessionMonitor(FileSystemEventHandler):
         self._observer.schedule(self, str(self.project_dir), recursive=False)
         self._observer.start()
 
-        if not self.quiet:
+        # 获取最近活跃的 session 状态
+        active_session = self._get_active_session()
+
+        if json_mode:
+            # JSON 模式输出
+            output = {
+                "type": "startup",
+                "project": str(self.project_dir),
+                "timestamp": time.time(),
+            }
+            if active_session:
+                state = self.sessions.get(active_session)
+                output["session_id"] = active_session
+                output["status"] = state.status.value if state else "UNKNOWN"
+                output["is_executing"] = state.is_executing if state else False
+            else:
+                output["session_id"] = None
+                output["status"] = "NO_SESSION"
+                output["is_executing"] = False
+            print(json.dumps(output, ensure_ascii=False), flush=True)
+        elif not self.quiet:
+            # 普通模式输出
             print(f"Monitoring: {self.project_dir}")
 
-            # 获取最近活跃的 session 状态
-            active_session = self._get_active_session()
             if active_session:
                 state = self.sessions.get(active_session)
                 if state:
@@ -778,7 +797,7 @@ Examples:
                 "timestamp": time.time(),
                 "output": state.last_output,
             }
-            print(json.dumps(output, ensure_ascii=False))
+            print(json.dumps(output, ensure_ascii=False), flush=True)
 
         def json_user_question_callback(session_id: str, questions: list[QuestionInfo]):
             output = {
@@ -795,7 +814,7 @@ Examples:
                     for q in questions
                 ],
             }
-            print(json.dumps(output, ensure_ascii=False))
+            print(json.dumps(output, ensure_ascii=False), flush=True)
 
         def json_error_stop_callback(session_id: str, error_info: ErrorInfo):
             output = {
@@ -809,7 +828,7 @@ Examples:
                     "tool_input": error_info.tool_input,
                 },
             }
-            print(json.dumps(output, ensure_ascii=False))
+            print(json.dumps(output, ensure_ascii=False), flush=True)
 
         on_complete = json_complete_callback
         on_user_question = json_user_question_callback
@@ -823,7 +842,7 @@ Examples:
             on_user_question=on_user_question,
             on_error_stop=on_error_stop,
         )
-        monitor.start()
+        monitor.start(json_mode=args.json)
     except FileNotFoundError as e:
         print(f"Error: {e}")
         exit(1)
