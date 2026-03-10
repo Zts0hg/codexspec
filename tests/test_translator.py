@@ -157,3 +157,90 @@ argument-hint: |
         result = apply_translations_to_template(content, translations)
         assert "第一行" in result
         assert "第二行" in result
+
+
+class TestIntegration:
+    """End-to-end integration tests."""
+
+    def test_full_translation_flow(self, tmp_path):
+        """Test complete translation flow from template to installed file."""
+        from codexspec.commands.installer import install_commands_to_subdir
+
+        # Setup template
+        templates_dir = tmp_path / "templates"
+        templates_dir.mkdir()
+        (templates_dir / "specify.md").write_text(
+            """---
+description: Clarify requirements through interactive Q&A
+argument-hint: "Describe your initial idea"
+---
+
+# Content""",
+            encoding="utf-8",
+        )
+
+        # Setup translation cache
+        translations_dir = tmp_path / "translations"
+        translations_dir.mkdir()
+        (translations_dir / "zh-CN.json").write_text(
+            json.dumps({"specify": {"description": "通过交互式问答澄清需求", "argument-hint": "描述你的初始想法"}}),
+            encoding="utf-8",
+        )
+
+        # Install with translation
+        target_dir = tmp_path / "target"
+        count = install_commands_to_subdir(
+            target_dir, templates_dir, language="zh-CN", translations_dir=translations_dir
+        )
+
+        # Verify
+        assert count == 1
+        content = (target_dir / "specify.md").read_text(encoding="utf-8")
+        assert "通过交互式问答澄清需求" in content
+        assert "描述你的初始想法" in content
+        assert "# Content" in content  # Markdown preserved
+
+    def test_install_without_translation(self, tmp_path):
+        """Test that unsupported language keeps original content."""
+        from codexspec.commands.installer import install_commands_to_subdir
+
+        templates_dir = tmp_path / "templates"
+        templates_dir.mkdir()
+        (templates_dir / "test.md").write_text(
+            """---
+description: Test description
+---
+
+# Content""",
+            encoding="utf-8",
+        )
+
+        target_dir = tmp_path / "target"
+        count = install_commands_to_subdir(target_dir, templates_dir, language="unsupported-lang")
+
+        assert count == 1
+        content = (target_dir / "test.md").read_text(encoding="utf-8")
+        assert "Test description" in content
+        assert "# Content" in content
+
+    def test_install_english_no_translation(self, tmp_path):
+        """Test that English skips translation entirely."""
+        from codexspec.commands.installer import install_commands_to_subdir
+
+        templates_dir = tmp_path / "templates"
+        templates_dir.mkdir()
+        (templates_dir / "test.md").write_text(
+            """---
+description: Test description
+---
+
+# Content""",
+            encoding="utf-8",
+        )
+
+        target_dir = tmp_path / "target"
+        count = install_commands_to_subdir(target_dir, templates_dir, language="en")
+
+        assert count == 1
+        content = (target_dir / "test.md").read_text(encoding="utf-8")
+        assert "Test description" in content
