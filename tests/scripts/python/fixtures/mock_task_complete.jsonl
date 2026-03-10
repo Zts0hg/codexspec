@@ -1,0 +1,5 @@
+{"type":"user","content":"Please help me create a simple Python function"}
+{"type":"assistant","message":{"stop_reason":null,"content":[{"type":"text","text":"I'll help you create a simple Python function."}]}}
+{"type":"assistant","message":{"stop_reason":"tool_use","content":[{"type":"tool_use","name":"Write","input":{"file_path":"/tmp/hello.py","content":"def hello():\n    print('Hello, World!')\n"}}]}}
+{"type":"user","content":""}
+{"type":"assistant","message":{"stop_reason":"end_turn","content":[{"type":"text","text":"I've created a simple Python function for you. The file has been written to /tmp/hello.py. You can run it with `python /tmp/hello.py`."}]}}
