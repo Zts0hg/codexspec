@@ -1,0 +1,5 @@
+{"type":"user","content":"Read a file that doesn't exist"}
+{"type":"assistant","message":{"stop_reason":null,"content":[{"type":"text","text":"I'll try to read that file for you."}]}}
+{"type":"assistant","message":{"stop_reason":"tool_use","content":[{"type":"tool_use","name":"Read","input":{"file_path":"/nonexistent/path/to/file.txt"}}]}}
+{"type":"user","content":""}
+{"type":"assistant","message":{"stop_reason":"error","content":[{"type":"tool_result","tool_use_id":"toolu_123","content":"Error: file not found: /nonexistent/path/to/file.txt","is_error":true}]}}
