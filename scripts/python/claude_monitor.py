@@ -7,9 +7,10 @@ Claude Code Session Monitor
 import argparse
 import json
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from enum import Enum
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 try:
     from watchdog.events import FileSystemEventHandler
@@ -19,14 +20,315 @@ except ImportError:
     exit(1)
 
 
+# ============================================================================
+# 数据模型定义 (Phase 1: Foundation)
+# ============================================================================
+
+
+class SessionStatus(Enum):
+    """Session 状态枚举"""
+
+    STREAMING = "STREAMING"  # 流式输出中
+    TOOL_USE = "TOOL_USE"  # 工具调用中
+    USER_QUESTION = "USER_QUESTION"  # 等待用户回答
+    ERROR_STOP = "ERROR_STOP"  # 出错停止
+    TASK_COMPLETE = "TASK_COMPLETE"  # 任务完成
+    IDLE = "IDLE"  # 空闲状态
+
+
+@dataclass
+class QuestionOption:
+    """用户询问选项"""
+
+    label: str
+    description: str
+
+
+@dataclass
+class QuestionInfo:
+    """用户询问的详细信息"""
+
+    question: str
+    header: str
+    options: list[QuestionOption]
+    multi_select: bool = False
+
+
+@dataclass
+class ErrorInfo:
+    """错误信息"""
+
+    error_type: str
+    message: str
+    tool_name: Optional[str] = None
+    tool_input: Optional[dict[str, Any]] = None
+
+
 @dataclass
 class SessionState:
     """Session 状态追踪"""
 
     session_id: str
+    status: SessionStatus = SessionStatus.IDLE
     last_stop_reason: Optional[str] = None
     last_output: Optional[str] = None
     is_executing: bool = False
+    questions: list[QuestionInfo] = field(default_factory=list)
+    error_info: Optional[ErrorInfo] = None
+
+
+# ============================================================================
+# 状态检测器 (Phase 2: Core Implementation)
+# ============================================================================
+
+
+class StateDetector:
+    """状态检测器 - 检测消息状态并分类"""
+
+    # 正常完成的 stop_reason
+    STOP_REASONS_COMPLETE = ("end_turn", "stop_sequence", "max_tokens")
+
+    @staticmethod
+    def detect(
+        message: dict,
+    ) -> tuple[SessionStatus, Optional[QuestionInfo], Optional[ErrorInfo]]:
+        """
+        检测消息状态
+
+        Args:
+            message: Claude API 响应消息
+
+        Returns:
+            tuple: (状态, 问题信息, 错误信息)
+        """
+        stop_reason = message.get("stop_reason")
+        content = message.get("content", [])
+
+        # 1. 流式输出中 (stop_reason=null)
+        if stop_reason is None:
+            return SessionStatus.STREAMING, None, None
+
+        # 2. 检查是否为用户询问
+        question_info = StateDetector._extract_question(content)
+        if question_info:
+            return SessionStatus.USER_QUESTION, question_info, None
+
+        # 3. 检查是否出错
+        error_info = StateDetector._extract_error(message)
+        if error_info and stop_reason not in StateDetector.STOP_REASONS_COMPLETE:
+            # 有错误且不是正常完成
+            if stop_reason in ("refusal", "error") or (
+                stop_reason not in StateDetector.STOP_REASONS_COMPLETE and stop_reason != "tool_use"
+            ):
+                return SessionStatus.ERROR_STOP, None, error_info
+
+        # 4. 工具调用（非 AskUserQuestion）
+        if stop_reason == "tool_use":
+            return SessionStatus.TOOL_USE, None, None
+
+        # 5. 任务完成
+        return SessionStatus.TASK_COMPLETE, None, None
+
+    @staticmethod
+    def _extract_question(content: list) -> Optional[QuestionInfo]:
+        """
+        从 content 中提取 AskUserQuestion 信息
+
+        Args:
+            content: 消息内容列表
+
+        Returns:
+            QuestionInfo 或 None
+        """
+        if not content:
+            return None
+
+        for item in content:
+            if item.get("type") != "tool_use":
+                continue
+            if item.get("name") != "AskUserQuestion":
+                continue
+
+            input_data = item.get("input", {})
+            options_data = input_data.get("options", [])
+
+            options = [
+                QuestionOption(
+                    label=opt.get("label", ""),
+                    description=opt.get("description", ""),
+                )
+                for opt in options_data
+            ]
+
+            return QuestionInfo(
+                question=input_data.get("question", ""),
+                header=input_data.get("header", ""),
+                options=options,
+                multi_select=input_data.get("multiSelect", False),
+            )
+
+        return None
+
+    @staticmethod
+    def _extract_error(message: dict) -> Optional[ErrorInfo]:
+        """
+        从消息中提取错误信息
+
+        Args:
+            message: 完整的消息对象
+
+        Returns:
+            ErrorInfo 或 None
+        """
+        content = message.get("content", [])
+        stop_reason = message.get("stop_reason")
+
+        # 检查 refusal
+        if stop_reason == "refusal":
+            # 从 content 中提取 refusal 文本
+            refusal_text = ""
+            for item in content:
+                if item.get("type") == "text":
+                    refusal_text = item.get("text", "")
+                    break
+            return ErrorInfo(
+                error_type="refusal",
+                message=refusal_text or "Request was refused",
+            )
+
+        # 检查 tool_result 中的错误
+        for item in content:
+            if item.get("type") != "tool_result":
+                continue
+            if not item.get("is_error"):
+                continue
+
+            error_content = item.get("content", "")
+            tool_use_id = item.get("tool_use_id", "")
+
+            return ErrorInfo(
+                error_type="tool_execution_error",
+                message=str(error_content) if error_content else "Tool execution failed",
+                tool_name=tool_use_id,  # 实际使用时可能需要从 tool_use_id 映射
+            )
+
+        # 检查 stop_reason 为 error
+        if stop_reason == "error":
+            error_text = ""
+            for item in content:
+                if item.get("type") == "text":
+                    error_text = item.get("text", "")
+                    break
+            return ErrorInfo(
+                error_type="execution_error",
+                message=error_text or "Execution error occurred",
+            )
+
+        return None
+
+
+# ============================================================================
+# 输出格式化器 (Phase 2: Core Implementation)
+# ============================================================================
+
+
+class OutputFormatter:
+    """输出格式化器 - 格式化各种状态的输出"""
+
+    SEPARATOR = "=" * 60
+
+    @staticmethod
+    def format_user_question(session_id: str, questions: list[QuestionInfo]) -> str:
+        """
+        格式化用户询问输出
+
+        Args:
+            session_id: Session ID
+            questions: 问题列表
+
+        Returns:
+            格式化的输出字符串
+        """
+        lines = [
+            "",
+            OutputFormatter.SEPARATOR,
+            f"[Session: {session_id[:8]}] Status: USER_QUESTION",
+            OutputFormatter.SEPARATOR,
+            "Questions:",
+        ]
+
+        for i, q in enumerate(questions, 1):
+            lines.append(f"  [{i}] {q.question}")
+            lines.append(f"      Header: {q.header}")
+            lines.append("      Options:")
+            for opt in q.options:
+                lines.append(f"        • {opt.label} - {opt.description}")
+            if q.multi_select:
+                lines.append("      (Multi-select enabled)")
+
+        lines.append(OutputFormatter.SEPARATOR)
+        return "\n".join(lines)
+
+    @staticmethod
+    def format_error_stop(session_id: str, error_info: ErrorInfo) -> str:
+        """
+        格式化错误停止输出
+
+        Args:
+            session_id: Session ID
+            error_info: 错误信息
+
+        Returns:
+            格式化的输出字符串
+        """
+        lines = [
+            "",
+            OutputFormatter.SEPARATOR,
+            f"[Session: {session_id[:8]}] Status: ERROR_STOP",
+            OutputFormatter.SEPARATOR,
+            f"Error Type: {error_info.error_type}",
+            f"Message: {error_info.message}",
+        ]
+
+        if error_info.tool_name:
+            lines.append(f"Tool: {error_info.tool_name}")
+
+        if error_info.tool_input:
+            lines.append(f"Input: {json.dumps(error_info.tool_input, ensure_ascii=False)}")
+
+        lines.append(OutputFormatter.SEPARATOR)
+        return "\n".join(lines)
+
+    @staticmethod
+    def format_task_complete(session_id: str, state: "SessionState") -> str:
+        """
+        格式化任务完成输出（保持现有格式）
+
+        Args:
+            session_id: Session ID
+            state: Session 状态
+
+        Returns:
+            格式化的输出字符串
+        """
+        lines = [
+            "",
+            OutputFormatter.SEPARATOR,
+            f"[Session: {session_id[:8]}] Status: TASK_COMPLETE",
+            OutputFormatter.SEPARATOR,
+            f"Stop reason: {state.last_stop_reason}",
+        ]
+
+        if state.last_output:
+            # 限制输出长度
+            output = state.last_output
+            if len(output) > 2000:
+                output = output[:2000] + "\n... (truncated)"
+            lines.append("Output:")
+            lines.append(f"  {output}")
+
+        lines.append(OutputFormatter.SEPARATOR)
+        return "\n".join(lines)
 
 
 class ClaudeSessionMonitor(FileSystemEventHandler):
@@ -47,10 +349,14 @@ class ClaudeSessionMonitor(FileSystemEventHandler):
         project_dir: Optional[Path] = None,
         quiet: bool = False,
         on_complete: Optional[callable] = None,
+        on_user_question: Optional[callable] = None,
+        on_error_stop: Optional[callable] = None,
     ):
         self.project_dir = project_dir or self._detect_current_project()
         self.quiet = quiet
         self.on_complete = on_complete
+        self.on_user_question = on_user_question
+        self.on_error_stop = on_error_stop
         self.sessions: dict[str, SessionState] = {}
         self._file_positions: dict[str, int] = {}  # 记录每个文件的读取位置
         self._observer: Optional[Observer] = None
@@ -157,22 +463,37 @@ class ClaudeSessionMonitor(FileSystemEventHandler):
 
     def _update_session_state(self, session_id: str, data: dict, silent: bool = False):
         """更新 session 状态"""
-        message = data.get("message", {})
+        # data 可能是完整的事件 {"type": "assistant", "message": {...}}
+        # 或者直接是 message 内容 {"stop_reason": ..., "content": [...]}
+        message = data.get("message", data)
         stop_reason = message.get("stop_reason")
         content = message.get("content", [])
 
         # 提取文本内容
         text_content = self._extract_text(content)
 
+        # 使用 StateDetector 检测状态
+        detected_status, question_info, error_info = StateDetector.detect(message)
+
         # 更新 session 状态
         if session_id not in self.sessions:
             self.sessions[session_id] = SessionState(session_id=session_id)
 
         state = self.sessions[session_id]
+        _ = state.status  # Track for future use
         previous_executing = state.is_executing
 
         state.last_stop_reason = stop_reason
         state.last_output = text_content
+        state.status = detected_status
+
+        # 根据检测结果更新问题/错误信息
+        if question_info:
+            state.questions = [question_info]
+        else:
+            state.questions = []
+
+        state.error_info = error_info
 
         # 判断是否正在执行
         # 1. stop_reason=None 表示流式输出中，正在执行
@@ -186,12 +507,22 @@ class ClaudeSessionMonitor(FileSystemEventHandler):
         else:
             state.is_executing = False
 
-        # 检测从执行中变为完成（状态变化）
-        if not silent and previous_executing and not state.is_executing:
-            self._on_execution_complete(session_id, state)
-        # 检测直接完成的消息
-        elif not silent and stop_reason in self.STOP_REASONS_COMPLETE:
-            self._on_execution_complete(session_id, state)
+        # 触发状态变化回调
+        if not silent:
+            # 检测用户询问状态
+            if detected_status == SessionStatus.USER_QUESTION:
+                self._on_user_question(session_id, state.questions)
+
+            # 检测错误停止状态
+            elif detected_status == SessionStatus.ERROR_STOP:
+                self._on_error_stop(session_id, state.error_info)
+
+            # 检测从执行中变为完成（状态变化）
+            elif previous_executing and not state.is_executing:
+                self._on_execution_complete(session_id, state)
+            # 检测直接完成的消息
+            elif stop_reason in self.STOP_REASONS_COMPLETE:
+                self._on_execution_complete(session_id, state)
 
     def _is_session_recently_active(self, session_id: str) -> bool:
         """检查 session 文件是否在最近活跃"""
@@ -222,16 +553,47 @@ class ClaudeSessionMonitor(FileSystemEventHandler):
 
     def _on_execution_complete(self, session_id: str, state: SessionState):
         """执行完成时的回调"""
-        if self.quiet:
-            return
-
-        # 调用自定义回调
+        # 调用自定义回调（即使在 quiet 模式下也调用）
         if self.on_complete:
             self.on_complete(session_id, state)
             return
 
+        # quiet 模式下不输出默认格式
+        if self.quiet:
+            return
+
         # 默认输出格式
         self._print_completion(session_id, state)
+
+    def _on_user_question(self, session_id: str, questions: list[QuestionInfo]):
+        """用户询问时的回调"""
+        # 调用自定义回调（即使在 quiet 模式下也调用）
+        if self.on_user_question:
+            self.on_user_question(session_id, questions)
+            return
+
+        # quiet 模式下不输出默认格式
+        if self.quiet:
+            return
+
+        # 默认输出格式
+        output = OutputFormatter.format_user_question(session_id, questions)
+        print(output)
+
+    def _on_error_stop(self, session_id: str, error_info: ErrorInfo):
+        """出错停止时的回调"""
+        # 调用自定义回调（即使在 quiet 模式下也调用）
+        if self.on_error_stop:
+            self.on_error_stop(session_id, error_info)
+            return
+
+        # quiet 模式下不输出默认格式
+        if self.quiet:
+            return
+
+        # 默认输出格式
+        output = OutputFormatter.format_error_stop(session_id, error_info)
+        print(output)
 
     def _print_completion(self, session_id: str, state: SessionState):
         """打印完成信息"""
@@ -403,24 +765,63 @@ Examples:
 
     # 创建自定义回调用于 JSON 输出
     on_complete = None
+    on_user_question = None
+    on_error_stop = None
+
     if args.json:
 
-        def json_callback(session_id: str, state: SessionState):
+        def json_complete_callback(session_id: str, state: SessionState):
             output = {
                 "session_id": session_id,
+                "status": state.status.value,
                 "stop_reason": state.last_stop_reason,
                 "timestamp": time.time(),
                 "output": state.last_output,
             }
             print(json.dumps(output, ensure_ascii=False))
 
-        on_complete = json_callback
+        def json_user_question_callback(session_id: str, questions: list[QuestionInfo]):
+            output = {
+                "session_id": session_id,
+                "status": SessionStatus.USER_QUESTION.value,
+                "timestamp": time.time(),
+                "questions": [
+                    {
+                        "question": q.question,
+                        "header": q.header,
+                        "options": [{"label": opt.label, "description": opt.description} for opt in q.options],
+                        "multi_select": q.multi_select,
+                    }
+                    for q in questions
+                ],
+            }
+            print(json.dumps(output, ensure_ascii=False))
+
+        def json_error_stop_callback(session_id: str, error_info: ErrorInfo):
+            output = {
+                "session_id": session_id,
+                "status": SessionStatus.ERROR_STOP.value,
+                "timestamp": time.time(),
+                "error": {
+                    "type": error_info.error_type,
+                    "message": error_info.message,
+                    "tool_name": error_info.tool_name,
+                    "tool_input": error_info.tool_input,
+                },
+            }
+            print(json.dumps(output, ensure_ascii=False))
+
+        on_complete = json_complete_callback
+        on_user_question = json_user_question_callback
+        on_error_stop = json_error_stop_callback
 
     try:
         monitor = ClaudeSessionMonitor(
             project_dir=args.project,
             quiet=args.quiet or args.json,
             on_complete=on_complete,
+            on_user_question=on_user_question,
+            on_error_stop=on_error_stop,
         )
         monitor.start()
     except FileNotFoundError as e:

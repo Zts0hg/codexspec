@@ -1,0 +1,7 @@
+{"type":"user","content":"Try to read a file, then create it if it doesn't exist"}
+{"type":"assistant","message":{"stop_reason":null,"content":[{"type":"text","text":"I'll try to read the file first."}]}}
+{"type":"assistant","message":{"stop_reason":"tool_use","content":[{"type":"tool_use","name":"Read","input":{"file_path":"/tmp/newfile.txt"}}]}}
+{"type":"user","content":""}
+{"type":"assistant","message":{"stop_reason":"tool_use","content":[{"type":"tool_result","tool_use_id":"toolu_123","content":"Error: file not found","is_error":true},{"type":"text","text":"The file doesn't exist. Let me create it for you."},{"type":"tool_use","name":"Write","input":{"file_path":"/tmp/newfile.txt","content":"Hello, this is a new file!"}}]}}
+{"type":"user","content":""}
+{"type":"assistant","message":{"stop_reason":"end_turn","content":[{"type":"text","text":"I've created the file for you at /tmp/newfile.txt."}]}}
