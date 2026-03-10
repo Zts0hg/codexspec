@@ -1,0 +1,57 @@
+{
+  "constitution": {
+    "description": "대화형 또는 제공된 원칙 입력에서 프로젝트 헌법을 생성하거나 업데이트하며, 모든 종속 템플릿의 동기화를 유지합니다.",
+    "argument-hint": "[quick|deep | 프로젝트 원칙] (선택사항)\n\n이 명령은 .codexspec/memory/constitution.md에 프로젝트 헌법을 생성/업데이트합니다.\n\n세 가지 사용 방법:\n1. 인수 없음 → 대화형 모드: 탐색 깊이 선택 (quick/deep)\n2. quick → 가벼운 탐색: 설정 파일 + README + 핵심 진입점 (~5-10개 파일)\n3. deep → 전체 탐색: 위 내용 + 소스 코드 분석 + 아키텍처 패턴\n4. <설명> → 탐색 건너뛰기, 원칙 직접 사용"
+  },
+  "specify": {
+    "description": "대화형 Q&A를 통해 요구사항을 명확히 하고 초기 아이디어를 탐색 및 정제"
+  },
+  "clarify": {
+    "description": "기술 계획 전에 대상화된 질문으로 기능 사양의 불명확한 영역 식별"
+  },
+  "analyze": {
+    "description": "spec.md, plan.md, tasks.md 간의 일관성과 품질을 비파괴적으로 분석"
+  },
+  "checklist": {
+    "description": "요구사항의 완전성, 명확성, 일관성을 검증하는 사용자 정의 품질 체크리스트 생성"
+  },
+  "generate-spec": {
+    "description": "요구사항이 명확해진 후 spec.md 문서 생성"
+  },
+  "spec-to-plan": {
+    "description": "기능 사양을 기술 구현 계획으로 변환"
+  },
+  "plan-to-tasks": {
+    "description": "기술 구현 계획을 실행 가능한 작업으로 분해"
+  },
+  "review-spec": {
+    "description": "기능 사양의 완전성, 명확성, 품질 검토 및 검증"
+  },
+  "review-plan": {
+    "description": "기술 구현 계획의 실현 가능성과 일관성 검토 및 검증"
+  },
+  "review-tasks": {
+    "description": "작업 분해의 완전성, 순서, TDD 준수 검토 및 검증"
+  },
+  "implement-tasks": {
+    "description": "조건부 TDD 워크플로로 구현 작업 실행 (코드는 TDD, 문서/구성은 직접 구현)"
+  },
+  "tasks-to-issues": {
+    "description": "기존 작업을 이 기능에 대한 실행 가능한 GitHub Issues로 변환"
+  },
+  "commit": {
+    "description": "git 상태와 세션 컨텍스트를 기반으로 Conventional Commits 준수 커밋 메시지 생성 및 실행"
+  },
+  "commit-staged": {
+    "description": "스테이징된 git 변경 사항을 분석하고 Conventional Commits 준수 커밋 메시지 생성"
+  },
+  "pr": {
+    "description": "git diff와 선택적 spec.md 통합을 기반으로 구조화된 Pull Request (GitHub) 또는 Merge Request (GitLab) 설명 생성"
+  },
+  "check-i18n-semantics": {
+    "description": "다국어 문서의 의미적 일관성과 품질 검사"
+  },
+  "translate-docs": {
+    "description": "프로젝트 문서를 지정된 언어로 번역"
+  }
+}
