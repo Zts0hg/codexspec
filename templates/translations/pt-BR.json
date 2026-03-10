@@ -1,0 +1,57 @@
+{
+  "constitution": {
+    "description": "Criar ou atualizar a constituição do projeto a partir de entradas interativas ou princípios fornecidos, garantindo que todos os modelos dependentes permaneçam sincronizados.",
+    "argument-hint": "[quick|deep | princípios do projeto] (opcional)\n\nEste comando cria/atualiza a constituição do projeto em .codexspec/memory/constitution.md.\n\nTrês formas de uso:\n1. Sem argumentos → Modo interativo: escolher profundidade de exploração (quick/deep)\n2. quick → Exploração leve: arquivos de configuração + README + pontos de entrada principais (~5-10 arquivos)\n3. deep → Exploração completa: tudo acima + análise de código fonte + padrões de arquitetura\n4. <descrição> → Pular exploração, usar seus princípios diretamente"
+  },
+  "specify": {
+    "description": "Esclarecer requisitos através de Q&A interativo para explorar e refinar ideias iniciais"
+  },
+  "clarify": {
+    "description": "Identificar áreas pouco claras na especificação funcional através de perguntas direcionadas antes do planejamento técnico"
+  },
+  "analyze": {
+    "description": "Realizar análise não destrutiva de consistência e qualidade entre artefatos spec.md, plan.md e tasks.md"
+  },
+  "checklist": {
+    "description": "Gerar checklists de qualidade personalizadas para validar completude, clareza e consistência dos requisitos"
+  },
+  "generate-spec": {
+    "description": "Gerar documento spec.md após os requisitos estarem claros"
+  },
+  "spec-to-plan": {
+    "description": "Converter especificação funcional em plano de implementação técnica"
+  },
+  "plan-to-tasks": {
+    "description": "Decompor plano de implementação técnica em tarefas executáveis"
+  },
+  "review-spec": {
+    "description": "Revisar e validar completude, clareza e qualidade da especificação funcional"
+  },
+  "review-plan": {
+    "description": "Revisar e validar viabilidade e consistência do plano de implementação técnica"
+  },
+  "review-tasks": {
+    "description": "Revisar e validar completude, ordenação e conformidade TDD da decomposição de tarefas"
+  },
+  "implement-tasks": {
+    "description": "Executar tarefas de implementação com workflow TDD condicional (TDD para código, implementação direta para docs/config)"
+  },
+  "tasks-to-issues": {
+    "description": "Converter tarefas existentes em GitHub Issues acionáveis para esta funcionalidade"
+  },
+  "commit": {
+    "description": "Gerar e executar mensagens de commit em conformidade com Conventional Commits baseadas no estado git e contexto de sessão"
+  },
+  "commit-staged": {
+    "description": "Analisar mudanças git preparadas e gerar mensagem de commit em conformidade com Conventional Commits"
+  },
+  "pr": {
+    "description": "Gerar descrição estruturada de Pull Request (GitHub) ou Merge Request (GitLab) baseada em git diff e integração opcional de spec.md"
+  },
+  "check-i18n-semantics": {
+    "description": "Verificar consistência semântica e qualidade de documentação multilíngue"
+  },
+  "translate-docs": {
+    "description": "Traduzir documentação do projeto para o idioma especificado"
+  }
+}

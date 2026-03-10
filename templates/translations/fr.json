@@ -1,0 +1,57 @@
+{
+  "constitution": {
+    "description": "Créer ou mettre à jour la constitution du projet à partir d'entrées interactives ou de principes fournis, en garantissant la synchronisation de tous les modèles dépendants.",
+    "argument-hint": "[quick|deep | principes du projet] (optionnel)\n\nCette commande crée/met à jour la constitution du projet dans .codexspec/memory/constitution.md.\n\nTrois modes d'utilisation :\n1. Sans arguments → Mode interactif : choisir la profondeur d'exploration (quick/deep)\n2. quick → Exploration légère : fichiers de configuration + README + points d'entrée principaux (~5-10 fichiers)\n3. deep → Exploration complète : tout ce qui précède + analyse du code source + patterns d'architecture\n4. <description> → Ignorer l'exploration, utiliser vos principes directement"
+  },
+  "specify": {
+    "description": "Clarifier les exigences via Q&R interactif pour explorer et affiner les idées initiales"
+  },
+  "clarify": {
+    "description": "Identifier les zones floues dans la spécification fonctionnelle via des questions ciblées avant la planification technique"
+  },
+  "analyze": {
+    "description": "Effectuer une analyse non destructive de cohérence et qualité entre artefacts spec.md, plan.md et tasks.md"
+  },
+  "checklist": {
+    "description": "Générer des listes de contrôle qualité personnalisées pour valider complétude, clarté et cohérence des exigences"
+  },
+  "generate-spec": {
+    "description": "Générer le document spec.md une fois les exigences clarifiées"
+  },
+  "spec-to-plan": {
+    "description": "Convertir la spécification fonctionnelle en plan d'implémentation technique"
+  },
+  "plan-to-tasks": {
+    "description": "Décomposer le plan d'implémentation technique en tâches exécutables"
+  },
+  "review-spec": {
+    "description": "Réviser et valider complétude, clarté et qualité de la spécification fonctionnelle"
+  },
+  "review-plan": {
+    "description": "Réviser et valider faisabilité et cohérence du plan d'implémentation technique"
+  },
+  "review-tasks": {
+    "description": "Réviser et valider complétude, ordonnancement et conformité TDD de la décomposition des tâches"
+  },
+  "implement-tasks": {
+    "description": "Exécuter les tâches d'implémentation avec workflow TDD conditionnel (TDD pour code, implémentation directe pour docs/config)"
+  },
+  "tasks-to-issues": {
+    "description": "Convertir les tâches existantes en GitHub Issues actionnables pour cette fonctionnalité"
+  },
+  "commit": {
+    "description": "Générer et exécuter des messages de commit conformes à Conventional Commits basés sur l'état git et le contexte de session"
+  },
+  "commit-staged": {
+    "description": "Analyser les changements git stagés et générer un message de commit conforme à Conventional Commits"
+  },
+  "pr": {
+    "description": "Générer une description structurée de Pull Request (GitHub) ou Merge Request (GitLab) basée sur git diff et intégration optionnelle de spec.md"
+  },
+  "check-i18n-semantics": {
+    "description": "Vérifier la cohérence sémantique et la qualité de la documentation multilingue"
+  },
+  "translate-docs": {
+    "description": "Traduire la documentation du projet dans la langue spécifiée"
+  }
+}
