@@ -1,0 +1,57 @@
+{
+  "constitution": {
+    "description": "Crear o actualizar la constitución del proyecto a partir de entradas interactivas o principios proporcionados, asegurando que todas las plantillas dependientes permanezcan sincronizadas.",
+    "argument-hint": "[quick|deep | principios del proyecto] (opcional)\n\nEste comando crea/actualiza la constitución del proyecto en .codexspec/memory/constitution.md.\n\nTres formas de uso:\n1. Sin argumentos → Modo interactivo: elegir profundidad de exploración (quick/deep)\n2. quick → Exploración ligera: archivos de configuración + README + puntos de entrada principales (~5-10 archivos)\n3. deep → Exploración completa: todo lo anterior + análisis de código fuente + patrones de arquitectura\n4. <descripción> → Omitir exploración, usar tus principios directamente"
+  },
+  "specify": {
+    "description": "Aclarar requisitos mediante Q&A interactivo para explorar y refinar ideas iniciales"
+  },
+  "clarify": {
+    "description": "Identificar áreas poco claras en la especificación funcional mediante preguntas dirigidas antes de la planificación técnica"
+  },
+  "analyze": {
+    "description": "Realizar análisis no destructivo de consistencia y calidad entre artefactos spec.md, plan.md y tasks.md"
+  },
+  "checklist": {
+    "description": "Generar listas de verificación de calidad personalizadas para validar completitud, claridad y consistencia de requisitos"
+  },
+  "generate-spec": {
+    "description": "Generar documento spec.md después de que los requisitos estén claros"
+  },
+  "spec-to-plan": {
+    "description": "Convertir especificación funcional en plan de implementación técnica"
+  },
+  "plan-to-tasks": {
+    "description": "Descomponer plan de implementación técnica en tareas ejecutables"
+  },
+  "review-spec": {
+    "description": "Revisar y validar completitud, claridad y calidad de la especificación funcional"
+  },
+  "review-plan": {
+    "description": "Revisar y validar viabilidad y consistencia del plan de implementación técnica"
+  },
+  "review-tasks": {
+    "description": "Revisar y validar completitud, orden y cumplimiento TDD de la descomposición de tareas"
+  },
+  "implement-tasks": {
+    "description": "Ejecutar tareas de implementación con flujo de trabajo TDD condicional (TDD para código, implementación directa para docs/config)"
+  },
+  "tasks-to-issues": {
+    "description": "Convertir tareas existentes en GitHub Issues accionables para esta funcionalidad"
+  },
+  "commit": {
+    "description": "Generar y ejecutar mensajes de commit conformes a Conventional Commits basados en estado git y contexto de sesión"
+  },
+  "commit-staged": {
+    "description": "Analizar cambios git preparados y generar mensaje de commit conforme a Conventional Commits"
+  },
+  "pr": {
+    "description": "Generar descripción estructurada de Pull Request (GitHub) o Merge Request (GitLab) basada en git diff e integración opcional de spec.md"
+  },
+  "check-i18n-semantics": {
+    "description": "Verificar consistencia semántica y calidad de documentación multilingüe"
+  },
+  "translate-docs": {
+    "description": "Traducir documentación del proyecto al idioma especificado"
+  }
+}
