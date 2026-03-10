@@ -6,7 +6,9 @@ CodexSpec slash commands.
 
 import shutil
 from pathlib import Path
-from typing import TypedDict
+from typing import Optional, TypedDict
+
+from codexspec.translator import load_translation_cache, translate_template_frontmatter
 
 # Constants
 COMMANDS_SUBDIR = "codexspec"  # Subdirectory name for commands
@@ -234,16 +236,21 @@ def install_commands_to_subdir(
     target_dir: Path,
     templates_dir: Path,
     force: bool = False,
+    language: str = "en",
+    translations_dir: Optional[Path] = None,
 ) -> int:
-    """Install command templates to subdirectory.
+    """Install command templates to subdirectory with optional translation.
 
     Pure file operation without user interaction. Copies template files
-    from the templates directory to the target subdirectory.
+    from the templates directory to the target subdirectory, applying
+    frontmatter translation if a non-English language is specified.
 
     Args:
         target_dir: Target directory (.claude/commands/codexspec)
         templates_dir: Source templates directory
         force: If True, overwrite existing files; if False, skip existing
+        language: Target language for frontmatter translation (default: "en")
+        translations_dir: Custom translations directory (for testing)
 
     Returns:
         Number of commands installed
@@ -258,6 +265,11 @@ def install_commands_to_subdir(
     # Ensure target directory exists
     target_dir.mkdir(parents=True, exist_ok=True)
 
+    # Load translation cache if needed
+    translation_cache = None
+    if language != "en":
+        translation_cache = load_translation_cache(language, translations_dir)
+
     installed_count = 0
     for template_file in templates_dir.glob("*.md"):
         target_path = target_dir / template_file.name
@@ -266,8 +278,15 @@ def install_commands_to_subdir(
         if target_path.exists() and not force:
             continue
 
-        # Copy template to target
-        target_path.write_text(template_file.read_text(encoding="utf-8"), encoding="utf-8")
+        # Read template content
+        content = template_file.read_text(encoding="utf-8")
+
+        # Apply translation if available
+        template_name = template_file.stem  # filename without extension
+        content = translate_template_frontmatter(content, template_name, language, translation_cache)
+
+        # Write to target
+        target_path.write_text(content, encoding="utf-8")
         installed_count += 1
 
     return installed_count
