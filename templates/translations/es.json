@@ -1,13 +1,15 @@
 {
   "constitution": {
     "description": "Crear o actualizar la constitución del proyecto a partir de entradas interactivas o principios proporcionados, asegurando que todas las plantillas dependientes permanezcan sincronizadas.",
-    "argument-hint": "[quick|deep | principios del proyecto] (opcional)\n\nEste comando crea/actualiza la constitución del proyecto en .codexspec/memory/constitution.md.\n\nTres formas de uso:\n1. Sin argumentos → Modo interactivo: elegir profundidad de exploración (quick/deep)\n2. quick → Exploración ligera: archivos de configuración + README + puntos de entrada principales (~5-10 archivos)\n3. deep → Exploración completa: todo lo anterior + análisis de código fuente + patrones de arquitectura\n4. <descripción> → Omitir exploración, usar tus principios directamente"
+    "argument-hint": "[quick|deep | principios del proyecto] (opcional)\n\nEste comando crea/actualiza la constitución del proyecto en .codexspec/memory/constitution.md.\n\nTres formas de uso:\n1. Sin argumentos → Modo interactivo: elegir profundidad de exploración (quick/deep)\n2. quick → Exploración ligera: archivos de configuración + README + puntos de entrada principales (~5-10 archivos)\n3. deep → Exploración completa: todo lo anterior + análisis de código fuente + patrones de arquitectura\n4. <descripción> → Omitir exploración, usar tus principios directamente\n\nEjemplos:\n  /codexspec.constitution\n  /codexspec.constitution quick\n  /codexspec.constitution deep\n  /codexspec.constitution Python FastAPI backend con pytest, enfocado en seguridad de tipos"
   },
   "specify": {
-    "description": "Aclarar requisitos mediante Q&A interactivo para explorar y refinar ideas iniciales"
+    "description": "Aclarar requisitos mediante Q&A interactivo para explorar y refinar ideas iniciales",
+    "argument-hint": "Describe tu idea inicial o requisito"
   },
   "clarify": {
-    "description": "Identificar áreas poco claras en la especificación funcional mediante preguntas dirigidas antes de la planificación técnica"
+    "description": "Identificar áreas poco claras en la especificación funcional mediante preguntas dirigidas antes de la planificación técnica",
+    "argument-hint": "[ruta_a_spec.md] (opcional, por defecto .codexspec/specs/{feature-id}/)"
   },
   "analyze": {
     "description": "Realizar análisis no destructivo de consistencia y calidad entre artefactos spec.md, plan.md y tasks.md"
@@ -19,39 +21,49 @@
     "description": "Generar documento spec.md después de que los requisitos estén claros"
   },
   "spec-to-plan": {
-    "description": "Convertir especificación funcional en plan de implementación técnica"
+    "description": "Convertir especificación funcional en plan de implementación técnica",
+    "argument-hint": ".codexspec/specs/{feature-id}/spec.md"
   },
   "plan-to-tasks": {
-    "description": "Descomponer plan de implementación técnica en tareas ejecutables"
+    "description": "Descomponer plan de implementación técnica en tareas ejecutables",
+    "argument-hint": "[ruta_a_spec.md ruta_a_plan.md] (opcional, por defecto .codexspec/specs/{feature-id}/)"
   },
   "review-spec": {
-    "description": "Revisar y validar completitud, claridad y calidad de la especificación funcional"
+    "description": "Revisar y validar completitud, claridad y calidad de la especificación funcional",
+    "argument-hint": "[ruta_a_spec.md] (opcional, por defecto .codexspec/specs/{feature-id}/)"
   },
   "review-plan": {
-    "description": "Revisar y validar viabilidad y consistencia del plan de implementación técnica"
+    "description": "Revisar y validar viabilidad y consistencia del plan de implementación técnica",
+    "argument-hint": "[ruta_a_plan.md] (opcional, por defecto .codexspec/specs/{feature-id}/)"
   },
   "review-tasks": {
-    "description": "Revisar y validar completitud, orden y cumplimiento TDD de la descomposición de tareas"
+    "description": "Revisar y validar completitud, orden y cumplimiento TDD de la descomposición de tareas",
+    "argument-hint": "[ruta_a_tasks.md] (opcional, por defecto .codexspec/specs/{feature-id}/)"
   },
   "implement-tasks": {
-    "description": "Ejecutar tareas de implementación con flujo de trabajo TDD condicional (TDD para código, implementación directa para docs/config)"
+    "description": "Ejecutar tareas de implementación con flujo de trabajo TDD condicional (TDD para código, implementación directa para docs/config)",
+    "argument-hint": "[ruta_tasks] | [ruta_spec ruta_plan ruta_tasks]"
   },
   "tasks-to-issues": {
     "description": "Convertir tareas existentes en GitHub Issues accionables para esta funcionalidad"
   },
   "commit": {
-    "description": "Generar y ejecutar mensajes de commit conformes a Conventional Commits basados en estado git y contexto de sesión"
+    "description": "Generar y ejecutar mensajes de commit conformes a Conventional Commits basados en estado git y contexto de sesión",
+    "argument-hint": "[-p] Usa -p para solo previsualizar el mensaje sin hacer commit"
   },
   "commit-staged": {
-    "description": "Analizar cambios git preparados y generar mensaje de commit conforme a Conventional Commits"
+    "description": "Analizar cambios git preparados y generar mensaje de commit conforme a Conventional Commits",
+    "argument-hint": "[-p] Usa -p para solo previsualizar el mensaje sin hacer commit"
   },
   "pr": {
     "description": "Generar descripción estructurada de Pull Request (GitHub) o Merge Request (GitLab) basada en git diff e integración opcional de spec.md"
   },
   "check-i18n-semantics": {
-    "description": "Verificar consistencia semántica y calidad de documentación multilingüe"
+    "description": "Verificar consistencia semántica y calidad de documentación multilingüe",
+    "argument-hint": "[archivo_fuente] [--lang <idioma>] [--strict]"
   },
   "translate-docs": {
-    "description": "Traducir documentación del proyecto al idioma especificado"
+    "description": "Traducir documentación del proyecto al idioma especificado",
+    "argument-hint": "--lang <códigos_idioma> (ej: 'zh,ja,ko') o 'all' para todos los idiomas"
   }
 }

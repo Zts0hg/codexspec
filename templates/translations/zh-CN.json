@@ -4,10 +4,12 @@
     "argument-hint": "[quick|deep | 项目原则] (可选)\n\n此命令创建/更新位于 .codexspec/memory/constitution.md 的项目宪法。\n\n三种使用方式：\n1. 无参数 → 交互模式：选择探索深度 (quick/deep)\n2. quick → 轻量探索：配置文件 + README + 核心入口点 (~5-10 个文件)\n3. deep → 完整探索：以上内容 + 源代码分析 + 架构模式\n4. <描述> → 跳过探索，直接使用你的原则\n\n示例：\n  /codexspec.constitution\n  /codexspec.constitution quick\n  /codexspec.constitution deep\n  /codexspec.constitution Python FastAPI 后端使用 pytest，注重类型安全"
   },
   "specify": {
-    "description": "通过交互式问答澄清需求，探索和完善初始想法"
+    "description": "通过交互式问答澄清需求，探索和完善初始想法",
+    "argument-hint": "描述你的初始想法或需求"
   },
   "clarify": {
-    "description": "在技术规划前通过定向澄清问题识别功能规格中的不明确区域"
+    "description": "在技术规划前通过定向澄清问题识别功能规格中的不明确区域",
+    "argument-hint": "[spec.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
   },
   "analyze": {
     "description": "对 spec.md、plan.md 和 tasks.md 执行非破坏性的跨工件一致性和质量分析"
@@ -19,39 +21,49 @@
     "description": "需求明确后生成 spec.md 文档"
   },
   "spec-to-plan": {
-    "description": "将功能规格转换为技术实现计划"
+    "description": "将功能规格转换为技术实现计划",
+    "argument-hint": ".codexspec/specs/{feature-id}/spec.md"
   },
   "plan-to-tasks": {
-    "description": "将技术实现计划分解为可执行的任务"
+    "description": "将技术实现计划分解为可执行的任务",
+    "argument-hint": "[spec.md 路径 plan.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
   },
   "review-spec": {
-    "description": "审查和验证功能规格的完整性、清晰度和质量"
+    "description": "审查和验证功能规格的完整性、清晰度和质量",
+    "argument-hint": "[spec.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
   },
   "review-plan": {
-    "description": "审查和验证技术实现计划的可行性和一致性"
+    "description": "审查和验证技术实现计划的可行性和一致性",
+    "argument-hint": "[plan.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
   },
   "review-tasks": {
-    "description": "审查和验证任务分解的完整性、排序和 TDD 合规性"
+    "description": "审查和验证任务分解的完整性、排序和 TDD 合规性",
+    "argument-hint": "[tasks.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
   },
   "implement-tasks": {
-    "description": "执行实现任务，支持条件 TDD 工作流（代码使用 TDD，文档/配置直接实现）"
+    "description": "执行实现任务，支持条件 TDD 工作流（代码使用 TDD，文档/配置直接实现）",
+    "argument-hint": "[tasks 路径] | [spec 路径 plan 路径 tasks 路径]"
   },
   "tasks-to-issues": {
     "description": "将现有任务转换为该功能的可操作 GitHub Issues"
   },
   "commit": {
-    "description": "基于 git 状态和会话上下文生成并执行符合 Conventional Commits 规范的提交信息"
+    "description": "基于 git 状态和会话上下文生成并执行符合 Conventional Commits 规范的提交信息",
+    "argument-hint": "[-p] 使用 -p 仅预览提交信息而不执行提交"
   },
   "commit-staged": {
-    "description": "分析暂存的 git 更改并生成符合 Conventional Commits 规范的提交信息"
+    "description": "分析暂存的 git 更改并生成符合 Conventional Commits 规范的提交信息",
+    "argument-hint": "[-p] 使用 -p 仅预览提交信息而不执行提交"
   },
   "pr": {
     "description": "基于 git diff 和可选的 spec.md 集成生成结构化的 Pull Request (GitHub) 或 Merge Request (GitLab) 描述"
   },
   "check-i18n-semantics": {
-    "description": "检查多语言文档的语义一致性和质量"
+    "description": "检查多语言文档的语义一致性和质量",
+    "argument-hint": "[源文件] [--lang <语言>] [--strict]"
   },
   "translate-docs": {
-    "description": "翻译项目文档到指定语言"
+    "description": "翻译项目文档到指定语言",
+    "argument-hint": "--lang <语言代码> (如 'zh,ja,ko') 或 'all' 翻译所有语言"
   }
 }
