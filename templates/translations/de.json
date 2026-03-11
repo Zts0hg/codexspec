@@ -1,13 +1,15 @@
 {
   "constitution": {
     "description": "Projektverfassung aus interaktiven oder bereitgestellten Prinzipien erstellen oder aktualisieren und sicherstellen, dass alle abhängigen Vorlagen synchronisiert bleiben.",
-    "argument-hint": "[quick|deep | Projektprinzipien] (optional)\n\nDieser Befehl erstellt/aktualisiert die Projektverfassung unter .codexspec/memory/constitution.md.\n\nDrei Verwendungsmöglichkeiten:\n1. Ohne Argumente → Interaktiver Modus: Explorationstiefe wählen (quick/deep)\n2. quick → Leichte Exploration: Konfigurationsdateien + README + Haupteinstiegspunkte (~5-10 Dateien)\n3. deep → Vollständige Exploration: alles oben + Quellcode-Analyse + Architektur-Patterns\n4. <Beschreibung> → Exploration überspringen, Prinzipien direkt verwenden"
+    "argument-hint": "[quick|deep | Projektprinzipien] (optional)\n\nDieser Befehl erstellt/aktualisiert die Projektverfassung unter .codexspec/memory/constitution.md.\n\nDrei Verwendungsmöglichkeiten:\n1. Ohne Argumente → Interaktiver Modus: Explorationstiefe wählen (quick/deep)\n2. quick → Leichte Exploration: Konfigurationsdateien + README + Haupteinstiegspunkte (~5-10 Dateien)\n3. deep → Vollständige Exploration: alles oben + Quellcode-Analyse + Architektur-Patterns\n4. <Beschreibung> → Exploration überspringen, Prinzipien direkt verwenden\n\nBeispiele:\n  /codexspec.constitution\n  /codexspec.constitution quick\n  /codexspec.constitution deep\n  /codexspec.constitution Python FastAPI Backend mit pytest, Fokus auf Typsicherheit"
   },
   "specify": {
-    "description": "Anforderungen durch interaktives Q&A klären und erste Ideen erkunden und verfeinern"
+    "description": "Anforderungen durch interaktives Q&A klären und erste Ideen erkunden und verfeinern",
+    "argument-hint": "Beschreiben Sie Ihre ursprüngliche Idee oder Anforderung"
   },
   "clarify": {
-    "description": "Unklare Bereiche in der Funktionsspezifikation durch gezielte Fragen vor der technischen Planung identifizieren"
+    "description": "Unklare Bereiche in der Funktionsspezifikation durch gezielte Fragen vor der technischen Planung identifizieren",
+    "argument-hint": "[pfad_zu_spec.md] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
   },
   "analyze": {
     "description": "Nicht-destruktive Konsistenz- und Qualitätsanalyse zwischen Artefakten spec.md, plan.md und tasks.md durchführen"
@@ -19,39 +21,49 @@
     "description": "spec.md-Dokument generieren nachdem Anforderungen geklärt sind"
   },
   "spec-to-plan": {
-    "description": "Funktionsspezifikation in technischen Implementierungsplan umwandeln"
+    "description": "Funktionsspezifikation in technischen Implementierungsplan umwandeln",
+    "argument-hint": ".codexspec/specs/{feature-id}/spec.md"
   },
   "plan-to-tasks": {
-    "description": "Technischen Implementierungsplan in ausführbare Aufgaben zerlegen"
+    "description": "Technischen Implementierungsplan in ausführbare Aufgaben zerlegen",
+    "argument-hint": "[spec.md_pfad plan.md_pfad] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
   },
   "review-spec": {
-    "description": "Vollständigkeit, Klarheit und Qualität der Funktionsspezifikation überprüfen und validieren"
+    "description": "Vollständigkeit, Klarheit und Qualität der Funktionsspezifikation überprüfen und validieren",
+    "argument-hint": "[spec.md_pfad] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
   },
   "review-plan": {
-    "description": "Machbarkeit und Konsistenz des technischen Implementierungsplans überprüfen und validieren"
+    "description": "Machbarkeit und Konsistenz des technischen Implementierungsplans überprüfen und validieren",
+    "argument-hint": "[plan.md_pfad] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
   },
   "review-tasks": {
-    "description": "Vollständigkeit, Reihenfolge und TDD-Konformität der Aufgabenaufschlüsselung überprüfen und validieren"
+    "description": "Vollständigkeit, Reihenfolge und TDD-Konformität der Aufgabenaufschlüsselung überprüfen und validieren",
+    "argument-hint": "[tasks.md_pfad] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
   },
   "implement-tasks": {
-    "description": "Implementierungsaufgaben mit bedingtem TDD-Workflow ausführen (TDD für Code, direkte Implementierung für Docs/Config)"
+    "description": "Implementierungsaufgaben mit bedingtem TDD-Workflow ausführen (TDD für Code, direkte Implementierung für Docs/Config)",
+    "argument-hint": "[tasks_pfad] | [spec_pfad plan_pfad tasks_pfad]"
   },
   "tasks-to-issues": {
     "description": "Bestehende Aufgaben in umsetzbare GitHub Issues für diese Funktionalität umwandeln"
   },
   "commit": {
-    "description": "Conventional Commits konforme Commit-Nachrichten basierend auf Git-Status und Sitzungskontext generieren und ausführen"
+    "description": "Conventional Commits konforme Commit-Nachrichten basierend auf Git-Status und Sitzungskontext generieren und ausführen",
+    "argument-hint": "[-p] -p verwenden um nur die Nachricht ohne Commit voranzuzeigen"
   },
   "commit-staged": {
-    "description": "Gestagte Git-Änderungen analysieren und Conventional Commits konforme Commit-Nachricht generieren"
+    "description": "Gestagte Git-Änderungen analysieren und Conventional Commits konforme Commit-Nachricht generieren",
+    "argument-hint": "[-p] -p verwenden um nur die Nachricht ohne Commit voranzuzeigen"
   },
   "pr": {
     "description": "Strukturierte Pull Request (GitHub) oder Merge Request (GitLab) Beschreibung basierend auf git diff und optionaler spec.md-Integration generieren"
   },
   "check-i18n-semantics": {
-    "description": "Semantische Konsistenz und Qualität mehrsprachiger Dokumentation prüfen"
+    "description": "Semantische Konsistenz und Qualität mehrsprachiger Dokumentation prüfen",
+    "argument-hint": "[quelldatei] [--lang <sprache>] [--strict]"
   },
   "translate-docs": {
-    "description": "Projektdokumentation in die angegebene Sprache übersetzen"
+    "description": "Projektdokumentation in die angegebene Sprache übersetzen",
+    "argument-hint": "--lang <sprachcodes> (z.B. 'zh,ja,ko') oder 'all' für alle Sprachen"
   }
 }

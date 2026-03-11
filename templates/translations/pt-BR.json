@@ -1,13 +1,15 @@
 {
   "constitution": {
     "description": "Criar ou atualizar a constituição do projeto a partir de entradas interativas ou princípios fornecidos, garantindo que todos os modelos dependentes permaneçam sincronizados.",
-    "argument-hint": "[quick|deep | princípios do projeto] (opcional)\n\nEste comando cria/atualiza a constituição do projeto em .codexspec/memory/constitution.md.\n\nTrês formas de uso:\n1. Sem argumentos → Modo interativo: escolher profundidade de exploração (quick/deep)\n2. quick → Exploração leve: arquivos de configuração + README + pontos de entrada principais (~5-10 arquivos)\n3. deep → Exploração completa: tudo acima + análise de código fonte + padrões de arquitetura\n4. <descrição> → Pular exploração, usar seus princípios diretamente"
+    "argument-hint": "[quick|deep | princípios do projeto] (opcional)\n\nEste comando cria/atualiza a constituição do projeto em .codexspec/memory/constitution.md.\n\nTrês formas de uso:\n1. Sem argumentos → Modo interativo: escolher profundidade de exploração (quick/deep)\n2. quick → Exploração leve: arquivos de configuração + README + pontos de entrada principais (~5-10 arquivos)\n3. deep → Exploração completa: tudo acima + análise de código fonte + padrões de arquitetura\n4. <descrição> → Pular exploração, usar seus princípios diretamente\n\nExemplos:\n  /codexspec.constitution\n  /codexspec.constitution quick\n  /codexspec.constitution deep\n  /codexspec.constitution Python FastAPI backend com pytest, focado em segurança de tipos"
   },
   "specify": {
-    "description": "Esclarecer requisitos através de Q&A interativo para explorar e refinar ideias iniciais"
+    "description": "Esclarecer requisitos através de Q&A interativo para explorar e refinar ideias iniciais",
+    "argument-hint": "Descreva sua ideia inicial ou requisito"
   },
   "clarify": {
-    "description": "Identificar áreas pouco claras na especificação funcional através de perguntas direcionadas antes do planejamento técnico"
+    "description": "Identificar áreas pouco claras na especificação funcional através de perguntas direcionadas antes do planejamento técnico",
+    "argument-hint": "[caminho_para_spec.md] (opcional, padrão .codexspec/specs/{feature-id}/)"
   },
   "analyze": {
     "description": "Realizar análise não destrutiva de consistência e qualidade entre artefatos spec.md, plan.md e tasks.md"
@@ -19,39 +21,49 @@
     "description": "Gerar documento spec.md após os requisitos estarem claros"
   },
   "spec-to-plan": {
-    "description": "Converter especificação funcional em plano de implementação técnica"
+    "description": "Converter especificação funcional em plano de implementação técnica",
+    "argument-hint": ".codexspec/specs/{feature-id}/spec.md"
   },
   "plan-to-tasks": {
-    "description": "Decompor plano de implementação técnica em tarefas executáveis"
+    "description": "Decompor plano de implementação técnica em tarefas executáveis",
+    "argument-hint": "[caminho_spec.md caminho_plan.md] (opcional, padrão .codexspec/specs/{feature-id}/)"
   },
   "review-spec": {
-    "description": "Revisar e validar completude, clareza e qualidade da especificação funcional"
+    "description": "Revisar e validar completude, clareza e qualidade da especificação funcional",
+    "argument-hint": "[caminho_spec.md] (opcional, padrão .codexspec/specs/{feature-id}/)"
   },
   "review-plan": {
-    "description": "Revisar e validar viabilidade e consistência do plano de implementação técnica"
+    "description": "Revisar e validar viabilidade e consistência do plano de implementação técnica",
+    "argument-hint": "[caminho_plan.md] (opcional, padrão .codexspec/specs/{feature-id}/)"
   },
   "review-tasks": {
-    "description": "Revisar e validar completude, ordenação e conformidade TDD da decomposição de tarefas"
+    "description": "Revisar e validar completude, ordenação e conformidade TDD da decomposição de tarefas",
+    "argument-hint": "[caminho_tasks.md] (opcional, padrão .codexspec/specs/{feature-id}/)"
   },
   "implement-tasks": {
-    "description": "Executar tarefas de implementação com workflow TDD condicional (TDD para código, implementação direta para docs/config)"
+    "description": "Executar tarefas de implementação com workflow TDD condicional (TDD para código, implementação direta para docs/config)",
+    "argument-hint": "[caminho_tasks] | [caminho_spec caminho_plan caminho_tasks]"
   },
   "tasks-to-issues": {
     "description": "Converter tarefas existentes em GitHub Issues acionáveis para esta funcionalidade"
   },
   "commit": {
-    "description": "Gerar e executar mensagens de commit em conformidade com Conventional Commits baseadas no estado git e contexto de sessão"
+    "description": "Gerar e executar mensagens de commit em conformidade com Conventional Commits baseadas no estado git e contexto de sessão",
+    "argument-hint": "[-p] Use -p para apenas visualizar a mensagem sem fazer commit"
   },
   "commit-staged": {
-    "description": "Analisar mudanças git preparadas e gerar mensagem de commit em conformidade com Conventional Commits"
+    "description": "Analisar mudanças git preparadas e gerar mensagem de commit em conformidade com Conventional Commits",
+    "argument-hint": "[-p] Use -p para apenas visualizar a mensagem sem fazer commit"
   },
   "pr": {
     "description": "Gerar descrição estruturada de Pull Request (GitHub) ou Merge Request (GitLab) baseada em git diff e integração opcional de spec.md"
   },
   "check-i18n-semantics": {
-    "description": "Verificar consistência semântica e qualidade de documentação multilíngue"
+    "description": "Verificar consistência semântica e qualidade de documentação multilíngue",
+    "argument-hint": "[arquivo_origem] [--lang <idioma>] [--strict]"
   },
   "translate-docs": {
-    "description": "Traduzir documentação do projeto para o idioma especificado"
+    "description": "Traduzir documentação do projeto para o idioma especificado",
+    "argument-hint": "--lang <códigos_idioma> (ex: 'zh,ja,ko') ou 'all' para todos os idiomas"
   }
 }
