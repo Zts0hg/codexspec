@@ -527,13 +527,17 @@ def init(
         else:
             console.print("[dim]跳过迁移[/dim]")
 
-    # Install or update commands (skip if migration just happened)
+    # Install or update commands (translate after migration if user wants)
     if migration_happened:
-        # Migration already installed the commands, just show summary
-        console.print("[dim]已迁移命令，跳过模板安装[/dim]")
+        # Migration moved files, ask if user wants to update/translate them
+        if Confirm.ask("是否覆盖更新命令模板?", default=True):
+            count = install_commands_to_subdir(
+                codexspec_commands_dir, templates_dir, force=True, language=normalized_lang
+            )
+            console.print(f"[green]✓ 已更新 {count} 个命令[/green]")
     elif should_update_commands(codexspec_dir):
         console.print()
-        if Confirm.ask("是否更新命令模板?", default=True):
+        if Confirm.ask("是否覆盖更新命令模板?", default=True):
             count = install_commands_to_subdir(
                 codexspec_commands_dir, templates_dir, force=True, language=normalized_lang
             )
