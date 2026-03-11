@@ -1,13 +1,15 @@
 {
   "constitution": {
     "description": "対話型または提供された原則入力からプロジェクト憲法を作成または更新し、依存テンプレートの同期を保ちます。",
-    "argument-hint": "[quick|deep | プロジェクト原則] (オプション)\n\nこのコマンドは .codexspec/memory/constitution.md にプロジェクト憲法を作成/更新します。\n\n3つの使用方法：\n1. 引数なし → 対話モード：探索深度を選択 (quick/deep)\n2. quick → 軽量探索：設定ファイル + README + コアエントリーポイント (~5-10ファイル)\n3. deep → 完全探索：上記 + ソースコード分析 + アーキテクチャパターン\n4. <説明> → 探索をスキップし、あなたの原則を直接使用"
+    "argument-hint": "[quick|deep | プロジェクト原則] (オプション)\n\nこのコマンドは .codexspec/memory/constitution.md にプロジェクト憲法を作成/更新します。\n\n3つの使用方法：\n1. 引数なし → 対話モード：探索深度を選択 (quick/deep)\n2. quick → 軽量探索：設定ファイル + README + コアエントリーポイント (~5-10ファイル)\n3. deep → 完全探索：上記 + ソースコード分析 + アーキテクチャパターン\n4. <説明> → 探索をスキップし、あなたの原則を直接使用\n\n例：\n  /codexspec.constitution\n  /codexspec.constitution quick\n  /codexspec.constitution deep\n  /codexspec.constitution Python FastAPI バックエンドで pytest 使用、型安全性重視"
   },
   "specify": {
-    "description": "対話型Q&Aを通じて要件を明確化し、初期アイデアを探索・洗練"
+    "description": "対話型Q&Aを通じて要件を明確化し、初期アイデアを探索・洗練",
+    "argument-hint": "初期アイデアや要件を記述してください"
   },
   "clarify": {
-    "description": "技術計画前にターゲットを絞った質問で機能仕様の不明確な領域を特定"
+    "description": "技術計画前にターゲットを絞った質問で機能仕様の不明確な領域を特定",
+    "argument-hint": "[spec.md へのパス] (オプション、デフォルトは .codexspec/specs/{feature-id}/)"
   },
   "analyze": {
     "description": "spec.md、plan.md、tasks.md間の整合性と品質を非破壊的に分析"
@@ -19,39 +21,49 @@
     "description": "要件が明確になった後にspec.mdドキュメントを生成"
   },
   "spec-to-plan": {
-    "description": "機能仕様を技術実装計画に変換"
+    "description": "機能仕様を技術実装計画に変換",
+    "argument-hint": ".codexspec/specs/{feature-id}/spec.md"
   },
   "plan-to-tasks": {
-    "description": "技術実装計画を実行可能なタスクに分解"
+    "description": "技術実装計画を実行可能なタスクに分解",
+    "argument-hint": "[spec.md へのパス plan.md へのパス] (オプション、デフォルトは .codexspec/specs/{feature-id}/)"
   },
   "review-spec": {
-    "description": "機能仕様の完全性、明確性、品質をレビュー・検証"
+    "description": "機能仕様の完全性、明確性、品質をレビュー・検証",
+    "argument-hint": "[spec.md へのパス] (オプション、デフォルトは .codexspec/specs/{feature-id}/)"
   },
   "review-plan": {
-    "description": "技術実装計画の実現可能性と整合性をレビュー・検証"
+    "description": "技術実装計画の実現可能性と整合性をレビュー・検証",
+    "argument-hint": "[plan.md へのパス] (オプション、デフォルトは .codexspec/specs/{feature-id}/)"
   },
   "review-tasks": {
-    "description": "タスク分解の完全性、順序、TDD準拠をレビュー・検証"
+    "description": "タスク分解の完全性、順序、TDD準拠をレビュー・検証",
+    "argument-hint": "[tasks.md へのパス] (オプション、デフォルトは .codexspec/specs/{feature-id}/)"
   },
   "implement-tasks": {
-    "description": "条件付きTDDワークフローで実装タスクを実行（コードはTDD、ドキュメント/設定は直接実装）"
+    "description": "条件付きTDDワークフローで実装タスクを実行（コードはTDD、ドキュメント/設定は直接実装）",
+    "argument-hint": "[tasks へのパス] | [spec へのパス plan へのパス tasks へのパス]"
   },
   "tasks-to-issues": {
     "description": "既存のタスクをこの機能の実行可能なGitHub Issuesに変換"
   },
   "commit": {
-    "description": "gitステータスとセッションコンテキストに基づいてConventional Commits準拠のコミットメッセージを生成・実行"
+    "description": "gitステータスとセッションコンテキストに基づいてConventional Commits準拠のコミットメッセージを生成・実行",
+    "argument-hint": "[-p] -p を使用するとコミットせずにメッセージをプレビューのみ"
   },
   "commit-staged": {
-    "description": "ステージングされたgit変更を分析し、Conventional Commits準拠のコミットメッセージを生成"
+    "description": "ステージングされたgit変更を分析し、Conventional Commits準拠のコミットメッセージを生成",
+    "argument-hint": "[-p] -p を使用するとコミットせずにメッセージをプレビューのみ"
   },
   "pr": {
     "description": "git diffとオプションのspec.md統合に基づいて構造化されたPull Request (GitHub) またはMerge Request (GitLab) 説明を生成"
   },
   "check-i18n-semantics": {
-    "description": "多言語ドキュメントの意味的一貫性と品質をチェック"
+    "description": "多言語ドキュメントの意味的一貫性と品質をチェック",
+    "argument-hint": "[ソースファイル] [--lang <言語>] [--strict]"
   },
   "translate-docs": {
-    "description": "プロジェクトドキュメントを指定言語に翻訳"
+    "description": "プロジェクトドキュメントを指定言語に翻訳",
+    "argument-hint": "--lang <言語コード> (例: 'zh,ja,ko') または 'all' ですべての言語"
   }
 }
