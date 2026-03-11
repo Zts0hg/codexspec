@@ -21,12 +21,20 @@ def get_translations_dir() -> Path:
     Returns:
         Path to templates/translations directory
     """
-    # When installed via uv/pip
-    package_dir = Path(__file__).parent.parent.parent / "templates" / "translations"
-    if package_dir.exists():
-        return package_dir
-    # Development fallback
-    return Path(__file__).parent.parent.parent / "templates" / "translations"
+    # Path 1: Wheel install - templates packaged inside codexspec package
+    # __file__ = site-packages/codexspec/translator.py
+    # parent / "templates" / "translations" = site-packages/codexspec/templates/translations
+    installed_translations = Path(__file__).parent / "templates" / "translations"
+    if installed_translations.exists():
+        return installed_translations
+
+    # Path 2: Development/editable install - templates in project root
+    dev_translations = Path(__file__).parent.parent.parent / "templates" / "translations"
+    if dev_translations.exists():
+        return dev_translations
+
+    # Path 3: Fallback - return the installed path (for error messages)
+    return installed_translations
 
 
 def get_translation_cache_path(language: str) -> Path:
