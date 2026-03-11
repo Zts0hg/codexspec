@@ -35,7 +35,7 @@ from .i18n import (
 )
 
 # Version info
-__version__ = "0.2.2"
+__version__ = "0.4.1"
 __author__ = "CodexSpec Team"
 
 # Constitution file path constants
