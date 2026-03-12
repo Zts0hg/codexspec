@@ -1,5 +1,5 @@
 ---
-description: Generate a custom quality checklist for validating requirements completeness, clarity, and consistency
+description: 生成自定义质量检查清单，用于验证需求完整性、清晰性和一致性
 scripts:
   sh: .codexspec/scripts/check-prerequisites.sh --json
   ps: .codexspec/scripts/check-prerequisites.ps1 -Json

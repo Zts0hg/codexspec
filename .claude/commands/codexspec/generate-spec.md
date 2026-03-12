@@ -1,5 +1,5 @@
 ---
-description: Generate spec.md document after requirements have been clarified
+description: 需求明确后生成 spec.md 文档
 ---
 
 # Specification Generator

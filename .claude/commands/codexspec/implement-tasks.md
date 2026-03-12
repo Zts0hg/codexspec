@@ -1,6 +1,6 @@
 ---
-description: Execute implementation tasks with conditional TDD workflow (TDD for code, direct implementation for docs/config)
-argument-hint: "[tasks_path] | [spec_path plan_path tasks_path]"
+description: 执行实现任务，支持条件 TDD 工作流（代码使用 TDD，文档/配置直接实现）
+argument-hint: "[tasks 路径] | [spec 路径 plan 路径 tasks 路径]"
 handoffs:
   - agent: claude
     step: Execute implementation tasks from the task breakdown

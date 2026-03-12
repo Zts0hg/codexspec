@@ -1,6 +1,6 @@
 ---
-description: Review and validate task breakdown for completeness, ordering, and TDD compliance
-argument-hint: "[path_to_tasks.md] (optional, defaults to .codexspec/specs/{feature-id}/)"
+description: 审查和验证任务分解的完整性、排序和 TDD 合规性
+argument-hint: "[tasks.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
 handoffs:
   - agent: claude
     step: Review tasks against plan and dependencies
