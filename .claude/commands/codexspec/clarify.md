@@ -1,6 +1,6 @@
 ---
-description: Identify underspecified areas in the current feature spec by asking targeted clarification questions and encoding answers back into the spec
-argument-hint: "[path_to_spec.md] (optional, defaults to .codexspec/specs/{feature-id}/)"
+description: 在技术规划前通过定向澄清问题识别功能规格中的不明确区域
+argument-hint: "[spec.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
 handoffs:
   - agent: claude
     step: Ask clarification questions and update spec
