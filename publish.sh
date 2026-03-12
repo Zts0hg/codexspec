@@ -1,6 +1,6 @@
 #!/bin/bash
 # Publish codexspec to PyPI and create GitHub tag
-# Usage: ./publish.sh [--test] [--skip-tag]
+# Usage: ./publish.sh [--test] [--skip-tag] [--auto-bump]
 
 set -e
 
@@ -13,6 +13,7 @@ NC='\033[0m' # No Color
 # Parse arguments
 TEST_PYPI=false
 SKIP_TAG=false
+AUTO_BUMP=false
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -24,13 +25,26 @@ while [[ $# -gt 0 ]]; do
             SKIP_TAG=true
             shift
             ;;
+        --auto-bump)
+            AUTO_BUMP=true
+            shift
+            ;;
         *)
             echo -e "${RED}Unknown option: $1${NC}"
-            echo "Usage: ./publish.sh [--test] [--skip-tag]"
+            echo "Usage: ./publish.sh [--test] [--skip-tag] [--auto-bump]"
             exit 1
             ;;
     esac
 done
+
+# Function to bump patch version
+bump_patch_version() {
+    local version=$1
+    local major minor patch
+    IFS='.' read -r major minor patch <<< "$version"
+    patch=$((patch + 1))
+    echo "${major}.${minor}.${patch}"
+}
 
 # Extract version from pyproject.toml (portable across macOS and Linux)
 VERSION=$(sed -n 's/^version = "\([^"]*\)"$/\1/p' pyproject.toml)
@@ -50,9 +64,26 @@ fi
 if ! $SKIP_TAG; then
     TAG_NAME="v$VERSION"
     if git ls-remote --tags origin | grep -q "refs/tags/${TAG_NAME}$"; then
-        echo -e "${RED}Error: Tag $TAG_NAME already exists on remote.${NC}"
-        echo -e "${RED}Please update the version in pyproject.toml before publishing.${NC}"
-        exit 1
+        if $AUTO_BUMP; then
+            # Auto-bump the patch version
+            NEW_VERSION=$(bump_patch_version "$VERSION")
+            echo -e "${YELLOW}Tag $TAG_NAME already exists on remote.${NC}"
+            echo -e "${YELLOW}Auto-bumping version: $VERSION -> $NEW_VERSION${NC}"
+
+            # Update pyproject.toml with new version (portable across macOS and Linux)
+            sed -i.bak "s/^version = \"${VERSION}\"/version = \"${NEW_VERSION}\"/" pyproject.toml
+            rm -f pyproject.toml.bak
+
+            # Update variables
+            VERSION="$NEW_VERSION"
+            TAG_NAME="v$VERSION"
+            echo -e "${GREEN}Version updated to: $VERSION${NC}"
+        else
+            echo -e "${RED}Error: Tag $TAG_NAME already exists on remote.${NC}"
+            echo -e "${RED}Please update the version in pyproject.toml before publishing.${NC}"
+            echo -e "${RED}Or use --auto-bump to automatically bump the patch version.${NC}"
+            exit 1
+        fi
     fi
 fi
 
