@@ -1,6 +1,6 @@
 ---
-description: Clarify requirements through interactive Q&A to explore and refine the initial idea
-argument-hint: "Describe your initial idea or requirement"
+description: 通过交互式问答澄清需求，探索和完善初始想法
+argument-hint: "描述你的初始想法或需求"
 ---
 
 # Requirement Clarification

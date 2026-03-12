@@ -1,5 +1,5 @@
 ---
-description: Convert a feature specification into a technical implementation plan
+description: 将功能规格转换为技术实现计划
 argument-hint: ".codexspec/specs/{feature-id}/spec.md"
 handoffs:
   - agent: claude

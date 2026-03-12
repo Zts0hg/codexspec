@@ -1,6 +1,6 @@
 ---
-description: Review and validate a feature specification for completeness, clarity, and quality
-argument-hint: "[path_to_spec.md] (optional, defaults to .codexspec/specs/{feature-id}/)"
+description: 审查和验证功能规格的完整性、清晰度和质量
+argument-hint: "[spec.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
 handoffs:
   - agent: claude
     step: Review specification against quality criteria

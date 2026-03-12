@@ -1,5 +1,5 @@
 ---
-description: Perform a non-destructive cross-artifact consistency and quality analysis across spec.md, plan.md, and tasks.md
+description: 对 spec.md、plan.md 和 tasks.md 执行非破坏性的跨工件一致性和质量分析
 scripts:
   sh: .codexspec/scripts/check-prerequisites.sh --json --require-tasks --include-tasks
   ps: .codexspec/scripts/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks

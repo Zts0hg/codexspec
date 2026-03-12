@@ -1,6 +1,6 @@
 ---
-description: Break down a technical implementation plan into actionable tasks
-argument-hint: "[path_to_spec.md path_to_plan.md] (optional, defaults to .codexspec/specs/{feature-id}/)"
+description: 将技术实现计划分解为可执行的任务
+argument-hint: "[spec.md 路径 plan.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
 handoffs:
   - agent: claude
     step: Generate task breakdown from plan

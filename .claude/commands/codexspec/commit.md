@@ -1,6 +1,6 @@
 ---
-description: Generate and execute Conventional Commits compliant commit messages based on git status and session context
-argument-hint: "[-p] Use -p to only preview the message without committing"
+description: 基于 git 状态和会话上下文生成并执行符合 Conventional Commits 规范的提交信息
+argument-hint: "[-p] 使用 -p 仅预览提交信息而不执行提交"
 allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git branch:*), Bash(git add:*), Bash(git commit:*)
 ---
 
