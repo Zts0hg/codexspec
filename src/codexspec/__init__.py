@@ -29,10 +29,12 @@ from .commands.installer import (
 from .i18n import (
     generate_config_content,
     get_language_name,
+    get_project_language,
     get_supported_languages,
     is_supported_language,
     normalize_locale,
 )
+from .translator import translate
 
 # Version info
 __version__ = "0.4.1"
@@ -333,6 +335,10 @@ def list_commands() -> None:
     This command displays all available CodexSpec slash commands grouped by category,
     showing their display names and descriptions.
     """
+
+    # Get user's language preference
+    language = get_project_language()
+
     metadata = get_commands_metadata()
 
     # Group by category
@@ -346,24 +352,19 @@ def list_commands() -> None:
         if cat in categories:
             categories[cat].append(cmd)
 
-    category_names = {
-        "core": "核心命令 (Core Commands)",
-        "enhanced": "增强命令 (Enhanced Commands)",
-        "git": "Git 工作流 (Git Workflow)",
-    }
-
     console.print()
-    console.print(f"[bold]CodexSpec 可用命令 ({len(metadata)} 个)[/bold]")
+    console.print(f"[bold]{translate('cli.list_commands.header', language, count=len(metadata))}[/bold]")
     console.print()
 
     for cat, commands in categories.items():
         if commands:
-            console.print(f"[bold cyan]{category_names[cat]} ({len(commands)})[/bold cyan]")
+            cat_msg = translate(f"cli.list_commands.category_{cat}", language, count=len(commands))
+            console.print(f"[bold cyan]{cat_msg}[/bold cyan]")
             for cmd in commands:
                 console.print(f"  {cmd['display_name']:<30} [dim]{cmd['description']}[/dim]")
             console.print()
 
-    console.print("[dim]使用 /codexspec.<command> 来调用这些命令[/dim]")
+    console.print(f"[dim]{translate('cli.list_commands.usage_hint', language)}[/dim]")
 
 
 @app.command()
@@ -422,17 +423,17 @@ def init(
         codexspec init --here --ai claude
         codexspec init . --force --ai claude
     """
+    # Normalize language code early for use throughout the function
+    normalized_lang = normalize_locale(lang)
+
     # Determine target directory
     if here or project_name == ".":
         target_dir = Path.cwd()
     elif project_name:
         target_dir = Path.cwd() / project_name
     else:
-        console.print("[red]Error: Please provide a project name or use --here flag[/red]")
+        console.print(f"[red]{translate('cli.init.error_no_project_name', normalized_lang)}[/red]")
         raise typer.Exit(1)
-
-    # Normalize language code early for use throughout the function
-    normalized_lang = normalize_locale(lang)
 
     if debug:
         console.print(f"[dim]Target directory: {target_dir}[/dim]")
@@ -442,8 +443,8 @@ def init(
     # Check if directory exists and handle accordingly
     if target_dir.exists() and not here and project_name != ".":
         if not force:
-            console.print(f"[red]Error: Directory '{target_dir}' already exists[/red]")
-            console.print("Use --force to overwrite or choose a different name")
+            console.print(f"[red]{translate('cli.init.error_dir_exists', normalized_lang, path=target_dir)}[/red]")
+            console.print(translate("cli.init.error_use_force", normalized_lang))
             raise typer.Exit(1)
 
     # Create directory if needed
@@ -514,41 +515,45 @@ def init(
     migration_happened = False
     if old_files:
         console.print()
-        console.print(f"[yellow]发现 {len(old_files)} 个旧结构命令文件[/yellow]")
-        console.print("[dim]旧结构: .claude/commands/codexspec.*.md[/dim]")
-        console.print("[dim]新结构: .claude/commands/codexspec/*.md[/dim]")
+        console.print(
+            f"[yellow]{translate('cli.init.migration_found', normalized_lang, count=len(old_files))}[/yellow]"
+        )
+        console.print(f"[dim]{translate('cli.init.migration_old_structure', normalized_lang)}[/dim]")
+        console.print(f"[dim]{translate('cli.init.migration_new_structure', normalized_lang)}[/dim]")
 
-        if Confirm.ask("是否迁移到新结构?", default=True):
+        if Confirm.ask(translate("cli.init.migration_confirm", normalized_lang), default=True):
             if migrate_old_commands(claude_dir, old_files):
-                console.print("[green]✓ 迁移完成[/green]")
+                console.print(f"[green]{translate('cli.init.migration_complete', normalized_lang)}[/green]")
                 migration_happened = True
             else:
-                console.print("[red]✗ 迁移失败[/red]")
+                console.print(f"[red]{translate('cli.init.migration_failed', normalized_lang)}[/red]")
         else:
-            console.print("[dim]跳过迁移[/dim]")
+            console.print(f"[dim]{translate('cli.init.migration_skipped', normalized_lang)}[/dim]")
 
     # Install or update commands (translate after migration if user wants)
     if migration_happened:
         # Migration moved files, ask if user wants to update/translate them
-        if Confirm.ask("是否覆盖更新命令模板?", default=True):
+        if Confirm.ask(translate("cli.init.update_confirm", normalized_lang), default=True):
             count = install_commands_to_subdir(
                 codexspec_commands_dir, templates_dir, force=True, language=normalized_lang
             )
-            console.print(f"[green]✓ 已更新 {count} 个命令[/green]")
+            console.print(f"[green]{translate('cli.init.commands_updated', normalized_lang, count=count)}[/green]")
     elif should_update_commands(codexspec_dir):
         console.print()
-        if Confirm.ask("是否覆盖更新命令模板?", default=True):
+        if Confirm.ask(translate("cli.init.update_confirm", normalized_lang), default=True):
             count = install_commands_to_subdir(
                 codexspec_commands_dir, templates_dir, force=True, language=normalized_lang
             )
-            console.print(f"[green]✓ 已更新 {count} 个命令[/green]")
+            console.print(f"[green]{translate('cli.init.commands_updated', normalized_lang, count=count)}[/green]")
     else:
         if templates_dir.exists():
             count = install_commands_to_subdir(codexspec_commands_dir, templates_dir, language=normalized_lang)
-            console.print(f"[green]✓ 已安装 {count} 个命令到 .claude/commands/{COMMANDS_SUBDIR}/[/green]")
+            cmd_path = f".claude/commands/{COMMANDS_SUBDIR}/"
+            msg = translate("cli.init.commands_installed", normalized_lang, count=count, path=cmd_path)
+            console.print(f"[green]{msg}[/green]")
         else:
             # Create default commands if templates don't exist
-            console.print("[yellow]Warning: Templates directory not found, creating default commands[/yellow]")
+            console.print(f"[yellow]{translate('cli.init.warning_templates_not_found', normalized_lang)}[/yellow]")
             codexspec_commands_dir.mkdir(parents=True, exist_ok=True)
             _create_default_commands(codexspec_commands_dir)
 
@@ -556,7 +561,8 @@ def init(
     constitution_file = codexspec_dir / "memory" / "constitution.md"
     if not constitution_file.exists():
         constitution_file.write_text(_get_default_constitution(), encoding="utf-8")
-        console.print("[green]Created:[/green] .codexspec/memory/constitution.md")
+        msg = translate("cli.init.created_file", normalized_lang, file=".codexspec/memory/constitution.md")
+        console.print(f"[green]{msg}[/green]")
 
     # Create config.yml with language settings
     config_file = codexspec_dir / "config.yml"
@@ -567,63 +573,68 @@ def init(
         )
         config_file.write_text(config_content, encoding="utf-8")
         lang_name = get_language_name(normalized_lang)
-        console.print(f"[green]Created:[/green] .codexspec/config.yml (language: {lang_name})")
+        msg = translate(
+            "cli.init.created_file",
+            normalized_lang,
+            file=f".codexspec/config.yml (language: {lang_name})",
+        )
+        console.print(f"[green]{msg}[/green]")
 
     # Create CLAUDE.md
     claude_md = target_dir / "CLAUDE.md"
     if not claude_md.exists() or force:
         project_name = target_dir.name
         claude_md.write_text(_get_claude_md_content(project_name), encoding="utf-8")
-        console.print("[green]Created:[/green] CLAUDE.md")
+        console.print(f"[green]{translate('cli.init.created_file', normalized_lang, file='CLAUDE.md')}[/green]")
     else:
         # Check if existing CLAUDE.md has compliance section
         if not has_compliance_section(claude_md):
-            if confirm_add_compliance():
+            if confirm_add_compliance(normalized_lang):
                 prepend_compliance_section(claude_md)
-                console.print("[green]Updated:[/green] CLAUDE.md (added Constitution Compliance section)")
+                console.print(f"[green]{translate('cli.init.compliance_added', normalized_lang)}[/green]")
 
     # Initialize git if requested
     if not no_git and not (target_dir / ".git").exists():
         try:
             subprocess.run(["git", "init"], cwd=target_dir, check=True, capture_output=True)
-            console.print("[green]Initialized:[/green] Git repository")
+            console.print(f"[green]{translate('cli.init.git_initialized', normalized_lang)}[/green]")
         except subprocess.CalledProcessError:
-            console.print("[yellow]Warning: Failed to initialize git repository[/yellow]")
+            console.print(f"[yellow]{translate('cli.init.git_failed', normalized_lang)}[/yellow]")
 
     # Print success message with command summary
     console.print()
-    _print_command_summary()
+    _print_command_summary(normalized_lang)
 
     project_nav = project_name if project_name and project_name != "." else "."
     console.print(
         Panel.fit(
-            "[bold green]CodexSpec project initialized successfully![/bold green]\n\n"
-            f"Project directory: [cyan]{target_dir}[/cyan]\n\n"
-            "[bold]Next steps:[/bold]\n"
-            f"1. Navigate to your project: [cyan]cd {project_nav}[/cyan]\n"
-            "2. Start Claude Code: [cyan]claude[/cyan]\n"
-            "3. Use [cyan]/codexspec.constitution[/cyan] to establish project principles\n"
-            "4. Use [cyan]/codexspec.specify[/cyan] to create your first specification",
-            title="Success",
+            f"[bold green]{translate('cli.init.success_message', normalized_lang)}[/bold green]\n\n"
+            f"{translate('cli.init.success_project_dir', normalized_lang, path=str(target_dir))}\n\n"
+            f"[bold]{translate('cli.init.next_steps', normalized_lang)}[/bold]\n"
+            f"1. {translate('cli.init.next_step_navigate', normalized_lang, path=project_nav)}\n"
+            f"2. {translate('cli.init.next_step_start_claude', normalized_lang)}\n"
+            f"3. {translate('cli.init.next_step_constitution', normalized_lang)}\n"
+            f"4. {translate('cli.init.next_step_specify', normalized_lang)}",
+            title=translate("cli.init.success_title", normalized_lang),
         )
     )
 
     # Git management tip
     console.print()
-    console.print("[bold]💡 提示:[/bold]")
-    console.print("   - 建议将 .claude/ 目录纳入 Git 管理: [cyan]git add .claude/[/cyan]")
-    console.print("   - 运行 [cyan]codexspec list-commands[/cyan] 查看所有可用命令")
-    console.print("   - 直接编辑 .md 文件自定义命令行为")
+    console.print(f"[bold]{translate('cli.init.tips_header', normalized_lang)}[/bold]")
+    console.print(f"   - {translate('cli.init.tips_git', normalized_lang)}")
+    console.print(f"   - {translate('cli.init.tips_list_commands', normalized_lang)}")
+    console.print(f"   - {translate('cli.init.tips_edit', normalized_lang)}")
 
     # Remind user to customize constitution
     console.print()
-    console.print("[yellow]Important:[/yellow] The constitution is the foundation of your SDD workflow.")
-    console.print(
-        "[yellow]Run [bold]/codexspec.constitution[/bold] to customize it for your project and team.[/yellow]"
-    )
+    important_header = translate("cli.init.important_header", normalized_lang)
+    important_msg = translate("cli.init.important_message", normalized_lang)
+    console.print(f"[yellow]{important_header}[/yellow] {important_msg}")
+    console.print(f"[yellow]{translate('cli.init.important_action', normalized_lang)}[/yellow]")
 
 
-def _print_command_summary() -> None:
+def _print_command_summary(language: str = "en") -> None:
     """Print a summary of installed commands grouped by category."""
     metadata = get_commands_metadata()
 
@@ -638,18 +649,14 @@ def _print_command_summary() -> None:
         if cat in categories:
             categories[cat].append(cmd)
 
-    category_names = {
-        "core": "核心命令 (Core Commands)",
-        "enhanced": "增强命令 (Enhanced Commands)",
-        "git": "Git 工作流 (Git Workflow)",
-    }
-
-    console.print(f"[bold]📁 已安装 {len(metadata)} 个命令到 .claude/commands/{COMMANDS_SUBDIR}/[/bold]")
+    console.print(
+        f"[bold]{translate('cli.init.commands_summary', language, count=len(metadata), path=COMMANDS_SUBDIR)}[/bold]"
+    )
     console.print()
 
     for cat, commands in categories.items():
         if commands:
-            console.print(f"  [bold]{category_names[cat]} ({len(commands)})[/bold]")
+            console.print(f"  [bold]{translate(f'cli.init.category_{cat}', language, count=len(commands))}[/bold]")
             for cmd in commands:
                 console.print(f"    [cyan]{cmd['display_name']}[/cyan]")
             console.print()
@@ -1465,19 +1472,20 @@ def prepend_compliance_section(claude_md_path: Path) -> None:
     claude_md_path.write_text(import_statement + existing_content, encoding="utf-8")
 
 
-def confirm_add_compliance() -> bool:
+def confirm_add_compliance(language: str = "en") -> bool:
     """Ask user whether to add the Constitution Compliance section.
 
     Uses typer.confirm() to interactively ask the user for confirmation.
     Default value is False (safe exit) to prevent accidental modifications.
 
+    Args:
+        language: Target language for the message
+
     Returns:
         True if user confirms, False otherwise
     """
     return typer.confirm(
-        "CLAUDE.md already exists without Constitution Compliance section.\n"
-        "The Constitution Compliance section ensures Claude follows your project's constitution.\n"
-        "? Would you like to add the Constitution Compliance section?",
+        translate("cli.init.compliance_confirm", language),
         default=False,
     )
 
