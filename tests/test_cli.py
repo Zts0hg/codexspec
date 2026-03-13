@@ -320,8 +320,8 @@ class TestInitMigration:
         old_file.write_text("# Old Constitution")
 
         # Run init with --here to use current directory
-        # Provide 'y' input for the migration confirmation prompt
-        result = runner.invoke(app, ["init", "--here", "--no-git"], input="y\n")
+        # Provide 'y' input for both migration and update confirmation prompts
+        result = runner.invoke(app, ["init", "--here", "--no-git"], input="y\ny\n")
         assert result.exit_code == 0
 
         # Should mention migration in output
@@ -338,8 +338,8 @@ class TestInitMigration:
         old_file = commands_dir / "codexspec.constitution.md"
         old_file.write_text(old_content)
 
-        # Run init - it should migrate with single 'y' input
-        result = runner.invoke(app, ["init", "--here", "--no-git"], input="y\n")
+        # Run init - say 'y' to migrate, 'n' to update to preserve content
+        result = runner.invoke(app, ["init", "--here", "--no-git"], input="y\nn\n")
         assert result.exit_code == 0
 
         # Old file should be gone
@@ -358,7 +358,8 @@ class TestInitMigration:
         old_file = commands_dir / "codexspec.constitution.md"
         old_file.write_text(custom_content)
 
-        result = runner.invoke(app, ["init", "--here", "--no-git"], input="y\n")
+        # Say 'y' to migrate, 'n' to update to preserve custom content
+        result = runner.invoke(app, ["init", "--here", "--no-git"], input="y\nn\n")
         assert result.exit_code == 0
 
         new_file = commands_dir / "codexspec" / "constitution.md"
