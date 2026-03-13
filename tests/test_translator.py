@@ -3,11 +3,14 @@
 import json
 
 from codexspec.translator import (
+    _CLI_MESSAGES_EN,
     SUPPORTED_LANGUAGES,
     apply_translations_to_template,
     extract_frontmatter_fields,
     get_translation_cache_path,
+    load_cli_translations,
     load_translation_cache,
+    translate,
 )
 
 
@@ -244,3 +247,97 @@ description: Test description
         assert count == 1
         content = (target_dir / "test.md").read_text(encoding="utf-8")
         assert "Test description" in content
+
+
+class TestCliMessagesBaseline:
+    """Tests for CLI messages English baseline (Task 5.3)."""
+
+    def test_baseline_has_init_messages(self):
+        """Should have init command messages in baseline."""
+        assert "init" in _CLI_MESSAGES_EN
+        assert "migration_found" in _CLI_MESSAGES_EN["init"]
+        assert "migration_complete" in _CLI_MESSAGES_EN["init"]
+        assert "success_message" in _CLI_MESSAGES_EN["init"]
+        assert "next_steps" in _CLI_MESSAGES_EN["init"]
+
+    def test_baseline_has_list_commands_messages(self):
+        """Should have list_commands messages in baseline."""
+        assert "list_commands" in _CLI_MESSAGES_EN
+        assert "header" in _CLI_MESSAGES_EN["list_commands"]
+        assert "no_project" in _CLI_MESSAGES_EN["list_commands"]
+
+    def test_baseline_has_set_language_messages(self):
+        """Should have set_language messages in baseline."""
+        assert "set_language" in _CLI_MESSAGES_EN
+        assert "language_set" in _CLI_MESSAGES_EN["set_language"]
+        assert "language_failed" in _CLI_MESSAGES_EN["set_language"]
+
+    def test_baseline_messages_have_placeholders(self):
+        """Should have parameterized messages with placeholders."""
+        # Check that some messages use {key} syntax
+        migration_found = _CLI_MESSAGES_EN["init"]["migration_found"]
+        assert "{count}" in migration_found
+
+        language_set = _CLI_MESSAGES_EN["set_language"]["language_set"]
+        assert "{lang}" in language_set
+        assert "{name}" in language_set
+
+        commands_installed = _CLI_MESSAGES_EN["init"]["commands_installed"]
+        assert "{count}" in commands_installed
+        assert "{path}" in commands_installed
+
+
+class TestCliTranslationIntegration:
+    """Integration tests for CLI message translation (Task 5.3)."""
+
+    def test_translate_init_messages_english(self):
+        """Test translating init command messages in English."""
+        result = translate("cli.init.migration_found", "en", count=5)
+        assert result == "Found 5 old structure command files"
+
+        result = translate("cli.init.migration_complete", "en")
+        assert "✓" in result
+        assert "Migration complete" in result
+
+    def test_translate_list_commands_messages_english(self):
+        """Test translating list_commands messages in English."""
+        result = translate("cli.list_commands.header", "en", count=10)
+        assert result == "CodexSpec Available Commands (10)"
+
+        result = translate("cli.list_commands.no_project", "en")
+        assert "No CodexSpec project found" in result
+
+    def test_translate_set_language_messages_english(self):
+        """Test translating set_language messages in English."""
+        result = translate("cli.set_language.language_set", "en", lang="zh-CN", name="Chinese")
+        assert result == "Language set to: zh-CN (Chinese)"
+
+        result = translate("cli.set_language.language_failed", "en")
+        assert "Failed to update language" in result
+
+    def test_fallback_to_baseline_on_missing_file(self, tmp_path):
+        """Test that missing translation file falls back to baseline."""
+        translations_dir = tmp_path / "translations"
+        translations_dir.mkdir(parents=True, exist_ok=True)
+
+        # No translation file exists
+        result = load_cli_translations("en", translations_dir=translations_dir)
+        assert result == _CLI_MESSAGES_EN
+
+    def test_all_cli_keys_accessible(self):
+        """Test that all CLI keys can be accessed through translate()."""
+        # Test a sample of keys from each namespace
+        init_keys = ["migration_found", "migration_complete", "success_message"]
+        for key in init_keys:
+            result = translate(f"cli.init.{key}", "en")
+            assert result != f"cli.init.{key}"  # Should not return the key itself
+
+        list_keys = ["header", "no_project", "usage_hint"]
+        for key in list_keys:
+            result = translate(f"cli.list_commands.{key}", "en")
+            assert result != f"cli.list_commands.{key}"
+
+        lang_keys = ["language_set", "language_failed", "commit_lang_set"]
+        for key in lang_keys:
+            result = translate(f"cli.set_language.{key}", "en")
+            assert result != f"cli.set_language.{key}"

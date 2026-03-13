@@ -210,3 +210,28 @@ def generate_config_content(language: str = "en", created: str = None) -> str:
         created = datetime.now().strftime("%Y-%m-%d")
 
     return CONFIG_TEMPLATE.format(language=normalized_lang, created=created)
+
+
+def get_project_language() -> str:
+    """Get the project language from .codexspec/config.yml.
+
+    Returns:
+        The configured language code, or "en" if not configured or file doesn't exist.
+    """
+    import re
+    from pathlib import Path
+
+    config_file = Path.cwd() / ".codexspec" / "config.yml"
+    if not config_file.exists():
+        return "en"
+
+    try:
+        content = config_file.read_text(encoding="utf-8")
+        # Parse the language setting from YAML-like format
+        match = re.search(r"^\s*output:\s*['\"]?(\S+?)['\"]?\s*$", content, re.MULTILINE)
+        if match:
+            return normalize_locale(match.group(1)) or "en"
+    except (OSError, re.error):
+        pass
+
+    return "en"
