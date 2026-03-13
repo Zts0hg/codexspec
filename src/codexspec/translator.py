@@ -5,14 +5,106 @@ frontmatter fields (description, argument-hint).
 """
 
 import json
+import logging
 import re
 import shutil
 import subprocess
 from pathlib import Path
 from typing import Optional
 
+from codexspec.i18n import normalize_locale
+
+logger = logging.getLogger(__name__)
+
 # Supported languages with pre-translated cache
 SUPPORTED_LANGUAGES = ["zh-CN", "ja", "ko", "es", "fr", "de", "pt-BR"]
+
+# English baseline CLI messages (fallback when translation file is missing)
+_CLI_MESSAGES_EN = {
+    "init": {
+        # Migration messages
+        "migration_found": "Found {count} old structure command files",
+        "migration_old_structure": "Old structure: .claude/commands/codexspec.*.md",
+        "migration_new_structure": "New structure: .claude/commands/codexspec/*.md",
+        "migration_confirm": "Migrate to new structure?",
+        "migration_complete": "✓ Migration complete",
+        "migration_failed": "✗ Migration failed",
+        "migration_skipped": "Skipped migration",
+        # Update messages
+        "update_confirm": "Overwrite and update command templates?",
+        "commands_updated": "✓ Updated {count} commands",
+        "commands_installed": "✓ Installed {count} commands to .claude/commands/{path}/",
+        "commands_installed_short": "✓ Installed {count} commands",
+        # File operation messages
+        "created_directory": "Created directory: {path}",
+        "copied_script": "Copied script: {name}",
+        "copied_template": "Copied template: {name}",
+        "created_file": "Created: {file}",
+        "updated_file": "Updated: {file} ({detail})",
+        "git_initialized": "Initialized: Git repository",
+        "git_failed": "Warning: Failed to initialize git repository",
+        "warning_scripts_not_found": "Warning: Scripts directory not found",
+        "warning_bash_scripts_not_found": "Warning: Bash scripts directory not found",
+        "warning_powershell_scripts_not_found": "Warning: PowerShell scripts directory not found",
+        "warning_docs_templates_not_found": "Warning: Docs templates directory not found",
+        "warning_templates_not_found": "Warning: Templates directory not found, creating default commands",
+        "installed_command": "Installed command: /codexspec.{name}",
+        # Command summary
+        "commands_summary": "📁 Installed {count} commands to .claude/commands/{path}/",
+        "category_core": "Core Commands ({count})",
+        "category_enhanced": "Enhanced Commands ({count})",
+        "category_git": "Git Workflow ({count})",
+        # Success panel
+        "success_title": "Success",
+        "success_message": "CodexSpec project initialized successfully!",
+        "success_project_dir": "Project directory: {path}",
+        "next_steps": "Next steps:",
+        "next_step_navigate": "Navigate to your project: cd {path}",
+        "next_step_start_claude": "Start Claude Code: claude",
+        "next_step_constitution": "Use /codexspec.constitution to establish project principles",
+        "next_step_specify": "Use /codexspec.specify to create your first specification",
+        # Tips
+        "tips_header": "💡 Tips:",
+        "tips_git": "Add .claude/ to Git: git add .claude/",
+        "tips_list_commands": "Run codexspec list-commands to see all available commands",
+        "tips_edit": "Edit .md files directly to customize command behavior",
+        # Important reminder
+        "important_header": "Important:",
+        "important_message": "The constitution is the foundation of your SDD workflow.",
+        "important_action": "Run /codexspec.constitution to customize it for your project.",
+        # Constitution compliance
+        "compliance_confirm": (
+            "CLAUDE.md already exists without Constitution Compliance section.\n"
+            "The Constitution Compliance section ensures Claude follows your project's constitution.\n"
+            "? Would you like to add the Constitution Compliance section?"
+        ),
+        "compliance_added": "Updated: CLAUDE.md (added Constitution Compliance section)",
+        # Errors
+        "error_dir_exists": "Error: Directory '{path}' already exists",
+        "error_use_force": "Use --force to overwrite or choose a different name",
+        "error_no_project_name": "Error: Please provide a project name or use --here flag",
+    },
+    "list_commands": {
+        "header": "CodexSpec Available Commands ({count})",
+        "table_header": "Command",
+        "description_header": "Description",
+        "category_core": "Core Commands ({count})",
+        "category_enhanced": "Enhanced Commands ({count})",
+        "category_git": "Git Workflow ({count})",
+        "no_project": "No CodexSpec project found in current directory.",
+        "run_init": "Run codexspec init to create a new project.",
+        "usage_hint": "Use /codexspec.<command> to invoke these commands",
+    },
+    "set_language": {
+        "language_set": "Language set to: {lang} ({name})",
+        "language_failed": "Failed to update language setting",
+        "language_warning": "Warning: '{lang}' is not in the list of commonly supported languages.",
+        "language_warning_hint": (
+            "It may still work if Claude supports it. Run codexspec config --list-langs to see supported languages."
+        ),
+        "commit_lang_set": "Commit message language set to: {lang}",
+    },
+}
 
 
 def get_translations_dir() -> Path:
@@ -71,6 +163,99 @@ def load_translation_cache(language: str, translations_dir: Optional[Path] = Non
         return json.loads(cache_path.read_text(encoding="utf-8"))
     except (json.JSONDecodeError, OSError):
         return None
+
+
+def load_cli_translations(lang: str, translations_dir: Optional[Path] = None) -> dict:
+    """Load CLI translations for a language.
+
+    Args:
+        lang: Target language code
+        translations_dir: Custom translations directory (for testing)
+
+    Returns:
+        Dictionary of CLI messages. Falls back to code baseline
+        _CLI_MESSAGES_EN if translation file doesn't exist or is corrupted.
+    """
+    # Normalize language code
+    normalized_lang = normalize_locale(lang)
+
+    # Fallback to code baseline for unknown languages
+    if not normalized_lang:
+        logger.warning(f"Using code baseline for {lang}")
+        return _CLI_MESSAGES_EN
+
+    # Resolve translations directory
+    if translations_dir is None:
+        translations_dir = get_translations_dir()
+
+    # Check if translation file exists
+    cache_path = translations_dir / f"{normalized_lang}.json"
+
+    if not cache_path.exists():
+        logger.warning(f"Using code baseline for {lang}")
+        return _CLI_MESSAGES_EN
+
+    try:
+        data = json.loads(cache_path.read_text(encoding="utf-8"))
+        # Extract CLI messages from the "cli" namespace
+        if isinstance(data, dict) and "cli" in data:
+            return data["cli"]
+        # Fallback if structure is unexpected
+        logger.warning(f"Translation file missing 'cli' key for {lang}, falling back to code baseline")
+        return _CLI_MESSAGES_EN
+    except (json.JSONDecodeError, OSError):
+        logger.warning(f"Translation file corrupted for {lang}, falling back to code baseline")
+        return _CLI_MESSAGES_EN
+
+
+def translate(key: str, language: str = "en", **kwargs) -> str:
+    """Translate a CLI message to the target language.
+
+    Args:
+        key: Message key in format "cli.{command}.{message_key}"
+             e.g., "cli.init.migration_found"
+        language: Target language code (default: "en")
+        **kwargs: Format parameters for the message
+
+    Returns:
+        Translated and formatted message string
+
+    Examples:
+        >>> translate("cli.init.migration_found", "zh-CN", count=3)
+        '发现 3 个旧结构命令文件'
+        >>> translate("cli.init.migration_found", "en", count=3)
+        'Found 3 old structure command files'
+    """
+    # Normalize language code
+    normalized_lang = normalize_locale(language)
+
+    # Load translations for the language
+    translations = load_cli_translations(normalized_lang)
+
+    # Extract message from translations dict
+    # Key format: "cli.{command}.{message_key}"
+    parts = key.split(".")
+    if len(parts) < 3:
+        return key
+
+    # Navigate to nested key
+    current = translations
+    for part in parts[1:]:
+        if part not in current:
+            # Key not found, return the key itself
+            return key
+        current = current[part]
+
+    # Get message template
+    message_template = current
+
+    # Format message with kwargs
+    try:
+        return message_template.format(**kwargs)
+    except KeyError:
+        # Missing parameter - return original template string
+        logger.debug(f"Missing parameter in message template: {key}")
+        return message_template
 
 
 def extract_frontmatter_fields(content: str) -> dict[str, Optional[str]]:
