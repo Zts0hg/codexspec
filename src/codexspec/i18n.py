@@ -8,6 +8,7 @@ at runtime.
 """
 
 import os
+from pathlib import Path
 from typing import Optional
 
 # Supported language codes with their normalized forms
@@ -235,3 +236,42 @@ def get_project_language() -> str:
         pass
 
     return "en"
+
+
+def update_config_language(config_file: Path, language: str) -> bool:
+    """Update the language setting in an existing config.yml file.
+
+    Args:
+        config_file: Path to the config.yml file
+        language: New language code to set
+
+    Returns:
+        True if update was successful, False otherwise
+    """
+    import re
+
+    normalized_lang = normalize_locale(language)
+
+    try:
+        content = config_file.read_text(encoding="utf-8")
+
+        # Update output language
+        content = re.sub(
+            r'^(\s*output:\s*)["\']?\S+?["\']?\s*$',
+            rf'\g<1>"{normalized_lang}"',
+            content,
+            flags=re.MULTILINE,
+        )
+
+        # Update commit language (defaults to output language)
+        content = re.sub(
+            r'^(\s*commit:\s*)["\']?\S+?["\']?\s*$',
+            rf'\g<1>"{normalized_lang}"',
+            content,
+            flags=re.MULTILINE,
+        )
+
+        config_file.write_text(content, encoding="utf-8")
+        return True
+    except (OSError, re.error):
+        return False
