@@ -17,6 +17,7 @@
       "copied_template": "Copied template: {name}",
       "created_file": "Created: {file}",
       "updated_file": "Updated: {file} ({detail})",
+      "language_updated": "Updated: Language setting changed to {lang_name}",
       "git_initialized": "Initialized: Git repository",
       "git_failed": "Warning: Failed to initialize git repository",
       "warning_scripts_not_found": "Warning: Scripts directory not found",

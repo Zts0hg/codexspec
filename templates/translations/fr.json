@@ -17,6 +17,7 @@
       "copied_template": "Modèle copié: {name}",
       "created_file": "Créé: {file}",
       "updated_file": "Mis à jour: {file} ({detail})",
+      "language_updated": "Mis à jour: Paramètre de langue changé à {lang_name}",
       "git_initialized": "Initialisé: Dépôt Git",
       "git_failed": "Avertissement: Échec de l'initialisation du dépôt Git",
       "warning_scripts_not_found": "Avertissement: Répertoire des scripts non trouvé",
