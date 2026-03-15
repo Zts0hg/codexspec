@@ -48,9 +48,7 @@
       "compliance_added": "Updated: CLAUDE.md (added Constitution Compliance section)",
       "error_dir_exists": "Error: Directory '{path}' already exists",
       "error_use_force": "Use --force to overwrite or choose a different name",
-      "error_no_project_name": "Error: Please provide a project name or use --here flag",
-      "created_file": "Created: {file}",
-      "updated_file": "Updated: {file} ({detail})"
+      "error_no_project_name": "Error: Please provide a project name or use --here flag"
     },
     "list_commands": {
       "header": "CodexSpec Available Commands ({count})",
@@ -70,5 +68,72 @@
       "language_warning_hint": "It may still work if Claude supports it. Run codexspec config --list-langs to see supported languages.",
       "commit_lang_set": "Commit message language set to: {lang}"
     }
+  },
+  "constitution": {
+    "description": "Create or update project constitution from interactive or provided principles input, keeping all dependent templates in sync.",
+    "argument-hint": "[quick|deep | project principles] (optional)\n\nThis command creates/updates the project constitution at .codexspec/memory/constitution.md.\n\nThree usage modes:\n1. No arguments → Interactive mode: choose exploration depth (quick/deep)\n2. quick → Light exploration: config files + README + core entry points (~5-10 files)\n3. deep → Full exploration: above + source code analysis + architecture patterns\n4. <description> → Skip exploration, use your principles directly\n\nExamples:\n  /codexspec.constitution\n  /codexspec.constitution quick\n  /codexspec.constitution deep\n  /codexspec.constitution Python FastAPI backend using pytest, focused on type safety"
+  },
+  "specify": {
+    "description": "Clarify requirements through interactive Q&A to explore and refine initial ideas",
+    "argument-hint": "Describe your initial idea or requirements"
+  },
+  "clarify": {
+    "description": "Identify unclear areas in functional specification through targeted questions before technical planning",
+    "argument-hint": "[path_to_spec.md] (optional, defaults to .codexspec/specs/{feature-id}/)"
+  },
+  "analyze": {
+    "description": "Perform non-destructive consistency and quality analysis between spec.md, plan.md, and tasks.md artifacts"
+  },
+  "checklist": {
+    "description": "Generate custom quality checklists to validate requirements completeness, clarity, and consistency"
+  },
+  "generate-spec": {
+    "description": "Generate spec.md document after requirements are clarified"
+  },
+  "spec-to-plan": {
+    "description": "Convert functional specification to technical implementation plan",
+    "argument-hint": ".codexspec/specs/{feature-id}/spec.md"
+  },
+  "plan-to-tasks": {
+    "description": "Break down technical implementation plan into actionable tasks",
+    "argument-hint": "[spec.md_path plan.md_path] (optional, defaults to .codexspec/specs/{feature-id}/)"
+  },
+  "review-spec": {
+    "description": "Review and validate functional specification for completeness, clarity, and quality",
+    "argument-hint": "[spec.md_path] (optional, defaults to .codexspec/specs/{feature-id}/)"
+  },
+  "review-plan": {
+    "description": "Review and validate technical implementation plan for feasibility and consistency",
+    "argument-hint": "[plan.md_path] (optional, defaults to .codexspec/specs/{feature-id}/)"
+  },
+  "review-tasks": {
+    "description": "Review and validate task breakdown for completeness, ordering, and TDD compliance",
+    "argument-hint": "[tasks.md_path] (optional, defaults to .codexspec/specs/{feature-id}/)"
+  },
+  "implement-tasks": {
+    "description": "Execute implementation tasks with conditional TDD workflow (TDD for code, direct implementation for docs/config)",
+    "argument-hint": "[tasks_path] | [spec_path plan_path tasks_path]"
+  },
+  "tasks-to-issues": {
+    "description": "Convert existing tasks to actionable GitHub Issues for this feature"
+  },
+  "commit": {
+    "description": "Generate and execute Conventional Commits compliant commit messages based on git status and session context",
+    "argument-hint": "[-p] Use -p to only preview the message without committing"
+  },
+  "commit-staged": {
+    "description": "Analyze staged git changes and generate Conventional Commits compliant commit message",
+    "argument-hint": "[-p] Use -p to only preview the message without committing"
+  },
+  "pr": {
+    "description": "Generate structured Pull Request (GitHub) or Merge Request (GitLab) description based on git diff and optional spec.md integration"
+  },
+  "check-i18n-semantics": {
+    "description": "Check semantic consistency and quality of multilingual documentation",
+    "argument-hint": "[source_file] [--lang <language>] [--strict]"
+  },
+  "translate-docs": {
+    "description": "Translate project documentation to specified language",
+    "argument-hint": "--lang <language_codes> (e.g. 'zh,ja,ko') or 'all' for all languages"
   }
 }

@@ -50,6 +50,25 @@
       "error_use_force": "--force を使用して上書きするか、別の名前を選択してください",
       "error_no_project_name": "エラー: プロジェクト名を指定するか --here フラグを使用してください"
     },
+    "list_commands": {
+      "header": "CodexSpec 利用可能なコマンド ({count})",
+      "table_header": "コマンド",
+      "description_header": "説明",
+      "category_core": "コアコマンド ({count})",
+      "category_enhanced": "拡張コマンド ({count})",
+      "category_git": "Git ワークフロー ({count})",
+      "no_project": "現在のディレクトリにCodexSpecプロジェクトが見つかりません。",
+      "run_init": "codexspec init を実行して新しいプロジェクトを作成してください。",
+      "usage_hint": "/codexspec.<コマンド> を使用してこれらのコマンドを呼び出します"
+    },
+    "set_language": {
+      "language_set": "言語を設定しました: {lang} ({name})",
+      "language_failed": "言語設定の更新に失敗しました",
+      "language_warning": "警告: '{lang}' は一般的なサポート言語リストにありません。",
+      "language_warning_hint": "Claudeがサポートしていれば動作する可能性があります。codexspec config --list-langs を実行してサポートされている言語を確認してください。",
+      "commit_lang_set": "コミットメッセージ言語を設定しました: {lang}"
+    }
+  },
   "constitution": {
     "description": "対話型または提供された原則入力からプロジェクト憲法を作成または更新し、依存テンプレートの同期を保ちます。",
     "argument-hint": "[quick|deep | プロジェクト原則] (オプション)\n\nこのコマンドは .codexspec/memory/constitution.md にプロジェクト憲法を作成/更新します。\n\n3つの使用方法：\n1. 引数なし → 対話モード：探索深度を選択 (quick/deep)\n2. quick → 軽量探索：設定ファイル + README + コアエントリーポイント (~5-10ファイル)\n3. deep → 完全探索：上記 + ソースコード分析 + アーキテクチャパターン\n4. <説明> → 探索をスキップし、あなたの原則を直接使用\n\n例：\n  /codexspec.constitution\n  /codexspec.constitution quick\n  /codexspec.constitution deep\n  /codexspec.constitution Python FastAPI バックエンドで pytest 使用、型安全性重視"
