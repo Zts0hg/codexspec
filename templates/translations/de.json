@@ -1,69 +1,139 @@
 {
-  "constitution": {
-    "description": "Projektverfassung aus interaktiven oder bereitgestellten Prinzipien erstellen oder aktualisieren und sicherstellen, dass alle abhängigen Vorlagen synchronisiert bleiben.",
-    "argument-hint": "[quick|deep | Projektprinzipien] (optional)\n\nDieser Befehl erstellt/aktualisiert die Projektverfassung unter .codexspec/memory/constitution.md.\n\nDrei Verwendungsmöglichkeiten:\n1. Ohne Argumente → Interaktiver Modus: Explorationstiefe wählen (quick/deep)\n2. quick → Leichte Exploration: Konfigurationsdateien + README + Haupteinstiegspunkte (~5-10 Dateien)\n3. deep → Vollständige Exploration: alles oben + Quellcode-Analyse + Architektur-Patterns\n4. <Beschreibung> → Exploration überspringen, Prinzipien direkt verwenden\n\nBeispiele:\n  /codexspec.constitution\n  /codexspec.constitution quick\n  /codexspec.constitution deep\n  /codexspec.constitution Python FastAPI Backend mit pytest, Fokus auf Typsicherheit"
-  },
-  "specify": {
-    "description": "Anforderungen durch interaktives Q&A klären und erste Ideen erkunden und verfeinern",
-    "argument-hint": "Beschreiben Sie Ihre ursprüngliche Idee oder Anforderung"
-  },
-  "clarify": {
-    "description": "Unklare Bereiche in der Funktionsspezifikation durch gezielte Fragen vor der technischen Planung identifizieren",
-    "argument-hint": "[pfad_zu_spec.md] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
-  },
-  "analyze": {
-    "description": "Nicht-destruktive Konsistenz- und Qualitätsanalyse zwischen Artefakten spec.md, plan.md und tasks.md durchführen"
-  },
-  "checklist": {
-    "description": "Benutzerdefinierte Qualitätschecklisten zur Validierung von Vollständigkeit, Klarheit und Konsistenz der Anforderungen generieren"
-  },
-  "generate-spec": {
-    "description": "spec.md-Dokument generieren nachdem Anforderungen geklärt sind"
-  },
-  "spec-to-plan": {
-    "description": "Funktionsspezifikation in technischen Implementierungsplan umwandeln",
-    "argument-hint": ".codexspec/specs/{feature-id}/spec.md"
-  },
-  "plan-to-tasks": {
-    "description": "Technischen Implementierungsplan in ausführbare Aufgaben zerlegen",
-    "argument-hint": "[spec.md_pfad plan.md_pfad] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
-  },
-  "review-spec": {
-    "description": "Vollständigkeit, Klarheit und Qualität der Funktionsspezifikation überprüfen und validieren",
-    "argument-hint": "[spec.md_pfad] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
-  },
-  "review-plan": {
-    "description": "Machbarkeit und Konsistenz des technischen Implementierungsplans überprüfen und validieren",
-    "argument-hint": "[plan.md_pfad] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
-  },
-  "review-tasks": {
-    "description": "Vollständigkeit, Reihenfolge und TDD-Konformität der Aufgabenaufschlüsselung überprüfen und validieren",
-    "argument-hint": "[tasks.md_pfad] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
-  },
-  "implement-tasks": {
-    "description": "Implementierungsaufgaben mit bedingtem TDD-Workflow ausführen (TDD für Code, direkte Implementierung für Docs/Config)",
-    "argument-hint": "[tasks_pfad] | [spec_pfad plan_pfad tasks_pfad]"
-  },
-  "tasks-to-issues": {
-    "description": "Bestehende Aufgaben in umsetzbare GitHub Issues für diese Funktionalität umwandeln"
-  },
-  "commit": {
-    "description": "Conventional Commits konforme Commit-Nachrichten basierend auf Git-Status und Sitzungskontext generieren und ausführen",
-    "argument-hint": "[-p] -p verwenden um nur die Nachricht ohne Commit voranzuzeigen"
-  },
-  "commit-staged": {
-    "description": "Gestagte Git-Änderungen analysieren und Conventional Commits konforme Commit-Nachricht generieren",
-    "argument-hint": "[-p] -p verwenden um nur die Nachricht ohne Commit voranzuzeigen"
-  },
-  "pr": {
-    "description": "Strukturierte Pull Request (GitHub) oder Merge Request (GitLab) Beschreibung basierend auf git diff und optionaler spec.md-Integration generieren"
-  },
-  "check-i18n-semantics": {
-    "description": "Semantische Konsistenz und Qualität mehrsprachiger Dokumentation prüfen",
-    "argument-hint": "[quelldatei] [--lang <sprache>] [--strict]"
-  },
-  "translate-docs": {
-    "description": "Projektdokumentation in die angegebene Sprache übersetzen",
-    "argument-hint": "--lang <sprachcodes> (z.B. 'zh,ja,ko') oder 'all' für alle Sprachen"
-  }
+    "cli": {
+        "init": {
+            "migration_found": "{count} Befehlsdateien mit alter Struktur gefunden",
+            "migration_old_structure": "Alte Struktur: .claude/commands/codexspec.*.md",
+            "migration_new_structure": "Neue Struktur: .claude/commands/codexspec/*.md",
+            "migration_confirm": "Zur neuen Struktur migrieren?",
+            "migration_complete": "✓ Migration abgeschlossen",
+            "migration_failed": "✗ Migration fehlgeschlagen",
+            "migration_skipped": "Migration übersprungen",
+            "update_confirm": "Befehlsvorlagen überschreiben und aktualisieren?",
+            "commands_updated": "✓ {count} Befehle aktualisiert",
+            "commands_installed": "✓ {count} Befehle in {path} installiert",
+            "commands_installed_short": "✓ {count} Befehle installiert",
+            "created_directory": "Verzeichnis erstellt: {path}",
+            "copied_script": "Skript kopiert: {name}",
+            "copied_template": "Vorlage kopiert: {name}",
+            "created_file": "Erstellt: {file}",
+            "updated_file": "Aktualisiert: {file} ({detail})",
+            "git_initialized": "Initialisiert: Git-Repository",
+            "git_failed": "Warnung: Git-Repository-Initialisierung fehlgeschlagen",
+            "warning_scripts_not_found": "Warnung: Skriptverzeichnis nicht gefunden",
+            "warning_bash_scripts_not_found": "Warnung: Bash-Skriptverzeichnis nicht gefunden",
+            "warning_powershell_scripts_not_found": "Warnung: PowerShell-Skriptverzeichnis nicht gefunden",
+            "warning_docs_templates_not_found": "Warnung: Dokumentvorlagenverzeichnis nicht gefunden",
+            "warning_templates_not_found": "Warnung: Vorlagenverzeichnis nicht gefunden, erstelle Standardbefehle",
+            "installed_command": "Befehl installiert: /codexspec.{name}",
+            "commands_summary": "📁 {count} Befehle in .claude/commands/{path}/ installiert",
+            "category_core": "Kernbefehle ({count})",
+            "category_enhanced": "Erweiterte Befehle ({count})",
+            "category_git": "Git-Workflow ({count})",
+            "success_title": "Erfolg",
+            "success_message": "CodexSpec-Projekt erfolgreich initialisiert!",
+            "success_project_dir": "Projektverzeichnis: {path}",
+            "next_steps": "Nächste Schritte:",
+            "next_step_navigate": "Zum Projekt navigieren: cd {path}",
+            "next_step_start_claude": "Claude Code starten: claude",
+            "next_step_constitution": "/codexspec.constitution verwenden, um Projektprinzipien festzulegen",
+            "next_step_specify": "/codexspec.specify verwenden, um erste Spezifikation zu erstellen",
+            "tips_header": "💡 Tipps:",
+            "tips_git": ".claude/ zu Git hinzufügen: git add .claude/",
+            "tips_list_commands": "codexspec list-commands ausführen, um alle verfügbaren Befehle zu sehen",
+            "tips_edit": ".md-Dateien direkt bearbeiten, um Befehlsverhalten anzupassen",
+            "important_header": "Wichtig:",
+            "important_message": "Die Verfassung ist die Grundlage Ihres SDD-Workflows.",
+            "important_action": "Führen Sie /codexspec.constitution aus, um sie für Ihr Projekt anzupassen.",
+            "compliance_confirm": "CLAUDE.md existiert bereits ohne Verfassungs-Compliance-Abschnitt.\nDer Verfassungs-Compliance-Abschnitt stellt sicher, dass Claude Ihrer Projektverfassung folgt.\n? Möchten Sie den Verfassungs-Compliance-Abschnitt hinzufügen?",
+            "compliance_added": "Aktualisiert: CLAUDE.md (Verfassungs-Compliance-Abschnitt hinzugefügt)",
+            "error_dir_exists": "Fehler: Verzeichnis '{path}' existiert bereits",
+            "error_use_force": "--force verwenden zum Überschreiben oder anderen Namen wählen",
+            "error_no_project_name": "Fehler: Bitte Projektnamen angeben oder --here Flag verwenden"
+        },
+        "list_commands": {
+            "header": "CodexSpec verfügbare Befehle ({count})",
+            "table_header": "Befehl",
+            "description_header": "Beschreibung",
+            "category_core": "Kernbefehle ({count})",
+            "category_enhanced": "Erweiterte Befehle ({count})",
+            "category_git": "Git-Workflow ({count})",
+            "no_project": "Kein CodexSpec-Projekt im aktuellen Verzeichnis gefunden.",
+            "run_init": "Führen Sie codexspec init aus, um ein neues Projekt zu erstellen.",
+            "usage_hint": "Verwenden Sie /codexspec.<befehl>, um diese Befehle aufzurufen"
+        },
+        "set_language": {
+            "language_set": "Sprache eingestellt auf: {lang} ({name})",
+            "language_failed": "Spracheinstellung konnte nicht aktualisiert werden",
+            "language_warning": "Warnung: '{lang}' ist nicht in der Liste der häufig unterstützten Sprachen.",
+            "language_warning_hint": "Es funktioniert möglicherweise noch, wenn Claude es unterstützt. Führen Sie codexspec config --list-langs aus, um unterstützte Sprachen zu sehen.",
+            "commit_lang_set": "Commit-Nachrichtensprache eingestellt auf: {lang}"
+        }
+    },
+    "constitution": {
+        "description": "Projektverfassung aus interaktiven oder bereitgestellten Prinzipien erstellen oder aktualisieren und sicherstellen, dass alle abhängigen Vorlagen synchronisiert bleiben.",
+        "argument-hint": "[quick|deep | Projektprinzipien] (optional)\n\nDieser Befehl erstellt/aktualisiert die Projektverfassung unter .codexspec/memory/constitution.md.\n\nDrei Verwendungsmöglichkeiten:\n1. Ohne Argumente → Interaktiver Modus: Explorationstiefe wählen (quick/deep)\n2. quick → Leichte Exploration: Konfigurationsdateien + README + Haupteinstiegspunkte (~5-10 Dateien)\n3. deep → Vollständige Exploration: alles oben + Quellcode-Analyse + Architektur-Patterns\n4. <Beschreibung> → Exploration überspringen, Prinzipien direkt verwenden\n\nBeispiele:\n  /codexspec.constitution\n  /codexspec.constitution quick\n  /codexspec.constitution deep\n  /codexspec.constitution Python FastAPI Backend mit pytest, Fokus auf Typsicherheit"
+    },
+    "specify": {
+        "description": "Anforderungen durch interaktives Q&A klären und erste Ideen erkunden und verfeinern",
+        "argument-hint": "Beschreiben Sie Ihre ursprüngliche Idee oder Anforderung"
+    },
+    "clarify": {
+        "description": "Unklare Bereiche in der Funktionsspezifikation durch gezielte Fragen vor der technischen Planung identifizieren",
+        "argument-hint": "[pfad_zu_spec.md] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
+    },
+    "analyze": {
+        "description": "Nicht-destruktive Konsistenz- und Qualitätsanalyse zwischen Artefakten spec.md, plan.md und tasks.md durchführen"
+    },
+    "checklist": {
+        "description": "Benutzerdefinierte Qualitätschecklisten zur Validierung von Vollständigkeit, Klarheit und Konsistenz der Anforderungen generieren"
+    },
+    "generate-spec": {
+        "description": "spec.md-Dokument generieren nachdem Anforderungen geklärt sind"
+    },
+    "spec-to-plan": {
+        "description": "Funktionsspezifikation in technischen Implementierungsplan umwandeln",
+        "argument-hint": ".codexspec/specs/{feature-id}/spec.md"
+    },
+    "plan-to-tasks": {
+        "description": "Technischen Implementierungsplan in ausführbare Aufgaben zerlegen",
+        "argument-hint": "[spec.md_pfad plan.md_pfad] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
+    },
+    "review-spec": {
+        "description": "Vollständigkeit, Klarheit und Qualität der Funktionsspezifikation überprüfen und validieren",
+        "argument-hint": "[spec.md_pfad] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
+    },
+    "review-plan": {
+        "description": "Machbarkeit und Konsistenz des technischen Implementierungsplans überprüfen und validieren",
+        "argument-hint": "[plan.md_pfad] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
+    },
+    "review-tasks": {
+        "description": "Vollständigkeit, Reihenfolge und TDD-Konformität der Aufgabenaufschlüsselung überprüfen und validieren",
+        "argument-hint": "[tasks.md_pfad] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
+    },
+    "implement-tasks": {
+        "description": "Implementierungsaufgaben mit bedingtem TDD-Workflow ausführen (TDD für Code, direkte Implementierung für Docs/Config)",
+        "argument-hint": "[tasks_pfad] | [spec_pfad plan_pfad tasks_pfad]"
+    },
+    "tasks-to-issues": {
+        "description": "Bestehende Aufgaben in umsetzbare GitHub Issues für diese Funktionalität umwandeln"
+    },
+    "commit": {
+        "description": "Conventional Commits konforme Commit-Nachrichten basierend auf Git-Status und Sitzungskontext generieren und ausführen",
+        "argument-hint": "[-p] -p verwenden um nur die Nachricht ohne Commit voranzuzeigen"
+    },
+    "commit-staged": {
+        "description": "Gestagte Git-Änderungen analysieren und Conventional Commits konforme Commit-Nachricht generieren",
+        "argument-hint": "[-p] -p verwenden um nur die Nachricht ohne Commit voranzuzeigen"
+    },
+    "pr": {
+        "description": "Strukturierte Pull Request (GitHub) oder Merge Request (GitLab) Beschreibung basierend auf git diff und optionaler spec.md-Integration generieren"
+    },
+    "check-i18n-semantics": {
+        "description": "Semantische Konsistenz und Qualität mehrsprachiger Dokumentation prüfen",
+        "argument-hint": "[quelldatei] [--lang <sprache>] [--strict]"
+    },
+    "translate-docs": {
+        "description": "Projektdokumentation in die angegebene Sprache übersetzen",
+        "argument-hint": "--lang <sprachcodes> (z.B. 'zh,ja,ko') oder 'all' für alle Sprachen"
+    }
 }
