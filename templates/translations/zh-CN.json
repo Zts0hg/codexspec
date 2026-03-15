@@ -17,6 +17,7 @@
       "copied_template": "已复制模板: {name}",
       "created_file": "已创建: {file}",
       "updated_file": "已更新: {file} ({detail})",
+      "language_updated": "已更新: 语言设置已更改为 {lang_name}",
       "git_initialized": "已初始化: Git 仓库",
       "git_failed": "警告: 初始化 Git 仓库失败",
       "warning_scripts_not_found": "警告: 未找到脚本目录",

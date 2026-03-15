@@ -17,6 +17,7 @@
             "copied_template": "Vorlage kopiert: {name}",
             "created_file": "Erstellt: {file}",
             "updated_file": "Aktualisiert: {file} ({detail})",
+            "language_updated": "Aktualisiert: Spracheinstellung geändert zu {lang_name}",
             "git_initialized": "Initialisiert: Git-Repository",
             "git_failed": "Warnung: Git-Repository-Initialisierung fehlgeschlagen",
             "warning_scripts_not_found": "Warnung: Skriptverzeichnis nicht gefunden",

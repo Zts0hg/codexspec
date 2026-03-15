@@ -17,6 +17,7 @@
       "copied_template": "템플릿 복사됨: {name}",
       "created_file": "생성됨: {file}",
       "updated_file": "업데이트됨: {file} ({detail})",
+      "language_updated": "업데이트됨: 언어 설정이 {lang_name}(으)로 변경되었습니다",
       "git_initialized": "초기화됨: Git 저장소",
       "git_failed": "경고: Git 저장소 초기화 실패",
       "warning_scripts_not_found": "경고: 스크립트 디렉토리를 찾을 수 없음",

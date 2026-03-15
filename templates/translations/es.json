@@ -17,6 +17,7 @@
       "copied_template": "Plantilla copiada: {name}",
       "created_file": "Creado: {file}",
       "updated_file": "Actualizado: {file} ({detail})",
+      "language_updated": "Actualizado: Configuración de idioma cambiada a {lang_name}",
       "git_initialized": "Inicializado: Repositorio Git",
       "git_failed": "Advertencia: Error al inicializar repositorio Git",
       "warning_scripts_not_found": "Advertencia: Directorio de scripts no encontrado",

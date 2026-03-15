@@ -33,6 +33,7 @@ from .i18n import (
     get_supported_languages,
     is_supported_language,
     normalize_locale,
+    update_config_language,
 )
 from .translator import translate
 
@@ -579,6 +580,16 @@ def init(
             file=f".codexspec/config.yml (language: {lang_name})",
         )
         console.print(f"[green]{msg}[/green]")
+    elif lang != "en":  # User explicitly provided --lang (not default)
+        # Update only the language setting in existing config
+        if update_config_language(config_file, normalized_lang):
+            lang_name = get_language_name(normalized_lang)
+            msg = translate(
+                "cli.init.language_updated",
+                normalized_lang,
+                lang_name=lang_name,
+            )
+            console.print(f"[green]{msg}[/green]")
 
     # Create CLAUDE.md
     claude_md = target_dir / "CLAUDE.md"

@@ -17,6 +17,7 @@
       "copied_template": "テンプレートをコピーしました: {name}",
       "created_file": "作成しました: {file}",
       "updated_file": "更新しました: {file} ({detail})",
+      "language_updated": "更新しました: 言語設定を {lang_name} に変更しました",
       "git_initialized": "初期化しました: Git リポジトリ",
       "git_failed": "警告: Git リポジトリの初期化に失敗しました",
       "warning_scripts_not_found": "警告: スクリプトディレクトリが見つかりません",
