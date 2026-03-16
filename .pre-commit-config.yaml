@@ -78,11 +78,14 @@ repos:
   # Dependency Security
   # ========================================
 
-  # safety - Dependency security check
-  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
-    rev: v1.3.3
+  # pip-audit - Dependency security check (local hook)
+  - repo: local
     hooks:
-      - id: python-safety-dependencies-check
+      - id: pip-audit
+        name: pip-audit
+        entry: uvx pip-audit
+        language: system
+        pass_filenames: false
 
   # ========================================
   # Local Hooks
