@@ -96,7 +96,7 @@ repos:
     hooks:
       - id: pytest
         name: pytest
-        entry: uv run pytest -x --tb=short
+        entry: uv run --extra dev pytest -x --tb=short
         language: system
         pass_filenames: false
         files: \.py$
