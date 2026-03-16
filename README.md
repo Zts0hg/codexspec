@@ -40,12 +40,14 @@ Idea → Clarify → Review → Plan → Review → Tasks → Review → Analyze
 ```
 
 **Every artifact has a corresponding review command:**
+
 - `spec.md` → `/codexspec.review-spec`
 - `plan.md` → `/codexspec.review-plan`
 - `tasks.md` → `/codexspec.review-tasks`
 - All artifacts → `/codexspec.analyze`
 
 This systematic review process ensures:
+
 - **Early error detection**: Catch misunderstandings before code is written
 - **Alignment verification**: Confirm AI's interpretation matches your intent
 - **Quality gates**: Validate completeness, clarity, and feasibility at each stage
@@ -54,18 +56,21 @@ This systematic review process ensures:
 ## Features
 
 ### Core SDD Workflow
+
 - **Constitution-Based**: Establish project principles that guide all subsequent decisions
 - **Two-Phase Specification**: Interactive clarification (`/specify`) followed by document generation (`/generate-spec`)
 - **Plan-Driven Development**: Technical choices come after requirements are validated
 - **TDD-Ready Tasks**: Task breakdowns enforce test-first methodology
 
 ### Human-AI Collaboration
+
 - **Review Commands**: Dedicated review commands for spec, plan, and tasks to validate AI output
 - **Interactive Clarification**: Q&A-based requirement refinement with immediate feedback
 - **Cross-Artifact Analysis**: Detect inconsistencies between spec, plan, and tasks before implementation
 - **Quality Checklists**: Automated quality assessment for requirements
 
 ### Developer Experience
+
 - **Claude Code Integration**: Native slash commands for Claude Code
 - **Internationalization (i18n)**: Multi-language support via LLM dynamic translation
 - **Cross-Platform**: Support for both Bash and PowerShell scripts
@@ -145,6 +150,7 @@ codexspec --version
 If you encounter "Access denied" or "spawn codexspec access denied (OSError 5)" errors in CMD:
 
 **Solution 1: Refresh environment variables**
+
 ```cmd
 # Close all CMD windows and open a new one
 # Or manually refresh PATH
@@ -153,11 +159,13 @@ codexspec --version
 ```
 
 **Solution 2: Use full path**
+
 ```cmd
 %USERPROFILE%\.local\bin\codexspec.exe --version
 ```
 
 **Solution 3: Use pipx instead of uv tool**
+
 ```cmd
 pip install pipx
 pipx ensurepath
@@ -241,6 +249,7 @@ Use `/codexspec.specify` to **explore and clarify** your requirements through in
 ```
 
 This command will:
+
 - Ask clarifying questions to understand your idea
 - Explore edge cases you might not have considered
 - Co-create high-quality requirements through dialogue
@@ -265,6 +274,7 @@ This command acts as a "requirement compiler" that transforms your clarified req
 ```
 
 This command generates a detailed review report with:
+
 - Section completeness analysis
 - Clarity and testability assessment
 - Constitution alignment check
@@ -289,6 +299,7 @@ The command includes **constitutionality review** - verifying your plan aligns w
 ```
 
 This verifies:
+
 - Specification alignment
 - Architecture soundness
 - Tech stack appropriateness
@@ -303,6 +314,7 @@ Use `/codexspec.plan-to-tasks` to break down the plan:
 ```
 
 Tasks are organized into standard phases with:
+
 - **TDD enforcement**: Test tasks precede implementation tasks
 - **Parallel markers `[P]`**: Identify independent tasks
 - **File path specifications**: Clear deliverables per task
@@ -316,6 +328,7 @@ Tasks are organized into standard phases with:
 ```
 
 This checks:
+
 - Plan coverage
 - TDD compliance
 - Dependency correctness
@@ -330,6 +343,7 @@ Use `/codexspec.analyze` for cross-artifact consistency check:
 ```
 
 This detects issues across spec, plan, and tasks:
+
 - Coverage gaps (requirements without tasks)
 - Duplication and inconsistencies
 - Constitution violations
@@ -344,6 +358,7 @@ Use `/codexspec.implement-tasks` to execute the implementation:
 ```
 
 The implementation follows **conditional TDD workflow**:
+
 - Code tasks: Test-first (Red → Green → Verify → Refactor)
 - Non-testable tasks (docs, config): Direct implementation
 
@@ -553,6 +568,7 @@ CodexSpec supports multiple languages through **LLM dynamic translation**. Inste
 ### Setting Language
 
 **During initialization:**
+
 ```bash
 # Create a project with Chinese output
 codexspec init my-project --lang zh-CN
@@ -562,6 +578,7 @@ codexspec init my-project --lang ja
 ```
 
 **After initialization:**
+
 ```bash
 # View current configuration
 codexspec config
@@ -587,6 +604,7 @@ codexspec config --set-commit-lang en
 ```
 
 **Language priority for commit messages:**
+
 1. `language.commit` setting (if specified)
 2. `language.output` (fallback)
 3. `"en"` (default)

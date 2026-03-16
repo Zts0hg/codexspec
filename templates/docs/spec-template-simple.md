@@ -11,6 +11,7 @@ If not configured, use English.
 <!-- requirement text -->
 
 #### Scenario: <!-- scenario name -->
+
 - **WHEN** <!-- condition -->
 - **THEN** <!-- expected outcome -->
 
@@ -35,6 +36,7 @@ If not configured, use English.
 **So that** <!-- benefit -->
 
 **Acceptance Criteria:**
+
 - [ ] <!-- criterion 1 -->
 - [ ] <!-- criterion 2 -->
 

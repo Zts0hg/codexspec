@@ -34,42 +34,52 @@ Veuillez baser sur la difference de code entre la branche actuelle et la branche
 ### Processus de Clarification
 
 **Q1 : Langue de sortie**
+
 - Options : Suivre la configuration du projet / Chinois / Detection automatique
 - **Choix de l'utilisateur** : Suivre la configuration du projet (actuel : en)
 
 **Q2 : Support de plateforme**
+
 - Options : Supporter GitHub et GitLab simultanement / GitHub uniquement / Detection automatique de plateforme
 - **Choix de l'utilisateur** : Detection automatique de plateforme
 
 **Q3 : Contenu de description PR**
+
 - Options : Description structuree detaillee / Description concise / Modele personnalisable
 - **Choix de l'utilisateur** : Description structuree detaillee (recommande)
 
 **Q4 : Condition de declenchement**
+
 - Options : Branche courante vs origin/main / Commits non pousses / Specification possible de la branche cible
 - **Choix de l'utilisateur** : Specification possible de la branche cible
 
 **Q5 : Source Spec**
+
 - Options : Prioriser spec.md / Uniquement informations git / Combiner toutes les sources
 - **Choix de l'utilisateur** : Combiner toutes les sources (recommande)
 
 **Q6 : Nom**
+
 - Options : codexspec.pr / codexspec.create-pr / codexspec.create-mr
 - **Choix de l'utilisateur** : codexspec.pr (recommande)
 
 **Q7 : Gestion sans Spec**
+
 - Options : Continuer la generation, sauter le contexte / Prompter l'utilisateur a creer d'abord un spec / Avertir et continuer
 - **Choix de l'utilisateur** : Continuer la generation, sauter le contexte
 
 **Q8 : Mode de sortie**
+
 - Options : Sortie terminal / Sauvegarder dans fichier / Terminal + fichier optionnel
 - **Choix de l'utilisateur** : Terminal + fichier optionnel (recommande)
 
 **Q9 : Sections par defaut**
+
 - Options : Contexte, Schema d'implementation, Tests, Comment verifier (tout selectionner)
 - **Choix de l'utilisateur** : Les quatre sections
 
 **Q10 : Parametres d'instruction**
+
 - **Choix de l'utilisateur** : Tous les parametres sont optionnels
   - `--target-branch` : Defaut origin/main
   - `--output` : Defaut sortie terminal uniquement si non specifie
@@ -81,6 +91,7 @@ Veuillez baser sur la difference de code entre la branche actuelle et la branche
 **Retour utilisateur** : La langue devrait suivre la meme priorite que l'instruction `/commit` selon le parametre `language.commit` dans `config.yml`, et seulement si `language.commit` n'est pas defini, alors selon `language.output`.
 
 **Resume des exigences mis a jour** :
+
 ```
 Priorite de langue : language.commit > language.output > English (defaut)
 ```
@@ -129,10 +140,12 @@ La commande doit determiner la langue de sortie dans l'ordre de priorite suivant
 ### Problemes Detectes
 
 **Avertissements (Should Fix)** :
+
 1. **SPEC-001** : Logique de decouverte de fichiers de test non explicitement specifiee
 2. **SPEC-002** : Selection du spec.md "le plus recemment modifie" peut etre inexact quand il y en a plusieurs
 
 **Suggestions (Nice to Have)** :
+
 1. Considerer l'ajout d'un parametre `--title`
 2. Ajouter une exigence de validation de format de sortie
 3. Considerer le support des modeles d'URL GitHub Enterprise
@@ -280,13 +293,16 @@ Nouvelle conception : --spec (activer spec, opt-in)
 ### Liste des Fichiers
 
 **Crees** :
+
 - `templates/commands/pr.md`
 
 **Modifies** :
+
 - `CLAUDE.md` - Ajouter la description de commande
 - `README.md` - Ajouter la commande a la liste
 
 **Tests** :
+
 - `tests/test_pr_template.py`
 
 ---
@@ -356,6 +372,7 @@ Nouvelle conception : --spec (activer spec, opt-in)
 ### 1. Valeur de la Phase de Clarification
 
 Cette etude de cas demontre le role critique de la commande `clarify` :
+
 - **L'utilisateur a detecte des problemes reels pendant l'utilisation** - Risque d'utilisation erronee de spec.md dans les scenarios de petites modifications
 - **Resolution des defauts de conception via Q&R de clarification** - Passage de la detection automatique au mode opt-in
 - **Les changements d'exigences sont systematiquement enregistres** - Tous les changements sont sauvegardes dans la section Clarifications de spec.md

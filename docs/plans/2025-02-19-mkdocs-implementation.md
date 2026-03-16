@@ -13,6 +13,7 @@
 ## Task 1: Update pyproject.toml with Docs Dependencies
 
 **Files:**
+
 - Modify: `pyproject.toml:37-42`
 
 **Step 1: Add docs optional dependencies**
@@ -50,6 +51,7 @@ git commit -m "chore: add MkDocs documentation dependencies"
 ## Task 2: Create mkdocs.yml Configuration
 
 **Files:**
+
 - Create: `mkdocs.yml`
 
 **Step 1: Create mkdocs.yml**
@@ -161,6 +163,7 @@ git commit -m "docs: add MkDocs configuration"
 ## Task 3: Create Docs Directory Structure
 
 **Files:**
+
 - Create: `docs/index.md`
 - Create: `docs/getting-started/installation.md`
 - Create: `docs/getting-started/quick-start.md`
@@ -248,6 +251,7 @@ Every artifact has a corresponding review command to validate AI output before p
 ## License
 
 MIT License - see [LICENSE](https://github.com/Zts0hg/codexspec/blob/main/LICENSE) for details.
+
 ```
 
 **Step 3: Create docs/getting-started/installation.md**
@@ -325,6 +329,7 @@ pip install --upgrade codexspec
 ## Next Steps
 
 [:material-arrow-right: Quick Start](quick-start.md)
+
 ```
 
 **Step 4: Create docs/getting-started/quick-start.md**
@@ -427,6 +432,7 @@ my-project/
 ## Next Steps
 
 [:material-arrow-right: Full Workflow Guide](../user-guide/workflow.md)
+
 ```
 
 **Step 5: Commit progress**
@@ -441,6 +447,7 @@ git commit -m "docs: add homepage and getting-started sections"
 ## Task 4: Create User Guide Documentation
 
 **Files:**
+
 - Create: `docs/user-guide/workflow.md`
 - Create: `docs/user-guide/commands.md`
 - Create: `docs/user-guide/i18n.md`
@@ -455,6 +462,7 @@ CodexSpec structures development into **reviewable checkpoints** with human vali
 ## Workflow Overview
 
 ```
+
 ┌──────────────────────────────────────────────────────────────────────────┐
 │                    CodexSpec Human-AI Collaboration Workflow             │
 ├──────────────────────────────────────────────────────────────────────────┤
@@ -492,6 +500,7 @@ CodexSpec structures development into **reviewable checkpoints** with human vali
 │  6. Implement  ─────►  Execute with conditional TDD workflow             │
 │                                                                          │
 └──────────────────────────────────────────────────────────────────────────┘
+
 ```
 
 ## Why Review Matters
@@ -617,6 +626,7 @@ project:
 - **Zero Translation Maintenance**: No need to maintain multiple template versions
 - **Always Up-to-Date**: Template updates benefit all languages
 - **Context-Aware**: Technical terms remain in English when appropriate
+
 ```
 
 **Step 4: Commit**
@@ -631,6 +641,7 @@ git commit -m "docs: add user-guide documentation"
 ## Task 5: Create Reference Documentation
 
 **Files:**
+
 - Create: `docs/reference/cli.md`
 - Create: `docs/reference/configuration.md`
 
@@ -715,6 +726,7 @@ codexspec config [OPTIONS]
 |--------|-------|-------------|
 | `--set-lang` | `-l` | Set the output language |
 | `--list-langs` | | List all supported languages |
+
 ```
 
 **Step 2: Create docs/reference/configuration.md**
@@ -763,6 +775,7 @@ The AI assistant being used. Currently supports:
 ### `project.created`
 
 Date when the project was initialized.
+
 ```
 
 **Step 3: Commit**
@@ -777,6 +790,7 @@ git commit -m "docs: add reference documentation"
 ## Task 6: Create Development Documentation
 
 **Files:**
+
 - Create: `docs/development/contributing.md`
 
 **Step 1: Create docs/development/contributing.md**
@@ -842,6 +856,7 @@ uv build
 - Line length: 120 characters max
 - Follow PEP 8
 - Use type hints for public functions
+
 ```
 
 **Step 2: Commit**
@@ -856,6 +871,7 @@ git commit -m "docs: add contributing guide"
 ## Task 7: Create Assets and Styles
 
 **Files:**
+
 - Create: `docs/assets/stylesheets/extra.css`
 - Create: `docs/assets/images/.gitkeep`
 
@@ -904,6 +920,7 @@ git commit -m "docs: add assets and custom styles"
 ## Task 8: Create GitHub Actions Workflow
 
 **Files:**
+
 - Create: `.github/workflows/docs.yml`
 
 **Step 1: Create .github/workflows/docs.yml**
@@ -980,6 +997,7 @@ git commit -m "ci: add GitHub Actions workflow for docs deployment"
 ## Task 9: Update .gitignore
 
 **Files:**
+
 - Modify: `.gitignore`
 
 **Step 1: Add MkDocs build output to .gitignore**
@@ -1003,6 +1021,7 @@ git commit -m "chore: add MkDocs site to gitignore"
 ## Task 10: Update README with Docs Link
 
 **Files:**
+
 - Modify: `README.md`
 
 **Step 1: Add documentation link to README**

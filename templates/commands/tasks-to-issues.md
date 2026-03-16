@@ -21,6 +21,7 @@ scripts:
 ## Language Preference
 
 **IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
+
 - If `language.output` is set to a language other than "en", respond and generate all content in that language
 - If not configured or set to "en", use English as default
 - Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
@@ -43,6 +44,7 @@ Convert the task breakdown from `tasks.md` into GitHub issues for project tracki
 ### 1. Initialize Context
 
 Run `{SCRIPT}` from repo root and parse JSON for:
+
 - `FEATURE_DIR` - Feature directory path
 - `AVAILABLE_DOCS` - Available documents list
 - `TASKS` - Path to tasks.md
@@ -61,6 +63,7 @@ git config --get remote.origin.url
 ### 3. Parse Tasks
 
 Load and parse the tasks file:
+
 - Extract task IDs
 - Extract task descriptions
 - Extract task dependencies
@@ -107,6 +110,7 @@ For each task in the list:
 ### 6. Report
 
 Output:
+
 - Number of issues created
 - List of issue URLs
 - Any tasks that could not be converted
@@ -114,6 +118,7 @@ Output:
 ## Safety Constraints
 
 > [!CAUTION]
+>
 > - UNDER NO CIRCUMSTANCES CREATE ISSUES IN REPOSITORIES THAT DO NOT MATCH THE REMOTE URL
 > - Always verify the repository before creating issues
 > - Do not create duplicate issues

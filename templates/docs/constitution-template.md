@@ -37,12 +37,14 @@ If not configured, use English.
 ## Technology Stack
 
 ### Languages & Frameworks
+
 - **Primary Language**: [e.g., Python 3.11+]
 - **Web Framework**: [e.g., FastAPI]
 - **Database**: [e.g., PostgreSQL]
 - **Testing**: [e.g., pytest]
 
 ### Code Standards
+
 - **Style Guide**: [e.g., PEP 8]
 - **Line Length**: [e.g., 120 characters]
 - **Type Hints**: [Required/Optional]
@@ -50,22 +52,27 @@ If not configured, use English.
 ## Development Workflow
 
 ### Branch Strategy
+
 - [Branch naming convention, e.g., feature/N-description]
 
 ### Commit Guidelines
+
 - [Commit message format, e.g., Conventional Commits]
 
 ### Code Review
+
 - [Review requirements and process]
 
 ## Quality Gates
 
 ### Pre-commit Checks
+
 - [ ] Linting passes
 - [ ] Type checking passes
 - [ ] Tests pass
 
 ### PR Requirements
+
 - [ ] All CI checks pass
 - [ ] At least one approval
 - [ ] No unresolved conversations

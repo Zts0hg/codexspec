@@ -34,42 +34,52 @@ Por favor, basandote en la diferencia de codigo entre la rama actual y la rama o
 ### Proceso de Clarificacion
 
 **Q1: Idioma de Salida**
+
 - Opciones: Seguir configuracion del proyecto / Chino / Deteccion automatica
 - **Seleccion del Usuario**: Seguir configuracion del proyecto (actual: en)
 
 **Q2: Soporte de Plataforma**
+
 - Opciones: Soportar GitHub y GitLab simultaneamente / Solo GitHub / Deteccion automatica de plataforma
 - **Seleccion del Usuario**: Deteccion automatica de plataforma
 
 **Q3: Contenido de Descripcion PR**
+
 - Opciones: Descripcion estructurada detallada / Descripcion concisa / Plantilla personalizable
 - **Seleccion del Usuario**: Descripcion estructurada detallada (recomendado)
 
 **Q4: Condicion de Disparo**
+
 - Opciones: Rama actual vs origin/main / Commits no enviados / Poder especificar rama objetivo
 - **Seleccion del Usuario**: Poder especificar rama objetivo
 
 **Q5: Fuente de Spec**
+
 - Opciones: Priorizar spec.md / Solo usar info git / Combinar todas las fuentes
 - **Seleccion del Usuario**: Combinar todas las fuentes (recomendado)
 
 **Q6: Nomenclatura**
+
 - Opciones: codexspec.pr / codexspec.create-pr / codexspec.create-mr
 - **Seleccion del Usuario**: codexspec.pr (recomendado)
 
 **Q7: Manejo sin Spec**
+
 - Opciones: Continuar generando, saltar contexto / Solicitar crear spec primero / Advertir y continuar
 - **Seleccion del Usuario**: Continuar generando, saltar contexto
 
 **Q8: Metodo de Salida**
+
 - Opciones: Salida a terminal / Guardar a archivo / Terminal + archivo opcional
 - **Seleccion del Usuario**: Terminal + archivo opcional (recomendado)
 
 **Q9: Secciones por Defecto**
+
 - Opciones: Contexto, Implementacion, Pruebas, Como Verificar (todas)
 - **Seleccion del Usuario**: Las cuatro secciones completas
 
 **Q10: Parametros del Comando**
+
 - **Seleccion del Usuario**: Todos los parametros son opcionales
   - `--target-branch`: Por defecto origin/main
   - `--output`: Si no se especifica, por defecto solo salida a terminal
@@ -81,6 +91,7 @@ Por favor, basandote en la diferencia de codigo entre la rama actual y la rama o
 **Retroalimentacion del Usuario**: El idioma deberia seguir la misma logica que el comando `/commit`, priorizando el parametro `language.commit` en `config.yml`, y si no hay parametro `language.commit` configurado, entonces segun `language.output`.
 
 **Resumen de Requisitos Actualizado**:
+
 ```
 Prioridad de idioma: language.commit > language.output > English (por defecto)
 ```
@@ -129,10 +140,12 @@ The command shall determine output language in the following priority order:
 ### Problemas Encontrados
 
 **Advertencias (Should Fix)**:
+
 1. **SPEC-001**: Logica de descubrimiento de archivos de prueba no especificada
 2. **SPEC-002**: Cuando hay multiples spec.md, seleccionar "modificado mas recientemente" puede ser inexacto
 
 **Sugerencias (Nice to Have)**:
+
 1. Considerar agregar parametro `--title`
 2. Agregar requisito de validacion de formato de salida
 3. Considerar soporte de patrones URL de GitHub Enterprise
@@ -280,13 +293,16 @@ Nuevo diseno: --spec (habilitar spec, opt-in)
 ### Lista de Archivos
 
 **Crear**:
+
 - `templates/commands/pr.md`
 
 **Modificar**:
+
 - `CLAUDE.md` - Agregar descripcion del comando
 - `README.md` - Agregar comando a la lista
 
 **Pruebas**:
+
 - `tests/test_pr_template.py`
 
 ---
@@ -357,6 +373,7 @@ Nuevo diseno: --spec (habilitar spec, opt-in)
 ### 1. Valor de la Fase de Clarificacion
 
 Este caso de uso demuestra el rol critico del comando `clarify`:
+
 - **Usuario descubrio problemas reales durante el uso** - Riesgo de uso erroneo de spec.md en escenarios de cambios pequenos
 - **Resuelto defectos de diseno mediante Q&A de clarificacion** - Cambio de deteccion automatica a modo opt-in
 - **Cambios de requisitos registrados sistematicamente** - Todos los cambios guardados en seccion Clarifications de spec.md

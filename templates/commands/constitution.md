@@ -24,6 +24,7 @@ handoffs:
 ## Language Preference
 
 **IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
+
 - If `language.output` is set to a language other than "en", respond and generate all content in that language
 - If not configured or set to "en", use English as default
 - Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
@@ -93,6 +94,7 @@ When user selects `quick`, explore the following in order:
    - `index.*` or `app.*`
 
 **Based on exploration findings, generate constitution draft covering:**
+
 - Technology Stack (from config files)
 - Code Standards (from linter configs)
 - Basic Principles (from documentation)
@@ -117,6 +119,7 @@ When user selects `deep`, perform quick exploration PLUS:
    - Analyze module organization
 
 **Based on deep exploration, also include in constitution:**
+
 - Detailed Code Standards with examples from actual code
 - Architecture Patterns section
 - Testing Requirements based on existing test patterns
@@ -126,6 +129,7 @@ When user selects `deep`, perform quick exploration PLUS:
 ### Mode C: Direct Principles Input
 
 When user provides project principles directly:
+
 - Skip exploration phase
 - Use provided principles as foundation
 - Still check for existing `.codexspec/memory/constitution.md`
@@ -136,6 +140,7 @@ When user provides project principles directly:
 ## Execution Flow
 
 > **Prerequisite**: Ensure you have completed Input Mode Detection above and have either:
+>
 > - Explored the project (quick/deep mode) and have findings ready, OR
 > - Received direct principles input from user
 
@@ -152,6 +157,7 @@ You are creating or updating the project constitution at `.codexspec/memory/cons
   - If template NOT exists: Create a minimal constitution (must include at minimum: Core Principles and Governance sections) based on user input and available project context, then proceed to Step 4 (cross-artifact validation is still valuable for new constitutions)
 
 **IMPORTANT**:
+
 - The user might specify a different number of principles than the template default. Adjust the principle sections accordingly.
 - When creating a new constitution, start version at `1.0.0`
 
@@ -164,10 +170,12 @@ You are creating or updating the project constitution at `.codexspec/memory/cons
 3. **Ask user** - if critical info missing and cannot infer
 
 **Governance dates:**
+
 - `RATIFICATION_DATE`: Original adoption date (ask if unknown, never guess)
 - `LAST_AMENDED_DATE`: Today's date if changes made, otherwise keep existing value
 
 **Version bump rules** (`CONSTITUTION_VERSION`):
+
 | Bump Type | When to Use |
 |-----------|-------------|
 | MAJOR | Backward incompatible changes (principle removal/redefinition) |
@@ -214,6 +222,7 @@ Read the following files and verify alignment with updated principles. **Report 
 Generate the following report to be inserted at the TOP of the constitution content (before all other content), formatted as an HTML comment. Actual writing happens in Step 7:
 
 **Report format for UPDATE mode:**
+
 ```html
 <!--
 SYNC IMPACT REPORT
@@ -240,6 +249,7 @@ Deferred TODOs:
 ```
 
 **Report format for CREATE mode:**
+
 ```html
 <!--
 SYNC IMPACT REPORT
@@ -268,6 +278,7 @@ Deferred TODOs:
 ### Step 6: Final Validation
 
 Before writing, verify:
+
 - [ ] No remaining placeholders (except explicitly deferred ones with TODO)
 - [ ] Version in report matches version in document
 - [ ] Dates use ISO format (YYYY-MM-DD)
@@ -279,6 +290,7 @@ Before writing, verify:
 > If updating an existing constitution, SKIP this step entirely.
 
 **When to execute this step:**
+
 - Check if `.codexspec/memory/constitution.md` exists
 - **If EXISTS**: Skip to Step 7 (this is an update, not first-time creation)
 - **If NOT EXISTS**: Continue with the CLAUDE.md compliance check below
@@ -311,6 +323,7 @@ Before writing, verify:
    - Use `---` as a separator between the compliance section and existing content
 
    **Content to prepend:**
+
    ```markdown
    ## [HIGHEST PRIORITY] CONSTITUTION COMPLIANCE
 
@@ -354,6 +367,7 @@ Before writing, verify:
    - Example: `CLAUDE.md: Added Constitution Compliance section (user confirmed)`
 
 **Edge Cases:**
+
 - **CLAUDE.md doesn't exist**: No action needed (init command will create it with compliance section)
 - **CLAUDE.md already has compliance section**: Skip (no duplicate needed)
 - **User declines**: Respect user choice, document in Sync Impact Report

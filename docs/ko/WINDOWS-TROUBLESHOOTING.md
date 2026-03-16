@@ -95,6 +95,7 @@ dir %USERPROFILE%\.local\bin\codexspec.*
 **원인**: uv가 설치되지 않았거나 PATH에 없습니다.
 
 **해결책**:
+
 ```powershell
 # PowerShell을 사용하여 uv 설치
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
@@ -108,6 +109,7 @@ uv --version
 **원인**: Python이 설치되지 않았거나 PATH에 없습니다.
 
 **해결책**:
+
 1. [python.org](https://www.python.org/downloads/)에서 Python 3.11+ 설치
 2. 설치 중에 "Add Python to PATH" 체크
 3. 터미널 다시 시작
@@ -117,6 +119,7 @@ uv --version
 **증상**: Codexspec이 잠시 작동하다가 중지되거나 간헐적인 오류 표시.
 
 **해결책**: codexspec을 안티바이러스 허용 목록에 추가:
+
 - **Windows Defender**: 설정 → 업데이트 및 보안 → Windows 보안 → 바이러스 및 위협 보호 → 설정 관리 → 제외
 - 경로 추가: `%USERPROFILE%\.local\bin\codexspec.exe`
 

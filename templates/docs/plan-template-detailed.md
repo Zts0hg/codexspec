@@ -16,10 +16,12 @@ If not configured, use English.
 ## Goals / Non-Goals
 
 **Goals:**
+
 - [What this implementation aims to achieve]
 - [Specific outcomes]
 
 **Non-Goals:**
+
 - [What is explicitly out of scope]
 - [What will be deferred to future iterations]
 
@@ -87,6 +89,7 @@ project/
 ### POST /api/v1/[resource]
 
 **Request:**
+
 ```json
 {
   "field1": "string",
@@ -95,6 +98,7 @@ project/
 ```
 
 **Response (201):**
+
 ```json
 {
   "id": "uuid",
@@ -105,6 +109,7 @@ project/
 ```
 
 **Errors:**
+
 - 400: Invalid request body
 - 401: Unauthorized
 - 409: Conflict
@@ -112,6 +117,7 @@ project/
 ### GET /api/v1/[resource]/:id
 
 **Response (200):**
+
 ```json
 {
   "id": "uuid",
@@ -120,6 +126,7 @@ project/
 ```
 
 **Errors:**
+
 - 404: Not found
 
 ## Decisions
@@ -129,6 +136,7 @@ project/
 **Context**: [Why this decision was needed]
 
 **Options Considered**:
+
 1. [Option A]
 2. [Option B]
 

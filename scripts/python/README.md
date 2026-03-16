@@ -49,6 +49,7 @@ Claude Code 的 session 文件（`.jsonl` 格式）中，每条 assistant 消息
 | `max_tokens`  | 达到 token 限制  | **空闲** |
 
 **状态判断逻辑**：
+
 1. `stop_reason=null`：流式输出中，判定为**执行中**
 2. `stop_reason=tool_use`：
    - 如果文件在 3 秒内被修改过 → **执行中**

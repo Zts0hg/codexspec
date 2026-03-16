@@ -15,6 +15,7 @@ You are now the **Chief Architect** of this project. Your responsibility is to t
 ## Language Preference
 
 **IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
+
 - If `language.output` is set to a language other than "en", respond and generate all content in that language
 - If not configured or set to "en", use English as default
 - Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
@@ -84,6 +85,7 @@ Transform the feature specification into a detailed technical implementation pla
 ### Module Structure Requirements
 
 For each module/component in your plan, specify:
+
 - **Responsibility**: What this module owns and does
 - **Dependencies**: Which other modules it depends on
 - **Interfaces**: What it exposes to other modules
@@ -153,26 +155,31 @@ The following template shows a comprehensive structure. **Only include sections 
 
 <!-- For Web Backend: -->
 ```
+
 project/
 ├── src/
 │   ├── [module1]/      # [responsibility]
 │   ├── [module2]/      # [responsibility]
 │   └── [module3]/      # [responsibility]
 └── tests/
+
 ```
 
 <!-- For CLI Tool: -->
 ```
+
 project/
 ├── src/
 │   ├── commands/       # CLI command handlers
 │   ├── core/           # Core business logic
 │   └── utils/          # Utilities
 └── tests/
+
 ```
 
 <!-- For Frontend: -->
 ```
+
 project/
 ├── src/
 │   ├── components/     # Reusable UI components
@@ -180,6 +187,7 @@ project/
 │   ├── hooks/          # Custom hooks
 │   └── utils/          # Utilities
 └── tests/
+
 ```
 
 ## 5. Module Dependency Graph
@@ -187,6 +195,7 @@ project/
 [Show how modules relate to each other. Example format:]
 
 ```
+
 ┌─────────────┐
 │  [Module A] │
 └──────┬──────┘
@@ -195,6 +204,7 @@ project/
 ┌─────────────┐     ┌─────────────┐
 │  [Module B] │────▶│  [Module C] │
 └─────────────┘     └─────────────┘
+
 ```
 
 ## 6. Module Specifications
@@ -264,6 +274,7 @@ project/
 ### Quality Criteria
 
 Before saving, verify:
+
 - [ ] Tech stack is clearly defined with version constraints (only relevant categories)
 - [ ] Constitutionality review is complete (if constitution exists) or noted as absent
 - [ ] Architecture has clear diagrams
@@ -285,5 +296,6 @@ Before saving, verify:
 ## Available Follow-up Commands
 
 After generating the technical plan, the user may consider:
+
 - `/codexspec.review-plan` - to validate the plan quality before task breakdown
 - `/codexspec.plan-to-tasks` - to proceed directly with breaking down into actionable tasks

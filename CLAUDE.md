@@ -12,6 +12,7 @@ This document provides comprehensive context and guidelines for Claude Code when
 ### Purpose
 
 CodexSpec helps developers:
+
 - Establish project principles through a constitution
 - Create detailed specifications focused on "what" and "why"
 - Generate technical implementation plans
@@ -99,11 +100,13 @@ CodexSpec uses **LLM-based dynamic translation** for internationalization instea
 **Core Concept**: Keep templates in English, let Claude translate at runtime based on user's language preference.
 
 **Implementation**:
+
 1. `src/codexspec/i18n.py` - Language utilities (normalization, validation)
 2. `.codexspec/config.yml` - Per-project language configuration
 3. Template `## Language Preference` section - Instructs Claude to check config
 
 **Language Configuration**:
+
 ```yaml
 # .codexspec/config.yml
 version: "1.0"
@@ -117,6 +120,7 @@ project:
 ```
 
 **Template Pattern**:
+
 ```markdown
 ## Language Preference
 
@@ -127,6 +131,7 @@ project:
 ```
 
 **Benefits**:
+
 - Zero translation maintenance overhead
 - Template updates benefit all languages immediately
 - Context-aware translations via Claude
@@ -141,6 +146,7 @@ The `constitution.md` file is generated in the language specified by `language.o
 - Teams should use a consistent working language for collaboration
 
 **Design Rationale**:
+
 1. Prevents content inconsistency across multiple file versions
 2. Claude and other major AI models have sufficient multilingual understanding capabilities
 3. Reduces maintenance overhead by eliminating the need to manage multiple translations
@@ -171,6 +177,7 @@ $ARGUMENTS
 ### Template Processing
 
 When `codexspec init` is run:
+
 1. Creates `.codexspec/` directory structure
 2. Creates `.claude/commands/` directory
 3. Copies slash command templates
@@ -299,6 +306,7 @@ The `init` and `/codexspec.constitution` commands now include a **dual safeguard
 - **constitution command**: On first-time creation, checks CLAUDE.md and offers to prepend compliance section
 
 **Helper Functions** (in `src/codexspec/__init__.py`):
+
 - `has_compliance_section(Path) -> bool`: Check if CLAUDE.md has compliance section
 - `prepend_compliance_section(Path) -> None`: Prepend compliance section to existing CLAUDE.md
 - `confirm_add_compliance() -> bool`: User confirmation prompt
@@ -357,6 +365,7 @@ Spec-kit supports 15+ AI agents. CodexSpec currently focuses on Claude Code but 
 | Others             | See spec-kit for full list |
 
 **Implementation Considerations:**
+
 1. Different command directory structures:
    - Claude: `.claude/commands/`
    - Gemini: `.gemini/commands/`
@@ -388,6 +397,7 @@ uv tool install codexspec --from git+https://github.com/Zts0hg/codexspec.git
 ```
 
 This requires:
+
 1. Proper `pyproject.toml` configuration
 2. Entry point in `[project.scripts]`
 3. Correct package structure

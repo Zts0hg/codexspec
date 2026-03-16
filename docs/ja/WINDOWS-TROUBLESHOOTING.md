@@ -95,6 +95,7 @@ dir %USERPROFILE%\.local\bin\codexspec.*
 **原因**: uv がインストールされていないか、PATH にない。
 
 **解決策**:
+
 ```powershell
 # PowerShell を使用して uv をインストール
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
@@ -108,6 +109,7 @@ uv --version
 **原因**: Python がインストールされていないか、PATH にない。
 
 **解決策**:
+
 1. [python.org](https://www.python.org/downloads/) から Python 3.11+ をインストール
 2. インストール時に "Add Python to PATH" をチェック
 3. 端末を再起動
@@ -117,6 +119,7 @@ uv --version
 **症状**: Codexspec が一時的に動作してから停止する、または断続的なエラーが表示される。
 
 **解決策**: codexspec をアンチウイルスの除外リストに追加:
+
 - **Windows Defender**: 設定 → 更新とセキュリティ → Windows セキュリティ → ウイルスと脅威の防止 → 設定の管理 → 除外
 - パスを追加: `%USERPROFILE%\.local\bin\codexspec.exe`
 

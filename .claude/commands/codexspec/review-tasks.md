@@ -11,6 +11,7 @@ handoffs:
 ## Language Preference
 
 **IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
+
 - If `language.output` is set to a language other than "en", respond and generate all content in that language
 - If not configured or set to "en", use English as default
 - Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
@@ -157,10 +158,12 @@ Review the task breakdown for quality and implementation readiness. This command
 ### Dependency Graph Analysis
 
 ```
+
 Valid Dependency Chain:
 1.1 ──► 1.2 ──► 2.1 ──► 2.2 ──► 3.1 ──► 3.2
                 │
                 └──► 2.3 ──► 2.4 ──► 3.2
+
 ```
 
 | Task | Declared Dependencies | Correct? | Circular? | Status |
@@ -245,6 +248,7 @@ Valid Dependency Chain:
 ## Execution Timeline Estimate
 
 ```
+
 Phase 1: Task 1.1 ──► [1.2 || 1.3 || 1.4] (parallel)
                            │
 Phase 2: ┌──────────────────┴──────────────────┐
@@ -262,6 +266,7 @@ Phase 3: ┌──────────────────┼───�
 Phase 4: Task 4.1 ──► 4.2
          │
 Phase 5: [5.1 || 5.2 || 5.3] (parallel)
+
 ```
 
 ## Recommendations
@@ -296,6 +301,7 @@ Based on the review result, the user may consider:
 ### Quality Criteria
 
 Before completing the review, verify:
+
 - [ ] All plan items have been traced to tasks (Plan Coverage)
 - [ ] TDD compliance has been verified for all code tasks (TDD Compliance)
 - [ ] Dependency graph is validated with no cycles (Dependency & Ordering)
