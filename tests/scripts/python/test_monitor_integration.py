@@ -33,7 +33,7 @@ class TestUserQuestionIntegration:
         """测试从 mock 文件检测用户询问"""
         mock_file = FIXTURES_DIR / "mock_user_question.jsonl"
 
-        with open(mock_file, "r") as f:
+        with open(mock_file, "r", encoding="utf-8") as f:
             lines = f.readlines()
 
         # 找到 assistant 消息
@@ -65,7 +65,7 @@ class TestUserQuestionIntegration:
 
         # 手动处理 mock 文件
         mock_file = FIXTURES_DIR / "mock_user_question.jsonl"
-        with open(mock_file, "r") as f:
+        with open(mock_file, "r", encoding="utf-8") as f:
             for line in f:
                 if not line.strip():
                     continue
@@ -88,7 +88,7 @@ class TestTaskCompleteIntegration:
         """测试从 mock 文件检测任务完成"""
         mock_file = FIXTURES_DIR / "mock_task_complete.jsonl"
 
-        with open(mock_file, "r") as f:
+        with open(mock_file, "r", encoding="utf-8") as f:
             lines = f.readlines()
 
         # 找到最后一个 assistant 消息
@@ -119,7 +119,7 @@ class TestTaskCompleteIntegration:
 
         # 手动处理 mock 文件
         mock_file = FIXTURES_DIR / "mock_task_complete.jsonl"
-        with open(mock_file, "r") as f:
+        with open(mock_file, "r", encoding="utf-8") as f:
             for line in f:
                 if not line.strip():
                     continue
@@ -137,7 +137,7 @@ class TestErrorStopIntegration:
         """测试从 mock 文件检测错误停止"""
         mock_file = FIXTURES_DIR / "mock_error_stop.jsonl"
 
-        with open(mock_file, "r") as f:
+        with open(mock_file, "r", encoding="utf-8") as f:
             lines = f.readlines()
 
         # 找到最后一个 assistant 消息
@@ -169,7 +169,7 @@ class TestErrorStopIntegration:
 
         # 手动处理 mock 文件
         mock_file = FIXTURES_DIR / "mock_error_stop.jsonl"
-        with open(mock_file, "r") as f:
+        with open(mock_file, "r", encoding="utf-8") as f:
             for line in f:
                 if not line.strip():
                     continue
@@ -198,7 +198,7 @@ class TestToolErrorContinueIntegration:
 
         # 手动处理 mock 文件
         mock_file = FIXTURES_DIR / "mock_tool_error_continue.jsonl"
-        with open(mock_file, "r") as f:
+        with open(mock_file, "r", encoding="utf-8") as f:
             for line in f:
                 if not line.strip():
                     continue
@@ -227,7 +227,7 @@ class TestMultipleQuestionsIntegration:
 
         # 手动处理 mock 文件
         mock_file = FIXTURES_DIR / "mock_multiple_questions.jsonl"
-        with open(mock_file, "r") as f:
+        with open(mock_file, "r", encoding="utf-8") as f:
             for line in f:
                 if not line.strip():
                     continue
@@ -304,7 +304,7 @@ class TestBackwardCompatibilityIntegration:
 
         # 手动处理任务完成文件
         mock_file = FIXTURES_DIR / "mock_task_complete.jsonl"
-        with open(mock_file, "r") as f:
+        with open(mock_file, "r", encoding="utf-8") as f:
             for line in f:
                 if not line.strip():
                     continue
