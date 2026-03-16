@@ -4,6 +4,7 @@ import os
 
 from codexspec.i18n import (
     generate_config_content,
+    get_all_supported_languages,
     get_language_from_env,
     get_language_name,
     get_supported_languages,
@@ -172,6 +173,52 @@ class TestGetSupportedLanguages:
         for code, name in languages:
             assert isinstance(name, str)
             assert len(name) > 0
+
+
+class TestGetAllSupportedLanguages:
+    """Tests for get_all_supported_languages function."""
+
+    def test_returns_list_of_tuples(self) -> None:
+        """Should return a list of (code, name) tuples."""
+        languages = get_all_supported_languages()
+        assert isinstance(languages, list)
+        assert all(isinstance(lang, tuple) and len(lang) == 2 for lang in languages)
+
+    def test_first_element_is_english(self) -> None:
+        """First element should be ('en', 'English')."""
+        languages = get_all_supported_languages()
+        assert languages[0] == ("en", "English")
+
+    def test_contains_all_pretranslated_languages(self) -> None:
+        """Should contain all pre-translated languages from translator."""
+        from codexspec.translator import SUPPORTED_LANGUAGES
+
+        languages = get_all_supported_languages()
+        codes = [code for code, _ in languages]
+
+        # Should contain English
+        assert "en" in codes
+
+        # Should contain all pre-translated languages
+        for lang in SUPPORTED_LANGUAGES:
+            assert lang in codes, f"Missing pre-translated language: {lang}"
+
+    def test_language_names_correct(self) -> None:
+        """All language names should be correctly retrieved."""
+        languages = get_all_supported_languages()
+
+        for code, name in languages:
+            expected_name = get_language_name(code)
+            assert name == expected_name, f"Name mismatch for {code}: {name} != {expected_name}"
+
+    def test_returns_correct_count(self) -> None:
+        """Should return correct count of languages."""
+        from codexspec.translator import SUPPORTED_LANGUAGES
+
+        languages = get_all_supported_languages()
+        expected_count = 1 + len(SUPPORTED_LANGUAGES)  # en + pre-translated
+
+        assert len(languages) == expected_count
 
 
 class TestGenerateConfigContent:

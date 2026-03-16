@@ -164,6 +164,28 @@ def get_supported_languages() -> list[tuple[str, str]]:
     return [(code, get_language_name(code)) for code in LANGUAGE_ALIASES.keys()]
 
 
+# Lazy-loaded list of all supported languages (en + pre-translated)
+_ALL_LANGUAGES_CACHE: list[str] | None = None
+
+
+def get_all_supported_languages() -> list[tuple[str, str]]:
+    """
+    获取所有支持的语言列表（包括 en 和预翻译语言）。
+
+    Returns:
+        List of (code, name) tuples，en 排在首位，随后是预翻译语言
+    """
+    global _ALL_LANGUAGES_CACHE
+
+    if _ALL_LANGUAGES_CACHE is None:
+        # Lazy import to avoid circular dependency with translator.py
+        from codexspec.translator import SUPPORTED_LANGUAGES
+
+        _ALL_LANGUAGES_CACHE = ["en"] + list(SUPPORTED_LANGUAGES)
+
+    return [(code, get_language_name(code)) for code in _ALL_LANGUAGES_CACHE]
+
+
 # Default config.yml template
 CONFIG_TEMPLATE = """# CodexSpec Configuration
 # This file configures project-level settings for CodexSpec

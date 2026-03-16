@@ -15,7 +15,7 @@ from typing import Optional
 import typer
 from rich.console import Console
 from rich.panel import Panel
-from rich.prompt import Confirm
+from rich.prompt import Confirm, Prompt
 from rich.table import Table
 
 from .commands.installer import (
@@ -387,11 +387,11 @@ def init(
         "-a",
         help="AI assistant to use (default: claude)",
     ),
-    lang: str = typer.Option(
-        "en",
+    lang: Optional[str] = typer.Option(
+        None,
         "--lang",
         "-l",
-        help="Output language for Claude interactions and generated documents (e.g., en, zh-CN, ja)",
+        help="Output language (e.g., en, zh-CN, ja). Interactive prompt if not specified in TTY.",
     ),
     force: bool = typer.Option(
         False,
@@ -425,6 +425,20 @@ def init(
         codexspec init --here --ai claude
         codexspec init . --force --ai claude
     """
+    # Handle interactive language selection when --lang not specified
+    if lang is None:
+        if sys.stdin.isatty():
+            # TTY environment: show interactive prompt
+            try:
+                lang = prompt_language_selection()
+            except KeyboardInterrupt:
+                console.print()
+                console.print("[yellow]Selection cancelled, using default language (en)[/yellow]")
+                lang = "en"
+        else:
+            # Non-TTY environment: use default
+            lang = "en"
+
     # Normalize language code early for use throughout the function
     normalized_lang = normalize_locale(lang)
 
@@ -1482,6 +1496,83 @@ def prepend_compliance_section(claude_md_path: Path) -> None:
     existing_content = claude_md_path.read_text(encoding="utf-8")
     import_statement = f"{MARKDOWNLINT_DISABLE_MD041}{CONSTITUTION_IMPORT_PATH}\n\n"
     claude_md_path.write_text(import_statement + existing_content, encoding="utf-8")
+
+
+def prompt_language_selection(default: str = "en") -> str:
+    """Display interactive language selection prompt.
+
+    Shows a numbered list of supported languages and prompts the user to select one.
+    If the user selects "Other...", they can enter a custom language code.
+
+    Args:
+        default: Default language code to use if user cancels or enters empty input
+
+    Returns:
+        The selected language code (normalized)
+
+    Raises:
+        KeyboardInterrupt: If user presses Ctrl+C
+    """
+    from .i18n import get_all_supported_languages, normalize_locale
+
+    # Get all supported languages
+    all_languages = get_all_supported_languages()
+
+    # Build the prompt message
+    console.print()
+    console.print("[bold cyan]Select output language:[/bold cyan]")
+    console.print()
+
+    # Create choices mapping
+    choices = {}
+    for i, (code, name) in enumerate(all_languages, start=1):
+        console.print(f"  [cyan][{i}][/cyan] {name} [dim]({code})[/dim]")
+        choices[str(i)] = code
+
+    # Add "Other..." option
+    other_index = str(len(all_languages) + 1)
+    console.print(f"  [cyan][{other_index}][/cyan] [italic]Other...[/italic] [dim](enter custom code)[/dim]")
+    console.print()
+    choices[other_index] = None  # Marker for custom input
+
+    # Prompt for selection
+    valid_choices = list(choices.keys())
+    selection = Prompt.ask(
+        "Enter choice",
+        default="1",
+        show_choices=False,
+    )
+
+    # Validate input - Prompt.ask doesn't validate when show_choices=False
+    while selection not in valid_choices:
+        console.print(f"[yellow]Invalid choice. Please enter 1-{other_index}.[/yellow]")
+        selection = Prompt.ask(
+            "Enter choice",
+            default="1",
+            show_choices=False,
+        )
+
+    # Handle selection
+    if choices[selection] is None:
+        # "Other..." selected - prompt for custom code
+        custom_code = Prompt.ask(
+            "Enter language code (e.g., ru, ar, hi)",
+            default="",
+            show_default=False,
+        )
+
+        # Edge Case 3: Empty string input -> fallback to default
+        if not custom_code.strip():
+            console.print("[dim]No language code entered, using default (en)[/dim]")
+            return default
+
+        # Normalize the custom code
+        normalized = normalize_locale(custom_code)
+        console.print(f"[dim]Note: Pre-translated content may not be available for '{normalized}'.[/dim]")
+        return normalized
+
+    # Return the selected predefined language
+    return choices[selection]
 
 
 def confirm_add_compliance(language: str = "en") -> bool:
