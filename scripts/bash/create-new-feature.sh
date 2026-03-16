@@ -52,7 +52,7 @@ if [ -z "$FEATURE_ID" ]; then
     # Find the next available ID
     SPECS_DIR=$(get_specs_dir)
     if [ -d "$SPECS_DIR" ]; then
-        LAST_ID=$(ls -1 "$SPECS_DIR" 2>/dev/null | grep -E '^[0-9]+' | sort -n | tail -1 | cut -d'-' -f1)
+        LAST_ID=$(find "$SPECS_DIR" -maxdepth 1 -type d -name '[0-9]*-*' -exec basename {} \; 2>/dev/null | cut -d'-' -f1 | sort -n | tail -1)
         if [ -n "$LAST_ID" ]; then
             FEATURE_ID=$(printf "%03d" $((10#$LAST_ID + 1)))
         else

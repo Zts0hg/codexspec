@@ -11,7 +11,7 @@ set -e
 DOCS_DIR="${1:-docs}"
 SOURCE_LANG="en"
 shift
-TARGET_LANGS="$@"
+TARGET_LANGS="$*"
 
 # Colors for output
 RED='\033[0;31m'

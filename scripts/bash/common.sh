@@ -66,7 +66,7 @@ is_codexspec_project() {
 
 # Ensure we're in a CodexSpec project
 require_codexspec_project() {
-    if ! is_codexspec_project; then
+    if ! is_codexspec_project .; then
         log_error "Not a CodexSpec project. Run 'codexspec init' first."
         exit 1
     fi
