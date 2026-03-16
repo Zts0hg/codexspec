@@ -22,6 +22,7 @@ from .commands.installer import (
     COMMANDS_SUBDIR,
     detect_old_structure,
     get_commands_metadata,
+    get_installed_commands_metadata,
     install_commands_to_subdir,
     migrate_old_commands,
     should_update_commands,
@@ -340,7 +341,7 @@ def list_commands() -> None:
     # Get user's language preference
     language = get_project_language()
 
-    metadata = get_commands_metadata()
+    metadata = get_installed_commands_metadata()
 
     # Group by category
     categories: dict[str, list] = {

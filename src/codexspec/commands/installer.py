@@ -8,7 +8,7 @@ import shutil
 from pathlib import Path
 from typing import Optional, TypedDict
 
-from codexspec.translator import load_translation_cache, translate_template_frontmatter
+from codexspec.translator import extract_frontmatter_fields, load_translation_cache, translate_template_frontmatter
 
 # Constants
 COMMANDS_SUBDIR = "codexspec"  # Subdirectory name for commands
@@ -161,6 +161,45 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "file_name": "pr.md",
         },
     ]
+
+
+def get_installed_commands_metadata() -> list[CommandMetadata]:
+    """Get metadata from installed command files with fallback to defaults.
+
+    This function reads the frontmatter from installed command files to get
+    translated descriptions. If a command file doesn't exist or doesn't have
+    a description in its frontmatter, falls back to the hardcoded default.
+
+    Returns:
+        List of CommandMetadata with descriptions from installed files when available.
+    """
+    # Get hardcoded default metadata
+    default_metadata = get_commands_metadata()
+
+    # Find installed commands directory
+    commands_dir = Path.cwd() / ".claude" / "commands" / COMMANDS_SUBDIR
+
+    if not commands_dir.exists():
+        return default_metadata
+
+    result = []
+    for cmd in default_metadata:
+        cmd_file = commands_dir / cmd["file_name"]
+
+        if cmd_file.exists():
+            # Read frontmatter from installed file
+            content = cmd_file.read_text(encoding="utf-8")
+            fields = extract_frontmatter_fields(content)
+
+            if fields.get("description"):
+                # Use translated description from installed file
+                result.append({**cmd, "description": fields["description"]})
+            else:
+                result.append(cmd)
+        else:
+            result.append(cmd)
+
+    return result
 
 
 def detect_old_structure(claude_dir: Path) -> list[Path]:
