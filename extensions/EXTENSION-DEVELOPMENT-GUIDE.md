@@ -130,6 +130,7 @@ hooks:
 ```
 
 Available hook points:
+
 - `after_constitution` - After running /codexspec.constitution
 - `after_specify` - After running /codexspec.specify
 - `after_spec_to_plan` - After running /codexspec.spec-to-plan

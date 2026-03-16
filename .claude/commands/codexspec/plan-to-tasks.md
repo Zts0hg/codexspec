@@ -11,6 +11,7 @@ handoffs:
 ## Language Preference
 
 **IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
+
 - If `language.output` is set to a language other than "en", respond and generate all content in that language
 - If not configured or set to "en", use English as default
 - Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
@@ -222,6 +223,7 @@ Estimated phases: [K]
 ## Execution Order
 
 ```
+
 Phase 1: Task 1.1 ──► ┌─► Task 1.2 [P]
                        │
                        └─► Task 1.3 [P] ──► Task 1.4
@@ -247,6 +249,7 @@ Phase 5: ┌───────────────┴──────�
     Task 5.1                        Task 5.2 [P]
                                          │
                                     Task 5.3 [P]
+
 ```
 
 ## Checkpoints
@@ -272,5 +275,6 @@ Phase 5: ┌───────────────┴──────�
 ## Available Follow-up Commands
 
 After generating the task breakdown, the user may consider:
+
 - `/codexspec.review-tasks` - to validate the task breakdown quality before implementation
 - `/codexspec.implement-tasks` - to proceed directly with implementing the tasks

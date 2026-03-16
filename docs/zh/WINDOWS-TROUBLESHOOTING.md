@@ -95,6 +95,7 @@ dir %USERPROFILE%\.local\bin\codexspec.*
 **原因**：uv 未安装或不在 PATH 中。
 
 **解决方案**：
+
 ```powershell
 # 使用 PowerShell 安装 uv
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
@@ -108,6 +109,7 @@ uv --version
 **原因**：Python 未安装或不在 PATH 中。
 
 **解决方案**：
+
 1. 从 [python.org](https://www.python.org/downloads/) 安装 Python 3.11+
 2. 安装时，勾选 "Add Python to PATH"
 3. 重启终端
@@ -117,6 +119,7 @@ uv --version
 **症状**：Codexspec 短暂工作后停止，或显示间歇性错误。
 
 **解决方案**：将 codexspec 添加到杀毒软件白名单：
+
 - **Windows Defender**：设置 → 更新和安全 → Windows 安全中心 → 病毒和威胁防护 → 管理设置 → 排除项
 - 添加路径：`%USERPROFILE%\.local\bin\codexspec.exe`
 

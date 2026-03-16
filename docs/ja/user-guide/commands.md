@@ -49,16 +49,19 @@
 プロジェクト憲法を作成または更新します。憲法は、すべての後続の開発決定を導くアーキテクチャ原則、技術スタック、コード標準、ガバナンスルールを定義します。
 
 **構文:**
+
 ```
 /codexspec.constitution [principles description]
 ```
 
 **引数:**
+
 | 引数 | 必須 | 説明 |
 |----------|----------|-------------|
 | `principles description` | いいえ | 含める原則の説明（指定されていない場合はプロンプトが表示されます） |
 
 **動作:**
+
 - 存在しない場合、`.codexspec/memory/constitution.md` を作成
 - 既存の憲法を新しい原則で更新
 - テンプレートとのクロスアーティファクト一貫性を検証
@@ -66,6 +69,7 @@
 - 依存テンプレートの憲法準拠レビューを含む
 
 **作成されるもの:**
+
 ```
 .codexspec/
 └── memory/
@@ -73,6 +77,7 @@
 ```
 
 **例:**
+
 ```text
 You: /codexspec.constitution Focus on code quality, testing standards, and clean architecture
 
@@ -95,6 +100,7 @@ AI:  Creating constitution...
 ```
 
 **ヒント:**
+
 - プロジェクトの早い段階で原則を定義し、一貫した意思決定を行う
 - 技術的およびプロセス的な原則の両方を含める
 - 主要な機能開発の前に憲法をレビューする
@@ -107,16 +113,19 @@ AI:  Creating constitution...
 インタラクティブな Q&A で要件を明確化します。このコマンドは初期アイデアを探索し、ファイルは作成しません。完全な制御権はユーザーが保持します。
 
 **構文:**
+
 ```
 /codexspec.specify [your idea or requirement]
 ```
 
 **引数:**
+
 | 引数 | 必須 | 説明 |
 |----------|----------|-------------|
 | `your idea or requirement` | いいえ | 構築したいものの初期説明（指定されていない場合はプロンプトが表示されます） |
 
 **動作:**
+
 - アイデアを理解するための明確化質問を行う
 - 考慮していないかもしれないエッジケースを探索
 - 対話を通じて高品質な要件を共創
@@ -124,10 +133,12 @@ AI:  Creating constitution...
 - **ファイルを生成しない** - ドキュメントを作成するタイミングはユーザーが決定
 
 **作成されないもの:**
+
 - このコマンド中にファイルは作成されない
 - 要件はユーザーが承認するまで会話に残る
 
 **例:**
+
 ```text
 You: /codexspec.specify I want to build a task management app
 
@@ -161,6 +172,7 @@ AI:  [Continues exploring requirements...]
 ```
 
 **ヒント:**
+
 - 初期要件探索に使用
 - 完全であることを気にしない - 改善は反復的
 - AI が仮定をした場合は質問する
@@ -173,16 +185,19 @@ AI:  [Continues exploring requirements...]
 明確化された要件から `spec.md` ドキュメントを生成します。このコマンドは「要件コンパイラ」として機能し、明確化された要件を構造化された仕様に変換します。
 
 **構文:**
+
 ```
 /codexspec.generate-spec
 ```
 
 **引数:**
+
 | 引数 | 必須 | 説明 |
 |----------|----------|-------------|
 | なし | - | 前の `/codexspec.specify` セッションからのコンテキストを使用 |
 
 **動作:**
+
 - `.codexspec/specs/{NNN}-{feature-name}/` ディレクトリを作成
 - 包括的な `spec.md` を生成:
   - 機能概要とゴール
@@ -193,6 +208,7 @@ AI:  [Continues exploring requirements...]
   - スコープ外の項目
 
 **作成されるもの:**
+
 ```
 .codexspec/
 └── specs/
@@ -201,6 +217,7 @@ AI:  [Continues exploring requirements...]
 ```
 
 **例:**
+
 ```text
 You: /codexspec.generate-spec
 
@@ -222,6 +239,7 @@ AI:  Generating specification...
 ```
 
 **ヒント:**
+
 - `/codexspec.specify` で要件が明確化された後に実行
 - 進む前に生成された spec をレビュー
 - 品質検証に `/codexspec.review-spec` を使用
@@ -234,16 +252,19 @@ AI:  Generating specification...
 既存の仕様をスキャンして曖昧さとギャップを発見します。初期 spec 作成後の反復的な改善に使用します。
 
 **構文:**
+
 ```
 /codexspec.clarify [path_to_spec.md]
 ```
 
 **引数:**
+
 | 引数 | 必須 | 説明 |
 |----------|----------|-------------|
 | `path_to_spec.md` | いいえ | spec ファイルへのパス（指定されていない場合は自動検出） |
 
 **動作:**
+
 - 4 つの焦点を絞った曖昧さカテゴリで spec をスキャン
 - 的を絞った明確化質問を行う（最大 5 つ）
 - 明確化の回答で spec.md を更新
@@ -259,6 +280,7 @@ AI:  Generating specification...
 | **測定可能性の問題** | メトリクスのない非機能要件 |
 
 **例:**
+
 ```text
 You: /codexspec.clarify
 
@@ -287,6 +309,7 @@ AI:  ✓ Updated NFR-001: Response time < 500ms reads, < 1s writes
 ```
 
 **ヒント:**
+
 - spec.md が存在するが改善が必要な場合に使用
 - `/codexspec.review-spec` の発見事項を統合
 - セッションあたり最大 5 つの質問
@@ -299,16 +322,19 @@ AI:  ✓ Updated NFR-001: Response time < 500ms reads, < 1s writes
 機能仕様を技術実装計画に変換します。ここでは機能が **どのように** 構築されるかを定義します。
 
 **構文:**
+
 ```
 /codexspec.spec-to-plan [path_to_spec.md]
 ```
 
 **引数:**
+
 | 引数 | 必須 | 説明 |
 |----------|----------|-------------|
 | `path_to_spec.md` | いいえ | spec ファイルへのパス（指定されていない場合は `.codexspec/specs/` から自動検出） |
 
 **動作:**
+
 - 仕様と憲法を読み込む
 - バージョン制約付きで技術スタックを定義
 - 憲法準拠レビューを実行（憲法が存在する場合は必須）
@@ -317,6 +343,7 @@ AI:  ✓ Updated NFR-001: Response time < 500ms reads, < 1s writes
 - 実装フェーズを計画
 
 **作成されるもの:**
+
 ```
 .codexspec/
 └── specs/
@@ -325,6 +352,7 @@ AI:  ✓ Updated NFR-001: Response time < 500ms reads, < 1s writes
 ```
 
 **例:**
+
 ```text
 You: /codexspec.spec-to-plan Use Python FastAPI for backend, React for frontend, PostgreSQL for database
 
@@ -358,6 +386,7 @@ AI:  Generating technical plan...
 ```
 
 **ヒント:**
+
 - spec がレビューされ安定した後に実行
 - 憲法が存在する場合、憲法準拠レビューは必須
 - プロジェクトタイプに基づいて関連セクションを含める
@@ -370,16 +399,19 @@ AI:  Generating technical plan...
 技術計画を TDD 適用のアトミックで実行可能なタスクに分解します。
 
 **構文:**
+
 ```
 /codexspec.plan-to-tasks [path_to_spec.md path_to_plan.md]
 ```
 
 **引数:**
+
 | 引数 | 必須 | 説明 |
 |----------|----------|-------------|
 | `paths` | いいえ | spec と plan へのパス（指定されていない場合は自動検出） |
 
 **動作:**
+
 - アトミックなタスクを作成（タスクごとに 1 つのプライマリファイル）
 - TDD を適用: テストタスクは実装タスクに先行
 - `[P]` で並列化可能なタスクをマーク
@@ -387,6 +419,7 @@ AI:  Generating technical plan...
 - フェーズチェックポイントを定義
 
 **作成されるもの:**
+
 ```
 .codexspec/
 └── specs/
@@ -395,6 +428,7 @@ AI:  Generating technical plan...
 ```
 
 **タスク構造:**
+
 ```markdown
 ### Task 2.1: Write Tests for Entity A [P]
 - **Type**: Testing
@@ -405,6 +439,7 @@ AI:  Generating technical plan...
 ```
 
 **例:**
+
 ```text
 You: /codexspec.plan-to-tasks
 
@@ -427,6 +462,7 @@ AI:  Breaking down plan into tasks...
 ```
 
 **ヒント:**
+
 - 各タスクは 1 つのプライマリファイルのみを扱うべき
 - テストタスクは常に実装タスクに先行
 - `[P]` は真に独立した並列化可能なタスクをマーク
@@ -439,23 +475,27 @@ AI:  Breaking down plan into tasks...
 条件付き TDD ワークフローで実装タスクを実行します。タスクリストを体系的に処理します。
 
 **構文:**
+
 ```
 /codexspec.implement-tasks [tasks_path]
 /codexspec.implement-tasks [spec_path plan_path tasks_path]
 ```
 
 **引数:**
+
 | 引数 | 必須 | 説明 |
 |----------|----------|-------------|
 | `tasks_path` | いいえ | tasks.md へのパス（指定されていない場合は自動検出） |
 | `spec_path plan_path tasks_path` | いいえ | 3 つのドキュメントへの明示的なパス |
 
 **ファイル解決:**
+
 - **引数なし**: `.codexspec/specs/` から自動検出
 - **1 つの引数**: `tasks.md` パスとして扱い、他は同じディレクトリから推論
 - **3 つの引数**: spec.md、plan.md、tasks.md への明示的なパス
 
 **動作:**
+
 - tasks.md を読み込み、未完了タスクを特定
 - コードタスクに TDD ワークフローを適用:
   - **Red**: 最初に失敗するテストを書く
@@ -467,17 +507,20 @@ AI:  Breaking down plan into tasks...
 - ブロッカーが発生した場合は issues.md に記録
 
 **コードタスクの TDD ワークフロー:**
+
 ```
 Red → Green → Verify → Refactor → Mark Complete
 ```
 
 **テスト不可能なタスクの直接実装:**
+
 - ドキュメントファイル
 - 設定ファイル
 - 静的アセット
 - インフラファイル
 
 **例:**
+
 ```text
 You: /codexspec.implement-tasks
 
@@ -510,6 +553,7 @@ AI:  Starting implementation...
 ```
 
 **ヒント:**
+
 - 中断された場合は途中から再開可能
 - ブロッカーは issues.md に記録
 - 重要なタスク/フェーズ後にコミット
@@ -522,16 +566,19 @@ AI:  Starting implementation...
 仕様の完全性、明確さ、一貫性、技術計画への準備状況を検証します。
 
 **構文:**
+
 ```
 /codexspec.review-spec [path_to_spec.md]
 ```
 
 **引数:**
+
 | 引数 | 必須 | 説明 |
 |----------|----------|-------------|
 | `path_to_spec.md` | いいえ | spec ファイルへのパス（指定されていない場合は自動検出） |
 
 **動作:**
+
 - すべての必須セクションの完全性をチェック
 - 明確さと具体性を評価
 - 内部一貫性を検証
@@ -550,6 +597,7 @@ AI:  Starting implementation...
 | 憲法整合性 | 10% | プロジェクト原則に整合 |
 
 **例:**
+
 ```text
 You: /codexspec.review-spec
 
@@ -593,6 +641,7 @@ AI:  Reviewing specification...
 ```
 
 **ヒント:**
+
 - `/codexspec.spec-to-plan` の前に実行
 - 進む前に重要な問題に対処
 - 警告はブロックしないがリスクを示す
@@ -605,16 +654,19 @@ AI:  Reviewing specification...
 技術実装計画の実現可能性、アーキテクチャ品質、仕様との整合性をレビューします。
 
 **構文:**
+
 ```
 /codexspec.review-plan [path_to_plan.md]
 ```
 
 **引数:**
+
 | 引数 | 必須 | 説明 |
 |----------|----------|-------------|
 | `path_to_plan.md` | いいえ | plan ファイルへのパス（指定されていない場合は自動検出） |
 
 **動作:**
+
 - 仕様要件が計画でカバーされていることを検証
 - 技術スタックの選択を評価
 - アーキテクチャ決定を評価
@@ -633,6 +685,7 @@ AI:  Reviewing specification...
 | 憲法整合性 | 15% | プロジェクト原則に従う |
 
 **例:**
+
 ```text
 You: /codexspec.review-plan
 
@@ -672,6 +725,7 @@ AI:  Reviewing technical plan...
 ```
 
 **ヒント:**
+
 - `/codexspec.plan-to-tasks` の前に実行
 - 重要な問題は解決すべき
 - アーキテクチャの問題を早期に発見するために使用
@@ -684,16 +738,19 @@ AI:  Reviewing technical plan...
 タスク分解の完全性、TDD 準拠、正しい順序、適切な依存関係を検証します。
 
 **構文:**
+
 ```
 /codexspec.review-tasks [path_to_tasks.md]
 ```
 
 **引数:**
+
 | 引数 | 必須 | 説明 |
 |----------|----------|-------------|
 | `path_to_tasks.md` | いいえ | tasks ファイルへのパス（指定されていない場合は自動検出） |
 
 **動作:**
+
 - すべての計画項目にタスクカバレッジがあるかチェック
 - TDD 準拠を検証（テストが実装に先行）
 - タスク粒度を検証（アトミック、単一ファイルフォーカス）
@@ -712,6 +769,7 @@ AI:  Reviewing technical plan...
 | 並列化とファイル | 10% | 正しいマーカーとパス |
 
 **例:**
+
 ```text
 You: /codexspec.review-tasks
 
@@ -746,6 +804,7 @@ AI:  Reviewing task breakdown...
 ```
 
 **ヒント:**
+
 - `/codexspec.implement-tasks` の前に実行
 - TDD 違反はコード品質にとって重要
 - 並列化マーカーが正確かチェック
@@ -758,16 +817,19 @@ AI:  Reviewing task breakdown...
 spec.md、plan.md、tasks.md にわたる非破壊的なクロスアーティファクト一貫性分析を実行します。不一致、重複、カバレッジギャップを特定します。
 
 **構文:**
+
 ```
 /codexspec.analyze
 ```
 
 **引数:**
+
 | 引数 | 必須 | 説明 |
 |----------|----------|-------------|
 | なし | - | 現在の機能のアーティファクトを分析 |
 
 **動作:**
+
 - アーティファクト間の重複を検出
 - 測定可能な基準が欠けている曖昧さを特定
 - 仕様不足の項目を発見
@@ -785,6 +847,7 @@ spec.md、plan.md、tasks.md にわたる非破壊的なクロスアーティフ
 | **LOW** | スタイル/表現の改善 |
 
 **例:**
+
 ```text
 You: /codexspec.analyze
 
@@ -822,6 +885,7 @@ AI:  Analyzing artifacts...
 ```
 
 **ヒント:**
+
 - `/codexspec.plan-to-tasks` 後、実装前に実行
 - CRITICAL 問題は実装をブロックすべき
 - 読み取り専用分析 - ファイルは変更されない
@@ -834,21 +898,25 @@ AI:  Analyzing artifacts...
 要件の完全性、明確さ、一貫性を検証するための品質チェックリストを生成します。これらは「要件記述のための単体テスト」です。
 
 **構文:**
+
 ```
 /codexspec.checklist [focus_area]
 ```
 
 **引数:**
+
 | 引数 | 必須 | 説明 |
 |----------|----------|-------------|
 | `focus_area` | いいえ | ドメインフォーカス（例: "ux"、"api"、"security"、"performance"） |
 
 **動作:**
+
 - 品質次元で整理されたチェックリストを生成
 - `FEATURE_DIR/checklists/` ディレクトリにチェックリストを作成
 - 項目は実装テストではなく要件品質に焦点
 
 **品質次元:**
+
 - **要件完全性**: 必要な要件がすべて存在するか？
 - **要件明確さ**: 要件は具体的で曖昧さがないか？
 - **要件一貫性**: 要件は競合なく整合しているか？
@@ -859,12 +927,14 @@ AI:  Analyzing artifacts...
 - **依存関係と前提**: 文書化されているか？
 
 **チェックリストタイプの例:**
+
 - `ux.md` - 視覚階層、インタラクション状態、アクセシビリティ
 - `api.md` - エラー形式、レート制限、認証
 - `security.md` - データ保護、脅威モデル、侵害対応
 - `performance.md` - メトリクス、負荷条件、劣化
 
 **例:**
+
 ```text
 You: /codexspec.checklist security
 
@@ -888,6 +958,7 @@ AI:  Generating security checklist...
 ```
 
 **ヒント:**
+
 - チェックリストは実装の正確性ではなく要件品質を検証
 - 要件レビューと改善に使用
 - 的を絞った検証のためにドメイン固有のチェックリストを作成
@@ -900,16 +971,19 @@ AI:  Generating security checklist...
 `tasks.md` からタスクを GitHub issues に変換し、プロジェクト追跡とコラボレーションを行います。
 
 **構文:**
+
 ```
 /codexspec.tasks-to-issues
 ```
 
 **引数:**
+
 | 引数 | 必須 | 説明 |
 |----------|----------|-------------|
 | なし | - | 現在の機能からすべてのタスクを変換 |
 
 **動作:**
+
 - タスク ID、説明、依存関係、ファイルパスを解析
 - 構造化された本文で GitHub issues を作成
 - タスクタイプに基づいてラベルを追加（setup、implementation、testing、documentation）
@@ -917,11 +991,13 @@ AI:  Generating security checklist...
 - URL 付きで作成された issues をレポート
 
 **前提条件:**
+
 - GitHub リモートを持つ Git リポジトリ
 - GitHub CLI (`gh`) がインストールされ、認証済み
 - `tasks.md` ファイルが存在
 
 **例:**
+
 ```text
 You: /codexspec.tasks-to-issues
 
@@ -944,6 +1020,7 @@ AI:  Converting tasks to GitHub issues...
 ```
 
 **ヒント:**
+
 - GitHub CLI 認証が必要（`gh auth login`）
 - GitHub リポジトリでのみ動作
 - リポジトリのデフォルト設定で issues を作成
@@ -956,16 +1033,19 @@ AI:  Converting tasks to GitHub issues...
 git ステータスとセッションコンテキストに基づいて Conventional Commits 準拠のコミットメッセージを生成します。このコマンドはコンテキスト認識であり、異なる git 状態を処理します。
 
 **構文:**
+
 ```
 /codexspec.commit
 ```
 
 **引数:**
+
 | 引数 | 必須 | 説明 |
 |----------|----------|-------------|
 | なし | - | 現在の git 状態とセッションコンテキストを分析 |
 
 **動作:**
+
 - git コンテキストを収集（ブランチ、ステータス、ステージング/未ステージング変更）
 - 意図理解のためにセッション会話履歴を分析
 - git 状態に基づいて優先ロジックに従う:
@@ -984,6 +1064,7 @@ git ステータスとセッションコンテキストに基づいて Conventio
 | クリーン | "No changes detected" をレポート |
 
 **例:**
+
 ```text
 You: /codexspec.commit
 
@@ -1008,6 +1089,7 @@ AI:  ✓ Committed: abc1234
 ```
 
 **ヒント:**
+
 - `/codexspec.commit-staged` より柔軟 - 様々な git 状態を処理
 - 意味のあるコミットメッセージのためにセッションコンテキストを考慮
 - コミット前に常に確認
@@ -1020,16 +1102,19 @@ AI:  ✓ Committed: abc1234
 ステージングされた git 変更のみに基づいて Conventional Commits 準拠のコミットメッセージを生成します。これは、すでに変更をステージングしている場合のシンプルで焦点を絞ったコマンドです。
 
 **構文:**
+
 ```
 /codexspec.commit-staged
 ```
 
 **引数:**
+
 | 引数 | 必須 | 説明 |
 |----------|----------|-------------|
 | なし | - | ステージングされた変更のみを分析 |
 
 **動作:**
+
 - `git diff --staged` を実行してステージングされた変更を取得
 - 変更を分析してコミットメッセージを生成
 - Conventional Commits 仕様に従う
@@ -1037,6 +1122,7 @@ AI:  ✓ Committed: abc1234
 - ステージングされた変更がない場合はエラーをレポート
 
 **例:**
+
 ```text
 You: /codexspec.commit-staged
 
@@ -1061,6 +1147,7 @@ AI:  ✓ Committed: def5678
 ```
 
 **ヒント:**
+
 - 最初に `git add` で変更をステージング
 - ステージングされたコンテンツのみを分析 - 未ステージングは無視
 - コミットしたいものがわかっている場合、`/codexspec.commit` よりシンプル
@@ -1134,6 +1221,7 @@ AI:  ✓ Committed: def5678
 コマンドが機能ディレクトリを見つけられませんでした。
 
 **解決策:**
+
 - 最初に `codexspec init` を実行してプロジェクトを初期化
 - `.codexspec/specs/` ディレクトリが存在するかチェック
 - 正しいプロジェクトディレクトリにいることを確認
@@ -1143,6 +1231,7 @@ AI:  ✓ Committed: def5678
 仕様ファイルがまだ存在しません。
 
 **解決策:**
+
 - 最初に `/codexspec.specify` を実行して要件を明確化
 - 次に `/codexspec.generate-spec` を実行して spec.md を作成
 
@@ -1151,6 +1240,7 @@ AI:  ✓ Committed: def5678
 プロジェクト憲法が存在しません。
 
 **解決策:**
+
 - `/codexspec.constitution` を実行して作成
 - 憲法はオプションですが、一貫した決定のために推奨
 
@@ -1159,6 +1249,7 @@ AI:  ✓ Committed: def5678
 タスク分解が存在しません。
 
 **解決策:**
+
 - 最初に `/codexspec.spec-to-plan` を実行したことを確認
 - 次に `/codexspec.plan-to-tasks` を実行して tasks.md を作成
 
@@ -1167,6 +1258,7 @@ AI:  ✓ Committed: def5678
 `/codexspec.tasks-to-issues` コマンドには GitHub 認証が必要です。
 
 **解決策:**
+
 - GitHub CLI をインストール: `brew install gh` (macOS) または同等のコマンド
 - 認証: `gh auth login`
 - 確認: `gh auth status`

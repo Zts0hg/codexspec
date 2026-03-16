@@ -34,42 +34,52 @@ PR描述需要面向团队的其他审查者，包含以下几个部分：
 ### 澄清过程
 
 **Q1: 输出语言**
+
 - 选项: 跟随项目配置 / 中文 / 自动检测
 - **用户选择**: 跟随项目配置 (当前: en)
 
 **Q2: 平台支持**
+
 - 选项: 同时支持 GitHub 和 GitLab / 仅 GitHub / 自动检测平台
 - **用户选择**: 自动检测平台
 
 **Q3: PR 描述内容**
+
 - 选项: 详细结构化描述 / 简洁描述 / 可自定义模板
 - **用户选择**: 详细结构化描述 (推荐)
 
 **Q4: 触发条件**
+
 - 选项: 当前分支 vs origin/main / 未推送的 commits / 可指定目标分支
 - **用户选择**: 可指定目标分支
 
 **Q5: Spec 来源**
+
 - 选项: 优先使用 spec.md / 仅用 git 信息 / 综合所有来源
 - **用户选择**: 综合所有来源 (推荐)
 
 **Q6: 命名**
+
 - 选项: codexspec.pr / codexspec.create-pr / codexspec.create-mr
 - **用户选择**: codexspec.pr (推荐)
 
 **Q7: 无 Spec 处理**
+
 - 选项: 继续生成，跳过背景 / 提示用户先创建 spec / 警告并继续
 - **用户选择**: 继续生成，跳过背景
 
 **Q8: 输出方式**
+
 - 选项: 终端输出 / 保存到文件 / 终端 + 可选文件
 - **用户选择**: 终端 + 可选文件 (推荐)
 
 **Q9: 默认章节**
+
 - 选项: 背景, 实现方案, 测试, 如何验证 (全选)
 - **用户选择**: 全部四个章节
 
 **Q10: 指令参数**
+
 - **用户选择**: 所有参数都是可选参数
   - `--target-branch`: 默认 origin/main
   - `--output`: 不指定时默认只在终端输出
@@ -81,6 +91,7 @@ PR描述需要面向团队的其他审查者，包含以下几个部分：
 **用户反馈**: 语言应该跟 `/commit` 指令一样优先根据 `config.yml` 中的 `language.commit` 参数，如果没有 `language.commit` 参数设置，才根据 `language.output`。
 
 **更新后的需求摘要**:
+
 ```
 语言优先级: language.commit > language.output > English (默认)
 ```
@@ -129,10 +140,12 @@ The command shall determine output language in the following priority order:
 ### 发现的问题
 
 **警告 (Should Fix)**:
+
 1. **SPEC-001**: 测试文件发现逻辑未明确指定
 2. **SPEC-002**: 多个 spec.md 时选择"最近修改"可能不准确
 
 **建议 (Nice to Have)**:
+
 1. 考虑添加 `--title` 参数
 2. 添加输出格式验证需求
 3. 考虑 GitHub Enterprise URL 模式支持
@@ -280,13 +293,16 @@ The command shall determine output language in the following priority order:
 ### 文件清单
 
 **创建**:
+
 - `templates/commands/pr.md`
 
 **修改**:
+
 - `CLAUDE.md` - 添加命令描述
 - `README.md` - 添加命令到列表
 
 **测试**:
+
 - `tests/test_pr_template.py`
 
 ---
@@ -356,6 +372,7 @@ The command shall determine output language in the following priority order:
 ### 1. 澄清阶段的价值
 
 本案例展示了 `clarify` 命令的关键作用：
+
 - **用户在使用过程中发现实际问题** - 小改动场景下 spec.md 的误用风险
 - **通过澄清问答解决设计缺陷** - 从自动检测改为 opt-in 模式
 - **需求变更被系统记录** - 所有变更保存在 spec.md 的 Clarifications 部分

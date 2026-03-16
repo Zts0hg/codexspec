@@ -49,16 +49,19 @@ Commands for iterative refinement, cross-artifact validation, and project manage
 Create or update the project constitution. The constitution defines architectural principles, technology stack, code standards, and governance rules that guide all subsequent development decisions.
 
 **Syntax:**
+
 ```
 /codexspec.constitution [principles description]
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |----------|----------|-------------|
 | `principles description` | No | Description of principles to include (will be prompted if not provided) |
 
 **What it does:**
+
 - Creates `.codexspec/memory/constitution.md` if not exists
 - Updates existing constitution with new principles
 - Validates cross-artifact consistency with templates
@@ -66,6 +69,7 @@ Create or update the project constitution. The constitution defines architectura
 - Includes constitutionality review for dependent templates
 
 **What it creates:**
+
 ```
 .codexspec/
 └── memory/
@@ -73,6 +77,7 @@ Create or update the project constitution. The constitution defines architectura
 ```
 
 **Example:**
+
 ```text
 You: /codexspec.constitution Focus on code quality, testing standards, and clean architecture
 
@@ -95,6 +100,7 @@ AI:  Creating constitution...
 ```
 
 **Tips:**
+
 - Define principles early in the project for consistent decision-making
 - Include both technical and process principles
 - Review constitution before major feature development
@@ -107,16 +113,19 @@ AI:  Creating constitution...
 Clarify requirements through interactive Q&A. This command explores your initial idea without creating any files—you maintain full control.
 
 **Syntax:**
+
 ```
 /codexspec.specify [your idea or requirement]
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |----------|----------|-------------|
 | `your idea or requirement` | No | Initial description of what you want to build (will be prompted if not provided) |
 
 **What it does:**
+
 - Asks clarifying questions to understand your idea
 - Explores edge cases you might not have considered
 - Co-creates high-quality requirements through dialogue
@@ -124,10 +133,12 @@ Clarify requirements through interactive Q&A. This command explores your initial
 - **Does NOT generate files** - you decide when to create documentation
 
 **What it does NOT create:**
+
 - No files are created during this command
 - Requirements stay in conversation until you approve
 
 **Example:**
+
 ```text
 You: /codexspec.specify I want to build a task management app
 
@@ -161,6 +172,7 @@ AI:  [Continues exploring requirements...]
 ```
 
 **Tips:**
+
 - Use for initial requirement exploration
 - Don't worry about being complete—refinement is iterative
 - Ask questions if the AI makes assumptions
@@ -173,16 +185,19 @@ AI:  [Continues exploring requirements...]
 Generate the `spec.md` document from clarified requirements. This command acts as a "requirement compiler" that transforms your clarified requirements into a structured specification.
 
 **Syntax:**
+
 ```
 /codexspec.generate-spec
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |----------|----------|-------------|
 | None | - | Uses context from previous `/codexspec.specify` session |
 
 **What it does:**
+
 - Creates `.codexspec/specs/{NNN}-{feature-name}/` directory
 - Generates comprehensive `spec.md` with:
   - Feature overview and goals
@@ -193,6 +208,7 @@ Generate the `spec.md` document from clarified requirements. This command acts a
   - Out of scope items
 
 **What it creates:**
+
 ```
 .codexspec/
 └── specs/
@@ -201,6 +217,7 @@ Generate the `spec.md` document from clarified requirements. This command acts a
 ```
 
 **Example:**
+
 ```text
 You: /codexspec.generate-spec
 
@@ -222,6 +239,7 @@ AI:  Generating specification...
 ```
 
 **Tips:**
+
 - Run after `/codexspec.specify` has clarified requirements
 - Review the generated spec before proceeding
 - Use `/codexspec.review-spec` for quality validation
@@ -234,16 +252,19 @@ AI:  Generating specification...
 Scan an existing specification for ambiguities and gaps. Use this for iterative refinement after initial spec creation.
 
 **Syntax:**
+
 ```
 /codexspec.clarify [path_to_spec.md]
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |----------|----------|-------------|
 | `path_to_spec.md` | No | Path to spec file (auto-detected if not provided) |
 
 **What it does:**
+
 - Scans spec using 4 focused ambiguity categories
 - Asks targeted clarification questions (max 5)
 - Updates spec.md with clarification answers
@@ -259,6 +280,7 @@ Scan an existing specification for ambiguities and gaps. Use this for iterative 
 | **Measurability Problems** | Non-functional requirements without metrics |
 
 **Example:**
+
 ```text
 You: /codexspec.clarify
 
@@ -287,6 +309,7 @@ AI:  ✓ Updated NFR-001: Response time < 500ms reads, < 1s writes
 ```
 
 **Tips:**
+
 - Use when spec.md exists but needs refinement
 - Integrates with `/codexspec.review-spec` findings
 - Maximum 5 questions per session
@@ -299,16 +322,19 @@ AI:  ✓ Updated NFR-001: Response time < 500ms reads, < 1s writes
 Convert the feature specification into a technical implementation plan. This is where you define **how** the feature will be built.
 
 **Syntax:**
+
 ```
 /codexspec.spec-to-plan [path_to_spec.md]
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |----------|----------|-------------|
 | `path_to_spec.md` | No | Path to spec file (auto-detected from `.codexspec/specs/` if not provided) |
 
 **What it does:**
+
 - Reads specification and constitution
 - Defines tech stack with version constraints
 - Performs constitutionality review (mandatory if constitution exists)
@@ -317,6 +343,7 @@ Convert the feature specification into a technical implementation plan. This is 
 - Plans implementation phases
 
 **What it creates:**
+
 ```
 .codexspec/
 └── specs/
@@ -325,6 +352,7 @@ Convert the feature specification into a technical implementation plan. This is 
 ```
 
 **Example:**
+
 ```text
 You: /codexspec.spec-to-plan Use Python FastAPI for backend, React for frontend, PostgreSQL for database
 
@@ -358,6 +386,7 @@ AI:  Generating technical plan...
 ```
 
 **Tips:**
+
 - Run after spec is reviewed and stable
 - Constitutionality review is mandatory if constitution exists
 - Include relevant sections based on project type
@@ -370,16 +399,19 @@ AI:  Generating technical plan...
 Break down the technical plan into atomic, actionable tasks with TDD enforcement.
 
 **Syntax:**
+
 ```
 /codexspec.plan-to-tasks [path_to_spec.md path_to_plan.md]
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |----------|----------|-------------|
 | `paths` | No | Paths to spec and plan (auto-detected if not provided) |
 
 **What it does:**
+
 - Creates atomic tasks (one primary file per task)
 - Enforces TDD: test tasks precede implementation tasks
 - Marks parallelizable tasks with `[P]`
@@ -387,6 +419,7 @@ Break down the technical plan into atomic, actionable tasks with TDD enforcement
 - Defines phase checkpoints
 
 **What it creates:**
+
 ```
 .codexspec/
 └── specs/
@@ -395,6 +428,7 @@ Break down the technical plan into atomic, actionable tasks with TDD enforcement
 ```
 
 **Task Structure:**
+
 ```markdown
 ### Task 2.1: Write Tests for Entity A [P]
 - **Type**: Testing
@@ -405,6 +439,7 @@ Break down the technical plan into atomic, actionable tasks with TDD enforcement
 ```
 
 **Example:**
+
 ```text
 You: /codexspec.plan-to-tasks
 
@@ -427,6 +462,7 @@ AI:  Breaking down plan into tasks...
 ```
 
 **Tips:**
+
 - Each task should involve only ONE primary file
 - Test tasks always precede implementation tasks
 - `[P]` marks truly independent parallelizable tasks
@@ -439,23 +475,27 @@ AI:  Breaking down plan into tasks...
 Execute implementation tasks with conditional TDD workflow. Works through the task list systematically.
 
 **Syntax:**
+
 ```
 /codexspec.implement-tasks [tasks_path]
 /codexspec.implement-tasks [spec_path plan_path tasks_path]
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |----------|----------|-------------|
 | `tasks_path` | No | Path to tasks.md (auto-detected if not provided) |
 | `spec_path plan_path tasks_path` | No | Explicit paths to all three documents |
 
 **File Resolution:**
+
 - **No arguments**: Auto-detect from `.codexspec/specs/`
 - **One argument**: Treat as `tasks.md` path, derive others from same directory
 - **Three arguments**: Explicit paths to spec.md, plan.md, and tasks.md
 
 **What it does:**
+
 - Reads tasks.md and identifies incomplete tasks
 - Applies TDD workflow for code tasks:
   - **Red**: Write failing tests first
@@ -467,17 +507,20 @@ Execute implementation tasks with conditional TDD workflow. Works through the ta
 - Records blockers in issues.md if encountered
 
 **TDD Workflow for Code Tasks:**
+
 ```
 Red → Green → Verify → Refactor → Mark Complete
 ```
 
 **Direct Implementation for Non-Testable:**
+
 - Documentation files
 - Configuration files
 - Static assets
 - Infrastructure files
 
 **Example:**
+
 ```text
 You: /codexspec.implement-tasks
 
@@ -510,6 +553,7 @@ AI:  Starting implementation...
 ```
 
 **Tips:**
+
 - Can resume where left off if interrupted
 - Blockers are recorded in issues.md
 - Commits are made after significant tasks/phases
@@ -522,16 +566,19 @@ AI:  Starting implementation...
 Validate the specification for completeness, clarity, consistency, and readiness for technical planning.
 
 **Syntax:**
+
 ```
 /codexspec.review-spec [path_to_spec.md]
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |----------|----------|-------------|
 | `path_to_spec.md` | No | Path to spec file (auto-detected if not provided) |
 
 **What it does:**
+
 - Checks completeness of all required sections
 - Evaluates clarity and specificity
 - Verifies internal consistency
@@ -550,6 +597,7 @@ Validate the specification for completeness, clarity, consistency, and readiness
 | Constitution Alignment | 10% | Aligns with project principles |
 
 **Example:**
+
 ```text
 You: /codexspec.review-spec
 
@@ -593,6 +641,7 @@ AI:  Reviewing specification...
 ```
 
 **Tips:**
+
 - Run before `/codexspec.spec-to-plan`
 - Address Critical issues before proceeding
 - Warnings don't block but indicate risk
@@ -605,16 +654,19 @@ AI:  Reviewing specification...
 Review the technical implementation plan for feasibility, architecture quality, and alignment with specification.
 
 **Syntax:**
+
 ```
 /codexspec.review-plan [path_to_plan.md]
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |----------|----------|-------------|
 | `path_to_plan.md` | No | Path to plan file (auto-detected if not provided) |
 
 **What it does:**
+
 - Verifies spec requirements have plan coverage
 - Evaluates tech stack choices
 - Assesses architecture decisions
@@ -633,6 +685,7 @@ Review the technical implementation plan for feasibility, architecture quality, 
 | Constitution Alignment | 15% | Follows project principles |
 
 **Example:**
+
 ```text
 You: /codexspec.review-plan
 
@@ -672,6 +725,7 @@ AI:  Reviewing technical plan...
 ```
 
 **Tips:**
+
 - Run before `/codexspec.plan-to-tasks`
 - Critical issues should be resolved
 - Use to catch architecture problems early
@@ -684,16 +738,19 @@ AI:  Reviewing technical plan...
 Validate the task breakdown for completeness, TDD compliance, correct ordering, and proper dependencies.
 
 **Syntax:**
+
 ```
 /codexspec.review-tasks [path_to_tasks.md]
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |----------|----------|-------------|
 | `path_to_tasks.md` | No | Path to tasks file (auto-detected if not provided) |
 
 **What it does:**
+
 - Checks all plan items have task coverage
 - Validates TDD compliance (tests before implementation)
 - Verifies task granularity (atomic, single-file focus)
@@ -712,6 +769,7 @@ Validate the task breakdown for completeness, TDD compliance, correct ordering, 
 | Parallelization & Files | 10% | Correct markers and paths |
 
 **Example:**
+
 ```text
 You: /codexspec.review-tasks
 
@@ -746,6 +804,7 @@ AI:  Reviewing task breakdown...
 ```
 
 **Tips:**
+
 - Run before `/codexspec.implement-tasks`
 - TDD violations are critical for code quality
 - Check parallelization markers are accurate
@@ -758,16 +817,19 @@ AI:  Reviewing task breakdown...
 Perform a non-destructive cross-artifact consistency analysis across spec.md, plan.md, and tasks.md. Identifies inconsistencies, duplications, and coverage gaps.
 
 **Syntax:**
+
 ```
 /codexspec.analyze
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |----------|----------|-------------|
 | None | - | Analyzes the current feature's artifacts |
 
 **What it does:**
+
 - Detects duplications across artifacts
 - Identifies ambiguities lacking measurable criteria
 - Finds underspecified items
@@ -785,6 +847,7 @@ Perform a non-destructive cross-artifact consistency analysis across spec.md, pl
 | **LOW** | Style/wording improvements |
 
 **Example:**
+
 ```text
 You: /codexspec.analyze
 
@@ -822,6 +885,7 @@ AI:  Analyzing artifacts...
 ```
 
 **Tips:**
+
 - Run after `/codexspec.plan-to-tasks`, before implementation
 - CRITICAL issues should block implementation
 - Read-only analysis—no files are modified
@@ -834,21 +898,25 @@ AI:  Analyzing artifacts...
 Generate quality checklists for validating requirements completeness, clarity, and consistency. These are "unit tests for requirements writing."
 
 **Syntax:**
+
 ```
 /codexspec.checklist [focus_area]
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |----------|----------|-------------|
 | `focus_area` | No | Domain focus (e.g., "ux", "api", "security", "performance") |
 
 **What it does:**
+
 - Generates checklists organized by quality dimensions
 - Creates checklists in `FEATURE_DIR/checklists/` directory
 - Items focus on requirement quality, not implementation testing
 
 **Quality Dimensions:**
+
 - **Requirement Completeness**: Are all necessary requirements present?
 - **Requirement Clarity**: Are requirements specific and unambiguous?
 - **Requirement Consistency**: Do requirements align without conflicts?
@@ -859,12 +927,14 @@ Generate quality checklists for validating requirements completeness, clarity, a
 - **Dependencies & Assumptions**: Are they documented?
 
 **Example Checklist Types:**
+
 - `ux.md` - Visual hierarchy, interaction states, accessibility
 - `api.md` - Error formats, rate limiting, authentication
 - `security.md` - Data protection, threat model, breach response
 - `performance.md` - Metrics, load conditions, degradation
 
 **Example:**
+
 ```text
 You: /codexspec.checklist security
 
@@ -888,6 +958,7 @@ AI:  Generating security checklist...
 ```
 
 **Tips:**
+
 - Checklists validate requirement quality, not implementation correctness
 - Use for requirements review and improvement
 - Create domain-specific checklists for focused validation
@@ -900,16 +971,19 @@ AI:  Generating security checklist...
 Convert tasks from `tasks.md` into GitHub issues for project tracking and collaboration.
 
 **Syntax:**
+
 ```
 /codexspec.tasks-to-issues
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |----------|----------|-------------|
 | None | - | Converts all tasks from the current feature |
 
 **What it does:**
+
 - Parses task IDs, descriptions, dependencies, and file paths
 - Creates GitHub issues with structured body
 - Adds labels based on task type (setup, implementation, testing, documentation)
@@ -917,11 +991,13 @@ Convert tasks from `tasks.md` into GitHub issues for project tracking and collab
 - Reports created issues with URLs
 
 **Prerequisites:**
+
 - Git repository with GitHub remote
 - GitHub CLI (`gh`) installed and authenticated
 - `tasks.md` file exists
 
 **Example:**
+
 ```text
 You: /codexspec.tasks-to-issues
 
@@ -944,6 +1020,7 @@ AI:  Converting tasks to GitHub issues...
 ```
 
 **Tips:**
+
 - Requires GitHub CLI authentication (`gh auth login`)
 - Only works with GitHub repositories
 - Creates issues in the repository's default configuration
@@ -956,16 +1033,19 @@ AI:  Converting tasks to GitHub issues...
 Generate a Conventional Commits compliant commit message based on git status and session context. This command is context-aware and handles different git states.
 
 **Syntax:**
+
 ```
 /codexspec.commit
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |----------|----------|-------------|
 | None | - | Analyzes current git state and session context |
 
 **What it does:**
+
 - Collects git context (branch, status, staged/unstaged changes)
 - Analyzes session conversation history for intent understanding
 - Follows priority logic based on git state:
@@ -984,6 +1064,7 @@ Generate a Conventional Commits compliant commit message based on git status and
 | Clean | Report "No changes detected" |
 
 **Example:**
+
 ```text
 You: /codexspec.commit
 
@@ -1008,6 +1089,7 @@ AI:  ✓ Committed: abc1234
 ```
 
 **Tips:**
+
 - More flexible than `/codexspec.commit-staged` - handles various git states
 - Considers session context for meaningful commit messages
 - Always confirms before committing
@@ -1020,16 +1102,19 @@ AI:  ✓ Committed: abc1234
 Generate a Conventional Commits compliant commit message based solely on staged git changes. This is a simpler, focused command for when you've already staged your changes.
 
 **Syntax:**
+
 ```
 /codexspec.commit-staged
 ```
 
 **Arguments:**
+
 | Argument | Required | Description |
 |----------|----------|-------------|
 | None | - | Analyzes staged changes only |
 
 **What it does:**
+
 - Executes `git diff --staged` to retrieve staged changes
 - Analyzes changes and generates commit message
 - Follows Conventional Commits specification
@@ -1037,6 +1122,7 @@ Generate a Conventional Commits compliant commit message based solely on staged 
 - Reports error if no staged changes exist
 
 **Example:**
+
 ```text
 You: /codexspec.commit-staged
 
@@ -1061,6 +1147,7 @@ AI:  ✓ Committed: def5678
 ```
 
 **Tips:**
+
 - Stage changes first with `git add`
 - Only analyzes staged content - ignores unstaged
 - Simpler than `/codexspec.commit` when you know what you want to commit
@@ -1134,6 +1221,7 @@ AI:  ✓ Committed: def5678
 The command couldn't locate the feature directory.
 
 **Solutions:**
+
 - Run `codexspec init` first to initialize the project
 - Check that `.codexspec/specs/` directory exists
 - Verify you're in the correct project directory
@@ -1143,6 +1231,7 @@ The command couldn't locate the feature directory.
 The specification file doesn't exist yet.
 
 **Solutions:**
+
 - Run `/codexspec.specify` to clarify requirements first
 - Then run `/codexspec.generate-spec` to create spec.md
 
@@ -1151,6 +1240,7 @@ The specification file doesn't exist yet.
 No project constitution exists.
 
 **Solutions:**
+
 - Run `/codexspec.constitution` to create one
 - Constitution is optional but recommended for consistent decisions
 
@@ -1159,6 +1249,7 @@ No project constitution exists.
 The tasks breakdown doesn't exist.
 
 **Solutions:**
+
 - Ensure you've run `/codexspec.spec-to-plan` first
 - Then run `/codexspec.plan-to-tasks` to create tasks.md
 
@@ -1167,6 +1258,7 @@ The tasks breakdown doesn't exist.
 The `/codexspec.tasks-to-issues` command requires GitHub authentication.
 
 **Solutions:**
+
 - Install GitHub CLI: `brew install gh` (macOS) or equivalent
 - Authenticate: `gh auth login`
 - Verify: `gh auth status`

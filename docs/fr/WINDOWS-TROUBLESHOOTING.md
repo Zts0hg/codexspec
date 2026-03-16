@@ -95,6 +95,7 @@ dir %USERPROFILE%\.local\bin\codexspec.*
 **Cause** : uv n'est pas installe ou n'est pas dans le PATH.
 
 **Solution** :
+
 ```powershell
 # Installer uv en utilisant PowerShell
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
@@ -108,6 +109,7 @@ uv --version
 **Cause** : Python n'est pas installe ou n'est pas dans le PATH.
 
 **Solution** :
+
 1. Installer Python 3.11+ depuis [python.org](https://www.python.org/downloads/)
 2. Pendant l'installation, cocher "Add Python to PATH"
 3. Redemarrer le terminal
@@ -117,6 +119,7 @@ uv --version
 **Symptomes** : Codexspec fonctionne brievement puis s'arrete, ou affiche des erreurs intermittentes.
 
 **Solution** : Ajouter codexspec a la liste blanche de votre antivirus :
+
 - **Windows Defender** : Parametres -> Mise a jour et securite -> Securite Windows -> Protection contre les virus et menaces -> Gerer les parametres -> Exclusions
 - Ajouter le chemin : `%USERPROFILE%\.local\bin\codexspec.exe`
 

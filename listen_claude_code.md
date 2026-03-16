@@ -60,7 +60,9 @@ def is_execution_complete(stop_reason: str | None) -> bool:
 
 核心脚本：claude_monitor.py
 
-#!/usr/bin/env python3
+```
+# !/usr/bin/env python3
+
 """
 Claude Code Session Monitor
 监听 Claude Code 执行状态，在执行完成时输出最后内容
@@ -196,6 +198,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     monitor = ClaudeSessionMonitor(project_dir=args.project, quiet=args.quiet)
     monitor.start()
+```
 
 实现步骤
 
@@ -233,12 +236,15 @@ uv pip install watchdog
 使用方式
 
 # 监听当前项目
+
 python claude_monitor.py
 
 # 指定项目目录
+
 python claude_monitor.py --project ~/.claude/projects/-Users-xiaoming-code-myproject
 
 # 静默模式（可用于管道）
+
 python claude_monitor.py --quiet
 
 验证方式

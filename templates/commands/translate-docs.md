@@ -11,6 +11,7 @@ handoffs:
 ## Language Preference
 
 **IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
+
 - If `language.output` is set to a language other than "en", respond and generate all content in that language
 - If not configured or set to "en", use English as default
 - Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
@@ -23,6 +24,7 @@ $ARGUMENTS
 ## Role
 
 You are a **Technical Document Translator** with expertise in:
+
 - Multi-language technical documentation
 - AI-assisted translation workflows
 - Terminology consistency and glossary management
@@ -34,12 +36,14 @@ Your responsibility is to translate English documentation to target languages wh
 ## When to Use This Command
 
 **Use `/codexspec.translate-docs` when:**
+
 - You need to translate documentation to one or more target languages
 - You want AI-assisted translation with terminology consistency
 - You need to generate initial translations for a new language
 - You want to update existing translations after source changes
 
 **Do NOT use this command for:**
+
 - Manual translation editing → Edit files directly
 - Translation quality review → Use `/codexspec.check-i18n-semantics`
 - Adding new languages to the project → Update mkdocs.yml first
@@ -49,6 +53,7 @@ Your responsibility is to translate English documentation to target languages wh
 ### 1. Parse Arguments
 
 Parse the user input to determine:
+
 - **Target languages**: Extract from `--lang` or `-l` flag
   - If "all" or not specified, translate to all supported languages
   - Otherwise, parse comma-separated language codes (e.g., "zh,ja,ko")
@@ -57,6 +62,7 @@ Parse the user input to determine:
 - **Dry run**: Check for `--dry-run` or `-d` flag
 
 Supported language codes:
+
 | Code | Language | Target Directory |
 |------|----------|-----------------|
 | zh | Chinese (Simplified) | docs/zh/ |
@@ -70,6 +76,7 @@ Supported language codes:
 ### 2. Load Glossary
 
 Read `docs/i18n/glossary.yml` and extract:
+
 - **keep_english**: Terms that should NOT be translated
 - **translations**: Pre-defined translations for specific terms
 - **rules**: Patterns for intelligent term handling
@@ -79,6 +86,7 @@ If glossary file doesn't exist, proceed with general translation (no terminology
 ### 3. Scan Source Files
 
 Scan the source directory for all Markdown files:
+
 ```
 docs/en/
 ├── index.md
@@ -93,6 +101,7 @@ docs/en/
 ```
 
 If `--incremental` flag is set, only translate files where:
+
 - Target file doesn't exist, OR
 - Source file is newer than target file
 
@@ -143,6 +152,7 @@ Display progress during translation:
 ### 6. Error Handling
 
 If a translation fails:
+
 - Log the error with file path and language
 - Continue with remaining translations
 - Report all errors at the end
@@ -152,6 +162,7 @@ If a translation fails:
 ### Terms to Keep in English
 
 Based on glossary.yml `keep_english` list, these should NOT be translated:
+
 - Tool names: uv, pip, pytest, ruff, MkDocs
 - File formats: JSON, YAML, TOML, Markdown
 - Technical terms: CLI, API, SDK, TDD, CI/CD
@@ -180,6 +191,7 @@ Based on glossary.yml `keep_english` list, these should NOT be translated:
 ## Quality Standards
 
 Each translation should:
+
 1. **Be technically accurate**: Correct terminology and concepts
 2. **Read naturally**: Appropriate phrasing for target language
 3. **Maintain consistency**: Same term translated same way throughout
@@ -212,6 +224,7 @@ Each translation should:
 ## Available Follow-up Commands
 
 After translation:
+
 - `/codexspec.check-i18n-semantics` - Verify translation quality
 - `uv run mkdocs build` - Test build with all languages
 

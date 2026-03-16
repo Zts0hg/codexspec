@@ -3,45 +3,115 @@
 # Run manually: uv run pre-commit run --all-files
 
 repos:
+  # ========================================
+  # Python Code Quality
+  # ========================================
+
   # Ruff - Fast Python linter and formatter
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.9.10
     hooks:
-      # Linter
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
-      # Formatter
       - id: ruff-format
 
-  # General file checks
+  # mypy - Type checking
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.15.0
+    hooks:
+      - id: mypy
+        args: [--ignore-missing-imports, --python-version=3.11, --no-strict-optional]
+        additional_dependencies: [types-PyYAML]
+        files: ^src/
+        pass_filenames: false
+
+  # bandit - Security linting
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.8.0
+    hooks:
+      - id: bandit
+        args: [-c, pyproject.toml]
+        additional_dependencies: ["bandit[toml]"]
+        files: ^src/
+
+  # ========================================
+  # General File Checks
+  # ========================================
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
-      # Remove trailing whitespace
       - id: trailing-whitespace
-      # Ensure files end with newline
       - id: end-of-file-fixer
-      # Check YAML files
       - id: check-yaml
-        args: [--unsafe]  # Allow custom YAML tags
-      # Check for large files
+        args: [--unsafe]
       - id: check-added-large-files
         args: ['--maxkb=500']
-      # Check for merge conflicts
       - id: check-merge-conflict
-      # Check for debug statements
       - id: debug-statements
-      # Sort requirements.txt (if exists)
       - id: requirements-txt-fixer
         files: requirements.*\.txt$
 
-  # Type checking (optional, comment out if not needed)
-  # - repo: https://github.com/pre-commit/mirrors-mypy
-  #   rev: v1.15.0
-  #   hooks:
-  #     - id: mypy
-  #       additional_dependencies: [types-PyYAML]
-  #       args: [--ignore-missing-imports]
+  # ========================================
+  # Documentation & Spell Checking
+  # ========================================
+
+  # markdownlint-cli - Markdown linting
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.42.0
+    hooks:
+      - id: markdownlint
+        args: [--fix]
+
+  # codespell - Spell checking
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.3.0
+    hooks:
+      - id: codespell
+        args: [--config, .codespellrc]
+
+  # ========================================
+  # Shell Scripts
+  # ========================================
+
+  # shellcheck - Shell script linting
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.9.0.6
+    hooks:
+      - id: shellcheck
+        args: [--severity=warning]
+
+  # ========================================
+  # Dependency Security
+  # ========================================
+
+  # safety - Dependency security check
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
+    rev: v1.3.3
+    hooks:
+      - id: python-safety-dependencies-check
+
+  # ========================================
+  # Local Hooks
+  # ========================================
+
+  # pytest - Testing (local hook)
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: uv run pytest -x --tb=short
+        language: system
+        pass_filenames: false
+        files: \.py$
+        stages: [pre-commit]
+
+  # commitizen - Commit message linting
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.30.0
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
 
 # CI configuration
 ci:

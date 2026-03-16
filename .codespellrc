@@ -1,0 +1,4 @@
+[codespell]
+skip = .git,.venv,*.lock,*.pyc,__pycache__,local-ref,*.po,*.mo,docs/*,README.*.md,listen_claude_code.md
+ignore-words-list = nd,fo,hte,cmn,ser,te
+check-filenames = false

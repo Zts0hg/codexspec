@@ -49,16 +49,19 @@ Befehle fuer iterative Verfeinerung, artefaktuebergreifende Validierung und Proj
 Die Projektverfassung erstellen oder aktualisieren. Die Verfassung definiert Architekturprinzipien, Technologie-Stack, Code-Standards und Governance-Regeln, die alle nachfolgenden Entwicklungsentscheidungen leiten.
 
 **Syntax:**
+
 ```
 /codexspec.constitution [Prinzipien-Beschreibung]
 ```
 
 **Argumente:**
+
 | Argument | Erforderlich | Beschreibung |
 |----------|----------|-------------|
 | `Prinzipien-Beschreibung` | Nein | Beschreibung der einzubeziehenden Prinzipien (wird abgefragt, falls nicht angegeben) |
 
 **Was es tut:**
+
 - Erstellt `.codexspec/memory/constitution.md`, falls nicht vorhanden
 - Aktualisiert bestehende Verfassung mit neuen Prinzipien
 - Validiert artefaktuebergreifende Konsistenz mit Vorlagen
@@ -66,6 +69,7 @@ Die Projektverfassung erstellen oder aktualisieren. Die Verfassung definiert Arc
 - Enthaelt Verfassungskonformitaetspruefung fuer abhaengige Vorlagen
 
 **Was es erstellt:**
+
 ```
 .codexspec/
 └── memory/
@@ -73,6 +77,7 @@ Die Projektverfassung erstellen oder aktualisieren. Die Verfassung definiert Arc
 ```
 
 **Beispiel:**
+
 ```text
 Sie: /codexspec.constitution Fokus auf Codequalitaet, Test-Standards und Clean Architecture
 
@@ -95,6 +100,7 @@ KI:  Erstelle Verfassung...
 ```
 
 **Tipps:**
+
 - Definieren Sie Prinzipien frueh im Projekt fuer konsistente Entscheidungsfindung
 - Schliessen Sie sowohl technische als auch Prozess-Prinzipien ein
 - Ueberpruefen Sie die Verfassung vor wichtigen Feature-Entwicklungen
@@ -107,16 +113,19 @@ KI:  Erstelle Verfassung...
 Anforderungen durch interaktives Q&A klaeren. Dieser Befehl erkundet Ihre urspruengliche Idee, ohne Dateien zu erstellen – Sie behalten die volle Kontrolle.
 
 **Syntax:**
+
 ```
 /codexspec.specify [Ihre Idee oder Anforderung]
 ```
 
 **Argumente:**
+
 | Argument | Erforderlich | Beschreibung |
 |----------|----------|-------------|
 | `Ihre Idee oder Anforderung` | Nein | Urspruengliche Beschreibung dessen, was Sie bauen moechten (wird abgefragt, falls nicht angegeben) |
 
 **Was es tut:**
+
 - Stellt klaerende Fragen, um Ihre Idee zu verstehen
 - Erkundet Randfaelle, die Sie moeglicherweise nicht beruecksichtigt haben
 - Erarbeitet gemeinsam qualitativ hochwertige Anforderungen durch Dialog
@@ -124,10 +133,12 @@ Anforderungen durch interaktives Q&A klaeren. Dieser Befehl erkundet Ihre urspru
 - **Erstellt KEINE Dateien** – Sie entscheiden, wann Dokumentation erstellt wird
 
 **Was es NICHT erstellt:**
+
 - Keine Dateien werden waehrend dieses Befehls erstellt
 - Anforderungen bleiben im Gespraech, bis Sie zustimmen
 
 **Beispiel:**
+
 ```text
 Sie: /codexspec.specify Ich moechte eine Task-Management-App bauen
 
@@ -161,6 +172,7 @@ KI:  [Fortfaehrt, Anforderungen zu erkunden...]
 ```
 
 **Tipps:**
+
 - Verwenden Sie fuer anfaengliche Anforderungserkundung
 - Keine Sorge wegen Vollstaendigkeit – Verfeinerung ist iterativ
 - Stellen Sie Fragen, wenn die KI Annahmen trifft
@@ -173,16 +185,19 @@ KI:  [Fortfaehrt, Anforderungen zu erkunden...]
 Das `spec.md`-Dokument aus geklarten Anforderungen generieren. Dieser Befehl fungiert als "Anforderungscompiler", der Ihre geklarten Anforderungen in eine strukturierte Spezifikation umwandelt.
 
 **Syntax:**
+
 ```
 /codexspec.generate-spec
 ```
 
 **Argumente:**
+
 | Argument | Erforderlich | Beschreibung |
 |----------|----------|-------------|
 | Keine | - | Verwendet Kontext aus vorheriger `/codexspec.specify`-Sitzung |
 
 **Was es tut:**
+
 - Erstellt Verzeichnis `.codexspec/specs/{NNN}-{feature-name}/`
 - Generiert umfassendes `spec.md` mit:
   - Feature-Ueberblick und Ziele
@@ -193,6 +208,7 @@ Das `spec.md`-Dokument aus geklarten Anforderungen generieren. Dieser Befehl fun
   - Nicht im Scope liegende Elemente
 
 **Was es erstellt:**
+
 ```
 .codexspec/
 └── specs/
@@ -201,6 +217,7 @@ Das `spec.md`-Dokument aus geklarten Anforderungen generieren. Dieser Befehl fun
 ```
 
 **Beispiel:**
+
 ```text
 Sie: /codexspec.generate-spec
 
@@ -222,6 +239,7 @@ KI:  Generiere Spezifikation...
 ```
 
 **Tipps:**
+
 - Ausfuehren, nachdem `/codexspec.specify` Anforderungen geklaert hat
 - Ueberpruefen Sie die generierte Spec vor dem Fortfahren
 - Verwenden Sie `/codexspec.review-spec` fuer Qualitaetsvalidierung
@@ -234,16 +252,19 @@ KI:  Generiere Spezifikation...
 Eine bestehende Spezifikation auf Unklarheiten und Luecken scannen. Verwenden Sie dies fuer iterative Verfeinerung nach der anfaenglichen Spec-Erstellung.
 
 **Syntax:**
+
 ```
 /codexspec.clarify [pfad_zu_spec.md]
 ```
 
 **Argumente:**
+
 | Argument | Erforderlich | Beschreibung |
 |----------|----------|-------------|
 | `pfad_zu_spec.md` | Nein | Pfad zur Spec-Datei (automatisch erkannt, falls nicht angegeben) |
 
 **Was es tut:**
+
 - Scannt Spec mit 4 fokussierten Unklarheitskategorien
 - Stellt gezielte Klaerungsfragen (maximal 5)
 - Aktualisiert spec.md mit Klaerungsantworten
@@ -259,6 +280,7 @@ Eine bestehende Spezifikation auf Unklarheiten und Luecken scannen. Verwenden Si
 | **Messbarkeitsprobleme** | Nicht-funktionale Anforderungen ohne Metriken |
 
 **Beispiel:**
+
 ```text
 Sie: /codexspec.clarify
 
@@ -287,6 +309,7 @@ KI:  ✓ Aktualisiert NFR-001: Antwortzeit < 500ms Lesezugriffe, < 1s Schreibzug
 ```
 
 **Tipps:**
+
 - Verwenden, wenn spec.md existiert, aber Verfeinerung benoetigt
 - Integriert mit `/codexspec.review-spec`-Ergebnissen
 - Maximal 5 Fragen pro Sitzung
@@ -299,16 +322,19 @@ KI:  ✓ Aktualisiert NFR-001: Antwortzeit < 500ms Lesezugriffe, < 1s Schreibzug
 Die Feature-Spezifikation in einen technischen Implementierungsplan konvertieren. Hier definieren Sie, **wie** das Feature gebaut wird.
 
 **Syntax:**
+
 ```
 /codexspec.spec-to-plan [pfad_zu_spec.md]
 ```
 
 **Argumente:**
+
 | Argument | Erforderlich | Beschreibung |
 |----------|----------|-------------|
 | `pfad_zu_spec.md` | Nein | Pfad zur Spec-Datei (automatisch aus `.codexspec/specs/` erkannt, falls nicht angegeben) |
 
 **Was es tut:**
+
 - Liest Spezifikation und Verfassung
 - Definiert Tech-Stack mit Versionseinschraenkungen
 - Fuehrt Verfassungskonformitaetspruefung durch (obligatorisch, falls Verfassung existiert)
@@ -317,6 +343,7 @@ Die Feature-Spezifikation in einen technischen Implementierungsplan konvertieren
 - Plant Implementierungsphasen
 
 **Was es erstellt:**
+
 ```
 .codexspec/
 └── specs/
@@ -325,6 +352,7 @@ Die Feature-Spezifikation in einen technischen Implementierungsplan konvertieren
 ```
 
 **Beispiel:**
+
 ```text
 Sie: /codexspec.spec-to-plan Python FastAPI fuer Backend, React fuer Frontend, PostgreSQL fuer Datenbank verwenden
 
@@ -358,6 +386,7 @@ KI:  Generiere technischen Plan...
 ```
 
 **Tipps:**
+
 - Ausfuehren, nachdem Spec ueberprueft und stabil ist
 - Verfassungskonformitaetspruefung ist obligatorisch, falls Verfassung existiert
 - Relevante Abschnitte basierend auf Projekttyp einbeziehen
@@ -370,16 +399,19 @@ KI:  Generiere technischen Plan...
 Den technischen Plan in atomare, umsetzbare Aufgaben mit TDD-Erzwingung aufteilen.
 
 **Syntax:**
+
 ```
 /codexspec.plan-to-tasks [pfad_zu_spec.md pfad_zu_plan.md]
 ```
 
 **Argumente:**
+
 | Argument | Erforderlich | Beschreibung |
 |----------|----------|-------------|
 | `Pfade` | Nein | Pfade zu Spec und Plan (automatisch erkannt, falls nicht angegeben) |
 
 **Was es tut:**
+
 - Erstellt atomare Aufgaben (eine Primaerdatei pro Aufgabe)
 - Erzwingt TDD: Testaufgaben gehen Implementierungsaufgaben voraus
 - Markiert parallelisierbare Aufgaben mit `[P]`
@@ -387,6 +419,7 @@ Den technischen Plan in atomare, umsetzbare Aufgaben mit TDD-Erzwingung aufteile
 - Definiert Phasen-Checkpoints
 
 **Was es erstellt:**
+
 ```
 .codexspec/
 └── specs/
@@ -395,6 +428,7 @@ Den technischen Plan in atomare, umsetzbare Aufgaben mit TDD-Erzwingung aufteile
 ```
 
 **Aufgabenstruktur:**
+
 ```markdown
 ### Aufgabe 2.1: Tests fuer Entity A schreiben [P]
 - **Typ**: Testing
@@ -405,6 +439,7 @@ Den technischen Plan in atomare, umsetzbare Aufgaben mit TDD-Erzwingung aufteile
 ```
 
 **Beispiel:**
+
 ```text
 Sie: /codexspec.plan-to-tasks
 
@@ -427,6 +462,7 @@ KI:  Teile Plan in Aufgaben auf...
 ```
 
 **Tipps:**
+
 - Jede Aufgabe sollte nur EINE Primaerdatei umfassen
 - Testaufgaben gehen immer Implementierungsaufgaben voraus
 - `[P]` markiert wirklich unabhaengige parallelisierbare Aufgaben
@@ -439,23 +475,27 @@ KI:  Teile Plan in Aufgaben auf...
 Implementierungsaufgaben mit bedingtem TDD-Workflow ausfuehren. Arbeitet systematisch die Aufgabenliste durch.
 
 **Syntax:**
+
 ```
 /codexspec.implement-tasks [tasks_pfad]
 /codexspec.implement-tasks [spec_pfad plan_pfad tasks_pfad]
 ```
 
 **Argumente:**
+
 | Argument | Erforderlich | Beschreibung |
 |----------|----------|-------------|
 | `tasks_pfad` | Nein | Pfad zu tasks.md (automatisch erkannt, falls nicht angegeben) |
 | `spec_pfad plan_pfad tasks_pfad` | Nein | Explizite Pfade zu allen drei Dokumenten |
 
 **Dateiaufloesung:**
+
 - **Keine Argumente**: Automatische Erkennung aus `.codexspec/specs/`
 - **Ein Argument**: Als `tasks.md`-Pfad behandeln, andere aus demselben Verzeichnis ableiten
 - **Drei Argumente**: Explizite Pfade zu spec.md, plan.md und tasks.md
 
 **Was es tut:**
+
 - Liest tasks.md und identifiziert unvollstaendige Aufgaben
 - Wendet TDD-Workflow fuer Code-Aufgaben an:
   - **Red**: Zuerst fehlschlagende Tests schreiben
@@ -467,17 +507,20 @@ Implementierungsaufgaben mit bedingtem TDD-Workflow ausfuehren. Arbeitet systema
 - Protokolliert Blocker in issues.md, falls aufgetreten
 
 **TDD-Workflow fuer Code-Aufgaben:**
+
 ```
 Red → Green → Verify → Refactor → Als komplett markieren
 ```
 
 **Direkte Implementierung fuer Nicht-Testbare:**
+
 - Dokumentationsdateien
 - Konfigurationsdateien
 - Statische Assets
 - Infrastrukturdateien
 
 **Beispiel:**
+
 ```text
 Sie: /codexspec.implement-tasks
 
@@ -510,6 +553,7 @@ KI:  Starte Implementierung...
 ```
 
 **Tipps:**
+
 - Kann fortgesetzt werden, falls unterbrochen
 - Blocker werden in issues.md protokolliert
 - Commits werden nach bedeutenden Aufgaben/Phasen gemacht
@@ -522,16 +566,19 @@ KI:  Starte Implementierung...
 Die Spezifikation auf Vollstaendigkeit, Klarheit, Konsistenz und Bereitschaft fuer technische Planung validieren.
 
 **Syntax:**
+
 ```
 /codexspec.review-spec [pfad_zu_spec.md]
 ```
 
 **Argumente:**
+
 | Argument | Erforderlich | Beschreibung |
 |----------|----------|-------------|
 | `pfad_zu_spec.md` | Nein | Pfad zur Spec-Datei (automatisch erkannt, falls nicht angegeben) |
 
 **Was es tut:**
+
 - Prueft Vollstaendigkeit aller erforderlichen Abschnitte
 - Bewertet Klarheit und Spezifitaet
 - Verifiziert interne Konsistenz
@@ -550,6 +597,7 @@ Die Spezifikation auf Vollstaendigkeit, Klarheit, Konsistenz und Bereitschaft fu
 | Verfassungsausrichtung | 10% | Richtet sich nach Projektprinzipien |
 
 **Beispiel:**
+
 ```text
 Sie: /codexspec.review-spec
 
@@ -593,6 +641,7 @@ KI:  Ueberpruefe Spezifikation...
 ```
 
 **Tipps:**
+
 - Vor `/codexspec.spec-to-plan` ausfuehren
 - Kritische Probleme vor dem Fortfahren beheben
 - Warnungen blockieren nicht, zeigen aber Risiko an
@@ -605,16 +654,19 @@ KI:  Ueberpruefe Spezifikation...
 Den technischen Implementierungsplan auf Machbarkeit, Architekturqualitaet und Ausrichtung an der Spezifikation ueberpruefen.
 
 **Syntax:**
+
 ```
 /codexspec.review-plan [pfad_zu_plan.md]
 ```
 
 **Argumente:**
+
 | Argument | Erforderlich | Beschreibung |
 |----------|----------|-------------|
 | `pfad_zu_plan.md` | Nein | Pfad zur Plan-Datei (automatisch erkannt, falls nicht angegeben) |
 
 **Was es tut:**
+
 - Verifiziert, dass Spec-Anforderungen Plan-Abdeckung haben
 - Bewertet Tech-Stack-Auswahlen
 - Beurteilt Architekturentscheidungen
@@ -633,6 +685,7 @@ Den technischen Implementierungsplan auf Machbarkeit, Architekturqualitaet und A
 | Verfassungsausrichtung | 15% | Folgt Projektprinzipien |
 
 **Beispiel:**
+
 ```text
 Sie: /codexspec.review-plan
 
@@ -672,6 +725,7 @@ KI:  Ueberpruefe technischen Plan...
 ```
 
 **Tipps:**
+
 - Vor `/codexspec.plan-to-tasks` ausfuehren
 - Kritische Probleme sollten geloest werden
 - Verwenden, um Architekturprobleme frueh zu erkennen
@@ -684,16 +738,19 @@ KI:  Ueberpruefe technischen Plan...
 Die Aufgabenaufteilung auf Vollstaendigkeit, TDD-Konformitaet, korrekte Reihenfolge und korrekte Abhaengigkeiten validieren.
 
 **Syntax:**
+
 ```
 /codexspec.review-tasks [pfad_zu_tasks.md]
 ```
 
 **Argumente:**
+
 | Argument | Erforderlich | Beschreibung |
 |----------|----------|-------------|
 | `pfad_zu_tasks.md` | Nein | Pfad zur Aufgaben-Datei (automatisch erkannt, falls nicht angegeben) |
 
 **Was es tut:**
+
 - Prueft, ob alle Plan-Elemente Aufgaben-Abdeckung haben
 - Validiert TDD-Konformitaet (Tests vor Implementierung)
 - Verifiziert Aufgabengranularitaet (atomar, Fokus auf einzelne Datei)
@@ -712,6 +769,7 @@ Die Aufgabenaufteilung auf Vollstaendigkeit, TDD-Konformitaet, korrekte Reihenfo
 | Parallelisierung & Dateien | 10% | Korrekte Markierungen und Pfade |
 
 **Beispiel:**
+
 ```text
 Sie: /codexspec.review-tasks
 
@@ -746,6 +804,7 @@ KI:  Ueberpruefe Aufgabenaufteilung...
 ```
 
 **Tipps:**
+
 - Vor `/codexspec.implement-tasks` ausfuehren
 - TDD-Verstoesse sind kritisch fuer Codequalitaet
 - Pruefen, dass Parallelisierungsmarkierungen korrekt sind
@@ -758,16 +817,19 @@ KI:  Ueberpruefe Aufgabenaufteilung...
 Eine zerstoerungsfreie artefaktuebergreifende Konsistenzanalyse ueber spec.md, plan.md und tasks.md durchfuehren. Identifiziert Inkonsistenzen, Duplikate und Abdeckungsluecken.
 
 **Syntax:**
+
 ```
 /codexspec.analyze
 ```
 
 **Argumente:**
+
 | Argument | Erforderlich | Beschreibung |
 |----------|----------|-------------|
 | Keine | - | Analysiert die Artefakte des aktuellen Features |
 
 **Was es tut:**
+
 - Erkennt Duplikate ueber Artefakte hinweg
 - Identifiziert Unklarheiten ohne messbare Kriterien
 - Findet unzureichend spezifizierte Elemente
@@ -785,6 +847,7 @@ Eine zerstoerungsfreie artefaktuebergreifende Konsistenzanalyse ueber spec.md, p
 | **LOW** | Stil/Wortlaut-Verbesserungen |
 
 **Beispiel:**
+
 ```text
 Sie: /codexspec.analyze
 
@@ -822,6 +885,7 @@ KI:  Analysiere Artefakte...
 ```
 
 **Tipps:**
+
 - Nach `/codexspec.plan-to-tasks` ausfuehren, vor Implementierung
 - CRITICAL-Probleme sollten Implementierung blockieren
 - Nur-Lese-Analyse – keine Dateien werden geaendert
@@ -834,21 +898,25 @@ KI:  Analysiere Artefakte...
 Qualitaetschecklisten zur Validierung von Anforderungsvollstaendigkeit, -klarheit und -konsistenz generieren. Dies sind "Unit-Tests fuer das Schreiben von Anforderungen".
 
 **Syntax:**
+
 ```
 /codexspec.checklist [fokusbereich]
 ```
 
 **Argumente:**
+
 | Argument | Erforderlich | Beschreibung |
 |----------|----------|-------------|
 | `fokusbereich` | Nein | Domänenfokus (z.B. "ux", "api", "security", "performance") |
 
 **Was es tut:**
+
 - Generiert Checklisten, organisiert nach Qualitaetsdimensionen
 - Erstellt Checklisten im `FEATURE_DIR/checklists/`-Verzeichnis
 - Elemente fokussieren auf Anforderungsqualitaet, nicht Implementierungstests
 
 **Qualitaetsdimensionen:**
+
 - **Anforderungsvollstaendigkeit**: Sind alle notwendigen Anforderungen vorhanden?
 - **Anforderungsklarheit**: Sind Anforderungen spezifisch und eindeutig?
 - **Anforderungskonsistenz**: Richtet sich Anforderungen ohne Konflikte aus?
@@ -859,12 +927,14 @@ Qualitaetschecklisten zur Validierung von Anforderungsvollstaendigkeit, -klarhei
 - **Abhaengigkeiten & Annahmen**: Sind sie dokumentiert?
 
 **Beispiel-Checklisten-Typen:**
+
 - `ux.md` - Visuelle Hierarchie, Interaktionszustaende, Barrierefreiheit
 - `api.md` - Fehlerformate, Rate-Limiting, Authentifizierung
 - `security.md` - Datenschutz, Bedrohungsmodell, Verletzungsreaktion
 - `performance.md` - Metriken, Lastbedingungen, Verschlechterung
 
 **Beispiel:**
+
 ```text
 Sie: /codexspec.checklist security
 
@@ -888,6 +958,7 @@ KI:  Generiere Security-Checkliste...
 ```
 
 **Tipps:**
+
 - Checklisten validieren Anforderungsqualitaet, nicht Implementierungskorrektheit
 - Fuer Anforderungsueberpruefung und -verbesserung verwenden
 - Domänenspezifische Checklisten fuer fokussierte Validierung erstellen
@@ -900,16 +971,19 @@ KI:  Generiere Security-Checkliste...
 Aufgaben aus `tasks.md` in GitHub-Issues fuer Projektverfolgung und Zusammenarbeit konvertieren.
 
 **Syntax:**
+
 ```
 /codexspec.tasks-to-issues
 ```
 
 **Argumente:**
+
 | Argument | Erforderlich | Beschreibung |
 |----------|----------|-------------|
 | Keine | - | Konvertiert alle Aufgaben des aktuellen Features |
 
 **Was es tut:**
+
 - Parst Aufgaben-IDs, Beschreibungen, Abhaengigkeiten und Dateipfade
 - Erstellt GitHub-Issues mit strukturiertem Body
 - Fuegt Labels basierend auf Aufgabentyp hinzu (setup, implementation, testing, documentation)
@@ -917,11 +991,13 @@ Aufgaben aus `tasks.md` in GitHub-Issues fuer Projektverfolgung und Zusammenarbe
 - Meldet erstellte Issues mit URLs
 
 **Voraussetzungen:**
+
 - Git-Repository mit GitHub-Remote
 - GitHub CLI (`gh`) installiert und authentifiziert
 - `tasks.md`-Datei existiert
 
 **Beispiel:**
+
 ```text
 Sie: /codexspec.tasks-to-issues
 
@@ -944,6 +1020,7 @@ KI:  Konvertiere Aufgaben zu GitHub-Issues...
 ```
 
 **Tipps:**
+
 - Erfordert GitHub-CLI-Authentifizierung (`gh auth login`)
 - Funktioniert nur mit GitHub-Repositories
 - Erstellt Issues in der Standardkonfiguration des Repositories
@@ -956,16 +1033,19 @@ KI:  Konvertiere Aufgaben zu GitHub-Issues...
 Eine Conventional-Commits-konforme Commit-Nachricht basierend auf Git-Status und Sitzungskontext generieren. Dieser Befehl ist kontextbewusst und behandelt verschiedene Git-Zustaende.
 
 **Syntax:**
+
 ```
 /codexspec.commit
 ```
 
 **Argumente:**
+
 | Argument | Erforderlich | Beschreibung |
 |----------|----------|-------------|
 | Keine | - | Analysiert aktuellen Git-Zustand und Sitzungskontext |
 
 **Was es tut:**
+
 - Sammelt Git-Kontext (Branch, Status, gestagete/ungestagete Aenderungen)
 - Analysiert Sitzungsgespraechsverlauf fuer Intent-Verstaendnis
 - Folgt Prioritaetslogik basierend auf Git-Zustand:
@@ -984,6 +1064,7 @@ Eine Conventional-Commits-konforme Commit-Nachricht basierend auf Git-Status und
 | Sauber | "Keine Aenderungen erkannt" melden |
 
 **Beispiel:**
+
 ```text
 Sie: /codexspec.commit
 
@@ -1008,6 +1089,7 @@ KI:  ✓ Committed: abc1234
 ```
 
 **Tipps:**
+
 - Flexibler als `/codexspec.commit-staged` – behandelt verschiedene Git-Zustaende
 - Beruecksichtigt Sitzungskontext fuer sinnvolle Commit-Nachrichten
 - Bestaetigt immer vor dem Committen
@@ -1020,16 +1102,19 @@ KI:  ✓ Committed: abc1234
 Eine Conventional-Commits-konforme Commit-Nachricht basierend ausschliesslich auf gestageten Git-Aenderungen generieren. Dies ist ein einfacherer, fokussierter Befehl, wenn Sie Ihre Aenderungen bereits gestaget haben.
 
 **Syntax:**
+
 ```
 /codexspec.commit-staged
 ```
 
 **Argumente:**
+
 | Argument | Erforderlich | Beschreibung |
 |----------|----------|-------------|
 | Keine | - | Analysiert nur gestagete Aenderungen |
 
 **Was es tut:**
+
 - Fuehrt `git diff --staged` aus, um gestagete Aenderungen abzurufen
 - Analysiert Aenderungen und generiert Commit-Nachricht
 - Folgt Conventional-Commits-Spezifikation
@@ -1037,6 +1122,7 @@ Eine Conventional-Commits-konforme Commit-Nachricht basierend ausschliesslich au
 - Meldet Fehler, wenn keine gestageten Aenderungen existieren
 
 **Beispiel:**
+
 ```text
 Sie: /codexspec.commit-staged
 
@@ -1061,6 +1147,7 @@ KI:  ✓ Committed: def5678
 ```
 
 **Tipps:**
+
 - Aenderungen zuerst mit `git add` stagen
 - Analysiert nur gestageten Inhalt – ignoriert ungestagete
 - Einfacher als `/codexspec.commit`, wenn Sie wissen, was Sie committen moechten
@@ -1134,6 +1221,7 @@ KI:  ✓ Committed: def5678
 Der Befehl konnte das Feature-Verzeichnis nicht lokalisieren.
 
 **Loesungen:**
+
 - Zuerst `codexspec init` ausfuehren, um das Projekt zu initialisieren
 - Pruefen, dass `.codexspec/specs/`-Verzeichnis existiert
 - Verifizieren, dass Sie im korrekten Projektverzeichnis sind
@@ -1143,6 +1231,7 @@ Der Befehl konnte das Feature-Verzeichnis nicht lokalisieren.
 Die Spezifikationsdatei existiert noch nicht.
 
 **Loesungen:**
+
 - Zuerst `/codexspec.specify` ausfuehren, um Anforderungen zu klaeren
 - Dann `/codexspec.generate-spec` ausfuehren, um spec.md zu erstellen
 
@@ -1151,6 +1240,7 @@ Die Spezifikationsdatei existiert noch nicht.
 Keine Projektverfassung existiert.
 
 **Loesungen:**
+
 - `/codexspec.constitution` ausfuehren, um eine zu erstellen
 - Verfassung ist optional, aber empfohlen fuer konsistente Entscheidungen
 
@@ -1159,6 +1249,7 @@ Keine Projektverfassung existiert.
 Die Aufgabenaufteilung existiert nicht.
 
 **Loesungen:**
+
 - Sicherstellen, dass Sie zuerst `/codexspec.spec-to-plan` ausgefuehrt haben
 - Dann `/codexspec.plan-to-tasks` ausfuehren, um tasks.md zu erstellen
 
@@ -1167,6 +1258,7 @@ Die Aufgabenaufteilung existiert nicht.
 Der `/codexspec.tasks-to-issues`-Befehl erfordert GitHub-Authentifizierung.
 
 **Loesungen:**
+
 - GitHub-CLI installieren: `brew install gh` (macOS) oder aequivalent
 - Authentifizieren: `gh auth login`
 - Verifizieren: `gh auth status`

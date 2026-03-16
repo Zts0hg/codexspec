@@ -10,6 +10,7 @@ scripts:
 ## Language Preference
 
 **IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
+
 - If `language.output` is set to a language other than "en", respond and generate all content in that language
 - If not configured or set to "en", use English as default
 - Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
@@ -38,10 +39,12 @@ Identify inconsistencies, duplications, ambiguities, and underspecified items ac
 ### 1. Initialize Analysis Context
 
 Run `{SCRIPT}` from repo root and parse JSON for:
+
 - `FEATURE_DIR` - Feature directory path
 - `AVAILABLE_DOCS` - List of available documents
 
 Derive absolute paths:
+
 - SPEC = FEATURE_DIR/spec.md
 - PLAN = FEATURE_DIR/plan.md
 - TASKS = FEATURE_DIR/tasks.md
@@ -53,6 +56,7 @@ Abort if any required file is missing.
 Load only the minimal necessary context:
 
 **From spec.md:**
+
 - Overview/Context
 - Functional Requirements
 - Non-Functional Requirements
@@ -60,12 +64,14 @@ Load only the minimal necessary context:
 - Edge Cases
 
 **From plan.md:**
+
 - Architecture/stack choices
 - Data Model references
 - Phases
 - Technical constraints
 
 **From tasks.md:**
+
 - Task IDs
 - Descriptions
 - Phase grouping
@@ -73,11 +79,13 @@ Load only the minimal necessary context:
 - Referenced file paths
 
 **From constitution:**
+
 - Load `.codexspec/memory/constitution.md` for principle validation
 
 ### 3. Build Semantic Models
 
 Create internal representations:
+
 - **Requirements inventory**: Each requirement with a stable key
 - **User story inventory**: Discrete user actions with acceptance criteria
 - **Task coverage mapping**: Map each task to requirements or stories
@@ -86,28 +94,34 @@ Create internal representations:
 ### 4. Detection Passes
 
 #### A. Duplication Detection
+
 - Identify near-duplicate requirements
 - Mark lower-quality phrasing for consolidation
 
 #### B. Ambiguity Detection
+
 - Flag vague adjectives (fast, scalable, secure) lacking measurable criteria
 - Flag unresolved placeholders (TODO, TKTK, ???)
 
 #### C. Underspecification
+
 - Requirements with verbs but missing measurable outcome
 - User stories missing acceptance criteria
 - Tasks referencing undefined components
 
 #### D. Constitution Alignment
+
 - Requirements conflicting with MUST principles
 - Missing mandated sections or quality gates
 
 #### E. Coverage Gaps
+
 - Requirements with zero associated tasks
 - Tasks with no mapped requirement
 - Non-functional requirements not reflected in tasks
 
 #### F. Inconsistency
+
 - Terminology drift
 - Data entities referenced but not defined
 - Task ordering contradictions

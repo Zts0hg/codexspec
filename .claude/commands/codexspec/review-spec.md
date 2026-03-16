@@ -11,6 +11,7 @@ handoffs:
 ## Language Preference
 
 **IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
+
 - If `language.output` is set to a language other than "en", respond and generate all content in that language
 - If not configured or set to "en", use English as default
 - Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
@@ -187,6 +188,7 @@ Based on the review result, the user may consider:
 ### Quality Criteria
 
 Before completing the review, verify:
+
 - [ ] All sections of the spec have been examined
 - [ ] Issues are categorized by severity (Critical/Warning/Suggestion)
 - [ ] Each issue has a clear, actionable suggestion

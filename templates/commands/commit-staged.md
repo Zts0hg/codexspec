@@ -20,11 +20,13 @@ allowed-tools: Bash(git diff:*), Bash(git commit:*)
 **IMPORTANT**: Before generating commit messages, read the project's language configuration from `.codexspec/config.yml`.
 
 **Commit message language priority**:
+
 1. If `language.commit` is set, use that language for the commit message description
 2. Otherwise, use `language.output` as fallback
 3. If neither is configured, default to English
 
 **Note**:
+
 - The commit type (feat, fix, docs, etc.) and scope should always remain in English
 - Only the description part should use the configured language
 - Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
@@ -32,6 +34,7 @@ allowed-tools: Bash(git diff:*), Bash(git commit:*)
 ## Parameter Check
 
 Check if `$ARGUMENTS` contains `-p`:
+
 - **If `-p` is present**: Preview mode - only output the commit message, do not execute `git commit`
 - **If `-p` is NOT present**: Execute mode - generate the message and execute `git commit` directly
 

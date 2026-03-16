@@ -40,12 +40,14 @@ Idea → Clarificar → Revisar → Planificar → Revisar → Tareas → Revisa
 ```
 
 **Cada artefacto tiene un comando de revisión correspondiente:**
+
 - `spec.md` → `/codexspec.review-spec`
 - `plan.md` → `/codexspec.review-plan`
 - `tasks.md` → `/codexspec.review-tasks`
 - Todos los artefactos → `/codexspec.analyze`
 
 Este proceso sistemático de revisión asegura:
+
 - **Detección temprana de errores**: Capturar malentendidos antes de escribir código
 - **Verificación de alineación**: Confirmar que la interpretación de la IA coincide con tu intención
 - **Puertas de calidad**: Validar completitud, claridad y viabilidad en cada etapa
@@ -54,18 +56,21 @@ Este proceso sistemático de revisión asegura:
 ## Características
 
 ### Flujo de Trabajo SDD Central
+
 - **Basado en Constitución**: Establecer principios del proyecto que guían todas las decisiones posteriores
 - **Especificación en Dos Fases**: Clarificación interactiva (`/specify`) seguida de generación de documento (`/generate-spec`)
 - **Desarrollo Guiado por Planes**: Las decisiones técnicas vienen después de validar los requisitos
 - **Tareas Preparadas para TDD**: Los desgloses de tareas aplican metodología test-first
 
 ### Colaboración Humano-AI
+
 - **Comandos de Revisión**: Comandos de revisión dedicados para spec, plan y tareas para validar salida de IA
 - **Clarificación Interactiva**: Refinamiento de requisitos basado en Q&A con retroalimentación inmediata
 - **Análisis Entre Artefactos**: Detectar inconsistencias entre spec, plan y tareas antes de la implementación
 - **Checklists de Calidad**: Evaluación automatizada de calidad para requisitos
 
 ### Experiencia del Desarrollador
+
 - **Integración con Claude Code**: Comandos slash nativos para Claude Code
 - **Internacionalización (i18n)**: Soporte multilingüe mediante traducción dinámica LLM
 - **Multiplataforma**: Soporte para scripts Bash y PowerShell
@@ -145,6 +150,7 @@ codexspec --version
 Si encuentras errores de "Acceso denegado" o "spawn codexspec acceso denegado (OSError 5)" en CMD:
 
 **Solución 1: Actualizar variables de entorno**
+
 ```cmd
 # Cerrar todas las ventanas de CMD y abrir una nueva
 # O actualizar manualmente PATH
@@ -153,11 +159,13 @@ codexspec --version
 ```
 
 **Solución 2: Usar ruta completa**
+
 ```cmd
 %USERPROFILE%\.local\bin\codexspec.exe --version
 ```
 
 **Solución 3: Usar pipx en lugar de uv tool**
+
 ```cmd
 pip install pipx
 pipx ensurepath
@@ -241,6 +249,7 @@ Usa `/codexspec.specify` para **explorar y clarificar** tus requisitos mediante 
 ```
 
 Este comando:
+
 - Hará preguntas de clarificación para entender tu idea
 - Explorará casos límite que quizás no hayas considerado
 - Co-creará requisitos de alta calidad mediante diálogo
@@ -265,6 +274,7 @@ Este comando actúa como un "compilador de requisitos" que transforma tus requis
 ```
 
 Este comando genera un informe de revisión detallado con:
+
 - Análisis de completitud de secciones
 - Evaluación de claridad y testeabilidad
 - Verificación de alineación con la constitución
@@ -289,6 +299,7 @@ El comando incluye **revisión de constitucionalidad** - verificando que tu plan
 ```
 
 Esto verifica:
+
 - Alineación con la especificación
 - Solidez de arquitectura
 - Adecuación del stack tecnológico
@@ -303,6 +314,7 @@ Usa `/codexspec.plan-to-tasks` para desglosar el plan:
 ```
 
 Las tareas se organizan en fases estándar con:
+
 - **Aplicación de TDD**: Las tareas de test preceden a las de implementación
 - **Marcadores de paralelismo `[P]`**: Identifican tareas independientes
 - **Especificaciones de rutas de archivo**: Entregables claros por tarea
@@ -316,6 +328,7 @@ Las tareas se organizan en fases estándar con:
 ```
 
 Esto verifica:
+
 - Cobertura del plan
 - Cumplimiento de TDD
 - Corrección de dependencias
@@ -330,6 +343,7 @@ Usa `/codexspec.analyze` para verificación de consistencia entre artefactos:
 ```
 
 Esto detecta problemas entre spec, plan y tareas:
+
 - Brechas de cobertura (requisitos sin tareas)
 - Duplicaciones e inconsistencias
 - Violaciones de constitución
@@ -344,6 +358,7 @@ Usa `/codexspec.implement-tasks` para ejecutar la implementación:
 ```
 
 La implementación sigue **flujo de trabajo TDD condicional**:
+
 - Tareas de código: Test-first (Rojo → Verde → Verificar → Refactorizar)
 - Tareas no testeables (docs, config): Implementación directa
 
@@ -552,6 +567,7 @@ CodexSpec soporta múltiples idiomas a través de **traducción dinámica LLM**.
 ### Establecer Idioma
 
 **Durante la inicialización:**
+
 ```bash
 # Crear un proyecto con salida en chino
 codexspec init my-project --lang zh-CN
@@ -561,6 +577,7 @@ codexspec init my-project --lang ja
 ```
 
 **Después de la inicialización:**
+
 ```bash
 # Ver configuración actual
 codexspec config
@@ -583,6 +600,7 @@ codexspec config --set-commit-lang en
 ```
 
 **Prioridad de idioma para mensajes de commit:**
+
 1. Configuración `language.commit` (si se especifica)
 2. `language.output` (alternativa)
 3. `"en"` (por defecto)

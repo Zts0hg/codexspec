@@ -34,42 +34,52 @@ Bitte erstellen Sie basierend auf dem Code-Unterschied zwischen dem aktuellen Br
 ### Klaerungsprozess
 
 **F1: Ausgabesprache**
+
 - Optionen: Projekteinstellung folgen / Deutsch / Automatische Erkennung
 - **Benutzerauswahl**: Projekteinstellung folgen (aktuell: en)
 
 **F2: Plattformunterstuetzung**
+
 - Optionen: GitHub und GitLab unterstuetzen / Nur GitHub / Plattform automatisch erkennen
 - **Benutzerauswahl**: Plattform automatisch erkennen
 
 **F3: PR-Beschreibungsinhalt**
+
 - Optionen: Detaillierte strukturierte Beschreibung / Kurze Beschreibung / Anpassbare Vorlage
 - **Benutzerauswahl**: Detaillierte strukturierte Beschreibung (empfohlen)
 
 **F4: Ausloeser**
+
 - Optionen: Aktueller Branch vs origin/main / Nicht gepushte Commits / Zielbranch angebbar
 - **Benutzerauswahl**: Zielbranch angebbar
 
 **F5: Spec-Quelle**
+
 - Optionen: Bevorzugt spec.md verwenden / Nur Git-Informationen / Alle Quellen kombinieren
 - **Benutzerauswahl**: Alle Quellen kombinieren (empfohlen)
 
 **F6: Benennung**
+
 - Optionen: codexspec.pr / codexspec.create-pr / codexspec.create-mr
 - **Benutzerauswahl**: codexspec.pr (empfohlen)
 
 **F7: Behandlung ohne Spec**
+
 - Optionen: Weiter generieren, Kontext ueberspringen / Benutzer auffordern, zuerst Spec zu erstellen / Warnen und fortfahren
 - **Benutzerauswahl**: Weiter generieren, Kontext ueberspringen
 
 **F8: Ausgabemodus**
+
 - Optionen: Terminalausgabe / In Datei speichern / Terminal + optionale Datei
 - **Benutzerauswahl**: Terminal + optionale Datei (empfohlen)
 
 **F9: Standardabschnitte**
+
 - Optionen: Kontext, Implementierung, Tests, Verifizierung (alle auswaehlen)
 - **Benutzerauswahl**: Alle vier Abschnitte
 
 **F10: Befehlsparameter**
+
 - **Benutzerauswahl**: Alle Parameter sind optionale Parameter
   - `--target-branch`: Standard origin/main
   - `--output`: Standardmaessig nur Terminalausgabe
@@ -81,6 +91,7 @@ Bitte erstellen Sie basierend auf dem Code-Unterschied zwischen dem aktuellen Br
 **Benutzerfeedback**: Die Sprache sollte wie beim `/commit`-Befehl primaer nach dem `language.commit`-Parameter in `config.yml` bestimmt werden. Wenn kein `language.commit`-Parameter gesetzt ist, dann nach `language.output`.
 
 **Aktualisierte Anforderungszusammenfassung**:
+
 ```
 Sprachprioritaet: language.commit > language.output > Englisch (Standard)
 ```
@@ -129,10 +140,12 @@ Der Befehl soll die Ausgabesprache in folgender Prioritaetsreihenfolge bestimmen
 ### Gefundene Probleme
 
 **Warnungen (Should Fix)**:
+
 1. **SPEC-001**: Testdatei-Erkennungslogik nicht explizit angegeben
 2. **SPEC-002**: Bei mehreren spec.md-Dateien kann "zuletzt geaendert" ungenau sein
 
 **Vorschlaege (Nice to Have)**:
+
 1. Erwaegen Sie das Hinzufuegen eines `--title`-Parameters
 2. Hinzufuegen einer Ausgabeformat-Validierungsanforderung
 3. Erwaegen Sie die Unterstuetzung von GitHub Enterprise URL-Mustern
@@ -280,13 +293,16 @@ Neues Design: --spec (spec aktivieren, opt-in)
 ### Dateiliste
 
 **Erstellen**:
+
 - `templates/commands/pr.md`
 
 **Aendern**:
+
 - `CLAUDE.md` - Befehlsbeschreibung hinzufuegen
 - `README.md` - Befehl zur Liste hinzufuegen
 
 **Testen**:
+
 - `tests/test_pr_template.py`
 
 ---
@@ -356,6 +372,7 @@ Neues Design: --spec (spec aktivieren, opt-in)
 ### 1. Wert der Klaerungsphase
 
 Dieser Fall zeigt die kritische Rolle des `clarify`-Befehls:
+
 - **Benutzer entdeckt tatsaechliche Probleme bei der Verwendung** - Risiko der spec.md-Fehlverwendung bei kleinen Aenderungen
 - **Designfehler durch Klaerungs-Q&A loesen** - Von automatischer Erkennung zu Opt-in-Modus geaendert
 - **Anforderungsaenderungen werden systematisch protokolliert** - Alle Aenderungen im Clarifications-Abschnitt von spec.md gespeichert

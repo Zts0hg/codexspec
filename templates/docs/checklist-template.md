@@ -132,13 +132,16 @@ If not configured, use English.
 ## Sign-off
 
 ### Specification Review
+
 - [ ] Reviewed by: _____________
 - [ ] Date: _____________
 
 ### Plan Review
+
 - [ ] Reviewed by: _____________
 - [ ] Date: _____________
 
 ### Tasks Review
+
 - [ ] Reviewed by: _____________
 - [ ] Date: _____________

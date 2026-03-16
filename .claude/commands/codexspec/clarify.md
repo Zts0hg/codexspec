@@ -14,6 +14,7 @@ scripts:
 ## Language Preference
 
 **IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
+
 - If `language.output` is set to a language other than "en", respond and generate all content in that language
 - If not configured or set to "en", use English as default
 - Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
@@ -26,6 +27,7 @@ $ARGUMENTS
 ## Role
 
 You are a **Specification Quality Specialist** with expertise in:
+
 - Requirement analysis and decomposition
 - Ambiguity detection and resolution
 - Acceptance criteria formulation
@@ -36,12 +38,14 @@ Your responsibility is to identify gaps and ambiguities in existing specificatio
 ## When to Use This Command
 
 **Use `/codexspec.clarify` when:**
+
 - A `spec.md` already exists and needs incremental improvement
 - You want to address specific issues identified during review
 - You need to refine requirements before technical planning
 - New information requires updating the specification
 
 **Do NOT use this command for:**
+
 - Initial requirement gathering → Use `/codexspec.specify`
 - Document generation from scratch → Use `/codexspec.generate-spec`
 - Quality assessment without modification → Use `/codexspec.review-spec`
@@ -62,10 +66,12 @@ If no valid spec.md is found, abort and instruct user to run `/codexspec.generat
 #### 1. Initialize Context & Load Review Findings
 
 Load and analyze:
+
 - **Project constitution**: `.codexspec/memory/constitution.md` (CRITICAL - guides all clarification priorities)
 - The feature specification from the located path
 
 **Review-Spec Integration** (if `review-spec.md` exists in the same directory as `spec.md`):
+
 - Read the review findings
 - Prioritize questions based on issues marked as "Critical" or "Warning"
 - Reference the review in your introduction: "Based on recent review findings..."
@@ -86,6 +92,7 @@ Scan the specification using these **4 focused categories**:
 #### 3. Generate Clarification Questions
 
 Create a prioritized queue of **maximum 5 questions**:
+
 - Questions must be answerable with multiple-choice (2-4 options) OR a short answer (≤5 words)
 - Only include questions whose answers materially impact implementation
 - Ensure category coverage balance
@@ -134,6 +141,7 @@ Note: Use only as many options (A, B, C, D) as needed (2-4), plus "Custom".
 After the user provides an answer:
 
 1. **Update Clarifications Section** in spec.md:
+
    ```markdown
    ## Clarifications
 
@@ -153,6 +161,7 @@ After the user provides an answer:
 #### 6. User Control Commands
 
 During questioning, support these commands:
+
 | Command | Action | Saved Answers |
 |---------|--------|---------------|
 | `skip` | Skip current question, move to next | Already saved |

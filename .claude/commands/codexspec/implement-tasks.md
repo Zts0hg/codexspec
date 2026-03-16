@@ -11,6 +11,7 @@ handoffs:
 ## Language Preference
 
 **IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
+
 - If `language.output` is set to a language other than "en", respond and generate all content in that language
 - If not configured or set to "en", use English as default
 - Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
@@ -19,6 +20,7 @@ handoffs:
 ## Input Documents
 
 **Usage:**
+
 - `/implement-tasks` → Auto-detect from `.codexspec/specs/`
 - `/implement-tasks tasks.md` → `$1` as tasks path, derive others
 - `/implement-tasks spec.md plan.md tasks.md` → All paths explicit
@@ -40,6 +42,7 @@ You are an **autonomous implementation agent**. Your responsibility is to execut
 ### 1. Prerequisites
 
 Before starting, verify these files exist and load them:
+
 - Specification file (spec.md)
 - Technical plan file (plan.md)
 - Tasks file (tasks.md)
@@ -48,6 +51,7 @@ Before starting, verify these files exist and load them:
 ### 2. Tech Stack Detection
 
 Identify the project's technology stack:
+
 1. Check `plan.md` for defined tech stack
 2. Verify with project files: `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, etc.
 3. Determine conventions: source directory, test directory, test command, package manager
@@ -56,7 +60,7 @@ Identify the project's technology stack:
 
 For **each task**, determine the workflow based on task type:
 
-#### Implementation Tasks (code that needs testing):
+#### Implementation Tasks (code that needs testing)
 
 1. **Red - Write Test First**
    - Write unit tests that define expected behavior
@@ -80,9 +84,10 @@ For **each task**, determine the workflow based on task type:
    - Record any important notes or decisions
    - Continue to next task (respect dependencies)
 
-#### Non-Testable Tasks (docs, config, assets):
+#### Non-Testable Tasks (docs, config, assets)
 
 Implement directly and verify correctness. Task types that typically don't need tests:
+
 - Documentation (README, API docs, user guides)
 - Configuration files (JSON, YAML, TOML)
 - Static assets (images, styles, fonts)
@@ -91,6 +96,7 @@ Implement directly and verify correctness. Task types that typically don't need 
 ### 4. Autonomous Execution
 
 **Work continuously** until all tasks are completed:
+
 - Do not wait for user approval between tasks
 - When encountering blockers:
   - Record the issue in `issues.md` (task ID, error, attempted solutions, status)
@@ -113,6 +119,7 @@ When encountering problems, create/update `issues.md` in the same directory as `
 ### 6. Completion
 
 After all tasks:
+
 - Run full test suite (if applicable)
 - Final commit if needed
 - Report completion summary with files modified

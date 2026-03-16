@@ -19,15 +19,18 @@ allowed-tools: Bash(git branch:*), Bash(git diff:*), Bash(git log:*), Bash(git r
 **IMPORTANT**: Before generating PR descriptions, read the project's language configuration from `.codexspec/config.yml`.
 
 **PR description language priority**:
+
 1. If `language.commit` is set, use that language for the PR description
 2. Otherwise, use `language.output` as fallback
 3. If neither is configured, default to English
 
 **Note**:
+
 - Technical terms (e.g., API, JWT, OAuth, PR, MR) may remain in English when appropriate
 - The PR title and section headers should follow the configured language
 
 **Examples**:
+
 - `output: "zh-CN"` + `commit: "en"` → Chinese interactions, English PR descriptions
 - `output: "zh-CN"` + `commit: "zh-CN"` → Chinese for both
 - `output: "zh-CN"` + no `commit` setting → Chinese for both (fallback)
@@ -50,6 +53,7 @@ Parse `$ARGUMENTS` for the following optional parameters:
 | `--spec <path>` | (none) | Enable spec.md integration (opt-in) |
 
 ### `--sections` Values
+
 - `summary` - High-level overview of changes
 - `changes` - Detailed file changes and technical approach
 - `testing` - Test coverage information
@@ -71,11 +75,13 @@ By default, spec.md is **NOT** used. Use `--spec` to enable SDD workflow integra
 | `path/to/spec.md` | Use specified spec.md file path |
 
 **When to use**:
+
 - Following SDD workflow with existing spec.md
 - Want Context section with user stories and requirements
 - Large feature changes with documented specifications
 
 **When NOT to use**:
+
 - Small bug fixes or minor changes
 - Quick iterations without formal specification
 - Changes unrelated to existing specs
@@ -122,12 +128,14 @@ Only when `--spec` is provided, read spec.md for Context section.
 ### Content Extraction (Best-Effort)
 
 Extract content from spec.md with priority order:
+
 1. **User Stories** - Primary source for Context
 2. **Goals** - Fallback if no User Stories
 3. **Overview** - Fallback if no Goals
 4. **Requirements** - Last resort
 
 **Graceful Degradation**:
+
 - If spec structure is incomplete, use available sections
 - Do not error or warn on incomplete specs
 - Skip Context section if no spec or extraction fails
@@ -135,6 +143,7 @@ Extract content from spec.md with priority order:
 ### Invalid Spec Path Handling
 
 If `--spec` path doesn't exist:
+
 1. List available specs: `ls .codexspec/specs/`
 2. Display error: "Spec '[path]' not found. Available specs: [list]"
 3. Continue without Context section
@@ -182,11 +191,13 @@ Generate the PR title following **Conventional Commits** specification:
 ### Scope (Optional)
 
 Add scope when changes are focused on a specific module/component:
+
 - `feat(auth): add OAuth2 support`
 - `fix(api): handle timeout errors`
 - `refactor(core): improve caching mechanism`
 
 **Example**:
+
 - Branch: `feature/auth-cleanup`
 - First commit: "Add password validation"
 - Actual changes: Full authentication refactor
@@ -197,19 +208,23 @@ Add scope when changes are focused on a specific module/component:
 Identify test files using language-agnostic patterns:
 
 ### Directory Patterns
+
 - `tests/`
 - `test/`
 - `__tests__/`
 - `spec/`
 
 ### File Name Patterns
+
 - `*_test.py`, `test_*.py`
 - `*.test.js`, `*.spec.ts`
 - `*_test.go`
 - `*Test.java`, `*Tests.java`
 
 ### Combined Approach
+
 Match files that are:
+
 - In test directories, OR
 - Match file name patterns
 
@@ -227,6 +242,7 @@ Detect project-specific test commands for "How to Verify" section:
 | `Makefile` with `test` target | `make test` | `make test` |
 
 **Fallback**: If no project files detected, use generic steps:
+
 1. Install dependencies
 2. Run tests
 
@@ -235,48 +251,60 @@ Detect project-specific test commands for "How to Verify" section:
 Generate PR sections based on gathered information:
 
 ### Summary Section
+
 **Format:** `### Summary`
 **Source:** Git diff analysis + commit messages
 **Content:**
+
 - High-level overview of changes and motivation
 - 2-3 sentences maximum, answer "What" and "Why"
 
 ### Changes Section
+
 **Format:** `### Changes`
 **Source:** Git diff analysis
 **Content:**
+
 - Table of files changed with change type and description
 - Technical details subsection with implementation approach
 - Architectural decisions if apparent
 
 ### Testing Section
+
 **Format:** `### Testing`
 **Source:** Test file discovery + commit messages
 **Content:**
+
 - Task list for test coverage status
 - Test files discovered
 - Exact commands to run tests
 
 ### How to Verify Section
+
 **Format:** `### How to Verify`
 **Source:** Project command detection
 **Content:**
+
 - Numbered list of step-by-step verification instructions
 - Project-specific test commands
 - Manual verification steps if applicable
 
 ### Checklist Section
+
 **Format:** `### Checklist`
 **Source:** Standard checklist items
 **Content:**
+
 - GitHub/GitLab task list syntax (`- [ ]`)
 - Project-specific checklist items
 - Focus on author self-confirmation before merge
 
 ### Notes Section
+
 **Format:** `### Notes`
 **Source:** Manual or detected from commits
 **Content:**
+
 - Breaking changes with `**Breaking Change:**` prefix
 - Migration instructions if needed
 - Links to related issues/PRs
@@ -284,6 +312,7 @@ Generate PR sections based on gathered information:
 ## Section Selection
 
 If `--sections` is specified, only include listed sections:
+
 - `summary` → Include Summary section
 - `changes` → Include Changes section
 - `testing` → Include Testing section
@@ -304,7 +333,7 @@ Example: `--sections summary,changes,testing`
 2. **Sections**: Use `###` for main sections (Context, Implementation, Testing, etc.)
 3. **Subsections**: Use `####` for subsections within main sections
 4. **Lists**: Use proper bullet points `-` or numbered lists `1.`
-5. **Code**: Use fenced code blocks with language hints (```bash, ```python, etc.)
+5. **Code**: Use fenced code blocks with language hints (```bash,```python, etc.)
 6. **Tables**: Use Markdown tables for structured data (file changes, test results, etc.)
 7. **Emphasis**: Use `**bold**` for key terms, `*italic*` for subtle emphasis
 8. **Links**: Use `[text](url)` format for references
@@ -365,6 +394,7 @@ Example: `--sections summary,changes,testing`
 
 ---
 *Related: #[issue-number]* (if applicable)
+
 ```
 
 ### GitLab MR Format
@@ -415,6 +445,7 @@ Example: `--sections summary,changes,testing`
 [Any additional notes or breaking changes]
 
 /label ~"[label]" @reviewer (if applicable)
+
 ```
 
 ### Section Content Guidelines
@@ -507,6 +538,7 @@ Example: `--sections summary,changes,testing`
 
 ... (all sections)
 ```
+
 ````
 
 This ensures users see the raw markdown source code, not the rendered output. Users can then copy the content inside the code block and paste it directly into GitHub/GitLab.

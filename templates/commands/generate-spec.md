@@ -7,6 +7,7 @@ description: Generate spec.md document after requirements have been clarified
 ## Language Preference
 
 **IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
+
 - If `language.output` is set to a language other than "en", respond and generate all content in that language
 - If not configured or set to "en", use English as default
 - Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
@@ -91,6 +92,7 @@ You are now acting as a "Requirement Compiler". Execute the following operations
 ### Quality Checklist
 
 Before saving, verify:
+
 - [ ] All user stories have acceptance criteria
 - [ ] Functional requirements are specific and testable
 - [ ] Non-functional requirements are measurable
@@ -108,6 +110,7 @@ Save the specification to: `.codexspec/specs/{NNN}-{feature-name}/spec.md`
 ## Available Follow-up Commands
 
 After generating the specification, the user may consider:
+
 - `/codexspec.review-spec` - to validate the specification quality before technical planning
 - `/codexspec.clarify` - to address any ambiguities or gaps identified
 - `/codexspec.spec-to-plan` - to proceed directly with technical implementation planning
