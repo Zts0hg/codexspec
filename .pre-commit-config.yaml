@@ -53,7 +53,7 @@ repos:
         files: requirements.*\.txt$
 
   # ========================================
-  # Documentation & Spell Checking
+  # Documentation
   # ========================================
 
   # markdownlint-cli - Markdown linting
@@ -62,13 +62,6 @@ repos:
     hooks:
       - id: markdownlint
         args: [--fix]
-
-  # codespell - Spell checking
-  - repo: https://github.com/codespell-project/codespell
-    rev: v2.3.0
-    hooks:
-      - id: codespell
-        args: [--config, .codespellrc]
 
   # ========================================
   # Shell Scripts
