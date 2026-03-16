@@ -248,7 +248,7 @@ def translate(key: str, language: str = "en", **kwargs) -> str:
         current = current[part]
 
     # Get message template
-    message_template = current
+    message_template = str(current)
 
     # Format message with kwargs
     try:
@@ -274,7 +274,7 @@ def extract_frontmatter_fields(content: str) -> dict[str, Optional[str]]:
         return {"description": None, "argument-hint": None}
 
     frontmatter = frontmatter_match.group(1)
-    result = {"description": None, "argument-hint": None}
+    result: dict[str, str | None] = {"description": None, "argument-hint": None}
 
     # Extract description (single line)
     desc_match = re.search(r"^description:\s*(.+)$", frontmatter, re.MULTILINE)

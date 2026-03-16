@@ -182,7 +182,7 @@ def get_installed_commands_metadata() -> list[CommandMetadata]:
     if not commands_dir.exists():
         return default_metadata
 
-    result = []
+    result: list[CommandMetadata] = []
     for cmd in default_metadata:
         cmd_file = commands_dir / cmd["file_name"]
 
