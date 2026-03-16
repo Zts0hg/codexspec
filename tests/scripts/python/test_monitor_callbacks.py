@@ -36,7 +36,7 @@ class TestMonitorCallbacks:
                 on_user_question=callback,
             )
 
-            # 模拟 AskUserQuestion 消息
+            # 模拟 AskUserQuestion 消息 (使用 questions 数组格式)
             message = {
                 "type": "assistant",
                 "message": {
@@ -46,12 +46,16 @@ class TestMonitorCallbacks:
                             "type": "tool_use",
                             "name": "AskUserQuestion",
                             "input": {
-                                "question": "选择格式",
-                                "header": "Format",
-                                "options": [
-                                    {"label": "JSON", "description": "JSON 格式"},
-                                ],
-                                "multiSelect": False,
+                                "questions": [
+                                    {
+                                        "question": "选择格式",
+                                        "header": "Format",
+                                        "options": [
+                                            {"label": "JSON", "description": "JSON 格式"},
+                                        ],
+                                        "multiSelect": False,
+                                    }
+                                ]
                             },
                         }
                     ],
@@ -187,7 +191,7 @@ class TestStateChangeDetection:
             state = monitor.get_session_state("test-session")
             assert state.status == SessionStatus.STREAMING
 
-            # 2. 工具调用
+            # 2. 工具调用 - 现在返回 PENDING_PERMISSION
             message2 = {
                 "type": "assistant",
                 "message": {
@@ -203,8 +207,8 @@ class TestStateChangeDetection:
             }
             monitor._process_message("test-session", message2)
             state = monitor.get_session_state("test-session")
-            # 由于文件修改时间判断，可能是 TOOL_USE 或 IDLE
-            assert state.status in (SessionStatus.TOOL_USE, SessionStatus.IDLE)
+            # 工具调用现在返回 PENDING_PERMISSION
+            assert state.status == SessionStatus.PENDING_PERMISSION
 
             # 3. 任务完成
             message3 = {
@@ -237,13 +241,17 @@ class TestStateChangeDetection:
                             "type": "tool_use",
                             "name": "AskUserQuestion",
                             "input": {
-                                "question": "选择颜色",
-                                "header": "Color",
-                                "options": [
-                                    {"label": "Red", "description": "红色"},
-                                    {"label": "Blue", "description": "蓝色"},
-                                ],
-                                "multiSelect": False,
+                                "questions": [
+                                    {
+                                        "question": "选择颜色",
+                                        "header": "Color",
+                                        "options": [
+                                            {"label": "Red", "description": "红色"},
+                                            {"label": "Blue", "description": "蓝色"},
+                                        ],
+                                        "multiSelect": False,
+                                    }
+                                ]
                             },
                         }
                     ],
@@ -316,10 +324,14 @@ class TestMultipleQuestions:
                             "type": "tool_use",
                             "name": "AskUserQuestion",
                             "input": {
-                                "question": "第一个问题",
-                                "header": "Q1",
-                                "options": [{"label": "A", "description": "选项A"}],
-                                "multiSelect": False,
+                                "questions": [
+                                    {
+                                        "question": "第一个问题",
+                                        "header": "Q1",
+                                        "options": [{"label": "A", "description": "选项A"}],
+                                        "multiSelect": False,
+                                    }
+                                ]
                             },
                         }
                     ],
@@ -337,10 +349,14 @@ class TestMultipleQuestions:
                             "type": "tool_use",
                             "name": "AskUserQuestion",
                             "input": {
-                                "question": "第二个问题",
-                                "header": "Q2",
-                                "options": [{"label": "B", "description": "选项B"}],
-                                "multiSelect": False,
+                                "questions": [
+                                    {
+                                        "question": "第二个问题",
+                                        "header": "Q2",
+                                        "options": [{"label": "B", "description": "选项B"}],
+                                        "multiSelect": False,
+                                    }
+                                ]
                             },
                         }
                     ],
@@ -372,10 +388,14 @@ class TestMultipleQuestions:
                                 "type": "tool_use",
                                 "name": "AskUserQuestion",
                                 "input": {
-                                    "question": f"问题{i}",
-                                    "header": f"Q{i}",
-                                    "options": [{"label": f"Opt{i}", "description": f"选项{i}"}],
-                                    "multiSelect": False,
+                                    "questions": [
+                                        {
+                                            "question": f"问题{i}",
+                                            "header": f"Q{i}",
+                                            "options": [{"label": f"Opt{i}", "description": f"选项{i}"}],
+                                            "multiSelect": False,
+                                        }
+                                    ]
                                 },
                             }
                         ],

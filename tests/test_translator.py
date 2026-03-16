@@ -203,9 +203,13 @@ argument-hint: "Describe your initial idea"
         assert "描述你的初始想法" in content
         assert "# Content" in content  # Markdown preserved
 
-    def test_install_without_translation(self, tmp_path):
+    def test_install_without_translation(self, tmp_path, monkeypatch):
         """Test that unsupported language keeps original content."""
+        from codexspec import translator
         from codexspec.commands.installer import install_commands_to_subdir
+
+        # Mock translate_with_claude_cli to avoid slow subprocess call
+        monkeypatch.setattr(translator, "translate_with_claude_cli", lambda *args, **kwargs: None)
 
         templates_dir = tmp_path / "templates"
         templates_dir.mkdir()
