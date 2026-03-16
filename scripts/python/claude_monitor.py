@@ -5,19 +5,71 @@ Claude Code Session Monitor
 """
 
 import argparse
+import atexit
 import json
+import os
+import sys
 import time
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
-try:
-    from watchdog.events import FileSystemEventHandler
+# 延迟导入 watchdog，避免在导入模块时就失败
+if TYPE_CHECKING:
     from watchdog.observers import Observer
-except ImportError:
-    print("Error: watchdog is required. Install with: pip install watchdog")
-    exit(1)
+
+# 单实例锁文件
+PID_FILE = Path("/tmp/claude_monitor.pid")
+
+
+def _is_process_running(pid: int) -> bool:
+    """检查进程是否存在（跨平台，支持 macOS）"""
+    try:
+        os.kill(pid, 0)  # 信号 0 不会真的杀死进程
+        return True
+    except OSError:
+        return False
+    except ValueError:
+        return False
+
+
+def _check_single_instance() -> None:
+    """确保只有一个实例运行"""
+    if PID_FILE.exists():
+        try:
+            old_pid = int(PID_FILE.read_text().strip())
+            if _is_process_running(old_pid):
+                print(f"[ERROR] Another instance is running (PID: {old_pid})", file=sys.stderr)
+                print(f"[ERROR] Run 'kill {old_pid}' to stop it, or remove {PID_FILE} if stale", file=sys.stderr)
+                sys.exit(1)
+        except (ValueError, PermissionError):
+            pass  # PID 文件损坏或无法读取，继续
+
+    # 写入当前 PID
+    PID_FILE.write_text(str(os.getpid()))
+
+
+def _cleanup_pid_file() -> None:
+    """清理 PID 文件"""
+    try:
+        if PID_FILE.exists():
+            current_pid = int(PID_FILE.read_text().strip())
+            if current_pid == os.getpid():
+                PID_FILE.unlink()
+    except (ValueError, PermissionError):
+        pass
+
+
+def _check_watchdog_available() -> bool:
+    """检查 watchdog 是否可用"""
+    try:
+        from watchdog.events import FileSystemEventHandler  # noqa: F401
+        from watchdog.observers import Observer  # noqa: F401
+
+        return True
+    except ImportError:
+        return False
 
 
 # ============================================================================
@@ -30,6 +82,7 @@ class SessionStatus(Enum):
 
     STREAMING = "STREAMING"  # 流式输出中
     TOOL_USE = "TOOL_USE"  # 工具调用中
+    PENDING_PERMISSION = "PENDING_PERMISSION"  # 等待权限确认
     USER_QUESTION = "USER_QUESTION"  # 等待用户回答
     ERROR_STOP = "ERROR_STOP"  # 出错停止
     TASK_COMPLETE = "TASK_COMPLETE"  # 任务完成
@@ -42,6 +95,16 @@ class QuestionOption:
 
     label: str
     description: str
+
+
+@dataclass
+class ToolUseInfo:
+    """工具调用信息"""
+
+    tool_name: str
+    tool_id: str
+    tool_input: dict[str, Any]
+    description: Optional[str] = None
 
 
 @dataclass
@@ -74,6 +137,7 @@ class SessionState:
     last_output: Optional[str] = None
     is_executing: bool = False
     questions: list[QuestionInfo] = field(default_factory=list)
+    pending_tools: list[ToolUseInfo] = field(default_factory=list)
     error_info: Optional[ErrorInfo] = None
 
 
@@ -91,7 +155,7 @@ class StateDetector:
     @staticmethod
     def detect(
         message: dict,
-    ) -> tuple[SessionStatus, Optional[QuestionInfo], Optional[ErrorInfo]]:
+    ) -> tuple[SessionStatus, Optional[QuestionInfo], list[ToolUseInfo], Optional[ErrorInfo]]:
         """
         检测消息状态
 
@@ -99,35 +163,74 @@ class StateDetector:
             message: Claude API 响应消息
 
         Returns:
-            tuple: (状态, 问题信息, 错误信息)
+            tuple: (状态, 问题信息, 工具调用列表, 错误信息)
         """
         stop_reason = message.get("stop_reason")
         content = message.get("content", [])
 
         # 1. 流式输出中 (stop_reason=null)
         if stop_reason is None:
-            return SessionStatus.STREAMING, None, None
+            return SessionStatus.STREAMING, None, [], None
 
-        # 2. 检查是否为用户询问
+        # 2. 检查是否为用户询问 (AskUserQuestion 工具)
         question_info = StateDetector._extract_question(content)
         if question_info:
-            return SessionStatus.USER_QUESTION, question_info, None
+            return SessionStatus.USER_QUESTION, question_info, [], None
 
-        # 3. 检查是否出错
+        # 3. 检查是否为工具调用等待权限确认
+        if stop_reason == "tool_use":
+            # 提取所有工具调用信息
+            tool_infos = StateDetector._extract_tool_uses(content)
+            if tool_infos:
+                return SessionStatus.PENDING_PERMISSION, None, tool_infos, None
+            return SessionStatus.TOOL_USE, None, [], None
+
+        # 4. 检查是否出错
         error_info = StateDetector._extract_error(message)
         if error_info and stop_reason not in StateDetector.STOP_REASONS_COMPLETE:
             # 有错误且不是正常完成
-            if stop_reason in ("refusal", "error") or (
-                stop_reason not in StateDetector.STOP_REASONS_COMPLETE and stop_reason != "tool_use"
-            ):
-                return SessionStatus.ERROR_STOP, None, error_info
-
-        # 4. 工具调用（非 AskUserQuestion）
-        if stop_reason == "tool_use":
-            return SessionStatus.TOOL_USE, None, None
+            if stop_reason in ("refusal", "error") or (stop_reason not in StateDetector.STOP_REASONS_COMPLETE):
+                return SessionStatus.ERROR_STOP, None, [], error_info
 
         # 5. 任务完成
-        return SessionStatus.TASK_COMPLETE, None, None
+        return SessionStatus.TASK_COMPLETE, None, [], None
+
+    @staticmethod
+    def _extract_tool_uses(content: list) -> list[ToolUseInfo]:
+        """
+        从 content 中提取所有 tool_use 信息
+
+        Args:
+            content: 消息内容列表
+
+        Returns:
+            ToolUseInfo 列表
+        """
+        tool_infos = []
+        if not content:
+            return tool_infos
+
+        for item in content:
+            if item.get("type") != "tool_use":
+                continue
+
+            tool_name = item.get("name", "")
+            tool_id = item.get("id", "")
+            tool_input = item.get("input", {})
+
+            # 提取描述（如果存在）
+            description = tool_input.get("description") if isinstance(tool_input, dict) else None
+
+            tool_infos.append(
+                ToolUseInfo(
+                    tool_name=tool_name,
+                    tool_id=tool_id,
+                    tool_input=tool_input,
+                    description=description,
+                )
+            )
+
+        return tool_infos
 
     @staticmethod
     def _extract_question(content: list) -> Optional[QuestionInfo]:
@@ -150,7 +253,15 @@ class StateDetector:
                 continue
 
             input_data = item.get("input", {})
-            options_data = input_data.get("options", [])
+
+            # 修复：Claude API 的 AskUserQuestion 将问题放在 input.questions 数组中
+            questions_data = input_data.get("questions", [])
+            if not questions_data:
+                return None
+
+            # 取第一个问题（当前实现只支持单问题）
+            first_question = questions_data[0]
+            options_data = first_question.get("options", [])
 
             options = [
                 QuestionOption(
@@ -161,10 +272,10 @@ class StateDetector:
             ]
 
             return QuestionInfo(
-                question=input_data.get("question", ""),
-                header=input_data.get("header", ""),
+                question=first_question.get("question", ""),
+                header=first_question.get("header", ""),
                 options=options,
-                multi_select=input_data.get("multiSelect", False),
+                multi_select=first_question.get("multiSelect", False),
             )
 
         return None
@@ -236,6 +347,42 @@ class OutputFormatter:
     """输出格式化器 - 格式化各种状态的输出"""
 
     SEPARATOR = "=" * 60
+
+    @staticmethod
+    def format_pending_permission(session_id: str, tools: list[ToolUseInfo]) -> str:
+        """
+        格式化等待权限确认的输出
+
+        Args:
+            session_id: Session ID
+            tools: 工具调用列表
+
+        Returns:
+            格式化的输出字符串
+        """
+        lines = [
+            "",
+            OutputFormatter.SEPARATOR,
+            f"[Session: {session_id[:8]}] Status: PENDING_PERMISSION",
+            OutputFormatter.SEPARATOR,
+            "Tools waiting for permission:",
+        ]
+
+        for i, tool in enumerate(tools, 1):
+            lines.append(f"  [{i}] {tool.tool_name}")
+            if tool.description:
+                lines.append(f"      Description: {tool.description}")
+            # 显示工具输入参数
+            if tool.tool_input:
+                lines.append("      Input:")
+                for key, value in tool.tool_input.items():
+                    value_str = str(value)
+                    if len(value_str) > 200:
+                        value_str = value_str[:200] + "..."
+                    lines.append(f"        {key}: {value_str}")
+
+        lines.append(OutputFormatter.SEPARATOR)
+        return "\n".join(lines)
 
     @staticmethod
     def format_user_question(session_id: str, questions: list[QuestionInfo]) -> str:
@@ -331,7 +478,23 @@ class OutputFormatter:
         return "\n".join(lines)
 
 
-class ClaudeSessionMonitor(FileSystemEventHandler):
+def _get_filesystem_event_handler():
+    """延迟获取 FileSystemEventHandler 基类"""
+    try:
+        from watchdog.events import FileSystemEventHandler
+
+        return FileSystemEventHandler
+    except ImportError:
+
+        class _DummyHandler:
+            """当 watchdog 不可用时的占位基类"""
+
+            pass
+
+        return _DummyHandler
+
+
+class ClaudeSessionMonitor(_get_filesystem_event_handler()):
     """监听 Claude Code session 文件变化"""
 
     # 表示执行完成的 stop_reason
@@ -351,15 +514,17 @@ class ClaudeSessionMonitor(FileSystemEventHandler):
         on_complete: Optional[callable] = None,
         on_user_question: Optional[callable] = None,
         on_error_stop: Optional[callable] = None,
+        on_pending_permission: Optional[callable] = None,
     ):
         self.project_dir = project_dir or self._detect_current_project()
         self.quiet = quiet
         self.on_complete = on_complete
         self.on_user_question = on_user_question
         self.on_error_stop = on_error_stop
+        self.on_pending_permission = on_pending_permission
         self.sessions: dict[str, SessionState] = {}
         self._file_positions: dict[str, int] = {}  # 记录每个文件的读取位置
-        self._observer: Optional[Observer] = None
+        self._observer: "Optional[Observer]" = None
 
     def _detect_current_project(self) -> Path:
         """检测当前项目目录"""
@@ -473,7 +638,7 @@ class ClaudeSessionMonitor(FileSystemEventHandler):
         text_content = self._extract_text(content)
 
         # 使用 StateDetector 检测状态
-        detected_status, question_info, error_info = StateDetector.detect(message)
+        detected_status, question_info, tool_infos, error_info = StateDetector.detect(message)
 
         # 更新 session 状态
         if session_id not in self.sessions:
@@ -487,12 +652,13 @@ class ClaudeSessionMonitor(FileSystemEventHandler):
         state.last_output = text_content
         state.status = detected_status
 
-        # 根据检测结果更新问题/错误信息
+        # 根据检测结果更新问题/错误/工具信息
         if question_info:
             state.questions = [question_info]
         else:
             state.questions = []
 
+        state.pending_tools = tool_infos
         state.error_info = error_info
 
         # 判断是否正在执行
@@ -509,8 +675,12 @@ class ClaudeSessionMonitor(FileSystemEventHandler):
 
         # 触发状态变化回调
         if not silent:
+            # 检测等待权限确认状态
+            if detected_status == SessionStatus.PENDING_PERMISSION:
+                self._on_pending_permission(session_id, state.pending_tools)
+
             # 检测用户询问状态
-            if detected_status == SessionStatus.USER_QUESTION:
+            elif detected_status == SessionStatus.USER_QUESTION:
                 self._on_user_question(session_id, state.questions)
 
             # 检测错误停止状态
@@ -595,6 +765,21 @@ class ClaudeSessionMonitor(FileSystemEventHandler):
         output = OutputFormatter.format_error_stop(session_id, error_info)
         print(output)
 
+    def _on_pending_permission(self, session_id: str, tools: list[ToolUseInfo]):
+        """等待权限确认时的回调"""
+        # 调用自定义回调（即使在 quiet 模式下也调用）
+        if self.on_pending_permission:
+            self.on_pending_permission(session_id, tools)
+            return
+
+        # quiet 模式下不输出默认格式
+        if self.quiet:
+            return
+
+        # 默认输出格式
+        output = OutputFormatter.format_pending_permission(session_id, tools)
+        print(output)
+
     def _print_completion(self, session_id: str, state: SessionState):
         """打印完成信息"""
         print(f"\n{'=' * 60}")
@@ -611,8 +796,16 @@ class ClaudeSessionMonitor(FileSystemEventHandler):
 
     def start(self, json_mode: bool = False):
         """启动监听"""
+        # 检查 watchdog 是否可用
+        if not _check_watchdog_available():
+            print("Error: watchdog is required. Install with: pip install watchdog", file=sys.stderr)
+            sys.exit(1)
+
         # 先初始化现有文件的状态
         self._initialize_from_existing_files()
+
+        # 延迟导入 Observer
+        from watchdog.observers import Observer
 
         # 启动文件监听
         self._observer = Observer()
@@ -733,6 +926,10 @@ def list_projects():
 
 
 def main():
+    # 确保只有一个实例运行
+    atexit.register(_cleanup_pid_file)
+    _check_single_instance()
+
     parser = argparse.ArgumentParser(
         description="Monitor Claude Code sessions and output content when execution completes",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -786,6 +983,7 @@ Examples:
     on_complete = None
     on_user_question = None
     on_error_stop = None
+    on_pending_permission = None
 
     if args.json:
 
@@ -830,9 +1028,27 @@ Examples:
             }
             print(json.dumps(output, ensure_ascii=False), flush=True)
 
+        def json_pending_permission_callback(session_id: str, tools: list[ToolUseInfo]):
+            output = {
+                "session_id": session_id,
+                "status": SessionStatus.PENDING_PERMISSION.value,
+                "timestamp": time.time(),
+                "tools": [
+                    {
+                        "name": t.tool_name,
+                        "id": t.tool_id,
+                        "input": t.tool_input,
+                        "description": t.description,
+                    }
+                    for t in tools
+                ],
+            }
+            print(json.dumps(output, ensure_ascii=False), flush=True)
+
         on_complete = json_complete_callback
         on_user_question = json_user_question_callback
         on_error_stop = json_error_stop_callback
+        on_pending_permission = json_pending_permission_callback
 
     try:
         monitor = ClaudeSessionMonitor(
@@ -841,6 +1057,7 @@ Examples:
             on_complete=on_complete,
             on_user_question=on_user_question,
             on_error_stop=on_error_stop,
+            on_pending_permission=on_pending_permission,
         )
         monitor.start(json_mode=args.json)
     except FileNotFoundError as e:
