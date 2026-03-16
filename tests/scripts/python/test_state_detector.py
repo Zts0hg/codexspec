@@ -27,17 +27,18 @@ class TestStateDetectorStreaming:
             "stop_reason": None,
             "content": [{"type": "text", "text": "Hello"}],
         }
-        status, question, error = StateDetector.detect(message)
+        status, question, tools, error = StateDetector.detect(message)
         assert status == SessionStatus.STREAMING
         assert question is None
         assert error is None
+        assert tools == []
 
     def test_streaming_when_no_stop_reason_field(self):
         """没有 stop_reason 字段时也应为 STREAMING"""
         message = {
             "content": [{"type": "text", "text": "Hello"}],
         }
-        status, question, error = StateDetector.detect(message)
+        status, question, tools, error = StateDetector.detect(message)
         assert status == SessionStatus.STREAMING
 
 
@@ -53,18 +54,22 @@ class TestStateDetectorUserQuestion:
                     "type": "tool_use",
                     "name": "AskUserQuestion",
                     "input": {
-                        "question": "你希望使用哪种输出格式？",
-                        "header": "Output Format",
-                        "options": [
-                            {"label": "JSON", "description": "便于程序解析"},
-                            {"label": "Text", "description": "便于人工阅读"},
-                        ],
-                        "multiSelect": False,
+                        "questions": [
+                            {
+                                "question": "你希望使用哪种输出格式？",
+                                "header": "Output Format",
+                                "options": [
+                                    {"label": "JSON", "description": "便于程序解析"},
+                                    {"label": "Text", "description": "便于人工阅读"},
+                                ],
+                                "multiSelect": False,
+                            }
+                        ]
                     },
                 }
             ],
         }
-        status, question, error = StateDetector.detect(message)
+        status, question, tools, error = StateDetector.detect(message)
         assert status == SessionStatus.USER_QUESTION
         assert question is not None
         assert question.question == "你希望使用哪种输出格式？"
@@ -83,18 +88,22 @@ class TestStateDetectorUserQuestion:
                     "type": "tool_use",
                     "name": "AskUserQuestion",
                     "input": {
-                        "question": "选择要启用的功能",
-                        "header": "Features",
-                        "options": [
-                            {"label": "A", "description": "功能A"},
-                            {"label": "B", "description": "功能B"},
-                        ],
-                        "multiSelect": True,
+                        "questions": [
+                            {
+                                "question": "选择要启用的功能",
+                                "header": "Features",
+                                "options": [
+                                    {"label": "A", "description": "功能A"},
+                                    {"label": "B", "description": "功能B"},
+                                ],
+                                "multiSelect": True,
+                            }
+                        ]
                     },
                 }
             ],
         }
-        status, question, error = StateDetector.detect(message)
+        status, question, tools, error = StateDetector.detect(message)
         assert status == SessionStatus.USER_QUESTION
         assert question is not None
         assert question.multi_select is True
@@ -111,7 +120,7 @@ class TestStateDetectorUserQuestion:
                 }
             ],
         }
-        status, question, error = StateDetector.detect(message)
+        status, question, tools, error = StateDetector.detect(message)
         assert status != SessionStatus.USER_QUESTION
         assert question is None
 
@@ -130,7 +139,7 @@ class TestStateDetectorErrorStop:
                 }
             ],
         }
-        status, question, error = StateDetector.detect(message)
+        status, question, tools, error = StateDetector.detect(message)
         assert status == SessionStatus.ERROR_STOP
         assert error is not None
 
@@ -149,7 +158,7 @@ class TestStateDetectorErrorStop:
                 }
             ],
         }
-        status, question, error = StateDetector.detect(message)
+        status, question, tools, error = StateDetector.detect(message)
         assert status == SessionStatus.ERROR_STOP
         assert error is not None
 
@@ -165,7 +174,7 @@ class TestStateDetectorErrorStop:
                 }
             ],
         }
-        status, question, error = StateDetector.detect(message)
+        status, question, tools, error = StateDetector.detect(message)
         assert status != SessionStatus.ERROR_STOP
 
     def test_not_error_stop_for_end_turn(self):
@@ -174,7 +183,7 @@ class TestStateDetectorErrorStop:
             "stop_reason": "end_turn",
             "content": [{"type": "text", "text": "Done"}],
         }
-        status, question, error = StateDetector.detect(message)
+        status, question, tools, error = StateDetector.detect(message)
         assert status != SessionStatus.ERROR_STOP
 
 
@@ -187,7 +196,7 @@ class TestStateDetectorTaskComplete:
             "stop_reason": "end_turn",
             "content": [{"type": "text", "text": "Task completed"}],
         }
-        status, question, error = StateDetector.detect(message)
+        status, question, tools, error = StateDetector.detect(message)
         assert status == SessionStatus.TASK_COMPLETE
 
     def test_task_complete_with_stop_sequence(self):
@@ -196,7 +205,7 @@ class TestStateDetectorTaskComplete:
             "stop_reason": "stop_sequence",
             "content": [{"type": "text", "text": "Stopped"}],
         }
-        status, question, error = StateDetector.detect(message)
+        status, question, tools, error = StateDetector.detect(message)
         assert status == SessionStatus.TASK_COMPLETE
 
     def test_task_complete_with_max_tokens(self):
@@ -205,15 +214,15 @@ class TestStateDetectorTaskComplete:
             "stop_reason": "max_tokens",
             "content": [{"type": "text", "text": "Truncated"}],
         }
-        status, question, error = StateDetector.detect(message)
+        status, question, tools, error = StateDetector.detect(message)
         assert status == SessionStatus.TASK_COMPLETE
 
 
 class TestStateDetectorToolUse:
-    """测试 TOOL_USE 状态检测"""
+    """测试 TOOL_USE / PENDING_PERMISSION 状态检测"""
 
     def test_tool_use_for_normal_tool(self):
-        """普通工具调用应为 TOOL_USE"""
+        """普通工具调用应为 PENDING_PERMISSION（等待权限确认）"""
         message = {
             "stop_reason": "tool_use",
             "content": [
@@ -224,11 +233,14 @@ class TestStateDetectorToolUse:
                 }
             ],
         }
-        status, question, error = StateDetector.detect(message)
-        assert status == SessionStatus.TOOL_USE
+        status, question, tools, error = StateDetector.detect(message)
+        # 工具调用时返回 PENDING_PERMISSION，表示等待权限确认
+        assert status == SessionStatus.PENDING_PERMISSION
+        assert len(tools) == 1
+        assert tools[0].tool_name == "Read"
 
     def test_tool_use_for_bash_tool(self):
-        """Bash 工具调用应为 TOOL_USE"""
+        """Bash 工具调用应为 PENDING_PERMISSION"""
         message = {
             "stop_reason": "tool_use",
             "content": [
@@ -239,8 +251,10 @@ class TestStateDetectorToolUse:
                 }
             ],
         }
-        status, question, error = StateDetector.detect(message)
-        assert status == SessionStatus.TOOL_USE
+        status, question, tools, error = StateDetector.detect(message)
+        assert status == SessionStatus.PENDING_PERMISSION
+        assert len(tools) == 1
+        assert tools[0].tool_name == "Bash"
 
 
 class TestStateDetectorEdgeCases:
@@ -252,7 +266,7 @@ class TestStateDetectorEdgeCases:
             "stop_reason": "end_turn",
             "content": [],
         }
-        status, question, error = StateDetector.detect(message)
+        status, question, tools, error = StateDetector.detect(message)
         assert status == SessionStatus.TASK_COMPLETE
 
     def test_multiple_tool_uses(self):
@@ -272,9 +286,10 @@ class TestStateDetectorEdgeCases:
                 },
             ],
         }
-        status, question, error = StateDetector.detect(message)
-        # 第一个工具不是 AskUserQuestion，所以应该是 TOOL_USE
-        assert status == SessionStatus.TOOL_USE
+        status, question, tools, error = StateDetector.detect(message)
+        # 工具调用返回 PENDING_PERMISSION
+        assert status == SessionStatus.PENDING_PERMISSION
+        assert len(tools) == 2
 
     def test_mixed_content_types(self):
         """混合内容类型的处理"""
@@ -289,8 +304,9 @@ class TestStateDetectorEdgeCases:
                 },
             ],
         }
-        status, question, error = StateDetector.detect(message)
-        assert status == SessionStatus.TOOL_USE
+        status, question, tools, error = StateDetector.detect(message)
+        # 工具调用返回 PENDING_PERMISSION
+        assert status == SessionStatus.PENDING_PERMISSION
 
     def test_unknown_stop_reason(self):
         """未知 stop_reason 处理"""
@@ -298,7 +314,7 @@ class TestStateDetectorEdgeCases:
             "stop_reason": "unknown_reason",
             "content": [{"type": "text", "text": "Something"}],
         }
-        status, question, error = StateDetector.detect(message)
+        status, question, tools, error = StateDetector.detect(message)
         # 未知原因，没有错误内容，应该是 TASK_COMPLETE
         assert status == SessionStatus.TASK_COMPLETE
 
@@ -313,13 +329,17 @@ class TestExtractQuestion:
                 "type": "tool_use",
                 "name": "AskUserQuestion",
                 "input": {
-                    "question": "选择颜色",
-                    "header": "Color",
-                    "options": [
-                        {"label": "Red", "description": "红色"},
-                        {"label": "Blue", "description": "蓝色"},
-                    ],
-                    "multiSelect": False,
+                    "questions": [
+                        {
+                            "question": "选择颜色",
+                            "header": "Color",
+                            "options": [
+                                {"label": "Red", "description": "红色"},
+                                {"label": "Blue", "description": "蓝色"},
+                            ],
+                            "multiSelect": False,
+                        }
+                    ]
                 },
             }
         ]

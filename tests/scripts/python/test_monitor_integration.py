@@ -43,7 +43,7 @@ class TestUserQuestionIntegration:
             data = json.loads(line)
             if data.get("type") == "assistant":
                 message = data.get("message", data)
-                status, question, error = StateDetector.detect(message)
+                status, question, tools, error = StateDetector.detect(message)
 
                 if status == SessionStatus.USER_QUESTION:
                     assert question is not None
@@ -98,7 +98,7 @@ class TestTaskCompleteIntegration:
             data = json.loads(line)
             if data.get("type") == "assistant":
                 message = data.get("message", data)
-                status, question, error = StateDetector.detect(message)
+                status, question, tools, error = StateDetector.detect(message)
 
                 if status == SessionStatus.TASK_COMPLETE:
                     assert question is None
@@ -147,7 +147,7 @@ class TestErrorStopIntegration:
             data = json.loads(line)
             if data.get("type") == "assistant":
                 message = data.get("message", data)
-                status, question, error = StateDetector.detect(message)
+                status, question, tools, error = StateDetector.detect(message)
 
                 if status == SessionStatus.ERROR_STOP:
                     assert error is not None
