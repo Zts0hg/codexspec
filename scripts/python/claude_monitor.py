@@ -177,13 +177,16 @@ class StateDetector:
         if question_info:
             return SessionStatus.USER_QUESTION, question_info, [], None
 
-        # 3. 检查是否为工具调用等待权限确认
+        # 3. 检查是否为工具调用
+        # 注意: stop_reason == "tool_use" 表示 Claude 正在使用工具
+        # 大多数工具（Bash, Read, Write 等）会自动执行，不需要用户确认
+        # 只有真正需要权限的工具才应该触发 PENDING_PERMISSION 通知
         if stop_reason == "tool_use":
             # 提取所有工具调用信息
             tool_infos = StateDetector._extract_tool_uses(content)
-            if tool_infos:
-                return SessionStatus.PENDING_PERMISSION, None, tool_infos, None
-            return SessionStatus.TOOL_USE, None, [], None
+            # 返回 TOOL_USE 而不是 PENDING_PERMISSION
+            # 避免对每个工具调用都发送权限请求通知
+            return SessionStatus.TOOL_USE, None, tool_infos if tool_infos else [], None
 
         # 4. 检查是否出错
         error_info = StateDetector._extract_error(message)
@@ -991,9 +994,9 @@ Examples:
             output = {
                 "session_id": session_id,
                 "status": state.status.value,
-                "stop_reason": state.last_stop_reason,
+                "stop_reason": state.last_stop_reason or "unknown",
                 "timestamp": time.time(),
-                "output": state.last_output,
+                "output": state.last_output or "",
             }
             print(json.dumps(output, ensure_ascii=False), flush=True)
 

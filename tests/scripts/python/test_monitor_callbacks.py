@@ -207,8 +207,9 @@ class TestStateChangeDetection:
             }
             monitor._process_message("test-session", message2)
             state = monitor.get_session_state("test-session")
-            # 工具调用现在返回 PENDING_PERMISSION
-            assert state.status == SessionStatus.PENDING_PERMISSION
+            # 工具调用现在返回 TOOL_USE (而不是 PENDING_PERMISSION)
+            # 大多数工具自动执行，不需要用户确认
+            assert state.status == SessionStatus.TOOL_USE
 
             # 3. 任务完成
             message3 = {
