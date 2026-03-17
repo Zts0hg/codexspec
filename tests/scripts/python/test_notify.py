@@ -10,6 +10,7 @@ Tests cover:
 """
 
 import os
+import subprocess
 import sys
 import tempfile
 import time
@@ -20,16 +21,32 @@ from pathlib import Path
 from unittest.mock import patch
 
 # Add parent directory to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent / "scripts" / "python"))
+
+# Path to the module under test
+NOTIFY_MODULE_PATH = str(Path(__file__).parent.parent.parent.parent / "scripts" / "python")
 
 
 class TestConfig(unittest.TestCase):
-    """Test cases for Config class - Task 1.2"""
+    """Test cases for Config class - Task 1.2
 
-    def setUp(self):
-        """Save original environment variables"""
-        self.original_env = {}
-        env_keys = [
+    Note: Config class reads environment variables at module load time.
+    We use subprocess-based testing to ensure clean environment for each test.
+    """
+
+    def _run_in_subprocess(self, env_vars: dict, code: str) -> str:
+        """Run Python code in a subprocess with specific environment variables.
+
+        Args:
+            env_vars: Environment variables to set for the subprocess
+            code: Python code to execute
+
+        Returns:
+            stdout from the subprocess
+        """
+        # Build clean environment, removing telegram-related vars by default
+        env = os.environ.copy()
+        for key in [
             "TELEGRAM_BOT_TOKEN",
             "TELEGRAM_CHAT_ID",
             "TELEGRAM_PROXY",
@@ -40,115 +57,156 @@ class TestConfig(unittest.TestCase):
             "NOTIFY_ON_USER_QUESTION",
             "NOTIFY_ON_ERROR",
             "NOTIFY_ON_PENDING_PERMISSION",
-        ]
-        for key in env_keys:
-            self.original_env[key] = os.environ.get(key)
+        ]:
+            env.pop(key, None)
 
-    def tearDown(self):
-        """Restore original environment variables"""
-        for key, value in self.original_env.items():
-            if value is None:
-                os.environ.pop(key, None)
-            else:
-                os.environ[key] = value
+        # Set test-specific env vars
+        env.update(env_vars)
+
+        result = subprocess.run(
+            [sys.executable, "-c", code],
+            capture_output=True,
+            text=True,
+            env=env,
+            cwd=NOTIFY_MODULE_PATH,
+        )
+        if result.returncode != 0:
+            self.fail(f"Subprocess failed: {result.stderr}")
+        return result.stdout.strip()
 
     def test_tc_cfg_001_read_all_env_vars(self):
         """TC-CFG-001: 读取所有环境变量"""
-        from notify_telegram import Config
+        env_vars = {
+            "TELEGRAM_BOT_TOKEN": "test_token_123",
+            "TELEGRAM_CHAT_ID": "test_chat_456",
+            "TELEGRAM_PROXY": "http://proxy:8080",
+            "TELEGRAM_LOG_FILE": "/custom/log/path.log",
+            "TELEGRAM_RETRY_COUNT": "5",
+            "TELEGRAM_RETRY_INTERVAL": "2",
+        }
+        code = """
+import sys
+sys.path.insert(0, '.')
+from notify_telegram import Config
+print(f"BOT_TOKEN:{Config.BOT_TOKEN}")
+print(f"CHAT_ID:{Config.CHAT_ID}")
+print(f"PROXY:{Config.PROXY}")
+print(f"LOG_FILE:{Config.LOG_FILE}")
+print(f"RETRY_COUNT:{Config.RETRY_COUNT}")
+print(f"RETRY_INTERVAL:{Config.RETRY_INTERVAL}")
+"""
+        output = self._run_in_subprocess(env_vars, code)
+        lines = output.split("\n")
 
-        os.environ["TELEGRAM_BOT_TOKEN"] = "test_token_123"
-        os.environ["TELEGRAM_CHAT_ID"] = "test_chat_456"
-        os.environ["TELEGRAM_PROXY"] = "http://proxy:8080"
-        os.environ["TELEGRAM_LOG_FILE"] = "/custom/log/path.log"
-        os.environ["TELEGRAM_RETRY_COUNT"] = "5"
-        os.environ["TELEGRAM_RETRY_INTERVAL"] = "2"
+        results = {}
+        for line in lines:
+            key, value = line.split(":", 1)
+            results[key] = value
 
-        # Re-import to pick up new env vars
-        import importlib
-
-        importlib.reload(sys.modules["notify_telegram"])
-
-        self.assertEqual(Config.BOT_TOKEN, "test_token_123")
-        self.assertEqual(Config.CHAT_ID, "test_chat_456")
-        self.assertEqual(Config.PROXY, "http://proxy:8080")
-        self.assertEqual(Config.LOG_FILE, "/custom/log/path.log")
-        self.assertEqual(Config.RETRY_COUNT, 5)
-        self.assertEqual(Config.RETRY_INTERVAL, 2)
+        self.assertEqual(results["BOT_TOKEN"], "test_token_123")
+        self.assertEqual(results["CHAT_ID"], "test_chat_456")
+        self.assertEqual(results["PROXY"], "http://proxy:8080")
+        self.assertEqual(results["LOG_FILE"], "/custom/log/path.log")
+        self.assertEqual(results["RETRY_COUNT"], "5")
+        self.assertEqual(results["RETRY_INTERVAL"], "2")
 
     def test_tc_cfg_002_default_values(self):
         """TC-CFG-002: 默认值验证"""
-        # Clear relevant env vars
-        for key in [
-            "TELEGRAM_PROXY",
-            "TELEGRAM_LOG_FILE",
-            "TELEGRAM_RETRY_COUNT",
-            "TELEGRAM_RETRY_INTERVAL",
-            "NOTIFY_ON_COMPLETE",
-            "NOTIFY_ON_USER_QUESTION",
-            "NOTIFY_ON_ERROR",
-            "NOTIFY_ON_PENDING_PERMISSION",
-        ]:
-            os.environ.pop(key, None)
+        # No env vars set - test defaults
+        code = """
+import sys
+sys.path.insert(0, '.')
+from notify_telegram import Config
+print(f"PROXY:{Config.PROXY}")
+print(f"LOG_FILE:{Config.LOG_FILE}")
+print(f"RETRY_COUNT:{Config.RETRY_COUNT}")
+print(f"RETRY_INTERVAL:{Config.RETRY_INTERVAL}")
+print(f"NOTIFY_ON_COMPLETE:{Config.NOTIFY_ON_COMPLETE}")
+print(f"NOTIFY_ON_USER_QUESTION:{Config.NOTIFY_ON_USER_QUESTION}")
+print(f"NOTIFY_ON_ERROR:{Config.NOTIFY_ON_ERROR}")
+"""
+        output = self._run_in_subprocess({}, code)
+        results = {}
+        for line in output.split("\n"):
+            key, value = line.split(":", 1)
+            results[key] = value
 
-        import importlib
-
-        importlib.reload(sys.modules["notify_telegram"])
-        from notify_telegram import Config
-
-        self.assertEqual(Config.PROXY, "http://127.0.0.1:7890")
-        self.assertIsNone(Config.LOG_FILE)
-        self.assertEqual(Config.RETRY_COUNT, 3)
-        self.assertEqual(Config.RETRY_INTERVAL, 1)
-        self.assertTrue(Config.NOTIFY_ON_COMPLETE)
-        self.assertTrue(Config.NOTIFY_ON_USER_QUESTION)
-        self.assertTrue(Config.NOTIFY_ON_ERROR)
+        self.assertEqual(results["PROXY"], "http://127.0.0.1:7890")
+        self.assertEqual(results["LOG_FILE"], "None")
+        self.assertEqual(results["RETRY_COUNT"], "3")
+        self.assertEqual(results["RETRY_INTERVAL"], "1")
+        self.assertEqual(results["NOTIFY_ON_COMPLETE"], "True")
+        self.assertEqual(results["NOTIFY_ON_USER_QUESTION"], "True")
+        self.assertEqual(results["NOTIFY_ON_ERROR"], "True")
 
     def test_tc_cfg_003_type_conversion_bool(self):
         """TC-CFG-003: 类型转换 - bool"""
-        os.environ["NOTIFY_ON_COMPLETE"] = "false"
-        os.environ["NOTIFY_ON_USER_QUESTION"] = "TRUE"
-        os.environ["NOTIFY_ON_ERROR"] = "False"
+        env_vars = {
+            "NOTIFY_ON_COMPLETE": "false",
+            "NOTIFY_ON_USER_QUESTION": "TRUE",
+            "NOTIFY_ON_ERROR": "False",
+        }
+        code = """
+import sys
+sys.path.insert(0, '.')
+from notify_telegram import Config
+print(f"NOTIFY_ON_COMPLETE:{Config.NOTIFY_ON_COMPLETE}")
+print(f"NOTIFY_ON_USER_QUESTION:{Config.NOTIFY_ON_USER_QUESTION}")
+print(f"NOTIFY_ON_ERROR:{Config.NOTIFY_ON_ERROR}")
+"""
+        output = self._run_in_subprocess(env_vars, code)
+        results = {}
+        for line in output.split("\n"):
+            key, value = line.split(":", 1)
+            results[key] = value
 
-        import importlib
-
-        importlib.reload(sys.modules["notify_telegram"])
-        from notify_telegram import Config
-
-        self.assertFalse(Config.NOTIFY_ON_COMPLETE)
-        self.assertTrue(Config.NOTIFY_ON_USER_QUESTION)
-        self.assertFalse(Config.NOTIFY_ON_ERROR)
+        self.assertEqual(results["NOTIFY_ON_COMPLETE"], "False")
+        self.assertEqual(results["NOTIFY_ON_USER_QUESTION"], "True")
+        self.assertEqual(results["NOTIFY_ON_ERROR"], "False")
 
     def test_tc_cfg_004_type_conversion_int(self):
         """TC-CFG-004: 类型转换 - int"""
-        os.environ["TELEGRAM_RETRY_COUNT"] = "10"
-        os.environ["TELEGRAM_RETRY_INTERVAL"] = "5"
+        env_vars = {
+            "TELEGRAM_RETRY_COUNT": "10",
+            "TELEGRAM_RETRY_INTERVAL": "5",
+        }
+        code = """
+import sys
+sys.path.insert(0, '.')
+from notify_telegram import Config
+print(f"RETRY_COUNT:{Config.RETRY_COUNT}")
+print(f"RETRY_INTERVAL:{Config.RETRY_INTERVAL}")
+print(f"RETRY_COUNT_TYPE:{type(Config.RETRY_COUNT).__name__}")
+print(f"RETRY_INTERVAL_TYPE:{type(Config.RETRY_INTERVAL).__name__}")
+"""
+        output = self._run_in_subprocess(env_vars, code)
+        results = {}
+        for line in output.split("\n"):
+            key, value = line.split(":", 1)
+            results[key] = value
 
-        import importlib
-
-        importlib.reload(sys.modules["notify_telegram"])
-        from notify_telegram import Config
-
-        self.assertEqual(Config.RETRY_COUNT, 10)
-        self.assertEqual(Config.RETRY_INTERVAL, 5)
-        self.assertIsInstance(Config.RETRY_COUNT, int)
-        self.assertIsInstance(Config.RETRY_INTERVAL, int)
+        self.assertEqual(results["RETRY_COUNT"], "10")
+        self.assertEqual(results["RETRY_INTERVAL"], "5")
+        self.assertEqual(results["RETRY_COUNT_TYPE"], "int")
+        self.assertEqual(results["RETRY_INTERVAL_TYPE"], "int")
 
     def test_tc_cfg_005_pending_permission_flag(self):
         """TC-CFG-005: 新增的 PENDING_PERMISSION 开关"""
-        os.environ["NOTIFY_ON_PENDING_PERMISSION"] = "true"
+        # Test with true
+        env_vars = {"NOTIFY_ON_PENDING_PERMISSION": "true"}
+        code = """
+import sys
+sys.path.insert(0, '.')
+from notify_telegram import Config
+print(Config.NOTIFY_ON_PENDING_PERMISSION)
+"""
+        output = self._run_in_subprocess(env_vars, code)
+        self.assertEqual(output, "True")
 
-        import importlib
-
-        importlib.reload(sys.modules["notify_telegram"])
-        from notify_telegram import Config
-
-        self.assertTrue(Config.NOTIFY_ON_PENDING_PERMISSION)
-
-        os.environ["NOTIFY_ON_PENDING_PERMISSION"] = "false"
-        importlib.reload(sys.modules["notify_telegram"])
-        from notify_telegram import Config
-
-        self.assertFalse(Config.NOTIFY_ON_PENDING_PERMISSION)
+        # Test with false
+        env_vars = {"NOTIFY_ON_PENDING_PERMISSION": "false"}
+        output = self._run_in_subprocess(env_vars, code)
+        self.assertEqual(output, "False")
 
 
 class TestLoggerBasicFormatting(unittest.TestCase):
