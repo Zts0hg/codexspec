@@ -297,5 +297,5 @@ Before saving, verify:
 
 After generating the technical plan, the user may consider:
 
-- `/codexspec.review-plan` - to validate the plan quality before task breakdown
-- `/codexspec.plan-to-tasks` - to proceed directly with breaking down into actionable tasks
+- `/codexspec:review-plan` - to validate the plan quality before task breakdown
+- `/codexspec:plan-to-tasks` - to proceed directly with breaking down into actionable tasks

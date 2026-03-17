@@ -64,10 +64,10 @@ class TestGetCommandsMetadata:
             assert set(cmd.keys()) == required_fields
 
     def test_display_name_format(self) -> None:
-        """Display names should start with /codexspec."""
+        """Display names should start with /codexspec:"""
         result = get_commands_metadata()
         for cmd in result:
-            assert cmd["display_name"].startswith("/codexspec.")
+            assert cmd["display_name"].startswith("/codexspec:")
 
     def test_sorted_by_category(self) -> None:
         """Commands should be sorted core -> enhanced -> git."""

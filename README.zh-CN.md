@@ -41,10 +41,10 @@ CodexSpec 将开发过程结构化为**可审查的检查点**：
 
 **每个产物都有对应的审查命令：**
 
-- `spec.md` → `/codexspec.review-spec`
-- `plan.md` → `/codexspec.review-plan`
-- `tasks.md` → `/codexspec.review-tasks`
-- 所有产物 → `/codexspec.analyze`
+- `spec.md` → `/codexspec:review-spec`
+- `plan.md` → `/codexspec:review-plan`
+- `tasks.md` → `/codexspec:review-tasks`
+- 所有产物 → `/codexspec:analyze`
 
 这种系统的审查流程确保：
 
@@ -118,10 +118,10 @@ uvx codexspec init . --ai claude
 
 ```bash
 # 使用 uv
-uv tool install git+https://github.com/Zts0hg/codexspec.git
+uv tool install git+https://github.com/Zts0hg/codexspec:git
 
 # 使用 pip
-pip install git+https://github.com/Zts0hg/codexspec.git
+pip install git+https://github.com/Zts0hg/codexspec:git
 
 # 特定分支或标签
 uv tool install git+https://github.com/Zts0hg/codexspec.git@main
@@ -234,18 +234,18 @@ cd my-awesome-project
 claude
 ```
 
-使用 `/codexspec.constitution` 命令创建项目的治理原则：
+使用 `/codexspec:constitution` 命令创建项目的治理原则：
 
 ```
-/codexspec.constitution 创建专注于代码质量、测试标准和整洁架构的原则
+/codexspec:constitution 创建专注于代码质量、测试标准和整洁架构的原则
 ```
 
 ### 3. 澄清需求
 
-使用 `/codexspec.specify` 通过交互式问答**探索和澄清**您的需求：
+使用 `/codexspec:specify` 通过交互式问答**探索和澄清**您的需求：
 
 ```
-/codexspec.specify 我想构建一个任务管理应用
+/codexspec:specify 我想构建一个任务管理应用
 ```
 
 此命令将：
@@ -257,10 +257,10 @@ claude
 
 ### 4. 生成规格文档
 
-需求澄清后，使用 `/codexspec.generate-spec` 创建 `spec.md` 文档：
+需求澄清后，使用 `/codexspec:generate-spec` 创建 `spec.md` 文档：
 
 ```
-/codexspec.generate-spec
+/codexspec:generate-spec
 ```
 
 此命令充当"需求编译器"，将您澄清的需求转换为结构化的规格文档。
@@ -270,7 +270,7 @@ claude
 **在进入计划阶段之前，验证您的规格：**
 
 ```
-/codexspec.review-spec
+/codexspec:review-spec
 ```
 
 此命令生成详细的审查报告，包括：
@@ -282,10 +282,10 @@ claude
 
 ### 6. 创建技术计划
 
-使用 `/codexspec.spec-to-plan` 定义如何实现：
+使用 `/codexspec:spec-to-plan` 定义如何实现：
 
 ```
-/codexspec.spec-to-plan 使用 Python 和 FastAPI 作为后端，PostgreSQL 作为数据库，React 作为前端
+/codexspec:spec-to-plan 使用 Python 和 FastAPI 作为后端，PostgreSQL 作为数据库，React 作为前端
 ```
 
 该命令包含**合宪性审查** - 验证您的计划符合项目原则。
@@ -295,7 +295,7 @@ claude
 **在分解任务之前，验证您的技术计划：**
 
 ```
-/codexspec.review-plan
+/codexspec:review-plan
 ```
 
 此命令验证：
@@ -307,10 +307,10 @@ claude
 
 ### 8. 生成任务
 
-使用 `/codexspec.plan-to-tasks` 分解计划：
+使用 `/codexspec:plan-to-tasks` 分解计划：
 
 ```
-/codexspec.plan-to-tasks
+/codexspec:plan-to-tasks
 ```
 
 任务按标准阶段组织，具有：
@@ -324,7 +324,7 @@ claude
 **在实现之前，验证任务分解：**
 
 ```
-/codexspec.review-tasks
+/codexspec:review-tasks
 ```
 
 此命令检查：
@@ -336,10 +336,10 @@ claude
 
 ### 10. 分析（可选但推荐）
 
-使用 `/codexspec.analyze` 进行跨产物一致性检查：
+使用 `/codexspec:analyze` 进行跨产物一致性检查：
 
 ```
-/codexspec.analyze
+/codexspec:analyze
 ```
 
 此命令检测规格、计划和任务中的问题：
@@ -351,10 +351,10 @@ claude
 
 ### 11. 实现
 
-使用 `/codexspec.implement-tasks` 执行实现：
+使用 `/codexspec:implement-tasks` 执行实现：
 
 ```
-/codexspec.implement-tasks
+/codexspec:implement-tasks
 ```
 
 实现遵循**条件 TDD 工作流**：
@@ -401,36 +401,36 @@ claude
 
 | 命令 | 描述 |
 |------|------|
-| `/codexspec.constitution` | 创建或更新项目宪法，支持跨产物验证和同步影响报告 |
-| `/codexspec.specify` | 通过交互式问答**澄清**需求（不生成文件） |
-| `/codexspec.generate-spec` | 需求澄清后**生成** `spec.md` 文档 |
-| `/codexspec.spec-to-plan` | 将规格转换为技术计划，包含合宪性审查和模块依赖图 |
-| `/codexspec.plan-to-tasks` | 将计划分解为原子级、TDD 强制的任务，带并行标记 `[P]` |
-| `/codexspec.implement-tasks` | 执行任务，采用条件 TDD 工作流（代码用 TDD，文档/配置直接实现） |
+| `/codexspec:constitution` | 创建或更新项目宪法，支持跨产物验证和同步影响报告 |
+| `/codexspec:specify` | 通过交互式问答**澄清**需求（不生成文件） |
+| `/codexspec:generate-spec` | 需求澄清后**生成** `spec.md` 文档 |
+| `/codexspec:spec-to-plan` | 将规格转换为技术计划，包含合宪性审查和模块依赖图 |
+| `/codexspec:plan-to-tasks` | 将计划分解为原子级、TDD 强制的任务，带并行标记 `[P]` |
+| `/codexspec:implement-tasks` | 执行任务，采用条件 TDD 工作流（代码用 TDD，文档/配置直接实现） |
 
 #### 审查命令（质量关卡）
 
 | 命令 | 描述 |
 |------|------|
-| `/codexspec.review-spec` | 验证规格的完整性、清晰度、一致性和可测试性，提供评分 |
-| `/codexspec.review-plan` | 审查技术计划的可行性、架构质量和宪法一致性 |
-| `/codexspec.review-tasks` | 验证任务分解的计划覆盖度、TDD 合规性、依赖关系和粒度 |
+| `/codexspec:review-spec` | 验证规格的完整性、清晰度、一致性和可测试性，提供评分 |
+| `/codexspec:review-plan` | 审查技术计划的可行性、架构质量和宪法一致性 |
+| `/codexspec:review-tasks` | 验证任务分解的计划覆盖度、TDD 合规性、依赖关系和粒度 |
 
 #### 增强命令
 
 | 命令 | 描述 |
 |------|------|
-| `/codexspec.clarify` | 使用 4 个聚焦类别扫描现有 spec.md 中的模糊区域，与审查发现集成 |
-| `/codexspec.analyze` | 非破坏性的跨产物分析（规格、计划、任务），基于严重性检测问题 |
-| `/codexspec.checklist` | 为需求验证生成质量检查清单 |
-| `/codexspec.tasks-to-issues` | 将任务转换为 GitHub issues，用于项目管理集成 |
+| `/codexspec:clarify` | 使用 4 个聚焦类别扫描现有 spec.md 中的模糊区域，与审查发现集成 |
+| `/codexspec:analyze` | 非破坏性的跨产物分析（规格、计划、任务），基于严重性检测问题 |
+| `/codexspec:checklist` | 为需求验证生成质量检查清单 |
+| `/codexspec:tasks-to-issues` | 将任务转换为 GitHub issues，用于项目管理集成 |
 
 #### Git 工作流命令
 
 | 命令 | 描述 |
 |------|------|
-| `/codexspec.commit` | 根据 git 状态和会话上下文生成 Conventional Commits 消息 |
-| `/codexspec.commit-staged` | 仅根据暂存的更改生成提交消息 |
+| `/codexspec:commit` | 根据 git 状态和会话上下文生成 Conventional Commits 消息 |
+| `/codexspec:commit-staged` | 仅根据暂存的更改生成提交消息 |
 
 ## 工作流概览
 
@@ -449,7 +449,7 @@ claude
 │         │                                                                │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ 审查关卡 1: /codexspec.review-spec ★                            ║   │
+│  ║  ★ 审查关卡 1: /codexspec:review-spec ★                            ║   │
 │  ║  验证：完整性、清晰度、可测试性、宪法一致性                              ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
@@ -462,7 +462,7 @@ claude
 │         │               • 模块依赖图                                       │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ 审查关卡 2: /codexspec.review-plan ★                            ║   │
+│  ║  ★ 审查关卡 2: /codexspec:review-plan ★                            ║   │
 │  ║  验证：规格一致性、架构、技术栈、阶段                                 ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
@@ -473,7 +473,7 @@ claude
 │         │               • 文件路径规范                                    │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ 审查关卡 3: /codexspec.review-tasks ★                           ║   │
+│  ║  ★ 审查关卡 3: /codexspec:review-tasks ★                           ║   │
 │  ║  验证：覆盖度、TDD 合规性、依赖关系、粒度                             ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
@@ -495,7 +495,7 @@ CodexSpec 为工作流的不同阶段提供了**两个不同的澄清命令**：
 
 #### specify 与 clarify：何时使用哪个？
 
-| 方面 | `/codexspec.specify` | `/codexspec.clarify` |
+| 方面 | `/codexspec:specify` | `/codexspec:clarify` |
 |------|----------------------|----------------------|
 | **目的** | 初始需求探索 | 现有规格的迭代细化 |
 | **何时使用** | 从新想法开始，没有 spec.md | spec.md 已存在，需要填补空白 |
@@ -511,15 +511,15 @@ CodexSpec 为工作流的不同阶段提供了**两个不同的澄清命令**：
 
 | 阶段 | 命令 | 目的 | 输出 |
 |------|------|------|------|
-| **探索** | `/codexspec.specify` | 交互式问答探索和细化需求 | 无（仅对话） |
-| **生成** | `/codexspec.generate-spec` | 将澄清的需求编译成结构化文档 | `spec.md` |
+| **探索** | `/codexspec:specify` | 交互式问答探索和细化需求 | 无（仅对话） |
+| **生成** | `/codexspec:generate-spec` | 将澄清的需求编译成结构化文档 | `spec.md` |
 
 #### 迭代澄清
 
 spec.md 创建之后：
 
 ```
-spec.md ──► /codexspec.clarify ──► 更新的 spec.md（包含 Clarifications 章节）
+spec.md ──► /codexspec:clarify ──► 更新的 spec.md（包含 Clarifications 章节）
                 │
                 └── 扫描 4 个聚焦类别的模糊区域：
                     • 完整性缺口 - 缺失章节、空白内容
@@ -664,7 +664,7 @@ project:
 
 ### Constitution 和生成文档
 
-当您使用 `/codexspec.constitution` 创建项目 constitution 时，它将按照您配置中指定的语言生成：
+当您使用 `/codexspec:constitution` 创建项目 constitution 时，它将按照您配置中指定的语言生成：
 
 - **单文件方法**：Constitution 仅以一种语言生成
 - **Claude 理解所有语言**：Claude 可以处理任何支持语言的 constitution 文件
@@ -707,7 +707,7 @@ my-extension/
 
 ```bash
 # 克隆仓库
-git clone https://github.com/Zts0hg/codexspec.git
+git clone https://github.com/Zts0hg/codexspec:git
 cd codexspec
 
 # 安装开发依赖
@@ -739,7 +739,7 @@ CodexSpec 灵感来源于 GitHub 的 spec-kit，但有一些关键差异：
 | 核心理念 | 规格驱动开发 | 规格驱动开发 + 人机协同 |
 | CLI 名称 | `specify` | `codexspec` |
 | 主要 AI | 多代理支持 | 专注于 Claude Code |
-| 命令前缀 | `/speckit.*` | `/codexspec.*` |
+| 命令前缀 | `/speckit.*` | `/codexspec:*` |
 | 宪法系统 | 基础 | 完整宪法，支持跨产物验证 |
 | 两阶段规格 | 否 | 是（澄清 + 生成） |
 | 审查命令 | 可选 | 3 个专用审查命令，带评分 |

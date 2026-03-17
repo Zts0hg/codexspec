@@ -40,14 +40,14 @@ Pour la derniere version de developpement :
 
 ```bash
 # Avec uv
-uv tool install git+https://github.com/Zts0hg/codexspec.git
+uv tool install git+https://github.com/Zts0hg/codexspec:git
 
 # Avec pip
-pip install git+https://github.com/Zts0hg/codexspec.git
+pip install git+https://github.com/Zts0hg/codexspec:git
 
 # Branche ou tag specifique
-uv tool install git+https://github.com/Zts0hg/codexspec.git@main
-uv tool install git+https://github.com/Zts0hg/codexspec.git@v0.2.0
+uv tool install git+https://github.com/Zts0hg/codexspec:git@main
+uv tool install git+https://github.com/Zts0hg/codexspec:git@v0.2.0
 ```
 
 ## Verifier l'Installation

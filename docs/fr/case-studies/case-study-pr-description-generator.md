@@ -4,7 +4,7 @@
 
 ## Apercu
 
-**Fonctionnalite Cible** : Ajouter une commande `/codexspec.pr` pour generer des descriptions de PR GitHub / MR GitLab structurees.
+**Fonctionnalite Cible** : Ajouter une commande `/codexspec:pr` pour generer des descriptions de PR GitHub / MR GitLab structurees.
 
 **Flux de Developpement** : `specify -> generate-spec -> review-spec -> clarify -> spec-to-plan`
 
@@ -12,7 +12,7 @@
 
 ---
 
-## Etape 1 : Clarification des Exigences Initiales (`/codexspec.specify`)
+## Etape 1 : Clarification des Exigences Initiales (`/codexspec:specify`)
 
 ### Entree Initiale de l'Utilisateur
 
@@ -98,7 +98,7 @@ Priorite de langue : language.commit > language.output > English (defaut)
 
 ---
 
-## Etape 2 : Generation du Document de Specification (`/codexspec.generate-spec`)
+## Etape 2 : Generation du Document de Specification (`/codexspec:generate-spec`)
 
 ### Structure du Document Genere
 
@@ -129,7 +129,7 @@ La commande doit determiner la langue de sortie dans l'ordre de priorite suivant
 
 ---
 
-## Etape 3 : Revision de Specification (`/codexspec.review-spec`)
+## Etape 3 : Revision de Specification (`/codexspec:review-spec`)
 
 ### Resultats de Revision
 
@@ -156,7 +156,7 @@ La commande doit determiner la langue de sortie dans l'ordre de priorite suivant
 
 ---
 
-## Etape 4 : Clarification et Ajustement des Exigences (`/codexspec.clarify`) : AVERTISSEMENT - Tournant Critique
+## Etape 4 : Clarification et Ajustement des Exigences (`/codexspec:clarify`) : AVERTISSEMENT - Tournant Critique
 
 ### Probleme Detecte
 
@@ -260,11 +260,11 @@ Nouvelle conception : --spec (activer spec, opt-in)
 
 ---
 
-## Etape 5 : Plan d'Implementation Technique (`/codexspec.spec-to-plan`)
+## Etape 5 : Plan d'Implementation Technique (`/codexspec:spec-to-plan`)
 
 ### Apercu du Plan
 
-**Methode d'implementation** : Fichier modele Markdown (conforme a `/codexspec.commit`)
+**Methode d'implementation** : Fichier modele Markdown (conforme a `/codexspec:commit`)
 
 **Aucune nouvelle dependance** - La fonctionnalite est implementee via le modele de commande slash, ne necessite pas de code Python.
 
@@ -316,7 +316,7 @@ Nouvelle conception : --spec (activer spec, opt-in)
                                     |
                                     v
 +-------------------------------------------------------------------------+
-|  /codexspec.specify                                                      |
+|  /codexspec:specify                                                      |
 |  |-- Clarifier les exigences via Q&R                                    |
 |  |-- L'utilisateur a fourni des exemples de reference                   |
 |  |-- 10 questions, couvrant langue, plateforme, contenu, parametres     |
@@ -324,7 +324,7 @@ Nouvelle conception : --spec (activer spec, opt-in)
                                     |
                                     v
 +-------------------------------------------------------------------------+
-|  /codexspec.generate-spec                                                |
+|  /codexspec:generate-spec                                                |
 |  |-- Generer le spec.md complet                                         |
 |  |-- 4 recits utilisateur, 8 exigences fonctionnelles, 10 cas de test   |
 |  |-- Sauvegarde dans .codexspec/specs/001-pr-description-generator/spec.md |
@@ -332,7 +332,7 @@ Nouvelle conception : --spec (activer spec, opt-in)
                                     |
                                     v
 +-------------------------------------------------------------------------+
-|  /codexspec.review-spec                                                  |
+|  /codexspec:review-spec                                                  |
 |  |-- Score de qualite : 92/100                                          |
 |  |-- Detection de 2 avertissements (decouverte fichiers test, multi spec) |
 |  |-- Statut : Reussite, peut passer a la phase de planification         |
@@ -340,7 +340,7 @@ Nouvelle conception : --spec (activer spec, opt-in)
                                     |
                                     v
 +-------------------------------------------------------------------------+
-|  /codexspec.clarify  : AVERTISSEMENT - Ajustement Critique               |
+|  /codexspec:clarify  : AVERTISSEMENT - Ajustement Critique               |
 |  |-- L'utilisateur a detecte un probleme de scenario d'usage reel       |
 |  |-- 5 questions de clarification, toutes repondues                     |
 |  |-- Changement cle : --no-spec -> --spec (opt-in)                      |
@@ -349,7 +349,7 @@ Nouvelle conception : --spec (activer spec, opt-in)
                                     |
                                     v
 +-------------------------------------------------------------------------+
-|  /codexspec.spec-to-plan                                                 |
+|  /codexspec:spec-to-plan                                                 |
 |  |-- Mise a jour du plan d'implementation technique                     |
 |  |-- 9 decisions techniques, incluant 5 nouvelles decisions             |
 |  |-- 5 phases d'implementation                                          |
@@ -359,9 +359,9 @@ Nouvelle conception : --spec (activer spec, opt-in)
                                     v
 +-------------------------------------------------------------------------+
 |  Etapes Suivantes (non completees dans cette session)                   |
-|  |-- /codexspec.review-plan - Valider la qualite du plan                |
-|  |-- /codexspec.plan-to-tasks - Decomposer en taches executables        |
-|  |-- /codexspec.implement-tasks - Executer l'implementation             |
+|  |-- /codexspec:review-plan - Valider la qualite du plan                |
+|  |-- /codexspec:plan-to-tasks - Decomposer en taches executables        |
+|  |-- /codexspec:implement-tasks - Executer l'implementation             |
 +-------------------------------------------------------------------------+
 ```
 
@@ -410,28 +410,28 @@ Ce changement reflete le passage de la conception d'un "workflow SDD par defaut"
 
 ```bash
 # 1. Clarification des exigences initiales
-/codexspec.specify
+/codexspec:specify
 
 # 2. Generation du document de specification
-/codexspec.generate-spec
+/codexspec:generate-spec
 
 # 3. Revision de la qualite de specification
-/codexspec.review-spec
+/codexspec:review-spec
 
 # 4. Clarification/ajustement des exigences (optionnel, utiliser apres detection de probleme)
-/codexspec.clarify [description du probleme]
+/codexspec:clarify [description du probleme]
 
 # 5. Generation du plan technique
-/codexspec.spec-to-plan
+/codexspec:spec-to-plan
 
 # 6. Revision de la qualite du plan (optionnel)
-/codexspec.review-plan
+/codexspec:review-plan
 
 # 7. Decomposition en taches
-/codexspec.plan-to-tasks
+/codexspec:plan-to-tasks
 
 # 8. Execution de l'implementation
-/codexspec.implement-tasks
+/codexspec:implement-tasks
 ```
 
 ---

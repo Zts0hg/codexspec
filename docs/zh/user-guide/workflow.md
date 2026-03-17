@@ -19,7 +19,7 @@ CodexSpec 将开发过程结构化为**可审查的检查点**，每个阶段都
 │         │                                                                │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ 审查关卡 1: /codexspec.review-spec ★                            ║   │
+│  ║  ★ 审查关卡 1: /codexspec:review-spec ★                            ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
 │         ▼                                                                │
@@ -27,7 +27,7 @@ CodexSpec 将开发过程结构化为**可审查的检查点**，每个阶段都
 │         │                                                                │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ 审查关卡 2: /codexspec.review-plan ★                            ║   │
+│  ║  ★ 审查关卡 2: /codexspec:review-plan ★                            ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
 │         ▼                                                                │
@@ -35,7 +35,7 @@ CodexSpec 将开发过程结构化为**可审查的检查点**，每个阶段都
 │         │                                                                │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ 审查关卡 3: /codexspec.review-tasks ★                           ║   │
+│  ║  ★ 审查关卡 3: /codexspec:review-tasks ★                           ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
 │         ▼                                                                │
@@ -57,21 +57,21 @@ CodexSpec 将开发过程结构化为**可审查的检查点**，每个阶段都
 
 | 阶段 | 命令 | 用途 |
 |------|------|------|
-| 1 | `/codexspec.constitution` | 定义项目原则 |
-| 2 | `/codexspec.specify` | 需求的交互式问答 |
-| 3 | `/codexspec.generate-spec` | 创建规格说明文档 |
-| - | `/codexspec.review-spec` | ★ 验证规格说明 |
-| 4 | `/codexspec.spec-to-plan` | 创建技术方案 |
-| - | `/codexspec.review-plan` | ★ 验证技术方案 |
-| 5 | `/codexspec.plan-to-tasks` | 分解为任务 |
-| - | `/codexspec.review-tasks` | ★ 验证任务 |
-| 6 | `/codexspec.implement-tasks` | 执行实现 |
+| 1 | `/codexspec:constitution` | 定义项目原则 |
+| 2 | `/codexspec:specify` | 需求的交互式问答 |
+| 3 | `/codexspec:generate-spec` | 创建规格说明文档 |
+| - | `/codexspec:review-spec` | ★ 验证规格说明 |
+| 4 | `/codexspec:spec-to-plan` | 创建技术方案 |
+| - | `/codexspec:review-plan` | ★ 验证技术方案 |
+| 5 | `/codexspec:plan-to-tasks` | 分解为任务 |
+| - | `/codexspec:review-tasks` | ★ 验证任务 |
+| 6 | `/codexspec:implement-tasks` | 执行实现 |
 
 ## 两阶段规格说明
 
 ### specify 与 clarify 的区别
 
-| 方面 | `/codexspec.specify` | `/codexspec.clarify` |
+| 方面 | `/codexspec:specify` | `/codexspec:clarify` |
 |------|----------------------|----------------------|
 | **目的** | 初始探索 | 迭代细化 |
 | **何时使用** | 不存在 spec.md | spec.md 存在，需要填补缺口 |

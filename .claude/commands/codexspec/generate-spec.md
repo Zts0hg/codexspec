@@ -15,7 +15,7 @@ description: 需求明确后生成 spec.md 文档
 
 ## Prerequisite
 
-**All requirements should already be clarified through `/codexspec.specify` before running this command.**
+**All requirements should already be clarified through `/codexspec:specify` before running this command.**
 
 ## Instructions
 
@@ -105,12 +105,12 @@ Before saving, verify:
 Save the specification to: `.codexspec/specs/{NNN}-{feature-name}/spec.md`
 
 > [!IMPORTANT]
-> This command should be called after `/codexspec.specify` has clarified all requirements. It focuses on document generation, not requirement exploration.
+> This command should be called after `/codexspec:specify` has clarified all requirements. It focuses on document generation, not requirement exploration.
 
 ## Available Follow-up Commands
 
 After generating the specification, the user may consider:
 
-- `/codexspec.review-spec` - to validate the specification quality before technical planning
-- `/codexspec.clarify` - to address any ambiguities or gaps identified
-- `/codexspec.spec-to-plan` - to proceed directly with technical implementation planning
+- `/codexspec:review-spec` - to validate the specification quality before technical planning
+- `/codexspec:clarify` - to address any ambiguities or gaps identified
+- `/codexspec:spec-to-plan` - to proceed directly with technical implementation planning

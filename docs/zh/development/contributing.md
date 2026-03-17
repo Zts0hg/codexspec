@@ -10,7 +10,7 @@
 
 ```bash
 # 克隆仓库
-git clone https://github.com/Zts0hg/codexspec.git
+git clone https://github.com/Zts0hg/codexspec:git
 cd codexspec
 
 # 安装开发依赖

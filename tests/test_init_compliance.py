@@ -37,7 +37,7 @@ This is an existing project.
 
 ## Available Commands
 
-- `/codexspec.init` - Initialize the project
+- `/codexspec:init` - Initialize the project
 """,
         encoding="utf-8",
     )

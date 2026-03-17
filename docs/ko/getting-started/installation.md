@@ -40,14 +40,14 @@ uvx codexspec init . --ai claude
 
 ```bash
 # uv 사용
-uv tool install git+https://github.com/Zts0hg/codexspec.git
+uv tool install git+https://github.com/Zts0hg/codexspec:git
 
 # pip 사용
-pip install git+https://github.com/Zts0hg/codexspec.git
+pip install git+https://github.com/Zts0hg/codexspec:git
 
 # 특정 브랜치 또는 태그
-uv tool install git+https://github.com/Zts0hg/codexspec.git@main
-uv tool install git+https://github.com/Zts0hg/codexspec.git@v0.2.0
+uv tool install git+https://github.com/Zts0hg/codexspec:git@main
+uv tool install git+https://github.com/Zts0hg/codexspec:git@v0.2.0
 ```
 
 ## 설치 확인

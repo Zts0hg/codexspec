@@ -1,7 +1,7 @@
 # Bem-vindo ao CodexSpec
 
-[![Versão no PyPI](https://img.shields.io/pypi/v/codexspec.svg)](https://pypi.org/project/codexspec/)
-[![Python](https://img.shields.io/pypi/pyversions/codexspec.svg)](https://pypi.org/project/codexspec/)
+[![Versão no PyPI](https://img.shields.io/pypi/v/codexspec:svg)](https://pypi.org/project/codexspec/)
+[![Python](https://img.shields.io/pypi/pyversions/codexspec:svg)](https://pypi.org/project/codexspec/)
 [![Licença: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **Um kit de ferramentas Spec-Driven Development (SDD) para Claude Code**

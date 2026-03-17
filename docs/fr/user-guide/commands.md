@@ -8,21 +8,21 @@ Pour les patterns de workflow et quand utiliser chaque commande, voir [Workflow]
 
 | Commande | Objectif |
 |----------|----------|
-| `/codexspec.constitution` | Creer ou mettre a jour la constitution du projet avec validation croisee des artefacts |
-| `/codexspec.specify` | Clarifier les exigences via Q&R interactives |
-| `/codexspec.generate-spec` | Generer le document spec.md a partir des exigences clarifiees |
-| `/codexspec.clarify` | Scanner un spec existant pour les ambiguites (raffinement iteratif) |
-| `/codexspec.spec-to-plan` | Convertir la specification en plan d'implementation technique |
-| `/codexspec.plan-to-tasks` | Decomposer le plan en taches atomiques avec application TDD |
-| `/codexspec.implement-tasks` | Executer les taches avec le workflow TDD conditionnel |
-| `/codexspec.review-spec` | Valider la specification pour completude et qualite |
-| `/codexspec.review-plan` | Reverifier le plan technique pour faisabilite et alignement |
-| `/codexspec.review-tasks` | Valider la decomposition des taches pour conformite TDD |
-| `/codexspec.analyze` | Analyse de coherence croisee des artefacts (lecture seule) |
-| `/codexspec.checklist` | Generer des listes de controle de qualite des exigences |
-| `/codexspec.tasks-to-issues` | Convertir les taches en issues GitHub |
-| `/codexspec.commit` | Generer des messages Conventional Commits avec contexte de session |
-| `/codexspec.commit-staged` | Generer un message de commit a partir des changements stages |
+| `/codexspec:constitution` | Creer ou mettre a jour la constitution du projet avec validation croisee des artefacts |
+| `/codexspec:specify` | Clarifier les exigences via Q&R interactives |
+| `/codexspec:generate-spec` | Generer le document spec.md a partir des exigences clarifiees |
+| `/codexspec:clarify` | Scanner un spec existant pour les ambiguites (raffinement iteratif) |
+| `/codexspec:spec-to-plan` | Convertir la specification en plan d'implementation technique |
+| `/codexspec:plan-to-tasks` | Decomposer le plan en taches atomiques avec application TDD |
+| `/codexspec:implement-tasks` | Executer les taches avec le workflow TDD conditionnel |
+| `/codexspec:review-spec` | Valider la specification pour completude et qualite |
+| `/codexspec:review-plan` | Reverifier le plan technique pour faisabilite et alignement |
+| `/codexspec:review-tasks` | Valider la decomposition des taches pour conformite TDD |
+| `/codexspec:analyze` | Analyse de coherence croisee des artefacts (lecture seule) |
+| `/codexspec:checklist` | Generer des listes de controle de qualite des exigences |
+| `/codexspec:tasks-to-issues` | Convertir les taches en issues GitHub |
+| `/codexspec:commit` | Generer des messages Conventional Commits avec contexte de session |
+| `/codexspec:commit-staged` | Generer un message de commit a partir des changements stages |
 
 ---
 
@@ -44,14 +44,14 @@ Commandes pour le raffinement iteratif, la validation croisee des artefacts et l
 
 ## Reference des Commandes
 
-### `/codexspec.constitution`
+### `/codexspec:constitution`
 
 Creer ou mettre a jour la constitution du projet. La constitution definit les principes architecturaux, la pile technologique, les standards de code et les regles de gouvernance qui guident toutes les decisions de developpement subsequentes.
 
 **Syntaxe :**
 
 ```
-/codexspec.constitution [description des principes]
+/codexspec:constitution [description des principes]
 ```
 
 **Arguments :**
@@ -79,7 +79,7 @@ Creer ou mettre a jour la constitution du projet. La constitution definit les pr
 **Exemple :**
 
 ```text
-Vous : /codexspec.constitution Axer sur la qualite du code, les standards de test et l'architecture propre
+Vous : /codexspec:constitution Axer sur la qualite du code, les standards de test et l'architecture propre
 
 AI  : Creation de la constitution...
 
@@ -108,14 +108,14 @@ AI  : Creation de la constitution...
 
 ---
 
-### `/codexspec.specify`
+### `/codexspec:specify`
 
 Clarifier les exigences via Q&R interactives. Cette commande explore votre idee initiale sans creer aucun fichier - vous gardez un controle total.
 
 **Syntaxe :**
 
 ```
-/codexspec.specify [votre idee ou exigence]
+/codexspec:specify [votre idee ou exigence]
 ```
 
 **Arguments :**
@@ -140,7 +140,7 @@ Clarifier les exigences via Q&R interactives. Cette commande explore votre idee 
 **Exemple :**
 
 ```text
-Vous : /codexspec.specify Je veux construire une application de gestion de taches
+Vous : /codexspec:specify Je veux construire une application de gestion de taches
 
 AI  : Super ! Laissez-moi vous aider a clarifier les exigences.
 
@@ -168,7 +168,7 @@ AI  : [Continue a explorer les exigences...]
      - Priorite : Collaboration temps reel > Sous-taches > GitHub
 
      Pret a generer le document de spec ?
-     Utilisez /codexspec.generate-spec pour creer spec.md
+     Utilisez /codexspec:generate-spec pour creer spec.md
 ```
 
 **Conseils :**
@@ -180,21 +180,21 @@ AI  : [Continue a explorer les exigences...]
 
 ---
 
-### `/codexspec.generate-spec`
+### `/codexspec:generate-spec`
 
 Generer le document `spec.md` a partir des exigences clarifiees. Cette commande agit comme un "compilateur d'exigences" qui transforme vos exigences clarifiees en une specification structuree.
 
 **Syntaxe :**
 
 ```
-/codexspec.generate-spec
+/codexspec:generate-spec
 ```
 
 **Arguments :**
 
 | Argument | Requis | Description |
 |----------|--------|-------------|
-| Aucun | - | Utilise le contexte de la session `/codexspec.specify` precedente |
+| Aucun | - | Utilise le contexte de la session `/codexspec:specify` precedente |
 
 **Ce qu'il fait :**
 
@@ -219,7 +219,7 @@ Generer le document `spec.md` a partir des exigences clarifiees. Cette commande 
 **Exemple :**
 
 ```text
-Vous : /codexspec.generate-spec
+Vous : /codexspec:generate-spec
 
 AI  : Generation de la specification...
 
@@ -234,27 +234,27 @@ AI  : Generation de la specification...
      - Hors du Cadre : Applications mobiles, SSO Entreprise
 
      Prochaines etapes :
-     - Reverifier le spec avec /codexspec.review-spec
-     - Ou passer a /codexspec.spec-to-plan
+     - Reverifier le spec avec /codexspec:review-spec
+     - Ou passer a /codexspec:spec-to-plan
 ```
 
 **Conseils :**
 
-- Executer apres que `/codexspec.specify` ait clarifie les exigences
+- Executer apres que `/codexspec:specify` ait clarifie les exigences
 - Reverifier le spec genere avant de poursuivre
-- Utiliser `/codexspec.review-spec` pour la validation de qualite
+- Utiliser `/codexspec:review-spec` pour la validation de qualite
 - Modifier spec.md directement si des ajustements mineurs sont necessaires
 
 ---
 
-### `/codexspec.clarify`
+### `/codexspec:clarify`
 
 Scanner une specification existante pour les ambiguites et lacunes. Utilisez ceci pour le raffinement iteratif apres la creation initiale du spec.
 
 **Syntaxe :**
 
 ```
-/codexspec.clarify [chemin_vers_spec.md]
+/codexspec:clarify [chemin_vers_spec.md]
 ```
 
 **Arguments :**
@@ -282,7 +282,7 @@ Scanner une specification existante pour les ambiguites et lacunes. Utilisez cec
 **Exemple :**
 
 ```text
-Vous : /codexspec.clarify
+Vous : /codexspec:clarify
 
 AI  : Scan de spec.md pour les ambiguites...
 
@@ -311,20 +311,20 @@ AI  : + Mis a jour NFR-001 : Temps de reponse < 500ms lectures, < 1s ecritures
 **Conseils :**
 
 - Utiliser quand spec.md existe mais necessite un raffinement
-- S'integre avec les resultats de `/codexspec.review-spec`
+- S'integre avec les resultats de `/codexspec:review-spec`
 - Maximum 5 questions par session
 - Executer plusieurs fois pour les specifications complexes
 
 ---
 
-### `/codexspec.spec-to-plan`
+### `/codexspec:spec-to-plan`
 
 Convertir la specification de fonctionnalite en plan d'implementation technique. C'est ici que vous definissez **comment** la fonctionnalite sera construite.
 
 **Syntaxe :**
 
 ```
-/codexspec.spec-to-plan [chemin_vers_spec.md]
+/codexspec:spec-to-plan [chemin_vers_spec.md]
 ```
 
 **Arguments :**
@@ -354,7 +354,7 @@ Convertir la specification de fonctionnalite en plan d'implementation technique.
 **Exemple :**
 
 ```text
-Vous : /codexspec.spec-to-plan Utiliser Python FastAPI pour le backend, React pour le frontend, PostgreSQL pour la base de donnees
+Vous : /codexspec:spec-to-plan Utiliser Python FastAPI pour le backend, React pour le frontend, PostgreSQL pour la base de donnees
 
 AI  : Generation du plan technique...
 
@@ -394,14 +394,14 @@ AI  : Generation du plan technique...
 
 ---
 
-### `/codexspec.plan-to-tasks**
+### `/codexspec:plan-to-tasks**
 
 Decomposer le plan technique en taches atomiques et actionnables avec application TDD.
 
 **Syntaxe :**
 
 ```
-/codexspec.plan-to-tasks [chemin_vers_spec.md chemin_vers_plan.md]
+/codexspec:plan-to-tasks [chemin_vers_spec.md chemin_vers_plan.md]
 ```
 
 **Arguments :**
@@ -441,7 +441,7 @@ Decomposer le plan technique en taches atomiques et actionnables avec applicatio
 **Exemple :**
 
 ```text
-Vous : /codexspec.plan-to-tasks
+Vous : /codexspec:plan-to-tasks
 
 AI  : Decomposition du plan en taches...
 
@@ -470,15 +470,15 @@ AI  : Decomposition du plan en taches...
 
 ---
 
-### `/codexspec.implement-tasks`
+### `/codexspec:implement-tasks`
 
 Executer les taches d'implementation avec le workflow TDD conditionnel. Travaille systematiquement a travers la liste des taches.
 
 **Syntaxe :**
 
 ```
-/codexspec.implement-tasks [chemin_taches]
-/codexspec.implement-tasks [chemin_spec chemin_plan chemin_taches]
+/codexspec:implement-tasks [chemin_taches]
+/codexspec:implement-tasks [chemin_spec chemin_plan chemin_taches]
 ```
 
 **Arguments :**
@@ -522,7 +522,7 @@ Rouge -> Vert -> Verifier -> Refactorer -> Marquer Complet
 **Exemple :**
 
 ```text
-Vous : /codexspec.implement-tasks
+Vous : /codexspec:implement-tasks
 
 AI  : Demarrage de l'implementation...
 
@@ -557,18 +557,18 @@ AI  : Demarrage de l'implementation...
 - Peut reprendre la ou il s'est arrete si interrompu
 - Les bloqueurs sont enregistres dans issues.md
 - Les commits sont faits apres des taches/phases significatives
-- Executer `/codexspec.review-tasks` d'abord pour validation
+- Executer `/codexspec:review-tasks` d'abord pour validation
 
 ---
 
-### `/codexspec.review-spec`
+### `/codexspec:review-spec`
 
 Valider la specification pour completude, clarte, coherence et pretitude a la planification technique.
 
 **Syntaxe :**
 
 ```
-/codexspec.review-spec [chemin_vers_spec.md]
+/codexspec:review-spec [chemin_vers_spec.md]
 ```
 
 **Arguments :**
@@ -599,7 +599,7 @@ Valider la specification pour completude, clarte, coherence et pretitude a la pl
 **Exemple :**
 
 ```text
-Vous : /codexspec.review-spec
+Vous : /codexspec:review-spec
 
 AI  : Revision de la specification...
 
@@ -636,27 +636,27 @@ AI  : Revision de la specification...
      3. Ajouter des criteres d'acceptation au Recit Utilisateur 3
 
      Suivi disponible :
-     - /codexspec.clarify - pour adresser les ambiguites
-     - /codexspec.spec-to-plan - si les problemes sont resolus
+     - /codexspec:clarify - pour adresser les ambiguites
+     - /codexspec:spec-to-plan - si les problemes sont resolus
 ```
 
 **Conseils :**
 
-- Executer avant `/codexspec.spec-to-plan`
+- Executer avant `/codexspec:spec-to-plan`
 - Adresser les problemes Critiques avant de poursuivre
 - Les Avertissements ne bloquent pas mais indiquent un risque
 - Re-executer apres avoir fait des corrections
 
 ---
 
-### `/codexspec.review-plan`
+### `/codexspec:review-plan`
 
 Reverifier le plan d'implementation technique pour faisabilite, qualite d'architecture et alignement avec la specification.
 
 **Syntaxe :**
 
 ```
-/codexspec.review-plan [chemin_vers_plan.md]
+/codexspec:review-plan [chemin_vers_plan.md]
 ```
 
 **Arguments :**
@@ -687,7 +687,7 @@ Reverifier le plan d'implementation technique pour faisabilite, qualite d'archit
 **Exemple :**
 
 ```text
-Vous : /codexspec.review-plan
+Vous : /codexspec:review-plan
 
 AI  : Revision du plan technique...
 
@@ -721,26 +721,26 @@ AI  : Revision du plan technique...
      | TDD | + |
      | Qualite du Code | + |
 
-     Pret pour /codexspec.plan-to-tasks
+     Pret pour /codexspec:plan-to-tasks
 ```
 
 **Conseils :**
 
-- Executer avant `/codexspec.plan-to-tasks`
+- Executer avant `/codexspec:plan-to-tasks`
 - Les problemes critiques devraient etre resolus
 - Utiliser pour detecter les problemes d'architecture tot
 - Verifier que la pile tech s'aligne avec les competences de l'equipe
 
 ---
 
-### `/codexspec.review-tasks`
+### `/codexspec:review-tasks`
 
 Valider la decomposition des taches pour completude, conformite TDD, ordonnancement correct et dependances appropriees.
 
 **Syntaxe :**
 
 ```
-/codexspec.review-tasks [chemin_vers_tasks.md]
+/codexspec:review-tasks [chemin_vers_tasks.md]
 ```
 
 **Arguments :**
@@ -771,7 +771,7 @@ Valider la decomposition des taches pour completude, conformite TDD, ordonnancem
 **Exemple :**
 
 ```text
-Vous : /codexspec.review-tasks
+Vous : /codexspec:review-tasks
 
 AI  : Revision de la decomposition des taches...
 
@@ -800,26 +800,26 @@ AI  : Revision de la decomposition des taches...
      1. Ajouter une tache de test pour TaskService avant l'implementation
      2. Corriger le marqueur de parallelisation sur la Tache 2.5
 
-     Corriger les problemes avant /codexspec.implement-tasks
+     Corriger les problemes avant /codexspec:implement-tasks
 ```
 
 **Conseils :**
 
-- Executer avant `/codexspec.implement-tasks`
+- Executer avant `/codexspec:implement-tasks`
 - Les violations TDD sont critiques pour la qualite du code
 - Verifier que les marqueurs de parallelisation sont exacts
 - Verifier que les chemins de fichiers correspondent a la structure du projet
 
 ---
 
-### `/codexspec.analyze`
+### `/codexspec:analyze`
 
 Effectuer une analyse de coherence croisee non destructive des artefacts a travers spec.md, plan.md et tasks.md. Identifie les incoherences, duplications et lacunes de couverture.
 
 **Syntaxe :**
 
 ```
-/codexspec.analyze
+/codexspec:analyze
 ```
 
 **Arguments :**
@@ -849,7 +849,7 @@ Effectuer une analyse de coherence croisee non destructive des artefacts a trave
 **Exemple :**
 
 ```text
-Vous : /codexspec.analyze
+Vous : /codexspec:analyze
 
 AI  : Analyse des artefacts...
 
@@ -881,26 +881,26 @@ AI  : Analyse des artefacts...
      2. Considerer la fusion de REQ-005 et REQ-008
      3. Definir "securise" dans NFR-002
 
-     Resoudre les problemes CRITIQUES avant /codexspec.implement-tasks
+     Resoudre les problemes CRITIQUES avant /codexspec:implement-tasks
 ```
 
 **Conseils :**
 
-- Executer apres `/codexspec.plan-to-tasks`, avant l'implementation
+- Executer apres `/codexspec:plan-to-tasks`, avant l'implementation
 - Les problemes CRITIQUES devraient bloquer l'implementation
 - Analyse en lecture seule - aucun fichier n'est modifie
 - Utiliser les resultats pour ameliorer la qualite des artefacts
 
 ---
 
-### `/codexspec.checklist`
+### `/codexspec:checklist`
 
 Generer des listes de controle de qualite pour valider la completude, clarte et coherence des exigences. Ce sont des "tests unitaires pour l'ecriture d'exigences".
 
 **Syntaxe :**
 
 ```
-/codexspec.checklist [domaine_focus]
+/codexspec:checklist [domaine_focus]
 ```
 
 **Arguments :**
@@ -936,7 +936,7 @@ Generer des listes de controle de qualite pour valider la completude, clarte et 
 **Exemple :**
 
 ```text
-Vous : /codexspec.checklist securite
+Vous : /codexspec:checklist securite
 
 AI  : Generation de la liste de controle securite...
 
@@ -966,14 +966,14 @@ AI  : Generation de la liste de controle securite...
 
 ---
 
-### `/codexspec.tasks-to-issues`
+### `/codexspec:tasks-to-issues`
 
 Convertir les taches de `tasks.md` en issues GitHub pour le suivi de projet et la collaboration.
 
 **Syntaxe :**
 
 ```
-/codexspec.tasks-to-issues
+/codexspec:tasks-to-issues
 ```
 
 **Arguments :**
@@ -999,7 +999,7 @@ Convertir les taches de `tasks.md` en issues GitHub pour le suivi de projet et l
 **Exemple :**
 
 ```text
-Vous : /codexspec.tasks-to-issues
+Vous : /codexspec:tasks-to-issues
 
 AI  : Conversion des taches en issues GitHub...
 
@@ -1028,14 +1028,14 @@ AI  : Conversion des taches en issues GitHub...
 
 ---
 
-### `/codexspec.commit`
+### `/codexspec:commit`
 
 Generer un message de commit conforme a Conventional Commits base sur le statut git et le contexte de session. Cette commande est contextuelle et gere differents etats git.
 
 **Syntaxe :**
 
 ```
-/codexspec.commit
+/codexspec:commit
 ```
 
 **Arguments :**
@@ -1066,7 +1066,7 @@ Generer un message de commit conforme a Conventional Commits base sur le statut 
 **Exemple :**
 
 ```text
-Vous : /codexspec.commit
+Vous : /codexspec:commit
 
 AI  : Analyse du contexte git...
 
@@ -1090,21 +1090,21 @@ AI  : + Commit : abc1234
 
 **Conseils :**
 
-- Plus flexible que `/codexspec.commit-staged` - gere divers etats git
+- Plus flexible que `/codexspec:commit-staged` - gere divers etats git
 - Considere le contexte de session pour des messages de commit significatifs
 - Confirme toujours avant de commiter
 - Pour les changements non-stages, fournit un rappel clair de stager d'abord
 
 ---
 
-### `/codexspec.commit-staged`
+### `/codexspec:commit-staged`
 
 Generer un message de commit conforme a Conventional Commits base uniquement sur les changements git stages. C'est une commande plus simple et ciblee pour quand vous avez deja stage vos changements.
 
 **Syntaxe :**
 
 ```
-/codexspec.commit-staged
+/codexspec:commit-staged
 ```
 
 **Arguments :**
@@ -1124,7 +1124,7 @@ Generer un message de commit conforme a Conventional Commits base uniquement sur
 **Exemple :**
 
 ```text
-Vous : /codexspec.commit-staged
+Vous : /codexspec:commit-staged
 
 AI  : Analyse des changements stages...
 
@@ -1150,8 +1150,8 @@ AI  : + Commit : def5678
 
 - Stager les changements d'abord avec `git add`
 - Analyse uniquement le contenu stage - ignore le non-stage
-- Plus simple que `/codexspec.commit` quand vous savez ce que vous voulez commiter
-- Utiliser `/codexspec.commit` pour des messages plus contextuels
+- Plus simple que `/codexspec:commit` quand vous savez ce que vous voulez commiter
+- Utiliser `/codexspec:commit` pour des messages plus contextuels
 
 ---
 
@@ -1172,7 +1172,7 @@ AI  : + Commit : def5678
 |         |                                                                 |
 |         v                                                                 |
 |  +====================================================================+   |
-|  |  ★ PORTE DE REVISION 1 : /codexspec.review-spec ★                   |   |
+|  |  ★ PORTE DE REVISION 1 : /codexspec:review-spec ★                   |   |
 |  |  Valider : Completude, Clarte, Testabilite, Constitution            |   |
 |  +====================================================================+   |
 |         |                                                                 |
@@ -1185,7 +1185,7 @@ AI  : + Commit : def5678
 |         |                * Graphe de dependance des modules               |
 |         v                                                                 |
 |  +====================================================================+   |
-|  |  ★ PORTE DE REVISION 2 : /codexspec.review-plan ★                   |   |
+|  |  ★ PORTE DE REVISION 2 : /codexspec:review-plan ★                   |   |
 |  |  Valider : Alignement Spec, Architecture, Pile Tech, Phases          |   |
 |  +====================================================================+   |
 |         |                                                                 |
@@ -1196,7 +1196,7 @@ AI  : + Commit : def5678
 |         |                * Specifications des chemins de fichiers         |
 |         v                                                                 |
 |  +====================================================================+   |
-|  |  ★ PORTE DE REVISION 3 : /codexspec.review-tasks ★                  |   |
+|  |  ★ PORTE DE REVISION 3 : /codexspec:review-tasks ★                  |   |
 |  |  Valider : Couverture, Conformite TDD, Dependances, Granularite     |   |
 |  +====================================================================+   |
 |         |                                                                 |
@@ -1232,8 +1232,8 @@ Le fichier de specification n'existe pas encore.
 
 **Solutions :**
 
-- Executer `/codexspec.specify` pour clarifier les exigences d'abord
-- Puis executer `/codexspec.generate-spec` pour creer spec.md
+- Executer `/codexspec:specify` pour clarifier les exigences d'abord
+- Puis executer `/codexspec:generate-spec` pour creer spec.md
 
 ### "Constitution non trouvee"
 
@@ -1241,7 +1241,7 @@ Aucune constitution de projet n'existe.
 
 **Solutions :**
 
-- Executer `/codexspec.constitution` pour en creer une
+- Executer `/codexspec:constitution` pour en creer une
 - La constitution est optionnelle mais recommandee pour des decisions coherentes
 
 ### "Fichier de taches non trouve"
@@ -1250,12 +1250,12 @@ La decomposition des taches n'existe pas.
 
 **Solutions :**
 
-- S'assurer d'avoir execute `/codexspec.spec-to-plan` d'abord
-- Puis executer `/codexspec.plan-to-tasks` pour creer tasks.md
+- S'assurer d'avoir execute `/codexspec:spec-to-plan` d'abord
+- Puis executer `/codexspec:plan-to-tasks` pour creer tasks.md
 
 ### "GitHub CLI non authentifie"
 
-La commande `/codexspec.tasks-to-issues` necessite une authentification GitHub.
+La commande `/codexspec:tasks-to-issues` necessite une authentification GitHub.
 
 **Solutions :**
 

@@ -100,7 +100,7 @@ scripts:
 ### 호출 흐름
 
 1. 사용자가 Claude Code에서 `/analyze` 입력
-2. Claude가 `.claude/commands/codexspec.analyze.md` 템플릿 읽기
+2. Claude가 `.claude/commands/codexspec:analyze.md` 템플릿 읽기
 3. 운영 체제에 따라 `{SCRIPT}`를 다음으로 교체:
    - **macOS/Linux**: `.codexspec/scripts/check-prerequisites.sh --json --require-tasks --include-tasks`
    - **Windows**: `.codexspec/scripts/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks`
@@ -208,7 +208,7 @@ scripts:
 │                                                                          │
 │  사용자: /analyze                                                        │
 │       │                                                                  │
-│       ├── Claude가 .claude/commands/codexspec.analyze.md 읽기           │
+│       ├── Claude가 .claude/commands/codexspec:analyze.md 읽기           │
 │       │                                                                  │
 │       ├── YAML frontmatter의 scripts 선언 구문 분석                      │
 │       │   scripts:                                                       │

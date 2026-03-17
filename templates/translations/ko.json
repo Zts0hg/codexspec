@@ -2,7 +2,7 @@
   "cli": {
     "init": {
       "migration_found": "이전 구조의 명령 파일 {count}개를 발견했습니다",
-      "migration_old_structure": "이전 구조: .claude/commands/codexspec.*.md",
+      "migration_old_structure": "이전 구조: .claude/commands/codexspec:*.md",
       "migration_new_structure": "새 구조: .claude/commands/codexspec/*.md",
       "migration_confirm": "새 구조로 마이그레이션하시겠습니까?",
       "migration_complete": "✓ 마이그레이션 완료",
@@ -25,7 +25,7 @@
       "warning_powershell_scripts_not_found": "경고: PowerShell 스크립트 디렉토리를 찾을 수 없음",
       "warning_docs_templates_not_found": "경고: 문서 템플릿 디렉토리를 찾을 수 없음",
       "warning_templates_not_found": "경고: 템플릿 디렉토리를 찾을 수 없음, 기본 명령 생성 중",
-      "installed_command": "명령 설치됨: /codexspec.{name}",
+      "installed_command": "명령 설치됨: /codexspec:{name}",
       "commands_summary": "📁 {count}개 명령을 .claude/commands/{path}/에 설치함",
       "category_core": "핵심 명령 ({count})",
       "category_enhanced": "확장 명령 ({count})",
@@ -36,15 +36,15 @@
       "next_steps": "다음 단계:",
       "next_step_navigate": "프로젝트로 이동: cd {path}",
       "next_step_start_claude": "Claude Code 시작: claude",
-      "next_step_constitution": "/codexspec.constitution을 사용하여 프로젝트 원칙 설정",
-      "next_step_specify": "/codexspec.specify를 사용하여 첫 번째 사양 생성",
+      "next_step_constitution": "/codexspec:constitution을 사용하여 프로젝트 원칙 설정",
+      "next_step_specify": "/codexspec:specify를 사용하여 첫 번째 사양 생성",
       "tips_header": "💡 팁:",
       "tips_git": ".claude/를 Git에 추가: git add .claude/",
       "tips_list_commands": "codexspec list-commands를 실행하여 사용 가능한 모든 명령 확인",
       "tips_edit": ".md 파일을 직접 편집하여 명령 동작 사용자 정의",
       "important_header": "중요:",
       "important_message": "헌법은 SDD 워크플로우의 기반입니다.",
-      "important_action": "/codexspec.constitution을 실행하여 프로젝트에 맞게 사용자 정의하세요.",
+      "important_action": "/codexspec:constitution을 실행하여 프로젝트에 맞게 사용자 정의하세요.",
       "compliance_confirm": "CLAUDE.md가 이미 존재하지만 헌법 준수 섹션이 없습니다.\n헌법 준수 섹션은 Claude가 프로젝트 헌법을 따르도록 보장합니다.\n? 헌법 준수 섹션을 추가하시겠습니까?",
       "compliance_added": "업데이트됨: CLAUDE.md (헌법 준수 섹션 추가됨)",
       "error_dir_exists": "오류: 디렉토리 '{path}'이(가) 이미 존재함",
@@ -60,7 +60,7 @@
       "category_git": "Git 워크플로우 ({count})",
       "no_project": "현재 디렉토리에서 CodexSpec 프로젝트를 찾을 수 없습니다.",
       "run_init": "codexspec init을 실행하여 새 프로젝트를 생성하세요.",
-      "usage_hint": "/codexspec.<명령>을 사용하여 이 명령들을 호출하세요"
+      "usage_hint": "/codexspec:<명령>을 사용하여 이 명령들을 호출하세요"
     },
     "set_language": {
       "language_set": "언어가 설정됨: {lang} ({name})",
@@ -72,7 +72,7 @@
   },
   "constitution": {
     "description": "대화형 또는 제공된 원칙 입력에서 프로젝트 헌법을 생성하거나 업데이트하며, 모든 종속 템플릿의 동기화를 유지합니다.",
-    "argument-hint": "[quick|deep | 프로젝트 원칙] (선택사항)\n\n이 명령은 .codexspec/memory/constitution.md에 프로젝트 헌법을 생성/업데이트합니다.\n\n세 가지 사용 방법:\n1. 인수 없음 → 대화형 모드: 탐색 깊이 선택 (quick/deep)\n2. quick → 가벼운 탐색: 설정 파일 + README + 핵심 진입점 (~5-10개 파일)\n3. deep → 전체 탐색: 위 내용 + 소스 코드 분석 + 아키텍처 패턴\n4. <설명> → 탐색 건너뛰기, 원칙 직접 사용\n\n예시:\n  /codexspec.constitution\n  /codexspec.constitution quick\n  /codexspec.constitution deep\n  /codexspec.constitution Python FastAPI 백엔드에서 pytest 사용, 타입 안전성 중시"
+    "argument-hint": "[quick|deep | 프로젝트 원칙] (선택사항)\n\n이 명령은 .codexspec/memory/constitution.md에 프로젝트 헌법을 생성/업데이트합니다.\n\n세 가지 사용 방법:\n1. 인수 없음 → 대화형 모드: 탐색 깊이 선택 (quick/deep)\n2. quick → 가벼운 탐색: 설정 파일 + README + 핵심 진입점 (~5-10개 파일)\n3. deep → 전체 탐색: 위 내용 + 소스 코드 분석 + 아키텍처 패턴\n4. <설명> → 탐색 건너뛰기, 원칙 직접 사용\n\n예시:\n  /codexspec:constitution\n  /codexspec:constitution quick\n  /codexspec:constitution deep\n  /codexspec:constitution Python FastAPI 백엔드에서 pytest 사용, 타입 안전성 중시"
   },
   "specify": {
     "description": "대화형 Q&A를 통해 요구사항을 명확히 하고 초기 아이디어를 탐색 및 정제",

@@ -27,15 +27,15 @@ claude
 Verwenden Sie den Constitution-Befehl:
 
 ```
-/codexspec.constitution Erstelle Prinzipien mit Fokus auf Codequalitaet und Testing
+/codexspec:constitution Erstelle Prinzipien mit Fokus auf Codequalitaet und Testing
 ```
 
 ## 3. Anforderungen klaeren
 
-Verwenden Sie `/codexspec.specify` um Anforderungen zu erkunden:
+Verwenden Sie `/codexspec:specify` um Anforderungen zu erkunden:
 
 ```
-/codexspec.specify Ich moechte eine Aufgabenverwaltungsanwendung erstellen
+/codexspec:specify Ich moechte eine Aufgabenverwaltungsanwendung erstellen
 ```
 
 ## 4. Spezifikation generieren
@@ -43,7 +43,7 @@ Verwenden Sie `/codexspec.specify` um Anforderungen zu erkunden:
 Nach der Klaerung generieren Sie das Spezifikationsdokument:
 
 ```
-/codexspec.generate-spec
+/codexspec:generate-spec
 ```
 
 ## 5. Ueberpruefen und Validieren
@@ -51,25 +51,25 @@ Nach der Klaerung generieren Sie das Spezifikationsdokument:
 **Empfohlen:** Validieren Sie vor dem Fortfahren:
 
 ```
-/codexspec.review-spec
+/codexspec:review-spec
 ```
 
 ## 6. Technischen Plan erstellen
 
 ```
-/codexspec.spec-to-plan Verwende Python FastAPI fuer das Backend
+/codexspec:spec-to-plan Verwende Python FastAPI fuer das Backend
 ```
 
 ## 7. Aufgaben generieren
 
 ```
-/codexspec.plan-to-tasks
+/codexspec:plan-to-tasks
 ```
 
 ## 8. Implementieren
 
 ```
-/codexspec.implement-tasks
+/codexspec:implement-tasks
 ```
 
 ## Projektstruktur

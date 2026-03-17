@@ -27,15 +27,15 @@ claude
 constitutionコマンドを使用します：
 
 ```
-/codexspec.constitution コード品質とテストに焦点を当てた原則を作成
+/codexspec:constitution コード品質とテストに焦点を当てた原則を作成
 ```
 
 ## 3. 要件の明確化
 
-`/codexspec.specify`を使用して要件を探索します：
+`/codexspec:specify`を使用して要件を探索します：
 
 ```
-/codexspec.specify タスク管理アプリケーションを構築したい
+/codexspec:specify タスク管理アプリケーションを構築したい
 ```
 
 ## 4. 仕様書の生成
@@ -43,7 +43,7 @@ constitutionコマンドを使用します：
 明確化が完了したら、仕様書ドキュメントを生成します：
 
 ```
-/codexspec.generate-spec
+/codexspec:generate-spec
 ```
 
 ## 5. レビューと検証
@@ -51,25 +51,25 @@ constitutionコマンドを使用します：
 **推奨:** 進行前に検証します：
 
 ```
-/codexspec.review-spec
+/codexspec:review-spec
 ```
 
 ## 6. 技術計画の作成
 
 ```
-/codexspec.spec-to-plan バックエンドにPython FastAPIを使用
+/codexspec:spec-to-plan バックエンドにPython FastAPIを使用
 ```
 
 ## 7. タスクの生成
 
 ```
-/codexspec.plan-to-tasks
+/codexspec:plan-to-tasks
 ```
 
 ## 8. 実装
 
 ```
-/codexspec.implement-tasks
+/codexspec:implement-tasks
 ```
 
 ## プロジェクト構造

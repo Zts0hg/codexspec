@@ -26,7 +26,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Goal
 
-Identify inconsistencies, duplications, ambiguities, and underspecified items across the three core artifacts (`spec.md`, `plan.md`, `tasks.md`) before implementation. This command MUST run only after `/codexspec.plan-to-tasks` has successfully produced a complete `tasks.md`.
+Identify inconsistencies, duplications, ambiguities, and underspecified items across the three core artifacts (`spec.md`, `plan.md`, `tasks.md`) before implementation. This command MUST run only after `/codexspec:plan-to-tasks` has successfully produced a complete `tasks.md`.
 
 ## Operating Constraints
 
@@ -161,7 +161,7 @@ Create internal representations:
 
 ### 7. Next Actions
 
-- If CRITICAL issues: Recommend resolving before `/codexspec.implement-tasks`
+- If CRITICAL issues: Recommend resolving before `/codexspec:implement-tasks`
 - If only LOW/MEDIUM: User may proceed with improvement suggestions
 - Provide explicit command suggestions
 
@@ -177,4 +177,4 @@ Ask: "Would you like me to suggest concrete remediation edits?" (Do NOT apply au
 - **Report zero issues gracefully** (emit success report with coverage statistics)
 
 > [!NOTE]
-> This command runs AFTER `/codexspec.plan-to-tasks` and BEFORE `/codexspec.implement-tasks`.
+> This command runs AFTER `/codexspec:plan-to-tasks` and BEFORE `/codexspec:implement-tasks`.

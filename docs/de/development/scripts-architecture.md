@@ -14,7 +14,7 @@ CodexSpec ist ein **Spec-Driven Development (SDD)**-Toolkit mit einer Drei-Schic
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
 │                    Claude Code-Interaktionsebene                 │
-│  /codexspec.specify | /codexspec.analyze | ...                  │
+│  /codexspec:specify | /codexspec:analyze | ...                  │
 │  (.claude/commands/*.md)                                        │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
@@ -99,8 +99,8 @@ Fuehren Sie `{SCRIPT}` vom Repository-Root aus und parsen Sie JSON fuer:
 
 ### Aufrufablauf
 
-1. Benutzer gibt `/codexspec.analyze` in Claude Code ein
-2. Claude liest die Vorlage `.claude/commands/codexspec.analyze.md`
+1. Benutzer gibt `/codexspec:analyze` in Claude Code ein
+2. Claude liest die Vorlage `.claude/commands/codexspec:analyze.md`
 3. Basierend auf dem Betriebssystem ersetzt Claude `{SCRIPT}` durch:
    - **macOS/Linux**: `.codexspec/scripts/check-prerequisites.sh --json --require-tasks --include-tasks`
    - **Windows**: `.codexspec/scripts/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks`
@@ -183,10 +183,10 @@ Die folgenden 4 Befehle verwenden Skripte:
 
 | Befehl | Skript-Parameter | Funktion |
 |------|--------------|------|
-| `/codexspec.clarify` | `--json --paths-only` | Pfade abrufen, Dateien nicht validieren |
-| `/codexspec.checklist` | `--json` | Vorhandensein von plan.md validieren |
-| `/codexspec.analyze` | `--json --require-tasks --include-tasks` | plan.md + tasks.md validieren |
-| `/codexspec.tasks-to-issues` | `--json --require-tasks --include-tasks` | plan.md + tasks.md validieren |
+| `/codexspec:clarify` | `--json --paths-only` | Pfade abrufen, Dateien nicht validieren |
+| `/codexspec:checklist` | `--json` | Vorhandensein von plan.md validieren |
+| `/codexspec:analyze` | `--json --require-tasks --include-tasks` | plan.md + tasks.md validieren |
+| `/codexspec:tasks-to-issues` | `--json --require-tasks --include-tasks` | plan.md + tasks.md validieren |
 
 ## 6. Vollstaendiges Workflow-Diagramm
 
@@ -206,9 +206,9 @@ Die folgenden 4 Befehle verwenden Skripte:
 ┌──────────────────────────────────────────────────────────────────────────┐
 │                        Verwendungsphase (Claude Code)                     │
 │                                                                          │
-│  Benutzer: /codexspec.analyze                                            │
+│  Benutzer: /codexspec:analyze                                            │
 │       │                                                                  │
-│       ├── Claude liest .claude/commands/codexspec.analyze.md             │
+│       ├── Claude liest .claude/commands/codexspec:analyze.md             │
 │       │                                                                  │
 │       ├── YAML-Frontmatter-Skriptdeklaration parsen                      │
 │       │   scripts:                                                       │
@@ -269,9 +269,9 @@ Verschiedene Befehle verwenden verschiedene Parameter, validieren nach Bedarf:
 
 | Phase | Befehl | Validierungsstufe |
 |------|------|----------|
-| Vor Planung | `/codexspec.clarify` | Nur Pfade |
-| Nach Planung | `/codexspec.checklist` | plan.md |
-| Nach Aufgaben | `/codexspec.analyze` | plan.md + tasks.md |
+| Vor Planung | `/codexspec:clarify` | Nur Pfade |
+| Nach Planung | `/codexspec:checklist` | plan.md |
+| Nach Aufgaben | `/codexspec:analyze` | plan.md + tasks.md |
 
 ### 7.5 Git-Integration
 

@@ -713,7 +713,7 @@ def _create_default_commands(commands_dir: Path) -> None:
         # Install directly to subdirectory without prefix
         cmd_file = commands_dir / f"{name}.md"
         cmd_file.write_text(content, encoding="utf-8")
-        console.print(f"[green]Installed command:[/green] /codexspec.{name}")
+        console.print(f"[green]Installed command:[/green] /codexspec:{name}")
 
 
 def _get_constitution_command() -> str:
@@ -1150,7 +1150,7 @@ You are tasked with identifying and resolving ambiguities in the feature specifi
 4. **Update Spec**: Record answers in a `## Clarifications` section.
 
 > [!NOTE]
-> This command should run BEFORE `/codexspec.spec-to-plan`.
+> This command should run BEFORE `/codexspec:spec-to-plan`.
 """
 
 
@@ -1183,7 +1183,7 @@ Perform a read-only analysis of all specification artifacts.
 A structured analysis report with severity levels (CRITICAL, HIGH, MEDIUM, LOW).
 
 > [!NOTE]
-> This command runs AFTER `/codexspec.plan-to-tasks` and BEFORE `/codexspec.implement-tasks`.
+> This command runs AFTER `/codexspec:plan-to-tasks` and BEFORE `/codexspec:implement-tasks`.
 """
 
 
@@ -1619,37 +1619,37 @@ The following slash commands are available in this project:
 
 | Command | Description |
 |---------|-------------|
-| `/codexspec.constitution` | Create or update project governing principles |
-| `/codexspec.specify` | Define what you want to build (requirements and user stories) |
-| `/codexspec.generate-spec` | Generate detailed specification from high-level requirements |
-| `/codexspec.spec-to-plan` | Convert specification to technical implementation plan |
-| `/codexspec.plan-to-tasks` | Break down plan into actionable tasks |
-| `/codexspec.review-spec` | Review specification for completeness and quality |
-| `/codexspec.review-plan` | Review technical plan for feasibility |
-| `/codexspec.review-tasks` | Review task breakdown for completeness |
-| `/codexspec.implement-tasks` | Execute tasks according to the breakdown |
+| `/codexspec:constitution` | Create or update project governing principles |
+| `/codexspec:specify` | Define what you want to build (requirements and user stories) |
+| `/codexspec:generate-spec` | Generate detailed specification from high-level requirements |
+| `/codexspec:spec-to-plan` | Convert specification to technical implementation plan |
+| `/codexspec:plan-to-tasks` | Break down plan into actionable tasks |
+| `/codexspec:review-spec` | Review specification for completeness and quality |
+| `/codexspec:review-plan` | Review technical plan for feasibility |
+| `/codexspec:review-tasks` | Review task breakdown for completeness |
+| `/codexspec:implement-tasks` | Execute tasks according to the breakdown |
 
 ### Enhanced Commands
 
 | Command | Description |
 |---------|-------------|
-| `/codexspec.clarify` | Clarify underspecified areas in the spec before planning |
-| `/codexspec.analyze` | Cross-artifact consistency and quality analysis |
-| `/codexspec.checklist` | Generate quality checklists for requirements validation |
-| `/codexspec.tasks-to-issues` | Convert tasks to GitHub issues |
+| `/codexspec:clarify` | Clarify underspecified areas in the spec before planning |
+| `/codexspec:analyze` | Cross-artifact consistency and quality analysis |
+| `/codexspec:checklist` | Generate quality checklists for requirements validation |
+| `/codexspec:tasks-to-issues` | Convert tasks to GitHub issues |
 
 ## Recommended Workflow
 
-1. **Establish Principles**: Run `/codexspec.constitution` to define project guidelines
-2. **Create Specification**: Run `/codexspec.specify` with your feature requirements
-3. **Clarify Spec**: Run `/codexspec.clarify` to resolve ambiguities
-4. **Review Spec**: Run `/codexspec.review-spec` to validate the specification
-5. **Create Plan**: Run `/codexspec.spec-to-plan` with your tech stack choices
-6. **Review Plan**: Run `/codexspec.review-plan` to validate the plan
-7. **Generate Tasks**: Run `/codexspec.plan-to-tasks` to create task breakdown
-8. **Analyze**: Run `/codexspec.analyze` for cross-artifact consistency
-9. **Review Tasks**: Run `/codexspec.review-tasks` to validate tasks
-10. **Implement**: Run `/codexspec.implement-tasks` to execute the implementation
+1. **Establish Principles**: Run `/codexspec:constitution` to define project guidelines
+2. **Create Specification**: Run `/codexspec:specify` with your feature requirements
+3. **Clarify Spec**: Run `/codexspec:clarify` to resolve ambiguities
+4. **Review Spec**: Run `/codexspec:review-spec` to validate the specification
+5. **Create Plan**: Run `/codexspec:spec-to-plan` with your tech stack choices
+6. **Review Plan**: Run `/codexspec:review-plan` to validate the plan
+7. **Generate Tasks**: Run `/codexspec:plan-to-tasks` to create task breakdown
+8. **Analyze**: Run `/codexspec:analyze` for cross-artifact consistency
+9. **Review Tasks**: Run `/codexspec:review-tasks` to validate tasks
+10. **Implement**: Run `/codexspec:implement-tasks` to execute the implementation
 
 ## Directory Structure
 
@@ -1676,8 +1676,8 @@ The following slash commands are available in this project:
 - Specifications focus on **what** and **why**, not **how**
 - Plans focus on **how** and technical choices
 - Tasks should be specific, ordered, and actionable
-- Run `/codexspec.clarify` before planning to reduce rework
-- Run `/codexspec.analyze` before implementation for quality assurance
+- Run `/codexspec:clarify` before planning to reduce rework
+- Run `/codexspec:analyze` before implementation for quality assurance
 
 ## Guidelines for Claude Code
 

@@ -236,13 +236,13 @@ Based on the review result, the user may consider:
 
 ### If Issues Found (Warnings or Suggestions)
 - **Direct Fix**: Simply describe the changes you want to make (e.g., "Fix PLAN-001 and add the missing API endpoints") and I will update the plan accordingly
-- **Re-run Review**: `/codexspec.review-plan` - to verify changes after fixing issues
-- **Proceed Anyway**: If you decide the warnings/suggestions are not critical or out of scope for the current iteration, you can proceed directly to `/codexspec.plan-to-tasks`
+- **Re-run Review**: `/codexspec:review-plan` - to verify changes after fixing issues
+- **Proceed Anyway**: If you decide the warnings/suggestions are not critical or out of scope for the current iteration, you can proceed directly to `/codexspec:plan-to-tasks`
 
 ### Next Steps Based on Review Result
-- **Pass**: `/codexspec.plan-to-tasks` - to proceed with task breakdown
-- **Needs Work**: Fix the identified issues first, then re-run `/codexspec.review-plan` to verify, or proceed anyway if issues are acceptable
-- **Fail**: `/codexspec.spec-to-plan` - to regenerate the technical plan
+- **Pass**: `/codexspec:plan-to-tasks` - to proceed with task breakdown
+- **Needs Work**: Fix the identified issues first, then re-run `/codexspec:review-plan` to verify, or proceed anyway if issues are acceptable
+- **Fail**: `/codexspec:spec-to-plan` - to regenerate the technical plan
 ```
 
 ### Quality Criteria

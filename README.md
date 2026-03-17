@@ -41,10 +41,10 @@ Idea → Clarify → Review → Plan → Review → Tasks → Review → Analyze
 
 **Every artifact has a corresponding review command:**
 
-- `spec.md` → `/codexspec.review-spec`
-- `plan.md` → `/codexspec.review-plan`
-- `tasks.md` → `/codexspec.review-tasks`
-- All artifacts → `/codexspec.analyze`
+- `spec.md` → `/codexspec:review-spec`
+- `plan.md` → `/codexspec:review-plan`
+- `tasks.md` → `/codexspec:review-tasks`
+- All artifacts → `/codexspec:analyze`
 
 This systematic review process ensures:
 
@@ -234,18 +234,18 @@ cd my-awesome-project
 claude
 ```
 
-Use the `/codexspec.constitution` command to create your project's governing principles:
+Use the `/codexspec:constitution` command to create your project's governing principles:
 
 ```
-/codexspec.constitution Create principles focused on code quality, testing standards, and clean architecture
+/codexspec:constitution Create principles focused on code quality, testing standards, and clean architecture
 ```
 
 ### 3. Clarify Requirements
 
-Use `/codexspec.specify` to **explore and clarify** your requirements through interactive Q&A:
+Use `/codexspec:specify` to **explore and clarify** your requirements through interactive Q&A:
 
 ```
-/codexspec.specify I want to build a task management application
+/codexspec:specify I want to build a task management application
 ```
 
 This command will:
@@ -257,10 +257,10 @@ This command will:
 
 ### 4. Generate Specification Document
 
-Once requirements are clarified, use `/codexspec.generate-spec` to create the `spec.md` document:
+Once requirements are clarified, use `/codexspec:generate-spec` to create the `spec.md` document:
 
 ```
-/codexspec.generate-spec
+/codexspec:generate-spec
 ```
 
 This command acts as a "requirement compiler" that transforms your clarified requirements into a structured specification document.
@@ -270,7 +270,7 @@ This command acts as a "requirement compiler" that transforms your clarified req
 **Before proceeding to planning, validate your specification:**
 
 ```
-/codexspec.review-spec
+/codexspec:review-spec
 ```
 
 This command generates a detailed review report with:
@@ -282,10 +282,10 @@ This command generates a detailed review report with:
 
 ### 6. Create a Technical Plan
 
-Use `/codexspec.spec-to-plan` to define how to implement it:
+Use `/codexspec:spec-to-plan` to define how to implement it:
 
 ```
-/codexspec.spec-to-plan Use Python with FastAPI for the backend, PostgreSQL for the database, and React for the frontend
+/codexspec:spec-to-plan Use Python with FastAPI for the backend, PostgreSQL for the database, and React for the frontend
 ```
 
 The command includes **constitutionality review** - verifying your plan aligns with project principles.
@@ -295,7 +295,7 @@ The command includes **constitutionality review** - verifying your plan aligns w
 **Before breaking down into tasks, validate your technical plan:**
 
 ```
-/codexspec.review-plan
+/codexspec:review-plan
 ```
 
 This verifies:
@@ -307,10 +307,10 @@ This verifies:
 
 ### 8. Generate Tasks
 
-Use `/codexspec.plan-to-tasks` to break down the plan:
+Use `/codexspec:plan-to-tasks` to break down the plan:
 
 ```
-/codexspec.plan-to-tasks
+/codexspec:plan-to-tasks
 ```
 
 Tasks are organized into standard phases with:
@@ -324,7 +324,7 @@ Tasks are organized into standard phases with:
 **Before implementation, validate task breakdown:**
 
 ```
-/codexspec.review-tasks
+/codexspec:review-tasks
 ```
 
 This checks:
@@ -336,10 +336,10 @@ This checks:
 
 ### 10. Analyze (Optional but Recommended)
 
-Use `/codexspec.analyze` for cross-artifact consistency check:
+Use `/codexspec:analyze` for cross-artifact consistency check:
 
 ```
-/codexspec.analyze
+/codexspec:analyze
 ```
 
 This detects issues across spec, plan, and tasks:
@@ -351,10 +351,10 @@ This detects issues across spec, plan, and tasks:
 
 ### 11. Implement
 
-Use `/codexspec.implement-tasks` to execute the implementation:
+Use `/codexspec:implement-tasks` to execute the implementation:
 
 ```
-/codexspec.implement-tasks
+/codexspec:implement-tasks
 ```
 
 The implementation follows **conditional TDD workflow**:
@@ -401,37 +401,37 @@ After initialization, these slash commands are available in Claude Code:
 
 | Command | Description |
 |---------|-------------|
-| `/codexspec.constitution` | Create or update project constitution with cross-artifact validation and sync impact reporting |
-| `/codexspec.specify` | **Clarify** requirements through interactive Q&A (no file generation) |
-| `/codexspec.generate-spec` | **Generate** `spec.md` document after requirements are clarified |
-| `/codexspec.spec-to-plan` | Convert specification to technical plan with constitutionality review and module dependency graph |
-| `/codexspec.plan-to-tasks` | Break down plan into atomic, TDD-enforced tasks with parallel markers `[P]` |
-| `/codexspec.implement-tasks` | Execute tasks with conditional TDD workflow (TDD for code, direct for docs/config) |
+| `/codexspec:constitution` | Create or update project constitution with cross-artifact validation and sync impact reporting |
+| `/codexspec:specify` | **Clarify** requirements through interactive Q&A (no file generation) |
+| `/codexspec:generate-spec` | **Generate** `spec.md` document after requirements are clarified |
+| `/codexspec:spec-to-plan` | Convert specification to technical plan with constitutionality review and module dependency graph |
+| `/codexspec:plan-to-tasks` | Break down plan into atomic, TDD-enforced tasks with parallel markers `[P]` |
+| `/codexspec:implement-tasks` | Execute tasks with conditional TDD workflow (TDD for code, direct for docs/config) |
 
 #### Review Commands (Quality Gates)
 
 | Command | Description |
 |---------|-------------|
-| `/codexspec.review-spec` | Validate specification for completeness, clarity, consistency, and testability with scoring |
-| `/codexspec.review-plan` | Review technical plan for feasibility, architecture quality, and constitution alignment |
-| `/codexspec.review-tasks` | Validate task breakdown for plan coverage, TDD compliance, dependencies, and granularity |
+| `/codexspec:review-spec` | Validate specification for completeness, clarity, consistency, and testability with scoring |
+| `/codexspec:review-plan` | Review technical plan for feasibility, architecture quality, and constitution alignment |
+| `/codexspec:review-tasks` | Validate task breakdown for plan coverage, TDD compliance, dependencies, and granularity |
 
 #### Enhancement Commands
 
 | Command | Description |
 |---------|-------------|
-| `/codexspec.clarify` | Scan existing spec.md for ambiguities using 4 focused categories, integrate with review findings |
-| `/codexspec.analyze` | Non-destructive cross-artifact analysis (spec, plan, tasks) with severity-based issue detection |
-| `/codexspec.checklist` | Generate quality checklists for requirements validation |
-| `/codexspec.tasks-to-issues` | Convert tasks to GitHub issues for project management integration |
+| `/codexspec:clarify` | Scan existing spec.md for ambiguities using 4 focused categories, integrate with review findings |
+| `/codexspec:analyze` | Non-destructive cross-artifact analysis (spec, plan, tasks) with severity-based issue detection |
+| `/codexspec:checklist` | Generate quality checklists for requirements validation |
+| `/codexspec:tasks-to-issues` | Convert tasks to GitHub issues for project management integration |
 
 #### Git Workflow Commands
 
 | Command | Description |
 |---------|-------------|
-| `/codexspec.commit` | Generate Conventional Commits messages based on git status and session context |
-| `/codexspec.commit-staged` | Generate commit message from staged changes only |
-| `/codexspec.pr` | Generate structured PR (GitHub) or MR (GitLab) descriptions with platform auto-detection |
+| `/codexspec:commit` | Generate Conventional Commits messages based on git status and session context |
+| `/codexspec:commit-staged` | Generate commit message from staged changes only |
+| `/codexspec:pr` | Generate structured PR (GitHub) or MR (GitLab) descriptions with platform auto-detection |
 
 ## Workflow Overview
 
@@ -450,7 +450,7 @@ After initialization, these slash commands are available in Claude Code:
 │         │                                                                │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ REVIEW GATE 1: /codexspec.review-spec ★                        ║   │
+│  ║  ★ REVIEW GATE 1: /codexspec:review-spec ★                        ║   │
 │  ║  Validate: Completeness, Clarity, Testability, Constitution       ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
@@ -463,7 +463,7 @@ After initialization, these slash commands are available in Claude Code:
 │         │               • Module dependency graph                        │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ REVIEW GATE 2: /codexspec.review-plan ★                        ║   │
+│  ║  ★ REVIEW GATE 2: /codexspec:review-plan ★                        ║   │
 │  ║  Validate: Spec Alignment, Architecture, Tech Stack, Phases       ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
@@ -474,7 +474,7 @@ After initialization, these slash commands are available in Claude Code:
 │         │               • File path specifications                       │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ REVIEW GATE 3: /codexspec.review-tasks ★                       ║   │
+│  ║  ★ REVIEW GATE 3: /codexspec:review-tasks ★                       ║   │
 │  ║  Validate: Coverage, TDD Compliance, Dependencies, Granularity    ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
@@ -496,7 +496,7 @@ CodexSpec provides **two distinct clarification commands** for different stages 
 
 #### specify vs clarify: When to Use Which?
 
-| Aspect | `/codexspec.specify` | `/codexspec.clarify` |
+| Aspect | `/codexspec:specify` | `/codexspec:clarify` |
 |--------|----------------------|----------------------|
 | **Purpose** | Initial requirement exploration | Iterative refinement of existing spec |
 | **When to Use** | Starting with a new idea, no spec.md exists | spec.md exists, need to fill gaps |
@@ -512,15 +512,15 @@ Before generating any documentation:
 
 | Phase | Command | Purpose | Output |
 |-------|---------|---------|--------|
-| **Explore** | `/codexspec.specify` | Interactive Q&A to explore and refine requirements | None (dialogue only) |
-| **Generate** | `/codexspec.generate-spec` | Compile clarified requirements into structured document | `spec.md` |
+| **Explore** | `/codexspec:specify` | Interactive Q&A to explore and refine requirements | None (dialogue only) |
+| **Generate** | `/codexspec:generate-spec` | Compile clarified requirements into structured document | `spec.md` |
 
 #### Iterative Clarification
 
 After spec.md is created:
 
 ```
-spec.md ──► /codexspec.clarify ──► Updated spec.md (with Clarifications section)
+spec.md ──► /codexspec:clarify ──► Updated spec.md (with Clarifications section)
                 │
                 └── Scans for ambiguities in 4 focused categories:
                     • Completeness Gaps - Missing sections, empty content
@@ -668,7 +668,7 @@ project:
 
 ### Constitution and Generated Documents
 
-When you use `/codexspec.constitution` to create your project constitution, it will be generated in the language specified in your configuration:
+When you use `/codexspec:constitution` to create your project constitution, it will be generated in the language specified in your configuration:
 
 - **Single File Approach**: Constitution is generated in one language only
 - **Claude Understands All Languages**: Claude can work with constitution files in any supported language
@@ -743,7 +743,7 @@ CodexSpec is inspired by GitHub's spec-kit but with some key differences:
 | Core Philosophy | Spec-driven development | Spec-driven development + human-AI collaboration |
 | CLI Name | `specify` | `codexspec` |
 | Primary AI | Multi-agent support | Claude Code focused |
-| Command Prefix | `/speckit.*` | `/codexspec.*` |
+| Command Prefix | `/speckit.*` | `/codexspec:*` |
 | Constitution System | Basic | Full constitution with cross-artifact validation |
 | Two-Phase Spec | No | Yes (clarify + generate) |
 | Review Commands | Optional | 3 dedicated review commands with scoring |

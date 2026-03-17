@@ -12,10 +12,10 @@ argument-hint: |
   4. <description> → Skip exploration, use your principles directly
 
   Examples:
-    /codexspec.constitution
-    /codexspec.constitution quick
-    /codexspec.constitution deep
-    /codexspec.constitution Python FastAPI backend with pytest, focus on type safety
+    /codexspec:constitution
+    /codexspec:constitution quick
+    /codexspec:constitution deep
+    /codexspec:constitution Python FastAPI backend with pytest, focus on type safety
 handoffs:
   - agent: codexspec.specify
     step: Create a feature specification based on the updated constitution

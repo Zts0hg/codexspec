@@ -21,7 +21,7 @@ This is an example command provided by a CodexSpec extension.
 ## Example Usage
 
 ```
-/codexspec.my-extension.example Do something useful
+/codexspec:my-extension.example Do something useful
 ```
 
 ---

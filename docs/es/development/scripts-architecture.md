@@ -15,7 +15,7 @@ CodexSpec es un kit de herramientas **Spec-Driven Development (SDD)** que adopta
                               v
 +-------------------------------------------------------------------------+
 |                    Capa de Interaccion Claude Code                       |
-|  /codexspec.specify | /codexspec.analyze | ...                           |
+|  /codexspec:specify | /codexspec:analyze | ...                           |
 |  (.claude/commands/*.md)                                                 |
 +-------------------------------------------------------------------------+
                               |
@@ -101,8 +101,8 @@ Run `{SCRIPT}` from repo root and parse JSON for:
 
 ### Flujo de Invocacion
 
-1. El usuario ingresa `/codexspec.analyze` en Claude Code
-2. Claude lee la plantilla `.claude/commands/codexspec.analyze.md`
+1. El usuario ingresa `/codexspec:analyze` en Claude Code
+2. Claude lee la plantilla `.claude/commands/codexspec:analyze.md`
 3. Segun el sistema operativo, Claude reemplaza `{SCRIPT}` con:
    - **macOS/Linux**: `.codexspec/scripts/check-prerequisites.sh --json --require-tasks --include-tasks`
    - **Windows**: `.codexspec/scripts/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks`
@@ -185,10 +185,10 @@ Los siguientes 4 comandos usan scripts:
 
 | Comando | Parametros Scripts | Funcion |
 |------|--------------|------|
-| `/codexspec.clarify` | `--json --paths-only` | Obtener rutas, no verificar archivos |
-| `/codexspec.checklist` | `--json` | Verificar que plan.md existe |
-| `/codexspec.analyze` | `--json --require-tasks --include-tasks` | Verificar plan.md + tasks.md |
-| `/codexspec.tasks-to-issues` | `--json --require-tasks --include-tasks` | Verificar plan.md + tasks.md |
+| `/codexspec:clarify` | `--json --paths-only` | Obtener rutas, no verificar archivos |
+| `/codexspec:checklist` | `--json` | Verificar que plan.md existe |
+| `/codexspec:analyze` | `--json --require-tasks --include-tasks` | Verificar plan.md + tasks.md |
+| `/codexspec:tasks-to-issues` | `--json --require-tasks --include-tasks` | Verificar plan.md + tasks.md |
 
 ## 6. Diagrama de Flujo de Trabajo Completo
 
@@ -209,9 +209,9 @@ Los siguientes 4 comandos usan scripts:
 +--------------------------------------------------------------------------+
 |                        Fase de Uso (Claude Code)                          |
 |                                                                          |
-|  Usuario: /codexspec.analyze                                             |
+|  Usuario: /codexspec:analyze                                             |
 |       |                                                                  |
-|       |-- Claude lee .claude/commands/codexspec.analyze.md              |
+|       |-- Claude lee .claude/commands/codexspec:analyze.md              |
 |       |                                                                  |
 |       |-- Analiza declaracion de scripts en YAML frontmatter            |
 |       |   scripts:                                                       |
@@ -272,9 +272,9 @@ Diferentes comandos usan diferentes parametros, verificacion segun necesidad:
 
 | Fase | Comando | Nivel de Verificacion |
 |------|------|----------|
-| Antes de planificar | `/codexspec.clarify` | Solo rutas |
-| Despues de planificar | `/codexspec.checklist` | plan.md |
-| Despues de tareas | `/codexspec.analyze` | plan.md + tasks.md |
+| Antes de planificar | `/codexspec:clarify` | Solo rutas |
+| Despues de planificar | `/codexspec:checklist` | plan.md |
+| Despues de tareas | `/codexspec:analyze` | plan.md + tasks.md |
 
 ### 7.5 Integracion con Git
 

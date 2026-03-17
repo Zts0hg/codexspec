@@ -19,7 +19,7 @@ CodexSpec structures development into **reviewable checkpoints** with human vali
 │         │                                                                │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ REVIEW GATE 1: /codexspec.review-spec ★                        ║   │
+│  ║  ★ REVIEW GATE 1: /codexspec:review-spec ★                        ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
 │         ▼                                                                │
@@ -27,7 +27,7 @@ CodexSpec structures development into **reviewable checkpoints** with human vali
 │         │                                                                │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ REVIEW GATE 2: /codexspec.review-plan ★                        ║   │
+│  ║  ★ REVIEW GATE 2: /codexspec:review-plan ★                        ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
 │         ▼                                                                │
@@ -35,7 +35,7 @@ CodexSpec structures development into **reviewable checkpoints** with human vali
 │         │                                                                │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ REVIEW GATE 3: /codexspec.review-tasks ★                       ║   │
+│  ║  ★ REVIEW GATE 3: /codexspec:review-tasks ★                       ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
 │         ▼                                                                │
@@ -57,21 +57,21 @@ CodexSpec structures development into **reviewable checkpoints** with human vali
 
 | Stage | Command | Purpose |
 |-------|---------|---------|
-| 1 | `/codexspec.constitution` | Define project principles |
-| 2 | `/codexspec.specify` | Interactive Q&A for requirements |
-| 3 | `/codexspec.generate-spec` | Create specification document |
-| - | `/codexspec.review-spec` | ★ Validate specification |
-| 4 | `/codexspec.spec-to-plan` | Create technical plan |
-| - | `/codexspec.review-plan` | ★ Validate plan |
-| 5 | `/codexspec.plan-to-tasks` | Break down into tasks |
-| - | `/codexspec.review-tasks` | ★ Validate tasks |
-| 6 | `/codexspec.implement-tasks` | Execute implementation |
+| 1 | `/codexspec:constitution` | Define project principles |
+| 2 | `/codexspec:specify` | Interactive Q&A for requirements |
+| 3 | `/codexspec:generate-spec` | Create specification document |
+| - | `/codexspec:review-spec` | ★ Validate specification |
+| 4 | `/codexspec:spec-to-plan` | Create technical plan |
+| - | `/codexspec:review-plan` | ★ Validate plan |
+| 5 | `/codexspec:plan-to-tasks` | Break down into tasks |
+| - | `/codexspec:review-tasks` | ★ Validate tasks |
+| 6 | `/codexspec:implement-tasks` | Execute implementation |
 
 ## Two-Phase Specification
 
 ### specify vs clarify
 
-| Aspect | `/codexspec.specify` | `/codexspec.clarify` |
+| Aspect | `/codexspec:specify` | `/codexspec:clarify` |
 |--------|----------------------|----------------------|
 | **Purpose** | Initial exploration | Iterative refinement |
 | **When** | No spec.md exists | spec.md exists, needs gaps filled |

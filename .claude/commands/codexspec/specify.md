@@ -61,8 +61,8 @@ Before asking questions, review:
 Once you believe requirements are sufficiently clarified:
 
 1. Summarize the clarified requirements
-2. Ask: "Are you satisfied with this requirement summary? If so, you can use `/codexspec.generate-spec` to generate the `spec.md` document."
+2. Ask: "Are you satisfied with this requirement summary? If so, you can use `/codexspec:generate-spec` to generate the `spec.md` document."
 3. **Wait for user confirmation** before taking any file creation action
 
 > [!IMPORTANT]
-> This command is for requirement clarification only. Document generation should be done via `/codexspec.generate-spec`.
+> This command is for requirement clarification only. Document generation should be done via `/codexspec:generate-spec`.

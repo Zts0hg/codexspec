@@ -14,7 +14,7 @@ CodexSpec は **Spec-Driven Development (SDD)** ツールキットであり、CL
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
 │                    Claude Code インタラクション層                │
-│  /codexspec.specify | /codexspec.analyze | ...                  │
+│  /codexspec:specify | /codexspec:analyze | ...                  │
 │  (.claude/commands/*.md)                                        │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
@@ -99,8 +99,8 @@ Run `{SCRIPT}` from repo root and parse JSON for:
 
 ### 呼び出しフロー
 
-1. ユーザーが Claude Code で `/codexspec.analyze` を入力
-2. Claude が `.claude/commands/codexspec.analyze.md` テンプレートを読み込む
+1. ユーザーが Claude Code で `/codexspec:analyze` を入力
+2. Claude が `.claude/commands/codexspec:analyze.md` テンプレートを読み込む
 3. オペレーティングシステムに基づいて、Claude が `{SCRIPT}` を置換:
    - **macOS/Linux**: `.codexspec/scripts/check-prerequisites.sh --json --require-tasks --include-tasks`
    - **Windows**: `.codexspec/scripts/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks`
@@ -183,10 +183,10 @@ Run `{SCRIPT}` from repo root and parse JSON for:
 
 | コマンド | Scripts パラメータ | 機能 |
 |------|--------------|------|
-| `/codexspec.clarify` | `--json --paths-only` | パスを取得、ファイル検証なし |
-| `/codexspec.checklist` | `--json` | plan.md の存在を検証 |
-| `/codexspec.analyze` | `--json --require-tasks --include-tasks` | plan.md + tasks.md を検証 |
-| `/codexspec.tasks-to-issues` | `--json --require-tasks --include-tasks` | plan.md + tasks.md を検証 |
+| `/codexspec:clarify` | `--json --paths-only` | パスを取得、ファイル検証なし |
+| `/codexspec:checklist` | `--json` | plan.md の存在を検証 |
+| `/codexspec:analyze` | `--json --require-tasks --include-tasks` | plan.md + tasks.md を検証 |
+| `/codexspec:tasks-to-issues` | `--json --require-tasks --include-tasks` | plan.md + tasks.md を検証 |
 
 ## 6. 完全なワークフロー図
 
@@ -206,9 +206,9 @@ Run `{SCRIPT}` from repo root and parse JSON for:
 ┌──────────────────────────────────────────────────────────────────────────┐
 │                        使用フェーズ (Claude Code)                          │
 │                                                                          │
-│  ユーザー: /codexspec.analyze                                            │
+│  ユーザー: /codexspec:analyze                                            │
 │       │                                                                  │
-│       ├── Claude が .claude/commands/codexspec.analyze.md を読み込み     │
+│       ├── Claude が .claude/commands/codexspec:analyze.md を読み込み     │
 │       │                                                                  │
 │       ├── YAML frontmatter の scripts 宣言を解析                         │
 │       │   scripts:                                                       │
@@ -269,9 +269,9 @@ scripts:
 
 | フェーズ | コマンド | 検証レベル |
 |------|------|----------|
-| 計画前 | `/codexspec.clarify` | パスのみ |
-| 計画後 | `/codexspec.checklist` | plan.md |
-| タスク後 | `/codexspec.analyze` | plan.md + tasks.md |
+| 計画前 | `/codexspec:clarify` | パスのみ |
+| 計画後 | `/codexspec:checklist` | plan.md |
+| タスク後 | `/codexspec:analyze` | plan.md + tasks.md |
 
 ### 7.5 Git 統合
 

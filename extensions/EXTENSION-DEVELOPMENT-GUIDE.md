@@ -131,11 +131,11 @@ hooks:
 
 Available hook points:
 
-- `after_constitution` - After running /codexspec.constitution
-- `after_specify` - After running /codexspec.specify
-- `after_spec_to_plan` - After running /codexspec.spec-to-plan
-- `after_plan_to_tasks` - After running /codexspec.plan-to-tasks
-- `after_implement` - After running /codexspec.implement-tasks
+- `after_constitution` - After running /codexspec:constitution
+- `after_specify` - After running /codexspec:specify
+- `after_spec_to_plan` - After running /codexspec:spec-to-plan
+- `after_plan_to_tasks` - After running /codexspec:plan-to-tasks
+- `after_implement` - After running /codexspec:implement-tasks
 
 ### Configuration
 
