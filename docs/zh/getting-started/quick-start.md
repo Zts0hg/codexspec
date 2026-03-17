@@ -27,15 +27,15 @@ claude
 使用 constitution 命令：
 
 ```
-/codexspec.constitution 创建专注于代码质量和测试的原则
+/codexspec:constitution 创建专注于代码质量和测试的原则
 ```
 
 ## 3. 澄清需求
 
-使用 `/codexspec.specify` 探索需求：
+使用 `/codexspec:specify` 探索需求：
 
 ```
-/codexspec.specify 我想构建一个任务管理应用程序
+/codexspec:specify 我想构建一个任务管理应用程序
 ```
 
 ## 4. 生成规格说明
@@ -43,7 +43,7 @@ claude
 澄清完成后，生成规格文档：
 
 ```
-/codexspec.generate-spec
+/codexspec:generate-spec
 ```
 
 ## 5. 审查和验证
@@ -51,25 +51,25 @@ claude
 **推荐：** 在继续之前进行验证：
 
 ```
-/codexspec.review-spec
+/codexspec:review-spec
 ```
 
 ## 6. 创建技术方案
 
 ```
-/codexspec.spec-to-plan 使用 Python FastAPI 作为后端
+/codexspec:spec-to-plan 使用 Python FastAPI 作为后端
 ```
 
 ## 7. 生成任务
 
 ```
-/codexspec.plan-to-tasks
+/codexspec:plan-to-tasks
 ```
 
 ## 8. 实现
 
 ```
-/codexspec.implement-tasks
+/codexspec:implement-tasks
 ```
 
 ## 项目结构

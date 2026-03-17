@@ -61,7 +61,7 @@ provides:
 # CUSTOMIZE: Define hooks (optional)
 # Remove if no hooks needed
 hooks: {}
-  # Hook that runs after /codexspec.plan-to-tasks
+  # Hook that runs after /codexspec:plan-to-tasks
   # after_tasks:
   #   command: "codexspec.my-extension.example"
   #   optional: true

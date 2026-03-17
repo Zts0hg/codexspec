@@ -97,7 +97,7 @@ jobs:
                 prompt: |
                     Execute document translation for language: ${{ matrix.language }}
 
-                    Use the /codexspec.translate-docs command with --lang ${{ matrix.language }} --incremental
+                    Use the /codexspec:translate-docs command with --lang ${{ matrix.language }} --incremental
 
                     Follow the translation guidelines from .codexspec/i18n/glossary.yml
 

@@ -118,16 +118,16 @@ A translation passes semantic check if:
 
 ```bash
 # Check all files in Chinese translation
-/codexspec.check-i18n-semantics --lang zh
+/codexspec:check-i18n-semantics --lang zh
 
 # Check specific file in Japanese
-/codexspec.check-i18n-semantics user-guide/installation.md --lang ja
+/codexspec:check-i18n-semantics user-guide/installation.md --lang ja
 
 # Strict mode - fail on any drift
-/codexspec.check-i18n-semantics --lang ko --strict
+/codexspec:check-i18n-semantics --lang ko --strict
 
 # Check all languages for a specific file
-/codexspec.check-i18n-semantics getting-started.md
+/codexspec:check-i18n-semantics getting-started.md
 ```
 
 ### Notes

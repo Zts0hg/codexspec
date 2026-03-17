@@ -40,14 +40,14 @@ uvx codexspec init . --ai claude
 
 ```bash
 # 使用 uv
-uv tool install git+https://github.com/Zts0hg/codexspec.git
+uv tool install git+https://github.com/Zts0hg/codexspec:git
 
 # 使用 pip
-pip install git+https://github.com/Zts0hg/codexspec.git
+pip install git+https://github.com/Zts0hg/codexspec:git
 
 # 指定分支或标签
-uv tool install git+https://github.com/Zts0hg/codexspec.git@main
-uv tool install git+https://github.com/Zts0hg/codexspec.git@v0.2.0
+uv tool install git+https://github.com/Zts0hg/codexspec:git@main
+uv tool install git+https://github.com/Zts0hg/codexspec:git@v0.2.0
 ```
 
 ## 验证安装

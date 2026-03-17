@@ -8,21 +8,21 @@
 
 | 命令 | 用途 |
 |------|------|
-| `/codexspec.constitution` | 创建或更新项目宪法，带有跨工件验证 |
-| `/codexspec.specify` | 通过交互式问答澄清需求 |
-| `/codexspec.generate-spec` | 从澄清的需求生成 spec.md 文档 |
-| `/codexspec.clarify` | 扫描现有规格说明中的歧义（迭代细化） |
-| `/codexspec.spec-to-plan` | 将规格说明转换为技术实现方案 |
-| `/codexspec.plan-to-tasks` | 将方案分解为原子级、强制 TDD 的任务 |
-| `/codexspec.implement-tasks` | 使用条件 TDD 工作流执行任务 |
-| `/codexspec.review-spec` | 验证规格说明的完整性和质量 |
-| `/codexspec.review-plan` | 审查技术方案的可行性和一致性 |
-| `/codexspec.review-tasks` | 验证任务分解的 TDD 合规性 |
-| `/codexspec.analyze` | 跨工件一致性分析（只读） |
-| `/codexspec.checklist` | 生成需求质量检查清单 |
-| `/codexspec.tasks-to-issues` | 将任务转换为 GitHub issues |
-| `/codexspec.commit` | 生成带有会话上下文的 Conventional Commits 消息 |
-| `/codexspec.commit-staged` | 从暂存的更改生成提交消息 |
+| `/codexspec:constitution` | 创建或更新项目宪法，带有跨工件验证 |
+| `/codexspec:specify` | 通过交互式问答澄清需求 |
+| `/codexspec:generate-spec` | 从澄清的需求生成 spec.md 文档 |
+| `/codexspec:clarify` | 扫描现有规格说明中的歧义（迭代细化） |
+| `/codexspec:spec-to-plan` | 将规格说明转换为技术实现方案 |
+| `/codexspec:plan-to-tasks` | 将方案分解为原子级、强制 TDD 的任务 |
+| `/codexspec:implement-tasks` | 使用条件 TDD 工作流执行任务 |
+| `/codexspec:review-spec` | 验证规格说明的完整性和质量 |
+| `/codexspec:review-plan` | 审查技术方案的可行性和一致性 |
+| `/codexspec:review-tasks` | 验证任务分解的 TDD 合规性 |
+| `/codexspec:analyze` | 跨工件一致性分析（只读） |
+| `/codexspec:checklist` | 生成需求质量检查清单 |
+| `/codexspec:tasks-to-issues` | 将任务转换为 GitHub issues |
+| `/codexspec:commit` | 生成带有会话上下文的 Conventional Commits 消息 |
+| `/codexspec:commit-staged` | 从暂存的更改生成提交消息 |
 
 ---
 
@@ -44,14 +44,14 @@
 
 ## 命令参考
 
-### `/codexspec.constitution`
+### `/codexspec:constitution`
 
 创建或更新项目宪法。宪法定义了指导所有后续开发决策的架构原则、技术栈、代码标准和治理规则。
 
 **语法：**
 
 ```
-/codexspec.constitution [原则描述]
+/codexspec:constitution [原则描述]
 ```
 
 **参数：**
@@ -79,7 +79,7 @@
 **示例：**
 
 ```text
-你: /codexspec.constitution 专注于代码质量、测试标准和整洁架构
+你: /codexspec:constitution 专注于代码质量、测试标准和整洁架构
 
 AI:  正在创建宪法...
 
@@ -108,14 +108,14 @@ AI:  正在创建宪法...
 
 ---
 
-### `/codexspec.specify`
+### `/codexspec:specify`
 
 通过交互式问答澄清需求。此命令探索你的初始想法而不创建任何文件——你保持完全控制。
 
 **语法：**
 
 ```
-/codexspec.specify [你的想法或需求]
+/codexspec:specify [你的想法或需求]
 ```
 
 **参数：**
@@ -140,7 +140,7 @@ AI:  正在创建宪法...
 **示例：**
 
 ```text
-你: /codexspec.specify 我想构建一个任务管理应用
+你: /codexspec:specify 我想构建一个任务管理应用
 
 AI:  好的！让我帮你澄清需求。
 
@@ -168,7 +168,7 @@ AI:  [继续探索需求...]
      - 优先级：实时协作 > 子任务 > GitHub
 
      准备好生成规格文档了吗？
-     使用 /codexspec.generate-spec 创建 spec.md
+     使用 /codexspec:generate-spec 创建 spec.md
 ```
 
 **提示：**
@@ -180,21 +180,21 @@ AI:  [继续探索需求...]
 
 ---
 
-### `/codexspec.generate-spec`
+### `/codexspec:generate-spec`
 
 从澄清的需求生成 `spec.md` 文档。此命令充当"需求编译器"，将你澄清的需求转换为结构化的规格说明。
 
 **语法：**
 
 ```
-/codexspec.generate-spec
+/codexspec:generate-spec
 ```
 
 **参数：**
 
 | 参数 | 必需 | 描述 |
 |------|------|------|
-| 无 | - | 使用之前 `/codexspec.specify` 会话的上下文 |
+| 无 | - | 使用之前 `/codexspec:specify` 会话的上下文 |
 
 **功能：**
 
@@ -219,7 +219,7 @@ AI:  [继续探索需求...]
 **示例：**
 
 ```text
-你: /codexspec.generate-spec
+你: /codexspec:generate-spec
 
 AI:  正在生成规格说明...
 
@@ -234,27 +234,27 @@ AI:  正在生成规格说明...
      - 范围外：移动应用、企业 SSO
 
      下一步：
-     - 使用 /codexspec.review-spec 审查规格
-     - 或继续 /codexspec.spec-to-plan
+     - 使用 /codexspec:review-spec 审查规格
+     - 或继续 /codexspec:spec-to-plan
 ```
 
 **提示：**
 
-- 在 `/codexspec.specify` 澄清需求后运行
+- 在 `/codexspec:specify` 澄清需求后运行
 - 在继续之前审查生成的规格
-- 使用 `/codexspec.review-spec` 进行质量验证
+- 使用 `/codexspec:review-spec` 进行质量验证
 - 如果需要微调，直接编辑 spec.md
 
 ---
 
-### `/codexspec.clarify`
+### `/codexspec:clarify`
 
 扫描现有规格说明中的歧义和缺口。在初始规格创建后用于迭代细化。
 
 **语法：**
 
 ```
-/codexspec.clarify [spec.md 路径]
+/codexspec:clarify [spec.md 路径]
 ```
 
 **参数：**
@@ -282,7 +282,7 @@ AI:  正在生成规格说明...
 **示例：**
 
 ```text
-你: /codexspec.clarify
+你: /codexspec:clarify
 
 AI:  正在扫描 spec.md 中的歧义...
 
@@ -311,20 +311,20 @@ AI:  ✓ 已更新 NFR-001：响应时间 读取 < 500ms，写入 < 1s
 **提示：**
 
 - 当 spec.md 存在但需要细化时使用
-- 与 `/codexspec.review-spec` 发现集成
+- 与 `/codexspec:review-spec` 发现集成
 - 每个会话最多 5 个问题
 - 对于复杂规格说明可多次运行
 
 ---
 
-### `/codexspec.spec-to-plan`
+### `/codexspec:spec-to-plan`
 
 将功能规格说明转换为技术实现方案。这是你定义功能**如何**构建的地方。
 
 **语法：**
 
 ```
-/codexspec.spec-to-plan [spec.md 路径]
+/codexspec:spec-to-plan [spec.md 路径]
 ```
 
 **参数：**
@@ -354,7 +354,7 @@ AI:  ✓ 已更新 NFR-001：响应时间 读取 < 500ms，写入 < 1s
 **示例：**
 
 ```text
-你: /codexspec.spec-to-plan 使用 Python FastAPI 作为后端，React 作为前端，PostgreSQL 作为数据库
+你: /codexspec:spec-to-plan 使用 Python FastAPI 作为后端，React 作为前端，PostgreSQL 作为数据库
 
 AI:  正在生成技术方案...
 
@@ -394,14 +394,14 @@ AI:  正在生成技术方案...
 
 ---
 
-### `/codexspec.plan-to-tasks`
+### `/codexspec:plan-to-tasks`
 
 将技术方案分解为带有 TDD 强制的原子级可执行任务。
 
 **语法：**
 
 ```
-/codexspec.plan-to-tasks [spec.md 路径 plan.md 路径]
+/codexspec:plan-to-tasks [spec.md 路径 plan.md 路径]
 ```
 
 **参数：**
@@ -441,7 +441,7 @@ AI:  正在生成技术方案...
 **示例：**
 
 ```text
-你: /codexspec.plan-to-tasks
+你: /codexspec:plan-to-tasks
 
 AI:  正在将方案分解为任务...
 
@@ -470,15 +470,15 @@ AI:  正在将方案分解为任务...
 
 ---
 
-### `/codexspec.implement-tasks`
+### `/codexspec:implement-tasks`
 
 使用条件 TDD 工作流执行实现任务。系统地完成任务列表。
 
 **语法：**
 
 ```
-/codexspec.implement-tasks [tasks 路径]
-/codexspec.implement-tasks [spec 路径 plan 路径 tasks 路径]
+/codexspec:implement-tasks [tasks 路径]
+/codexspec:implement-tasks [spec 路径 plan 路径 tasks 路径]
 ```
 
 **参数：**
@@ -522,7 +522,7 @@ AI:  正在将方案分解为任务...
 **示例：**
 
 ```text
-你: /codexspec.implement-tasks
+你: /codexspec:implement-tasks
 
 AI:  开始实现...
 
@@ -557,18 +557,18 @@ AI:  开始实现...
 - 如果中断可以从上次停止的地方恢复
 - 阻塞问题记录在 issues.md 中
 - 在重要任务/阶段后进行提交
-- 先运行 `/codexspec.review-tasks` 进行验证
+- 先运行 `/codexspec:review-tasks` 进行验证
 
 ---
 
-### `/codexspec.review-spec`
+### `/codexspec:review-spec`
 
 验证规格说明的完整性、清晰度、一致性及技术规划准备度。
 
 **语法：**
 
 ```
-/codexspec.review-spec [spec.md 路径]
+/codexspec:review-spec [spec.md 路径]
 ```
 
 **参数：**
@@ -599,7 +599,7 @@ AI:  开始实现...
 **示例：**
 
 ```text
-你: /codexspec.review-spec
+你: /codexspec:review-spec
 
 AI:  正在审查规格说明...
 
@@ -636,27 +636,27 @@ AI:  正在审查规格说明...
      3. 为用户故事 3 添加验收标准
 
      可用的后续操作：
-     - /codexspec.clarify - 解决歧义
-     - /codexspec.spec-to-plan - 如果问题已解决
+     - /codexspec:clarify - 解决歧义
+     - /codexspec:spec-to-plan - 如果问题已解决
 ```
 
 **提示：**
 
-- 在 `/codexspec.spec-to-plan` 之前运行
+- 在 `/codexspec:spec-to-plan` 之前运行
 - 在继续之前解决关键问题
 - 警告不会阻止但表示风险
 - 修复后重新运行
 
 ---
 
-### `/codexspec.review-plan`
+### `/codexspec:review-plan`
 
 审查技术实现方案的可行性、架构质量和与规格说明的一致性。
 
 **语法：**
 
 ```
-/codexspec.review-plan [plan.md 路径]
+/codexspec:review-plan [plan.md 路径]
 ```
 
 **参数：**
@@ -687,7 +687,7 @@ AI:  正在审查规格说明...
 **示例：**
 
 ```text
-你: /codexspec.review-plan
+你: /codexspec:review-plan
 
 AI:  正在审查技术方案...
 
@@ -721,26 +721,26 @@ AI:  正在审查技术方案...
      | TDD | ✅ |
      | 代码质量 | ✅ |
 
-     准备好使用 /codexspec.plan-to-tasks
+     准备好使用 /codexspec:plan-to-tasks
 ```
 
 **提示：**
 
-- 在 `/codexspec.plan-to-tasks` 之前运行
+- 在 `/codexspec:plan-to-tasks` 之前运行
 - 关键问题应该解决
 - 用于及早发现架构问题
 - 验证技术栈与团队技能一致
 
 ---
 
-### `/codexspec.review-tasks`
+### `/codexspec:review-tasks`
 
 验证任务分解的完整性、TDD 合规性、正确排序和适当依赖。
 
 **语法：**
 
 ```
-/codexspec.review-tasks [tasks.md 路径]
+/codexspec:review-tasks [tasks.md 路径]
 ```
 
 **参数：**
@@ -771,7 +771,7 @@ AI:  正在审查技术方案...
 **示例：**
 
 ```text
-你: /codexspec.review-tasks
+你: /codexspec:review-tasks
 
 AI:  正在审查任务分解...
 
@@ -800,26 +800,26 @@ AI:  正在审查任务分解...
      1. 在实现之前为 TaskService 添加测试任务
      2. 修复任务 2.5 的并行化标记
 
-     在 /codexspec.implement-tasks 之前修复问题
+     在 /codexspec:implement-tasks 之前修复问题
 ```
 
 **提示：**
 
-- 在 `/codexspec.implement-tasks` 之前运行
+- 在 `/codexspec:implement-tasks` 之前运行
 - TDD 违规对代码质量至关重要
 - 检查并行化标记准确
 - 验证文件路径与项目结构匹配
 
 ---
 
-### `/codexspec.analyze`
+### `/codexspec:analyze`
 
 对 spec.md、plan.md 和 tasks.md 执行非破坏性的跨工件一致性分析。识别不一致、重复和覆盖缺口。
 
 **语法：**
 
 ```
-/codexspec.analyze
+/codexspec:analyze
 ```
 
 **参数：**
@@ -849,7 +849,7 @@ AI:  正在审查任务分解...
 **示例：**
 
 ```text
-你: /codexspec.analyze
+你: /codexspec:analyze
 
 AI:  正在分析工件...
 
@@ -881,26 +881,26 @@ AI:  正在分析工件...
      2. 考虑合并 REQ-005 和 REQ-008
      3. 在 NFR-002 中定义"安全"
 
-     在 /codexspec.implement-tasks 之前解决 CRITICAL 问题
+     在 /codexspec:implement-tasks 之前解决 CRITICAL 问题
 ```
 
 **提示：**
 
-- 在 `/codexspec.plan-to-tasks` 之后、实现之前运行
+- 在 `/codexspec:plan-to-tasks` 之后、实现之前运行
 - CRITICAL 问题应该阻止实现
 - 只读分析——不修改文件
 - 使用发现来改进工件质量
 
 ---
 
-### `/codexspec.checklist`
+### `/codexspec:checklist`
 
 生成用于验证需求完整性、清晰度和一致性的质量检查清单。这些是"需求编写的单元测试"。
 
 **语法：**
 
 ```
-/codexspec.checklist [聚焦领域]
+/codexspec:checklist [聚焦领域]
 ```
 
 **参数：**
@@ -936,7 +936,7 @@ AI:  正在分析工件...
 **示例：**
 
 ```text
-你: /codexspec.checklist security
+你: /codexspec:checklist security
 
 AI:  正在生成安全检查清单...
 
@@ -966,14 +966,14 @@ AI:  正在生成安全检查清单...
 
 ---
 
-### `/codexspec.tasks-to-issues`
+### `/codexspec:tasks-to-issues`
 
 将 `tasks.md` 中的任务转换为 GitHub issues，用于项目跟踪和协作。
 
 **语法：**
 
 ```
-/codexspec.tasks-to-issues
+/codexspec:tasks-to-issues
 ```
 
 **参数：**
@@ -999,7 +999,7 @@ AI:  正在生成安全检查清单...
 **示例：**
 
 ```text
-你: /codexspec.tasks-to-issues
+你: /codexspec:tasks-to-issues
 
 AI:  正在将任务转换为 GitHub issues...
 
@@ -1028,14 +1028,14 @@ AI:  正在将任务转换为 GitHub issues...
 
 ---
 
-### `/codexspec.commit`
+### `/codexspec:commit`
 
 基于 git 状态和会话上下文生成符合 Conventional Commits 的提交消息。此命令具有上下文感知能力，处理不同的 git 状态。
 
 **语法：**
 
 ```
-/codexspec.commit
+/codexspec:commit
 ```
 
 **参数：**
@@ -1066,7 +1066,7 @@ AI:  正在将任务转换为 GitHub issues...
 **示例：**
 
 ```text
-你: /codexspec.commit
+你: /codexspec:commit
 
 AI:  正在分析 git 上下文...
 
@@ -1090,21 +1090,21 @@ AI:  ✓ 已提交：abc1234
 
 **提示：**
 
-- 比 `/codexspec.commit-staged` 更灵活 - 处理各种 git 状态
+- 比 `/codexspec:commit-staged` 更灵活 - 处理各种 git 状态
 - 考虑会话上下文以生成有意义的提交消息
 - 提交前总是确认
 - 对于未暂存更改，提供清晰的暂存提醒
 
 ---
 
-### `/codexspec.commit-staged`
+### `/codexspec:commit-staged`
 
 仅基于暂存的 git 更改生成符合 Conventional Commits 的提交消息。这是一个更简单、专注的命令，适用于你已经暂存了更改的情况。
 
 **语法：**
 
 ```
-/codexspec.commit-staged
+/codexspec:commit-staged
 ```
 
 **参数：**
@@ -1124,7 +1124,7 @@ AI:  ✓ 已提交：abc1234
 **示例：**
 
 ```text
-你: /codexspec.commit-staged
+你: /codexspec:commit-staged
 
 AI:  正在分析暂存的更改...
 
@@ -1150,8 +1150,8 @@ AI:  ✓ 已提交：def5678
 
 - 先使用 `git add` 暂存更改
 - 仅分析暂存的内容 - 忽略未暂存的
-- 当你知道要提交什么时比 `/codexspec.commit` 更简单
-- 使用 `/codexspec.commit` 获取更具上下文感知的消息
+- 当你知道要提交什么时比 `/codexspec:commit` 更简单
+- 使用 `/codexspec:commit` 获取更具上下文感知的消息
 
 ---
 
@@ -1172,7 +1172,7 @@ AI:  ✓ 已提交：def5678
 │         │                                                                │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ 审查关卡 1: /codexspec.review-spec ★                            ║   │
+│  ║  ★ 审查关卡 1: /codexspec:review-spec ★                            ║   │
 │  ║  验证：完整性、清晰度、可测试性、宪法                               ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
@@ -1185,7 +1185,7 @@ AI:  ✓ 已提交：def5678
 │         │               • 模块依赖图                                     │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ 审查关卡 2: /codexspec.review-plan ★                            ║   │
+│  ║  ★ 审查关卡 2: /codexspec:review-plan ★                            ║   │
 │  ║  验证：规格一致性、架构、技术栈、阶段                               ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
@@ -1196,7 +1196,7 @@ AI:  ✓ 已提交：def5678
 │         │               • 文件路径规范                                  │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ 审查关卡 3: /codexspec.review-tasks ★                           ║   │
+│  ║  ★ 审查关卡 3: /codexspec:review-tasks ★                           ║   │
 │  ║  验证：覆盖、TDD 合规、依赖、粒度                                   ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
@@ -1232,8 +1232,8 @@ AI:  ✓ 已提交：def5678
 
 **解决方案：**
 
-- 先运行 `/codexspec.specify` 澄清需求
-- 然后运行 `/codexspec.generate-spec` 创建 spec.md
+- 先运行 `/codexspec:specify` 澄清需求
+- 然后运行 `/codexspec:generate-spec` 创建 spec.md
 
 ### "找不到宪法"
 
@@ -1241,7 +1241,7 @@ AI:  ✓ 已提交：def5678
 
 **解决方案：**
 
-- 运行 `/codexspec.constitution` 创建一个
+- 运行 `/codexspec:constitution` 创建一个
 - 宪法是可选的，但建议用于一致的决策
 
 ### "找不到任务文件"
@@ -1250,12 +1250,12 @@ AI:  ✓ 已提交：def5678
 
 **解决方案：**
 
-- 确保你已先运行 `/codexspec.spec-to-plan`
-- 然后运行 `/codexspec.plan-to-tasks` 创建 tasks.md
+- 确保你已先运行 `/codexspec:spec-to-plan`
+- 然后运行 `/codexspec:plan-to-tasks` 创建 tasks.md
 
 ### "GitHub CLI 未认证"
 
-`/codexspec.tasks-to-issues` 命令需要 GitHub 认证。
+`/codexspec:tasks-to-issues` 命令需要 GitHub 认证。
 
 **解决方案：**
 

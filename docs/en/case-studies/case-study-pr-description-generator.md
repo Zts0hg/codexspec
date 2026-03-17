@@ -4,7 +4,7 @@
 
 ## 概述
 
-**目标功能**: 添加 `/codexspec.pr` 命令，用于生成结构化的 GitHub PR / GitLab MR 描述信息。
+**目标功能**: 添加 `/codexspec:pr` 命令，用于生成结构化的 GitHub PR / GitLab MR 描述信息。
 
 **开发流程**: `specify → generate-spec → review-spec → clarify → spec-to-plan`
 
@@ -12,7 +12,7 @@
 
 ---
 
-## 阶段 1: 原始需求澄清 (`/codexspec.specify`)
+## 阶段 1: 原始需求澄清 (`/codexspec:specify`)
 
 ### 用户初始输入
 
@@ -98,7 +98,7 @@ PR描述需要面向团队的其他审查者，包含以下几个部分：
 
 ---
 
-## 阶段 2: 生成规格文档 (`/codexspec.generate-spec`)
+## 阶段 2: 生成规格文档 (`/codexspec:generate-spec`)
 
 ### 生成的文档结构
 
@@ -129,7 +129,7 @@ The command shall determine output language in the following priority order:
 
 ---
 
-## 阶段 3: 规格审查 (`/codexspec.review-spec`)
+## 阶段 3: 规格审查 (`/codexspec:review-spec`)
 
 ### 审查结果
 
@@ -156,7 +156,7 @@ The command shall determine output language in the following priority order:
 
 ---
 
-## 阶段 4: 需求澄清与调整 (`/codexspec.clarify`) ⚠️ 关键转折
+## 阶段 4: 需求澄清与调整 (`/codexspec:clarify`) ⚠️ 关键转折
 
 ### 发现的问题
 
@@ -260,11 +260,11 @@ The command shall determine output language in the following priority order:
 
 ---
 
-## 阶段 5: 技术实现计划 (`/codexspec.spec-to-plan`)
+## 阶段 5: 技术实现计划 (`/codexspec:spec-to-plan`)
 
 ### 计划概述
 
-**实现方式**: Markdown 模板文件 (与 `/codexspec.commit` 一致)
+**实现方式**: Markdown 模板文件 (与 `/codexspec:commit` 一致)
 
 **无新依赖** - 特性通过 slash command 模板实现，不需要 Python 代码。
 
@@ -316,7 +316,7 @@ The command shall determine output language in the following priority order:
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec.specify                                                      │
+│  /codexspec:specify                                                      │
 │  ├─ 通过问答澄清需求                                                     │
 │  ├─ 用户提供了参考示例                                                   │
 │  └─ 10 个问题，覆盖语言、平台、内容、参数等                              │
@@ -324,7 +324,7 @@ The command shall determine output language in the following priority order:
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec.generate-spec                                                │
+│  /codexspec:generate-spec                                                │
 │  ├─ 生成完整的 spec.md                                                   │
 │  ├─ 4 个用户故事，8 个功能需求，10 个测试用例                             │
 │  └─ 保存到 .codexspec/specs/001-pr-description-generator/spec.md         │
@@ -332,7 +332,7 @@ The command shall determine output language in the following priority order:
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec.review-spec                                                  │
+│  /codexspec:review-spec                                                  │
 │  ├─ 质量评分: 92/100                                                     │
 │  ├─ 发现 2 个警告 (测试文件发现、多 spec 处理)                            │
 │  └─ 状态: 通过，可进入规划阶段                                           │
@@ -340,7 +340,7 @@ The command shall determine output language in the following priority order:
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec.clarify  ⚠️ 关键调整                                        │
+│  /codexspec:clarify  ⚠️ 关键调整                                        │
 │  ├─ 用户发现实际使用场景问题                                             │
 │  ├─ 5 个澄清问题，全部得到回答                                           │
 │  ├─ 关键变更: --no-spec → --spec (opt-in)                                │
@@ -349,7 +349,7 @@ The command shall determine output language in the following priority order:
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec.spec-to-plan                                                 │
+│  /codexspec:spec-to-plan                                                 │
 │  ├─ 更新技术实现计划                                                     │
 │  ├─ 9 个技术决策，包含 5 个新增决策                                      │
 │  ├─ 5 个实现阶段                                                         │
@@ -359,9 +359,9 @@ The command shall determine output language in the following priority order:
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  后续步骤 (未在本 session 完成)                                          │
-│  ├─ /codexspec.review-plan - 验证计划质量                                │
-│  ├─ /codexspec.plan-to-tasks - 分解为可执行任务                          │
-│  └─ /codexspec.implement-tasks - 执行实现                                │
+│  ├─ /codexspec:review-plan - 验证计划质量                                │
+│  ├─ /codexspec:plan-to-tasks - 分解为可执行任务                          │
+│  └─ /codexspec:implement-tasks - 执行实现                                │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -410,28 +410,28 @@ The command shall determine output language in the following priority order:
 
 ```bash
 # 1. 初始需求澄清
-/codexspec.specify
+/codexspec:specify
 
 # 2. 生成规格文档
-/codexspec.generate-spec
+/codexspec:generate-spec
 
 # 3. 审查规格质量
-/codexspec.review-spec
+/codexspec:review-spec
 
 # 4. 澄清/调整需求 (可选，发现问题后使用)
-/codexspec.clarify [问题描述]
+/codexspec:clarify [问题描述]
 
 # 5. 生成技术计划
-/codexspec.spec-to-plan
+/codexspec:spec-to-plan
 
 # 6. 审查计划质量 (可选)
-/codexspec.review-plan
+/codexspec:review-plan
 
 # 7. 分解为任务
-/codexspec.plan-to-tasks
+/codexspec:plan-to-tasks
 
 # 8. 执行实现
-/codexspec.implement-tasks
+/codexspec:implement-tasks
 ```
 
 ---

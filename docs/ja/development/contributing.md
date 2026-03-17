@@ -10,7 +10,7 @@
 
 ```bash
 # リポジトリをクローン
-git clone https://github.com/Zts0hg/codexspec.git
+git clone https://github.com/Zts0hg/codexspec:git
 cd codexspec
 
 # 開発依存関係をインストール

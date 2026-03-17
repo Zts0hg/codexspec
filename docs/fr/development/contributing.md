@@ -10,7 +10,7 @@
 
 ```bash
 # Cloner le depot
-git clone https://github.com/Zts0hg/codexspec.git
+git clone https://github.com/Zts0hg/codexspec:git
 cd codexspec
 
 # Installer les dependances de developpement

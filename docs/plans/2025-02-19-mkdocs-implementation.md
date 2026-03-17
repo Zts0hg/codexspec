@@ -192,8 +192,8 @@ mkdir -p docs/assets/images
 ```markdown
 # Welcome to CodexSpec
 
-[![PyPI version](https://img.shields.io/pypi/v/codexspec.svg)](https://pypi.org/project/codexspec/)
-[![Python](https://img.shields.io/pypi/pyversions/codexspec.svg)](https://pypi.org/project/codexspec/)
+[![PyPI version](https://img.shields.io/pypi/v/codexspec:svg)](https://pypi.org/project/codexspec/)
+[![Python](https://img.shields.io/pypi/pyversions/codexspec:svg)](https://pypi.org/project/codexspec/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 **A Spec-Driven Development (SDD) toolkit for Claude Code**
@@ -299,14 +299,14 @@ For the latest development version:
 
 ```bash
 # Using uv
-uv tool install git+https://github.com/Zts0hg/codexspec.git
+uv tool install git+https://github.com/Zts0hg/codexspec:git
 
 # Using pip
-pip install git+https://github.com/Zts0hg/codexspec.git
+pip install git+https://github.com/Zts0hg/codexspec:git
 
 # Specific branch or tag
-uv tool install git+https://github.com/Zts0hg/codexspec.git@main
-uv tool install git+https://github.com/Zts0hg/codexspec.git@v0.2.0
+uv tool install git+https://github.com/Zts0hg/codexspec:git@main
+uv tool install git+https://github.com/Zts0hg/codexspec:git@v0.2.0
 ```
 
 ## Verify Installation
@@ -364,15 +364,15 @@ claude
 Use the constitution command:
 
 ```
-/codexspec.constitution Create principles focused on code quality and testing
+/codexspec:constitution Create principles focused on code quality and testing
 ```
 
 ## 3. Clarify Requirements
 
-Use `/codexspec.specify` to explore requirements:
+Use `/codexspec:specify` to explore requirements:
 
 ```
-/codexspec.specify I want to build a task management application
+/codexspec:specify I want to build a task management application
 ```
 
 ## 4. Generate Specification
@@ -380,7 +380,7 @@ Use `/codexspec.specify` to explore requirements:
 Once clarified, generate the spec document:
 
 ```
-/codexspec.generate-spec
+/codexspec:generate-spec
 ```
 
 ## 5. Review and Validate
@@ -388,25 +388,25 @@ Once clarified, generate the spec document:
 **Recommended:** Validate before proceeding:
 
 ```
-/codexspec.review-spec
+/codexspec:review-spec
 ```
 
 ## 6. Create Technical Plan
 
 ```
-/codexspec.spec-to-plan Use Python FastAPI for backend
+/codexspec:spec-to-plan Use Python FastAPI for backend
 ```
 
 ## 7. Generate Tasks
 
 ```
-/codexspec.plan-to-tasks
+/codexspec:plan-to-tasks
 ```
 
 ## 8. Implement
 
 ```
-/codexspec.implement-tasks
+/codexspec:implement-tasks
 ```
 
 ## Project Structure
@@ -477,7 +477,7 @@ CodexSpec structures development into **reviewable checkpoints** with human vali
 │         │                                                                │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ REVIEW GATE 1: /codexspec.review-spec ★                        ║   │
+│  ║  ★ REVIEW GATE 1: /codexspec:review-spec ★                        ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
 │         ▼                                                                │
@@ -485,7 +485,7 @@ CodexSpec structures development into **reviewable checkpoints** with human vali
 │         │                                                                │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ REVIEW GATE 2: /codexspec.review-plan ★                        ║   │
+│  ║  ★ REVIEW GATE 2: /codexspec:review-plan ★                        ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
 │         ▼                                                                │
@@ -493,7 +493,7 @@ CodexSpec structures development into **reviewable checkpoints** with human vali
 │         │                                                                │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ REVIEW GATE 3: /codexspec.review-tasks ★                       ║   │
+│  ║  ★ REVIEW GATE 3: /codexspec:review-tasks ★                       ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
 │         ▼                                                                │
@@ -516,21 +516,21 @@ CodexSpec structures development into **reviewable checkpoints** with human vali
 
 | Stage | Command | Purpose |
 |-------|---------|---------|
-| 1 | `/codexspec.constitution` | Define project principles |
-| 2 | `/codexspec.specify` | Interactive Q&A for requirements |
-| 3 | `/codexspec.generate-spec` | Create specification document |
-| - | `/codexspec.review-spec` | ★ Validate specification |
-| 4 | `/codexspec.spec-to-plan` | Create technical plan |
-| - | `/codexspec.review-plan` | ★ Validate plan |
-| 5 | `/codexspec.plan-to-tasks` | Break down into tasks |
-| - | `/codexspec.review-tasks` | ★ Validate tasks |
-| 6 | `/codexspec.implement-tasks` | Execute implementation |
+| 1 | `/codexspec:constitution` | Define project principles |
+| 2 | `/codexspec:specify` | Interactive Q&A for requirements |
+| 3 | `/codexspec:generate-spec` | Create specification document |
+| - | `/codexspec:review-spec` | ★ Validate specification |
+| 4 | `/codexspec:spec-to-plan` | Create technical plan |
+| - | `/codexspec:review-plan` | ★ Validate plan |
+| 5 | `/codexspec:plan-to-tasks` | Break down into tasks |
+| - | `/codexspec:review-tasks` | ★ Validate tasks |
+| 6 | `/codexspec:implement-tasks` | Execute implementation |
 
 ## Two-Phase Specification
 
 ### specify vs clarify
 
-| Aspect | `/codexspec.specify` | `/codexspec.clarify` |
+| Aspect | `/codexspec:specify` | `/codexspec:clarify` |
 |--------|----------------------|----------------------|
 | **Purpose** | Initial exploration | Iterative refinement |
 | **When** | No spec.md exists | spec.md exists, needs gaps filled |
@@ -808,7 +808,7 @@ git commit -m "docs: add reference documentation"
 
 ```bash
 # Clone the repository
-git clone https://github.com/Zts0hg/codexspec.git
+git clone https://github.com/Zts0hg/codexspec:git
 cd codexspec
 
 # Install development dependencies

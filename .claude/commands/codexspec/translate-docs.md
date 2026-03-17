@@ -35,7 +35,7 @@ Your responsibility is to translate English documentation to target languages wh
 
 ## When to Use This Command
 
-**Use `/codexspec.translate-docs` when:**
+**Use `/codexspec:translate-docs` when:**
 
 - You need to translate documentation to one or more target languages
 - You want AI-assisted translation with terminology consistency
@@ -45,7 +45,7 @@ Your responsibility is to translate English documentation to target languages wh
 **Do NOT use this command for:**
 
 - Manual translation editing → Edit files directly
-- Translation quality review → Use `/codexspec.check-i18n-semantics`
+- Translation quality review → Use `/codexspec:check-i18n-semantics`
 - Adding new languages to the project → Update mkdocs.yml first
 
 ## Instructions
@@ -202,16 +202,16 @@ Each translation should:
 
 ```bash
 # Translate to all supported languages
-/codexspec.translate-docs
+/codexspec:translate-docs
 
 # Translate to specific languages
-/codexspec.translate-docs --lang zh,ja
+/codexspec:translate-docs --lang zh,ja
 
 # Incremental translation (only changed files)
-/codexspec.translate-docs --lang zh --incremental
+/codexspec:translate-docs --lang zh --incremental
 
 # Preview without writing files
-/codexspec.translate-docs --lang ko --dry-run
+/codexspec:translate-docs --lang ko --dry-run
 ```
 
 ## Exit Codes
@@ -225,7 +225,7 @@ Each translation should:
 
 After translation:
 
-- `/codexspec.check-i18n-semantics` - Verify translation quality
+- `/codexspec:check-i18n-semantics` - Verify translation quality
 - `uv run mkdocs build` - Test build with all languages
 
 > [!NOTE]

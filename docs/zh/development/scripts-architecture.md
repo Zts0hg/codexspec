@@ -14,7 +14,7 @@ CodexSpec 是一个 **Spec-Driven Development (SDD)** 工具包，采用 CLI + �
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
 │                    Claude Code 交互层                            │
-│  /codexspec.specify | /codexspec.analyze | ...                  │
+│  /codexspec:specify | /codexspec:analyze | ...                  │
 │  (.claude/commands/*.md)                                        │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
@@ -99,8 +99,8 @@ Run `{SCRIPT}` from repo root and parse JSON for:
 
 ### 调用流程
 
-1. 用户在 Claude Code 中输入 `/codexspec.analyze`
-2. Claude 读取 `.claude/commands/codexspec.analyze.md` 模板
+1. 用户在 Claude Code 中输入 `/codexspec:analyze`
+2. Claude 读取 `.claude/commands/codexspec:analyze.md` 模板
 3. 根据操作系统，Claude 将 `{SCRIPT}` 替换为：
    - **macOS/Linux**: `.codexspec/scripts/check-prerequisites.sh --json --require-tasks --include-tasks`
    - **Windows**: `.codexspec/scripts/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks`
@@ -183,10 +183,10 @@ Run `{SCRIPT}` from repo root and parse JSON for:
 
 | 命令 | Scripts 参数 | 作用 |
 |------|--------------|------|
-| `/codexspec.clarify` | `--json --paths-only` | 获取路径，不验证文件 |
-| `/codexspec.checklist` | `--json` | 验证 plan.md 存在 |
-| `/codexspec.analyze` | `--json --require-tasks --include-tasks` | 验证 plan.md + tasks.md |
-| `/codexspec.tasks-to-issues` | `--json --require-tasks --include-tasks` | 验证 plan.md + tasks.md |
+| `/codexspec:clarify` | `--json --paths-only` | 获取路径，不验证文件 |
+| `/codexspec:checklist` | `--json` | 验证 plan.md 存在 |
+| `/codexspec:analyze` | `--json --require-tasks --include-tasks` | 验证 plan.md + tasks.md |
+| `/codexspec:tasks-to-issues` | `--json --require-tasks --include-tasks` | 验证 plan.md + tasks.md |
 
 ## 6. 完整工作流程图
 
@@ -206,9 +206,9 @@ Run `{SCRIPT}` from repo root and parse JSON for:
 ┌──────────────────────────────────────────────────────────────────────────┐
 │                        使用阶段 (Claude Code)                             │
 │                                                                          │
-│  用户: /codexspec.analyze                                                │
+│  用户: /codexspec:analyze                                                │
 │       │                                                                  │
-│       ├── Claude 读取 .claude/commands/codexspec.analyze.md             │
+│       ├── Claude 读取 .claude/commands/codexspec:analyze.md             │
 │       │                                                                  │
 │       ├── 解析 YAML frontmatter 中的 scripts 声明                        │
 │       │   scripts:                                                       │
@@ -269,9 +269,9 @@ scripts:
 
 | 阶段 | 命令 | 验证级别 |
 |------|------|----------|
-| 规划前 | `/codexspec.clarify` | 仅路径 |
-| 规划后 | `/codexspec.checklist` | plan.md |
-| 任务后 | `/codexspec.analyze` | plan.md + tasks.md |
+| 规划前 | `/codexspec:clarify` | 仅路径 |
+| 规划后 | `/codexspec:checklist` | plan.md |
+| 任务后 | `/codexspec:analyze` | plan.md + tasks.md |
 
 ### 7.5 Git 集成
 

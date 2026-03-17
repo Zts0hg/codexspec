@@ -276,5 +276,5 @@ Phase 5: ┌───────────────┴──────�
 
 After generating the task breakdown, the user may consider:
 
-- `/codexspec.review-tasks` - to validate the task breakdown quality before implementation
-- `/codexspec.implement-tasks` - to proceed directly with implementing the tasks
+- `/codexspec:review-tasks` - to validate the task breakdown quality before implementation
+- `/codexspec:implement-tasks` - to proceed directly with implementing the tasks

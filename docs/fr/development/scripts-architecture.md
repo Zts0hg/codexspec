@@ -14,7 +14,7 @@ CodexSpec est une boite a outils **Spec-Driven Development (SDD)** adoptant une 
                               |
 +-----------------------------------------------------------------+
 |                    Couche d'Interaction Claude Code              |
-|  /codexspec.specify | /codexspec.analyze | ...                  |
+|  /codexspec:specify | /codexspec:analyze | ...                  |
 |  (.claude/commands/*.md)                                        |
 +-----------------------------------------------------------------+
                               |
@@ -99,8 +99,8 @@ Executez `{SCRIPT}` depuis la racine du depot et analysez le JSON pour :
 
 ### Flux d'Appel
 
-1. L'utilisateur saisit `/codexspec.analyze` dans Claude Code
-2. Claude lit le modele `.claude/commands/codexspec.analyze.md`
+1. L'utilisateur saisit `/codexspec:analyze` dans Claude Code
+2. Claude lit le modele `.claude/commands/codexspec:analyze.md`
 3. Selon le systeme d'exploitation, Claude remplace `{SCRIPT}` par :
    - **macOS/Linux** : `.codexspec/scripts/check-prerequisites.sh --json --require-tasks --include-tasks`
    - **Windows** : `.codexspec/scripts/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks`
@@ -183,10 +183,10 @@ Les 4 commandes suivantes utilisent les scripts :
 
 | Commande | Parametres Scripts | Effet |
 |----------|-------------------|-------|
-| `/codexspec.clarify` | `--json --paths-only` | Obtenir les chemins, ne pas verifier les fichiers |
-| `/codexspec.checklist` | `--json` | Verifier l'existence de plan.md |
-| `/codexspec.analyze` | `--json --require-tasks --include-tasks` | Verifier plan.md + tasks.md |
-| `/codexspec.tasks-to-issues` | `--json --require-tasks --include-tasks` | Verifier plan.md + tasks.md |
+| `/codexspec:clarify` | `--json --paths-only` | Obtenir les chemins, ne pas verifier les fichiers |
+| `/codexspec:checklist` | `--json` | Verifier l'existence de plan.md |
+| `/codexspec:analyze` | `--json --require-tasks --include-tasks` | Verifier plan.md + tasks.md |
+| `/codexspec:tasks-to-issues` | `--json --require-tasks --include-tasks` | Verifier plan.md + tasks.md |
 
 ## 6. Diagramme de Flux Complet
 
@@ -206,9 +206,9 @@ Les 4 commandes suivantes utilisent les scripts :
 +--------------------------------------------------------------------------+
 |                        Phase d'Utilisation (Claude Code)                  |
 |                                                                          |
-|  Utilisateur : /codexspec.analyze                                        |
+|  Utilisateur : /codexspec:analyze                                        |
 |       |                                                                  |
-|       |-- Claude lit .claude/commands/codexspec.analyze.md              |
+|       |-- Claude lit .claude/commands/codexspec:analyze.md              |
 |       |                                                                  |
 |       |-- Analyser la declaration scripts dans YAML frontmatter         |
 |       |   scripts:                                                       |
@@ -269,9 +269,9 @@ Differentes commandes utilisent differents parametres, verification a la demande
 
 | Etape | Commande | Niveau de Verification |
 |-------|----------|------------------------|
-| Avant planification | `/codexspec.clarify` | Chemins uniquement |
-| Apres planification | `/codexspec.checklist` | plan.md |
-| Apres taches | `/codexspec.analyze` | plan.md + tasks.md |
+| Avant planification | `/codexspec:clarify` | Chemins uniquement |
+| Apres planification | `/codexspec:checklist` | plan.md |
+| Apres taches | `/codexspec:analyze` | plan.md + tasks.md |
 
 ### 7.5 Integration Git
 

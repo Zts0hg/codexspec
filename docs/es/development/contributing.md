@@ -10,7 +10,7 @@
 
 ```bash
 # Clonar el repositorio
-git clone https://github.com/Zts0hg/codexspec.git
+git clone https://github.com/Zts0hg/codexspec:git
 cd codexspec
 
 # Instalar dependencias de desarrollo

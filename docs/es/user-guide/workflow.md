@@ -19,7 +19,7 @@ CodexSpec estructura el desarrollo en **puntos de control revisables** con valid
 |         |                                                                |
 |         v                                                                |
 |  +==================================================================+   |
-|  |  ★ PUERTA DE REVISION 1: /codexspec.review-spec ★                 |   |
+|  |  ★ PUERTA DE REVISION 1: /codexspec:review-spec ★                 |   |
 |  +==================================================================+   |
 |         |                                                                |
 |         v                                                                |
@@ -27,7 +27,7 @@ CodexSpec estructura el desarrollo en **puntos de control revisables** con valid
 |         |                                                                |
 |         v                                                                |
 |  +==================================================================+   |
-|  |  ★ PUERTA DE REVISION 2: /codexspec.review-plan ★                 |   |
+|  |  ★ PUERTA DE REVISION 2: /codexspec:review-plan ★                 |   |
 |  +==================================================================+   |
 |         |                                                                |
 |         v                                                                |
@@ -35,7 +35,7 @@ CodexSpec estructura el desarrollo en **puntos de control revisables** con valid
 |         |                                                                |
 |         v                                                                |
 |  +==================================================================+   |
-|  |  ★ PUERTA DE REVISION 3: /codexspec.review-tasks ★                |   |
+|  |  ★ PUERTA DE REVISION 3: /codexspec:review-tasks ★                |   |
 |  +==================================================================+   |
 |         |                                                                |
 |         v                                                                |
@@ -57,21 +57,21 @@ CodexSpec estructura el desarrollo en **puntos de control revisables** con valid
 
 | Etapa | Comando | Proposito |
 |-------|---------|---------|
-| 1 | `/codexspec.constitution` | Definir principios del proyecto |
-| 2 | `/codexspec.specify` | Q&A interactivo para requisitos |
-| 3 | `/codexspec.generate-spec` | Crear documento de especificacion |
-| - | `/codexspec.review-spec` | ★ Validar especificacion |
-| 4 | `/codexspec.spec-to-plan` | Crear plan tecnico |
-| - | `/codexspec.review-plan` | ★ Validar plan |
-| 5 | `/codexspec.plan-to-tasks` | Desglosar en tareas |
-| - | `/codexspec.review-tasks` | ★ Validar tareas |
-| 6 | `/codexspec.implement-tasks` | Ejecutar implementacion |
+| 1 | `/codexspec:constitution` | Definir principios del proyecto |
+| 2 | `/codexspec:specify` | Q&A interactivo para requisitos |
+| 3 | `/codexspec:generate-spec` | Crear documento de especificacion |
+| - | `/codexspec:review-spec` | ★ Validar especificacion |
+| 4 | `/codexspec:spec-to-plan` | Crear plan tecnico |
+| - | `/codexspec:review-plan` | ★ Validar plan |
+| 5 | `/codexspec:plan-to-tasks` | Desglosar en tareas |
+| - | `/codexspec:review-tasks` | ★ Validar tareas |
+| 6 | `/codexspec:implement-tasks` | Ejecutar implementacion |
 
 ## Especificacion en Dos Fases
 
 ### specify vs clarify
 
-| Aspecto | `/codexspec.specify` | `/codexspec.clarify` |
+| Aspecto | `/codexspec:specify` | `/codexspec:clarify` |
 |--------|----------------------|----------------------|
 | **Proposito** | Exploracion inicial | Refinamiento iterativo |
 | **Cuando** | No existe spec.md | spec.md existe, necesita llenar brechas |

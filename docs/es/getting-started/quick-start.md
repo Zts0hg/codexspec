@@ -27,15 +27,15 @@ claude
 Usa el comando constitution:
 
 ```
-/codexspec.constitution Crear principios enfocados en calidad de codigo y pruebas
+/codexspec:constitution Crear principios enfocados en calidad de codigo y pruebas
 ```
 
 ## 3. Clarificar Requisitos
 
-Usa `/codexspec.specify` para explorar los requisitos:
+Usa `/codexspec:specify` para explorar los requisitos:
 
 ```
-/codexspec.specify Quiero construir una aplicacion de gestion de tareas
+/codexspec:specify Quiero construir una aplicacion de gestion de tareas
 ```
 
 ## 4. Generar Especificacion
@@ -43,7 +43,7 @@ Usa `/codexspec.specify` para explorar los requisitos:
 Una vez clarificados, genera el documento de especificacion:
 
 ```
-/codexspec.generate-spec
+/codexspec:generate-spec
 ```
 
 ## 5. Revisar y Validar
@@ -51,25 +51,25 @@ Una vez clarificados, genera el documento de especificacion:
 **Recomendado:** Valida antes de continuar:
 
 ```
-/codexspec.review-spec
+/codexspec:review-spec
 ```
 
 ## 6. Crear Plan Tecnico
 
 ```
-/codexspec.spec-to-plan Usar Python FastAPI para el backend
+/codexspec:spec-to-plan Usar Python FastAPI para el backend
 ```
 
 ## 7. Generar Tareas
 
 ```
-/codexspec.plan-to-tasks
+/codexspec:plan-to-tasks
 ```
 
 ## 8. Implementar
 
 ```
-/codexspec.implement-tasks
+/codexspec:implement-tasks
 ```
 
 ## Estructura del Proyecto

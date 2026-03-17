@@ -2,7 +2,7 @@
     "cli": {
         "init": {
             "migration_found": "{count} Befehlsdateien mit alter Struktur gefunden",
-            "migration_old_structure": "Alte Struktur: .claude/commands/codexspec.*.md",
+            "migration_old_structure": "Alte Struktur: .claude/commands/codexspec:*.md",
             "migration_new_structure": "Neue Struktur: .claude/commands/codexspec/*.md",
             "migration_confirm": "Zur neuen Struktur migrieren?",
             "migration_complete": "✓ Migration abgeschlossen",
@@ -25,7 +25,7 @@
             "warning_powershell_scripts_not_found": "Warnung: PowerShell-Skriptverzeichnis nicht gefunden",
             "warning_docs_templates_not_found": "Warnung: Dokumentvorlagenverzeichnis nicht gefunden",
             "warning_templates_not_found": "Warnung: Vorlagenverzeichnis nicht gefunden, erstelle Standardbefehle",
-            "installed_command": "Befehl installiert: /codexspec.{name}",
+            "installed_command": "Befehl installiert: /codexspec:{name}",
             "commands_summary": "📁 {count} Befehle in .claude/commands/{path}/ installiert",
             "category_core": "Kernbefehle ({count})",
             "category_enhanced": "Erweiterte Befehle ({count})",
@@ -36,15 +36,15 @@
             "next_steps": "Nächste Schritte:",
             "next_step_navigate": "Zum Projekt navigieren: cd {path}",
             "next_step_start_claude": "Claude Code starten: claude",
-            "next_step_constitution": "/codexspec.constitution verwenden, um Projektprinzipien festzulegen",
-            "next_step_specify": "/codexspec.specify verwenden, um erste Spezifikation zu erstellen",
+            "next_step_constitution": "/codexspec:constitution verwenden, um Projektprinzipien festzulegen",
+            "next_step_specify": "/codexspec:specify verwenden, um erste Spezifikation zu erstellen",
             "tips_header": "💡 Tipps:",
             "tips_git": ".claude/ zu Git hinzufügen: git add .claude/",
             "tips_list_commands": "codexspec list-commands ausführen, um alle verfügbaren Befehle zu sehen",
             "tips_edit": ".md-Dateien direkt bearbeiten, um Befehlsverhalten anzupassen",
             "important_header": "Wichtig:",
             "important_message": "Die Verfassung ist die Grundlage Ihres SDD-Workflows.",
-            "important_action": "Führen Sie /codexspec.constitution aus, um sie für Ihr Projekt anzupassen.",
+            "important_action": "Führen Sie /codexspec:constitution aus, um sie für Ihr Projekt anzupassen.",
             "compliance_confirm": "CLAUDE.md existiert bereits ohne Verfassungs-Compliance-Abschnitt.\nDer Verfassungs-Compliance-Abschnitt stellt sicher, dass Claude Ihrer Projektverfassung folgt.\n? Möchten Sie den Verfassungs-Compliance-Abschnitt hinzufügen?",
             "compliance_added": "Aktualisiert: CLAUDE.md (Verfassungs-Compliance-Abschnitt hinzugefügt)",
             "error_dir_exists": "Fehler: Verzeichnis '{path}' existiert bereits",
@@ -60,7 +60,7 @@
             "category_git": "Git-Workflow ({count})",
             "no_project": "Kein CodexSpec-Projekt im aktuellen Verzeichnis gefunden.",
             "run_init": "Führen Sie codexspec init aus, um ein neues Projekt zu erstellen.",
-            "usage_hint": "Verwenden Sie /codexspec.<befehl>, um diese Befehle aufzurufen"
+            "usage_hint": "Verwenden Sie /codexspec:<befehl>, um diese Befehle aufzurufen"
         },
         "set_language": {
             "language_set": "Sprache eingestellt auf: {lang} ({name})",
@@ -72,7 +72,7 @@
     },
     "constitution": {
         "description": "Projektverfassung aus interaktiven oder bereitgestellten Prinzipien erstellen oder aktualisieren und sicherstellen, dass alle abhängigen Vorlagen synchronisiert bleiben.",
-        "argument-hint": "[quick|deep | Projektprinzipien] (optional)\n\nDieser Befehl erstellt/aktualisiert die Projektverfassung unter .codexspec/memory/constitution.md.\n\nDrei Verwendungsmöglichkeiten:\n1. Ohne Argumente → Interaktiver Modus: Explorationstiefe wählen (quick/deep)\n2. quick → Leichte Exploration: Konfigurationsdateien + README + Haupteinstiegspunkte (~5-10 Dateien)\n3. deep → Vollständige Exploration: alles oben + Quellcode-Analyse + Architektur-Patterns\n4. <Beschreibung> → Exploration überspringen, Prinzipien direkt verwenden\n\nBeispiele:\n  /codexspec.constitution\n  /codexspec.constitution quick\n  /codexspec.constitution deep\n  /codexspec.constitution Python FastAPI Backend mit pytest, Fokus auf Typsicherheit"
+        "argument-hint": "[quick|deep | Projektprinzipien] (optional)\n\nDieser Befehl erstellt/aktualisiert die Projektverfassung unter .codexspec/memory/constitution.md.\n\nDrei Verwendungsmöglichkeiten:\n1. Ohne Argumente → Interaktiver Modus: Explorationstiefe wählen (quick/deep)\n2. quick → Leichte Exploration: Konfigurationsdateien + README + Haupteinstiegspunkte (~5-10 Dateien)\n3. deep → Vollständige Exploration: alles oben + Quellcode-Analyse + Architektur-Patterns\n4. <Beschreibung> → Exploration überspringen, Prinzipien direkt verwenden\n\nBeispiele:\n  /codexspec:constitution\n  /codexspec:constitution quick\n  /codexspec:constitution deep\n  /codexspec:constitution Python FastAPI Backend mit pytest, Fokus auf Typsicherheit"
     },
     "specify": {
         "description": "Anforderungen durch interaktives Q&A klären und erste Ideen erkunden und verfeinern",

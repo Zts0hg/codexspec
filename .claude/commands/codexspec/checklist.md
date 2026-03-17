@@ -189,4 +189,4 @@ Use the following template as reference for checklist structure:
 - Breach response requirements
 
 > [!NOTE]
-> Each `/codexspec.checklist` run creates a NEW file in `checklists/` directory.
+> Each `/codexspec:checklist` run creates a NEW file in `checklists/` directory.

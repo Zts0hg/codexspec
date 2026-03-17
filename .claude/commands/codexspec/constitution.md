@@ -12,10 +12,10 @@ argument-hint: |
   4. <描述> → 跳过探索，直接使用你的原则
 
   示例：
-    /codexspec.constitution
-    /codexspec.constitution quick
-    /codexspec.constitution deep
-    /codexspec.constitution Python FastAPI 后端使用 pytest，注重类型安全
+    /codexspec:constitution
+    /codexspec:constitution quick
+    /codexspec:constitution deep
+    /codexspec:constitution Python FastAPI 后端使用 pytest，注重类型安全
 
   This command creates/updates the project constitution at .codexspec/memory/constitution.md.
 
@@ -26,10 +26,10 @@ argument-hint: |
   4. <description> → Skip exploration, use your principles directly
 
   Examples:
-    /codexspec.constitution
-    /codexspec.constitution quick
-    /codexspec.constitution deep
-    /codexspec.constitution Python FastAPI backend with pytest, focus on type safety
+    /codexspec:constitution
+    /codexspec:constitution quick
+    /codexspec:constitution deep
+    /codexspec:constitution Python FastAPI backend with pytest, focus on type safety
 handoffs:
   - agent: codexspec.specify
     step: Create a feature specification based on the updated constitution

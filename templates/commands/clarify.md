@@ -37,7 +37,7 @@ Your responsibility is to identify gaps and ambiguities in existing specificatio
 
 ## When to Use This Command
 
-**Use `/codexspec.clarify` when:**
+**Use `/codexspec:clarify` when:**
 
 - A `spec.md` already exists and needs incremental improvement
 - You want to address specific issues identified during review
@@ -46,9 +46,9 @@ Your responsibility is to identify gaps and ambiguities in existing specificatio
 
 **Do NOT use this command for:**
 
-- Initial requirement gathering → Use `/codexspec.specify`
-- Document generation from scratch → Use `/codexspec.generate-spec`
-- Quality assessment without modification → Use `/codexspec.review-spec`
+- Initial requirement gathering → Use `/codexspec:specify`
+- Document generation from scratch → Use `/codexspec:generate-spec`
+- Quality assessment without modification → Use `/codexspec:review-spec`
 
 ## Instructions
 
@@ -59,7 +59,7 @@ Your responsibility is to identify gaps and ambiguities in existing specificatio
   - `FEATURE_DIR` - The feature directory path
   - `FEATURE_SPEC` - Path to spec.md
 
-If no valid spec.md is found, abort and instruct user to run `/codexspec.generate-spec` first.
+If no valid spec.md is found, abort and instruct user to run `/codexspec:generate-spec` first.
 
 ### Execution Steps
 
@@ -220,16 +220,16 @@ The following areas were identified but not addressed (question quota reached):
 ## Available Follow-up Commands
 
 Based on the clarification session, the user may consider:
-- `/codexspec.review-spec` - to validate the improvements made
-- `/codexspec.spec-to-plan` - to proceed with technical planning
-- `/codexspec.clarify` - to address deferred items in another session
+- `/codexspec:review-spec` - to validate the improvements made
+- `/codexspec:spec-to-plan` - to proceed with technical planning
+- `/codexspec:clarify` - to address deferred items in another session
 ```
 
 ## Behavior Rules
 
 1. **Maximum 5 Questions**: Never exceed the question limit
 2. **Save After Each Answer**: Immediately persist all changes to `spec.md` - the Clarifications section and any updated requirement sections
-3. **No Meaningful Ambiguities**: If scan finds no critical issues, output: "No critical ambiguities detected. The specification appears sufficiently clear for technical planning." and suggest `/codexspec.spec-to-plan`
+3. **No Meaningful Ambiguities**: If scan finds no critical issues, output: "No critical ambiguities detected. The specification appears sufficiently clear for technical planning." and suggest `/codexspec:spec-to-plan`
 4. **Deferred Tracking**: If quota is reached with unresolved high-impact items, list them in the completion report under Deferred Items
 5. **Review Integration**: If review-spec.md exists, always mention it in your introduction and prioritize its Critical/Warning issues
 
@@ -242,4 +242,4 @@ specify → generate-spec → [clarify] → review-spec → spec-to-plan
 ```
 
 > [!NOTE]
-> This command is designed to run AFTER `/codexspec.generate-spec` and BEFORE `/codexspec.spec-to-plan`. It incrementally improves existing specifications rather than creating new ones.
+> This command is designed to run AFTER `/codexspec:generate-spec` and BEFORE `/codexspec:spec-to-plan`. It incrementally improves existing specifications rather than creating new ones.

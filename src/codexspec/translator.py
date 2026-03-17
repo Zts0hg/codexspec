@@ -49,7 +49,7 @@ _CLI_MESSAGES_EN = {
         "warning_powershell_scripts_not_found": "Warning: PowerShell scripts directory not found",
         "warning_docs_templates_not_found": "Warning: Docs templates directory not found",
         "warning_templates_not_found": "Warning: Templates directory not found, creating default commands",
-        "installed_command": "Installed command: /codexspec.{name}",
+        "installed_command": "Installed command: /codexspec:{name}",
         # Command summary
         "commands_summary": "📁 Installed {count} commands to .claude/commands/{path}/",
         "category_core": "Core Commands ({count})",
@@ -62,8 +62,8 @@ _CLI_MESSAGES_EN = {
         "next_steps": "Next steps:",
         "next_step_navigate": "Navigate to your project: cd {path}",
         "next_step_start_claude": "Start Claude Code: claude",
-        "next_step_constitution": "Use /codexspec.constitution to establish project principles",
-        "next_step_specify": "Use /codexspec.specify to create your first specification",
+        "next_step_constitution": "Use /codexspec:constitution to establish project principles",
+        "next_step_specify": "Use /codexspec:specify to create your first specification",
         # Tips
         "tips_header": "💡 Tips:",
         "tips_git": "Add .claude/ to Git: git add .claude/",
@@ -72,7 +72,7 @@ _CLI_MESSAGES_EN = {
         # Important reminder
         "important_header": "Important:",
         "important_message": "The constitution is the foundation of your SDD workflow.",
-        "important_action": "Run /codexspec.constitution to customize it for your project.",
+        "important_action": "Run /codexspec:constitution to customize it for your project.",
         # Constitution compliance
         "compliance_confirm": (
             "CLAUDE.md already exists without Constitution Compliance section.\n"
@@ -94,7 +94,7 @@ _CLI_MESSAGES_EN = {
         "category_git": "Git Workflow ({count})",
         "no_project": "No CodexSpec project found in current directory.",
         "run_init": "Run codexspec init to create a new project.",
-        "usage_hint": "Use /codexspec.<command> to invoke these commands",
+        "usage_hint": "Use /codexspec:<command> to invoke these commands",
     },
     "set_language": {
         "language_set": "Language set to: {lang} ({name})",

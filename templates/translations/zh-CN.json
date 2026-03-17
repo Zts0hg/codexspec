@@ -2,7 +2,7 @@
   "cli": {
     "init": {
       "migration_found": "发现 {count} 个旧结构命令文件",
-      "migration_old_structure": "旧结构: .claude/commands/codexspec.*.md",
+      "migration_old_structure": "旧结构: .claude/commands/codexspec:*.md",
       "migration_new_structure": "新结构: .claude/commands/codexspec/*.md",
       "migration_confirm": "是否迁移到新结构？",
       "migration_complete": "✓ 迁移完成",
@@ -25,7 +25,7 @@
       "warning_powershell_scripts_not_found": "警告: 未找到 PowerShell 脚本目录",
       "warning_docs_templates_not_found": "警告: 未找到文档模板目录",
       "warning_templates_not_found": "警告: 未找到模板目录，正在创建默认命令",
-      "installed_command": "已安装命令: /codexspec.{name}",
+      "installed_command": "已安装命令: /codexspec:{name}",
       "commands_summary": "📁 已安装 {count} 个命令到 .claude/commands/{path}/",
       "category_core": "核心命令 ({count})",
       "category_enhanced": "增强命令 ({count})",
@@ -36,15 +36,15 @@
       "next_steps": "下一步：",
       "next_step_navigate": "进入项目目录: cd {path}",
       "next_step_start_claude": "启动 Claude Code: claude",
-      "next_step_constitution": "使用 /codexspec.constitution 建立项目原则",
-      "next_step_specify": "使用 /codexspec.specify 创建你的第一个规格",
+      "next_step_constitution": "使用 /codexspec:constitution 建立项目原则",
+      "next_step_specify": "使用 /codexspec:specify 创建你的第一个规格",
       "tips_header": "💡 提示：",
       "tips_git": "将 .claude/ 添加到 Git: git add .claude/",
       "tips_list_commands": "运行 codexspec list-commands 查看所有可用命令",
       "tips_edit": "直接编辑 .md 文件来自定义命令行为",
       "important_header": "重要：",
       "important_message": "宪法是 SDD 工作流的基础。",
-      "important_action": "运行 /codexspec.constitution 为你的项目进行定制。",
+      "important_action": "运行 /codexspec:constitution 为你的项目进行定制。",
       "compliance_confirm": "CLAUDE.md 已存在但没有宪法合规性部分。\n宪法合规性部分确保 Claude 遵循项目宪法。\n? 是否要添加宪法合规性部分？",
       "compliance_added": "已更新: CLAUDE.md (已添加宪法合规性部分)",
       "error_dir_exists": "错误: 目录 '{path}' 已存在",
@@ -60,7 +60,7 @@
       "category_git": "Git 工作流 ({count})",
       "no_project": "当前目录未找到 CodexSpec 项目。",
       "run_init": "运行 codexspec init 创建新项目。",
-      "usage_hint": "使用 /codexspec.<命令> 来调用这些命令"
+      "usage_hint": "使用 /codexspec:<命令> 来调用这些命令"
     },
     "set_language": {
       "language_set": "语言已设置为: {lang} ({name})",
@@ -72,7 +72,7 @@
   },
   "constitution": {
     "description": "通过交互式或提供的原则输入创建或更新项目宪法，确保所有依赖模板保持同步。",
-    "argument-hint": "[quick|deep | 项目原则] (可选)\n\n此命令创建/更新位于 .codexspec/memory/constitution.md 的项目宪法。\n\n三种使用方式：\n1. 无参数 → 交互模式：选择探索深度 (quick/deep)\n2. quick → 轻量探索：配置文件 + README + 核心入口点 (~5-10 个文件)\n3. deep → 完整探索：以上内容 + 源代码分析 + 架构模式\n4. <描述> → 跳过探索，直接使用你的原则\n\n示例：\n  /codexspec.constitution\n  /codexspec.constitution quick\n  /codexspec.constitution deep\n  /codexspec.constitution Python FastAPI 后端使用 pytest，注重类型安全"
+    "argument-hint": "[quick|deep | 项目原则] (可选)\n\n此命令创建/更新位于 .codexspec/memory/constitution.md 的项目宪法。\n\n三种使用方式：\n1. 无参数 → 交互模式：选择探索深度 (quick/deep)\n2. quick → 轻量探索：配置文件 + README + 核心入口点 (~5-10 个文件)\n3. deep → 完整探索：以上内容 + 源代码分析 + 架构模式\n4. <描述> → 跳过探索，直接使用你的原则\n\n示例：\n  /codexspec:constitution\n  /codexspec:constitution quick\n  /codexspec:constitution deep\n  /codexspec:constitution Python FastAPI 后端使用 pytest，注重类型安全"
   },
   "specify": {
     "description": "通过交互式问答澄清需求，探索和完善初始想法",

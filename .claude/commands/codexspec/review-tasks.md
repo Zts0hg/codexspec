@@ -289,13 +289,13 @@ Based on the review result, the user may consider:
 
 ### If Issues Found (Warnings or Suggestions)
 - **Direct Fix**: Simply describe the changes you want to make (e.g., "Fix TASK-001 and split Task 2.5 into smaller tasks") and I will update the tasks accordingly
-- **Re-run Review**: `/codexspec.review-tasks` - to verify changes after fixing issues
-- **Proceed Anyway**: If you decide the warnings/suggestions are not critical or out of scope for the current iteration, you can proceed directly to `/codexspec.implement-tasks`
+- **Re-run Review**: `/codexspec:review-tasks` - to verify changes after fixing issues
+- **Proceed Anyway**: If you decide the warnings/suggestions are not critical or out of scope for the current iteration, you can proceed directly to `/codexspec:implement-tasks`
 
 ### Next Steps Based on Review Result
-- **Pass**: `/codexspec.implement-tasks` - to begin implementation
-- **Needs Work**: Fix the identified issues first, then re-run `/codexspec.review-tasks` to verify, or proceed anyway if issues are acceptable
-- **Fail**: `/codexspec.plan-to-tasks` - to regenerate the task breakdown
+- **Pass**: `/codexspec:implement-tasks` - to begin implementation
+- **Needs Work**: Fix the identified issues first, then re-run `/codexspec:review-tasks` to verify, or proceed anyway if issues are acceptable
+- **Fail**: `/codexspec:plan-to-tasks` - to regenerate the task breakdown
 ```
 
 ### Quality Criteria

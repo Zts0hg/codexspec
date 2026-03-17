@@ -41,10 +41,10 @@ Idea → Clarificar → Revisar → Planificar → Revisar → Tareas → Revisa
 
 **Cada artefacto tiene un comando de revisión correspondiente:**
 
-- `spec.md` → `/codexspec.review-spec`
-- `plan.md` → `/codexspec.review-plan`
-- `tasks.md` → `/codexspec.review-tasks`
-- Todos los artefactos → `/codexspec.analyze`
+- `spec.md` → `/codexspec:review-spec`
+- `plan.md` → `/codexspec:review-plan`
+- `tasks.md` → `/codexspec:review-tasks`
+- Todos los artefactos → `/codexspec:analyze`
 
 Este proceso sistemático de revisión asegura:
 
@@ -118,10 +118,10 @@ Para obtener la última versión de desarrollo o una rama específica:
 
 ```bash
 # Usando uv
-uv tool install git+https://github.com/Zts0hg/codexspec.git
+uv tool install git+https://github.com/Zts0hg/codexspec:git
 
 # Usando pip
-pip install git+https://github.com/Zts0hg/codexspec.git
+pip install git+https://github.com/Zts0hg/codexspec:git
 
 # Rama o etiqueta específica
 uv tool install git+https://github.com/Zts0hg/codexspec.git@main
@@ -234,18 +234,18 @@ cd my-awesome-project
 claude
 ```
 
-Usa el comando `/codexspec.constitution` para crear los principios de gobernanza del proyecto:
+Usa el comando `/codexspec:constitution` para crear los principios de gobernanza del proyecto:
 
 ```
-/codexspec.constitution Crear principios enfocados en calidad de código, estándares de testing y arquitectura limpia
+/codexspec:constitution Crear principios enfocados en calidad de código, estándares de testing y arquitectura limpia
 ```
 
 ### 3. Clarificar Requisitos
 
-Usa `/codexspec.specify` para **explorar y clarificar** tus requisitos mediante Q&A interactivo:
+Usa `/codexspec:specify` para **explorar y clarificar** tus requisitos mediante Q&A interactivo:
 
 ```
-/codexspec.specify Quiero construir una aplicación de gestión de tareas
+/codexspec:specify Quiero construir una aplicación de gestión de tareas
 ```
 
 Este comando:
@@ -257,10 +257,10 @@ Este comando:
 
 ### 4. Generar Documento de Especificación
 
-Una vez clarificados los requisitos, usa `/codexspec.generate-spec` para crear el documento `spec.md`:
+Una vez clarificados los requisitos, usa `/codexspec:generate-spec` para crear el documento `spec.md`:
 
 ```
-/codexspec.generate-spec
+/codexspec:generate-spec
 ```
 
 Este comando actúa como un "compilador de requisitos" que transforma tus requisitos clarificados en un documento de especificación estructurado.
@@ -270,7 +270,7 @@ Este comando actúa como un "compilador de requisitos" que transforma tus requis
 **Antes de proceder a la planificación, valida tu especificación:**
 
 ```
-/codexspec.review-spec
+/codexspec:review-spec
 ```
 
 Este comando genera un informe de revisión detallado con:
@@ -282,10 +282,10 @@ Este comando genera un informe de revisión detallado con:
 
 ### 6. Crear un Plan Técnico
 
-Usa `/codexspec.spec-to-plan` para definir cómo implementarlo:
+Usa `/codexspec:spec-to-plan` para definir cómo implementarlo:
 
 ```
-/codexspec.spec-to-plan Usar Python con FastAPI para el backend, PostgreSQL para la base de datos y React para el frontend
+/codexspec:spec-to-plan Usar Python con FastAPI para el backend, PostgreSQL para la base de datos y React para el frontend
 ```
 
 El comando incluye **revisión de constitucionalidad** - verificando que tu plan se alinea con los principios del proyecto.
@@ -295,7 +295,7 @@ El comando incluye **revisión de constitucionalidad** - verificando que tu plan
 **Antes de desglosar en tareas, valida tu plan técnico:**
 
 ```
-/codexspec.review-plan
+/codexspec:review-plan
 ```
 
 Esto verifica:
@@ -307,10 +307,10 @@ Esto verifica:
 
 ### 8. Generar Tareas
 
-Usa `/codexspec.plan-to-tasks` para desglosar el plan:
+Usa `/codexspec:plan-to-tasks` para desglosar el plan:
 
 ```
-/codexspec.plan-to-tasks
+/codexspec:plan-to-tasks
 ```
 
 Las tareas se organizan en fases estándar con:
@@ -324,7 +324,7 @@ Las tareas se organizan en fases estándar con:
 **Antes de la implementación, valida el desglose de tareas:**
 
 ```
-/codexspec.review-tasks
+/codexspec:review-tasks
 ```
 
 Esto verifica:
@@ -336,10 +336,10 @@ Esto verifica:
 
 ### 10. Analizar (Opcional pero Recomendado)
 
-Usa `/codexspec.analyze` para verificación de consistencia entre artefactos:
+Usa `/codexspec:analyze` para verificación de consistencia entre artefactos:
 
 ```
-/codexspec.analyze
+/codexspec:analyze
 ```
 
 Esto detecta problemas entre spec, plan y tareas:
@@ -351,10 +351,10 @@ Esto detecta problemas entre spec, plan y tareas:
 
 ### 11. Implementar
 
-Usa `/codexspec.implement-tasks` para ejecutar la implementación:
+Usa `/codexspec:implement-tasks` para ejecutar la implementación:
 
 ```
-/codexspec.implement-tasks
+/codexspec:implement-tasks
 ```
 
 La implementación sigue **flujo de trabajo TDD condicional**:
@@ -401,36 +401,36 @@ Después de la inicialización, estos comandos slash están disponibles en Claud
 
 | Comando | Descripción |
 |---------|-------------|
-| `/codexspec.constitution` | Crear o actualizar constitución del proyecto con validación entre artefactos e informe de impacto de sincronización |
-| `/codexspec.specify` | **Clarificar** requisitos mediante Q&A interactivo (sin generación de archivos) |
-| `/codexspec.generate-spec` | **Generar** documento `spec.md` después de clarificar requisitos |
-| `/codexspec.spec-to-plan` | Convertir especificación a plan técnico con revisión de constitucionalidad y grafo de dependencia de módulos |
-| `/codexspec.plan-to-tasks` | Desglosar plan en tareas atómicas con aplicación de TDD y marcadores de paralelismo `[P]` |
-| `/codexspec.implement-tasks` | Ejecutar tareas con flujo de trabajo TDD condicional (TDD para código, directo para docs/config) |
+| `/codexspec:constitution` | Crear o actualizar constitución del proyecto con validación entre artefactos e informe de impacto de sincronización |
+| `/codexspec:specify` | **Clarificar** requisitos mediante Q&A interactivo (sin generación de archivos) |
+| `/codexspec:generate-spec` | **Generar** documento `spec.md` después de clarificar requisitos |
+| `/codexspec:spec-to-plan` | Convertir especificación a plan técnico con revisión de constitucionalidad y grafo de dependencia de módulos |
+| `/codexspec:plan-to-tasks` | Desglosar plan en tareas atómicas con aplicación de TDD y marcadores de paralelismo `[P]` |
+| `/codexspec:implement-tasks` | Ejecutar tareas con flujo de trabajo TDD condicional (TDD para código, directo para docs/config) |
 
 #### Comandos de Revisión (Puertas de Calidad)
 
 | Comando | Descripción |
 |---------|-------------|
-| `/codexspec.review-spec` | Validar especificación por completitud, claridad, consistencia y testeabilidad con puntuación |
-| `/codexspec.review-plan` | Revisar plan técnico por viabilidad, calidad de arquitectura y alineación con constitución |
-| `/codexspec.review-tasks` | Validar desglose de tareas por cobertura del plan, cumplimiento TDD, dependencias y granularidad |
+| `/codexspec:review-spec` | Validar especificación por completitud, claridad, consistencia y testeabilidad con puntuación |
+| `/codexspec:review-plan` | Revisar plan técnico por viabilidad, calidad de arquitectura y alineación con constitución |
+| `/codexspec:review-tasks` | Validar desglose de tareas por cobertura del plan, cumplimiento TDD, dependencias y granularidad |
 
 #### Comandos de Mejora
 
 | Comando | Descripción |
 |---------|-------------|
-| `/codexspec.clarify` | Escanear spec.md existente buscando ambigüedades usando 4 categorías enfocadas, integrar con hallazgos de revisión |
-| `/codexspec.analyze` | Análisis no destructivo entre artefactos (spec, plan, tareas) con detección de problemas basada en severidad |
-| `/codexspec.checklist` | Generar checklists de calidad para validación de requisitos |
-| `/codexspec.tasks-to-issues` | Convertir tareas a GitHub issues para integración con gestión de proyectos |
+| `/codexspec:clarify` | Escanear spec.md existente buscando ambigüedades usando 4 categorías enfocadas, integrar con hallazgos de revisión |
+| `/codexspec:analyze` | Análisis no destructivo entre artefactos (spec, plan, tareas) con detección de problemas basada en severidad |
+| `/codexspec:checklist` | Generar checklists de calidad para validación de requisitos |
+| `/codexspec:tasks-to-issues` | Convertir tareas a GitHub issues para integración con gestión de proyectos |
 
 #### Comandos de Flujo de Trabajo Git
 
 | Comando | Descripción |
 |---------|-------------|
-| `/codexspec.commit` | Generar mensajes de Conventional Commits basados en el estado de git y el contexto de la sesión |
-| `/codexspec.commit-staged` | Generar mensaje de commit solo desde los cambios preparados |
+| `/codexspec:commit` | Generar mensajes de Conventional Commits basados en el estado de git y el contexto de la sesión |
+| `/codexspec:commit-staged` | Generar mensaje de commit solo desde los cambios preparados |
 
 ## Resumen del Flujo de Trabajo
 
@@ -449,7 +449,7 @@ Después de la inicialización, estos comandos slash están disponibles en Claud
 │         │                                                                │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ PUERTA DE REVISIÓN 1: /codexspec.review-spec ★                 ║   │
+│  ║  ★ PUERTA DE REVISIÓN 1: /codexspec:review-spec ★                 ║   │
 │  ║  Validar: Completitud, Claridad, Testeabilidad, Constitución       ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
@@ -462,7 +462,7 @@ Después de la inicialización, estos comandos slash están disponibles en Claud
 │         │                   • Grafo de dependencia de módulos             │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ PUERTA DE REVISIÓN 2: /codexspec.review-plan ★                 ║   │
+│  ║  ★ PUERTA DE REVISIÓN 2: /codexspec:review-plan ★                 ║   │
 │  ║  Validar: Alineación Spec, Arquitectura, Stack Tech, Fases         ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
@@ -473,7 +473,7 @@ Después de la inicialización, estos comandos slash están disponibles en Claud
 │         │                   • Especificaciones de rutas de archivo       │
 │         ▼                                                                │
 │  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ PUERTA DE REVISIÓN 3: /codexspec.review-tasks ★                ║   │
+│  ║  ★ PUERTA DE REVISIÓN 3: /codexspec:review-tasks ★                ║   │
 │  ║  Validar: Cobertura, Cumplimiento TDD, Dependencias, Granularidad  ║   │
 │  ╚═══════════════════════════════════════════════════════════════════╝   │
 │         │                                                                │
@@ -495,7 +495,7 @@ CodexSpec proporciona **dos comandos de clarificación distintos** para diferent
 
 #### specify vs clarify: ¿Cuál usar cuándo?
 
-| Aspecto | `/codexspec.specify` | `/codexspec.clarify` |
+| Aspecto | `/codexspec:specify` | `/codexspec:clarify` |
 |---------|----------------------|----------------------|
 | **Propósito** | Exploración inicial de requisitos | Refinamiento iterativo de spec existente |
 | **Cuándo usar** | Empezar con idea nueva, no existe spec.md | spec.md existe, necesita llenar brechas |
@@ -511,15 +511,15 @@ Antes de generar cualquier documentación:
 
 | Fase | Comando | Propósito | Salida |
 |------|---------|-----------|--------|
-| **Exploración** | `/codexspec.specify` | Q&A interactivo para explorar y refinar requisitos | Ninguna (solo diálogo) |
-| **Generación** | `/codexspec.generate-spec` | Compilar requisitos clarificados en documento estructurado | `spec.md` |
+| **Exploración** | `/codexspec:specify` | Q&A interactivo para explorar y refinar requisitos | Ninguna (solo diálogo) |
+| **Generación** | `/codexspec:generate-spec` | Compilar requisitos clarificados en documento estructurado | `spec.md` |
 
 #### Clarificación Iterativa
 
 Después de crear spec.md:
 
 ```
-spec.md ──► /codexspec.clarify ──► spec.md actualizado (con sección Clarifications)
+spec.md ──► /codexspec:clarify ──► spec.md actualizado (con sección Clarifications)
                 │
                 └── Escanea ambigüedades en 4 categorías enfocadas:
                     • Brechas de Completitud - Secciones faltantes, contenido vacío
@@ -664,7 +664,7 @@ project:
 
 ### Constitution y Documentos Generados
 
-Cuando usas `/codexspec.constitution` para crear la constitución de tu proyecto, se generará en el idioma especificado en tu configuración:
+Cuando usas `/codexspec:constitution` para crear la constitución de tu proyecto, se generará en el idioma especificado en tu configuración:
 
 - **Enfoque de Archivo Único**: La constitución se genera en un solo idioma
 - **Claude Entiende Todos los Idiomas**: Claude puede trabajar con archivos de constitución en cualquier idioma soportado
@@ -707,7 +707,7 @@ Consulta `extensions/EXTENSION-DEVELOPMENT-GUIDE.md` para más detalles.
 
 ```bash
 # Clonar el repositorio
-git clone https://github.com/Zts0hg/codexspec.git
+git clone https://github.com/Zts0hg/codexspec:git
 cd codexspec
 
 # Instalar dependencias de desarrollo
@@ -739,7 +739,7 @@ CodexSpec está inspirado en spec-kit de GitHub pero con algunas diferencias cla
 | Filosofía Central | Desarrollo guiado por especificaciones | Desarrollo guiado por especificaciones + colaboración humano-AI |
 | Nombre del CLI | `specify` | `codexspec` |
 | IA Principal | Soporte multi-agente | Enfocado en Claude Code |
-| Prefijo de Comandos | `/speckit.*` | `/codexspec.*` |
+| Prefijo de Comandos | `/speckit.*` | `/codexspec:*` |
 | Sistema de Constitución | Básico | Constitución completa con validación entre artefactos |
 | Spec en Dos Fases | No | Sí (clarificar + generar) |
 | Comandos de Revisión | Opcional | 3 comandos de revisión dedicados con puntuación |

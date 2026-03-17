@@ -19,7 +19,7 @@ CodexSpec strukturiert die Entwicklung in **ueberpruefbare Pruefpunkte** mit men
 |         |                                                                |
 |         v                                                                |
 |  +---------------------------------------------------------------+      |
-|  |  ★ REVIEW-GATE 1: /codexspec.review-spec ★                    |      |
+|  |  ★ REVIEW-GATE 1: /codexspec:review-spec ★                    |      |
 |  +---------------------------------------------------------------+      |
 |         |                                                                |
 |         v                                                                |
@@ -27,7 +27,7 @@ CodexSpec strukturiert die Entwicklung in **ueberpruefbare Pruefpunkte** mit men
 |         |                                                                |
 |         v                                                                |
 |  +---------------------------------------------------------------+      |
-|  |  ★ REVIEW-GATE 2: /codexspec.review-plan ★                    |      |
+|  |  ★ REVIEW-GATE 2: /codexspec:review-plan ★                    |      |
 |  +---------------------------------------------------------------+      |
 |         |                                                                |
 |         v                                                                |
@@ -35,7 +35,7 @@ CodexSpec strukturiert die Entwicklung in **ueberpruefbare Pruefpunkte** mit men
 |         |                                                                |
 |         v                                                                |
 |  +---------------------------------------------------------------+      |
-|  |  ★ REVIEW-GATE 3: /codexspec.review-tasks ★                   |      |
+|  |  ★ REVIEW-GATE 3: /codexspec:review-tasks ★                   |      |
 |  +---------------------------------------------------------------+      |
 |         |                                                                |
 |         v                                                                |
@@ -57,21 +57,21 @@ CodexSpec strukturiert die Entwicklung in **ueberpruefbare Pruefpunkte** mit men
 
 | Phase | Befehl | Zweck |
 |-------|--------|-------|
-| 1 | `/codexspec.constitution` | Projektprinzipien definieren |
-| 2 | `/codexspec.specify` | Interaktives Q&A fuer Anforderungen |
-| 3 | `/codexspec.generate-spec` | Spezifikationsdokument erstellen |
-| - | `/codexspec.review-spec` | ★ Spezifikation validieren |
-| 4 | `/codexspec.spec-to-plan` | Technischen Plan erstellen |
-| - | `/codexspec.review-plan` | ★ Plan validieren |
-| 5 | `/codexspec.plan-to-tasks` | In Aufgaben aufteilen |
-| - | `/codexspec.review-tasks` | ★ Aufgaben validieren |
-| 6 | `/codexspec.implement-tasks` | Implementierung ausfuehren |
+| 1 | `/codexspec:constitution` | Projektprinzipien definieren |
+| 2 | `/codexspec:specify` | Interaktives Q&A fuer Anforderungen |
+| 3 | `/codexspec:generate-spec` | Spezifikationsdokument erstellen |
+| - | `/codexspec:review-spec` | ★ Spezifikation validieren |
+| 4 | `/codexspec:spec-to-plan` | Technischen Plan erstellen |
+| - | `/codexspec:review-plan` | ★ Plan validieren |
+| 5 | `/codexspec:plan-to-tasks` | In Aufgaben aufteilen |
+| - | `/codexspec:review-tasks` | ★ Aufgaben validieren |
+| 6 | `/codexspec:implement-tasks` | Implementierung ausfuehren |
 
 ## Zwei-Phasen-Spezifikation
 
 ### specify vs clarify
 
-| Aspekt | `/codexspec.specify` | `/codexspec.clarify` |
+| Aspekt | `/codexspec:specify` | `/codexspec:clarify` |
 |--------|----------------------|----------------------|
 | **Zweck** | Initiale Erkundung | Iterative Verfeinerung |
 | **Wann** | Kein spec.md existiert | spec.md existiert, Luecken muessen gefuellt werden |
