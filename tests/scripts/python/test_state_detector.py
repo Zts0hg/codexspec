@@ -219,10 +219,10 @@ class TestStateDetectorTaskComplete:
 
 
 class TestStateDetectorToolUse:
-    """测试 TOOL_USE / PENDING_PERMISSION 状态检测"""
+    """测试 TOOL_USE 状态检测"""
 
     def test_tool_use_for_normal_tool(self):
-        """普通工具调用应为 PENDING_PERMISSION（等待权限确认）"""
+        """普通工具调用应返回 TOOL_USE（大多数工具自动执行）"""
         message = {
             "stop_reason": "tool_use",
             "content": [
@@ -234,13 +234,14 @@ class TestStateDetectorToolUse:
             ],
         }
         status, question, tools, error = StateDetector.detect(message)
-        # 工具调用时返回 PENDING_PERMISSION，表示等待权限确认
-        assert status == SessionStatus.PENDING_PERMISSION
+        # 工具调用时返回 TOOL_USE，而不是 PENDING_PERMISSION
+        # 避免对每个工具调用都发送权限请求通知
+        assert status == SessionStatus.TOOL_USE
         assert len(tools) == 1
         assert tools[0].tool_name == "Read"
 
     def test_tool_use_for_bash_tool(self):
-        """Bash 工具调用应为 PENDING_PERMISSION"""
+        """Bash 工具调用应返回 TOOL_USE"""
         message = {
             "stop_reason": "tool_use",
             "content": [
@@ -252,7 +253,7 @@ class TestStateDetectorToolUse:
             ],
         }
         status, question, tools, error = StateDetector.detect(message)
-        assert status == SessionStatus.PENDING_PERMISSION
+        assert status == SessionStatus.TOOL_USE
         assert len(tools) == 1
         assert tools[0].tool_name == "Bash"
 
@@ -287,8 +288,8 @@ class TestStateDetectorEdgeCases:
             ],
         }
         status, question, tools, error = StateDetector.detect(message)
-        # 工具调用返回 PENDING_PERMISSION
-        assert status == SessionStatus.PENDING_PERMISSION
+        # 工具调用返回 TOOL_USE
+        assert status == SessionStatus.TOOL_USE
         assert len(tools) == 2
 
     def test_mixed_content_types(self):
@@ -305,8 +306,8 @@ class TestStateDetectorEdgeCases:
             ],
         }
         status, question, tools, error = StateDetector.detect(message)
-        # 工具调用返回 PENDING_PERMISSION
-        assert status == SessionStatus.PENDING_PERMISSION
+        # 工具调用返回 TOOL_USE
+        assert status == SessionStatus.TOOL_USE
 
     def test_unknown_stop_reason(self):
         """未知 stop_reason 处理"""
