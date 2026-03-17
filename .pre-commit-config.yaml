@@ -83,7 +83,7 @@ repos:
     hooks:
       - id: pip-audit
         name: pip-audit
-        entry: uvx pip-audit
+        entry: uv tool run pip-audit
         language: system
         pass_filenames: false
 
