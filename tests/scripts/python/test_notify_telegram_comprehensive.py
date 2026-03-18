@@ -28,7 +28,6 @@ from notify_telegram import (
     RetryHandler,
     escape_html,
     format_error,
-    format_pending_permission,
     format_task_complete,
     format_user_question,
     process_event,
@@ -274,35 +273,6 @@ class TestFormatError:
 
         assert "test1234" in result
         assert "unknown" in result.lower()
-
-
-class TestFormatPendingPermission:
-    """Test format_pending_permission function."""
-
-    def test_basic_permission_request(self):
-        """Test basic permission request formatting."""
-        data = {
-            "session_id": "abc12345",
-            "permission_type": "file_write",
-            "resource": "/tmp/test.txt",
-        }
-        result = format_pending_permission(data)
-
-        assert "🔐" in result
-        assert "Claude Code 权限请求" in result
-        assert "abc12345" in result
-        assert "file_write" in result
-        assert "/tmp/test.txt" in result
-
-    def test_permission_without_resource(self):
-        """Test permission request without resource."""
-        data = {
-            "session_id": "test1234",
-            "permission_type": "network_access",
-        }
-        result = format_pending_permission(data)
-
-        assert "network_access" in result
 
 
 class TestEscapeHtml:

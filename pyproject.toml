@@ -1,6 +1,6 @@
 [project]
 name = "codexspec"
-version = "0.4.1"
+version = "0.4.3"
 description = "CodexSpec - A Spec-Driven Development (SDD) toolkit for Claude Code"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -91,6 +91,9 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
 addopts = "-v --tb=short"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
 
 [tool.coverage.run]
 source = ["src/codexspec"]

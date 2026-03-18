@@ -190,24 +190,6 @@ print(f"RETRY_INTERVAL_TYPE:{type(Config.RETRY_INTERVAL).__name__}")
         self.assertEqual(results["RETRY_COUNT_TYPE"], "int")
         self.assertEqual(results["RETRY_INTERVAL_TYPE"], "int")
 
-    def test_tc_cfg_005_pending_permission_flag(self):
-        """TC-CFG-005: 新增的 PENDING_PERMISSION 开关"""
-        # Test with true
-        env_vars = {"NOTIFY_ON_PENDING_PERMISSION": "true"}
-        code = """
-import sys
-sys.path.insert(0, '.')
-from notify_telegram import Config
-print(Config.NOTIFY_ON_PENDING_PERMISSION)
-"""
-        output = self._run_in_subprocess(env_vars, code)
-        self.assertEqual(output, "True")
-
-        # Test with false
-        env_vars = {"NOTIFY_ON_PENDING_PERMISSION": "false"}
-        output = self._run_in_subprocess(env_vars, code)
-        self.assertEqual(output, "False")
-
 
 class TestLoggerBasicFormatting(unittest.TestCase):
     """Test cases for Logger basic formatting - Task 1.4"""
