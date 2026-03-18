@@ -710,61 +710,50 @@ class TestSendTelegramMessage:
 
     def test_send_success(self):
         """Test successful message send."""
-        # Set required config first
-        original_token = Config.BOT_TOKEN
-        original_chat_id = Config.CHAT_ID
-        try:
-            Config.BOT_TOKEN = "test_token"
-            Config.CHAT_ID = "test_chat"
+        with patch.object(notify_telegram.Config, "BOT_TOKEN", "test_token"):
+            with patch.object(notify_telegram.Config, "CHAT_ID", "test_chat"):
+                with patch("notify_telegram.urllib.request.build_opener") as mock_builder:
+                    mock_opener = MagicMock()
+                    mock_response = MagicMock()
+                    mock_response.read.return_value = b'{"ok": true, "result": {"message_id": 123}}'
+                    mock_response.__enter__ = MagicMock(return_value=mock_response)
+                    mock_response.__exit__ = MagicMock(return_value=False)
+                    mock_opener.open.return_value = mock_response
+                    mock_builder.return_value = mock_opener
 
-            with patch("notify_telegram.urllib.request.build_opener") as mock_builder:
-                mock_opener = MagicMock()
-                mock_response = MagicMock()
-                mock_response.read.return_value = b'{"ok": true, "result": {"message_id": 123}}'
-                mock_response.__enter__ = MagicMock(return_value=mock_response)
-                mock_response.__exit__ = MagicMock(return_value=False)
-                mock_opener.open.return_value = mock_response
-                mock_builder.return_value = mock_opener
+                    result = send_telegram_message("Test message")
 
-                result = send_telegram_message("Test message")
-
-            assert result is True
-        finally:
-            Config.BOT_TOKEN = original_token
-            Config.CHAT_ID = original_chat_id
+                assert result is True
 
     def test_send_missing_token(self):
         """Test send with missing token."""
-        # Skip - difficult to mock correctly due to module-level state
-        pytest.skip("Config class attributes are module-level, hard to mock")
+        with patch.object(notify_telegram.Config, "BOT_TOKEN", None):
+            with patch.object(notify_telegram.Config, "CHAT_ID", "test_chat"):
+                with pytest.raises(ValueError, match="TELEGRAM_BOT_TOKEN"):
+                    send_telegram_message("Test message")
 
     def test_send_missing_chat_id(self):
         """Test send with missing chat ID."""
-        # Skip - difficult to mock properly due to module-level state
-        pytest.skip("Config class attributes are module-level, hard to mock")
+        with patch.object(notify_telegram.Config, "BOT_TOKEN", "test_token"):
+            with patch.object(notify_telegram.Config, "CHAT_ID", None):
+                with pytest.raises(ValueError, match="TELEGRAM_CHAT_ID"):
+                    send_telegram_message("Test message")
 
     def test_send_api_error(self):
         """Test send with API error response."""
-        original_token = Config.BOT_TOKEN
-        original_chat_id = Config.CHAT_ID
-        try:
-            Config.BOT_TOKEN = "test_token"
-            Config.CHAT_ID = "test_chat"
+        with patch.object(notify_telegram.Config, "BOT_TOKEN", "test_token"):
+            with patch.object(notify_telegram.Config, "CHAT_ID", "test_chat"):
+                with patch("notify_telegram.urllib.request.build_opener") as mock_builder:
+                    mock_opener = MagicMock()
+                    mock_response = MagicMock()
+                    mock_response.read.return_value = b'{"ok": false, "description": "Bad request"}'
+                    mock_response.__enter__ = MagicMock(return_value=mock_response)
+                    mock_response.__exit__ = MagicMock(return_value=False)
+                    mock_opener.open.return_value = mock_response
+                    mock_builder.return_value = mock_opener
 
-            with patch("notify_telegram.urllib.request.build_opener") as mock_builder:
-                mock_opener = MagicMock()
-                mock_response = MagicMock()
-                mock_response.read.return_value = b'{"ok": false, "description": "Bad request"}'
-                mock_response.__enter__ = MagicMock(return_value=mock_response)
-                mock_response.__exit__ = MagicMock(return_value=False)
-                mock_opener.open.return_value = mock_response
-                mock_builder.return_value = mock_opener
-
-                with pytest.raises(Exception, match="Telegram API"):
-                    send_telegram_message("Test")
-        finally:
-            Config.BOT_TOKEN = original_token
-            Config.CHAT_ID = original_chat_id
+                    with pytest.raises(Exception, match="Telegram API"):
+                        send_telegram_message("Test")
 
 
 if __name__ == "__main__":
