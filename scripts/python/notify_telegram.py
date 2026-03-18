@@ -45,7 +45,6 @@ class Config:
     NOTIFY_ON_COMPLETE: bool = os.environ.get("NOTIFY_ON_COMPLETE", "true").lower() == "true"
     NOTIFY_ON_USER_QUESTION: bool = os.environ.get("NOTIFY_ON_USER_QUESTION", "true").lower() == "true"
     NOTIFY_ON_ERROR: bool = os.environ.get("NOTIFY_ON_ERROR", "true").lower() == "true"
-    NOTIFY_ON_PENDING_PERMISSION: bool = os.environ.get("NOTIFY_ON_PENDING_PERMISSION", "true").lower() == "true"
     NOTIFY_ON_TOOL_USE: bool = os.environ.get("NOTIFY_ON_TOOL_USE", "true").lower() == "true"
 
 
@@ -775,9 +774,6 @@ def main():
         elif status == "ERROR_STOP" and Config.NOTIFY_ON_ERROR:
             message = format_error(data)
             event_type = "错误通知"
-        elif status == "PENDING_PERMISSION" and Config.NOTIFY_ON_PENDING_PERMISSION:
-            message = format_pending_permission(data)
-            event_type = "权限请求"
         elif status == "TOOL_USE" and Config.NOTIFY_ON_TOOL_USE:
             message = format_tool_use(data)
             event_type = "工具调用"
@@ -825,32 +821,6 @@ def main():
                     error=last_error or "Unknown error",
                     retry_count=retry_count,
                 )
-
-
-def format_pending_permission(data: dict) -> str:
-    """格式化权限请求通知
-
-    Args:
-        data: 事件数据
-
-    Returns:
-        格式化的 Telegram 消息
-    """
-    session_id = data.get("session_id", "unknown")[:8]
-    permission_type = data.get("permission_type", "unknown")
-    resource = data.get("resource", "")
-
-    lines = [
-        "🔐 <b>Claude Code 权限请求</b>",
-        "",
-        f"📌 Session: <code>{session_id}</code>",
-        f"🔒 权限类型: {escape_html(permission_type)}",
-    ]
-
-    if resource:
-        lines.append(f"📁 资源: <code>{escape_html(resource)}</code>")
-
-    return "\n".join(lines)
 
 
 if __name__ == "__main__":

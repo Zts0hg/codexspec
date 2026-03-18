@@ -84,7 +84,6 @@ class SessionStatus(Enum):
 
     STREAMING = "STREAMING"  # 流式输出中
     TOOL_USE = "TOOL_USE"  # 工具调用中
-    PENDING_PERMISSION = "PENDING_PERMISSION"  # 等待权限确认
     USER_QUESTION = "USER_QUESTION"  # 等待用户回答
     ERROR_STOP = "ERROR_STOP"  # 出错停止
     TASK_COMPLETE = "TASK_COMPLETE"  # 任务完成
@@ -354,42 +353,6 @@ class OutputFormatter:
     SEPARATOR = "=" * 60
 
     @staticmethod
-    def format_pending_permission(session_id: str, tools: list[ToolUseInfo]) -> str:
-        """
-        格式化等待权限确认的输出
-
-        Args:
-            session_id: Session ID
-            tools: 工具调用列表
-
-        Returns:
-            格式化的输出字符串
-        """
-        lines = [
-            "",
-            OutputFormatter.SEPARATOR,
-            f"[Session: {session_id[:8]}] Status: PENDING_PERMISSION",
-            OutputFormatter.SEPARATOR,
-            "Tools waiting for permission:",
-        ]
-
-        for i, tool in enumerate(tools, 1):
-            lines.append(f"  [{i}] {tool.tool_name}")
-            if tool.description:
-                lines.append(f"      Description: {tool.description}")
-            # 显示工具输入参数
-            if tool.tool_input:
-                lines.append("      Input:")
-                for key, value in tool.tool_input.items():
-                    value_str = str(value)
-                    if len(value_str) > 200:
-                        value_str = value_str[:200] + "..."
-                    lines.append(f"        {key}: {value_str}")
-
-        lines.append(OutputFormatter.SEPARATOR)
-        return "\n".join(lines)
-
-    @staticmethod
     def format_user_question(session_id: str, questions: list[QuestionInfo]) -> str:
         """
         格式化用户询问输出
@@ -552,7 +515,6 @@ class ClaudeSessionMonitor(_get_filesystem_event_handler()):
         on_complete: Optional[callable] = None,
         on_user_question: Optional[callable] = None,
         on_error_stop: Optional[callable] = None,
-        on_pending_permission: Optional[callable] = None,
         on_tool_use: Optional[callable] = None,
     ):
         self.project_dir = project_dir or self._detect_current_project()
@@ -560,7 +522,6 @@ class ClaudeSessionMonitor(_get_filesystem_event_handler()):
         self.on_complete = on_complete
         self.on_user_question = on_user_question
         self.on_error_stop = on_error_stop
-        self.on_pending_permission = on_pending_permission
         self.on_tool_use = on_tool_use
         self.sessions: dict[str, SessionState] = {}
         self._file_positions: dict[str, int] = {}  # 记录每个文件的读取位置
@@ -715,12 +676,8 @@ class ClaudeSessionMonitor(_get_filesystem_event_handler()):
 
         # 触发状态变化回调
         if not silent:
-            # 检测等待权限确认状态
-            if detected_status == SessionStatus.PENDING_PERMISSION:
-                self._on_pending_permission(session_id, state.pending_tools)
-
             # 检测用户询问状态
-            elif detected_status == SessionStatus.USER_QUESTION:
+            if detected_status == SessionStatus.USER_QUESTION:
                 self._on_user_question(session_id, state.questions)
 
             # 检测错误停止状态
@@ -807,21 +764,6 @@ class ClaudeSessionMonitor(_get_filesystem_event_handler()):
 
         # 默认输出格式
         output = OutputFormatter.format_error_stop(session_id, error_info)
-        print(output)
-
-    def _on_pending_permission(self, session_id: str, tools: list[ToolUseInfo]):
-        """等待权限确认时的回调"""
-        # 调用自定义回调（即使在 quiet 模式下也调用）
-        if self.on_pending_permission:
-            self.on_pending_permission(session_id, tools)
-            return
-
-        # quiet 模式下不输出默认格式
-        if self.quiet:
-            return
-
-        # 默认输出格式
-        output = OutputFormatter.format_pending_permission(session_id, tools)
         print(output)
 
     def _on_tool_use(self, session_id: str, tools: list[ToolUseInfo]):
@@ -1110,7 +1052,6 @@ Examples:
     on_complete = None
     on_user_question = None
     on_error_stop = None
-    on_pending_permission = None
     on_tool_use = None
 
     if args.json:
@@ -1163,23 +1104,6 @@ Examples:
             }
             output_json(output)
 
-        def json_pending_permission_callback(session_id: str, tools: list[ToolUseInfo]):
-            output = {
-                "session_id": session_id,
-                "status": SessionStatus.PENDING_PERMISSION.value,
-                "timestamp": time.time(),
-                "tools": [
-                    {
-                        "name": t.tool_name,
-                        "id": t.tool_id,
-                        "input": t.tool_input,
-                        "description": t.description,
-                    }
-                    for t in tools
-                ],
-            }
-            output_json(output)
-
         def json_tool_use_callback(session_id: str, tools: list[ToolUseInfo]):
             output = {
                 "session_id": session_id,
@@ -1199,7 +1123,6 @@ Examples:
         on_complete = json_complete_callback
         on_user_question = json_user_question_callback
         on_error_stop = json_error_stop_callback
-        on_pending_permission = json_pending_permission_callback
         on_tool_use = json_tool_use_callback
 
     # Setup signal handler for graceful shutdown
@@ -1218,7 +1141,6 @@ Examples:
             on_complete=on_complete,
             on_user_question=on_user_question,
             on_error_stop=on_error_stop,
-            on_pending_permission=on_pending_permission,
             on_tool_use=on_tool_use,
         )
         monitor.start(json_mode=args.json)
