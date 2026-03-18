@@ -8,6 +8,8 @@ import argparse
 import atexit
 import json
 import os
+import signal
+import subprocess
 import sys
 import time
 from dataclasses import dataclass, field
@@ -928,6 +930,56 @@ def list_projects():
         print(f"    Sessions: {count}, Last modified: {time.strftime('%Y-%m-%d %H:%M', time.localtime(mtime))}")
 
 
+class TeeNotifier:
+    """Manages notify_telegram.py subprocess for tee-style notification."""
+
+    def __init__(self):
+        self._process: Optional[subprocess.Popen] = None
+
+    def start(self) -> bool:
+        """Start notify_telegram.py subprocess."""
+        try:
+            # Get the path to notify_telegram.py (same directory as this script)
+            notify_script = Path(__file__).parent / "notify_telegram.py"
+            self._process = subprocess.Popen(
+                ["uv", "run", "python3", str(notify_script)],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.DEVNULL,
+                stderr=None,  # Let notify_telegram log to stderr
+                text=True,
+                bufsize=1,  # Line buffered
+            )
+            return True
+        except Exception as e:
+            print(f"[ERROR] Failed to start notify_telegram: {e}", file=sys.stderr)
+            return False
+
+    def write(self, line: str) -> None:
+        """Write a line to both stdout and subprocess."""
+        # Always write to stdout for observation
+        print(line, flush=True)
+
+        # Write to subprocess if running
+        if self._process and self._process.stdin:
+            try:
+                self._process.stdin.write(line + "\n")
+                self._process.stdin.flush()
+            except (BrokenPipeError, OSError):
+                # Subprocess died, continue with stdout only
+                self._process = None
+
+    def stop(self) -> None:
+        """Gracefully stop the subprocess."""
+        if self._process:
+            try:
+                self._process.stdin.close()
+                self._process.wait(timeout=5)
+            except Exception:
+                self._process.terminate()
+            finally:
+                self._process = None
+
+
 def main():
     # 确保只有一个实例运行
     atexit.register(_cleanup_pid_file)
@@ -975,12 +1027,30 @@ Examples:
         action="store_true",
         help="Output completion events as JSON (one per line)",
     )
+    parser.add_argument(
+        "--tee-notify",
+        action="store_true",
+        help="Send JSON events to both stdout and notify_telegram.py subprocess (requires --json)",
+    )
 
     args = parser.parse_args()
 
     if args.list:
         list_projects()
         return
+
+    # Validate --tee-notify requires --json
+    if args.tee_notify and not args.json:
+        print("[ERROR] --tee-notify requires --json mode", file=sys.stderr)
+        sys.exit(1)
+
+    # Handle tee-notify mode
+    tee_notifier: Optional[TeeNotifier] = None
+    if args.tee_notify:
+        tee_notifier = TeeNotifier()
+        if not tee_notifier.start():
+            print("[WARN] Falling back to stdout-only mode", file=sys.stderr)
+            tee_notifier = None
 
     # 创建自定义回调用于 JSON 输出
     on_complete = None
@@ -989,6 +1059,13 @@ Examples:
     on_pending_permission = None
 
     if args.json:
+        # Output function: use tee_notifier if available, otherwise print directly
+        def output_json(data: dict) -> None:
+            line = json.dumps(data, ensure_ascii=False)
+            if tee_notifier:
+                tee_notifier.write(line)
+            else:
+                print(line, flush=True)
 
         def json_complete_callback(session_id: str, state: SessionState):
             output = {
@@ -998,7 +1075,7 @@ Examples:
                 "timestamp": time.time(),
                 "output": state.last_output or "",
             }
-            print(json.dumps(output, ensure_ascii=False), flush=True)
+            output_json(output)
 
         def json_user_question_callback(session_id: str, questions: list[QuestionInfo]):
             output = {
@@ -1015,7 +1092,7 @@ Examples:
                     for q in questions
                 ],
             }
-            print(json.dumps(output, ensure_ascii=False), flush=True)
+            output_json(output)
 
         def json_error_stop_callback(session_id: str, error_info: ErrorInfo):
             output = {
@@ -1029,7 +1106,7 @@ Examples:
                     "tool_input": error_info.tool_input,
                 },
             }
-            print(json.dumps(output, ensure_ascii=False), flush=True)
+            output_json(output)
 
         def json_pending_permission_callback(session_id: str, tools: list[ToolUseInfo]):
             output = {
@@ -1046,12 +1123,21 @@ Examples:
                     for t in tools
                 ],
             }
-            print(json.dumps(output, ensure_ascii=False), flush=True)
+            output_json(output)
 
         on_complete = json_complete_callback
         on_user_question = json_user_question_callback
         on_error_stop = json_error_stop_callback
         on_pending_permission = json_pending_permission_callback
+
+    # Setup signal handler for graceful shutdown
+    def signal_handler(signum, frame):
+        if tee_notifier:
+            tee_notifier.stop()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
 
     try:
         monitor = ClaudeSessionMonitor(
@@ -1068,6 +1154,9 @@ Examples:
         exit(1)
     except KeyboardInterrupt:
         print("\nMonitoring stopped")
+    finally:
+        if tee_notifier:
+            tee_notifier.stop()
 
 
 if __name__ == "__main__":
