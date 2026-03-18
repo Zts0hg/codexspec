@@ -343,6 +343,86 @@ class StateDetector:
 
 
 # ============================================================================
+# 工具详情提取 (Phase 2.5: Tool Details Enhancement)
+# ============================================================================
+
+
+def truncate_string(text: str, max_length: int = 100) -> str:
+    """Truncate string to max_length with ellipsis.
+
+    Args:
+        text: String to truncate
+        max_length: Maximum length (default 100)
+
+    Returns:
+        Truncated string with "..." suffix if needed
+    """
+    if not text:
+        return ""
+    if len(text) <= max_length:
+        return text
+    return text[: max_length - 3] + "..."
+
+
+def extract_tool_details(tool_name: str, tool_input: dict, max_length: int = 100) -> dict:
+    """Extract tool-specific details for display.
+
+    Args:
+        tool_name: Name of the tool (e.g., "Bash", "Read", "Edit")
+        tool_input: Tool input dictionary
+        max_length: Maximum length for truncated strings
+
+    Returns:
+        Dictionary with tool-specific details
+    """
+    details = {}
+
+    # Common field - file_path is used by many tools
+    if "file_path" in tool_input:
+        details["file_path"] = tool_input["file_path"]
+
+    # Tool-specific extraction
+    if tool_name == "Bash":
+        if "command" in tool_input:
+            details["command"] = truncate_string(tool_input["command"], max_length)
+        if "description" in tool_input:
+            details["description"] = truncate_string(tool_input["description"], max_length)
+    elif tool_name == "Read":
+        if "offset" in tool_input:
+            details["offset"] = tool_input["offset"]
+        if "limit" in tool_input:
+            details["limit"] = tool_input["limit"]
+    elif tool_name == "Write":
+        if "content" in tool_input:
+            details["content_preview"] = truncate_string(tool_input["content"], 50)
+    elif tool_name == "Edit":
+        if "old_string" in tool_input:
+            details["old_string"] = truncate_string(tool_input["old_string"], 50)
+        if "new_string" in tool_input:
+            details["new_string"] = truncate_string(tool_input["new_string"], 50)
+    elif tool_name in ("Grep", "Glob"):
+        if "pattern" in tool_input:
+            details["pattern"] = tool_input["pattern"]
+        if "path" in tool_input:
+            details["path"] = tool_input["path"]
+        if tool_name == "Grep" and "output_mode" in tool_input:
+            details["output_mode"] = tool_input["output_mode"]
+    elif tool_name == "Agent":
+        if "subagent_type" in tool_input:
+            details["subagent_type"] = tool_input["subagent_type"]
+        if "description" in tool_input:
+            details["description"] = truncate_string(tool_input["description"], max_length)
+    elif tool_name == "WebSearch":
+        if "query" in tool_input:
+            details["query"] = truncate_string(tool_input["query"], max_length)
+    elif tool_name == "Task":
+        if "description" in tool_input:
+            details["description"] = truncate_string(tool_input["description"], max_length)
+
+    return details
+
+
+# ============================================================================
 # 输出格式化器 (Phase 2: Core Implementation)
 # ============================================================================
 
@@ -467,13 +547,15 @@ class OutputFormatter:
 
         for i, tool in enumerate(tools, 1):
             lines.append(f"  [{i}] {tool.tool_name}")
-            # 显示文件路径（如果有）
+            # Extract and display tool-specific details
             if tool.tool_input:
-                file_path = tool.tool_input.get("file_path")
-                if file_path:
-                    # 截断长路径
-                    display_path = file_path if len(file_path) <= 60 else "..." + file_path[-57:]
-                    lines.append(f"      File: {display_path}")
+                details = extract_tool_details(tool.tool_name, tool.tool_input)
+                for key, value in details.items():
+                    # Truncate long values for display
+                    display_value = str(value)
+                    if len(display_value) > 60:
+                        display_value = display_value[:57] + "..."
+                    lines.append(f"      {key}: {display_value}")
 
         lines.append(OutputFormatter.SEPARATOR)
         return "\n".join(lines)
@@ -1113,7 +1195,7 @@ Examples:
                     {
                         "name": t.tool_name,
                         "id": t.tool_id,
-                        "file_path": t.tool_input.get("file_path") if t.tool_input else None,
+                        "details": extract_tool_details(t.tool_name, t.tool_input or {}),
                     }
                     for t in tools
                 ],
