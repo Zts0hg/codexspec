@@ -682,13 +682,63 @@ def format_tool_use(data: dict) -> str:
 
     for tool in tools[:5]:  # 最多显示5个工具
         name = tool.get("name", "unknown")
-        file_path = tool.get("file_path")
-        if file_path:
-            # 只显示文件名
-            filename = file_path.split("/")[-1]
-            lines.append(f"• {name}: <code>{escape_html(filename)}</code>")
+        details = tool.get("details", {})
+
+        # Build tool summary based on tool type
+        summary_parts = []
+        if name == "Bash":
+            if "command" in details:
+                summary_parts.append(f"cmd: {escape_html(details['command'])}")
+            if "description" in details:
+                summary_parts.append(f"desc: {escape_html(details['description'])}")
+        elif name == "Read":
+            if "file_path" in details:
+                filename = details["file_path"].split("/")[-1]
+                summary_parts.append(f"file: {escape_html(filename)}")
+            if "offset" in details or "limit" in details:
+                offset = details.get("offset", "?")
+                limit = details.get("limit", "?")
+                summary_parts.append(f"lines: {offset}-{offset + limit if limit != '?' else '?'}")
+        elif name == "Write":
+            if "file_path" in details:
+                filename = details["file_path"].split("/")[-1]
+                summary_parts.append(f"file: {escape_html(filename)}")
+            if "content_preview" in details:
+                summary_parts.append(f"preview: {escape_html(details['content_preview'])}")
+        elif name == "Edit":
+            if "file_path" in details:
+                filename = details["file_path"].split("/")[-1]
+                summary_parts.append(f"file: {escape_html(filename)}")
+            if "old_string" in details:
+                summary_parts.append(f"old: {escape_html(details['old_string'])}")
+        elif name in ("Grep", "Glob"):
+            if "pattern" in details:
+                summary_parts.append(f"pattern: {escape_html(details['pattern'])}")
+            if "path" in details:
+                summary_parts.append(f"path: {escape_html(details['path'])}")
+            if name == "Grep" and "output_mode" in details:
+                summary_parts.append(f"mode: {escape_html(details['output_mode'])}")
+        elif name == "Agent":
+            if "subagent_type" in details:
+                summary_parts.append(f"type: {escape_html(details['subagent_type'])}")
+            if "description" in details:
+                summary_parts.append(f"desc: {escape_html(details['description'])}")
+        elif name == "WebSearch":
+            if "query" in details:
+                summary_parts.append(f"query: {escape_html(details['query'])}")
+        elif name == "Task":
+            if "description" in details:
+                summary_parts.append(f"desc: {escape_html(details['description'])}")
         else:
-            lines.append(f"• {name}")
+            # Fallback: show file_path if available
+            if "file_path" in details:
+                filename = details["file_path"].split("/")[-1]
+                summary_parts.append(f"file: {escape_html(filename)}")
+
+        if summary_parts:
+            lines.append(f"• <b>{name}</b>: {' | '.join(summary_parts)}")
+        else:
+            lines.append(f"• <b>{name}</b>")
 
     if len(tools) > 5:
         lines.append(f"• ... 还有 {len(tools) - 5} 个工具")
@@ -724,6 +774,8 @@ def process_event(line: str) -> Optional[str]:
         return format_user_question(data)
     elif status == "ERROR_STOP" and Config.NOTIFY_ON_ERROR:
         return format_error(data)
+    elif status == "TOOL_USE" and Config.NOTIFY_ON_TOOL_USE:
+        return format_tool_use(data)
 
     return None
 
