@@ -46,6 +46,7 @@ class Config:
     NOTIFY_ON_USER_QUESTION: bool = os.environ.get("NOTIFY_ON_USER_QUESTION", "true").lower() == "true"
     NOTIFY_ON_ERROR: bool = os.environ.get("NOTIFY_ON_ERROR", "true").lower() == "true"
     NOTIFY_ON_PENDING_PERMISSION: bool = os.environ.get("NOTIFY_ON_PENDING_PERMISSION", "true").lower() == "true"
+    NOTIFY_ON_TOOL_USE: bool = os.environ.get("NOTIFY_ON_TOOL_USE", "true").lower() == "true"
 
 
 # ============================================================================
@@ -660,6 +661,42 @@ def format_error(data: dict) -> str:
     return "\n".join(lines)
 
 
+def format_tool_use(data: dict) -> str:
+    """格式化工具调用通知
+
+    Args:
+        data: 包含工具调用信息的字典
+
+    Returns:
+        格式化后的 Telegram 消息
+    """
+    session_id = data.get("session_id", "unknown")[:8]
+    tools = data.get("tools", [])
+
+    lines = [
+        "🔧 <b>Claude Code 工具调用</b>",
+        "",
+        f"📌 Session: <code>{session_id}</code>",
+        "",
+        "<b>工具列表:</b>",
+    ]
+
+    for tool in tools[:5]:  # 最多显示5个工具
+        name = tool.get("name", "unknown")
+        file_path = tool.get("file_path")
+        if file_path:
+            # 只显示文件名
+            filename = file_path.split("/")[-1]
+            lines.append(f"• {name}: <code>{escape_html(filename)}</code>")
+        else:
+            lines.append(f"• {name}")
+
+    if len(tools) > 5:
+        lines.append(f"• ... 还有 {len(tools) - 5} 个工具")
+
+    return "\n".join(lines)
+
+
 # ============================================================================
 # 主循环
 # ============================================================================
@@ -741,6 +778,9 @@ def main():
         elif status == "PENDING_PERMISSION" and Config.NOTIFY_ON_PENDING_PERMISSION:
             message = format_pending_permission(data)
             event_type = "权限请求"
+        elif status == "TOOL_USE" and Config.NOTIFY_ON_TOOL_USE:
+            message = format_tool_use(data)
+            event_type = "工具调用"
 
         if message and event_type:
             final_message = message  # Capture for closure

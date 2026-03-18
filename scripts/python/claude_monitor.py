@@ -482,6 +482,39 @@ class OutputFormatter:
         lines.append(OutputFormatter.SEPARATOR)
         return "\n".join(lines)
 
+    @staticmethod
+    def format_tool_use(session_id: str, tools: list[ToolUseInfo]) -> str:
+        """
+        格式化工具调用输出
+
+        Args:
+            session_id: Session ID
+            tools: 工具调用列表
+
+        Returns:
+            格式化的输出字符串
+        """
+        lines = [
+            "",
+            OutputFormatter.SEPARATOR,
+            f"[Session: {session_id[:8]}] Status: TOOL_USE",
+            OutputFormatter.SEPARATOR,
+            "Tools being executed:",
+        ]
+
+        for i, tool in enumerate(tools, 1):
+            lines.append(f"  [{i}] {tool.tool_name}")
+            # 显示文件路径（如果有）
+            if tool.tool_input:
+                file_path = tool.tool_input.get("file_path")
+                if file_path:
+                    # 截断长路径
+                    display_path = file_path if len(file_path) <= 60 else "..." + file_path[-57:]
+                    lines.append(f"      File: {display_path}")
+
+        lines.append(OutputFormatter.SEPARATOR)
+        return "\n".join(lines)
+
 
 def _get_filesystem_event_handler():
     """延迟获取 FileSystemEventHandler 基类"""
@@ -520,6 +553,7 @@ class ClaudeSessionMonitor(_get_filesystem_event_handler()):
         on_user_question: Optional[callable] = None,
         on_error_stop: Optional[callable] = None,
         on_pending_permission: Optional[callable] = None,
+        on_tool_use: Optional[callable] = None,
     ):
         self.project_dir = project_dir or self._detect_current_project()
         self.quiet = quiet
@@ -527,6 +561,7 @@ class ClaudeSessionMonitor(_get_filesystem_event_handler()):
         self.on_user_question = on_user_question
         self.on_error_stop = on_error_stop
         self.on_pending_permission = on_pending_permission
+        self.on_tool_use = on_tool_use
         self.sessions: dict[str, SessionState] = {}
         self._file_positions: dict[str, int] = {}  # 记录每个文件的读取位置
         self._observer: "Optional[Observer]" = None
@@ -692,6 +727,10 @@ class ClaudeSessionMonitor(_get_filesystem_event_handler()):
             elif detected_status == SessionStatus.ERROR_STOP:
                 self._on_error_stop(session_id, state.error_info)
 
+            # 检测工具调用状态
+            elif detected_status == SessionStatus.TOOL_USE:
+                self._on_tool_use(session_id, state.pending_tools)
+
             # 检测从执行中变为完成（状态变化）
             elif previous_executing and not state.is_executing:
                 self._on_execution_complete(session_id, state)
@@ -783,6 +822,21 @@ class ClaudeSessionMonitor(_get_filesystem_event_handler()):
 
         # 默认输出格式
         output = OutputFormatter.format_pending_permission(session_id, tools)
+        print(output)
+
+    def _on_tool_use(self, session_id: str, tools: list[ToolUseInfo]):
+        """工具调用时的回调"""
+        # 调用自定义回调（即使在 quiet 模式下也调用）
+        if self.on_tool_use:
+            self.on_tool_use(session_id, tools)
+            return
+
+        # quiet 模式下不输出默认格式
+        if self.quiet:
+            return
+
+        # 默认输出格式
+        output = OutputFormatter.format_tool_use(session_id, tools)
         print(output)
 
     def _print_completion(self, session_id: str, state: SessionState):
@@ -1057,6 +1111,7 @@ Examples:
     on_user_question = None
     on_error_stop = None
     on_pending_permission = None
+    on_tool_use = None
 
     if args.json:
         # Output function: use tee_notifier if available, otherwise print directly
@@ -1125,10 +1180,27 @@ Examples:
             }
             output_json(output)
 
+        def json_tool_use_callback(session_id: str, tools: list[ToolUseInfo]):
+            output = {
+                "session_id": session_id,
+                "status": SessionStatus.TOOL_USE.value,
+                "timestamp": time.time(),
+                "tools": [
+                    {
+                        "name": t.tool_name,
+                        "id": t.tool_id,
+                        "file_path": t.tool_input.get("file_path") if t.tool_input else None,
+                    }
+                    for t in tools
+                ],
+            }
+            output_json(output)
+
         on_complete = json_complete_callback
         on_user_question = json_user_question_callback
         on_error_stop = json_error_stop_callback
         on_pending_permission = json_pending_permission_callback
+        on_tool_use = json_tool_use_callback
 
     # Setup signal handler for graceful shutdown
     def signal_handler(signum, frame):
@@ -1147,6 +1219,7 @@ Examples:
             on_user_question=on_user_question,
             on_error_stop=on_error_stop,
             on_pending_permission=on_pending_permission,
+            on_tool_use=on_tool_use,
         )
         monitor.start(json_mode=args.json)
     except FileNotFoundError as e:
