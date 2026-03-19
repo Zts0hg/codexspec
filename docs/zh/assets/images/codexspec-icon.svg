@@ -13,14 +13,14 @@
   <!-- Inner accent border (subtle) -->
   <rect x="1" y="1" width="118" height="118" rx="21.5" fill="none" stroke="#21262d" stroke-width="1"/>
 
-  <!-- Icon mark: {×} -->
+  <!-- Icon mark: {×} - MORE PROMINENT -->
   <!-- { -->
-  <text class="mono" x="36"  y="62" font-size="44" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">{</text>
+  <text class="mono" x="28" y="58" font-size="68" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">{</text>
   <!-- × -->
-  <text class="mono" x="60"  y="61" font-size="34" font-weight="700" fill="#f0883e" text-anchor="middle" dominant-baseline="middle">×</text>
+  <text class="mono" x="60" y="57" font-size="52" font-weight="700" fill="#f0883e" text-anchor="middle" dominant-baseline="middle">×</text>
   <!-- } -->
-  <text class="mono" x="84"  y="62" font-size="44" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">}</text>
+  <text class="mono" x="92" y="58" font-size="68" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">}</text>
 
   <!-- Bottom label -->
-  <text class="mono" x="60" y="96" font-size="8.5" font-weight="400" fill="#6e7681" text-anchor="middle" letter-spacing="1.5">codexspec</text>
+  <text class="mono" x="60" y="100" font-size="8.5" font-weight="400" fill="#6e7681" text-anchor="middle" letter-spacing="1.5">codexspec</text>
 </svg>
