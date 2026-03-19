@@ -577,6 +577,38 @@ def escape_html(text: str) -> str:
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
+def format_code_block(content: str, max_length: int = 500) -> str:
+    """将内容格式化为 Telegram 代码块
+
+    Args:
+        content: 要格式化的内容
+        max_length: 最大长度，超过则截断。设为 0 禁用截断
+
+    Returns:
+        格式化后的 <pre> 标签内容
+    """
+    if max_length > 0 and len(content) > max_length:
+        content = content[:max_length] + "\n... (已截断)"
+
+    return f"<pre>{escape_html(content)}</pre>"
+
+
+def format_tool_entry(name: str, details: dict) -> str:
+    """格式化单个工具条目
+
+    Args:
+        name: 工具名称
+        details: 工具详情字典
+
+    Returns:
+        格式化后的工具条目（标题 + 代码块）
+    """
+    detail_lines = [f"{k}: {v}" for k, v in details.items() if v]
+    content = "\n".join(detail_lines) if detail_lines else "无详情"
+
+    return f"<b>{escape_html(name)}</b>\n{format_code_block(content)}"
+
+
 def format_task_complete(data: dict) -> str:
     """格式化任务完成通知"""
     session_id = (data.get("session_id") or "unknown")[:8]
@@ -611,6 +643,8 @@ def format_user_question(data: dict) -> str:
         "❓ <b>Claude Code 需要你的输入</b>",
         "",
         f"📌 Session: <code>{session_id}</code>",
+        "",
+        "📝 问题详情:",
     ]
 
     for i, q in enumerate(questions, 1):
@@ -619,20 +653,31 @@ def format_user_question(data: dict) -> str:
         options = q.get("options", [])
         multi_select = q.get("multi_select", False)
 
+        # 构建问题标题
         lines.append("")
         lines.append(f"<b>问题 {i}:</b> {escape_html(question)}")
+
+        # 构建代码块内容
+        code_block_lines = []
         if header:
-            lines.append(f"📋 {escape_html(header)}")
+            code_block_lines.append(f"📋 {header}")
+            code_block_lines.append("")
 
         if options:
-            lines.append("<b>选项:</b>")
+            code_block_lines.append("选项:")
             for opt in options:
                 label = opt.get("label", "")
                 desc = opt.get("description", "")
-                lines.append(f"  • {escape_html(label)} - {escape_html(desc)}")
+                code_block_lines.append(f"  • {label} - {desc}")
+            code_block_lines.append("")
 
         if multi_select:
-            lines.append("☑️ 可多选")
+            code_block_lines.append("☑️ 可多选")
+
+        # 添加代码块
+        if code_block_lines:
+            content = "\n".join(code_block_lines).strip()
+            lines.append(format_code_block(content, max_length=0))  # 禁用截断
 
     return "\n".join(lines)
 
@@ -651,13 +696,82 @@ def format_error(data: dict) -> str:
         "",
         f"📌 Session: <code>{session_id}</code>",
         f"🔴 Error type: {error_type}",
-        f"💬 Message: {escape_html(message)}",
+        "",
+        "📝 错误详情:",
     ]
 
+    # 构建代码块内容
+    code_block_lines = [f"Message: {message}"]
     if tool_name:
-        lines.append(f"🔧 Tool: {escape_html(tool_name)}")
+        code_block_lines.append(f"Tool: {tool_name}")
+
+    content = "\n".join(code_block_lines)
+    lines.append(format_code_block(content))
 
     return "\n".join(lines)
+
+
+def _extract_tool_details(name: str, details: dict) -> dict:
+    """提取工具特定的详情信息
+
+    Args:
+        name: 工具名称
+        details: 原始详情字典
+
+    Returns:
+        提取后的详情字典
+    """
+    extracted = {}
+
+    if name == "Bash":
+        if "command" in details:
+            extracted["cmd"] = details["command"]
+        if "description" in details:
+            extracted["desc"] = details["description"]
+    elif name == "Read":
+        if "file_path" in details:
+            extracted["file"] = details["file_path"].split("/")[-1]
+        if "offset" in details or "limit" in details:
+            offset = details.get("offset", "?")
+            limit = details.get("limit", "?")
+            if limit != "?" and offset != "?":
+                extracted["lines"] = f"{offset}-{offset + limit}"
+            else:
+                extracted["lines"] = f"{offset}-?"
+    elif name == "Write":
+        if "file_path" in details:
+            extracted["file"] = details["file_path"].split("/")[-1]
+        if "content_preview" in details:
+            extracted["preview"] = details["content_preview"]
+    elif name == "Edit":
+        if "file_path" in details:
+            extracted["file"] = details["file_path"].split("/")[-1]
+        if "old_string" in details:
+            extracted["old"] = details["old_string"]
+    elif name in ("Grep", "Glob"):
+        if "pattern" in details:
+            extracted["pattern"] = details["pattern"]
+        if "path" in details:
+            extracted["path"] = details["path"]
+        if name == "Grep" and "output_mode" in details:
+            extracted["mode"] = details["output_mode"]
+    elif name == "Agent":
+        if "subagent_type" in details:
+            extracted["type"] = details["subagent_type"]
+        if "description" in details:
+            extracted["desc"] = details["description"]
+    elif name == "WebSearch":
+        if "query" in details:
+            extracted["query"] = details["query"]
+    elif name == "Task":
+        if "description" in details:
+            extracted["desc"] = details["description"]
+    else:
+        # Fallback: show file_path if available
+        if "file_path" in details:
+            extracted["file"] = details["file_path"].split("/")[-1]
+
+    return extracted
 
 
 def format_tool_use(data: dict) -> str:
@@ -677,70 +791,27 @@ def format_tool_use(data: dict) -> str:
         "",
         f"📌 Session: <code>{session_id}</code>",
         "",
-        "<b>工具列表:</b>",
+        "📝 工具调用详情:",
     ]
 
-    for tool in tools[:5]:  # 最多显示5个工具
+    # 处理空工具列表
+    if not tools:
+        lines.append("")
+        lines.append("无工具调用信息")
+        return "\n".join(lines)
+
+    # 格式化每个工具（最多5个）
+    for tool in tools[:5]:
         name = tool.get("name", "unknown")
         details = tool.get("details", {})
+        extracted_details = _extract_tool_details(name, details)
 
-        # Build tool summary based on tool type
-        summary_parts = []
-        if name == "Bash":
-            if "command" in details:
-                summary_parts.append(f"cmd: {escape_html(details['command'])}")
-            if "description" in details:
-                summary_parts.append(f"desc: {escape_html(details['description'])}")
-        elif name == "Read":
-            if "file_path" in details:
-                filename = details["file_path"].split("/")[-1]
-                summary_parts.append(f"file: {escape_html(filename)}")
-            if "offset" in details or "limit" in details:
-                offset = details.get("offset", "?")
-                limit = details.get("limit", "?")
-                summary_parts.append(f"lines: {offset}-{offset + limit if limit != '?' else '?'}")
-        elif name == "Write":
-            if "file_path" in details:
-                filename = details["file_path"].split("/")[-1]
-                summary_parts.append(f"file: {escape_html(filename)}")
-            if "content_preview" in details:
-                summary_parts.append(f"preview: {escape_html(details['content_preview'])}")
-        elif name == "Edit":
-            if "file_path" in details:
-                filename = details["file_path"].split("/")[-1]
-                summary_parts.append(f"file: {escape_html(filename)}")
-            if "old_string" in details:
-                summary_parts.append(f"old: {escape_html(details['old_string'])}")
-        elif name in ("Grep", "Glob"):
-            if "pattern" in details:
-                summary_parts.append(f"pattern: {escape_html(details['pattern'])}")
-            if "path" in details:
-                summary_parts.append(f"path: {escape_html(details['path'])}")
-            if name == "Grep" and "output_mode" in details:
-                summary_parts.append(f"mode: {escape_html(details['output_mode'])}")
-        elif name == "Agent":
-            if "subagent_type" in details:
-                summary_parts.append(f"type: {escape_html(details['subagent_type'])}")
-            if "description" in details:
-                summary_parts.append(f"desc: {escape_html(details['description'])}")
-        elif name == "WebSearch":
-            if "query" in details:
-                summary_parts.append(f"query: {escape_html(details['query'])}")
-        elif name == "Task":
-            if "description" in details:
-                summary_parts.append(f"desc: {escape_html(details['description'])}")
-        else:
-            # Fallback: show file_path if available
-            if "file_path" in details:
-                filename = details["file_path"].split("/")[-1]
-                summary_parts.append(f"file: {escape_html(filename)}")
+        lines.append("")
+        lines.append(format_tool_entry(name, extracted_details))
 
-        if summary_parts:
-            lines.append(f"• <b>{name}</b>: {' | '.join(summary_parts)}")
-        else:
-            lines.append(f"• <b>{name}</b>")
-
+    # 超出限制提示
     if len(tools) > 5:
+        lines.append("")
         lines.append(f"• ... 还有 {len(tools) - 5} 个工具")
 
     return "\n".join(lines)
