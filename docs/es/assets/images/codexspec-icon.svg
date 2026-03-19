@@ -1,0 +1,26 @@
+<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .mono {
+        font-family: 'JetBrains Mono','Fira Code','SF Mono','Consolas','Courier New',monospace;
+      }
+    </style>
+  </defs>
+
+  <!-- Background square -->
+  <rect width="120" height="120" rx="22" fill="#0d1117"/>
+
+  <!-- Inner accent border (subtle) -->
+  <rect x="1" y="1" width="118" height="118" rx="21.5" fill="none" stroke="#21262d" stroke-width="1"/>
+
+  <!-- Icon mark: {×} -->
+  <!-- { -->
+  <text class="mono" x="36"  y="62" font-size="44" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">{</text>
+  <!-- × -->
+  <text class="mono" x="60"  y="61" font-size="34" font-weight="700" fill="#f0883e" text-anchor="middle" dominant-baseline="middle">×</text>
+  <!-- } -->
+  <text class="mono" x="84"  y="62" font-size="44" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">}</text>
+
+  <!-- Bottom label -->
+  <text class="mono" x="60" y="96" font-size="8.5" font-weight="400" fill="#6e7681" text-anchor="middle" letter-spacing="1.5">codexspec</text>
+</svg>

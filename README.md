@@ -1,3 +1,9 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="codexspec-logo-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="codexspec-logo-light.svg">
+  <img alt="CodexSpec Logo" src="codexspec-logo-light.svg" width="420">
+</picture>
+
 # CodexSpec
 
 **English** | [中文](README.zh-CN.md) | [日本語](README.ja.md) | [Español](README.es.md) | [Português](README.pt-BR.md) | [한국어](README.ko.md) | [Deutsch](README.de.md) | [Français](README.fr.md)
