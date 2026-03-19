@@ -1,0 +1,34 @@
+<svg viewBox="0 0 420 96" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .mono {
+        font-family: 'JetBrains Mono','Fira Code','SF Mono','Consolas','Courier New',monospace;
+      }
+    </style>
+  </defs>
+
+  <!-- Background -->
+  <rect width="420" height="96" rx="12" fill="#ffffff" stroke="#d0d7de" stroke-width="1"/>
+
+  <!-- ── Wordmark: {code} × <spec> ── -->
+
+  <!-- { -->
+  <text class="mono" x="36"  y="47" font-size="40" font-weight="700" fill="#0969da" dominant-baseline="middle">{</text>
+  <!-- code -->
+  <text class="mono" x="62"  y="47" font-size="33" font-weight="500" fill="#1f2328" dominant-baseline="middle">code</text>
+  <!-- } -->
+  <text class="mono" x="145" y="47" font-size="40" font-weight="700" fill="#0969da" dominant-baseline="middle">}</text>
+
+  <!-- × operator -->
+  <text class="mono" x="196" y="46" font-size="26" font-weight="700" fill="#bc4c00" dominant-baseline="middle" text-anchor="middle">×</text>
+
+  <!-- < -->
+  <text class="mono" x="221" y="47" font-size="40" font-weight="700" fill="#1a7f37" dominant-baseline="middle">&lt;</text>
+  <!-- spec -->
+  <text class="mono" x="247" y="47" font-size="33" font-weight="500" fill="#1f2328" dominant-baseline="middle">spec</text>
+  <!-- > -->
+  <text class="mono" x="330" y="47" font-size="40" font-weight="700" fill="#1a7f37" dominant-baseline="middle">&gt;</text>
+
+  <!-- Tagline -->
+  <text class="mono" x="210" y="75" font-size="9" font-weight="400" fill="#8c959f" text-anchor="middle" letter-spacing="2.8">SPEC · DRIVEN · DEVELOPMENT</text>
+</svg>

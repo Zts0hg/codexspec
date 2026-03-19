@@ -1,3 +1,9 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/images/codexspec-logo-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/images/codexspec-logo-light.svg">
+  <img alt="CodexSpec Logo" src="assets/images/codexspec-logo-light.svg" width="420">
+</picture>
+
 # Willkommen bei CodexSpec
 
 [![PyPI version](https://img.shields.io/pypi/v/codexspec:svg)](https://pypi.org/project/codexspec/)
