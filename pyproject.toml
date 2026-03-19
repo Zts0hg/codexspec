@@ -71,6 +71,9 @@ include = [
     "/src",
     "/templates",
     "/scripts",
+    "/codexspec-icon.svg",
+    "/codexspec-logo-dark.svg",
+    "/codexspec-logo-light.svg",
 ]
 
 [tool.ruff]

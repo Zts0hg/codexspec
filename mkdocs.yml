@@ -12,11 +12,12 @@ docs_dir: docs
 exclude_docs: |
   /plans/
   /i18n/
+  /internal/
 
 theme:
   name: material
-  favicon: assets/images/favicon.svg
-  logo: assets/images/favicon.svg
+  favicon: assets/images/codexspec-icon.svg
+  logo: assets/images/codexspec-icon.svg
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
