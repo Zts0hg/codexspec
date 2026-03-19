@@ -1,0 +1,56 @@
+<svg viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg" width="800" height="300">
+  <defs>
+    <style>
+      .mono { font-family: 'JetBrains Mono','Fira Code','SF Mono','Consolas','Courier New',monospace; }
+      .guide { stroke: #ff0000; stroke-width: 0.3; }
+      .center { stroke: #00ff00; stroke-width: 0.3; }
+    </style>
+  </defs>
+
+  <rect width="400" height="150" fill="#0d1117"/>
+
+  <!-- Original icon with guide lines -->
+  <g transform="translate(10, 0)">
+    <!-- Horizontal center line at y=56 -->
+    <line x1="0" y1="56" x2="130" y2="56" class="guide"/>
+
+    <!-- The icon -->
+    <text class="mono" x="22" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">{</text>
+    <text class="mono" x="60" y="56" font-size="70" font-weight="700" fill="#f0883e" text-anchor="middle" dominant-baseline="middle">×</text>
+    <text class="mono" x="98" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">}</text>
+
+    <!-- Vertical guide through × center -->
+    <line x1="60" y1="0" x2="60" y2="120" class="center"/>
+  </g>
+
+  <!-- Analysis section -->
+  <g transform="translate(160, 0)">
+    <text x="0" y="20" fill="#fff" font-size="10">Analysis:</text>
+    <text x="0" y="35" fill="#8b949e" font-size="8">- Red line: y=56 baseline</text>
+    <text x="0" y="48" fill="#8b949e" font-size="8">- Green line: x=60 vertical</text>
+    <text x="0" y="61" fill="#8b949e" font-size="8">- Check if × cross aligns</text>
+    <text x="0" y="74" fill="#8b949e" font-size="8">  with {} curve center</text>
+
+    <text x="0" y="95" fill="#f0883e" font-size="9">Font sizes:</text>
+    <text x="0" y="108" fill="#8b949e" font-size="8">{} : 88px</text>
+    <text x="0" y="121" fill="#8b949e" font-size="8">×  : 70px</text>
+  </g>
+
+  <!-- Slice comparison: horizontal slices at different y positions -->
+  <g transform="translate(280, 0)">
+    <text x="0" y="15" fill="#fff" font-size="10">Y-slice test:</text>
+
+    <!-- Draw horizontal lines at y=56 for reference -->
+    <rect x="0" y="50" width="100" height="1" fill="#ff0000" opacity="0.5"/>
+    <rect x="0" y="56" width="100" height="1" fill="#ff0000"/>
+    <rect x="0" y="62" width="100" height="1" fill="#ff0000" opacity="0.5"/>
+
+    <!-- Mini versions to compare -->
+    <text class="mono" x="15" y="57" font-size="20" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">{</text>
+    <text class="mono" x="50" y="57" font-size="16" font-weight="700" fill="#f0883e" text-anchor="middle" dominant-baseline="middle">×</text>
+    <text class="mono" x="85" y="57" font-size="20" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">}</text>
+
+    <text x="50" y="90" fill="#8b949e" font-size="8" text-anchor="middle">Mini version</text>
+    <text x="50" y="102" fill="#8b949e" font-size="8" text-anchor="middle">y=57 for all</text>
+  </g>
+</svg>

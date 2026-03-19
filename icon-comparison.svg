@@ -1,0 +1,90 @@
+<svg viewBox="0 0 360 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .mono { font-family: 'JetBrains Mono','Fira Code','SF Mono','Consolas','Courier New',monospace; }
+    </style>
+  </defs>
+
+  <rect width="360" height="400" fill="#0d1117"/>
+
+  <!-- Version 1: y=56 for all (current) -->
+  <g transform="translate(0, 0)">
+    <rect width="120" height="120" fill="#161b22" stroke="#30363d"/>
+    <text class="mono" x="22" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">{</text>
+    <text class="mono" x="60" y="56" font-size="70" font-weight="700" fill="#f0883e" text-anchor="middle" dominant-baseline="middle">×</text>
+    <text class="mono" x="98" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">}</text>
+    <text x="60" y="115" fill="#8b949e" font-size="10" text-anchor="middle">y=56</text>
+  </g>
+
+  <!-- Version 2: y=57 for × -->
+  <g transform="translate(120, 0)">
+    <rect width="120" height="120" fill="#161b22" stroke="#30363d"/>
+    <text class="mono" x="22" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">{</text>
+    <text class="mono" x="60" y="57" font-size="70" font-weight="700" fill="#f0883e" text-anchor="middle" dominant-baseline="middle">×</text>
+    <text class="mono" x="98" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">}</text>
+    <text x="60" y="115" fill="#8b949e" font-size="10" text-anchor="middle">y=57</text>
+  </g>
+
+  <!-- Version 3: y=58 for × -->
+  <g transform="translate(240, 0)">
+    <rect width="120" height="120" fill="#161b22" stroke="#30363d"/>
+    <text class="mono" x="22" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">{</text>
+    <text class="mono" x="60" y="58" font-size="70" font-weight="700" fill="#f0883e" text-anchor="middle" dominant-baseline="middle">×</text>
+    <text class="mono" x="98" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">}</text>
+    <text x="60" y="115" fill="#8b949e" font-size="10" text-anchor="middle">y=58</text>
+  </g>
+
+  <!-- Version 4: y=59 for × -->
+  <g transform="translate(0, 130)">
+    <rect width="120" height="120" fill="#161b22" stroke="#30363d"/>
+    <text class="mono" x="22" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">{</text>
+    <text class="mono" x="60" y="59" font-size="70" font-weight="700" fill="#f0883e" text-anchor="middle" dominant-baseline="middle">×</text>
+    <text class="mono" x="98" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">}</text>
+    <text x="60" y="115" fill="#8b949e" font-size="10" text-anchor="middle">y=59</text>
+  </g>
+
+  <!-- Version 5: y=60 for × -->
+  <g transform="translate(120, 130)">
+    <rect width="120" height="120" fill="#161b22" stroke="#30363d"/>
+    <text class="mono" x="22" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">{</text>
+    <text class="mono" x="60" y="60" font-size="70" font-weight="700" fill="#f0883e" text-anchor="middle" dominant-baseline="middle">×</text>
+    <text class="mono" x="98" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">}</text>
+    <text x="60" y="115" fill="#8b949e" font-size="10" text-anchor="middle">y=60</text>
+  </g>
+
+  <!-- Version 6: y=61 for × -->
+  <g transform="translate(240, 130)">
+    <rect width="120" height="120" fill="#161b22" stroke="#30363d"/>
+    <text class="mono" x="22" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">{</text>
+    <text class="mono" x="60" y="61" font-size="70" font-weight="700" fill="#f0883e" text-anchor="middle" dominant-baseline="middle">×</text>
+    <text class="mono" x="98" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">}</text>
+    <text x="60" y="115" fill="#8b949e" font-size="10" text-anchor="middle">y=61</text>
+  </g>
+
+  <!-- Version 7: y=62 for × -->
+  <g transform="translate(0, 260)">
+    <rect width="120" height="120" fill="#161b22" stroke="#30363d"/>
+    <text class="mono" x="22" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">{</text>
+    <text class="mono" x="60" y="62" font-size="70" font-weight="700" fill="#f0883e" text-anchor="middle" dominant-baseline="middle">×</text>
+    <text class="mono" x="98" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">}</text>
+    <text x="60" y="115" fill="#8b949e" font-size="10" text-anchor="middle">y=62</text>
+  </g>
+
+  <!-- Version 8: y=63 for × -->
+  <g transform="translate(120, 260)">
+    <rect width="120" height="120" fill="#161b22" stroke="#30363d"/>
+    <text class="mono" x="22" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">{</text>
+    <text class="mono" x="60" y="63" font-size="70" font-weight="700" fill="#f0883e" text-anchor="middle" dominant-baseline="middle">×</text>
+    <text class="mono" x="98" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">}</text>
+    <text x="60" y="115" fill="#8b949e" font-size="10" text-anchor="middle">y=63</text>
+  </g>
+
+  <!-- Version 9: y=64 for × -->
+  <g transform="translate(240, 260)">
+    <rect width="120" height="120" fill="#161b22" stroke="#30363d"/>
+    <text class="mono" x="22" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">{</text>
+    <text class="mono" x="60" y="64" font-size="70" font-weight="700" fill="#f0883e" text-anchor="middle" dominant-baseline="middle">×</text>
+    <text class="mono" x="98" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">}</text>
+    <text x="60" y="115" fill="#8b949e" font-size="10" text-anchor="middle">y=64</text>
+  </g>
+</svg>

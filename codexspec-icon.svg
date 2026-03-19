@@ -13,13 +13,13 @@
   <!-- Inner accent border (subtle) -->
   <rect x="1" y="1" width="118" height="118" rx="21.5" fill="none" stroke="#21262d"/>
 
-  <!-- Icon mark: {×} - MORE PROMINENT -->
+  <!-- Icon mark: {×} - MAXIMUM PROMINENCE -->
   <!-- { -->
-  <text class="mono" x="28" y="58" font-size="68" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">{</text>
+  <text class="mono" x="22" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">{</text>
   <!-- × -->
-  <text class="mono" x="60" y="57" font-size="52" font-weight="700" fill="#f0883e" text-anchor="middle" dominant-baseline="middle">×</text>
+  <text class="mono" x="60" y="60" font-size="70" font-weight="700" fill="#f0883e" text-anchor="middle" dominant-baseline="middle">×</text>
   <!-- } -->
-  <text class="mono" x="92" y="58" font-size="68" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">}</text>
+  <text class="mono" x="98" y="56" font-size="88" font-weight="700" fill="#58a6ff" text-anchor="middle" dominant-baseline="middle">}</text>
 
   <!-- Bottom label -->
   <text class="mono" x="60" y="100" font-size="8.5" font-weight="400" fill="#6e7681" text-anchor="middle" letter-spacing="1.5">codexspec</text>
