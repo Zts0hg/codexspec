@@ -1,8 +1,10 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="codexspec-logo-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="codexspec-logo-light.svg">
-  <img alt="CodexSpec Logo" src="codexspec-logo-light.svg" width="420">
-</picture>
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="codexspec-logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="codexspec-logo-light.svg">
+    <img alt="CodexSpec Logo" src="codexspec-logo-light.svg" width="420">
+  </picture>
+</div>
 
 # CodexSpec
 
