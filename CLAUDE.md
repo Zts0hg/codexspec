@@ -174,6 +174,50 @@ $ARGUMENTS
 ...
 ```
 
+### Spec Directory Naming Scheme
+
+Spec directories use a **timestamp + random suffix** naming scheme to ensure uniqueness across parallel development branches:
+
+**Format**: `{YYYY-MMDD-HHMM}{random}-{feature-name}`
+
+| Component | Description | Example |
+|-----------|-------------|---------|
+| `YYYY` | 4-digit year | 2025 |
+| `MM` | 2-digit month | 03 |
+| `DD` | 2-digit day | 21 |
+| `HH` | 2-digit hour (00-23) | 14 |
+| `MM` | 2-digit minute (00-59) | 30 |
+| `{random}` | 2 random chars [a-z0-9] | k7 |
+
+**Example**: `2025-0321-1430k7-user-authentication`
+
+```
+2025-0321-1430k7-user-authentication
+│    │     │   ││
+│    │     │   │└── Random suffix (2 chars)
+│    │     │   └─── Minute (30)
+│    │     └─────── Hour (14)
+│    └───────────── Month-Day (0321)
+└────────────────── Year (2025)
+```
+
+**Benefits**:
+
+- **Uniqueness**: Timestamp + random suffix eliminates conflicts in parallel development
+- **Sortability**: Directories sort chronologically by name
+- **Readability**: Human-readable timestamp with hyphen separators
+- **Compatibility**: Old sequential format (001-xxx) coexists with new format
+
+**Generation Command**:
+
+```bash
+TIMESTAMP=$(date +"%Y-%m%d-%H%M")
+RANDOM_SUFFIX=$(head /dev/urandom | LC_ALL=C tr -dc 'a-z0-9' | head -c 2)
+PREFIX="${TIMESTAMP}${RANDOM_SUFFIX}"
+```
+
+**Regex Validation**: `^\d{4}-\d{4}-\d{4}[a-z0-9]{2}-[a-z0-9-]+$`
+
 ### Template Processing
 
 When `codexspec init` is run:
