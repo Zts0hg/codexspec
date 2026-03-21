@@ -16,20 +16,6 @@ argument-hint: |
     /codexspec:constitution quick
     /codexspec:constitution deep
     /codexspec:constitution Python FastAPI 后端使用 pytest，注重类型安全
-
-  This command creates/updates the project constitution at .codexspec/memory/constitution.md.
-
-  Three ways to use:
-  1. No arguments → Interactive mode: choose exploration depth (quick/deep)
-  2. quick → Lightweight exploration: config files + README + core entry points (~5-10 files)
-  3. deep → Full exploration: all of above + source code analysis + architecture patterns
-  4. <description> → Skip exploration, use your principles directly
-
-  Examples:
-    /codexspec:constitution
-    /codexspec:constitution quick
-    /codexspec:constitution deep
-    /codexspec:constitution Python FastAPI backend with pytest, focus on type safety
 handoffs:
   - agent: codexspec.specify
     step: Create a feature specification based on the updated constitution

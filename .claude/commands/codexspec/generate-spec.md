@@ -44,6 +44,11 @@ You are now acting as a "Requirement Compiler". Execute the following operations
 
 4. **Review Constitution**: Ensure alignment with `.codexspec/memory/constitution.md`
 
+5. **Auto-Review Generated Spec**: After saving the spec, automatically run the review process:
+   - Execute the same quality checks as `/codexspec:review-spec`
+   - Generate a review report at `.codexspec/specs/{NNN}-{feature-name}/review-spec.md`
+   - If issues are found, present a summary and ask if user wants to fix them now or proceed
+
 ### Spec Template Structure
 
 ```markdown
@@ -104,13 +109,15 @@ Before saving, verify:
 
 Save the specification to: `.codexspec/specs/{NNN}-{feature-name}/spec.md`
 
+A review report will also be generated at: `.codexspec/specs/{NNN}-{feature-name}/review-spec.md`
+
 > [!IMPORTANT]
 > This command should be called after `/codexspec:specify` has clarified all requirements. It focuses on document generation, not requirement exploration.
 
 ## Available Follow-up Commands
 
-After generating the specification, the user may consider:
+After generating and reviewing the specification, the user may consider:
 
-- `/codexspec:review-spec` - to validate the specification quality before technical planning
+- **Fix Issues**: If review found issues, describe the changes to fix them (e.g., "Fix SPEC-001")
 - `/codexspec:clarify` - to address any ambiguities or gaps identified
-- `/codexspec:spec-to-plan` - to proceed directly with technical implementation planning
+- `/codexspec:spec-to-plan` - to proceed with technical implementation planning
