@@ -16,35 +16,20 @@ O CodexSpec estrutura o desenvolvimento em **pontos de verificação revisáveis
 │         │               requisitos                                       │
 │         ▼                                                                │
 │  3. Generate Spec  ─►  Criar documento spec.md                           │
-│         │                                                                │
-│         ▼                                                                │
-│  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ PORTÃO DE REVISÃO 1: /codexspec:review-spec ★                  ║   │
-│  ╚═══════════════════════════════════════════════════════════════════╝   │
-│         │                                                                │
+│         │               ✓ Revisão automática: gera review-spec.md        │
 │         ▼                                                                │
 │  4. Spec to Plan  ──►  Criar plano técnico                               │
-│         │                                                                │
-│         ▼                                                                │
-│  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ PORTÃO DE REVISÃO 2: /codexspec:review-plan ★                  ║   │
-│  ╚═══════════════════════════════════════════════════════════════════╝   │
-│         │                                                                │
+│         │               ✓ Revisão automática: gera review-plan.md        │
 │         ▼                                                                │
 │  5. Plan to Tasks  ─►  Gerar tarefas atômicas                            │
-│         │                                                                │
-│         ▼                                                                │
-│  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ PORTÃO DE REVISÃO 3: /codexspec:review-tasks ★                 ║   │
-│  ╚═══════════════════════════════════════════════════════════════════╝   │
-│         │                                                                │
+│         │               ✓ Revisão automática: gera review-tasks.md       │
 │         ▼                                                                │
 │  6. Implement  ─────►  Executar com fluxo de trabalho TDD condicional    │
 │                                                                          │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-## Por que a Revisão Importa
+## Por Que a Revisão Importa
 
 | Sem Revisão | Com Revisão |
 |-------------|-------------|
@@ -53,18 +38,75 @@ O CodexSpec estrutura o desenvolvimento em **pontos de verificação revisáveis
 | Arquitetura se desvia da intenção | Alinhamento verificado em cada etapa |
 | **Resultado: Retrabalho** | **Resultado: Correto na primeira vez** |
 
+## Revisão Automática
+
+Cada comando de geração agora **executa automaticamente uma revisão**:
+
+- `/codexspec:generate-spec` → invoca automaticamente `review-spec`
+- `/codexspec:spec-to-plan` → invoca automaticamente `review-plan`
+- `/codexspec:plan-to-tasks` → invoca automaticamente `review-tasks`
+
+Os relatórios de revisão são gerados junto com os artefatos, permitindo ver problemas imediatamente.
+
+## Loop de Qualidade Iterativo
+
+Quando problemas são encontrados nos relatórios de revisão, descreva as correções em linguagem natural e o sistema atualizará tanto o artefato quanto o relatório:
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                    Loop de Qualidade Iterativo                        │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                       │
+│  Artefato (spec/plan/tasks.md)                                        │
+│         │                                                             │
+│         ▼                                                             │
+│  Revisão automática  ───►  Relatório de revisão (review-*.md)         │
+│         │                       │                                     │
+│         │                       ▼                                     │
+│         │                Problemas encontrados?                        │
+│         │                       │                                     │
+│         │                 ┌─────┴─────┐                               │
+│         │                 │           │                               │
+│         │                Sim        Não                               │
+│         │                 │           │                               │
+│         │                 ▼           ▼                               │
+│         │       Descrever        Continuar para                       │
+│         │       correção         próxima etapa                        │
+│         │       na conversação                                           │
+│         │                 │                                           │
+│         │                 ▼                                           │
+│         │       Atualizar simultaneamente:                             │
+│         │         • Artefato (spec/plan/tasks.md)                      │
+│         │         • Relatório de revisão (review-*.md)                 │
+│         │                 │                                           │
+│         └─────────────────┘                                           │
+│           (Repetir até ficar satisfeito)                              │
+│                                                                       │
+│  Revisão manual: Execute /codexspec:review-* a qualquer momento       │
+│  para obter uma nova análise                                          │
+│                                                                       │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+**Como funciona**:
+
+1. **Revisão automática**: Cada comando de geração executa automaticamente a revisão correspondente
+2. **Relatório de revisão**: Gera arquivos `review-*.md` contendo os problemas encontrados
+3. **Correção iterativa**: Descreva o que precisa ser corrigido na conversação, o artefato e o relatório são atualizados juntos
+4. **Revisão manual**: Execute `/codexspec:review-spec|plan|tasks` a qualquer momento para uma nova análise
+
 ## Comandos Principais
 
 | Etapa | Comando | Propósito |
 |-------|---------|-----------|
 | 1 | `/codexspec:constitution` | Definir princípios do projeto |
 | 2 | `/codexspec:specify` | Perguntas e respostas interativas para requisitos |
-| 3 | `/codexspec:generate-spec` | Criar documento de especificação |
-| - | `/codexspec:review-spec` | ★ Validar especificação |
-| 4 | `/codexspec:spec-to-plan` | Criar plano técnico |
-| - | `/codexspec:review-plan` | ★ Validar plano |
-| 5 | `/codexspec:plan-to-tasks` | Dividir em tarefas |
-| - | `/codexspec:review-tasks` | ★ Validar tarefas |
+| 3 | `/codexspec:generate-spec` | Criar documento de especificação (★ Revisão automática) |
+| - | `/codexspec:review-spec` | Invocado automaticamente, ou revalidar manualmente |
+| 4 | `/codexspec:spec-to-plan` | Criar plano técnico (★ Revisão automática) |
+| - | `/codexspec:review-plan` | Invocado automaticamente, ou revalidar manualmente |
+| 5 | `/codexspec:plan-to-tasks` | Dividir em tarefas (★ Revisão automática) |
+| - | `/codexspec:review-tasks` | Invocado automaticamente, ou revalidar manualmente |
 | 6 | `/codexspec:implement-tasks` | Executar implementação |
 
 ## Especificação em Duas Fases
