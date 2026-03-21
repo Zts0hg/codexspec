@@ -286,7 +286,7 @@ class TestInitSubdirectoryStructure:
         # Check some commands exist without prefix
         assert (subcommands_dir / "constitution.md").exists()
         assert (subcommands_dir / "specify.md").exists()
-        assert (subcommands_dir / "commit.md").exists()
+        assert (subcommands_dir / "commit-staged.md").exists()
 
     def test_init_no_root_commands(self, isolated_runner: Path, runner: CliRunner) -> None:
         """init should NOT create codexspec.*.md files in root commands directory."""
@@ -305,7 +305,7 @@ class TestInitSubdirectoryStructure:
         assert result.exit_code == 0
 
         # Should show installed commands summary
-        assert "16" in result.stdout or "command" in result.stdout.lower()
+        assert "15" in result.stdout or "command" in result.stdout.lower()
 
 
 class TestInitMigration:
@@ -410,5 +410,5 @@ class TestListCommands:
         """list-commands should show total count."""
         result = runner.invoke(app, ["list-commands"])
         assert result.exit_code == 0
-        # Should show 16 commands
-        assert "16" in result.stdout
+        # Should show 15 commands
+        assert "15" in result.stdout

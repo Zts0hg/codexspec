@@ -429,8 +429,7 @@ claude
 
 | コマンド | 説明 |
 |----------|------|
-| `/codexspec:commit` | gitステータスとセッションコンテキストに基づいてConventional Commitsメッセージを生成 |
-| `/codexspec:commit-staged` | ステージ済みの変更のみからコミットメッセージを生成 |
+| `/codexspec:commit-staged` | ステージ済みの変更からコミットメッセージを生成（セッションコンテキスト認識付き） |
 
 ## ワークフロー概要
 

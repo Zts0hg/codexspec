@@ -430,8 +430,7 @@ Après l'initialisation, ces commandes slash sont disponibles dans Claude Code :
 
 | Commande | Description |
 |----------|-------------|
-| `/codexspec:commit` | Générer des messages Conventional Commits basés sur l'état git et le contexte de session |
-| `/codexspec:commit-staged` | Générer un message de commit uniquement à partir des changements indexés |
+| `/codexspec:commit-staged` | Générer un message de commit à partir des changements indexés (avec conscience du contexte de session) |
 
 ## Aperçu du Flux de Travail
 

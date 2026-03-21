@@ -21,8 +21,7 @@
 | `/codexspec:analyze` | クロスアーティファクト一貫性分析（読み取り専用） |
 | `/codexspec:checklist` | 要件品質チェックリストを生成 |
 | `/codexspec:tasks-to-issues` | タスクを GitHub issues に変換 |
-| `/codexspec:commit` | セッションコンテキスト付きの Conventional Commits メッセージを生成 |
-| `/codexspec:commit-staged` | ステージングされた変更からコミットメッセージを生成 |
+| `/codexspec:commit-staged` | ステージングされた変更からコミットメッセージを生成（セッションコンテキスト認識付き） |
 
 ---
 
@@ -1028,97 +1027,29 @@ AI:  Converting tasks to GitHub issues...
 
 ---
 
-### `/codexspec:commit`
-
-git ステータスとセッションコンテキストに基づいて Conventional Commits 準拠のコミットメッセージを生成します。このコマンドはコンテキスト認識であり、異なる git 状態を処理します。
-
-**構文:**
-
-```
-/codexspec:commit
-```
-
-**引数:**
-
-| 引数 | 必須 | 説明 |
-|----------|----------|-------------|
-| なし | - | 現在の git 状態とセッションコンテキストを分析 |
-
-**動作:**
-
-- git コンテキストを収集（ブランチ、ステータス、ステージング/未ステージング変更）
-- 意図理解のためにセッション会話履歴を分析
-- git 状態に基づいて優先ロジックに従う:
-  - **ステージングされた変更が存在**: ステージングされた変更のみからコミットメッセージを生成
-  - **ステージングなし、未ステージング変更あり**: ステージングリマインダー付きでコミットメッセージを提案
-  - **変更なし**: クリーンな作業ディレクトリをレポート
-- Conventional Commits 準拠のメッセージを生成
-- コミット実行前にユーザーに確認
-
-**Git 状態処理:**
-
-| 状態 | 動作 |
-|-------|----------|
-| ステージングされた変更 | メッセージ生成、確認、コミット |
-| 未ステージングのみ | メッセージ提案、ステージングリマインダー、すべてステージングするか確認 |
-| クリーン | "No changes detected" をレポート |
-
-**例:**
-
-```text
-You: /codexspec:commit
-
-AI:  Analyzing git context...
-
-     Branch: feature/add-auth
-     Staged: 2 files
-     Unstaged: 3 files
-
-     Suggested commit message:
-     feat(auth): add JWT authentication module
-
-     - Implement token generation and validation
-     - Add middleware for protected routes
-     - Include unit tests for auth service
-
-     Confirm commit? (y/n)
-
-You: y
-
-AI:  ✓ Committed: abc1234
-```
-
-**ヒント:**
-
-- `/codexspec:commit-staged` より柔軟 - 様々な git 状態を処理
-- 意味のあるコミットメッセージのためにセッションコンテキストを考慮
-- コミット前に常に確認
-- 未ステージング変更の場合、最初にステージングするよう明確なリマインダーを提供
-
----
-
 ### `/codexspec:commit-staged`
 
-ステージングされた git 変更のみに基づいて Conventional Commits 準拠のコミットメッセージを生成します。これは、すでに変更をステージングしている場合のシンプルで焦点を絞ったコマンドです。
+ステージングされた git 変更に基づいて Conventional Commits 準拠のコミットメッセージを生成し、セッションコンテキスト認識機能を備えています。このコマンドは開発セッションを理解し、意味のあるコミットメッセージを生成します。
 
 **構文:**
 
 ```
-/codexspec:commit-staged
+/codexspec:commit-staged [-p]
 ```
 
 **引数:**
 
 | 引数 | 必須 | 説明 |
 |----------|----------|-------------|
-| なし | - | ステージングされた変更のみを分析 |
+| `-p` | いいえ | プレビューモード - コミットせずにメッセージを表示 |
 
 **動作:**
 
 - `git diff --staged` を実行してステージングされた変更を取得
-- 変更を分析してコミットメッセージを生成
+- 意図理解のために変更とセッションコンテキストを分析
 - Conventional Commits 仕様に従う
-- コミット前にユーザーに確認
+- 実行モード（デフォルト）: メッセージ生成後すぐにコミット
+- プレビューモード（`-p`）: コミットせずにメッセージを表示のみ
 - ステージングされた変更がない場合はエラーをレポート
 
 **例:**
@@ -1126,32 +1057,46 @@ AI:  ✓ Committed: abc1234
 ```text
 You: /codexspec:commit-staged
 
-AI:  Analyzing staged changes...
+AI:  ステージングされた変更を分析中...
 
-     Files staged:
+     ステージングされたファイル:
      - src/auth/service.py
      - tests/test_auth.py
 
-     Suggested commit message:
-     feat(auth): implement token refresh logic
+     生成されたコミットメッセージ:
+     feat(auth): トークンリフレッシュロジックを実装
 
-     - Add refresh token generation
-     - Include token expiration handling
-     - Add tests for refresh flow
+     - リフレッシュトークン生成を追加
+     - トークン有効期限処理を含む
+     - リフレッシュフローのテストを追加
 
-     Confirm commit? (y/n)
+     コミットを実行中...
 
-You: y
+     ✓ コミット完了: def5678
+```
 
-AI:  ✓ Committed: def5678
+**プレビューモードの例:**
+
+```text
+You: /codexspec:commit-staged -p
+
+AI:  プレビューモード - コミットは実行されません
+
+     提案されたコミットメッセージ:
+     feat(auth): トークンリフレッシュロジックを実装
+
+     - リフレッシュトークン生成を追加
+     - トークン有効期限処理を含む
+     - リフレッシュフローのテストを追加
 ```
 
 **ヒント:**
 
 - 最初に `git add` で変更をステージング
-- ステージングされたコンテンツのみを分析 - 未ステージングは無視
-- コミットしたいものがわかっている場合、`/codexspec:commit` よりシンプル
-- よりコンテキスト認識のあるメッセージには `/codexspec:commit` を使用
+- ステージングされたコンテンツのみを分析 - Gitの2段階コミットワークフローを尊重
+- 意味のあるコミットメッセージのためにセッションコンテキストを考慮
+- コミット前にプレビューするには `-p` フラグを使用
+- デフォルトで Conventional Commits 仕様に従う
 
 ---
 

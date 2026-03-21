@@ -21,8 +21,7 @@ Para padrões de fluxo de trabalho e quando usar cada comando, consulte [Fluxo d
 | `/codexspec:analyze` | Análise de consistência cruzada de artefatos (somente leitura) |
 | `/codexspec:checklist` | Gerar checklists de qualidade de requisitos |
 | `/codexspec:tasks-to-issues` | Converter tarefas em issues do GitHub |
-| `/codexspec:commit` | Gerar mensagens Conventional Commits com contexto de sessão |
-| `/codexspec:commit-staged` | Gerar mensagem de commit a partir de alterações staged |
+| `/codexspec:commit-staged` | Gerar mensagem de commit a partir de alterações staged (com consciência do contexto da sessão) |
 
 ---
 
@@ -1028,97 +1027,29 @@ AI:  Convertendo tarefas para issues do GitHub...
 
 ---
 
-### `/codexspec:commit`
-
-Gerar uma mensagem de commit compatível com Conventional Commits baseada no status do git e contexto de sessão. Este comando é context-aware e lida com diferentes estados do git.
-
-**Sintaxe:**
-
-```
-/codexspec:commit
-```
-
-**Argumentos:**
-
-| Argumento | Obrigatório | Descrição |
-|-----------|-------------|-----------|
-| Nenhum | - | Analisa estado atual do git e contexto de sessão |
-
-**O que faz:**
-
-- Coleta contexto git (branch, status, alterações staged/unstaged)
-- Analisa histórico de conversação da sessão para entendimento de intenção
-- Segue lógica de prioridade baseada no estado do git:
-  - **Alterações staged existem**: Gera mensagem de commit apenas das alterações staged
-  - **Sem staged, mas alterações unstaged**: Sugere mensagem de commit com lembrete de staging
-  - **Sem alterações**: Relata diretório de trabalho limpo
-- Gera mensagens compatíveis com Conventional Commits
-- Confirma com usuário antes de executar commit
-
-**Tratamento de Estado do Git:**
-
-| Estado | Comportamento |
-|--------|---------------|
-| Alterações staged | Gerar mensagem, confirmar, commitar |
-| Apenas unstaged | Sugerir mensagem, lembrar de staging, perguntar se deve stage all |
-| Limpo | Relatar "Nenhuma alteração detectada" |
-
-**Exemplo:**
-
-```text
-Você: /codexspec:commit
-
-AI:  Analisando contexto git...
-
-     Branch: feature/add-auth
-     Staged: 2 arquivos
-     Unstaged: 3 arquivos
-
-     Mensagem de commit sugerida:
-     feat(auth): adicionar módulo de autenticação JWT
-
-     - Implementar geração e validação de tokens
-     - Adicionar middleware para rotas protegidas
-     - Incluir testes unitários para serviço de auth
-
-     Confirmar commit? (y/n)
-
-Você: y
-
-AI:  ✓ Commitado: abc1234
-```
-
-**Dicas:**
-
-- Mais flexível que `/codexspec:commit-staged` - lida com vários estados do git
-- Considera contexto de sessão para mensagens de commit significativas
-- Sempre confirma antes de commitar
-- Para alterações unstaged, fornece lembrete claro para stage primeiro
-
----
-
 ### `/codexspec:commit-staged`
 
-Gerar uma mensagem de commit compatível com Conventional Commits baseada apenas nas alterações git staged. Este é um comando mais simples e focado para quando você já staged suas alterações.
+Gerar uma mensagem de commit compatível com Conventional Commits baseada nas alterações git staged, com consciência do contexto de sessão. Este comando entende sua sessão de desenvolvimento para gerar mensagens de commit significativas.
 
 **Sintaxe:**
 
 ```
-/codexspec:commit-staged
+/codexspec:commit-staged [-p]
 ```
 
 **Argumentos:**
 
 | Argumento | Obrigatório | Descrição |
 |-----------|-------------|-----------|
-| Nenhum | - | Analisa apenas alterações staged |
+| `-p` | Não | Modo preview - exibir mensagem sem commitar |
 
 **O que faz:**
 
 - Executa `git diff --staged` para recuperar alterações staged
-- Analisa alterações e gera mensagem de commit
+- Analisa alterações e contexto de sessão para entendimento de intenção
 - Segue especificação Conventional Commits
-- Confirma com usuário antes de commitar
+- Modo execução (padrão): commita diretamente após gerar a mensagem
+- Modo preview (`-p`): exibe a mensagem sem commitar
 - Relata erro se não existirem alterações staged
 
 **Exemplo:**
@@ -1132,26 +1063,40 @@ AI:  Analisando alterações staged...
      - src/auth/service.py
      - tests/test_auth.py
 
-     Mensagem de commit sugerida:
+     Mensagem de commit gerada:
      feat(auth): implementar lógica de refresh token
 
      - Adicionar geração de refresh token
      - Incluir tratamento de expiração de token
      - Adicionar testes para fluxo de refresh
 
-     Confirmar commit? (y/n)
+     Executando commit...
 
-Você: y
+     ✓ Commitado: def5678
+```
 
-AI:  ✓ Commitado: def5678
+**Exemplo de Modo Preview:**
+
+```text
+Você: /codexspec:commit-staged -p
+
+AI:  Modo preview - nenhum commit será executado
+
+     Mensagem de commit sugerida:
+     feat(auth): implementar lógica de refresh token
+
+     - Adicionar geração de refresh token
+     - Incluir tratamento de expiração de token
+     - Adicionar testes para fluxo de refresh
 ```
 
 **Dicas:**
 
 - Stage alterações primeiro com `git add`
-- Apenas analisa conteúdo staged - ignora unstaged
-- Mais simples que `/codexspec:commit` quando você sabe o que quer commitar
-- Use `/codexspec:commit` para mensagens mais context-aware
+- Apenas analisa conteúdo staged - respeitando o fluxo de commit em duas etapas do Git
+- Considera contexto de sessão para mensagens de commit significativas
+- Use a flag `-p` para preview antes de commitar
+- Segue a especificação Conventional Commits por padrão
 
 ---
 

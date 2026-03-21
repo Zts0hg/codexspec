@@ -88,7 +88,7 @@ Por favor, basandote en la diferencia de codigo entre la rama actual y la rama o
 
 ### Correccion de Configuracion de Idioma
 
-**Retroalimentacion del Usuario**: El idioma deberia seguir la misma logica que el comando `/commit`, priorizando el parametro `language.commit` en `config.yml`, y si no hay parametro `language.commit` configurado, entonces segun `language.output`.
+**Retroalimentacion del Usuario**: El idioma deberia seguir la misma logica que el comando `/commit-staged`, priorizando el parametro `language.commit` en `config.yml`, y si no hay parametro `language.commit` configurado, entonces segun `language.output`.
 
 **Resumen de Requisitos Actualizado**:
 
@@ -264,7 +264,7 @@ Nuevo diseno: --spec (habilitar spec, opt-in)
 
 ### Resumen del Plan
 
-**Metodo de Implementacion**: Archivo de plantilla Markdown (consistente con `/codexspec:commit`)
+**Metodo de Implementacion**: Archivo de plantilla Markdown (consistente con `/codexspec:commit-staged`)
 
 **Sin Nuevas Dependencias** - La funcionalidad se implementa mediante plantillas de slash command, no requiere codigo Python.
 
@@ -273,7 +273,7 @@ Nuevo diseno: --spec (habilitar spec, opt-in)
 | Decision | Seleccion | Razon |
 |------|------|------|
 | Metodo de implementacion | Plantilla Markdown | Consistente con comandos existentes, facil de mantener |
-| Prioridad de idioma | commit > output > en | Consistente con comando `/commit` |
+| Prioridad de idioma | commit > output > en | Consistente con comando `/commit-staged` |
 | Deteccion de plataforma | Parsing de URL remota | Simple y confiable |
 | Integracion de Spec | Opt-in (`--spec`) | Evitar referencias erroneas |
 | Extraccion de contenido | Mejor esfuerzo | No bloquear flujo de trabajo |

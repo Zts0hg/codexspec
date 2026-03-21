@@ -704,7 +704,6 @@ def _create_default_commands(commands_dir: Path) -> None:
         "analyze": _get_analyze_command(),
         "checklist": _get_checklist_command(),
         "tasks-to-issues": _get_tasks_to_issues_command(),
-        "commit": _get_commit_command(),
         "commit-staged": _get_commit_staged_command(),
         "pr": _get_pr_command(),
     }
@@ -1255,84 +1254,84 @@ Convert tasks from tasks.md into GitHub issues.
 """
 
 
-def _get_commit_command() -> str:
-    """Return the commit command template."""
-    return """---
-description: Generate a Conventional Commits compliant commit message from current changes
-handoffs:
-  - agent: claude
-    step: Analyze changes and generate commit message
----
-
-# Commit Message Generator
-
-## User Input
-
-$ARGUMENTS
-
-## Instructions
-
-Generate a Conventional Commits compliant commit message based on the current git status and staged changes.
-
-### Steps
-
-1. **Check Status**: Run `git status` to see current changes
-2. **Analyze Diff**: Review `git diff` for unstaged changes
-3. **Generate Message**: Create a commit message following Conventional Commits format:
-   - type: feat, fix, docs, style, refactor, test, chore
-   - scope: optional module/component
-   - description: concise summary
-
-### Format
-
-```
-type(scope): description
-
-[optional body]
-
-Co-Authored-By: Claude <noreply@anthropic.com>
-```
-
-> [!NOTE]
-> This command helps maintain consistent commit history.
-"""
-
-
 def _get_commit_staged_command() -> str:
     """Return the commit-staged command template."""
     return """---
-description: Generate a commit message from staged changes only
-handoffs:
-  - agent: claude
-    step: Analyze staged changes and generate commit message
+description: Analyze staged git changes and generate Conventional Commits
+    compliant commit messages with session context awareness
+argument-hint: "[-p] Use -p to only preview the message without committing"
+allowed-tools: Bash(git diff:*), Bash(git commit:*)
 ---
 
-# Staged Commit Generator
+## Constitution Compliance (MANDATORY)
 
-## User Input
+**Before generating commit messages:**
 
-$ARGUMENTS
+1. **Check for Constitution File**: Look for `.codexspec/memory/constitution.md`
+2. **If Constitution Exists**:
+   - Load and read relevant principles (especially coding standards, commit conventions)
+   - Ensure commit message style aligns with constitutional guidelines
+   - Verify that the changes being committed don't violate any principles
+3. **If No Constitution Exists**: Proceed with default Conventional Commits format
+
+## Language Preference
+
+**IMPORTANT**: Before generating commit messages, read the project's language
+configuration from `.codexspec/config.yml`.
+
+**Commit message language priority**:
+
+1. If `language.commit` is set, use that language for the commit message description
+2. Otherwise, use `language.output` as fallback
+3. If neither is configured, default to English
+
+**Note**:
+
+- The commit type (feat, fix, docs, etc.) and scope should always remain in English
+- Only the description part should use the configured language
+- Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
+
+## Parameter Check
+
+Check if `$ARGUMENTS` contains `-p`:
+
+- **If `-p` is present**: Preview mode - only output the commit message, do not execute `git commit`
+- **If `-p` is NOT present**: Execute mode - generate the message and execute `git commit` directly
 
 ## Instructions
 
-Generate a Conventional Commits compliant commit message from staged changes only.
+1. Execute `git diff --staged` to retrieve staged changes.
 
-### Steps
+2. Analyze the changes and generate a commit message that strictly follows **Conventional Commits** specification:
+   - Format: `type(scope): description`
+   - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
+   - If the project has a `CLAUDE.md` with custom commit conventions, follow those instead
+   - **DO NOT** include any AI attribution in the commit message
+   - Do not add `Co-Authored-By` lines or any references to AI tools/agents
+   - The commit message should focus solely on describing the changes
 
-1. **Check Staged**: Run `git diff --staged` to see staged changes
-2. **Analyze**: Understand what changes are being committed
-3. **Generate**: Create commit message following Conventional Commits format
+3. **If preview mode (`-p`)**: Display the generated commit message and stop.
 
-### Format
+4. **If execute mode (default)**: Execute `git commit -m "..."` directly with the generated message.
 
-```
-type(scope): description
+## Session Context Awareness
 
-Co-Authored-By: Claude <noreply@anthropic.com>
-```
+When analyzing changes, consider the current session context:
 
-> [!NOTE]
-> This command only considers staged changes, not unstaged ones.
+- What the user has been working on in this session
+- The purpose and goals discussed in the conversation
+- Any related specifications, plans, or tasks mentioned
+
+This context helps generate more meaningful commit messages that reflect
+the "why" behind the changes, not just the "what".
+
+## Important Notes
+
+- In execute mode (default), execute `git commit` directly after generating the message
+- In preview mode (`-p`), only display the commit message without executing
+- If no staged changes exist, inform the user and suggest using `git add` first
+- For breaking changes, include `BREAKING CHANGE:` in the commit body
+- Keep the description concise and in imperative mood (e.g., "add feature" not "added feature")
 """
 
 

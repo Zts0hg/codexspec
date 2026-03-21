@@ -88,7 +88,7 @@ Bitte erstellen Sie basierend auf dem Code-Unterschied zwischen dem aktuellen Br
 
 ### Sprachkonfigurationskorrektur
 
-**Benutzerfeedback**: Die Sprache sollte wie beim `/commit`-Befehl primaer nach dem `language.commit`-Parameter in `config.yml` bestimmt werden. Wenn kein `language.commit`-Parameter gesetzt ist, dann nach `language.output`.
+**Benutzerfeedback**: Die Sprache sollte wie beim `/commit-staged`-Befehl primaer nach dem `language.commit`-Parameter in `config.yml` bestimmt werden. Wenn kein `language.commit`-Parameter gesetzt ist, dann nach `language.output`.
 
 **Aktualisierte Anforderungszusammenfassung**:
 
@@ -264,7 +264,7 @@ Neues Design: --spec (spec aktivieren, opt-in)
 
 ### Planueberblick
 
-**Implementierungsmethode**: Markdown-Vorlagendatei (konsistent mit `/codexspec:commit`)
+**Implementierungsmethode**: Markdown-Vorlagendatei (konsistent mit `/codexspec:commit-staged`)
 
 **Keine neuen Abhaengigkeiten** - Funktion wird durch Slash-Command-Vorlage implementiert, erfordert keinen Python-Code.
 
@@ -273,7 +273,7 @@ Neues Design: --spec (spec aktivieren, opt-in)
 | Entscheidung | Auswahl | Begruendung |
 |------|------|------|
 | Implementierungsmethode | Markdown-Vorlage | Konsistent mit bestehenden Befehlen, wartbar |
-| Sprachprioritaet | commit > output > en | Konsistent mit `/commit`-Befehl |
+| Sprachprioritaet | commit > output > en | Konsistent mit `/commit-staged`-Befehl |
 | Plattformerkennung | Remote-URL-Parsing | Einfach und zuverlaessig |
 | Spec-Integration | Opt-in (`--spec`) | Falsche Referenzierung vermeiden |
 | Inhaltsextraktion | Bestmoegliche | Blockiert Workflow nicht |

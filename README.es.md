@@ -429,8 +429,7 @@ Después de la inicialización, estos comandos slash están disponibles en Claud
 
 | Comando | Descripción |
 |---------|-------------|
-| `/codexspec:commit` | Generar mensajes de Conventional Commits basados en el estado de git y el contexto de la sesión |
-| `/codexspec:commit-staged` | Generar mensaje de commit solo desde los cambios preparados |
+| `/codexspec:commit-staged` | Generar mensaje de commit desde cambios preparados (con conciencia de contexto de sesión) |
 
 ## Resumen del Flujo de Trabajo
 

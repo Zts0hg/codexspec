@@ -429,8 +429,7 @@ claude
 
 | 명령어 | 설명 |
 |--------|------|
-| `/codexspec:commit` | git 상태와 세션 컨텍스트를 기반으로 Conventional Commits 메시지 생성 |
-| `/codexspec:commit-staged` | 스테이징된 변경사항만으로 커밋 메시지 생성 |
+| `/codexspec:commit-staged` | 스테이징된 변경사항으로 커밋 메시지 생성 (세션 컨텍스트 인식 포함) |
 
 ## 워크플로우 개요
 

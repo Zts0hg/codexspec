@@ -21,8 +21,7 @@ Pour les patterns de workflow et quand utiliser chaque commande, voir [Workflow]
 | `/codexspec:analyze` | Analyse de coherence croisee des artefacts (lecture seule) |
 | `/codexspec:checklist` | Generer des listes de controle de qualite des exigences |
 | `/codexspec:tasks-to-issues` | Convertir les taches en issues GitHub |
-| `/codexspec:commit` | Generer des messages Conventional Commits avec contexte de session |
-| `/codexspec:commit-staged` | Generer un message de commit a partir des changements stages |
+| `/codexspec:commit-staged` | Generer un message de commit a partir des changements stages (avec conscience du contexte de session) |
 
 ---
 
@@ -1028,97 +1027,29 @@ AI  : Conversion des taches en issues GitHub...
 
 ---
 
-### `/codexspec:commit`
-
-Generer un message de commit conforme a Conventional Commits base sur le statut git et le contexte de session. Cette commande est contextuelle et gere differents etats git.
-
-**Syntaxe :**
-
-```
-/codexspec:commit
-```
-
-**Arguments :**
-
-| Argument | Requis | Description |
-|----------|--------|-------------|
-| Aucun | - | Analyse l'etat git actuel et le contexte de session |
-
-**Ce qu'il fait :**
-
-- Collecte le contexte git (branche, statut, changements stages/non-stages)
-- Analyse l'historique de conversation de session pour la comprehension de l'intention
-- Suit la logique de priorite basee sur l'etat git :
-  - **Changements stages existent** : Generer un message de commit a partir des changements stages uniquement
-  - **Pas de stages, mais changements non-stages** : Suggerer un message de commit avec un rappel de staging
-  - **Aucun changement** : Rapporter un repertoire de travail propre
-- Genere des messages conformes a Conventional Commits
-- Confirme avec l'utilisateur avant d'executer le commit
-
-**Gestion des Etats Git :**
-
-| Etat | Comportement |
-|------|--------------|
-| Changements stages | Generer message, confirmer, commiter |
-| Non-stages uniquement | Suggerer message, rappeler de stager, demander si doit tout stager |
-| Propre | Rapporter "Aucun changement detecte" |
-
-**Exemple :**
-
-```text
-Vous : /codexspec:commit
-
-AI  : Analyse du contexte git...
-
-     Branche : feature/add-auth
-     Stages : 2 fichiers
-     Non-stages : 3 fichiers
-
-     Message de commit suggere :
-     feat(auth): ajouter le module d'authentification JWT
-
-     - Implementer la generation et validation des tokens
-     - Ajouter le middleware pour les routes protegees
-     - Inclure les tests unitaires pour le service auth
-
-     Confirmer le commit ? (o/n)
-
-Vous : o
-
-AI  : + Commit : abc1234
-```
-
-**Conseils :**
-
-- Plus flexible que `/codexspec:commit-staged` - gere divers etats git
-- Considere le contexte de session pour des messages de commit significatifs
-- Confirme toujours avant de commiter
-- Pour les changements non-stages, fournit un rappel clair de stager d'abord
-
----
-
 ### `/codexspec:commit-staged`
 
-Generer un message de commit conforme a Conventional Commits base uniquement sur les changements git stages. C'est une commande plus simple et ciblee pour quand vous avez deja stage vos changements.
+Generer un message de commit conforme a Conventional Commits base sur les changements git stages, avec conscience du contexte de session. Cette commande comprend votre session de developpement pour generer des messages de commit significatifs.
 
 **Syntaxe :**
 
 ```
-/codexspec:commit-staged
+/codexspec:commit-staged [-p]
 ```
 
 **Arguments :**
 
 | Argument | Requis | Description |
 |----------|--------|-------------|
-| Aucun | - | Analyse les changements stages uniquement |
+| `-p` | Non | Mode apercu - afficher le message sans commiter |
 
 **Ce qu'il fait :**
 
 - Execute `git diff --staged` pour recuperer les changements stages
-- Analyse les changements et genere un message de commit
+- Analyse les changements et le contexte de session pour comprendre l'intention
 - Suit la specification Conventional Commits
-- Confirme avec l'utilisateur avant de commiter
+- Mode execution (par defaut) : commite directement apres avoir genere le message
+- Mode apercu (`-p`) : affiche le message sans commiter
 - Rapporte une erreur si aucun changement stage n'existe
 
 **Exemple :**
@@ -1132,26 +1063,40 @@ AI  : Analyse des changements stages...
      - src/auth/service.py
      - tests/test_auth.py
 
-     Message de commit suggere :
+     Message de commit genere :
      feat(auth): implementer la logique de rafraichissement des tokens
 
      - Ajouter la generation de token de rafraichissement
      - Inclure la gestion de l'expiration des tokens
      - Ajouter des tests pour le flux de rafraichissement
 
-     Confirmer le commit ? (o/n)
+     Execution du commit...
 
-Vous : o
+     + Commit : def5678
+```
 
-AI  : + Commit : def5678
+**Exemple de Mode Apercu :**
+
+```text
+Vous : /codexspec:commit-staged -p
+
+AI  : Mode apercu - aucun commit ne sera execute
+
+     Message de commit suggere :
+     feat(auth): implementer la logique de rafraichissement des tokens
+
+     - Ajouter la generation de token de rafraichissement
+     - Inclure la gestion de l'expiration des tokens
+     - Ajouter des tests pour le flux de rafraichissement
 ```
 
 **Conseils :**
 
 - Stager les changements d'abord avec `git add`
-- Analyse uniquement le contenu stage - ignore le non-stage
-- Plus simple que `/codexspec:commit` quand vous savez ce que vous voulez commiter
-- Utiliser `/codexspec:commit` pour des messages plus contextuels
+- Analyse uniquement le contenu stage - respectant le flux de commit en deux etapes de Git
+- Considere le contexte de session pour des messages de commit significatifs
+- Utilisez le flag `-p` pour previsualiser avant de commiter
+- Suit la specification Conventional Commits par defaut
 
 ---
 
