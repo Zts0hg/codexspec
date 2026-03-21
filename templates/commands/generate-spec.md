@@ -23,12 +23,33 @@ You are now acting as a "Requirement Compiler". Execute the following operations
 
 ### Steps
 
-1. **Determine Feature ID**: List directories in `.codexspec/specs/` using `ls` command to find existing spec directories (each spec is a directory named `{NNN}-{feature-name}/`). Determine the next sequential number (e.g., if `001-*` directory exists, use `002-`).
+1. **Determine Feature ID**: Generate a unique prefix using timestamp + random suffix:
 
-   > **IMPORTANT**: Do NOT use Glob to detect existing specs - Glob only matches files, not directories. Use `ls` or `Bash` tool instead.
+   ```bash
+   # Get current timestamp
+   TIMESTAMP=$(date +"%Y-%m%d-%H%M")
 
-2. **Create Feature Directory**: Create a new directory `.codexspec/specs/{NNN}-{feature-name}/` where:
-   - `NNN` is the sequential number (001, 002, etc.)
+   # Generate 2-character random suffix from [a-z0-9]
+   RANDOM_SUFFIX=$(head /dev/urandom | LC_ALL=C tr -dc 'a-z0-9' | head -c 2)
+
+   # Full prefix: 16 characters (e.g., "2025-0321-1430k7")
+   PREFIX="${TIMESTAMP}${RANDOM_SUFFIX}"
+   ```
+
+   **Format Specification**:
+   - `YYYY`: 4-digit year (e.g., 2025)
+   - `MM`: 2-digit month (01-12)
+   - `DD`: 2-digit day (01-31)
+   - `HH`: 2-digit hour (00-23)
+   - `MM`: 2-digit minute (00-59)
+   - `{random}`: 2 random characters from [a-z0-9] (36 characters, 1296 combinations)
+
+   > **Format**: `{YYYY-MMDD-HHMM}{random}-{feature-name}`
+   > **Example**: `2025-0321-1430k7-user-authentication`
+   > **Regex**: `^\d{4}-\d{4}-\d{4}[a-z0-9]{2}-[a-z0-9-]+$`
+
+2. **Create Feature Directory**: Create a new directory `.codexspec/specs/{YYYY-MMDD-HHMM}{random}-{feature-name}/` where:
+   - `{YYYY-MMDD-HHMM}{random}` is the 16-character unique prefix (e.g., `2025-0321-1430k7`)
    - `feature-name` is a kebab-case description of the feature
 
 3. **Generate spec.md**: Create a comprehensive specification document including:
@@ -46,7 +67,7 @@ You are now acting as a "Requirement Compiler". Execute the following operations
 
 5. **Auto-Review Generated Spec**: After saving the spec, automatically run the review process:
    - Execute the same quality checks as `/codexspec:review-spec`
-   - Generate a review report at `.codexspec/specs/{NNN}-{feature-name}/review-spec.md`
+   - Generate a review report at `.codexspec/specs/{YYYY-MMDD-HHMM}{random}-{feature-name}/review-spec.md`
    - If issues are found, present a summary and ask if user wants to fix them now or proceed
 
 ### Spec Template Structure
@@ -107,9 +128,9 @@ Before saving, verify:
 
 ### Output
 
-Save the specification to: `.codexspec/specs/{NNN}-{feature-name}/spec.md`
+Save the specification to: `.codexspec/specs/{YYYY-MMDD-HHMM}{random}-{feature-name}/spec.md`
 
-A review report will also be generated at: `.codexspec/specs/{NNN}-{feature-name}/review-spec.md`
+A review report will also be generated at: `.codexspec/specs/{YYYY-MMDD-HHMM}{random}-{feature-name}/review-spec.md`
 
 > [!IMPORTANT]
 > This command should be called after `/codexspec:specify` has clarified all requirements. It focuses on document generation, not requirement exploration.

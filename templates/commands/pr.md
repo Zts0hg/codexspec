@@ -71,7 +71,7 @@ By default, spec.md is **NOT** used. Use `--spec` to enable SDD workflow integra
 | Value | Behavior |
 |-------|----------|
 | (not specified) | No spec integration, generate from git only |
-| `001-auth` | Use `.codexspec/specs/001-auth/spec.md` |
+| `2025-0321-1430k7-auth` | Use `.codexspec/specs/2025-0321-1430k7-auth/spec.md` |
 | `path/to/spec.md` | Use specified spec.md file path |
 
 **When to use**:
@@ -121,9 +121,11 @@ Only when `--spec` is provided, read spec.md for Context section.
 
 ### Spec Resolution
 
-1. If `--spec` is a number like `001`, resolve to `.codexspec/specs/001-*/spec.md`
-2. If `--spec` is a directory name like `001-auth`, resolve to `.codexspec/specs/001-auth/spec.md`
+1. If `--spec` is a partial prefix like `2025-0321`, resolve to `.codexspec/specs/2025-0321*/spec.md`
+2. If `--spec` is a full directory name like `2025-0321-1430k7-auth`, resolve to `.codexspec/specs/2025-0321-1430k7-auth/spec.md`
 3. If `--spec` is a path, use directly
+
+> **Note**: Legacy sequential format directories (e.g., `001-feature`) are also supported for backward compatibility.
 
 ### Content Extraction (Best-Effort)
 
