@@ -70,6 +70,12 @@ Analyze the provided spec and plan documents, then break down the technical impl
 
 9. **Save Tasks**: Write to `.codexspec/specs/{feature-id}/tasks.md`
 
+10. **Auto-Review Generated Tasks**: After saving the tasks, automatically run the review process:
+
+- Execute the same quality checks as `/codexspec:review-tasks`
+- Generate a review report at `.codexspec/specs/{feature-id}/review-tasks.md`
+- If issues are found, present a summary and ask if user wants to fix them now or proceed
+
 ### Reference Templates
 
 Use the following templates as reference for generating the task breakdown:
@@ -272,9 +278,15 @@ Phase 5: ┌───────────────┴──────�
 - [ ] Complexity estimates are reasonable
 - [ ] Checkpoints are defined at phase boundaries
 
+### Output
+
+Save the task breakdown to: `.codexspec/specs/{feature-id}/tasks.md`
+
+A review report will also be generated at: `.codexspec/specs/{feature-id}/review-tasks.md`
+
 ## Available Follow-up Commands
 
-After generating the task breakdown, the user may consider:
+After generating and reviewing the task breakdown, the user may consider:
 
-- `/codexspec:review-tasks` - to validate the task breakdown quality before implementation
-- `/codexspec:implement-tasks` - to proceed directly with implementing the tasks
+- **Fix Issues**: If review found issues, describe the changes to fix them (e.g., "Fix TASK-001")
+- `/codexspec:implement-tasks` - to proceed with implementing the tasks

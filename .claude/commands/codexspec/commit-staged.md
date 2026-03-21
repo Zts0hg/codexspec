@@ -54,6 +54,16 @@ Check if `$ARGUMENTS` contains `-p`:
 
 4. **If execute mode (default)**: Execute `git commit -m "..."` directly with the generated message.
 
+## Session Context Awareness
+
+When analyzing changes, consider the current session context:
+
+- What the user has been working on in this session
+- The purpose and goals discussed in the conversation
+- Any related specifications, plans, or tasks mentioned
+
+This context helps generate more meaningful commit messages that reflect the "why" behind the changes, not just the "what".
+
 ## Important Notes
 
 - In execute mode (default), execute `git commit` directly after generating the message
