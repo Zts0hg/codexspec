@@ -138,18 +138,11 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "category": "enhanced",
             "file_name": "tasks-to-issues.md",
         },
-        # Git Workflow Commands (3)
-        {
-            "name": "commit",
-            "display_name": "/codexspec:commit",
-            "description": "生成符合 Conventional Commits 规范的提交信息",
-            "category": "git",
-            "file_name": "commit.md",
-        },
+        # Git Workflow Commands (2)
         {
             "name": "commit-staged",
             "display_name": "/codexspec:commit-staged",
-            "description": "从暂存更改生成提交信息",
+            "description": "从暂存更改生成提交信息（含会话上下文感知）",
             "category": "git",
             "file_name": "commit-staged.md",
         },

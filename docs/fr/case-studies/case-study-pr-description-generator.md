@@ -88,7 +88,7 @@ Veuillez baser sur la difference de code entre la branche actuelle et la branche
 
 ### Correction de Configuration de Langue
 
-**Retour utilisateur** : La langue devrait suivre la meme priorite que l'instruction `/commit` selon le parametre `language.commit` dans `config.yml`, et seulement si `language.commit` n'est pas defini, alors selon `language.output`.
+**Retour utilisateur** : La langue devrait suivre la meme priorite que l'instruction `/commit-staged` selon le parametre `language.commit` dans `config.yml`, et seulement si `language.commit` n'est pas defini, alors selon `language.output`.
 
 **Resume des exigences mis a jour** :
 
@@ -264,7 +264,7 @@ Nouvelle conception : --spec (activer spec, opt-in)
 
 ### Apercu du Plan
 
-**Methode d'implementation** : Fichier modele Markdown (conforme a `/codexspec:commit`)
+**Methode d'implementation** : Fichier modele Markdown (conforme a `/codexspec:commit-staged`)
 
 **Aucune nouvelle dependance** - La fonctionnalite est implementee via le modele de commande slash, ne necessite pas de code Python.
 
@@ -273,7 +273,7 @@ Nouvelle conception : --spec (activer spec, opt-in)
 | Decision | Choix | Raison |
 |----------|-------|--------|
 | Methode d'implementation | Modele Markdown | Conforme aux commandes existantes, facile a maintenir |
-| Priorite de langue | commit > output > en | Conforme a la commande `/commit` |
+| Priorite de langue | commit > output > en | Conforme a la commande `/commit-staged` |
 | Detection de plateforme | Parsing d'URL remote | Simple et fiable |
 | Integration Spec | Opt-in (`--spec`) | Eviter les references erronees |
 | Extraction de contenu | Au mieux | Ne pas bloquer le workflow |

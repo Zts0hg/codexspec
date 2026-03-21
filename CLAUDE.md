@@ -213,11 +213,10 @@ When `codexspec init` is run:
 
 ### Git Workflow Commands
 
-| Command                    | Description                            |
-| -------------------------- | -------------------------------------- |
-| `/codexspec:commit`        | Generate Conventional Commits messages |
-| `/codexspec:commit-staged` | Generate commit from staged changes    |
-| `/codexspec:pr`            | Generate PR/MR descriptions            |
+| Command                    | Description                                         |
+| -------------------------- | --------------------------------------------------- |
+| `/codexspec:commit-staged` | Generate commit from staged changes with session context awareness |
+| `/codexspec:pr`            | Generate PR/MR descriptions                         |
 
 ## Development Guidelines
 
@@ -294,9 +293,8 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec:analyze`         | ✅ Template | NEW - Template complete                                                       |
 | `/codexspec:checklist`       | ✅ Template | NEW - Template complete                                                       |
 | `/codexspec:tasks-to-issues` | ✅ Template | NEW - Template complete                                                       |
-| `/codexspec:commit`          | ✅ Template | Generate commit messages                                                      |
-| `/codexspec:commit-staged`   | ✅ Template | Generate commit from staged                                                   |
-| `/codexspec:pr`              | ✅ Template | NEW - Generate PR/MR descriptions                                             |
+| `/codexspec:commit-staged`   | ✅ Template | Generate commit from staged changes with session context awareness            |
+| `/codexspec:pr`              | ✅ Template | Generate PR/MR descriptions                                                   |
 
 ### Constitution Compliance Feature (NEW)
 

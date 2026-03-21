@@ -21,8 +21,7 @@ For workflow patterns and when to use each command, see [Workflow](workflow.md).
 | `/codexspec:analyze` | Cross-artifact consistency analysis (read-only) |
 | `/codexspec:checklist` | Generate requirements quality checklists |
 | `/codexspec:tasks-to-issues` | Convert tasks to GitHub issues |
-| `/codexspec:commit` | Generate Conventional Commits messages with session context |
-| `/codexspec:commit-staged` | Generate commit message from staged changes |
+| `/codexspec:commit-staged` | Generate commit message from staged changes with session context awareness |
 
 ---
 
@@ -1028,97 +1027,29 @@ AI:  Converting tasks to GitHub issues...
 
 ---
 
-### `/codexspec:commit`
-
-Generate a Conventional Commits compliant commit message based on git status and session context. This command is context-aware and handles different git states.
-
-**Syntax:**
-
-```
-/codexspec:commit
-```
-
-**Arguments:**
-
-| Argument | Required | Description |
-|----------|----------|-------------|
-| None | - | Analyzes current git state and session context |
-
-**What it does:**
-
-- Collects git context (branch, status, staged/unstaged changes)
-- Analyzes session conversation history for intent understanding
-- Follows priority logic based on git state:
-  - **Staged changes exist**: Generate commit message from staged changes only
-  - **No staged, but unstaged changes**: Suggest commit message with staging reminder
-  - **No changes**: Report clean working directory
-- Generates Conventional Commits compliant messages
-- Confirms with user before executing commit
-
-**Git State Handling:**
-
-| State | Behavior |
-|-------|----------|
-| Staged changes | Generate message, confirm, commit |
-| Unstaged only | Suggest message, remind to stage, ask if should stage all |
-| Clean | Report "No changes detected" |
-
-**Example:**
-
-```text
-You: /codexspec:commit
-
-AI:  Analyzing git context...
-
-     Branch: feature/add-auth
-     Staged: 2 files
-     Unstaged: 3 files
-
-     Suggested commit message:
-     feat(auth): add JWT authentication module
-
-     - Implement token generation and validation
-     - Add middleware for protected routes
-     - Include unit tests for auth service
-
-     Confirm commit? (y/n)
-
-You: y
-
-AI:  ✓ Committed: abc1234
-```
-
-**Tips:**
-
-- More flexible than `/codexspec:commit-staged` - handles various git states
-- Considers session context for meaningful commit messages
-- Always confirms before committing
-- For unstaged changes, provides clear reminder to stage first
-
----
-
 ### `/codexspec:commit-staged`
 
-Generate a Conventional Commits compliant commit message based solely on staged git changes. This is a simpler, focused command for when you've already staged your changes.
+Generate a Conventional Commits compliant commit message based on staged git changes with session context awareness. This command understands your development session to generate meaningful commit messages.
 
 **Syntax:**
 
 ```
-/codexspec:commit-staged
+/codexspec:commit-staged [-p]
 ```
 
 **Arguments:**
 
 | Argument | Required | Description |
 |----------|----------|-------------|
-| None | - | Analyzes staged changes only |
+| `-p` | No | Preview mode - display message without committing |
 
 **What it does:**
 
 - Executes `git diff --staged` to retrieve staged changes
-- Analyzes changes and generates commit message
+- Analyzes changes and session context for intent understanding
 - Follows Conventional Commits specification
-- Confirms with user before committing
+- In execute mode (default): commits directly after generating message
+- In preview mode (`-p`): displays message without committing
 - Reports error if no staged changes exist
 
 **Example:**
@@ -1132,26 +1063,40 @@ AI:  Analyzing staged changes...
      - src/auth/service.py
      - tests/test_auth.py
 
-     Suggested commit message:
+     Generated commit message:
      feat(auth): implement token refresh logic
 
      - Add refresh token generation
      - Include token expiration handling
      - Add tests for refresh flow
 
-     Confirm commit? (y/n)
+     Executing commit...
 
-You: y
+     ✓ Committed: def5678
+```
 
-AI:  ✓ Committed: def5678
+**Preview Mode Example:**
+
+```text
+You: /codexspec:commit-staged -p
+
+AI:  Preview mode - no commit will be executed
+
+     Suggested commit message:
+     feat(auth): implement token refresh logic
+
+     - Add refresh token generation
+     - Include token expiration handling
+     - Add tests for refresh flow
 ```
 
 **Tips:**
 
 - Stage changes first with `git add`
-- Only analyzes staged content - ignores unstaged
-- Simpler than `/codexspec:commit` when you know what you want to commit
-- Use `/codexspec:commit` for more context-aware messages
+- Only analyzes staged content - respects Git's two-stage commit workflow
+- Considers session context for meaningful commit messages
+- Use `-p` flag to preview before committing
+- Follows Conventional Commits specification by default
 
 ---
 

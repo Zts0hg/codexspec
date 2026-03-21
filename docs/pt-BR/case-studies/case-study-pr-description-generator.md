@@ -88,7 +88,7 @@ Por favor, com base na diferença de código entre a branch atual e a branch ori
 
 ### Correção da Configuração de Idioma
 
-**Feedback do Usuário**: O idioma deve seguir a mesma prioridade que o comando `/commit`, primeiro conforme parâmetro `language.commit` em `config.yml`, se não houver configuração `language.commit`, então conforme `language.output`.
+**Feedback do Usuário**: O idioma deve seguir a mesma prioridade que o comando `/commit-staged`, primeiro conforme parâmetro `language.commit` em `config.yml`, se não houver configuração `language.commit`, então conforme `language.output`.
 
 **Resumo de Requisitos Atualizado**:
 
@@ -264,7 +264,7 @@ Novo Design: --spec (habilitar spec, opt-in)
 
 ### Resumo do Plano
 
-**Método de Implementação**: Arquivo template Markdown (consistente com `/codexspec:commit`)
+**Método de Implementação**: Arquivo template Markdown (consistente com `/codexspec:commit-staged`)
 
 **Sem Novas Dependências** - Funcionalidade implementada via template de slash command, não requer código Python.
 
@@ -273,7 +273,7 @@ Novo Design: --spec (habilitar spec, opt-in)
 | Decisão | Escolha | Razão |
 |---------|---------|-------|
 | Método de Implementação | Template Markdown | Consistente com comandos existentes, fácil de manter |
-| Prioridade de Idioma | commit > output > en | Consistente com comando `/commit` |
+| Prioridade de Idioma | commit > output > en | Consistente com comando `/commit-staged` |
 | Detecção de Plataforma | Parsing de Remote URL | Simples e confiável |
 | Integração com Spec | Opt-in (`--spec`) | Evitar referência incorreta |
 | Extração de Conteúdo | Melhor esforço | Não bloquear fluxo de trabalho |

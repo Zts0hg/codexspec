@@ -1,5 +1,5 @@
 ---
-description: Analyze staged git changes and generate Conventional Commits compliant commit messages
+description: Analyze staged git changes and generate Conventional Commits compliant commit messages with session context awareness
 argument-hint: "[-p] Use -p to only preview the message without committing"
 allowed-tools: Bash(git diff:*), Bash(git commit:*)
 ---
@@ -53,6 +53,16 @@ Check if `$ARGUMENTS` contains `-p`:
 3. **If preview mode (`-p`)**: Display the generated commit message and stop.
 
 4. **If execute mode (default)**: Execute `git commit -m "..."` directly with the generated message.
+
+## Session Context Awareness
+
+When analyzing changes, consider the current session context:
+
+- What the user has been working on in this session
+- The purpose and goals discussed in the conversation
+- Any related specifications, plans, or tasks mentioned
+
+This context helps generate more meaningful commit messages that reflect the "why" behind the changes, not just the "what".
 
 ## Important Notes
 

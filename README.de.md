@@ -429,8 +429,7 @@ Nach der Initialisierung sind diese Slash-Befehle in Claude Code verfügbar:
 
 | Befehl | Beschreibung |
 |--------|--------------|
-| `/codexspec:commit` | Conventional Commits-Nachrichten basierend auf Git-Status und Sitzungskontext generieren |
-| `/codexspec:commit-staged` | Commit-Nachricht nur aus gestageten Änderungen generieren |
+| `/codexspec:commit-staged` | Commit-Nachricht aus gestageten Änderungen generieren (mit Sitzungskontext-Bewusstsein) |
 
 ## Workflow-Übersicht
 

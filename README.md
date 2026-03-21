@@ -437,8 +437,7 @@ After initialization, these slash commands are available in Claude Code:
 
 | Command | Description |
 |---------|-------------|
-| `/codexspec:commit` | Generate Conventional Commits messages based on git status and session context |
-| `/codexspec:commit-staged` | Generate commit message from staged changes only |
+| `/codexspec:commit-staged` | Generate commit message from staged changes with session context awareness |
 | `/codexspec:pr` | Generate structured PR (GitHub) or MR (GitLab) descriptions with platform auto-detection |
 
 ## Workflow Overview

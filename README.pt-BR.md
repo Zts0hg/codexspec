@@ -429,8 +429,7 @@ Apos a inicializacao, estes comandos slash estao disponiveis no Claude Code:
 
 | Comando | Descricao |
 |---------|-----------|
-| `/codexspec:commit` | Gerar mensagens de Conventional Commits com base no status do git e contexto da sessao |
-| `/codexspec:commit-staged` | Gerar mensagem de commit apenas das alteracoes preparadas |
+| `/codexspec:commit-staged` | Gerar mensagem de commit das alteracoes preparadas (com consciencia do contexto da sessao) |
 
 ## Visao Geral do Fluxo de Trabalho
 

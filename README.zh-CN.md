@@ -429,8 +429,7 @@ claude
 
 | 命令 | 描述 |
 |------|------|
-| `/codexspec:commit` | 根据 git 状态和会话上下文生成 Conventional Commits 消息 |
-| `/codexspec:commit-staged` | 仅根据暂存的更改生成提交消息 |
+| `/codexspec:commit-staged` | 从暂存更改生成提交消息（含会话上下文感知） |
 
 ## 工作流概览
 

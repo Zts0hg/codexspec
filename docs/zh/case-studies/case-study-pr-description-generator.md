@@ -88,7 +88,7 @@ PR描述需要面向团队的其他审查者，包含以下几个部分：
 
 ### 语言配置修正
 
-**用户反馈**: 语言应该跟 `/commit` 指令一样优先根据 `config.yml` 中的 `language.commit` 参数，如果没有 `language.commit` 参数设置，才根据 `language.output`。
+**用户反馈**: 语言应该跟 `/commit-staged` 指令一样优先根据 `config.yml` 中的 `language.commit` 参数，如果没有 `language.commit` 参数设置，才根据 `language.output`。
 
 **更新后的需求摘要**:
 
@@ -264,7 +264,7 @@ The command shall determine output language in the following priority order:
 
 ### 计划概述
 
-**实现方式**: Markdown 模板文件 (与 `/codexspec:commit` 一致)
+**实现方式**: Markdown 模板文件 (与 `/codexspec:commit-staged` 一致)
 
 **无新依赖** - 特性通过 slash command 模板实现，不需要 Python 代码。
 
@@ -273,7 +273,7 @@ The command shall determine output language in the following priority order:
 | 决策 | 选择 | 理由 |
 |------|------|------|
 | 实现方式 | Markdown 模板 | 与现有命令一致，易维护 |
-| 语言优先级 | commit > output > en | 与 `/commit` 命令一致 |
+| 语言优先级 | commit > output > en | 与 `/commit-staged` 命令一致 |
 | 平台检测 | Remote URL 解析 | 简单可靠 |
 | Spec 集成 | Opt-in (`--spec`) | 避免错误引用 |
 | 内容提取 | 最佳努力 | 不阻塞工作流 |

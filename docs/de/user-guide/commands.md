@@ -21,8 +21,7 @@ Fuer Workflow-Muster und wann jeder Befehl zu verwenden ist, siehe [Workflow](wo
 | `/codexspec:analyze` | Artefaktuebergreifende Konsistenzanalyse (nur Lesen) |
 | `/codexspec:checklist` | Qualitaetschecklisten fuer Anforderungen generieren |
 | `/codexspec:tasks-to-issues` | Aufgaben in GitHub-Issues konvertieren |
-| `/codexspec:commit` | Conventional-Commits-Nachrichten mit Sitzungskontext generieren |
-| `/codexspec:commit-staged` | Commit-Nachricht aus gestageten Aenderungen generieren |
+| `/codexspec:commit-staged` | Commit-Nachricht aus gestageten Aenderungen generieren (mit Sitzungskontext-Bewusstsein) |
 
 ---
 
@@ -1028,97 +1027,29 @@ KI:  Konvertiere Aufgaben zu GitHub-Issues...
 
 ---
 
-### `/codexspec:commit`
-
-Eine Conventional-Commits-konforme Commit-Nachricht basierend auf Git-Status und Sitzungskontext generieren. Dieser Befehl ist kontextbewusst und behandelt verschiedene Git-Zustaende.
-
-**Syntax:**
-
-```
-/codexspec:commit
-```
-
-**Argumente:**
-
-| Argument | Erforderlich | Beschreibung |
-|----------|----------|-------------|
-| Keine | - | Analysiert aktuellen Git-Zustand und Sitzungskontext |
-
-**Was es tut:**
-
-- Sammelt Git-Kontext (Branch, Status, gestagete/ungestagete Aenderungen)
-- Analysiert Sitzungsgespraechsverlauf fuer Intent-Verstaendnis
-- Folgt Prioritaetslogik basierend auf Git-Zustand:
-  - **Gestagete Aenderungen existieren**: Commit-Nachricht nur aus gestageten Aenderungen generieren
-  - **Keine gestageten, aber ungestagete Aenderungen**: Commit-Nachricht mit Staging-Erinnerung vorschlagen
-  - **Keine Aenderungen**: Sauberes Arbeitsverzeichnis melden
-- Generiert Conventional-Commits-konforme Nachrichten
-- Bestaetigt mit Benutzer vor der Ausfuehrung des Commits
-
-**Git-Zustandsbehandlung:**
-
-| Zustand | Verhalten |
-|-------|----------|
-| Gestagete Aenderungen | Nachricht generieren, bestaetigen, committen |
-| Nur ungestagete | Nachricht vorschlagen, an Staging erinnern, fragen ob alle stagen |
-| Sauber | "Keine Aenderungen erkannt" melden |
-
-**Beispiel:**
-
-```text
-Sie: /codexspec:commit
-
-KI:  Analysiere Git-Kontext...
-
-     Branch: feature/add-auth
-     Gestagete: 2 Dateien
-     Ungestagete: 3 Dateien
-
-     Vorgeschlagene Commit-Nachricht:
-     feat(auth): add JWT authentication module
-
-     - Implement token generation and validation
-     - Add middleware for protected routes
-     - Include unit tests for auth service
-
-     Commit bestaetigen? (y/n)
-
-Sie: y
-
-KI:  ✓ Committed: abc1234
-```
-
-**Tipps:**
-
-- Flexibler als `/codexspec:commit-staged` – behandelt verschiedene Git-Zustaende
-- Beruecksichtigt Sitzungskontext fuer sinnvolle Commit-Nachrichten
-- Bestaetigt immer vor dem Committen
-- Fuer ungestagete Aenderungen, klare Erinnerung zum Staging zuerst
-
----
-
 ### `/codexspec:commit-staged`
 
-Eine Conventional-Commits-konforme Commit-Nachricht basierend ausschliesslich auf gestageten Git-Aenderungen generieren. Dies ist ein einfacherer, fokussierter Befehl, wenn Sie Ihre Aenderungen bereits gestaget haben.
+Eine Conventional-Commits-konforme Commit-Nachricht basierend auf gestageten Git-Aenderungen mit Sitzungskontext-Bewusstsein generieren. Dieser Befehl versteht Ihre Entwicklungssitzung, um sinnvolle Commit-Nachrichten zu generieren.
 
 **Syntax:**
 
 ```
-/codexspec:commit-staged
+/codexspec:commit-staged [-p]
 ```
 
 **Argumente:**
 
 | Argument | Erforderlich | Beschreibung |
 |----------|----------|-------------|
-| Keine | - | Analysiert nur gestagete Aenderungen |
+| `-p` | Nein | Vorschaumodus - Nachricht anzeigen ohne zu committen |
 
 **Was es tut:**
 
 - Fuehrt `git diff --staged` aus, um gestagete Aenderungen abzurufen
-- Analysiert Aenderungen und generiert Commit-Nachricht
+- Analysiert Aenderungen und Sitzungskontext fuer Intent-Verstaendnis
 - Folgt Conventional-Commits-Spezifikation
-- Bestaetigt mit Benutzer vor dem Committen
+- Ausfuehrungsmodus (Standard): committet direkt nach Generierung der Nachricht
+- Vorschaumodus (`-p`): zeigt Nachricht ohne zu committen
 - Meldet Fehler, wenn keine gestageten Aenderungen existieren
 
 **Beispiel:**
@@ -1132,26 +1063,40 @@ KI:  Analysiere gestagete Aenderungen...
      - src/auth/service.py
      - tests/test_auth.py
 
+     Generierte Commit-Nachricht:
+     feat(auth): Token-Refresh-Logik implementieren
+
+     - Refresh-Token-Generierung hinzufuegen
+     - Token-Ablaufbehandlung einschliessen
+     - Tests fuer Refresh-Flow hinzufuegen
+
+     Fuehre Commit aus...
+
+     ✓ Committed: def5678
+```
+
+**Vorschaumodus-Beispiel:**
+
+```text
+Sie: /codexspec:commit-staged -p
+
+KI:  Vorschaumodus - kein Commit wird ausgefuehrt
+
      Vorgeschlagene Commit-Nachricht:
-     feat(auth): implement token refresh logic
+     feat(auth): Token-Refresh-Logik implementieren
 
-     - Add refresh token generation
-     - Include token expiration handling
-     - Add tests for refresh flow
-
-     Commit bestaetigen? (y/n)
-
-Sie: y
-
-KI:  ✓ Committed: def5678
+     - Refresh-Token-Generierung hinzufuegen
+     - Token-Ablaufbehandlung einschliessen
+     - Tests fuer Refresh-Flow hinzufuegen
 ```
 
 **Tipps:**
 
 - Aenderungen zuerst mit `git add` stagen
-- Analysiert nur gestageten Inhalt – ignoriert ungestagete
-- Einfacher als `/codexspec:commit`, wenn Sie wissen, was Sie committen moechten
-- `/codexspec:commit` fuer kontextbewusstere Nachrichten verwenden
+- Analysiert nur gestageten Inhalt – respektiert den zweistufigen Commit-Workflow von Git
+- Beruecksichtigt Sitzungskontext fuer sinnvolle Commit-Nachrichten
+- Verwenden Sie den `-p` Flag zum Vorschauen vor dem Committen
+- Folgt standardmaessig der Conventional-Commits-Spezifikation
 
 ---
 
