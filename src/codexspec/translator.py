@@ -282,8 +282,8 @@ def extract_frontmatter_fields(content: str) -> dict[str, Optional[str]]:
         result["description"] = desc_match.group(1).strip()
 
     # Extract argument-hint (can be multiline with |)
-    # First try multiline format with |
-    hint_match = re.search(r"^argument-hint:\s*\|\s*\n((?:  .+\n?)+)", frontmatter, re.MULTILINE)
+    # First try multiline format with | (supports empty lines)
+    hint_match = re.search(r"^argument-hint:\s*\|\s*\n((?:  .+\n?|\s*\n)+)", frontmatter, re.MULTILINE)
     if hint_match:
         # Remove leading indentation from multiline strings
         hint_content = hint_match.group(1)
@@ -325,11 +325,16 @@ def apply_translations_to_template(content: str, translations: dict) -> str:
         # Check if original hint is multiline (uses |)
         if re.search(r"^argument-hint:\s*\|", content, re.MULTILINE):
             # Build new multiline content with proper indentation
+            # Only add indentation to non-empty lines
             hint_lines = new_hint.split("\n")
-            indented_hint = "\n  ".join(hint_lines)
-            # Replace multiline hint - match the entire multiline block
+            indented_lines = [("  " + line) if line else "" for line in hint_lines]
+            indented_hint = "\n".join(indented_lines)
+            # Replace multiline hint - match the entire multiline block (supports empty lines)
             content = re.sub(
-                r"(argument-hint:\s*\|)\s*\n((?:  .+\n?)+)", rf"\g<1>\n  {indented_hint}\n", content, flags=re.MULTILINE
+                r"(argument-hint:\s*\|)\s*\n((?:  .+\n?|\s*\n)+)",
+                rf"\g<1>\n{indented_hint}\n",
+                content,
+                flags=re.MULTILINE,
             )
         else:
             # Replace single-line hint (with or without quotes)
