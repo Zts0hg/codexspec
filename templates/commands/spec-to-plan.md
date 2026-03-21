@@ -82,6 +82,11 @@ Transform the feature specification into a detailed technical implementation pla
    - If no path was provided: Write to `.codexspec/specs/{feature-id}/plan.md`
    - Ask user for confirmation on output path if uncertain
 
+8. **Auto-Review Generated Plan**: After saving the plan, automatically run the review process:
+   - Execute the same quality checks as `/codexspec:review-plan`
+   - Generate a review report at `.codexspec/specs/{feature-id}/review-plan.md`
+   - If issues are found, present a summary and ask if user wants to fix them now or proceed
+
 ### Module Structure Requirements
 
 For each module/component in your plan, specify:
@@ -285,6 +290,12 @@ Before saving, verify:
 - [ ] Technical decisions have rationale
 - [ ] Plan is self-contained and can be understood without external context
 
+### Output
+
+Save the implementation plan to: `.codexspec/specs/{feature-id}/plan.md`
+
+A review report will also be generated at: `.codexspec/specs/{feature-id}/review-plan.md`
+
 ### Important Notes
 
 > [!WARNING]
@@ -295,7 +306,7 @@ Before saving, verify:
 
 ## Available Follow-up Commands
 
-After generating the technical plan, the user may consider:
+After generating and reviewing the technical plan, the user may consider:
 
-- `/codexspec:review-plan` - to validate the plan quality before task breakdown
-- `/codexspec:plan-to-tasks` - to proceed directly with breaking down into actionable tasks
+- **Fix Issues**: If review found issues, describe the changes to fix them (e.g., "Fix PLAN-001")
+- `/codexspec:plan-to-tasks` - to proceed with breaking down into actionable tasks

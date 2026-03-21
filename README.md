@@ -411,18 +411,18 @@ After initialization, these slash commands are available in Claude Code:
 |---------|-------------|
 | `/codexspec:constitution` | Create or update project constitution with cross-artifact validation and sync impact reporting |
 | `/codexspec:specify` | **Clarify** requirements through interactive Q&A (no file generation) |
-| `/codexspec:generate-spec` | **Generate** `spec.md` document after requirements are clarified |
-| `/codexspec:spec-to-plan` | Convert specification to technical plan with constitutionality review and module dependency graph |
-| `/codexspec:plan-to-tasks` | Break down plan into atomic, TDD-enforced tasks with parallel markers `[P]` |
+| `/codexspec:generate-spec` | **Generate** `spec.md` document after requirements are clarified (★ auto-reviews) |
+| `/codexspec:spec-to-plan` | Convert specification to technical plan with constitutionality review and module dependency graph (★ auto-reviews) |
+| `/codexspec:plan-to-tasks` | Break down plan into atomic, TDD-enforced tasks with parallel markers `[P]` (★ auto-reviews) |
 | `/codexspec:implement-tasks` | Execute tasks with conditional TDD workflow (TDD for code, direct for docs/config) |
 
 #### Review Commands (Quality Gates)
 
 | Command | Description |
 |---------|-------------|
-| `/codexspec:review-spec` | Validate specification for completeness, clarity, consistency, and testability with scoring |
-| `/codexspec:review-plan` | Review technical plan for feasibility, architecture quality, and constitution alignment |
-| `/codexspec:review-tasks` | Validate task breakdown for plan coverage, TDD compliance, dependencies, and granularity |
+| `/codexspec:review-spec` | Auto-invoked by `/generate-spec`; can also run manually to re-validate after fixes |
+| `/codexspec:review-plan` | Auto-invoked by `/spec-to-plan`; can also run manually to re-validate after fixes |
+| `/codexspec:review-tasks` | Auto-invoked by `/plan-to-tasks`; can also run manually to re-validate after fixes |
 
 #### Enhancement Commands
 
@@ -455,13 +455,7 @@ After initialization, these slash commands are available in Claude Code:
 │         │               (no file created - human control)                │
 │         ▼                                                                │
 │  3. Generate Spec  ─►  Create spec.md document                           │
-│         │                                                                │
-│         ▼                                                                │
-│  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ REVIEW GATE 1: /codexspec:review-spec ★                        ║   │
-│  ║  Validate: Completeness, Clarity, Testability, Constitution       ║   │
-│  ╚═══════════════════════════════════════════════════════════════════╝   │
-│         │                                                                │
+│         │               ✓ AUTO-REVIEW: generates review-spec.md         │
 │         ▼                                                                │
 │  4. Clarify  ───────►  Resolve ambiguities (iterative)                   │
 │         │               4 focused categories, max 5 questions            │
@@ -469,23 +463,13 @@ After initialization, these slash commands are available in Claude Code:
 │  5. Spec to Plan  ──►  Create technical plan with:                       │
 │         │               • Constitutionality review (MANDATORY)           │
 │         │               • Module dependency graph                        │
-│         ▼                                                                │
-│  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ REVIEW GATE 2: /codexspec:review-plan ★                        ║   │
-│  ║  Validate: Spec Alignment, Architecture, Tech Stack, Phases       ║   │
-│  ╚═══════════════════════════════════════════════════════════════════╝   │
-│         │                                                                │
+│         │               ✓ AUTO-REVIEW: generates review-plan.md         │
 │         ▼                                                                │
 │  6. Plan to Tasks  ─►  Generate atomic tasks with:                       │
 │         │               • TDD enforcement (tests before impl)            │
 │         │               • Parallel markers [P]                           │
 │         │               • File path specifications                       │
-│         ▼                                                                │
-│  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ REVIEW GATE 3: /codexspec:review-tasks ★                       ║   │
-│  ║  Validate: Coverage, TDD Compliance, Dependencies, Granularity    ║   │
-│  ╚═══════════════════════════════════════════════════════════════════╝   │
-│         │                                                                │
+│         │               ✓ AUTO-REVIEW: generates review-tasks.md        │
 │         ▼                                                                │
 │  7. Analyze  ───────►  Cross-artifact consistency check                  │
 │         │               Detect gaps, duplications, constitution issues   │
@@ -496,7 +480,7 @@ After initialization, these slash commands are available in Claude Code:
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Key Insight**: Each review gate (★) is a **human checkpoint** where you validate AI output before investing more time. Skipping these gates often leads to costly rework.
+**Key Insight**: Each generation command now **auto-reviews** (✓), producing a review report alongside the artifact. Review the report, describe fixes in natural language, and both the artifact and report will update iteratively. You can also run `/codexspec:review-*` commands manually anytime for a fresh review.
 
 ### Key Concept: Requirement Clarification Workflow
 
@@ -543,6 +527,51 @@ spec.md ──► /codexspec:clarify ──► Updated spec.md (with Clarificati
 - **Explicit control**: Files are only created when you decide
 - **Quality focus**: Requirements are thoroughly explored before documentation
 - **Iterative refinement**: Specs can be improved incrementally as understanding deepens
+
+### Iterative Quality Cycle
+
+When issues are found in review reports, describe the fixes in natural language and the system will:
+
+```
+┌──────────────────────────────────────────────────────────────────────┐
+│                    Iterative Quality Cycle                            │
+├──────────────────────────────────────────────────────────────────────┤
+│                                                                       │
+│  Artifact (spec/plan/tasks.md)                                        │
+│         │                                                             │
+│         ▼                                                             │
+│  Auto-Review ─────► Review Report (review-*.md)                       │
+│         │                    │                                        │
+│         │                    ▼                                        │
+│         │             Issues Found?                                   │
+│         │                    │                                        │
+│         │              ┌─────┴─────┐                                  │
+│         │              │           │                                  │
+│         │             YES          NO                                 │
+│         │              │           │                                  │
+│         │              ▼           ▼                                  │
+│         │     Describe Fixes   Continue                               │
+│         │       in Chat        to Next Step                           │
+│         │              │                                              │
+│         │              ▼                                              │
+│         │     Update Both:                                            │
+│         │       • Artifact (spec/plan/tasks.md)                       │
+│         │       • Review Report (review-*.md)                         │
+│         │              │                                              │
+│         └──────────────┘                                              │
+│                (Repeat until satisfied)                               │
+│                                                                       │
+│  Manual Re-review: Run /codexspec:review-* anytime for fresh analysis │
+│                                                                       │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+**How It Works**:
+
+1. **Auto-Review**: Each generation command runs the corresponding review automatically
+2. **Review Report**: A `review-*.md` file is generated with findings
+3. **Iterative Fixes**: Describe what needs fixing in chat, and both the artifact and report update
+4. **Manual Re-review**: Run `/codexspec:review-spec|plan|tasks` anytime for a fresh analysis
 
 ## Project Structure
 
