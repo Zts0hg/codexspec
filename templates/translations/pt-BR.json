@@ -142,5 +142,9 @@
   "review-python-code": {
     "description": "Revisar código Python por conformidade PEP 8, segurança de tipos, robustez de engenharia e alinhamento com a constituição",
     "argument-hint": "Caminho para arquivo ou diretório Python a revisar\n\nExemplos:\n- `src/codexspec/` - Revisar pacote completo\n- `src/codexspec/__init__.py` - Revisar arquivo único\n- `src/ tests/` - Revisar múltiplos caminhos"
+  },
+  "review-react-code": {
+    "description": "Revisar código React/TypeScript por arquitetura de componentes, conformidade com Hooks, gerenciamento de estado, performance e alinhamento com a constituição",
+    "argument-hint": "Caminho para arquivo ou diretório React/TypeScript a revisar\n\nExemplos:\n- `src/components/` - Revisar diretório inteiro de componentes\n- `src/components/Button.tsx` - Revisar arquivo único\n- `src/hooks/ src/components/` - Revisar múltiplos caminhos"
   }
 }

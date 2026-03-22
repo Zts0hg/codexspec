@@ -142,5 +142,9 @@
   "review-python-code": {
     "description": "审查 Python 代码的 PEP 8 合规性、类型安全、工程健壮性和宪法一致性",
     "argument-hint": "要审查的 Python 文件或目录路径\n\n示例：\n- `src/codexspec/` - 审查整个包\n- `src/codexspec/__init__.py` - 审查单个文件\n- `src/ tests/` - 审查多个路径"
+  },
+  "review-react-code": {
+    "description": "审查 React/TypeScript 代码的组件架构、Hooks 规范、状态管理、性能表现和宪法一致性",
+    "argument-hint": "要审查的 React/TypeScript 文件或目录路径\n\n示例：\n- `src/components/` - 审查整个组件目录\n- `src/components/Button.tsx` - 审查单个文件\n- `src/hooks/ src/components/` - 审查多个路径"
   }
 }

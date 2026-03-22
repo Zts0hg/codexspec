@@ -34,9 +34,9 @@ class TestGetCommandsMetadata:
         assert isinstance(result, list)
 
     def test_returns_correct_count(self) -> None:
-        """Should return 16 commands (9 core + 4 enhanced + 2 git + 1 review)."""
+        """Should return 17 commands (9 core + 4 enhanced + 2 git + 2 review)."""
         result = get_commands_metadata()
-        assert len(result) == 16
+        assert len(result) == 17
 
     def test_core_commands_count(self) -> None:
         """Should have 9 core commands."""
@@ -57,10 +57,10 @@ class TestGetCommandsMetadata:
         assert len(git_commands) == 2
 
     def test_review_commands_count(self) -> None:
-        """Should have 1 review command."""
+        """Should have 2 review commands."""
         result = get_commands_metadata()
         review_commands = [c for c in result if c["category"] == "review"]
-        assert len(review_commands) == 1
+        assert len(review_commands) == 2
 
     def test_metadata_structure(self) -> None:
         """Each command should have all required fields."""
