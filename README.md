@@ -45,12 +45,12 @@ SDD:          Idea → Spec → Plan → Tasks → Code
 
 **Why use SDD?**
 
-| Problem | SDD Solution |
-|---------|--------------|
+| Problem              | SDD Solution                                     |
+| -------------------- | ------------------------------------------------ |
 | AI misunderstandings | Specs clarify "what to build", AI stops guessing |
-| Missing requirements | Interactive clarification discovers edge cases |
-| Architecture drift | Review checkpoints ensure correct direction |
-| Wasted rework | Problems are found before code is written |
+| Missing requirements | Interactive clarification discovers edge cases   |
+| Architecture drift   | Review checkpoints ensure correct direction      |
+| Wasted rework        | Problems are found before code is written        |
 
 ---
 
@@ -60,12 +60,12 @@ CodexSpec is built on the belief that **effective AI-assisted development requir
 
 ### Why Human Oversight Matters
 
-| Without Reviews | With Reviews |
-|-----------------|--------------|
-| AI makes wrong assumptions | Humans catch misunderstandings early |
-| Incomplete requirements propagate | Gaps identified before implementation |
-| Architecture drifts from intent | Alignment verified at each stage |
-| Tasks miss critical features | Systematic coverage validation |
+| Without Reviews                   | With Reviews                            |
+| --------------------------------- | --------------------------------------- |
+| AI makes wrong assumptions        | Humans catch misunderstandings early    |
+| Incomplete requirements propagate | Gaps identified before implementation   |
+| Architecture drifts from intent   | Alignment verified at each stage        |
+| Tasks miss critical features      | Systematic coverage validation          |
 | **Result: Rework, wasted effort** | **Result: Get it right the first time** |
 
 ### The CodexSpec Approach
@@ -218,28 +218,57 @@ pip install --upgrade codexspec
 CodexSpec breaks development into **reviewable checkpoints**:
 
 ```mermaid
-flowchart LR
-    A[Idea] --> B["/specify"]
-    B --> C["/generate-spec"]
-    C --> D["Review spec"]
-    D --> E["/spec-to-plan"]
-    E --> F["Review plan"]
-    F --> G["/plan-to-tasks"]
-    G --> H["Review tasks"]
-    H --> I["/implement"]
+%%{init: {
+  'theme': 'base',
+  'flowchart': {
+    'curve': 'stepBefore',
+    'rankSpacing': 40,
+    'nodeSpacing': 50
+  }
+}}%%
+flowchart TB
+    %% 全局样式复用
+    classDef default fill:#2d2d2d,stroke:#666,stroke-width:1px,color:#fff,width:160px;
+
+    %% 第一阶段：定义/规格
+    subgraph Row1 [" "]
+        direction LR
+        A[Idea] --> B["/specify"] --> C["/generate-spec"]
+    end
+
+    %% 第二阶段：计划/审核
+    subgraph Row2 [" "]
+        direction LR
+        D["Review spec"] --> E["/spec-to-plan"] --> F["Review plan"]
+    end
+
+    %% 第三阶段：执行/交付
+    subgraph Row3 [" "]
+        direction LR
+        G["/plan-to-tasks"] --> H["Review tasks"] --> I["/implement"]
+    end
+
+    %% 连接各行：使用特殊的连接线
+    C --> D
+    F --> G
+
+    %% 隐藏子图边框，使其看起来更像自然换行
+    style Row1 fill:none,stroke:none
+    style Row2 fill:none,stroke:none
+    style Row3 fill:none,stroke:none
 ```
 
 ### Workflow Steps
 
-| Step | Command | Output | Human Check |
-|------|---------|--------|-------------|
-| 1. Project Principles | `/codexspec:constitution` | `constitution.md` | ✅ |
-| 2. Requirement Clarification | `/codexspec:specify` | None (interactive dialogue) | ✅ |
-| 3. Generate Spec | `/codexspec:generate-spec` | `spec.md` + auto-review | ✅ |
-| 4. Technical Planning | `/codexspec:spec-to-plan` | `plan.md` + auto-review | ✅ |
-| 5. Task Breakdown | `/codexspec:plan-to-tasks` | `tasks.md` + auto-review | ✅ |
-| 6. Cross-Artifact Analysis | `/codexspec:analyze` | Analysis report | ✅ |
-| 7. Implementation | `/codexspec:implement-tasks` | Code | - |
+| Step                         | Command                      | Output                      | Human Check |
+| ---------------------------- | ---------------------------- | --------------------------- | ----------- |
+| 1. Project Principles        | `/codexspec:constitution`    | `constitution.md`           | ✅           |
+| 2. Requirement Clarification | `/codexspec:specify`         | None (interactive dialogue) | ✅           |
+| 3. Generate Spec             | `/codexspec:generate-spec`   | `spec.md` + auto-review     | ✅           |
+| 4. Technical Planning        | `/codexspec:spec-to-plan`    | `plan.md` + auto-review     | ✅           |
+| 5. Task Breakdown            | `/codexspec:plan-to-tasks`   | `tasks.md` + auto-review    | ✅           |
+| 6. Cross-Artifact Analysis   | `/codexspec:analyze`         | Analysis report             | ✅           |
+| 7. Implementation            | `/codexspec:implement-tasks` | Code                        | -           |
 
 ### Key Concept: Iterative Quality Loop
 
@@ -250,13 +279,39 @@ Every generation command includes **automatic review**, generating a review repo
 3. System automatically updates specs and review reports
 
 ```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'lineColor': '#888888',
+    'primaryColor': '#2d2d2d',
+    'primaryTextColor': '#ffffff',
+    'primaryBorderColor': '#666666'
+  },
+  'flowchart': {
+    'curve': 'stepBefore',
+    'nodeSpacing': 50,
+    'rankSpacing': 40
+  }
+}}%%
 flowchart TB
-    A["Generate Spec/Plan/Tasks"] --> B["Auto Review"]
-    B --> C{"Issues Found?"}
-    C -->|Yes| D["Describe Fix in Natural Language"]
-    D --> E["Update Spec + Review Report"]
+    %% 定义矩形样式：固定宽度 220px 确保线条垂直对齐
+    classDef rectStyle fill:#2d2d2d,stroke:#666,stroke-width:1px,color:#fff,width:220px;
+    %% 定义判定框样式
+    classDef diamondStyle fill:#3d3d3d,stroke:#888,stroke-width:2px,color:#fff;
+
+    A["Generate Spec/Plan/Tasks"]:::rectStyle --> B["Auto Review"]:::rectStyle
+    B --> C{"Issues Found?"}:::diamondStyle
+
+    C -->|Yes| D["Describe Fix in Natural Language"]:::rectStyle
+    D --> E["Update Spec + Review Report"]:::rectStyle
+
+    %% 回调连线
     E --> B
-    C -->|No| F["Continue to Next Step"]
+
+    C -->|No| F["Continue to Next Step"]:::rectStyle
+
+    %% 针对 Yes/No 标签的样式优化（可选）
+    linkStyle 2,4 stroke:#aaa,stroke-width:1px;
 ```
 
 <details>
@@ -353,36 +408,36 @@ Implementation follows **conditional TDD workflow**:
 
 ### CLI Commands
 
-| Command | Description |
-|---------|-------------|
-| `codexspec init` | Initialize a new project |
-| `codexspec check` | Check for installed tools |
-| `codexspec version` | Display version information |
-| `codexspec config` | View or modify configuration |
+| Command             | Description                  |
+| ------------------- | ---------------------------- |
+| `codexspec init`    | Initialize a new project     |
+| `codexspec check`   | Check for installed tools    |
+| `codexspec version` | Display version information  |
+| `codexspec config`  | View or modify configuration |
 
 <details>
 <summary>📋 init Options</summary>
 
-| Option | Description |
-|--------|-------------|
-| `PROJECT_NAME` | Project directory name |
-| `--here`, `-h` | Initialize in current directory |
-| `--ai`, `-a` | AI assistant to use (default: claude) |
-| `--lang`, `-l` | Output language (e.g., en, zh-CN, ja) |
-| `--force`, `-f` | Force overwrite existing files |
-| `--no-git` | Skip git initialization |
-| `--debug`, `-d` | Enable debug output |
+| Option          | Description                           |
+| --------------- | ------------------------------------- |
+| `PROJECT_NAME`  | Project directory name                |
+| `--here`, `-h`  | Initialize in current directory       |
+| `--ai`, `-a`    | AI assistant to use (default: claude) |
+| `--lang`, `-l`  | Output language (e.g., en, zh-CN, ja) |
+| `--force`, `-f` | Force overwrite existing files        |
+| `--no-git`      | Skip git initialization               |
+| `--debug`, `-d` | Enable debug output                   |
 
 </details>
 
 <details>
 <summary>📋 config Options</summary>
 
-| Option | Description |
-|--------|-------------|
-| `--set-lang`, `-l` | Set output language |
-| `--set-commit-lang`, `-c` | Set commit message language |
-| `--list-langs` | List all supported languages |
+| Option                    | Description                  |
+| ------------------------- | ---------------------------- |
+| `--set-lang`, `-l`        | Set output language          |
+| `--set-commit-lang`, `-c` | Set commit message language  |
+| `--list-langs`            | List all supported languages |
 
 </details>
 
@@ -390,45 +445,45 @@ Implementation follows **conditional TDD workflow**:
 
 #### Core Workflow Commands
 
-| Command | Description |
-|---------|-------------|
-| `/codexspec:constitution` | Create/update project constitution with cross-artifact validation |
-| `/codexspec:specify` | Clarify requirements through interactive Q&A |
-| `/codexspec:generate-spec` | Generate `spec.md` document ★ Auto-review |
-| `/codexspec:spec-to-plan` | Convert spec to technical plan ★ Auto-review |
-| `/codexspec:plan-to-tasks` | Break down plan into atomic tasks ★ Auto-review |
-| `/codexspec:implement-tasks` | Execute tasks (conditional TDD) |
+| Command                      | Description                                                       |
+| ---------------------------- | ----------------------------------------------------------------- |
+| `/codexspec:constitution`    | Create/update project constitution with cross-artifact validation |
+| `/codexspec:specify`         | Clarify requirements through interactive Q&A                      |
+| `/codexspec:generate-spec`   | Generate `spec.md` document ★ Auto-review                         |
+| `/codexspec:spec-to-plan`    | Convert spec to technical plan ★ Auto-review                      |
+| `/codexspec:plan-to-tasks`   | Break down plan into atomic tasks ★ Auto-review                   |
+| `/codexspec:implement-tasks` | Execute tasks (conditional TDD)                                   |
 
 #### Review Commands (Quality Gates)
 
-| Command | Description |
-|---------|-------------|
-| `/codexspec:review-spec` | Review specification (auto or manual) |
-| `/codexspec:review-plan` | Review technical plan (auto or manual) |
+| Command                   | Description                            |
+| ------------------------- | -------------------------------------- |
+| `/codexspec:review-spec`  | Review specification (auto or manual)  |
+| `/codexspec:review-plan`  | Review technical plan (auto or manual) |
 | `/codexspec:review-tasks` | Review task breakdown (auto or manual) |
 
 #### Enhancement Commands
 
-| Command | Description |
-|---------|-------------|
-| `/codexspec:clarify` | Scan spec for ambiguities (4 categories, max 5 questions) |
-| `/codexspec:analyze` | Cross-artifact consistency analysis (read-only, severity-based) |
-| `/codexspec:checklist` | Generate requirements quality checklist |
-| `/codexspec:tasks-to-issues` | Convert tasks to GitHub Issues |
+| Command                      | Description                                                     |
+| ---------------------------- | --------------------------------------------------------------- |
+| `/codexspec:clarify`         | Scan spec for ambiguities (4 categories, max 5 questions)       |
+| `/codexspec:analyze`         | Cross-artifact consistency analysis (read-only, severity-based) |
+| `/codexspec:checklist`       | Generate requirements quality checklist                         |
+| `/codexspec:tasks-to-issues` | Convert tasks to GitHub Issues                                  |
 
 #### Git Workflow Commands
 
-| Command | Description |
-|---------|-------------|
-| `/codexspec:commit-staged` | Generate commit message from staged changes |
-| `/codexspec:pr` | Generate PR/MR description (auto-detect platform) |
+| Command                    | Description                                       |
+| -------------------------- | ------------------------------------------------- |
+| `/codexspec:commit-staged` | Generate commit message from staged changes       |
+| `/codexspec:pr`            | Generate PR/MR description (auto-detect platform) |
 
 #### Code Review Commands
 
-| Command | Description |
-|---------|-------------|
+| Command                         | Description                                                     |
+| ------------------------------- | --------------------------------------------------------------- |
 | `/codexspec:review-python-code` | Review Python code (PEP 8, type safety, engineering robustness) |
-| `/codexspec:review-react-code` | Review React/TypeScript code (architecture, hooks, performance) |
+| `/codexspec:review-react-code`  | Review React/TypeScript code (architecture, hooks, performance) |
 
 ---
 
@@ -436,21 +491,21 @@ Implementation follows **conditional TDD workflow**:
 
 CodexSpec is inspired by GitHub spec-kit with key differences:
 
-| Feature | spec-kit | CodexSpec |
-|---------|----------|-----------|
-| Core Philosophy | Spec-driven development | Spec-driven + Human-AI collaboration |
-| CLI Name | `specify` | `codexspec` |
-| Primary AI | Multi-agent support | Focused on Claude Code |
-| Constitution System | Basic | Full constitution + cross-artifact validation |
-| Two-Phase Spec | No | Yes (clarify + generate) |
-| Review Commands | Optional | 3 dedicated review commands + scoring |
-| Clarify Command | Yes | 4 focus categories, review integration |
-| Analyze Command | Yes | Read-only, severity-based, constitution-aware |
-| TDD in Tasks | Optional | Enforced (tests before implementation) |
-| Implementation | Standard | Conditional TDD (code vs docs/config) |
-| Extension System | Yes | Yes |
-| PowerShell Scripts | Yes | Yes |
-| i18n Support | No | Yes (13+ languages via LLM translation) |
+| Feature             | spec-kit                | CodexSpec                                     |
+| ------------------- | ----------------------- | --------------------------------------------- |
+| Core Philosophy     | Spec-driven development | Spec-driven + Human-AI collaboration          |
+| CLI Name            | `specify`               | `codexspec`                                   |
+| Primary AI          | Multi-agent support     | Focused on Claude Code                        |
+| Constitution System | Basic                   | Full constitution + cross-artifact validation |
+| Two-Phase Spec      | No                      | Yes (clarify + generate)                      |
+| Review Commands     | Optional                | 3 dedicated review commands + scoring         |
+| Clarify Command     | Yes                     | 4 focus categories, review integration        |
+| Analyze Command     | Yes                     | Read-only, severity-based, constitution-aware |
+| TDD in Tasks        | Optional                | Enforced (tests before implementation)        |
+| Implementation      | Standard                | Conditional TDD (code vs docs/config)         |
+| Extension System    | Yes                     | Yes                                           |
+| PowerShell Scripts  | Yes                     | Yes                                           |
+| i18n Support        | No                      | Yes (13+ languages via LLM translation)       |
 
 ### Key Differentiators
 
@@ -492,21 +547,21 @@ codexspec config --set-commit-lang en
 
 ### Supported Languages
 
-| Code | Language |
-|------|----------|
-| `en` | English (default) |
-| `zh-CN` | 简体中文 |
-| `zh-TW` | 繁體中文 |
-| `ja` | 日本語 |
-| `ko` | 한국어 |
-| `es` | Español |
-| `fr` | Français |
-| `de` | Deutsch |
-| `pt-BR` | Português |
-| `ru` | Русский |
-| `it` | Italiano |
-| `ar` | العربية |
-| `hi` | हिन्दी |
+| Code    | Language          |
+| ------- | ----------------- |
+| `en`    | English (default) |
+| `zh-CN` | 简体中文          |
+| `zh-TW` | 繁體中文          |
+| `ja`    | 日本語            |
+| `ko`    | 한국어            |
+| `es`    | Español           |
+| `fr`    | Français          |
+| `de`    | Deutsch           |
+| `pt-BR` | Português         |
+| `ru`    | Русский           |
+| `it`    | Italiano          |
+| `ar`    | العربية           |
+| `hi`    | हिन्दी               |
 
 <details>
 <summary>⚙️ Configuration File Example</summary>
