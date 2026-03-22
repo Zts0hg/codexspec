@@ -16,7 +16,10 @@
 
 **A Spec-Driven Development (SDD) toolkit for Claude Code**
 
-[📖 Documentation](https://zts0hg.github.io/codexspec/) | [中文文档](https://zts0hg.github.io/codexspec/zh/) | [日本語ドキュメント](https://zts0hg.github.io/codexspec/ja/) | [한국어 문서](https://zts0hg.github.io/codexspec/ko/)
+CodexSpec helps you build high-quality software through a structured, specification-first approach.
+Instead of jumping straight to code, you define **what** to build and **why** before deciding **how** to build it.
+
+[📖 Documentation](https://zts0hg.github.io/codexspec/) | [中文文档](https://zts0hg.github.io/codexspec/zh/) | [日本語ドキュメント](https://zts0hg.github.io/codexspec/ja/) | [한국어 문서](https://zts0hg.github.io/codexspec/ko/) | [Documentación](https://zts0hg.github.io/codexspec/es/) | [Documentation](https://zts0hg.github.io/codexspec/fr/) | [Dokumentation](https://zts0hg.github.io/codexspec/de/) | [Documentação](https://zts0hg.github.io/codexspec/pt-BR/)
 
 ---
 
@@ -51,6 +54,31 @@ SDD:          Idea → Spec → Plan → Tasks → Code
 | Missing requirements | Interactive clarification discovers edge cases   |
 | Architecture drift   | Review checkpoints ensure correct direction      |
 | Wasted rework        | Problems are found before code is written        |
+
+<details>
+<summary>✨ Key Features</summary>
+
+### Core Workflow
+
+- **Constitution-Based Development** - Establish project principles that guide all decisions
+- **Two-Phase Specification** - Interactive clarification (`/specify`) followed by document generation (`/generate-spec`)
+- **Automatic Reviews** - Every artifact includes built-in quality checks
+- **TDD-Ready Tasks** - Task breakdowns enforce test-first methodology
+
+### Human-AI Collaboration
+
+- **Review Commands** - Dedicated review commands for spec, plan, and tasks
+- **Interactive Clarification** - Q&A-based requirement refinement
+- **Cross-Artifact Analysis** - Detect inconsistencies before implementation
+
+### Developer Experience
+
+- **Native Claude Code Integration** - Slash commands work seamlessly
+- **Multi-Language Support** - 13+ languages via LLM dynamic translation
+- **Cross-Platform** - Bash and PowerShell scripts included
+- **Extensible** - Plugin architecture for custom commands
+
+</details>
 
 ---
 
@@ -232,6 +260,16 @@ Idea → /specify → /generate-spec → /spec-to-plan → /plan-to-tasks → /i
 | 5. Task Breakdown            | `/codexspec:plan-to-tasks`   | `tasks.md` + auto-review    | ✅           |
 | 6. Cross-Artifact Analysis   | `/codexspec:analyze`         | Analysis report             | ✅           |
 | 7. Implementation            | `/codexspec:implement-tasks` | Code                        | -           |
+
+### specify vs clarify: When to Use Which?
+
+| Aspect | `/codexspec:specify` | `/codexspec:clarify` |
+|--------|----------------------|----------------------|
+| **Purpose** | Initial requirement exploration | Refine existing spec |
+| **When to Use** | No spec.md exists yet | spec.md needs improvement |
+| **Output** | None (dialogue only) | Updates spec.md |
+| **Method** | Open-ended Q&A | Structured scan (4 categories) |
+| **Questions** | Unlimited | Max 5 per run |
 
 ### Key Concept: Iterative Quality Loop
 
