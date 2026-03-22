@@ -440,6 +440,13 @@ After initialization, these slash commands are available in Claude Code:
 | `/codexspec:commit-staged` | Generate commit message from staged changes with session context awareness |
 | `/codexspec:pr` | Generate structured PR (GitHub) or MR (GitLab) descriptions with platform auto-detection |
 
+#### Code Review Commands
+
+| Command | Description |
+|---------|-------------|
+| `/codexspec:review-python-code` | Review Python code for PEP 8 compliance, type safety, engineering robustness, and constitution alignment |
+| `/codexspec:review-react-code` | Review React/TypeScript code for component architecture, hooks compliance, state management, performance, and constitution alignment |
+
 ## Workflow Overview
 
 ```

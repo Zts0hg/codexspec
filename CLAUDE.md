@@ -54,8 +54,8 @@ codexspec/
 │       └── tasks-to-issues.md # NEW
 ├── scripts/
 │   ├── bash/                  # Bash helper scripts
-│   └── powershell/            # PowerShell scripts (NEW)
-├── extensions/                # Extension system (NEW)
+│   └── powershell/            # PowerShell scripts
+├── extensions/                # Extension system
 │   ├── catalog.json
 │   ├── EXTENSION-DEVELOPMENT-GUIDE.md
 │   └── template/
@@ -262,11 +262,12 @@ When `codexspec init` is run:
 | `/codexspec:commit-staged` | Generate commit from staged changes with session context awareness |
 | `/codexspec:pr`            | Generate PR/MR descriptions                         |
 
-### Code Review Commands
+### Code Review Commands (2)
 
 | Command                      | Description                                      |
 | ---------------------------- | ------------------------------------------------ |
 | `/codexspec:review-python-code` | Review Python code for PEP 8, type safety, engineering robustness, and constitution alignment |
+| `/codexspec:review-react-code` | Review React/TypeScript code for component architecture, hooks compliance, state management, performance, and constitution alignment |
 
 ## Development Guidelines
 
@@ -329,7 +330,7 @@ uv run pytest tests/scripts/powershell/ -v
 | `init`                       | ✅ Complete | Initializes project structure, supports --lang, Constitution Compliance check |
 | `check`                      | ✅ Complete | Checks for installed tools                                                    |
 | `version`                    | ✅ Complete | Displays version info                                                         |
-| `config`                     | ✅ Complete | View/modify project configuration (NEW)                                       |
+| `config`                     | ✅ Complete | View/modify project configuration                                             |
 | `/codexspec:constitution`    | ✅ Template | Template complete, CLAUDE.md Compliance check on first-time creation          |
 | `/codexspec:specify`         | ✅ Template | Template complete                                                             |
 | `/codexspec:generate-spec`   | ✅ Template | Template complete                                                             |
@@ -339,15 +340,16 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec:review-plan`     | ✅ Template | Template complete                                                             |
 | `/codexspec:review-tasks`    | ✅ Template | Template complete                                                             |
 | `/codexspec:implement-tasks` | ✅ Template | Template complete                                                             |
-| `/codexspec:clarify`         | ✅ Template | NEW - Template complete                                                       |
-| `/codexspec:analyze`         | ✅ Template | NEW - Template complete                                                       |
-| `/codexspec:checklist`       | ✅ Template | NEW - Template complete                                                       |
-| `/codexspec:tasks-to-issues` | ✅ Template | NEW - Template complete                                                       |
+| `/codexspec:clarify`         | ✅ Template | Template complete                                                             |
+| `/codexspec:analyze`         | ✅ Template | Template complete                                                             |
+| `/codexspec:checklist`       | ✅ Template | Template complete                                                             |
+| `/codexspec:tasks-to-issues` | ✅ Template | Template complete                                                             |
 | `/codexspec:commit-staged`   | ✅ Template | Generate commit from staged changes with session context awareness            |
 | `/codexspec:pr`              | ✅ Template | Generate PR/MR descriptions                                                   |
 | `/codexspec:review-python-code` | ✅ Template | Review Python code for PEP 8, type safety, engineering robustness, and constitution alignment |
+| `/codexspec:review-react-code` | ✅ Template | Review React/TypeScript code for component architecture, hooks compliance, state management, performance, and constitution alignment |
 
-### Constitution Compliance Feature (NEW)
+### Constitution Compliance Feature
 
 The `init` and `/codexspec:constitution` commands now include a **dual safeguard mechanism** to ensure CLAUDE.md contains the Constitution Compliance section:
 

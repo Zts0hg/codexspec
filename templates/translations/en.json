@@ -142,5 +142,9 @@
   "review-python-code": {
     "description": "Review Python code for PEP 8 compliance, type safety, engineering robustness, and constitution alignment",
     "argument-hint": "Path to Python file or directory to review\n\nExamples:\n- `src/codexspec/` - Review entire package\n- `src/codexspec/__init__.py` - Review single file\n- `src/ tests/` - Review multiple paths"
+  },
+  "review-react-code": {
+    "description": "Review React/TypeScript code for component architecture, hooks compliance, state management, performance, and constitution alignment",
+    "argument-hint": "Path to React/TypeScript file or directory to review\n\nExamples:\n- `src/components/` - Review entire components directory\n- `src/components/Button.tsx` - Review single file\n- `src/hooks/ src/components/` - Review multiple paths"
   }
 }

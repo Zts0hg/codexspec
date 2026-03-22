@@ -42,7 +42,7 @@ def get_commands_metadata() -> list[CommandMetadata]:
 
     Returns:
         List of CommandMetadata dictionaries sorted by category priority:
-        core (9) -> enhanced (4) -> git (2) -> review (1)
+        core (9) -> enhanced (4) -> git (2) -> review (2)
     """
     return [
         # Core Commands (9)
@@ -153,13 +153,20 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "category": "git",
             "file_name": "pr.md",
         },
-        # Code Review Commands (1)
+        # Code Review Commands (2)
         {
             "name": "review-python-code",
             "display_name": "/codexspec:review-python-code",
             "description": "审查 Python 代码的 PEP 8 合规性、类型安全、工程健壮性和宪法一致性",
             "category": "review",
             "file_name": "review-python-code.md",
+        },
+        {
+            "name": "review-react-code",
+            "display_name": "/codexspec:review-react-code",
+            "description": "审查 React/TypeScript 代码的组件架构、Hooks 规范、状态管理、性能表现和宪法一致性",
+            "category": "review",
+            "file_name": "review-react-code.md",
         },
     ]
 
