@@ -222,40 +222,34 @@ CodexSpec breaks development into **reviewable checkpoints**:
   'theme': 'base',
   'flowchart': {
     'curve': 'stepBefore',
-    'rankSpacing': 40,
-    'nodeSpacing': 50
+    'nodeSpacing': 40,
+    'rankSpacing': 40
   }
 }}%%
-flowchart TB
-    %% 全局样式复用
-    classDef default fill:#2d2d2d,stroke:#666,stroke-width:1px,color:#fff,width:160px;
+flowchart LR
+    %% 统一节点样式
+    classDef default fill:#2d2d2d,stroke:#666,stroke-width:1px,color:#fff,width:150px;
 
-    %% 第一阶段：定义/规格
-    subgraph Row1 [" "]
-        direction LR
-        A[Idea] --> B["/specify"] --> C["/generate-spec"]
-    end
+    %% 第一行：从左往右
+    A[Idea] --> B["/specify"] --> C["/generate-spec"]
 
-    %% 第二阶段：计划/审核
-    subgraph Row2 [" "]
-        direction LR
-        D["Review spec"] --> E["/spec-to-plan"] --> F["Review plan"]
-    end
+    %% 换行连接：从第一行末尾向下连接到第二行开头
+    %% 这里我们利用一个不可见的节点或者直接连线
+    C --- space1(( )) --- D["Review spec"]
+    style space1 fill:none,stroke:none,color:#fff0
 
-    %% 第三阶段：执行/交付
-    subgraph Row3 [" "]
-        direction LR
-        G["/plan-to-tasks"] --> H["Review tasks"] --> I["/implement"]
-    end
+    %% 第二行：从右往左 (通过反向连接控制位置)
+    F["Review plan"] --> E["/spec-to-plan"] --> D
 
-    %% 连接各行：使用特殊的连接线
-    C --> D
-    F --> G
+    %% 再次换行连接：从第二行末尾向下
+    F --- space2(( )) --- G["/plan-to-tasks"]
+    style space2 fill:none,stroke:none,color:#fff0
 
-    %% 隐藏子图边框，使其看起来更像自然换行
-    style Row1 fill:none,stroke:none
-    style Row2 fill:none,stroke:none
-    style Row3 fill:none,stroke:none
+    %% 第三行：从左往右
+    G --> H["Review tasks"] --> I["/implement"]
+
+    %% 强制对齐 (关键技巧：使用隐藏线让 A, D, G 在同一列)
+    A ~~~ D ~~~ G
 ```
 
 ### Workflow Steps
