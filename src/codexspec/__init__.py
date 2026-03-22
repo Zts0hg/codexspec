@@ -348,6 +348,7 @@ def list_commands() -> None:
         "core": [],
         "enhanced": [],
         "git": [],
+        "review": [],
     }
     for cmd in metadata:
         cat = cmd["category"]

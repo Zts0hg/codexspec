@@ -262,6 +262,12 @@ When `codexspec init` is run:
 | `/codexspec:commit-staged` | Generate commit from staged changes with session context awareness |
 | `/codexspec:pr`            | Generate PR/MR descriptions                         |
 
+### Code Review Commands
+
+| Command                      | Description                                      |
+| ---------------------------- | ------------------------------------------------ |
+| `/codexspec:review-python-code` | Review Python code for PEP 8, type safety, engineering robustness, and constitution alignment |
+
 ## Development Guidelines
 
 ### Code Style
@@ -339,6 +345,7 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec:tasks-to-issues` | ✅ Template | NEW - Template complete                                                       |
 | `/codexspec:commit-staged`   | ✅ Template | Generate commit from staged changes with session context awareness            |
 | `/codexspec:pr`              | ✅ Template | Generate PR/MR descriptions                                                   |
+| `/codexspec:review-python-code` | ✅ Template | Review Python code for PEP 8, type safety, engineering robustness, and constitution alignment |
 
 ### Constitution Compliance Feature (NEW)
 

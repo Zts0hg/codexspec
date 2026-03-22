@@ -30,6 +30,7 @@
       "category_core": "核心命令 ({count})",
       "category_enhanced": "增强命令 ({count})",
       "category_git": "Git 工作流 ({count})",
+      "category_review": "代码审查 ({count})",
       "success_title": "成功",
       "success_message": "CodexSpec 项目初始化成功！",
       "success_project_dir": "项目目录: {path}",
@@ -58,6 +59,7 @@
       "category_core": "核心命令 ({count})",
       "category_enhanced": "增强命令 ({count})",
       "category_git": "Git 工作流 ({count})",
+      "category_review": "代码审查 ({count})",
       "no_project": "当前目录未找到 CodexSpec 项目。",
       "run_init": "运行 codexspec init 创建新项目。",
       "usage_hint": "使用 /codexspec:<命令> 来调用这些命令"
@@ -136,5 +138,9 @@
   "translate-docs": {
     "description": "翻译项目文档到指定语言",
     "argument-hint": "--lang <语言代码> (如 'zh,ja,ko') 或 'all' 翻译所有语言"
+  },
+  "review-python-code": {
+    "description": "审查 Python 代码的 PEP 8 合规性、类型安全、工程健壮性和宪法一致性",
+    "argument-hint": "要审查的 Python 文件或目录路径\n\n示例：\n- `src/codexspec/` - 审查整个包\n- `src/codexspec/__init__.py` - 审查单个文件\n- `src/ tests/` - 审查多个路径"
   }
 }

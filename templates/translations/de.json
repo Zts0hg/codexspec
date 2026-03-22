@@ -30,6 +30,7 @@
             "category_core": "Kernbefehle ({count})",
             "category_enhanced": "Erweiterte Befehle ({count})",
             "category_git": "Git-Workflow ({count})",
+            "category_review": "Code-Überprüfung ({count})",
             "success_title": "Erfolg",
             "success_message": "CodexSpec-Projekt erfolgreich initialisiert!",
             "success_project_dir": "Projektverzeichnis: {path}",
@@ -58,6 +59,7 @@
             "category_core": "Kernbefehle ({count})",
             "category_enhanced": "Erweiterte Befehle ({count})",
             "category_git": "Git-Workflow ({count})",
+            "category_review": "Code-Überprüfung ({count})",
             "no_project": "Kein CodexSpec-Projekt im aktuellen Verzeichnis gefunden.",
             "run_init": "Führen Sie codexspec init aus, um ein neues Projekt zu erstellen.",
             "usage_hint": "Verwenden Sie /codexspec:<befehl>, um diese Befehle aufzurufen"
@@ -136,5 +138,9 @@
     "translate-docs": {
         "description": "Projektdokumentation in die angegebene Sprache übersetzen",
         "argument-hint": "--lang <sprachcodes> (z.B. 'zh,ja,ko') oder 'all' für alle Sprachen"
+    },
+    "review-python-code": {
+        "description": "Python-Code auf PEP 8-Konformität, Typsicherheit, Engineering-Robustheit und Verfassungsübereinstimmung überprüfen",
+        "argument-hint": "Pfad zur Python-Datei oder zum Verzeichnis zur Überprüfung\n\nBeispiele:\n- `src/codexspec/` - Gesamtes Paket überprüfen\n- `src/codexspec/__init__.py` - Einzelne Datei überprüfen\n- `src/ tests/` - Mehrere Pfade überprüfen"
     }
 }

@@ -30,6 +30,7 @@
       "category_core": "Comandos principais ({count})",
       "category_enhanced": "Comandos avançados ({count})",
       "category_git": "Fluxo de trabalho Git ({count})",
+      "category_review": "Revisão de código ({count})",
       "success_title": "Sucesso",
       "success_message": "Projeto CodexSpec inicializado com sucesso!",
       "success_project_dir": "Diretório do projeto: {path}",
@@ -58,6 +59,7 @@
       "category_core": "Comandos principais ({count})",
       "category_enhanced": "Comandos avançados ({count})",
       "category_git": "Fluxo de trabalho Git ({count})",
+      "category_review": "Revisão de código ({count})",
       "no_project": "Nenhum projeto CodexSpec encontrado no diretório atual.",
       "run_init": "Execute codexspec init para criar um novo projeto.",
       "usage_hint": "Use /codexspec:<comando> para invocar estes comandos"
@@ -136,5 +138,9 @@
   "translate-docs": {
     "description": "Traduzir documentação do projeto para o idioma especificado",
     "argument-hint": "--lang <códigos_idioma> (ex: 'zh,ja,ko') ou 'all' para todos os idiomas"
+  },
+  "review-python-code": {
+    "description": "Revisar código Python por conformidade PEP 8, segurança de tipos, robustez de engenharia e alinhamento com a constituição",
+    "argument-hint": "Caminho para arquivo ou diretório Python a revisar\n\nExemplos:\n- `src/codexspec/` - Revisar pacote completo\n- `src/codexspec/__init__.py` - Revisar arquivo único\n- `src/ tests/` - Revisar múltiplos caminhos"
   }
 }

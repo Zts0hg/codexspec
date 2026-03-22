@@ -30,6 +30,7 @@
       "category_core": "コアコマンド ({count})",
       "category_enhanced": "拡張コマンド ({count})",
       "category_git": "Git ワークフロー ({count})",
+      "category_review": "コードレビュー ({count})",
       "success_title": "成功",
       "success_message": "CodexSpec プロジェクトが正常に初期化されました！",
       "success_project_dir": "プロジェクトディレクトリ: {path}",
@@ -58,6 +59,7 @@
       "category_core": "コアコマンド ({count})",
       "category_enhanced": "拡張コマンド ({count})",
       "category_git": "Git ワークフロー ({count})",
+      "category_review": "コードレビュー ({count})",
       "no_project": "現在のディレクトリにCodexSpecプロジェクトが見つかりません。",
       "run_init": "codexspec init を実行して新しいプロジェクトを作成してください。",
       "usage_hint": "/codexspec:<コマンド> を使用してこれらのコマンドを呼び出します"
@@ -136,5 +138,9 @@
   "translate-docs": {
     "description": "プロジェクトドキュメントを指定言語に翻訳",
     "argument-hint": "--lang <言語コード> (例: 'zh,ja,ko') または 'all' ですべての言語"
+  },
+  "review-python-code": {
+    "description": "PythonコードのPEP 8準拠、型安全性、エンジニアリングの堅牢性、憲法整合性をレビュー",
+    "argument-hint": "レビューするPythonファイルまたはディレクトリへのパス\n\n例：\n- `src/codexspec/` - パッケージ全体をレビュー\n- `src/codexspec/__init__.py` - 単一ファイルをレビュー\n- `src/ tests/` - 複数パスをレビュー"
   }
 }
