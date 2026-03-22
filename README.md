@@ -72,16 +72,12 @@ CodexSpec is built on the belief that **effective AI-assisted development requir
 
 CodexSpec structures development into **reviewable checkpoints**:
 
-```mermaid
-flowchart LR
-    A[Idea] --> B["/specify"]
-    B --> C["/generate-spec"]
-    C --> D["Review spec"]
-    D --> E["/spec-to-plan"]
-    E --> F["Review plan"]
-    F --> G["/plan-to-tasks"]
-    G --> H["Review tasks"]
-    H --> I["/implement"]
+```
+Idea → /specify → /generate-spec → /spec-to-plan → /plan-to-tasks → /implement
+                         │                  │                │
+                    Review spec        Review plan      Review tasks
+                         │                  │                │
+                      ✅ Human            ✅ Human          ✅ Human
 ```
 
 **Every artifact has a corresponding review command:**
@@ -217,39 +213,12 @@ pip install --upgrade codexspec
 
 CodexSpec breaks development into **reviewable checkpoints**:
 
-```mermaid
-%%{init: {
-  'theme': 'base',
-  'flowchart': {
-    'curve': 'stepBefore',
-    'nodeSpacing': 40,
-    'rankSpacing': 40
-  }
-}}%%
-flowchart LR
-    %% 统一节点样式
-    classDef default fill:#2d2d2d,stroke:#666,stroke-width:1px,color:#fff,width:150px;
-
-    %% 第一行：从左往右
-    A[Idea] --> B["/specify"] --> C["/generate-spec"]
-
-    %% 换行连接：从第一行末尾向下连接到第二行开头
-    %% 这里我们利用一个不可见的节点或者直接连线
-    C --- space1(( )) --- D["Review spec"]
-    style space1 fill:none,stroke:none,color:#fff0
-
-    %% 第二行：从右往左 (通过反向连接控制位置)
-    F["Review plan"] --> E["/spec-to-plan"] --> D
-
-    %% 再次换行连接：从第二行末尾向下
-    F --- space2(( )) --- G["/plan-to-tasks"]
-    style space2 fill:none,stroke:none,color:#fff0
-
-    %% 第三行：从左往右
-    G --> H["Review tasks"] --> I["/implement"]
-
-    %% 强制对齐 (关键技巧：使用隐藏线让 A, D, G 在同一列)
-    A ~~~ D ~~~ G
+```
+Idea → /specify → /generate-spec → /spec-to-plan → /plan-to-tasks → /implement
+                         │                  │                │
+                    Review spec        Review plan      Review tasks
+                         │                  │                │
+                      ✅ Human            ✅ Human          ✅ Human
 ```
 
 ### Workflow Steps
