@@ -14,840 +14,594 @@
 [![Python](https://img.shields.io/pypi/pyversions/codexspec.svg)](https://pypi.org/project/codexspec/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**[📖 Documentation](https://zts0hg.github.io/codexspec/)** | [中文文档](https://zts0hg.github.io/codexspec/zh/) | [日本語ドキュメント](https://zts0hg.github.io/codexspec/ja/) | [한국어 문서](https://zts0hg.github.io/codexspec/ko/) | [Documentación](https://zts0hg.github.io/codexspec/es/) | [Documentation](https://zts0hg.github.io/codexspec/fr/) | [Dokumentation](https://zts0hg.github.io/codexspec/de/) | [Documentação](https://zts0hg.github.io/codexspec/pt-BR/)
-
 **A Spec-Driven Development (SDD) toolkit for Claude Code**
 
-CodexSpec is a toolkit that helps you build high-quality software using a structured, specification-driven approach. It flips the script on traditional development by making specifications executable artifacts that directly guide implementation.
+[📖 Documentation](https://zts0hg.github.io/codexspec/) | [中文文档](https://zts0hg.github.io/codexspec/zh/) | [日本語ドキュメント](https://zts0hg.github.io/codexspec/ja/) | [한국어 문서](https://zts0hg.github.io/codexspec/ko/)
 
-## Design Philosophy: Human-AI Collaboration
+---
 
-CodexSpec is built on the belief that **effective AI-assisted development requires active human participation at every stage**. The toolkit is designed around a core principle:
+## 目录
 
-> **Review and validate each artifact before moving forward.**
+- [什么是 Spec-Driven Development?](#什么是-spec-driven-development)
+- [30秒快速开始](#-30秒快速开始)
+- [安装](#安装)
+- [核心工作流](#核心工作流)
+- [可用命令](#可用命令)
+- [与 spec-kit 对比](#comparison-with-spec-kit)
+- [国际化支持](#internationalization-i18n)
+- [贡献 & 许可证](#contributing)
 
-### Why Human Oversight Matters
+---
 
-In AI-assisted development, skipping review stages leads to:
+## 什么是 Spec-Driven Development?
 
-| Problem | Consequence |
-|---------|-------------|
-| Unclear requirements | AI makes assumptions that diverge from your intent |
-| Incomplete specifications | Features get built without critical edge cases |
-| Misaligned technical plans | Architecture doesn't match business needs |
-| Vague task breakdowns | Implementation goes off-track, requiring expensive rework |
-
-### The CodexSpec Approach
-
-CodexSpec structures development into **reviewable checkpoints**:
+**Spec-Driven Development (SDD)** 是一种「先写规范、后写代码」的开发方法论：
 
 ```
-Idea → Clarify → Review → Plan → Review → Tasks → Review → Analyze → Implement
-              ↑              ↑              ↑
-           Human checks    Human checks    Human checks
+传统开发:  想法 → 直接写代码 → 调试 → 重写
+SDD 开发:  想法 → 规范 → 计划 → 任务 → 代码
 ```
 
-**Every artifact has a corresponding review command:**
+**为什么使用 SDD?**
 
-- `spec.md` → `/codexspec:review-spec`
-- `plan.md` → `/codexspec:review-plan`
-- `tasks.md` → `/codexspec:review-tasks`
-- All artifacts → `/codexspec:analyze`
+| 问题 | SDD 的解决方案 |
+|------|----------------|
+| AI 理解偏差 | 规范明确「做什么」，AI 不再猜测 |
+| 需求遗漏 | 交互式澄清发现边缘情况 |
+| 架构偏离 | 审查检查点确保方向正确 |
+| 返工浪费 | 问题在写代码前被发现 |
 
-This systematic review process ensures:
+**CodexSpec 的核心理念**：在每个阶段都设置 **人工审查检查点**，确保 AI 的输出符合你的意图。
 
-- **Early error detection**: Catch misunderstandings before code is written
-- **Alignment verification**: Confirm AI's interpretation matches your intent
-- **Quality gates**: Validate completeness, clarity, and feasibility at each stage
-- **Reduced rework**: Invest minutes in review to save hours of reimplementation
+---
 
-## Features
+## 🚀 30秒快速开始
 
-### Core SDD Workflow
+```bash
+# 1. 安装
+uv tool install codexspec
 
-- **Constitution-Based**: Establish project principles that guide all subsequent decisions
-- **Two-Phase Specification**: Interactive clarification (`/specify`) followed by document generation (`/generate-spec`)
-- **Plan-Driven Development**: Technical choices come after requirements are validated
-- **TDD-Ready Tasks**: Task breakdowns enforce test-first methodology
+# 2. 创建项目
+codexspec init my-project && cd my-project
 
-### Human-AI Collaboration
+# 3. 在 Claude Code 中使用
+claude
+> /codexspec:constitution 创建注重代码质量和测试的原则
+> /codexspec:specify 我想构建一个待办事项应用
+> /codexspec:generate-spec
+> /codexspec:spec-to-plan
+> /codexspec:plan-to-tasks
+> /codexspec:implement-tasks
+```
 
-- **Review Commands**: Dedicated review commands for spec, plan, and tasks to validate AI output
-- **Interactive Clarification**: Q&A-based requirement refinement with immediate feedback
-- **Cross-Artifact Analysis**: Detect inconsistencies between spec, plan, and tasks before implementation
-- **Quality Checklists**: Automated quality assessment for requirements
+就这么简单！继续阅读了解完整的工作流程。
 
-### Developer Experience
+---
 
-- **Claude Code Integration**: Native slash commands for Claude Code
-- **Internationalization (i18n)**: Multi-language support via LLM dynamic translation
-- **Cross-Platform**: Support for both Bash and PowerShell scripts
-- **Extensible**: Plugin architecture for custom commands
+## 安装
 
-## Installation
-
-### Prerequisites
+### 前置要求
 
 - Python 3.11+
-- [uv](https://docs.astral.sh/uv/) (recommended) or pip
+- [uv](https://docs.astral.sh/uv/) (推荐) 或 pip
 
-### Option 1: Install with uv (Recommended)
-
-The easiest way to install CodexSpec is using uv:
+### 推荐安装方式
 
 ```bash
+# 使用 uv (推荐)
 uv tool install codexspec
-```
 
-### Option 2: Install with pip
-
-Alternatively, you can use pip:
-
-```bash
+# 或使用 pip
 pip install codexspec
 ```
 
-### Option 3: One-time Usage
-
-Run directly without installing:
+### 验证安装
 
 ```bash
-# Create a new project
+codexspec --version
+```
+
+<details>
+<summary>📦 其他安装方式</summary>
+
+#### 一次性使用 (无需安装)
+
+```bash
+# 创建新项目
 uvx codexspec init my-project
 
-# Initialize in an existing project
+# 在现有项目中初始化
 cd your-existing-project
 uvx codexspec init . --ai claude
 ```
 
-### Option 4: Install from GitHub (Development Version)
-
-For the latest development version or a specific branch:
+#### 从 GitHub 安装开发版
 
 ```bash
-# Using uv
+# 使用 uv
 uv tool install git+https://github.com/Zts0hg/codexspec.git
 
-# Using pip
-pip install git+https://github.com/Zts0hg/codexspec.git
-
-# Specific branch or tag
+# 指定分支或标签
 uv tool install git+https://github.com/Zts0hg/codexspec.git@main
-uv tool install git+https://github.com/Zts0hg/codexspec.git@v0.2.0
+uv tool install git+https://github.com/Zts0hg/codexspec.git@v0.5.6
 ```
 
-## Windows Users
+</details>
 
-### Recommended: Use PowerShell
+<details>
+<summary>🪟 Windows 用户注意事项</summary>
 
-**Windows users should use PowerShell for installation and running CodexSpec**:
+**推荐使用 PowerShell**：
 
 ```powershell
-# 1. Install uv (if not already installed)
+# 1. 安装 uv (如果尚未安装)
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 
-# 2. Restart PowerShell, then install codexspec
+# 2. 重启 PowerShell，然后安装 codexspec
 uv tool install codexspec
 
-# 3. Verify installation
+# 3. 验证安装
 codexspec --version
 ```
 
-### Troubleshooting for CMD Users
+**CMD 故障排除**：
 
-If you encounter "Access denied" or "spawn codexspec access denied (OSError 5)" errors in CMD:
+如果遇到 "Access denied" 错误：
 
-**Solution 1: Refresh environment variables**
+1. 关闭所有 CMD 窗口并重新打开
+2. 或手动刷新 PATH：`set PATH=%PATH%;%USERPROFILE%\.local\bin`
+3. 或使用完整路径：`%USERPROFILE%\.local\bin\codexspec.exe --version`
 
-```cmd
-# Close all CMD windows and open a new one
-# Or manually refresh PATH
-set PATH=%PATH%;%USERPROFILE%\.local\bin
-codexspec --version
-```
+详细故障排除请参阅 [Windows Troubleshooting Guide](docs/WINDOWS-TROUBLESHOOTING.md)。
 
-**Solution 2: Use full path**
+</details>
 
-```cmd
-%USERPROFILE%\.local\bin\codexspec.exe --version
-```
-
-**Solution 3: Use pipx instead of uv tool**
-
-```cmd
-pip install pipx
-pipx ensurepath
-# Restart CMD
-pipx install codexspec
-```
-
-### FAQ
-
-**Q: Why does PowerShell work but CMD doesn't?**
-A: PowerShell and CMD handle user environment variables differently. When uv adds paths to user PATH, PowerShell typically recognizes them immediately, while CMD may require a restart or manual refresh.
-
-For more details, see [Windows Troubleshooting Guide](docs/WINDOWS-TROUBLESHOOTING.md).
-
-## Quick Start
-
-After installation, you can use the CLI:
+### 升级
 
 ```bash
-# Create new project
-codexspec init my-project
-
-# Create project with Chinese output
-codexspec init my-project --lang zh-CN
-
-# Initialize in existing project
-codexspec init . --ai claude
-# or
-codexspec init --here --ai claude
-
-# Check installed tools
-codexspec check
-
-# View version
-codexspec version
-```
-
-To upgrade to the latest version:
-
-```bash
-# Using uv
+# 使用 uv
 uv tool install codexspec --upgrade
 
-# Using pip
+# 使用 pip
 pip install --upgrade codexspec
 ```
 
-## Usage
+---
 
-### 1. Initialize a Project
+## 核心工作流
 
-After [installation](#installation), create or initialize your project:
+CodexSpec 将开发过程分解为 **可审查的检查点**：
+
+```mermaid
+flowchart LR
+    A[想法] --> B[/specify]
+    B --> C[/generate-spec]
+    C --> D[审查 spec]
+    D --> E[/spec-to-plan]
+    E --> F[审查 plan]
+    F --> G[/plan-to-tasks]
+    G --> H[审查 tasks]
+    H --> I[/implement]
+```
+
+### 工作流步骤
+
+| 步骤 | 命令 | 输出 | 人工检查 |
+|------|------|------|----------|
+| 1. 项目原则 | `/codexspec:constitution` | `constitution.md` | ✅ |
+| 2. 需求澄清 | `/codexspec:specify` | 无 (交互式对话) | ✅ |
+| 3. 生成规范 | `/codexspec:generate-spec` | `spec.md` + 自动审查 | ✅ |
+| 4. 技术规划 | `/codexspec:spec-to-plan` | `plan.md` + 自动审查 | ✅ |
+| 5. 任务分解 | `/codexspec:plan-to-tasks` | `tasks.md` + 自动审查 | ✅ |
+| 6. 跨工件分析 | `/codexspec:analyze` | 分析报告 | ✅ |
+| 7. 实现 | `/codexspec:implement-tasks` | 代码 | - |
+
+### 关键概念：迭代质量循环
+
+每个生成命令都会 **自动审查**，生成审查报告。你可以：
+
+1. 查看审查报告
+2. 用自然语言描述需要修复的问题
+3. 系统自动更新规范和审查报告
+
+```mermaid
+flowchart TB
+    A[生成规范/计划/任务] --> B[自动审查]
+    B --> C{发现问题?}
+    C -->|是| D[用自然语言描述修复]
+    D --> E[更新规范 + 审查报告]
+    E --> B
+    C -->|否| F[继续下一步]
+```
+
+<details>
+<summary>📖 详细工作流说明</summary>
+
+### 1. 初始化项目
 
 ```bash
 codexspec init my-awesome-project
-# or in current directory
-codexspec init . --ai claude
-```
-
-### 2. Establish Project Principles
-
-Launch Claude Code in the project directory:
-
-```bash
 cd my-awesome-project
 claude
 ```
 
-Use the `/codexspec:constitution` command to create your project's governing principles:
+### 2. 建立项目原则
 
 ```
-/codexspec:constitution Create principles focused on code quality, testing standards, and clean architecture
+/codexspec:constitution 创建注重代码质量、测试标准和清晰架构的原则
 ```
 
-### 3. Clarify Requirements
-
-Use `/codexspec:specify` to **explore and clarify** your requirements through interactive Q&A:
+### 3. 澄清需求
 
 ```
-/codexspec:specify I want to build a task management application
+/codexspec:specify 我想构建一个任务管理应用
 ```
 
-This command will:
+此命令会：
 
-- Ask clarifying questions to understand your idea
-- Explore edge cases you might not have considered
-- Co-create high-quality requirements through dialogue
-- **NOT** generate files automatically - you stay in control
+- 通过问答了解你的想法
+- 探索你可能没考虑到的边缘情况
+- **不**自动生成文件 - 你保持控制
 
-### 4. Generate Specification Document
+### 4. 生成规范文档
 
-Once requirements are clarified, use `/codexspec:generate-spec` to create the `spec.md` document:
+需求明确后：
 
 ```
 /codexspec:generate-spec
 ```
 
-This command acts as a "requirement compiler" that transforms your clarified requirements into a structured specification document.
+此命令：
 
-### 5. Review Specification (Recommended)
+- 将澄清的需求编译为结构化规范
+- **自动**运行审查并生成 `review-spec.md`
 
-**Before proceeding to planning, validate your specification:**
-
-```
-/codexspec:review-spec
-```
-
-This command generates a detailed review report with:
-
-- Section completeness analysis
-- Clarity and testability assessment
-- Constitution alignment check
-- Prioritized recommendations
-
-### 6. Create a Technical Plan
-
-Use `/codexspec:spec-to-plan` to define how to implement it:
+### 5. 创建技术计划
 
 ```
-/codexspec:spec-to-plan Use Python with FastAPI for the backend, PostgreSQL for the database, and React for the frontend
+/codexspec:spec-to-plan 后端使用 Python FastAPI，数据库用 PostgreSQL，前端用 React
 ```
 
-The command includes **constitutionality review** - verifying your plan aligns with project principles.
+包含 **合规性审查** - 验证计划符合项目原则。
 
-### 7. Review Plan (Recommended)
-
-**Before breaking down into tasks, validate your technical plan:**
-
-```
-/codexspec:review-plan
-```
-
-This verifies:
-
-- Specification alignment
-- Architecture soundness
-- Tech stack appropriateness
-- Constitution compliance
-
-### 8. Generate Tasks
-
-Use `/codexspec:plan-to-tasks` to break down the plan:
+### 6. 生成任务
 
 ```
 /codexspec:plan-to-tasks
 ```
 
-Tasks are organized into standard phases with:
+任务组织为标准阶段：
 
-- **TDD enforcement**: Test tasks precede implementation tasks
-- **Parallel markers `[P]`**: Identify independent tasks
-- **File path specifications**: Clear deliverables per task
+- **TDD 强制**：测试任务在实现任务之前
+- **并行标记 `[P]`**：识别可并行执行的任务
+- **文件路径规范**：每个任务有明确的交付物
 
-### 9. Review Tasks (Recommended)
-
-**Before implementation, validate task breakdown:**
-
-```
-/codexspec:review-tasks
-```
-
-This checks:
-
-- Plan coverage
-- TDD compliance
-- Dependency correctness
-- Task granularity
-
-### 10. Analyze (Optional but Recommended)
-
-Use `/codexspec:analyze` for cross-artifact consistency check:
+### 7. 跨工件分析 (可选但推荐)
 
 ```
 /codexspec:analyze
 ```
 
-This detects issues across spec, plan, and tasks:
+检测 spec、plan、tasks 之间的问题：
 
-- Coverage gaps (requirements without tasks)
-- Duplication and inconsistencies
-- Constitution violations
-- Underspecified items
+- 覆盖缺口（需求没有对应任务）
+- 重复和不一致
+- 违反宪法
+- 未充分说明的项目
 
-### 11. Implement
-
-Use `/codexspec:implement-tasks` to execute the implementation:
+### 8. 实现
 
 ```
 /codexspec:implement-tasks
 ```
 
-The implementation follows **conditional TDD workflow**:
+实现遵循 **条件 TDD 工作流**：
 
-- Code tasks: Test-first (Red → Green → Verify → Refactor)
-- Non-testable tasks (docs, config): Direct implementation
+- 代码任务：测试优先 (Red → Green → Verify → Refactor)
+- 非测试任务（文档、配置）：直接实现
 
-## Available Commands
+</details>
 
-### CLI Commands
+---
 
-| Command | Description |
-|---------|-------------|
-| `codexspec init` | Initialize a new CodexSpec project |
-| `codexspec check` | Check for installed tools |
-| `codexspec version` | Display version information |
-| `codexspec config` | View or modify project configuration |
+## 可用命令
 
-### `codexspec init` Options
+### CLI 命令
 
-| Option | Description |
-|--------|-------------|
-| `PROJECT_NAME` | Name for your new project directory |
-| `--here`, `-h` | Initialize in current directory |
-| `--ai`, `-a` | AI assistant to use (default: claude) |
-| `--lang`, `-l` | Output language (e.g., en, zh-CN, ja) |
-| `--force`, `-f` | Force overwrite existing files |
-| `--no-git` | Skip git initialization |
-| `--debug`, `-d` | Enable debug output |
+| 命令 | 描述 |
+|------|------|
+| `codexspec init` | 初始化新项目 |
+| `codexspec check` | 检查已安装工具 |
+| `codexspec version` | 显示版本信息 |
+| `codexspec config` | 查看或修改配置 |
 
-### `codexspec config` Options
+<details>
+<summary>📋 init 选项</summary>
 
-| Option | Description |
-|--------|-------------|
-| `--set-lang`, `-l` | Set the output language |
-| `--set-commit-lang`, `-c` | Set the commit message language (defaults to output language) |
-| `--list-langs` | List all supported languages |
+| 选项 | 描述 |
+|------|------|
+| `PROJECT_NAME` | 项目目录名称 |
+| `--here`, `-h` | 在当前目录初始化 |
+| `--ai`, `-a` | 使用的 AI 助手 (默认: claude) |
+| `--lang`, `-l` | 输出语言 (如 en, zh-CN, ja) |
+| `--force`, `-f` | 强制覆盖现有文件 |
+| `--no-git` | 跳过 git 初始化 |
+| `--debug`, `-d` | 启用调试输出 |
 
-### Slash Commands
+</details>
 
-After initialization, these slash commands are available in Claude Code:
+<details>
+<summary>📋 config 选项</summary>
 
-#### Core Workflow Commands
+| 选项 | 描述 |
+|------|------|
+| `--set-lang`, `-l` | 设置输出语言 |
+| `--set-commit-lang`, `-c` | 设置提交信息语言 |
+| `--list-langs` | 列出所有支持的语言 |
 
-| Command | Description |
-|---------|-------------|
-| `/codexspec:constitution` | Create or update project constitution with cross-artifact validation and sync impact reporting |
-| `/codexspec:specify` | **Clarify** requirements through interactive Q&A (no file generation) |
-| `/codexspec:generate-spec` | **Generate** `spec.md` document after requirements are clarified (★ auto-reviews) |
-| `/codexspec:spec-to-plan` | Convert specification to technical plan with constitutionality review and module dependency graph (★ auto-reviews) |
-| `/codexspec:plan-to-tasks` | Break down plan into atomic, TDD-enforced tasks with parallel markers `[P]` (★ auto-reviews) |
-| `/codexspec:implement-tasks` | Execute tasks with conditional TDD workflow (TDD for code, direct for docs/config) |
+</details>
 
-#### Review Commands (Quality Gates)
+### Slash 命令
 
-| Command | Description |
-|---------|-------------|
-| `/codexspec:review-spec` | Auto-invoked by `/generate-spec`; can also run manually to re-validate after fixes |
-| `/codexspec:review-plan` | Auto-invoked by `/spec-to-plan`; can also run manually to re-validate after fixes |
-| `/codexspec:review-tasks` | Auto-invoked by `/plan-to-tasks`; can also run manually to re-validate after fixes |
+#### 核心工作流命令
 
-#### Enhancement Commands
+| 命令 | 描述 |
+|------|------|
+| `/codexspec:constitution` | 创建/更新项目宪法，包含跨工件验证 |
+| `/codexspec:specify` | 通过交互式问答澄清需求 |
+| `/codexspec:generate-spec` | 生成 `spec.md` 文档 ★ 自动审查 |
+| `/codexspec:spec-to-plan` | 将规范转换为技术计划 ★ 自动审查 |
+| `/codexspec:plan-to-tasks` | 分解计划为原子任务 ★ 自动审查 |
+| `/codexspec:implement-tasks` | 执行任务 (条件 TDD) |
 
-| Command | Description |
-|---------|-------------|
-| `/codexspec:clarify` | Scan existing spec.md for ambiguities using 4 focused categories, integrate with review findings |
-| `/codexspec:analyze` | Non-destructive cross-artifact analysis (spec, plan, tasks) with severity-based issue detection |
-| `/codexspec:checklist` | Generate quality checklists for requirements validation |
-| `/codexspec:tasks-to-issues` | Convert tasks to GitHub issues for project management integration |
+#### 审查命令 (质量门)
 
-#### Git Workflow Commands
+| 命令 | 描述 |
+|------|------|
+| `/codexspec:review-spec` | 审查规范 (自动调用或手动运行) |
+| `/codexspec:review-plan` | 审查技术计划 (自动调用或手动运行) |
+| `/codexspec:review-tasks` | 审查任务分解 (自动调用或手动运行) |
 
-| Command | Description |
-|---------|-------------|
-| `/codexspec:commit-staged` | Generate commit message from staged changes with session context awareness |
-| `/codexspec:pr` | Generate structured PR (GitHub) or MR (GitLab) descriptions with platform auto-detection |
+#### 增强命令
 
-#### Code Review Commands
+| 命令 | 描述 |
+|------|------|
+| `/codexspec:clarify` | 扫描规范中的模糊点 (4 类别，最多 5 问题) |
+| `/codexspec:analyze` | 跨工件一致性分析 (只读，基于严重性) |
+| `/codexspec:checklist` | 生成需求质量检查清单 |
+| `/codexspec:tasks-to-issues` | 将任务转换为 GitHub Issues |
 
-| Command | Description |
-|---------|-------------|
-| `/codexspec:review-python-code` | Review Python code for PEP 8 compliance, type safety, engineering robustness, and constitution alignment |
-| `/codexspec:review-react-code` | Review React/TypeScript code for component architecture, hooks compliance, state management, performance, and constitution alignment |
+#### Git 工作流命令
 
-## Workflow Overview
+| 命令 | 描述 |
+|------|------|
+| `/codexspec:commit-staged` | 从暂存更改生成提交信息 |
+| `/codexspec:pr` | 生成 PR/MR 描述 (自动检测平台) |
 
-```
-┌──────────────────────────────────────────────────────────────────────────┐
-│                    CodexSpec Human-AI Collaboration Workflow             │
-├──────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  1. Constitution  ──►  Define project principles                         │
-│         │                         with cross-artifact validation         │
-│         ▼                                                                │
-│  2. Specify  ───────►  Interactive Q&A to clarify requirements           │
-│         │               (no file created - human control)                │
-│         ▼                                                                │
-│  3. Generate Spec  ─►  Create spec.md document                           │
-│         │               ✓ AUTO-REVIEW: generates review-spec.md         │
-│         ▼                                                                │
-│  4. Clarify  ───────►  Resolve ambiguities (iterative)                   │
-│         │               4 focused categories, max 5 questions            │
-│         ▼                                                                │
-│  5. Spec to Plan  ──►  Create technical plan with:                       │
-│         │               • Constitutionality review (MANDATORY)           │
-│         │               • Module dependency graph                        │
-│         │               ✓ AUTO-REVIEW: generates review-plan.md         │
-│         ▼                                                                │
-│  6. Plan to Tasks  ─►  Generate atomic tasks with:                       │
-│         │               • TDD enforcement (tests before impl)            │
-│         │               • Parallel markers [P]                           │
-│         │               • File path specifications                       │
-│         │               ✓ AUTO-REVIEW: generates review-tasks.md        │
-│         ▼                                                                │
-│  7. Analyze  ───────►  Cross-artifact consistency check                  │
-│         │               Detect gaps, duplications, constitution issues   │
-│         ▼                                                                │
-│  8. Implement  ─────►  Execute with conditional TDD workflow             │
-│                          Code: Test-first | Docs/Config: Direct          │
-│                                                                          │
-└──────────────────────────────────────────────────────────────────────────┘
-```
+#### 代码审查命令
 
-**Key Insight**: Each generation command now **auto-reviews** (✓), producing a review report alongside the artifact. Review the report, describe fixes in natural language, and both the artifact and report will update iteratively. You can also run `/codexspec:review-*` commands manually anytime for a fresh review.
+| 命令 | 描述 |
+|------|------|
+| `/codexspec:review-python-code` | 审查 Python 代码 (PEP 8、类型安全、工程健壮性) |
+| `/codexspec:review-react-code` | 审查 React/TypeScript 代码 (架构、Hooks、性能) |
 
-### Key Concept: Requirement Clarification Workflow
+---
 
-CodexSpec provides **two distinct clarification commands** for different stages of the workflow:
+## Comparison with spec-kit
 
-#### specify vs clarify: When to Use Which?
+CodexSpec 受 GitHub spec-kit 启发，但有一些关键差异：
 
-| Aspect | `/codexspec:specify` | `/codexspec:clarify` |
-|--------|----------------------|----------------------|
-| **Purpose** | Initial requirement exploration | Iterative refinement of existing spec |
-| **When to Use** | Starting with a new idea, no spec.md exists | spec.md exists, need to fill gaps |
-| **Input** | Your initial idea or requirement | Existing spec.md file |
-| **Output** | None (dialogue only) | Updates spec.md with clarifications |
-| **Method** | Open-ended Q&A | Structured ambiguity scan (4 categories) |
-| **Question Limit** | Unlimited | Maximum 5 questions |
-| **Typical Use** | "I want to build a todo app" | "The spec is missing error handling details" |
+| 特性 | spec-kit | CodexSpec |
+|------|----------|-----------|
+| 核心理念 | 规范驱动开发 | 规范驱动 + 人机协作 |
+| CLI 名称 | `specify` | `codexspec` |
+| 主要 AI | 多代理支持 | 专注于 Claude Code |
+| 宪法系统 | 基础 | 完整宪法 + 跨工件验证 |
+| 两阶段规范 | 否 | 是 (澄清 + 生成) |
+| 审查命令 | 可选 | 3 个专用审查命令 + 评分 |
+| 澄清命令 | 是 | 4 个聚焦类别，审查集成 |
+| 分析命令 | 是 | 只读，基于严重性，感知宪法 |
+| 任务中 TDD | 可选 | 强制 (测试先于实现) |
+| 实现 | 标准 | 条件 TDD (代码 vs 文档/配置) |
+| 扩展系统 | 是 | 是 |
+| PowerShell 脚本 | 是 | 是 |
+| i18n 支持 | 否 | 是 (13+ 语言，通过 LLM 翻译) |
 
-#### Two-Phase Specification
+### 关键差异
 
-Before generating any documentation:
+1. **审查优先文化**：每个主要工件都有专用审查命令
+2. **宪法治理**：原则被验证，而不仅仅是记录
+3. **默认 TDD**：测试优先方法论在任务生成中强制执行
+4. **人工检查点**：工作流围绕验证门设计
 
-| Phase | Command | Purpose | Output |
-|-------|---------|---------|--------|
-| **Explore** | `/codexspec:specify` | Interactive Q&A to explore and refine requirements | None (dialogue only) |
-| **Generate** | `/codexspec:generate-spec` | Compile clarified requirements into structured document | `spec.md` |
-
-#### Iterative Clarification
-
-After spec.md is created:
-
-```
-spec.md ──► /codexspec:clarify ──► Updated spec.md (with Clarifications section)
-                │
-                └── Scans for ambiguities in 4 focused categories:
-                    • Completeness Gaps - Missing sections, empty content
-                    • Specificity Issues - Vague terms, undefined constraints
-                    • Behavioral Clarity - Error handling, state transitions
-                    • Measurability Problems - Non-functional requirements without metrics
-```
-
-#### Benefits of This Design
-
-- **Human-AI collaboration**: You actively participate in requirement discovery
-- **Explicit control**: Files are only created when you decide
-- **Quality focus**: Requirements are thoroughly explored before documentation
-- **Iterative refinement**: Specs can be improved incrementally as understanding deepens
-
-### Iterative Quality Cycle
-
-When issues are found in review reports, describe the fixes in natural language and the system will:
-
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│                    Iterative Quality Cycle                            │
-├──────────────────────────────────────────────────────────────────────┤
-│                                                                       │
-│  Artifact (spec/plan/tasks.md)                                        │
-│         │                                                             │
-│         ▼                                                             │
-│  Auto-Review ─────► Review Report (review-*.md)                       │
-│         │                    │                                        │
-│         │                    ▼                                        │
-│         │             Issues Found?                                   │
-│         │                    │                                        │
-│         │              ┌─────┴─────┐                                  │
-│         │              │           │                                  │
-│         │             YES          NO                                 │
-│         │              │           │                                  │
-│         │              ▼           ▼                                  │
-│         │     Describe Fixes   Continue                               │
-│         │       in Chat        to Next Step                           │
-│         │              │                                              │
-│         │              ▼                                              │
-│         │     Update Both:                                            │
-│         │       • Artifact (spec/plan/tasks.md)                       │
-│         │       • Review Report (review-*.md)                         │
-│         │              │                                              │
-│         └──────────────┘                                              │
-│                (Repeat until satisfied)                               │
-│                                                                       │
-│  Manual Re-review: Run /codexspec:review-* anytime for fresh analysis │
-│                                                                       │
-└──────────────────────────────────────────────────────────────────────┘
-```
-
-**How It Works**:
-
-1. **Auto-Review**: Each generation command runs the corresponding review automatically
-2. **Review Report**: A `review-*.md` file is generated with findings
-3. **Iterative Fixes**: Describe what needs fixing in chat, and both the artifact and report update
-4. **Manual Re-review**: Run `/codexspec:review-spec|plan|tasks` anytime for a fresh analysis
-
-## Project Structure
-
-After initialization, your project will have this structure:
-
-```
-my-project/
-├── .codexspec/
-│   ├── memory/
-│   │   └── constitution.md    # Project governing principles
-│   ├── specs/
-│   │   └── {feature-id}/
-│   │       ├── spec.md        # Feature specification
-│   │       ├── plan.md        # Technical plan
-│   │       ├── tasks.md       # Task breakdown
-│   │       └── checklists/    # Quality checklists
-│   ├── templates/             # Custom templates
-│   ├── scripts/               # Helper scripts
-│   │   ├── bash/              # Bash scripts
-│   │   └── powershell/        # PowerShell scripts
-│   └── extensions/            # Custom extensions
-├── .claude/
-│   └── commands/              # Slash commands for Claude Code
-└── CLAUDE.md                  # Context for Claude Code
-```
+---
 
 ## Internationalization (i18n)
 
-CodexSpec supports multiple languages through **LLM dynamic translation**. Instead of maintaining translated templates, we let Claude translate content at runtime based on your language configuration.
+CodexSpec 通过 **LLM 动态翻译** 支持多种语言。无需维护翻译模板，Claude 在运行时根据你的语言配置翻译内容。
 
-### Setting Language
+### 设置语言
 
-**During initialization:**
+**初始化时：**
 
 ```bash
-# Create a project with Chinese output
+# 创建中文输出项目
 codexspec init my-project --lang zh-CN
 
-# Create a project with Japanese output
+# 创建日文输出项目
 codexspec init my-project --lang ja
 ```
 
-**After initialization:**
+**初始化后：**
 
 ```bash
-# View current configuration
+# 查看当前配置
 codexspec config
 
-# Change output language setting
+# 更改输出语言
 codexspec config --set-lang zh-CN
 
-# Set commit messages to English (while keeping output in Chinese)
-codexspec config --set-commit-lang en
-
-# List supported languages
-codexspec config --list-langs
-```
-
-### Commit Message Language
-
-You can configure a different language for commit messages than the output language:
-
-```bash
-# Use Chinese for interactions but English for commit messages
-codexspec config --set-lang zh-CN
+# 设置提交信息语言
 codexspec config --set-commit-lang en
 ```
 
-**Language priority for commit messages:**
+### 支持的语言
 
-1. `language.commit` setting (if specified)
-2. `language.output` (fallback)
-3. `"en"` (default)
+| 代码 | 语言 |
+|------|------|
+| `en` | English (默认) |
+| `zh-CN` | 简体中文 |
+| `zh-TW` | 繁體中文 |
+| `ja` | 日本語 |
+| `ko` | 한국어 |
+| `es` | Español |
+| `fr` | Français |
+| `de` | Deutsch |
+| `pt-BR` | Português |
+| `ru` | Русский |
+| `it` | Italiano |
+| `ar` | العربية |
+| `hi` | हिन्दी |
 
-**Note:** The commit type (feat, fix, docs, etc.) and scope always remain in English. Only the description part uses the configured language.
+<details>
+<summary>⚙️ 配置文件示例</summary>
 
-### Configuration File
-
-The `.codexspec/config.yml` file stores language settings:
+`.codexspec/config.yml`:
 
 ```yaml
 version: "1.0"
 
 language:
-  # Output language for Claude interactions and generated documents
-  output: "zh-CN"
-
-  # Commit message language (defaults to output language)
-  # Set to "en" for English commit messages regardless of output language
-  commit: "zh-CN"
-
-  # Template language - keep as "en" for compatibility
-  templates: "en"
+  output: "zh-CN"        # 输出语言
+  commit: "zh-CN"        # 提交信息语言 (默认为 output)
+  templates: "en"        # 保持为 "en"
 
 project:
   ai: "claude"
-  created: "2026-02-15"
+  created: "2025-02-15"
 ```
 
-### Supported Languages
+</details>
 
-| Code | Language |
-|------|----------|
-| `en` | English (default) |
-| `zh-CN` | Chinese (Simplified) |
-| `zh-TW` | Chinese (Traditional) |
-| `ja` | Japanese |
-| `ko` | Korean |
-| `es` | Spanish |
-| `fr` | French |
-| `de` | German |
-| `pt` | Portuguese |
-| `ru` | Russian |
-| `it` | Italian |
-| `ar` | Arabic |
-| `hi` | Hindi |
+---
 
-### How It Works
+## Project Structure
 
-1. **Single English Templates**: All command templates remain in English
-2. **Language Configuration**: Project specifies preferred output language
-3. **Dynamic Translation**: Claude reads English instructions, outputs in target language
-4. **Context-Aware**: Technical terms (JWT, OAuth, etc.) remain in English when appropriate
+初始化后的项目结构：
 
-### Benefits
+```
+my-project/
+├── .codexspec/
+│   ├── memory/
+│   │   └── constitution.md    # 项目宪法
+│   ├── specs/
+│   │   └── {feature-id}/
+│   │       ├── spec.md        # 功能规范
+│   │       ├── plan.md        # 技术计划
+│   │       ├── tasks.md       # 任务分解
+│   │       └── checklists/    # 质量检查清单
+│   ├── templates/             # 自定义模板
+│   ├── scripts/               # 辅助脚本
+│   └── extensions/            # 自定义扩展
+├── .claude/
+│   └── commands/              # Claude Code slash 命令
+└── CLAUDE.md                  # Claude Code 上下文
+```
 
-- **Zero Translation Maintenance**: No need to maintain multiple template versions
-- **Always Up-to-Date**: Template updates automatically benefit all languages
-- **Context-Aware Translation**: Claude provides natural, context-appropriate translations
-- **Unlimited Languages**: Any language supported by Claude works immediately
-
-### Constitution and Generated Documents
-
-When you use `/codexspec:constitution` to create your project constitution, it will be generated in the language specified in your configuration:
-
-- **Single File Approach**: Constitution is generated in one language only
-- **Claude Understands All Languages**: Claude can work with constitution files in any supported language
-- **Team Collaboration**: Teams should use a consistent working language
-
-This design avoids synchronization issues between multiple language versions and reduces maintenance overhead.
+---
 
 ## Extension System
 
-CodexSpec supports a plugin architecture for adding custom commands:
-
-### Extension Structure
+CodexSpec 支持插件架构来添加自定义命令：
 
 ```
 my-extension/
-├── extension.yml          # Extension manifest
-├── commands/              # Custom slash commands
+├── extension.yml          # 扩展清单
+├── commands/              # 自定义 slash 命令
 │   └── command.md
 └── README.md
 ```
 
-### Creating Extensions
+详见 `extensions/EXTENSION-DEVELOPMENT-GUIDE.md`。
 
-1. Copy the template from `extensions/template/`
-2. Modify `extension.yml` with your extension details
-3. Add your custom commands in `commands/`
-4. Test locally and publish
-
-See `extensions/EXTENSION-DEVELOPMENT-GUIDE.md` for details.
+---
 
 ## Development
 
-### Prerequisites
+### 前置要求
 
 - Python 3.11+
-- uv package manager
+- uv 包管理器
 - Git
 
-### Local Development
+### 本地开发
 
 ```bash
-# Clone the repository
+# 克隆仓库
 git clone https://github.com/Zts0hg/codexspec.git
 cd codexspec
 
-# Install development dependencies
+# 安装开发依赖
 uv sync --dev
 
-# Run locally
+# 本地运行
 uv run codexspec --help
 
-# Run tests
+# 运行测试
 uv run pytest
 
-# Lint code
+# 代码检查
 uv run ruff check src/
-```
 
-### Building
-
-```bash
-# Build the package
+# 构建包
 uv build
 ```
 
-## Comparison with spec-kit
-
-CodexSpec is inspired by GitHub's spec-kit but with some key differences:
-
-| Feature | spec-kit | CodexSpec |
-|---------|----------|-----------|
-| Core Philosophy | Spec-driven development | Spec-driven development + human-AI collaboration |
-| CLI Name | `specify` | `codexspec` |
-| Primary AI | Multi-agent support | Claude Code focused |
-| Command Prefix | `/speckit.*` | `/codexspec:*` |
-| Constitution System | Basic | Full constitution with cross-artifact validation |
-| Two-Phase Spec | No | Yes (clarify + generate) |
-| Review Commands | Optional | 3 dedicated review commands with scoring |
-| Clarify Command | Yes | 4 focused categories, review integration |
-| Analyze Command | Yes | Read-only, severity-based, constitution-aware |
-| TDD in Tasks | Optional | Enforced (tests precede implementation) |
-| Implementation | Standard | Conditional TDD (code vs docs/config) |
-| Extension System | Yes | Yes |
-| PowerShell Scripts | Yes | Yes |
-| i18n Support | No | Yes (13+ languages via LLM translation) |
-
-### Key Differentiators
-
-1. **Review-First Culture**: Every major artifact has a dedicated review command
-2. **Constitution Governance**: Principles are validated, not just documented
-3. **TDD by Default**: Test-first methodology enforced in task generation
-4. **Human Checkpoints**: Workflow designed around validation gates
+---
 
 ## Philosophy
 
-CodexSpec follows these core principles:
+### SDD 基础
 
-### SDD Fundamentals
+1. **意图驱动**：规范先定义「做什么」，再决定「怎么做」
+2. **丰富规范创建**：使用护栏和组织原则
+3. **多步骤细化**：而非一次性代码生成
+4. **宪法治理**：项目原则指导所有决策
 
-1. **Intent-driven development**: Specifications define the "what" before the "how"
-2. **Rich specification creation**: Use guardrails and organizational principles
-3. **Multi-step refinement**: Rather than one-shot code generation
-4. **Constitution governance**: Project principles guide all decisions
+### 人机协作
 
-### Human-AI Collaboration
+5. **人在环中**：AI 生成工件，人类验证
+6. **审查导向**：每步前验证工件
+7. **渐进披露**：复杂信息逐步揭示
+8. **显式优于隐式**：需求应清晰，而非假设
 
-5. **Human-in-the-loop**: AI generates artifacts, humans validate them
-6. **Review-oriented**: Validate each artifact before moving forward
-7. **Progressive disclosure**: Complex information revealed incrementally
-8. **Explicit over implicit**: Requirements should be clear, not assumed
+### 质量保证
 
-### Quality Assurance
+9. **默认测试驱动**：TDD 工作流内置于任务生成
+10. **跨工件一致性**：同时分析 spec、plan、tasks
+11. **宪法对齐**：所有工件遵守项目原则
 
-9. **Test-driven by default**: TDD workflow built into task generation
-10. **Cross-artifact consistency**: Analyze spec, plan, and tasks together
-11. **Constitution alignment**: All artifacts respect project principles
+### 为什么审查重要
 
-### Why Review Matters
+| 没有审查 | 有审查 |
+|----------|--------|
+| AI 做出错误假设 | 人工早期发现误解 |
+| 不完整需求传播 | 实现前识别缺口 |
+| 架构偏离意图 | 每阶段验证对齐 |
+| 任务遗漏关键功能 | 系统验证覆盖 |
+| **结果：返工，浪费精力** | **结果：一次做对** |
 
-| Without Review | With Review |
-|---------------|-------------|
-| AI makes incorrect assumptions | Human catches misinterpretations early |
-| Incomplete requirements propagate | Gaps identified before implementation |
-| Architecture drifts from intent | Alignment verified at each stage |
-| Tasks miss critical functionality | Coverage validated systematically |
-| **Result: Rework, wasted effort** | **Result: Right first time** |
+---
 
 ## Contributing
 
-Contributions are welcome! Please read our contributing guidelines before submitting a pull request.
+欢迎贡献！提交 pull request 前请阅读贡献指南。
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT License - 详见 [LICENSE](LICENSE)。
 
 ## Acknowledgements
 
-- Inspired by [GitHub spec-kit](https://github.com/github/spec-kit)
-- Built for [Claude Code](https://claude.ai/code)
+- 灵感来自 [GitHub spec-kit](https://github.com/github/spec-kit)
+- 为 [Claude Code](https://claude.ai/code) 构建
