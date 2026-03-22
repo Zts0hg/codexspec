@@ -74,14 +74,14 @@ CodexSpec structures development into **reviewable checkpoints**:
 
 ```mermaid
 flowchart LR
-    A[Idea] --> B[/specify]
-    B --> C[/generate-spec]
-    C --> D[Review spec]
-    D --> E[/spec-to-plan]
-    E --> F[Review plan]
-    F --> G[/plan-to-tasks]
-    G --> H[Review tasks]
-    H --> I[/implement]
+    A[Idea] --> B["/specify"]
+    B --> C["/generate-spec"]
+    C --> D["Review spec"]
+    D --> E["/spec-to-plan"]
+    E --> F["Review plan"]
+    F --> G["/plan-to-tasks"]
+    G --> H["Review tasks"]
+    H --> I["/implement"]
 ```
 
 **Every artifact has a corresponding review command:**
@@ -219,14 +219,14 @@ CodexSpec breaks development into **reviewable checkpoints**:
 
 ```mermaid
 flowchart LR
-    A[Idea] --> B[/specify]
-    B --> C[/generate-spec]
-    C --> D[Review spec]
-    D --> E[/spec-to-plan]
-    E --> F[Review plan]
-    F --> G[/plan-to-tasks]
-    G --> H[Review tasks]
-    H --> I[/implement]
+    A[Idea] --> B["/specify"]
+    B --> C["/generate-spec"]
+    C --> D["Review spec"]
+    D --> E["/spec-to-plan"]
+    E --> F["Review plan"]
+    F --> G["/plan-to-tasks"]
+    G --> H["Review tasks"]
+    H --> I["/implement"]
 ```
 
 ### Workflow Steps
@@ -251,12 +251,12 @@ Every generation command includes **automatic review**, generating a review repo
 
 ```mermaid
 flowchart TB
-    A[Generate Spec/Plan/Tasks] --> B[Auto Review]
-    B --> C{Issues Found?}
-    C -->|Yes| D[Describe Fix in Natural Language]
-    D --> E[Update Spec + Review Report]
+    A["Generate Spec/Plan/Tasks"] --> B["Auto Review"]
+    B --> C{"Issues Found?"}
+    C -->|Yes| D["Describe Fix in Natural Language"]
+    D --> E["Update Spec + Review Report"]
     E --> B
-    C -->|No| F[Continue to Next Step]
+    C -->|No| F["Continue to Next Step"]
 ```
 
 <details>
