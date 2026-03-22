@@ -55,6 +55,7 @@ _CLI_MESSAGES_EN = {
         "category_core": "Core Commands ({count})",
         "category_enhanced": "Enhanced Commands ({count})",
         "category_git": "Git Workflow ({count})",
+        "category_review": "Code Review ({count})",
         # Success panel
         "success_title": "Success",
         "success_message": "CodexSpec project initialized successfully!",
@@ -92,6 +93,7 @@ _CLI_MESSAGES_EN = {
         "category_core": "Core Commands ({count})",
         "category_enhanced": "Enhanced Commands ({count})",
         "category_git": "Git Workflow ({count})",
+        "category_review": "Code Review ({count})",
         "no_project": "No CodexSpec project found in current directory.",
         "run_init": "Run codexspec init to create a new project.",
         "usage_hint": "Use /codexspec:<command> to invoke these commands",

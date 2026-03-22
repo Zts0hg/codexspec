@@ -22,7 +22,7 @@ class CommandMetadata(TypedDict):
         name: Command name without prefix (e.g., "constitution")
         display_name: Full display name (e.g., "/codexspec:constitution")
         description: Command description for list-commands output
-        category: Command category ("core", "enhanced", or "git")
+        category: Command category ("core", "enhanced", "git", or "review")
         file_name: Template file name (e.g., "constitution.md")
     """
 
@@ -42,7 +42,7 @@ def get_commands_metadata() -> list[CommandMetadata]:
 
     Returns:
         List of CommandMetadata dictionaries sorted by category priority:
-        core (9) -> enhanced (4) -> git (3)
+        core (9) -> enhanced (4) -> git (2) -> review (1)
     """
     return [
         # Core Commands (9)
@@ -152,6 +152,14 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "description": "生成 PR/MR 描述",
             "category": "git",
             "file_name": "pr.md",
+        },
+        # Code Review Commands (1)
+        {
+            "name": "review-python-code",
+            "display_name": "/codexspec:review-python-code",
+            "description": "审查 Python 代码的 PEP 8 合规性、类型安全、工程健壮性和宪法一致性",
+            "category": "review",
+            "file_name": "review-python-code.md",
         },
     ]
 

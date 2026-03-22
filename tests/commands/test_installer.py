@@ -34,9 +34,9 @@ class TestGetCommandsMetadata:
         assert isinstance(result, list)
 
     def test_returns_correct_count(self) -> None:
-        """Should return 15 commands (9 core + 4 enhanced + 2 git)."""
+        """Should return 16 commands (9 core + 4 enhanced + 2 git + 1 review)."""
         result = get_commands_metadata()
-        assert len(result) == 15
+        assert len(result) == 16
 
     def test_core_commands_count(self) -> None:
         """Should have 9 core commands."""
@@ -56,6 +56,12 @@ class TestGetCommandsMetadata:
         git_commands = [c for c in result if c["category"] == "git"]
         assert len(git_commands) == 2
 
+    def test_review_commands_count(self) -> None:
+        """Should have 1 review command."""
+        result = get_commands_metadata()
+        review_commands = [c for c in result if c["category"] == "review"]
+        assert len(review_commands) == 1
+
     def test_metadata_structure(self) -> None:
         """Each command should have all required fields."""
         result = get_commands_metadata()
@@ -70,15 +76,16 @@ class TestGetCommandsMetadata:
             assert cmd["display_name"].startswith("/codexspec:")
 
     def test_sorted_by_category(self) -> None:
-        """Commands should be sorted core -> enhanced -> git."""
+        """Commands should be sorted core -> enhanced -> git -> review."""
         result = get_commands_metadata()
         categories = [c["category"] for c in result]
         # Find the index of each category section
         core_idx = categories.index("core")
         enhanced_idx = categories.index("enhanced")
         git_idx = categories.index("git")
-        # Core should come before enhanced, enhanced before git
-        assert core_idx < enhanced_idx < git_idx
+        review_idx = categories.index("review")
+        # Core should come before enhanced, enhanced before git, git before review
+        assert core_idx < enhanced_idx < git_idx < review_idx
 
 
 class TestDetectOldStructure:

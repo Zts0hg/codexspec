@@ -30,6 +30,7 @@
       "category_core": "Core Commands ({count})",
       "category_enhanced": "Enhanced Commands ({count})",
       "category_git": "Git Workflow ({count})",
+      "category_review": "Code Review ({count})",
       "success_title": "Success",
       "success_message": "CodexSpec project initialized successfully!",
       "success_project_dir": "Project directory: {path}",
@@ -58,6 +59,7 @@
       "category_core": "Core Commands ({count})",
       "category_enhanced": "Enhanced Commands ({count})",
       "category_git": "Git Workflow ({count})",
+      "category_review": "Code Review ({count})",
       "no_project": "No CodexSpec project found in current directory.",
       "run_init": "Run codexspec init to create a new project.",
       "usage_hint": "Use /codexspec:<command> to invoke these commands"
@@ -136,5 +138,9 @@
   "translate-docs": {
     "description": "Translate project documentation to specified language",
     "argument-hint": "--lang <language_codes> (e.g. 'zh,ja,ko') or 'all' for all languages"
+  },
+  "review-python-code": {
+    "description": "Review Python code for PEP 8 compliance, type safety, engineering robustness, and constitution alignment",
+    "argument-hint": "Path to Python file or directory to review\n\nExamples:\n- `src/codexspec/` - Review entire package\n- `src/codexspec/__init__.py` - Review single file\n- `src/ tests/` - Review multiple paths"
   }
 }
