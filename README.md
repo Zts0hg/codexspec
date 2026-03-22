@@ -130,8 +130,12 @@ This systematic review process ensures:
 # 1. Install
 uv tool install codexspec
 
-# 2. Create project
+# 2. Initialize project
+#    Option A: Create new project
 codexspec init my-project && cd my-project
+
+#    Option B: Initialize in existing project
+cd your-existing-project && codexspec init .
 
 # 3. Use in Claude Code
 claude
