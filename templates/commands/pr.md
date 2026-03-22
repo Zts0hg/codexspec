@@ -341,9 +341,65 @@ Example: `--sections summary,changes,testing`
 8. **Links**: Use `[text](url)` format for references
 9. **Task Lists**: Use `- [ ]` and `- [x]` for verification checklists
 
-### GitHub PR Format
+### Code Block Nesting Rules (CRITICAL)
+
+When the PR content itself contains code blocks (e.g., showing command examples, code snippets, or diff output), you **MUST** handle nesting correctly to prevent unclosed code blocks:
+
+**Rule 1: Use more backticks for outer blocks**
+When nesting code blocks, the outer block must use more backticks than the inner block:
+
+- Outer: 4+ backticks (````)
+- Inner: 3 backticks (```)
+
+**Rule 2: Never mix same-level backticks**
+Using 3 backticks for both outer and inner blocks will cause premature closing and broken formatting.
+
+**Example - Correct Nesting:**
+
+````markdown
+### How to Verify
+
+Run the following command:
+```bash
+pytest tests/auth/
+```
+
+Expected output:
+```
+=== test session starts ===
+collected 5 items
+```
+````
+
+**Example - Incorrect (will break):**
 
 ```markdown
+### How to Verify
+```bash
+pytest tests/auth/
+```
+
+```  ← This closes the first block, leaving rest orphaned
+```
+
+**Rule 3: For terminal output mode**
+When outputting to terminal, wrap the entire PR in a code block with 4+ backticks:
+
+````text
+```markdown
+[PR content with internal ``` code blocks ```]
+```
+````
+
+**Rule 4: Backtick escaping in content**
+If you need to display literal backticks (`` ` ``) in PR content without starting a code block:
+
+- For single backtick: Use inline code syntax `` ` `` (wrap in single backticks)
+- For multiple backticks: Use HTML entity `&#96;` or wrap in more backticks than displayed
+
+### GitHub PR Format
+
+````markdown
 ## type(scope): description
 
 > Brief summary of what this PR accomplishes (1-2 sentences)
@@ -397,11 +453,11 @@ Example: `--sections summary,changes,testing`
 ---
 *Related: #[issue-number]* (if applicable)
 
-```
+````
 
 ### GitLab MR Format
 
-```markdown
+````markdown
 ## type(scope): description
 
 > Brief summary of what this MR accomplishes (1-2 sentences)
@@ -448,37 +504,43 @@ Example: `--sections summary,changes,testing`
 
 /label ~"[label]" @reviewer (if applicable)
 
-```
+````
 
 ### Section Content Guidelines
 
 #### Summary Section
+
 - Keep to 2-3 sentences maximum
 - Answer "What" and "Why" (not "How")
 - Use plain language accessible to all reviewers
 
 #### Changes Section
+
 - Use tables for file changes (improves readability)
 - Group related changes logically
 - Include change type: Added, Modified, Deleted, Renamed
 
 #### Testing Section
+
 - Use task lists for test coverage status
 - Include exact commands to run tests
 - Note any special test requirements
 
 #### How to Verify Section
+
 - Use numbered list for step-by-step verification
 - Include specific commands to run
 - Be precise and actionable (e.g., "Run `pytest tests/auth/`")
 - Include expected outcomes where helpful
 
 #### Checklist Section
+
 - Use GitHub/GitLab task list syntax `- [ ]`
 - Include project-specific checklist items
 - Focus on author self-confirmation before merge
 
 #### Notes Section
+
 - Highlight breaking changes with `**Breaking Change:**` prefix
 - Include migration instructions if needed
 - Link to related issues/PRs
@@ -497,26 +559,32 @@ Example: `--sections summary,changes,testing`
 ## Edge Cases
 
 ### EC-001: Branch Up to Date with Target
+
 **Scenario**: No commits ahead of target branch
 **Response**: "No changes detected between current branch and [target]. Nothing to generate."
 
 ### EC-002: Invalid Target Branch
+
 **Scenario**: Target branch doesn't exist
 **Response**: "Target branch '[branch]' not found. Please verify the branch name."
 
 ### EC-003: Not a Git Repository
+
 **Scenario**: Command run outside git repo
 **Response**: "Not a git repository. Please run this command from within a git repository."
 
 ### EC-004b: Invalid Spec Path
+
 **Scenario**: `--spec` path doesn't exist
 **Response**: "Spec '[path]' not found. Available specs: [list specs in .codexspec/specs/]"
 
 ### EC-005: Detached HEAD State
+
 **Scenario**: Repository in detached HEAD
 **Response**: "Cannot determine current branch. Please checkout a branch before generating PR description."
 
 ### EC-006: No Remote Configured
+
 **Scenario**: No git remote configured
 **Handling**: Use GitHub terminology with warning: "No remote configured. Defaulting to GitHub terminology."
 
@@ -546,6 +614,7 @@ Example: `--sections summary,changes,testing`
 This ensures users see the raw markdown source code, not the rendered output. Users can then copy the content inside the code block and paste it directly into GitHub/GitLab.
 
 ### File Output (`--output`)
+
 When saving to a file, output the raw markdown content directly (without code block wrapper). The file will contain the actual PR description ready for use.
 
 ## Important Notes
