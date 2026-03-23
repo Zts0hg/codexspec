@@ -670,6 +670,7 @@ def _print_command_summary(language: str = "en") -> None:
         "core": [],
         "enhanced": [],
         "git": [],
+        "review": [],
     }
     for cmd in metadata:
         cat = cmd["category"]
@@ -707,6 +708,10 @@ def _create_default_commands(commands_dir: Path) -> None:
         "tasks-to-issues": _get_tasks_to_issues_command(),
         "commit-staged": _get_commit_staged_command(),
         "pr": _get_pr_command(),
+        "review-python-code": _get_review_python_code_command(),
+        "review-react-code": _get_review_react_code_command(),
+        "translate-docs": _get_translate_docs_command(),
+        "check-i18n-semantics": _get_check_i18n_semantics_command(),
     }
 
     for name, content in commands.items():
@@ -1388,6 +1393,138 @@ Generate a comprehensive Pull Request or Merge Request description based on bran
 
 > [!NOTE]
 > This command helps create standardized PR descriptions.
+"""
+
+
+def _get_review_python_code_command() -> str:
+    """Return the review-python-code command template."""
+    return """---
+description: Review Python code for PEP 8 compliance, type safety, engineering robustness, and constitution alignment
+argument-hint: Path to Python file or directory to review
+allowed-tools: Read, Grep, Glob, Bash(ruff check:*), Bash(mypy:*), Bash(python -m py_compile:*)
+---
+
+# Python Code Reviewer
+
+## User Input
+
+```text
+$ARGUMENTS
+```
+
+## Instructions
+
+Perform a comprehensive code review of Python files at the specified path.
+This command combines static analysis tools with architectural review to provide actionable feedback.
+
+### Steps
+
+1. **Run Static Analysis**: Execute ruff check and mypy for type checking
+2. **Architecture Review**: Check code organization, patterns, and best practices
+3. **Constitution Alignment**: Verify code follows project constitution guidelines
+4. **Generate Report**: Provide actionable feedback with severity levels
+
+> [!NOTE]
+> Requires ruff and mypy to be installed for full analysis.
+"""
+
+
+def _get_review_react_code_command() -> str:
+    """Return the review-react-code command template."""
+    return """---
+description: Review React/TypeScript code for component architecture, hooks compliance,
+    state management, performance, and constitution alignment
+argument-hint: Path to React/TypeScript file or directory to review
+allowed-tools: Read, Grep, Glob, Bash(npm run lint:*), Bash(npx eslint:*), Bash(npx tsc --noEmit:*)
+---
+
+# React Code Reviewer
+
+## User Input
+
+```text
+$ARGUMENTS
+```
+
+## Instructions
+
+Perform a comprehensive code review of React/TypeScript files at the specified path.
+This command combines static analysis tools with architectural review to provide actionable feedback.
+
+### Steps
+
+1. **Run Static Analysis**: Execute eslint and tsc for type checking
+2. **Component Review**: Check component architecture and patterns
+3. **Hooks Compliance**: Verify React hooks are used correctly
+4. **Performance Review**: Identify potential performance issues
+5. **Constitution Alignment**: Verify code follows project constitution guidelines
+
+> [!NOTE]
+> Requires eslint and typescript to be installed for full analysis.
+"""
+
+
+def _get_translate_docs_command() -> str:
+    """Return the translate-docs command template."""
+    return """---
+description: Translate documentation to target languages using AI-assisted translation with glossary support
+argument-hint: "--lang <language_codes> (e.g., 'zh,ja,ko') or 'all' for all languages"
+handoffs:
+  - agent: claude
+    step: Execute document translation with glossary guidance
+---
+
+# Document Translator
+
+## User Input
+
+$ARGUMENTS
+
+## Instructions
+
+Translate documentation files to specified target languages while maintaining technical accuracy and formatting.
+
+### Steps
+
+1. **Parse Arguments**: Identify target languages from --lang parameter
+2. **Load Glossary**: Read terminology guidelines from .codexspec/i18n/glossary.yml
+3. **Translate Files**: Process each documentation file
+4. **Maintain Formatting**: Preserve markdown structure and code blocks
+
+> [!NOTE]
+> This command supports batch translation for multiple languages.
+"""
+
+
+def _get_check_i18n_semantics_command() -> str:
+    """Return the check-i18n-semantics command template."""
+    return """---
+description: Check semantic consistency between source and translated documentation using AI
+argument-hint: "[source_file] [--lang <lang>] [--strict]"
+allowed-tools: Read, Glob, Grep, Bash
+---
+
+# Semantic Consistency Check
+
+## User Input
+
+```
+$ARGUMENTS
+```
+
+## Instructions
+
+Analyze translated documentation for semantic consistency with the source English content.
+
+### Steps
+
+1. **Parse Arguments**: Identify source file and target languages
+2. **Load Files**: Read source and translated versions
+3. **Semantic Analysis**: Compare meaning and accuracy
+4. **Generate Report**: List inconsistencies with severity levels
+
+> [!NOTE]
+> Use --strict flag to fail on any semantic drift.
 """
 
 
