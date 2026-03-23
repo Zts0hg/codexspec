@@ -52,20 +52,36 @@ Parse `$ARGUMENTS` to determine execution mode:
 
 ### Mode A: No Arguments - Present Options
 
-Output the following and wait for user response:
+**IMPORTANT**: Use the `AskUserQuestion` tool to present structured choices.
 
-> 📋 **Constitution 创建向导**
->
-> 检测到无参数输入。我将探索项目来生成 constitution，请选择探索深度：
->
-> | 模式 | 探索范围 | 适用场景 |
-> |------|----------|----------|
-> | `quick` | 项目结构、配置文件、README/CLAUDE.md、核心入口代码（约 5-10 个关键文件） | 新初始化项目、快速创建基础 constitution |
-> | `deep` | 上述内容 + 完整源代码分析、代码风格、架构模式、测试策略（可能分析数十到上百个文件） | 成熟项目、需要全面捕捉项目现状 |
->
-> 请回复 `quick` 或 `deep`，或直接描述你的项目原则（例如："Python Flask 后端项目，注重测试覆盖率"）。
+```json
+{
+  "questions": [{
+    "question": "I will explore the project to generate the constitution. Please select exploration depth:",
+    "header": "Exploration",
+    "options": [
+      {
+        "label": "quick",
+        "description": "Config files + README + core entry points (~5-10 files), best for newly initialized projects"
+      },
+      {
+        "label": "deep",
+        "description": "Above + full source code analysis + architecture patterns, best for mature projects"
+      },
+      {
+        "label": "Describe principles",
+        "description": "Skip exploration, I will tell you the project principles directly"
+      }
+    ]
+  }]
+}
+```
 
-After user responds, proceed to Mode B or Mode C accordingly.
+**After user responds:**
+
+- If user selects `quick` → proceed to Mode B Quick Exploration
+- If user selects `deep` → proceed to Mode B Deep Exploration
+- If user selects "Describe principles" or provides custom description → proceed to Mode C
 
 ---
 
