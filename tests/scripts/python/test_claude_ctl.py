@@ -89,6 +89,26 @@ class TestParseArgs:
             args = claude_ctl.parse_args()
             assert args.version is True
 
+    def test_parse_list_panes(self):
+        """测试 --list-panes 解析"""
+        with patch("sys.argv", ["claude-ctl", "--list-panes"]):
+            args = claude_ctl.parse_args()
+            assert args.list_panes is True
+
+    def test_parse_list_panes_with_session(self):
+        """测试 --list-panes --session 解析"""
+        with patch("sys.argv", ["claude-ctl", "--list-panes", "--session", "claude-main"]):
+            args = claude_ctl.parse_args()
+            assert args.list_panes is True
+            assert args.session == "claude-main"
+
+    def test_parse_list_panes_with_pane_target(self):
+        """测试 --list-panes 带 pane 格式目标"""
+        with patch("sys.argv", ["claude-ctl", "--list-panes", "--session", "claude-main:0.1"]):
+            args = claude_ctl.parse_args()
+            assert args.list_panes is True
+            assert args.session == "claude-main:0.1"
+
     def test_mutual_exclusion_message_and_approve(self):
         """测试 --message 和 --approve 互斥"""
         with patch("sys.argv", ["claude-ctl", "--session", "test", "--message", "hi", "--approve"]):
@@ -215,6 +235,71 @@ class TestTmuxClientSendEnter:
         mock_subprocess_run.return_value = MagicMock(returncode=1)
         result = claude_ctl.TmuxClient.send_enter("test-session")
         assert result is False
+
+
+class TestTmuxClientListPanes:
+    """测试 TmuxClient.list_panes()"""
+
+    def test_list_panes_all(self, mock_subprocess_run):
+        """测试列出所有 panes"""
+        mock_subprocess_run.return_value = MagicMock(
+            returncode=0,
+            stdout="session1:0.0  PID: 123  Command: bash\nsession1:0.1  PID: 456  Command: vim\n",
+            stderr="",
+        )
+        result = claude_ctl.TmuxClient.list_panes()
+        assert len(result) == 2
+        assert "session1:0.0" in result[0]
+        assert "session1:0.1" in result[1]
+        # Verify no -t flag when target is empty
+        call_args = mock_subprocess_run.call_args[0][0]
+        assert "-t" not in call_args
+
+    def test_list_panes_with_session_target(self, mock_subprocess_run):
+        """测试列出指定 session 的 panes"""
+        mock_subprocess_run.return_value = MagicMock(
+            returncode=0,
+            stdout="claude-main:0.0  PID: 123  Command: claude\n",
+            stderr="",
+        )
+        result = claude_ctl.TmuxClient.list_panes("claude-main")
+        assert len(result) == 1
+        assert "claude-main:0.0" in result[0]
+        # Verify -t flag is used
+        call_args = mock_subprocess_run.call_args[0][0]
+        assert "-t" in call_args
+        assert "claude-main" in call_args
+
+    def test_list_panes_with_pane_target(self, mock_subprocess_run):
+        """测试列出指定 window 的 panes（支持 session:window.pane 格式）"""
+        mock_subprocess_run.return_value = MagicMock(
+            returncode=0,
+            stdout="claude-main:0.1  PID: 456  Command: vim\n",
+            stderr="",
+        )
+        result = claude_ctl.TmuxClient.list_panes("claude-main:0")
+        assert len(result) == 1
+        call_args = mock_subprocess_run.call_args[0][0]
+        assert "-t" in call_args
+        assert "claude-main:0" in call_args
+
+    def test_list_panes_empty(self, mock_subprocess_run):
+        """测试无 panes"""
+        mock_subprocess_run.return_value = MagicMock(returncode=1, stdout="", stderr="")
+        result = claude_ctl.TmuxClient.list_panes("nonexistent")
+        assert result == []
+
+    def test_list_panes_tmux_error(self, mock_subprocess_run):
+        """测试 tmux 命令失败"""
+        mock_subprocess_run.side_effect = subprocess.TimeoutExpired(cmd="tmux", timeout=5)
+        result = claude_ctl.TmuxClient.list_panes()
+        assert result == []
+
+    def test_list_panes_tmux_not_found(self, mock_subprocess_run):
+        """测试 tmux 命令不存在"""
+        mock_subprocess_run.side_effect = FileNotFoundError
+        result = claude_ctl.TmuxClient.list_panes()
+        assert result == []
 
 
 # ============================================================================
@@ -351,6 +436,49 @@ class TestHandleListSessions:
         assert result == claude_ctl.EXIT_SUCCESS
 
 
+class TestHandleListPanes:
+    """测试 handle_list_panes()"""
+
+    def test_handle_list_panes_all(self, mock_subprocess_run):
+        """测试列出所有 panes"""
+        mock_subprocess_run.return_value = MagicMock(
+            returncode=0,
+            stdout="session1:0.0  PID: 123  Command: bash\n",
+            stderr="",
+        )
+        with patch("claude_ctl.TmuxClient.list_panes", return_value=["session1:0.0  PID: 123  Command: bash"]):
+            result = claude_ctl.handle_list_panes()
+        assert result == claude_ctl.EXIT_SUCCESS
+
+    def test_handle_list_panes_with_session(self, mock_subprocess_run):
+        """测试列出指定 session 的 panes"""
+        mock_subprocess_run.return_value = MagicMock(
+            returncode=0,
+            stdout="claude-main:0.0  PID: 123  Command: claude\n",
+            stderr="",
+        )
+        with patch("claude_ctl.TmuxClient.list_panes", return_value=["claude-main:0.0  PID: 123  Command: claude"]):
+            result = claude_ctl.handle_list_panes("claude-main")
+        assert result == claude_ctl.EXIT_SUCCESS
+
+    def test_handle_list_panes_with_pane_target(self, mock_subprocess_run):
+        """测试列出指定 window 的 panes"""
+        mock_subprocess_run.return_value = MagicMock(
+            returncode=0,
+            stdout="claude-main:0.1  PID: 456  Command: vim\n",
+            stderr="",
+        )
+        with patch("claude_ctl.TmuxClient.list_panes", return_value=["claude-main:0.1  PID: 456  Command: vim"]):
+            result = claude_ctl.handle_list_panes("claude-main:0")
+        assert result == claude_ctl.EXIT_SUCCESS
+
+    def test_handle_list_panes_empty(self, mock_subprocess_run):
+        """测试无 panes"""
+        with patch("claude_ctl.TmuxClient.list_panes", return_value=[]):
+            result = claude_ctl.handle_list_panes("nonexistent")
+        assert result == claude_ctl.EXIT_SUCCESS
+
+
 # ============================================================================
 # Integration Tests (Task 4.2)
 # ============================================================================
@@ -422,6 +550,41 @@ class TestIntegration:
             with pytest.raises(SystemExit) as exc_info:
                 claude_ctl.main()
             assert exc_info.value.code == claude_ctl.EXIT_SUCCESS
+
+    def test_list_panes_flow(self, mock_subprocess_run):
+        """测试 --list-panes 列出所有 panes"""
+        mock_subprocess_run.return_value = MagicMock(
+            returncode=0,
+            stdout="session1:0.0  PID: 123  Command: bash\n",
+            stderr="",
+        )
+        with patch("sys.argv", ["claude-ctl", "--list-panes"]):
+            with patch("claude_ctl.TmuxClient.list_panes", return_value=["session1:0.0  PID: 123  Command: bash"]):
+                with pytest.raises(SystemExit) as exc_info:
+                    claude_ctl.main()
+                assert exc_info.value.code == claude_ctl.EXIT_SUCCESS
+
+    def test_list_panes_with_session_flow(self, mock_subprocess_run):
+        """测试 --list-panes --session 列出指定 session 的 panes"""
+        mock_subprocess_run.return_value = MagicMock(
+            returncode=0,
+            stdout="claude-main:0.0  PID: 123  Command: claude\n",
+            stderr="",
+        )
+        with patch("sys.argv", ["claude-ctl", "--list-panes", "--session", "claude-main"]):
+            with patch("claude_ctl.TmuxClient.list_panes", return_value=["claude-main:0.0  PID: 123  Command: claude"]):
+                with pytest.raises(SystemExit) as exc_info:
+                    claude_ctl.main()
+                assert exc_info.value.code == claude_ctl.EXIT_SUCCESS
+
+    def test_message_to_pane_flow(self, mock_subprocess_run):
+        """测试发送消息到指定 pane（session:window.pane 格式）"""
+        mock_subprocess_run.return_value = MagicMock(returncode=0)
+        with patch("sys.argv", ["claude-ctl", "--session", "claude-main:0.1", "--message", "hello pane 1"]):
+            with patch("claude_ctl.TmuxClient.session_exists", return_value=True):
+                with pytest.raises(SystemExit) as exc_info:
+                    claude_ctl.main()
+                assert exc_info.value.code == claude_ctl.EXIT_SUCCESS
 
 
 # ============================================================================
