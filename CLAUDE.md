@@ -230,6 +230,47 @@ When `codexspec init` is run:
 6. Copies helper scripts (bash and powershell)
 7. Initializes git (optional)
 
+### Git Branch Safety Check
+
+**Feature**: Automatic branch detection and creation prompt for new feature development.
+
+**Purpose**: Prevent accidental development on main/master branches by prompting users to create a feature branch.
+
+**Affected Commands**:
+
+- `/codexspec:specify` - Requirement clarification
+- `/codexspec:generate-spec` - Spec generation
+
+**Behavior**:
+
+1. When executing these commands on a main branch (`main` or `master`), the system prompts:
+   - "创建新功能分支（推荐）" - Create and switch to a new feature branch
+   - "在当前分支继续工作" - Continue on current branch
+   - "取消操作" - Cancel operation
+
+2. If user chooses to create a branch:
+   - Prompts for feature name
+   - Generates branch name: `{YYYY-MMDD-HHMM}{random}-{feature-name}`
+   - Creates and switches to the new branch
+
+3. Gracefully handles:
+   - Non-git environments (skips check)
+   - Feature branches (no prompt)
+   - Custom main branch names via configuration
+
+**Configuration** (`.codexspec/config.yml`):
+
+```yaml
+git:
+  main_branches:
+    - "main"
+    - "master"
+    - "develop"  # Add custom main branches
+  branch_check_enabled: true  # Set to false to disable
+```
+
+**Implementation**: The check is implemented as a `## Git Branch Safety Check` section in the command templates, executed before `## Instructions`.
+
 ## Available Slash Commands
 
 ### Core Commands (9)
@@ -246,7 +287,7 @@ When `codexspec init` is run:
 | `/codexspec:review-tasks`    | Review task breakdown                    |
 | `/codexspec:implement-tasks` | Execute implementation                   |
 
-### Enhanced Commands (4) - NEW
+### Enhanced Commands (6) - NEW
 
 | Command                      | Description                                 |
 | ---------------------------- | ------------------------------------------- |
@@ -254,6 +295,8 @@ When `codexspec init` is run:
 | `/codexspec:analyze`         | Cross-artifact consistency analysis         |
 | `/codexspec:checklist`       | Generate requirements quality checklists    |
 | `/codexspec:tasks-to-issues` | Convert tasks to GitHub issues              |
+| `/codexspec:translate-docs`  | Translate project documentation to specified language |
+| `/codexspec:check-i18n-semantics` | Check semantic consistency and quality of multilingual documents |
 
 ### Git Workflow Commands
 
@@ -348,6 +391,8 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec:pr`              | ✅ Template | Generate PR/MR descriptions                                                   |
 | `/codexspec:review-python-code` | ✅ Template | Review Python code for PEP 8, type safety, engineering robustness, and constitution alignment |
 | `/codexspec:review-react-code` | ✅ Template | Review React/TypeScript code for component architecture, hooks compliance, state management, performance, and constitution alignment |
+| `/codexspec:translate-docs`  | ✅ Template | Translate project documentation to specified language |
+| `/codexspec:check-i18n-semantics` | ✅ Template | Check semantic consistency and quality of multilingual documents |
 
 ### Constitution Compliance Feature
 
