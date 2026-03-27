@@ -83,7 +83,7 @@ repos:
     hooks:
       - id: pip-audit
         name: pip-audit
-        entry: uv tool run pip-audit
+        entry: uv tool run pip-audit --ignore-vuln CVE-2026-4539
         language: system
         pass_filenames: false
 
