@@ -93,52 +93,106 @@ Scan the specification using these **4 focused categories**:
 
 Create a prioritized queue of **maximum 5 questions**:
 
-- Questions must be answerable with multiple-choice (2-4 options) OR a short answer (≤5 words)
+- Questions must be answerable with 2-4 structured options OR via custom text input
 - Only include questions whose answers materially impact implementation
 - Ensure category coverage balance
 - Prioritize questions addressing Critical/Warning issues from review-spec.md (if exists)
 
-#### 4. Sequential Questioning Loop
-
-Present **EXACTLY ONE** question at a time.
+**IMPORTANT**: Use the `AskUserQuestion` tool for structured questions to reduce user typing burden.
 
 **For Multiple-Choice Questions:**
 
+Use the `AskUserQuestion` tool with this structure:
+
+```json
+{
+  "questions": [{
+    "question": "Based on [spec section context], [specific question]?",
+    "header": "[Category]",
+    "options": [
+      {"label": "Option A", "description": "[What this means] → [Implementation impact]"},
+      {"label": "Option B", "description": "[What this means] → [Implementation impact]"}
+    ]
+  }]
+}
+```
+
+**Format Guidelines:**
+
+- **header**: Use one of the 4 categories (Completeness, Specificity, Behavioral, Measurability)
+- **label**: Concise option name (1-3 words)
+- **description**: Format as `[Meaning] → [Impact]` to show consequences
+- System auto-generates "Type something" for custom answers
+- Do NOT add explicit "Custom" option (already provided by system)
+
+**For Questions Needing Numeric/Short Answers:**
+
+Use `AskUserQuestion` with fewer options to guide, letting users type specific values:
+
+- Provide 2-3 common ranges as options
+- Users can type exact values via "Type something"
+
+**Recommendation Delivery:**
+State your recommendation BEFORE calling AskUserQuestion:
+
+> **My recommendation**: Option A because [reasoning]. However, the choice depends on [factor].
+
+This allows users to make informed decisions quickly.
+
+**Benefits:**
+
+- Reduces typing burden for users
+- Ensures consistent option naming for later processing
+- **"Type something" option is ALWAYS auto-generated** - users can type custom answers for any question
+- Supports `preview` field for visual comparisons
+
+**When NOT to use structured questions:**
+
+- Open-ended exploration (e.g., "Tell me about your vision for this feature")
+- Fewer than 2 or more than 4 reasonable options
+- When you need detailed textual explanation
+
+**Note**: Do NOT add explicit "Custom" or "Let me describe..." options - the system already provides a "Type something" option automatically. Adding your own would be redundant.
+
+#### 4. Sequential Questioning Loop
+
+Present **EXACTLY ONE** question at a time using this workflow:
+
+**Step A: Present Context and Recommendation**
+
+Before calling AskUserQuestion, output:
+
 ```markdown
 ## Question [N/M]: [Category]
 
-**Context**: [Quote the relevant section from spec.md that needs clarification]
+**Context**: [Quote relevant spec.md section]
 
-**Question**: [Clear, specific question]
+**Issue**: [Describe the ambiguity/gap identified]
 
-| Option | Description | Impact |
-|--------|-------------|--------|
-| A | [Option description] | [How this choice affects implementation] |
-| B | [Option description] | [How this choice affects implementation] |
-| Custom | Provide a different answer | - |
-
-**Recommendation**: Option [X] - [Brief reasoning for recommendation]
+**My recommendation**: Option [X] because [reasoning].
 ```
 
-Note: Use only as many options (A, B, C, D) as needed (2-4), plus "Custom".
+**Step B: Call AskUserQuestion**
 
-**For Short-Answer Questions:**
+Invoke the tool with structured options. Example:
 
-```markdown
-## Question [N/M]: [Category]
-
-**Context**: [Quote the relevant section from spec.md that needs clarification]
-
-**Question**: [Clear, specific question]
-
-**Format**: Short answer, maximum 5 words
-
-**Suggestion**: [Proposed answer with reasoning]
+```json
+{
+  "questions": [{
+    "question": "How should the API handle rate limiting?",
+    "header": "Behavioral",
+    "options": [
+      {"label": "Reject with 429", "description": "Fail fast → Client must implement retry logic"},
+      {"label": "Queue requests", "description": "Smooth traffic → Higher latency under load"},
+      {"label": "Throttle per user", "description": "Fair distribution → Requires user tracking"}
+    ]
+  }]
+}
 ```
 
-#### 5. Integration After Each Answer
+**Step C: Process Answer and Save**
 
-After the user provides an answer:
+After user responds:
 
 1. **Update Clarifications Section** in spec.md:
 
@@ -148,7 +202,7 @@ After the user provides an answer:
    ### Session [YYYY-MM-DD HH:MM]
 
    **Q1**: [Question asked]
-   **A1**: [User's answer]
+   **A1**: [User's answer - use label if selected, or custom text]
    **Impact**: [Which requirements/sections are affected]
 
    ---
@@ -158,19 +212,19 @@ After the user provides an answer:
 
 3. **Save Immediately**: Write all changes to `spec.md`
 
-#### 6. User Control Commands
+4. **Proceed to next question** (or end session)
 
-During questioning, support these commands:
+**Step D: User Control Commands**
 
-| Command | Action | Saved Answers |
-|---------|--------|---------------|
-| `skip` | Skip current question, move to next | Already saved |
-| `done` | End session early, generate report | Already saved |
-| `stop` | End session immediately, no report | Already saved |
+During questioning, support these commands via the "Type something" option:
 
-All previously answered questions are saved to spec.md regardless of how the session ends.
+- `skip` - Skip current question, move to next (saves already answered)
+- `done` - End session early, generate report (saves already answered)
+- `stop` - End session immediately, no report (saves already answered)
 
-#### 7. Completion Report
+If user types any of these commands, handle accordingly before saving.
+
+#### 5. Completion Report
 
 After the session ends (all questions answered, or user used `done`), output this report to the console (do NOT save to a file):
 
@@ -228,10 +282,13 @@ Based on the clarification session, the user may consider:
 ## Behavior Rules
 
 1. **Maximum 5 Questions**: Never exceed the question limit
-2. **Save After Each Answer**: Immediately persist all changes to `spec.md` - the Clarifications section and any updated requirement sections
-3. **No Meaningful Ambiguities**: If scan finds no critical issues, output: "No critical ambiguities detected. The specification appears sufficiently clear for technical planning." and suggest `/codexspec:spec-to-plan`
-4. **Deferred Tracking**: If quota is reached with unresolved high-impact items, list them in the completion report under Deferred Items
-5. **Review Integration**: If review-spec.md exists, always mention it in your introduction and prioritize its Critical/Warning issues
+2. **One Question Per AskUserQuestion Call**: Always call with single question, not array of questions
+3. **Save After Each Answer**: Immediately persist all changes to `spec.md` - the Clarifications section and any updated requirement sections
+4. **Recommend Before Asking**: State your recommendation before presenting options
+5. **No Meaningful Ambiguities**: If scan finds no critical issues, output: "No critical ambiguities detected. The specification appears sufficiently clear for technical planning." and suggest `/codexspec:spec-to-plan`
+6. **Deferred Tracking**: If quota is reached with unresolved high-impact items, list them in the completion report under Deferred Items
+7. **Review Integration**: If review-spec.md exists, always mention it in your introduction and prioritize its Critical/Warning issues
+8. **AskUserQuestion for All Questions**: Use AskUserQuestion even for questions where you expect typed answers - the "Type something" option handles this gracefully
 
 ## Workflow Position
 
