@@ -9,7 +9,13 @@ Claude Code Controller (claude-ctl)
     claude-ctl --session <name> --approve
     claude-ctl --session <name> --reject
     claude-ctl --list-sessions
+    claude-ctl --list-panes [--session <name>]
     claude-ctl --version
+
+session 格式支持:
+    claude-main              # session 级别
+    claude-main:0            # window 级别
+    claude-main:0.1          # pane 级别
 """
 
 import argparse
@@ -89,6 +95,38 @@ class TmuxClient:
         except (subprocess.TimeoutExpired, FileNotFoundError):
             return False
 
+    @staticmethod
+    def list_panes(target: str = "") -> list[str]:
+        """列出所有 pane，返回详细信息
+
+        Args:
+            target: 可选的目标，格式为 session、session:window 或 session:window.pane
+                   空字符串表示列出所有 pane
+
+        Returns:
+            pane 信息列表，格式为 "session:window.pane  PID: xxx  Command: xxx"
+        """
+        try:
+            cmd = [
+                "tmux",
+                "list-panes",
+                "-F",
+                "#{session_name}:#{window_index}.#{pane_index}  PID: #{pane_pid}  Command: #{pane_current_command}",
+            ]
+            if target:
+                cmd.extend(["-t", target])
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                timeout=5,
+            )
+            if result.returncode == 0:
+                return [line.strip() for line in result.stdout.strip().split("\n") if line.strip()]
+            return []
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            return []
+
 
 def parse_args() -> argparse.Namespace:
     """解析命令行参数"""
@@ -103,6 +141,9 @@ def parse_args() -> argparse.Namespace:
     claude-ctl --session claude-main --approve
     claude-ctl --session claude-main --reject
     claude-ctl --list-sessions
+    claude-ctl --list-panes
+    claude-ctl --list-panes --session claude-main
+    claude-ctl --session claude-main:0.1 --message "hello pane 1"
         """,
     )
 
@@ -135,6 +176,11 @@ def parse_args() -> argparse.Namespace:
         "--list-sessions",
         action="store_true",
         help="列出所有 tmux 会话",
+    )
+    parser.add_argument(
+        "--list-panes",
+        action="store_true",
+        help="列出所有 pane（可选 --session 指定范围）",
     )
     parser.add_argument(
         "--version",
@@ -270,6 +316,22 @@ def handle_list_sessions() -> int:
     return EXIT_SUCCESS
 
 
+def handle_list_panes(session: str | None = None) -> int:
+    """处理 --list-panes 命令
+
+    Args:
+        session: 可选的 session/window/pane 目标，格式支持:
+                - None 或 "": 列出所有 pane
+                - "session": 列出指定 session 的所有 pane
+                - "session:window": 列出指定 window 的所有 pane
+    """
+    target = session if session else ""
+    panes = TmuxClient.list_panes(target)
+    for pane in panes:
+        print(pane)
+    return EXIT_SUCCESS
+
+
 def handle_version() -> int:
     """处理 --version 命令"""
     print(f"claude-ctl version {__version__}")
@@ -287,6 +349,10 @@ def main() -> None:
     # --list-sessions
     if args.list_sessions:
         sys.exit(handle_list_sessions())
+
+    # --list-panes
+    if args.list_panes:
+        sys.exit(handle_list_panes(args.session))
 
     # 需要 --session 的操作
     if args.message is not None:
@@ -315,7 +381,8 @@ def main() -> None:
 
     # 没有指定任何操作
     print(
-        "Error: Must specify one of: --message, --select, --approve, --reject, --list-sessions, --version",
+        "Error: Must specify one of: --message, --select, --approve, "
+        "--reject, --list-sessions, --list-panes, --version",
         file=sys.stderr,
     )
     sys.exit(EXIT_INVALID_ARGS)
