@@ -238,6 +238,47 @@ uv tool install codexspec --upgrade
 pip install --upgrade codexspec
 ```
 
+### Installation über den Plugin-Marktplatz (Alternative)
+
+CodexSpec ist auch als Claude Code Plugin verfügbar. Diese Methode ist ideal, wenn Sie CodexSpec-Befehle direkt in Claude Code ohne das CLI-Tool verwenden möchten.
+
+#### Installationsschritte
+
+```bash
+# In Claude Code den Marktplatz hinzufügen
+> /plugin marketplace add Zts0hg/codexspec
+
+# Das Plugin installieren
+> /plugin install codexspec@codexspec-market
+```
+
+#### Sprachkonfiguration für Plugin-Benutzer
+
+Nach der Installation über den Plugin-Marktplatz konfigurieren Sie Ihre bevorzugte Sprache mit dem Befehl `/codexspec:config`:
+
+```bash
+# Interaktive Konfiguration starten
+> /codexspec:config
+
+# Oder aktuelle Konfiguration anzeigen
+> /codexspec:config --view
+```
+
+Der config-Befehl führt Sie durch:
+
+1. Auswahl der Ausgabesprache (für generierte Dokumente)
+2. Auswahl der Commit-Nachrichtensprache
+3. Erstellung der Datei `.codexspec/config.yml`
+
+**Vergleich der Installationsmethoden**
+
+| Methode | Am besten für | Funktionen |
+|---------|--------------|------------|
+| **CLI-Installation** (`uv tool install`) | Vollständiger Entwicklungs-Workflow | CLI-Befehle (`init`, `check`, `config`) + Slash-Befehle |
+| **Plugin-Marktplatz** | Schneller Start, bestehende Projekte | Nur Slash-Befehle (`/codexspec:config` für Spracheinstellung verwenden) |
+
+**Hinweis**: Das Plugin verwendet den Modus `strict: false` und nutzt die bestehende Mehrsprachenunterstützung durch LLM-Dynamische Übersetzung.
+
 ---
 
 ## Kern-Workflow
@@ -466,6 +507,7 @@ Implementierung folgt **bedingtem TDD-Workflow**:
 
 | Befehl                      | Beschreibung                                                     |
 | --------------------------- | ---------------------------------------------------------------- |
+| `/codexspec:config`         | Projektkonfiguration verwalten (erstellen/anzeigen/ändern/zurücksetzen) |
 | `/codexspec:clarify`        | Spec nach Unklarheiten durchsuchen (4 Kategorien, max 5 Fragen)  |
 | `/codexspec:analyze`        | Artefaktübergreifende Konsistenzanalyse (nur-Lese, schweregradbasiert) |
 | `/codexspec:checklist`      | Qualitätschecklisten für Anforderungen generieren                |

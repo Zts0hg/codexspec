@@ -238,6 +238,47 @@ uv tool install codexspec --upgrade
 pip install --upgrade codexspec
 ```
 
+### Installation via le Marketplace de Plugins (Alternative)
+
+CodexSpec est également disponible en tant que plugin Claude Code. Cette méthode est idéale si vous souhaitez utiliser les commandes CodexSpec directement dans Claude Code sans l'outil CLI.
+
+#### Étapes d'Installation
+
+```bash
+# Dans Claude Code, ajouter le marketplace
+> /plugin marketplace add Zts0hg/codexspec
+
+# Installer le plugin
+> /plugin install codexspec@codexspec-market
+```
+
+#### Configuration de la Langue pour les Utilisateurs de Plugin
+
+Après l'installation via le Marketplace de Plugins, configurez votre langue préférée en utilisant la commande `/codexspec:config` :
+
+```bash
+# Démarrer la configuration interactive
+> /codexspec:config
+
+# Ou voir la configuration actuelle
+> /codexspec:config --view
+```
+
+La commande config vous guidera à travers :
+
+1. Sélection de la langue de sortie (pour les documents générés)
+2. Sélection de la langue des messages de commit
+3. Création du fichier `.codexspec/config.yml`
+
+**Comparaison des Méthodes d'Installation**
+
+| Méthode | Meilleur Pour | Fonctionnalités |
+|---------|--------------|-----------------|
+| **Installation CLI** (`uv tool install`) | Flux de développement complet | Commandes CLI (`init`, `check`, `config`) + commandes slash |
+| **Marketplace de Plugins** | Démarrage rapide, projets existants | Commandes slash uniquement (utiliser `/codexspec:config` pour la configuration linguistique) |
+
+**Note** : Le plugin utilise le mode `strict: false` et réutilise le support multilingue existant via la traduction dynamique LLM.
+
 ---
 
 ## Workflow Principal
@@ -466,6 +507,7 @@ L'implémentation suit le **workflow TDD conditionnel** :
 
 | Commande                      | Description                                                     |
 | ----------------------------- | --------------------------------------------------------------- |
+| `/codexspec:config`           | Gérer la configuration du projet (créer/afficher/modifier/réinitialiser) |
 | `/codexspec:clarify`          | Scanner la spec pour ambiguïtés (4 catégories, max 5 questions) |
 | `/codexspec:analyze`          | Analyse de cohérence inter-artefacts (lecture seule, basée sur la sévérité) |
 | `/codexspec:checklist`        | Générer des checklists de qualité pour les exigences            |

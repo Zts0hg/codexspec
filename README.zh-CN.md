@@ -238,6 +238,47 @@ uv tool install codexspec --upgrade
 pip install --upgrade codexspec
 ```
 
+### 插件市场安装（备选方案）
+
+CodexSpec 也作为 Claude Code 插件提供。如果您只想在 Claude Code 中直接使用 CodexSpec 命令而无需 CLI 工具，此方法非常适合。
+
+#### 安装步骤
+
+```bash
+# 在 Claude Code 中，添加插件市场
+> /plugin marketplace add Zts0hg/codexspec
+
+# 安装插件
+> /plugin install codexspec@codexspec-market
+```
+
+#### 插件用户的语言配置
+
+通过插件市场安装后，使用 `/codexspec:config` 命令配置您的首选语言：
+
+```bash
+# 启动交互式配置
+> /codexspec:config
+
+# 或查看当前配置
+> /codexspec:config --view
+```
+
+config 命令将引导您完成：
+
+1. 选择输出语言（用于生成的文档）
+2. 选择提交信息语言
+3. 创建 `.codexspec/config.yml` 文件
+
+**安装方式对比**
+
+| 方式 | 适用场景 | 功能特性 |
+|------|----------|----------|
+| **CLI 安装** (`uv tool install`) | 完整开发工作流 | CLI 命令（`init`、`check`、`config`）+ 斜杠命令 |
+| **插件市场** | 快速开始、现有项目 | 仅斜杠命令（使用 `/codexspec:config` 进行语言设置） |
+
+**注意**：插件使用 `strict: false` 模式，并通过 LLM 动态翻译复用现有的多语言支持。
+
 ---
 
 ## 核心工作流
@@ -466,6 +507,7 @@ claude
 
 | 命令 | 描述 |
 |------|------|
+| `/codexspec:config` | 管理项目配置（创建/查看/修改/重置） |
 | `/codexspec:clarify` | 扫描规格中的模糊区域（4 类别，最多 5 个问题） |
 | `/codexspec:analyze` | 跨产物一致性分析（只读，基于严重性） |
 | `/codexspec:checklist` | 生成需求质量检查清单 |

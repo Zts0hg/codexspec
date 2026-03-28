@@ -239,6 +239,47 @@ uv tool install codexspec --upgrade
 pip install --upgrade codexspec
 ```
 
+### Plugin Marketplace Installation (Alternative)
+
+CodexSpec is also available as a Claude Code plugin. This method is ideal if you want to use CodexSpec commands directly in Claude Code without the CLI tool.
+
+#### Installation Steps
+
+```bash
+# In Claude Code, add the marketplace
+> /plugin marketplace add Zts0hg/codexspec
+
+# Install the plugin
+> /plugin install codexspec@codexspec-market
+```
+
+#### Language Configuration for Plugin Users
+
+After installing via Plugin Marketplace, configure your preferred language using the `/codexspec:config` command:
+
+```bash
+# Start interactive configuration
+> /codexspec:config
+
+# Or view current configuration
+> /codexspec:config --view
+```
+
+The config command will guide you through:
+
+1. Selecting output language (for generated documents)
+2. Selecting commit message language
+3. Creating the `.codexspec/config.yml` file
+
+**Comparison of Installation Methods**
+
+| Method | Best For | Features |
+|--------|----------|----------|
+| **CLI Installation** (`uv tool install`) | Full development workflow | CLI commands (`init`, `check`, `config`) + slash commands |
+| **Plugin Marketplace** | Quick start, existing projects | Slash commands only (use `/codexspec:config` for language setup) |
+
+**Note**: The plugin uses `strict: false` mode and reuses the existing multi-language support via LLM dynamic translation.
+
 ---
 
 ## Core Workflow
@@ -299,9 +340,7 @@ Every generation command includes **automatic review**, generating a review repo
   }
 }}%%
 flowchart TB
-    %% 定义矩形样式：固定宽度 220px 确保线条垂直对齐
     classDef rectStyle fill:#2d2d2d,stroke:#666,stroke-width:1px,color:#fff,width:220px;
-    %% 定义判定框样式
     classDef diamondStyle fill:#3d3d3d,stroke:#888,stroke-width:2px,color:#fff;
 
     A["Generate Spec/Plan/Tasks"]:::rectStyle --> B["Auto Review"]:::rectStyle
@@ -310,12 +349,10 @@ flowchart TB
     C -->|Yes| D["Describe Fix in Natural Language"]:::rectStyle
     D --> E["Update Spec + Review Report"]:::rectStyle
 
-    %% 回调连线
     E --> B
 
     C -->|No| F["Continue to Next Step"]:::rectStyle
 
-    %% 针对 Yes/No 标签的样式优化（可选）
     linkStyle 2,4 stroke:#aaa,stroke-width:1px;
 ```
 
@@ -471,6 +508,7 @@ Implementation follows **conditional TDD workflow**:
 
 | Command                      | Description                                                     |
 | ---------------------------- | --------------------------------------------------------------- |
+| `/codexspec:config`          | Manage project configuration (create/view/modify/reset)         |
 | `/codexspec:clarify`         | Scan spec for ambiguities (4 categories, max 5 questions)       |
 | `/codexspec:analyze`         | Cross-artifact consistency analysis (read-only, severity-based) |
 | `/codexspec:checklist`       | Generate requirements quality checklist                         |
