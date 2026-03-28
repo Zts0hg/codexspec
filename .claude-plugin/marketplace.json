@@ -1,0 +1,30 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "codexspec-market",
+  "description": "Spec-Driven Development (SDD) toolkit for Claude Code - structured slash commands for AI-assisted software development",
+  "owner": {
+    "name": "Zts0hg"
+  },
+  "plugins": [
+    {
+      "name": "codexspec",
+      "description": "Complete Spec-Driven Development toolkit with constitution, specification, planning, and implementation commands. Includes 19 slash commands for requirements clarification, spec generation, technical planning, task breakdown, code review, and more.",
+      "source": {
+        "source": "github",
+        "repo": "Zts0hg/codexspec",
+        "ref": "v0.5.11",
+        "path": ".claude/commands/codexspec"
+      },
+      "version": "0.5.11",
+      "author": {
+        "name": "Zts0hg"
+      },
+      "homepage": "https://github.com/Zts0hg/codexspec",
+      "repository": "https://github.com/Zts0hg/codexspec",
+      "license": "MIT",
+      "category": "development",
+      "keywords": ["spec-driven", "development", "ai", "claude", "sdd", "specification", "planning", "tdd"],
+      "strict": false
+    }
+  ]
+}
