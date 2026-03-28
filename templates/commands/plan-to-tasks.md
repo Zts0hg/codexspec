@@ -70,11 +70,11 @@ Analyze the provided spec and plan documents, then break down the technical impl
 
 9. **Save Tasks**: Write to `.codexspec/specs/{feature-id}/tasks.md`
 
-10. **Auto-Review Generated Tasks**: After saving the tasks, automatically run the review process:
-
-- Execute the same quality checks as `/codexspec:review-tasks`
-- Generate a review report at `.codexspec/specs/{feature-id}/review-tasks.md`
-- If issues are found, present a summary and ask if user wants to fix them now or proceed
+10. **Auto-Review Generated Tasks**: After saving the tasks, invoke the review command:
+    - **Use the Skill tool to invoke `/codexspec:review-tasks`** with the generated tasks path as argument
+    - The review command will handle all quality checks and generate the report
+    - Wait for the review to complete, then present a summary of findings
+    - If issues are found, ask if user wants to fix them now or proceed to next step
 
 ### Reference Templates
 
