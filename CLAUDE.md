@@ -439,8 +439,9 @@ uv run pytest tests/scripts/powershell/ -v
 | `check`                      | ✅ Complete | Checks for installed tools                                                    |
 | `version`                    | ✅ Complete | Displays version info                                                         |
 | `config`                     | ✅ Complete | View/modify project configuration                                             |
+| `/codexspec:config`          | ✅ Template | Interactive configuration management for Plugin users                          |
 | `/codexspec:constitution`    | ✅ Template | Template complete, CLAUDE.md Compliance check on first-time creation          |
-| `/codexspec:specify`         | ✅ Template | Template complete                                                             |
+| `/codexspec:specify`         | ✅ Template | Template complete, includes Configuration Check                               |
 | `/codexspec:generate-spec`   | ✅ Template | Template complete                                                             |
 | `/codexspec:spec-to-plan`    | ✅ Template | Template complete                                                             |
 | `/codexspec:plan-to-tasks`   | ✅ Template | Template complete                                                             |

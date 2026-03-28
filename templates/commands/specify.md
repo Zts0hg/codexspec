@@ -5,6 +5,38 @@ argument-hint: "Describe your initial idea or requirement"
 
 # Requirement Clarification
 
+## Configuration Check
+
+**IMPORTANT**: Before proceeding, check if the project configuration exists.
+
+### Execution Steps
+
+1. **Check Configuration File**
+   - Check if `.codexspec/config.yml` exists
+   - This is a simple file existence check, no parsing needed at this stage
+
+2. **If Configuration Does NOT Exist**
+   - Display a one-time prompt:
+
+     ```
+     💡 检测到项目未配置语言设置。你可以使用 `/codexspec:config` 命令来创建配置文件。
+     ```
+
+   - Use default values for current session:
+     - `language.output`: "en"
+     - `language.commit`: "en"
+     - `language.templates`: "en"
+   - Continue with command execution normally
+
+3. **If Configuration Exists**
+   - Proceed to `## Language Preference` section
+   - Read configuration and apply language settings as before
+
+4. **Session State** (Implicit)
+   - The prompt is shown only once per conversation session
+   - Claude's conversation context naturally maintains this state
+   - No additional mechanism needed
+
 ## Language Preference
 
 **IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.

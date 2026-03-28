@@ -8,14 +8,14 @@
   "plugins": [
     {
       "name": "codexspec",
-      "description": "Complete Spec-Driven Development toolkit with constitution, specification, planning, and implementation commands. Includes 19 slash commands for requirements clarification, spec generation, technical planning, task breakdown, code review, and more.",
+      "description": "Complete Spec-Driven Development toolkit with constitution, specification, planning, and implementation commands. Includes 20 slash commands for requirements clarification, spec generation, technical planning, task breakdown, code review, configuration management, and more.",
       "source": {
         "source": "github",
         "repo": "Zts0hg/codexspec",
-        "ref": "v0.5.11",
+        "ref": "v0.5.12",
         "path": ".claude/commands/codexspec"
       },
-      "version": "0.5.11",
+      "version": "0.5.12",
       "author": {
         "name": "Zts0hg"
       },
