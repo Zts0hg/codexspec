@@ -61,6 +61,8 @@ codexspec/
 │   └── template/
 │       ├── extension.yml
 │       └── commands/example.md
+├── .claude-plugin/            # Plugin marketplace configuration
+│   └── marketplace.json       # Claude Code plugin marketplace definition
 ├── pyproject.toml             # Project configuration
 ├── README.md                  # User documentation
 └── CLAUDE.md                  # This file
@@ -270,6 +272,69 @@ git:
 ```
 
 **Implementation**: The check is implemented as a `## Git Branch Safety Check` section in the command templates, executed before `## Instructions`.
+
+### Plugin Marketplace Support
+
+**Feature**: CodexSpec is available as a Claude Code plugin via the plugin marketplace.
+
+**Purpose**: Allow users to install CodexSpec slash commands directly without the CLI tool.
+
+**Marketplace Configuration** (`.claude-plugin/marketplace.json`):
+
+```json
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "codexspec-market",
+  "description": "Spec-Driven Development (SDD) toolkit for Claude Code",
+  "owner": {
+    "name": "Zts0hg"
+  },
+  "plugins": [
+    {
+      "name": "codexspec",
+      "description": "Complete Spec-Driven Development toolkit...",
+      "source": {
+        "source": "github",
+        "repo": "Zts0hg/codexspec",
+        "ref": "v0.5.11",
+        "path": ".claude/commands/codexspec"
+      },
+      "version": "0.5.11",
+      "strict": false
+    }
+  ]
+}
+```
+
+**Key Design Decisions**:
+
+1. **Single Plugin Package**: All 19 commands bundled as one plugin (not separate plugins per command)
+2. **`strict: false`**: Plugin doesn't require `plugin.json` - commands work directly from markdown templates
+3. **Version Sync**: `ref` and `version` in `marketplace.json` are automatically updated by `publish.sh`
+4. **Multi-language Support**: Reuses existing LLM dynamic translation via `.codexspec/config.yml`
+
+**Installation Methods Comparison**:
+
+| Method | Best For | Features |
+|--------|----------|----------|
+| CLI (`uv tool install`) | Full development workflow | `init`, `check`, `config` commands + slash commands |
+| Plugin Marketplace | Quick start, existing projects | Slash commands only |
+
+**Publish Integration** (`publish.sh`):
+
+- `update_marketplace()`: Updates `ref` and `version` fields in `marketplace.json`
+- `commit_marketplace_changes()`: Commits and pushes marketplace updates
+- `--skip-marketplace`: Option to skip marketplace updates during publish
+
+**User Installation**:
+
+```bash
+# Add marketplace
+> /plugin marketplace add Zts0hg/codexspec
+
+# Install plugin
+> /plugin install codexspec@codexspec-market
+```
 
 ## Available Slash Commands
 
