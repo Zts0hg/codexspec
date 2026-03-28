@@ -238,6 +238,47 @@ uv tool install codexspec --upgrade
 pip install --upgrade codexspec
 ```
 
+### Instalação via Marketplace de Plugins (Alternativa)
+
+O CodexSpec também está disponível como um plugin do Claude Code. Este método é ideal se você quiser usar os comandos do CodexSpec diretamente no Claude Code sem a ferramenta CLI.
+
+#### Passos de Instalação
+
+```bash
+# No Claude Code, adicionar o marketplace
+> /plugin marketplace add Zts0hg/codexspec
+
+# Instalar o plugin
+> /plugin install codexspec@codexspec-market
+```
+
+#### Configuração de Idioma para Usuários de Plugin
+
+Após instalar via Marketplace de Plugins, configure seu idioma preferido usando o comando `/codexspec:config`:
+
+```bash
+# Iniciar configuração interativa
+> /codexspec:config
+
+# Ou ver a configuração atual
+> /codexspec:config --view
+```
+
+O comando config irá guiá-lo através de:
+
+1. Selecionar idioma de saída (para documentos gerados)
+2. Selecionar idioma das mensagens de commit
+3. Criar o arquivo `.codexspec/config.yml`
+
+**Comparação de Métodos de Instalação**
+
+| Método | Melhor Para | Recursos |
+|--------|------------|----------|
+| **Instalação CLI** (`uv tool install`) | Fluxo de desenvolvimento completo | Comandos CLI (`init`, `check`, `config`) + comandos slash |
+| **Marketplace de Plugins** | Início rápido, projetos existentes | Apenas comandos slash (usar `/codexspec:config` para configuração de idioma) |
+
+**Nota**: O plugin usa o modo `strict: false` e reutiliza o suporte multilíngue existente via tradução dinâmica LLM.
+
 ---
 
 ## Fluxo de Trabalho Central
@@ -466,6 +507,7 @@ A implementação segue **fluxo de trabalho TDD condicional**:
 
 | Comando | Descrição |
 |---------|-----------|
+| `/codexspec:config` | Gerenciar configuração do projeto (criar/visualizar/modificar/redefinir) |
 | `/codexspec:clarify` | Escanear spec.md existente por ambiguidades (4 categorias, máx 5 perguntas) |
 | `/codexspec:analyze` | Análise cross-artefato não destrutiva (somente leitura, baseada em severidade) |
 | `/codexspec:checklist` | Gerar checklists de qualidade para validação de requisitos |

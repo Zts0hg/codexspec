@@ -238,6 +238,47 @@ uv tool install codexspec --upgrade
 pip install --upgrade codexspec
 ```
 
+### Instalación desde el Mercado de Plugins (Alternativa)
+
+CodexSpec también está disponible como un plugin de Claude Code. Este método es ideal si deseas usar los comandos de CodexSpec directamente en Claude Code sin la herramienta CLI.
+
+#### Pasos de Instalación
+
+```bash
+# En Claude Code, añadir el mercado
+> /plugin marketplace add Zts0hg/codexspec
+
+# Instalar el plugin
+> /plugin install codexspec@codexspec-market
+```
+
+#### Configuración de Idioma para Usuarios de Plugin
+
+Después de instalar desde el Mercado de Plugins, configura tu idioma preferido usando el comando `/codexspec:config`:
+
+```bash
+# Iniciar configuración interactiva
+> /codexspec:config
+
+# O ver la configuración actual
+> /codexspec:config --view
+```
+
+El comando config te guiará a través de:
+
+1. Seleccionar idioma de salida (para documentos generados)
+2. Seleccionar idioma de mensajes de commit
+3. Crear el archivo `.codexspec/config.yml`
+
+**Comparación de Métodos de Instalación**
+
+| Método | Mejor Para | Características |
+|--------|-----------|-----------------|
+| **Instalación CLI** (`uv tool install`) | Flujo de desarrollo completo | Comandos CLI (`init`, `check`, `config`) + comandos slash |
+| **Mercado de Plugins** | Inicio rápido, proyectos existentes | Solo comandos slash (usar `/codexspec:config` para configuración de idioma) |
+
+**Nota**: El plugin usa el modo `strict: false` y reutiliza el soporte multiidioma existente mediante traducción dinámica LLM.
+
 ---
 
 ## Flujo de Trabajo Central
@@ -466,6 +507,7 @@ La implementación sigue **flujo de trabajo TDD condicional**:
 
 | Comando | Descripción |
 |---------|-------------|
+| `/codexspec:config` | Gestionar configuración del proyecto (crear/ver/modificar/restablecer) |
 | `/codexspec:clarify` | Escanear spec.md existente buscando ambigüedades (4 categorías, máx 5 preguntas) |
 | `/codexspec:analyze` | Análisis no destructivo entre artefactos (solo lectura, basado en severidad) |
 | `/codexspec:checklist` | Generar checklists de calidad para validación de requisitos |

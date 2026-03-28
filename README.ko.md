@@ -238,6 +238,47 @@ uv tool install codexspec --upgrade
 pip install --upgrade codexspec
 ```
 
+### 플러그인 마켓플레이스 설치 (대안)
+
+CodexSpec은 Claude Code 플러그인으로도 제공됩니다. CLI 도구 없이 Claude Code에서 직접 CodexSpec 명령을 사용하려는 경우 이 방법이 적합합니다.
+
+#### 설치 단계
+
+```bash
+# Claude Code에서 마켓플레이스 추가
+> /plugin marketplace add Zts0hg/codexspec
+
+# 플러그인 설치
+> /plugin install codexspec@codexspec-market
+```
+
+#### 플러그인 사용자를 위한 언어 설정
+
+플러그인 마켓플레이스를 통해 설치한 후, `/codexspec:config` 명령을 사용하여 선호하는 언어를 설정합니다:
+
+```bash
+# 대화형 설정 시작
+> /codexspec:config
+
+# 또는 현재 설정 확인
+> /codexspec:config --view
+```
+
+config 명령은 다음을 안내합니다:
+
+1. 출력 언어 선택 (생성된 문서용)
+2. 커밋 메시지 언어 선택
+3. `.codexspec/config.yml` 파일 생성
+
+**설치 방법 비교**
+
+| 방법 | 최적 용도 | 기능 |
+|------|----------|------|
+| **CLI 설치** (`uv tool install`) | 전체 개발 워크플로우 | CLI 명령 (`init`, `check`, `config`) + 슬래시 명령 |
+| **플러그인 마켓플레이스** | 빠른 시작, 기존 프로젝트 | 슬래시 명령만 (`/codexspec:config`로 언어 설정) |
+
+**참고**: 플러그인은 `strict: false` 모드를 사용하며 LLM 동적 번역을 통한 기존 다국어 지원을 재사용합니다.
+
 ---
 
 ## 핵심 워크플로우
@@ -466,6 +507,7 @@ claude
 
 | 명령어 | 설명 |
 |--------|------|
+| `/codexspec:config` | 프로젝트 설정 관리 (생성/보기/수정/재설정) |
 | `/codexspec:clarify` | 기존 spec.md를 모호성 스캔 (4 카테고리, 최대 5개 질문) |
 | `/codexspec:analyze` | 비파괴적 교차 아티팩트 분석 (읽기 전용, 심각도 기반) |
 | `/codexspec:checklist` | 요구사항 검증을 위한 품질 체크리스트 생성 |

@@ -238,6 +238,47 @@ uv tool install codexspec --upgrade
 pip install --upgrade codexspec
 ```
 
+### プラグインマーケットプレイスインストール（代替方法）
+
+CodexSpecはClaude Codeプラグインとしても利用可能です。CLIツールなしでClaude Code内で直接CodexSpecコマンドを使用したい場合に最適です。
+
+#### インストール手順
+
+```bash
+# Claude Codeで、マーケットプレイスを追加
+> /plugin marketplace add Zts0hg/codexspec
+
+# プラグインをインストール
+> /plugin install codexspec@codexspec-market
+```
+
+#### プラグインユーザー向けの言語設定
+
+プラグインマーケットプレイス経由でインストール後、`/codexspec:config`コマンドを使用して言語を設定します：
+
+```bash
+# インタラクティブ設定を開始
+> /codexspec:config
+
+# または現在の設定を確認
+> /codexspec:config --view
+```
+
+configコマンドは以下をガイドします：
+
+1. 出力言語の選択（生成されるドキュメント用）
+2. コミットメッセージ言語の選択
+3. `.codexspec/config.yml`ファイルの作成
+
+**インストール方法の比較**
+
+| 方法 | 最適な用途 | 機能 |
+|------|----------|------|
+| **CLIインストール** (`uv tool install`) | 完全な開発ワークフロー | CLIコマンド（`init`、`check`、`config`）+ スラッシュコマンド |
+| **プラグインマーケットプレイス** | クイックスタート、既存プロジェクト | スラッシュコマンドのみ（`/codexspec:config`で言語設定） |
+
+**注意**：プラグインは`strict: false`モードを使用し、LLM動的翻訳による既存の多言語サポートを再利用します。
+
 ---
 
 ## コアワークフロー
@@ -467,6 +508,7 @@ claude
 
 | コマンド | 説明 |
 |----------|------|
+| `/codexspec:config` | プロジェクト設定を管理（作成/表示/変更/リセット） |
 | `/codexspec:clarify` | 既存spec.mdを曖昧さスキャン（4カテゴリ、最大5問） |
 | `/codexspec:analyze` | 非破壊的クロスアーティファクト分析（読み取り専用、重要度ベース） |
 | `/codexspec:checklist` | 要件検証用の品質チェックリストを生成 |
