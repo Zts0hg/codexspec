@@ -48,6 +48,9 @@
       "important_action": "Execute /codexspec:constitution para personalizá-la para seu projeto.",
       "compliance_confirm": "CLAUDE.md já existe sem a seção de Conformidade com a Constituição.\nA seção de Conformidade com a Constituição garante que Claude siga a constituição do seu projeto.\n? Deseja adicionar a seção de Conformidade com a Constituição?",
       "compliance_added": "Atualizado: CLAUDE.md (seção de Conformidade com a Constituição adicionada)",
+      "commit_lang_differs": "Você selecionou '{selected}' como idioma de interação com a IA. O idioma atual das mensagens de commit do git está definido como '{current}'.\nDeseja atualizar o idioma das mensagens de commit do git para corresponder?",
+      "commit_lang_updated": "Atualizado: O idioma das mensagens de commit foi alterado para {lang}",
+      "commit_lang_kept": "O idioma das mensagens de commit permanece como '{lang}'",
       "error_dir_exists": "Erro: O diretório '{path}' já existe",
       "error_use_force": "Use --force para sobrescrever ou escolha um nome diferente",
       "error_no_project_name": "Erro: Forneça um nome de projeto ou use o flag --here"

@@ -29,12 +29,14 @@ from .commands.installer import (
 )
 from .i18n import (
     generate_config_content,
+    get_commit_language,
     get_language_name,
     get_project_language,
     get_supported_languages,
     is_supported_language,
     normalize_locale,
     update_config_language,
+    update_output_language,
 )
 from .translator import translate
 
@@ -597,15 +599,37 @@ def init(
         )
         console.print(f"[green]{msg}[/green]")
     elif lang != "en":  # User explicitly provided --lang (not default)
-        # Update only the language setting in existing config
-        if update_config_language(config_file, normalized_lang):
-            lang_name = get_language_name(normalized_lang)
+        # Check if commit language differs from selected language
+        current_commit_lang = get_commit_language(config_file)
+        if current_commit_lang and current_commit_lang != normalized_lang:
+            # Prompt user to update commit language
             msg = translate(
-                "cli.init.language_updated",
+                "cli.init.commit_lang_differs",
                 normalized_lang,
-                lang_name=lang_name,
+                current=current_commit_lang,
+                selected=normalized_lang,
             )
-            console.print(f"[green]{msg}[/green]")
+            if Confirm.ask(msg, default=True):
+                update_config_language(config_file, normalized_lang)
+                console.print(
+                    f"[green]{translate('cli.init.commit_lang_updated', normalized_lang, lang=normalized_lang)}[/green]"
+                )
+            else:
+                # Update only output language, keep commit language
+                update_output_language(config_file, normalized_lang)
+                console.print(
+                    f"[dim]{translate('cli.init.commit_lang_kept', normalized_lang, lang=current_commit_lang)}[/dim]"
+                )
+        else:
+            # No difference or commit lang not set, update both
+            if update_config_language(config_file, normalized_lang):
+                lang_name = get_language_name(normalized_lang)
+                msg = translate(
+                    "cli.init.language_updated",
+                    normalized_lang,
+                    lang_name=lang_name,
+                )
+                console.print(f"[green]{msg}[/green]")
 
     # Create CLAUDE.md
     claude_md = target_dir / "CLAUDE.md"

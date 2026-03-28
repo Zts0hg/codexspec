@@ -48,6 +48,9 @@
             "important_action": "Führen Sie /codexspec:constitution aus, um sie für Ihr Projekt anzupassen.",
             "compliance_confirm": "CLAUDE.md existiert bereits ohne Verfassungs-Compliance-Abschnitt.\nDer Verfassungs-Compliance-Abschnitt stellt sicher, dass Claude Ihrer Projektverfassung folgt.\n? Möchten Sie den Verfassungs-Compliance-Abschnitt hinzufügen?",
             "compliance_added": "Aktualisiert: CLAUDE.md (Verfassungs-Compliance-Abschnitt hinzugefügt)",
+            "commit_lang_differs": "Sie haben '{selected}' als Interaktionssprache mit der KI gewählt. Die aktuelle Sprache für Git-Commit-Nachrichten ist auf '{current}' eingestellt.\nMöchten Sie die Sprache für Git-Commit-Nachrichten entsprechend aktualisieren?",
+            "commit_lang_updated": "Aktualisiert: Sprache für Commit-Nachrichten wurde zu {lang} geändert",
+            "commit_lang_kept": "Sprache für Commit-Nachrichten bleibt '{lang}'",
             "error_dir_exists": "Fehler: Verzeichnis '{path}' existiert bereits",
             "error_use_force": "--force verwenden zum Überschreiben oder anderen Namen wählen",
             "error_no_project_name": "Fehler: Bitte Projektnamen angeben oder --here Flag verwenden"
