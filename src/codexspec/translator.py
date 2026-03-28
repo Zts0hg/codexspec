@@ -81,6 +81,14 @@ _CLI_MESSAGES_EN = {
             "? Would you like to add the Constitution Compliance section?"
         ),
         "compliance_added": "Updated: CLAUDE.md (added Constitution Compliance section)",
+        # Commit language consistency check
+        "commit_lang_differs": (
+            "You selected '{selected}' as the AI interaction language. "
+            "The current git commit message language is set to '{current}'.\n"
+            "Would you like to update the git commit message language to match?"
+        ),
+        "commit_lang_updated": "Updated: Commit message language changed to {lang}",
+        "commit_lang_kept": "Commit message language kept as '{lang}'",
         # Errors
         "error_dir_exists": "Error: Directory '{path}' already exists",
         "error_use_force": "Use --force to overwrite or choose a different name",

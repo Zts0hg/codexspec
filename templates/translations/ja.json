@@ -48,6 +48,9 @@
       "important_action": "/codexspec:constitution を実行してプロジェクトに合わせてカスタマイズしてください。",
       "compliance_confirm": "CLAUDE.md は既に存在しますが、憲法準拠セクションがありません。\n憲法準拠セクションは、Claude がプロジェクトの憲法に従うことを保証します。\n? 憲法準拠セクションを追加しますか？",
       "compliance_added": "更新しました: CLAUDE.md (憲法準拠セクションを追加)",
+      "commit_lang_differs": "'{selected}' をAIとの対話言語として選択しました。現在のgitコミットメッセージ言語は '{current}' に設定されています。\nコミットメッセージ言語も選択した言語に更新しますか？",
+      "commit_lang_updated": "更新完了: コミットメッセージ言語を {lang} に変更しました",
+      "commit_lang_kept": "コミットメッセージ言語は '{lang}' のままです",
       "error_dir_exists": "エラー: ディレクトリ '{path}' は既に存在します",
       "error_use_force": "--force を使用して上書きするか、別の名前を選択してください",
       "error_no_project_name": "エラー: プロジェクト名を指定するか --here フラグを使用してください"

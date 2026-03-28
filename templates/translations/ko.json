@@ -48,6 +48,9 @@
       "important_action": "/codexspec:constitution을 실행하여 프로젝트에 맞게 사용자 정의하세요.",
       "compliance_confirm": "CLAUDE.md가 이미 존재하지만 헌법 준수 섹션이 없습니다.\n헌법 준수 섹션은 Claude가 프로젝트 헌법을 따르도록 보장합니다.\n? 헌법 준수 섹션을 추가하시겠습니까?",
       "compliance_added": "업데이트됨: CLAUDE.md (헌법 준수 섹션 추가됨)",
+      "commit_lang_differs": "'{selected}'을(를) AI 상호작용 언어로 선택했습니다. 현재 git 커밋 메시지 언어가 '{current}'(으)로 설정되어 있습니다.\n커밋 메시지 언어도 선택한 언어로 업데이트하시겠습니까?",
+      "commit_lang_updated": "업데이트 완료: 커밋 메시지 언어가 {lang}(으)로 변경되었습니다",
+      "commit_lang_kept": "커밋 메시지 언어는 '{lang}'(으)로 유지됩니다",
       "error_dir_exists": "오류: 디렉토리 '{path}'이(가) 이미 존재함",
       "error_use_force": "--force를 사용하여 덮어쓰거나 다른 이름을 선택하세요",
       "error_no_project_name": "오류: 프로젝트 이름을 지정하거나 --here 플래그를 사용하세요"

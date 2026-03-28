@@ -260,6 +260,63 @@ def get_project_language() -> str:
     return "en"
 
 
+def get_commit_language(config_file: Path) -> Optional[str]:
+    """Get the commit language from a config.yml file.
+
+    Args:
+        config_file: Path to the config.yml file
+
+    Returns:
+        The commit language code, or None if not found or file doesn't exist
+    """
+    import re
+
+    if not config_file.exists():
+        return None
+
+    try:
+        content = config_file.read_text(encoding="utf-8")
+        # Parse the commit language setting from YAML-like format
+        match = re.search(r"^\s*commit:\s*['\"]?(\S+?)['\"]?\s*$", content, re.MULTILINE)
+        if match:
+            return normalize_locale(match.group(1))
+    except (OSError, re.error):
+        pass
+
+    return None
+
+
+def update_output_language(config_file: Path, language: str) -> bool:
+    """Update only the output language setting in config.yml.
+
+    Args:
+        config_file: Path to the config.yml file
+        language: New language code to set
+
+    Returns:
+        True if update was successful, False otherwise
+    """
+    import re
+
+    normalized_lang = normalize_locale(language)
+
+    try:
+        content = config_file.read_text(encoding="utf-8")
+
+        # Update output language only
+        content = re.sub(
+            r'^(\s*output:\s*)["\']?\S+?["\']?\s*$',
+            rf'\g<1>"{normalized_lang}"',
+            content,
+            flags=re.MULTILINE,
+        )
+
+        config_file.write_text(content, encoding="utf-8")
+        return True
+    except (OSError, re.error):
+        return False
+
+
 def update_config_language(config_file: Path, language: str) -> bool:
     """Update the language setting in an existing config.yml file.
 

@@ -48,6 +48,9 @@
       "important_action": "运行 /codexspec:constitution 为你的项目进行定制。",
       "compliance_confirm": "CLAUDE.md 已存在但没有宪法合规性部分。\n宪法合规性部分确保 Claude 遵循项目宪法。\n? 是否要添加宪法合规性部分？",
       "compliance_added": "已更新: CLAUDE.md (已添加宪法合规性部分)",
+      "commit_lang_differs": "您选择了 '{selected}' 作为与AI的交互语言，检测到当前git提交消息语言设置为 '{current}'。\n是否要将git提交消息语言也更新为所选语言？",
+      "commit_lang_updated": "已更新: 提交消息语言已更改为 {lang}",
+      "commit_lang_kept": "提交消息语言保持为 '{lang}'",
       "error_dir_exists": "错误: 目录 '{path}' 已存在",
       "error_use_force": "使用 --force 覆盖或选择其他名称",
       "error_no_project_name": "错误: 请提供项目名称或使用 --here 标志"
