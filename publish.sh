@@ -109,9 +109,7 @@ commit_marketplace_changes() {
     echo -e "${YELLOW}Committing marketplace.json changes...${NC}"
 
     git add "$marketplace_file"
-    git commit -m "chore: update marketplace.json to v$version
-
-Co-Authored-By: Claude Code <noreply@anthropic.com>"
+    git commit -m "chore: update marketplace.json to v$version"
 
     echo -e "${YELLOW}Pushing marketplace.json to origin...${NC}"
     git push origin HEAD
