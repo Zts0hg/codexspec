@@ -124,10 +124,11 @@ You are now acting as a "Requirement Compiler". Execute the following operations
 
 4. **Review Constitution**: Ensure alignment with `.codexspec/memory/constitution.md`
 
-5. **Auto-Review Generated Spec**: After saving the spec, automatically run the review process:
-   - Execute the same quality checks as `/codexspec:review-spec`
-   - Generate a review report at `.codexspec/specs/{YYYY-MMDD-HHMM}{random}-{feature-name}/review-spec.md`
-   - If issues are found, present a summary and ask if user wants to fix them now or proceed
+5. **Auto-Review Generated Spec**: After saving the spec, invoke the review command:
+   - **Use the Skill tool to invoke `/codexspec:review-spec`** with the generated spec path as argument
+   - The review command will handle all quality checks and generate the report
+   - Wait for the review to complete, then present a summary of findings
+   - If issues are found, ask if user wants to fix them now or proceed to next step
 
 ### Spec Template Structure
 
