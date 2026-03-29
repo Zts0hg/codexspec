@@ -82,10 +82,11 @@ Transform the feature specification into a detailed technical implementation pla
    - If no path was provided: Write to `.codexspec/specs/{feature-id}/plan.md`
    - Ask user for confirmation on output path if uncertain
 
-8. **Auto-Review Generated Plan**: After saving the plan, automatically run the review process:
-   - Execute the same quality checks as `/codexspec:review-plan`
-   - Generate a review report at `.codexspec/specs/{feature-id}/review-plan.md`
-   - If issues are found, present a summary and ask if user wants to fix them now or proceed
+8. **Auto-Review Generated Plan**: After saving the plan, invoke the review command:
+   - **Use the Skill tool to invoke `/codexspec:review-plan`** with the generated plan path as argument
+   - The review command will handle all quality checks and generate the report
+   - Wait for the review to complete, then present a summary of findings
+   - If issues are found, ask if user wants to fix them now or proceed to next step
 
 ### Module Structure Requirements
 
