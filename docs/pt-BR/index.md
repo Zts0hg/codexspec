@@ -16,16 +16,25 @@ O CodexSpec é um kit de ferramentas que ajuda você a construir software de alt
 
 ## Por que CodexSpec?
 
-### Colaboração Humano-AI
+Por que usar CodexSpec alem do Claude Code? Aqui esta a comparacao:
 
-O CodexSpec é construído sobre a crença de que **o desenvolvimento eficaz auxiliado por IA requer participação humana ativa em cada etapa**.
+| Aspecto | Apenas Claude Code | CodexSpec + Claude Code |
+|---------|-------------------|-------------------------|
+| **Suporte multilingue** | Interacao padrao em ingles | Configure o idioma da equipe para melhor colaboracao |
+| **Rastreabilidade** | Dificil rastrear decisoes apos a sessao | Todos os specs, planos e tarefas salvos em `.codexspec/specs/` |
+| **Recuperacao de sessao** | Dificil recuperar de interrupcoes no modo plan | Divisao em multiplos comandos + docs persistentes = recuperacao facil |
+| **Governanca de equipe** | Sem principios unificados, estilos inconsistentes | `constitution.md` aplica padroes e qualidade da equipe |
 
-| Problema | Solução |
+### Colaboracao Humano-AI
+
+O CodexSpec e construido sobre a crenca de que **o desenvolvimento eficaz auxiliado por IA requer participacao humana ativa em cada etapa**.
+
+| Problema | Solucao |
 |----------|---------|
 | Requisitos pouco claros | Perguntas e respostas interativas para esclarecer antes de construir |
-| Especificações incompletas | Comandos de revisão dedicados com pontuação |
-| Planos técnicos desalinhados | Validação baseada na constituição |
-| Divisões de tarefas vagas | Geração de tarefas com TDD obrigatório |
+| Especificacoes incompletas | Comandos de revisao dedicados com pontuacao |
+| Planos tecnicos desalinhados | Validacao baseada na constituicao |
+| Divisoes de tarefas vagas | Geracao de tarefas com TDD obrigatorio |
 
 ### Recursos Principais
 

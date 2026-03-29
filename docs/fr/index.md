@@ -16,6 +16,15 @@ CodexSpec est une boite a outils qui vous aide a construire des logiciels de hau
 
 ## Pourquoi CodexSpec ?
 
+Pourquoi utiliser CodexSpec en plus de Claude Code ? Voici la comparaison :
+
+| Aspect | Claude Code seulement | CodexSpec + Claude Code |
+|--------|----------------------|-------------------------|
+| **Support multilingue** | Interaction en anglais par defaut | Configurez la langue de l'equipe pour une meilleure collaboration |
+| **Tracabilite** | Difficile de tracer les decisions apres la session | Tous les specs, plans et taches sauvegardes dans `.codexspec/specs/` |
+| **Recuperation de session** | Difficile de recuperer apres interruptions en mode plan | Division en plusieurs commandes + docs persistants = recuperation facile |
+| **Gouvernance d'equipe** | Pas de principes unifies, styles incoherents | `constitution.md` applique les standards et qualite de l'equipe |
+
 ### Collaboration Humain-AI
 
 CodexSpec repose sur la conviction que **un developpement assiste par AI efficace necessite une participation humaine active a chaque etape**.
