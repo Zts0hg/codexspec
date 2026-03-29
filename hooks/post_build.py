@@ -1,5 +1,6 @@
 """Post-build hook to create root redirect if needed and fix 404.html language."""
 
+import re
 from pathlib import Path
 
 
@@ -22,6 +23,12 @@ def on_post_build(config, **kwargs):
 
     # Generate robots.txt for search engines
     _generate_robots_txt(site_dir, config)
+
+    # Optimize sitemap.xml (remove changefreq)
+    _optimize_sitemap(site_dir)
+
+    # Inject sitemap link into HTML heads
+    _inject_sitemap_link(site_dir)
 
     # Handle root redirect if needed
     root_index = site_dir / "index.html"
@@ -84,15 +91,74 @@ def _generate_robots_txt(site_dir: Path, config) -> None:
     Creates a robots.txt file that:
     - Allows all crawlers to access the site
     - Points to the sitemap.xml location
+    - Adds crawl-delay for respectful crawling
     """
     site_url = config.site_url.rstrip("/")
 
     robots_content = f"""User-agent: *
 Allow: /
 
+# Sitemaps
 Sitemap: {site_url}/sitemap.xml
+
+# Crawl-delay (respected by some crawlers)
+Crawl-delay: 1
 """
 
     robots_path = site_dir / "robots.txt"
     robots_path.write_text(robots_content)
     print(f"Generated robots.txt at {robots_path}")
+
+
+def _optimize_sitemap(site_dir: Path) -> None:
+    """Optimize sitemap.xml by removing changefreq element.
+
+    Google has ignored changefreq since 2015, and keeping it with
+    inaccurate values (e.g., 'daily' for static docs) may reduce
+    sitemap trust. Removing it results in a cleaner sitemap.
+    """
+    sitemap_path = site_dir / "sitemap.xml"
+    if not sitemap_path.exists():
+        print("sitemap.xml not found, skipping optimization")
+        return
+
+    content = sitemap_path.read_text()
+    original_content = content
+
+    # Remove changefreq elements (including surrounding whitespace)
+    content = re.sub(r"\s*<changefreq>[^<]+</changefreq>", "", content)
+
+    if content != original_content:
+        sitemap_path.write_text(content)
+        print("Optimized sitemap.xml: removed changefreq elements")
+    else:
+        print("sitemap.xml already optimized (no changefreq found)")
+
+
+def _inject_sitemap_link(site_dir: Path) -> None:
+    """Inject sitemap link into HTML head elements.
+
+    Adds <link rel="sitemap" ...> to all HTML pages to help search
+    engines discover the sitemap through page markup in addition
+    to robots.txt.
+    """
+    sitemap_link = '  <link rel="sitemap" type="application/xml" href="/sitemap.xml">\n</head>'
+    injected_count = 0
+
+    for html_file in site_dir.rglob("*.html"):
+        content = html_file.read_text()
+
+        # Skip if already has sitemap link
+        if 'rel="sitemap"' in content:
+            continue
+
+        # Inject before </head>
+        if "</head>" in content:
+            content = content.replace("</head>", sitemap_link)
+            html_file.write_text(content)
+            injected_count += 1
+
+    if injected_count > 0:
+        print(f"Injected sitemap links into {injected_count} HTML files")
+    else:
+        print("All HTML files already have sitemap links")
