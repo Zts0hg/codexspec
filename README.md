@@ -25,6 +25,7 @@ Instead of jumping straight to code, you define **what** to build and **why** be
 
 ## Table of Contents
 
+- [Why Choose CodexSpec?](#why-choose-codexspec)
 - [What is Spec-Driven Development?](#what-is-spec-driven-development)
 - [Design Philosophy: Human-AI Collaboration](#design-philosophy-human-ai-collaboration)
 - [30-Second Quick Start](#-30-second-quick-start)
@@ -34,6 +35,19 @@ Instead of jumping straight to code, you define **what** to build and **why** be
 - [Comparison with spec-kit](#comparison-with-spec-kit)
 - [Internationalization](#internationalization-i18n)
 - [Contributing & License](#contributing)
+
+---
+
+## Why Choose CodexSpec?
+
+Why use CodexSpec on top of Claude Code? Here's the comparison:
+
+| Aspect | Claude Code Only | CodexSpec + Claude Code |
+|--------|------------------|-------------------------|
+| **Multi-language Support** | Default English interaction | Configure team language for smoother collaboration and reviews |
+| **Traceability** | Hard to trace decisions after session ends | All specs, plans, and tasks saved in `.codexspec/specs/` |
+| **Session Recovery** | Plan mode interruptions are hard to recover from | Multi-command split + persisted docs = easy recovery |
+| **Team Governance** | No unified principles, inconsistent styles | `constitution.md` enforces team standards and quality |
 
 ---
 

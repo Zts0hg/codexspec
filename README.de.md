@@ -24,6 +24,7 @@ CodexSpec hilft Ihnen, hochwertige Software durch einen strukturierten, spezifik
 
 ## Inhaltsverzeichnis
 
+- [Warum CodexSpec wählen?](#warum-codexspec-wählen)
 - [Was ist Spec-Driven Development?](#was-ist-spec-driven-development)
 - [Design-Philosophie: Mensch-KI-Zusammenarbeit](#design-philosophie-mensch-ki-zusammenarbeit)
 - [30-Sekunden-Schnellstart](#-30-sekunden-schnellstart)
@@ -33,6 +34,19 @@ CodexSpec hilft Ihnen, hochwertige Software durch einen strukturierten, spezifik
 - [Vergleich mit spec-kit](#vergleich-mit-spec-kit)
 - [Internationalisierung](#internationalisierung-i18n)
 - [Mitwirken & Lizenz](#mitwirken)
+
+---
+
+## Warum CodexSpec wählen?
+
+Warum CodexSpec zusätzlich zu Claude Code verwenden? Hier ist der Vergleich:
+
+| Aspekt | Nur Claude Code | CodexSpec + Claude Code |
+|--------|-----------------|-------------------------|
+| **Mehrsprachige Unterstützung** | Standardmäßig englische Interaktion | Konfigurieren Sie die Team-Sprache für reibungslosere Zusammenarbeit und Reviews |
+| **Nachvollziehbarkeit** | Schwer, Entscheidungen nach Sitzungsende nachzuverfolgen | Alle Specs, Pläne und Aufgaben in `.codexspec/specs/` gespeichert |
+| **Sitzungswiederherstellung** | Schwierig, sich von Plan-Modus-Unterbrechungen zu erholen | Multi-Command-Aufteilung + persistente Docs = einfache Wiederherstellung |
+| **Team-Governance** | Keine einheitlichen Prinzipien, inkonsistente Stile | `constitution.md` setzt Team-Standards und Qualität durch |
 
 ---
 

@@ -16,6 +16,15 @@ CodexSpec is a toolkit that helps you build high-quality software using a struct
 
 ## Why CodexSpec?
 
+Why use CodexSpec on top of Claude Code? Here's the comparison:
+
+| Aspect | Claude Code Only | CodexSpec + Claude Code |
+|--------|------------------|-------------------------|
+| **Multi-language Support** | Default English interaction | Configure team language for smoother collaboration and reviews |
+| **Traceability** | Hard to trace decisions after session ends | All specs, plans, and tasks saved in `.codexspec/specs/` |
+| **Session Recovery** | Plan mode interruptions are hard to recover from | Multi-command split + persisted docs = easy recovery |
+| **Team Governance** | No unified principles, inconsistent styles | `constitution.md` enforces team standards and quality |
+
 ### Human-AI Collaboration
 
 CodexSpec is built on the belief that **effective AI-assisted development requires active human participation at every stage**.

@@ -24,6 +24,7 @@ CodexSpec te ayuda a construir software de alta calidad utilizando un enfoque es
 
 ## Tabla de Contenidos
 
+- [¿Por qué elegir CodexSpec?](#por-qué-elegir-codexspec)
 - [¿Qué es el Desarrollo Guiado por Especificaciones?](#qué-es-el-desarrollo-guiado-por-especificaciones)
 - [Filosofía de Diseño: Colaboración Humano-AI](#filosofía-de-diseño-colaboración-humano-ai)
 - [Inicio Rápido en 30 Segundos](#-inicio-rápido-en-30-segundos)
@@ -33,6 +34,19 @@ CodexSpec te ayuda a construir software de alta calidad utilizando un enfoque es
 - [Comparación con spec-kit](#comparación-con-spec-kit)
 - [Internacionalización](#internacionalización-i18n)
 - [Contribuir y Licencia](#contribuir)
+
+---
+
+## ¿Por qué elegir CodexSpec?
+
+¿Por qué usar CodexSpec sobre Claude Code? Aquí está la comparación:
+
+| Aspecto | Solo Claude Code | CodexSpec + Claude Code |
+|---------|------------------|-------------------------|
+| **Soporte Multiidioma** | Interacción en inglés por defecto | Configura el idioma del equipo para una colaboración y revisión más fluida |
+| **Trazabilidad** | Difícil rastrear decisiones después de que termina la sesión | Todos los specs, planes y tareas guardados en `.codexspec/specs/` |
+| **Recuperación de Sesión** | Difícil recuperarse de interrupciones del modo plan | División en múltiples comandos + docs persistentes = fácil recuperación |
+| **Gobernanza de Equipo** | Sin principios unificados, estilos inconsistentes | `constitution.md` aplica estándares y calidad del equipo |
 
 ---
 
