@@ -27,6 +27,13 @@ def on_post_build(config, **kwargs):
     # Optimize sitemap.xml (remove changefreq)
     _optimize_sitemap(site_dir)
 
+    # Generate HTML sitemap page for user navigation
+    _generate_html_sitemap(site_dir, config)
+
+    # Append sitemap-page.html URL to sitemap.xml
+    site_url = config.site_url.rstrip("/")
+    _append_sitemap_page_url(site_dir, site_url)
+
     # Inject sitemap link into HTML heads
     _inject_sitemap_link(site_dir)
 
@@ -135,14 +142,174 @@ def _optimize_sitemap(site_dir: Path) -> None:
         print("sitemap.xml already optimized (no changefreq found)")
 
 
-def _inject_sitemap_link(site_dir: Path) -> None:
-    """Inject sitemap link into HTML head elements.
+def _get_i18n_languages(config) -> list:
+    """Extract i18n language list from MkDocs plugin config."""
+    i18n_plugin = config.plugins.get("i18n")
+    if i18n_plugin:
+        return i18n_plugin.config.get("languages", [])
+    return []
 
-    Adds <link rel="sitemap" ...> to all HTML pages to help search
-    engines discover the sitemap through page markup in addition
-    to robots.txt.
+
+def _extract_nav_pages(nav: list) -> list[tuple[str, str]]:
+    """Recursively extract (title, path) pairs from nav config, filtering external URLs."""
+    pages = []
+    for item in nav:
+        if isinstance(item, str):
+            pages.append((item, item))
+        elif isinstance(item, dict):
+            for title, value in item.items():
+                if isinstance(value, str):
+                    if not value.startswith(("http://", "https://")):
+                        pages.append((title, value))
+                elif isinstance(value, list):
+                    pages.extend(_extract_nav_pages(value))
+    return pages
+
+
+def _build_language_section(lang: dict, nav_pages: list, site_url: str, site_dir: Path) -> str:
+    """Build HTML section for one language, including only pages that exist on disk."""
+    locale = lang["locale"]
+    name = lang["name"]
+    is_default = lang.get("default", False)
+
+    links = []
+    # Home link
+    if is_default:
+        links.append(f'<li><a href="{site_url}/">Home</a></li>')
+    else:
+        links.append(f'<li><a href="{site_url}/{locale}/">{name}</a></li>')
+
+    # Nav page links (only include pages that exist on disk)
+    for title, path in nav_pages:
+        page_dir = path.replace(".md", "")
+        if is_default:
+            url = f"{site_url}/{page_dir}/"
+            check_path = site_dir / page_dir / "index.html"
+        else:
+            url = f"{site_url}/{locale}/{page_dir}/"
+            check_path = site_dir / locale / page_dir / "index.html"
+        if check_path.exists():
+            links.append(f'<li><a href="{url}">{title}</a></li>')
+
+    return f'<section class="language-section" lang="{locale}"><h2>{name}</h2><ul>{"".join(links)}</ul></section>'
+
+
+def _build_full_html(language_sections: list, site_url: str) -> str:
+    """Assemble complete HTML page with inline CSS matching MkDocs Material theme."""
+    sections_html = "\n".join(language_sections)
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sitemap - CodexSpec</title>
+    <style>
+        :root {{
+            --md-primary-fg-color: #009688;
+            --md-accent-fg-color: #009688;
+            --bg-color: #ffffff;
+            --text-color: #212121;
+            --border-color: #e0e0e0;
+        }}
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            color: var(--text-color);
+            background: var(--bg-color);
+            line-height: 1.6;
+        }}
+        header {{
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--md-primary-fg-color);
+            padding-bottom: 1rem;
+        }}
+        header h1 {{ color: var(--md-primary-fg-color); margin: 0 0 0.5rem 0; }}
+        header a {{ color: var(--md-primary-fg-color); text-decoration: none; }}
+        header a:hover {{ text-decoration: underline; }}
+        .languages-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }}
+        .language-section {{ margin-bottom: 1.5rem; }}
+        .language-section h2 {{
+            color: var(--md-primary-fg-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            font-size: 1.25rem;
+        }}
+        .language-section ul {{ list-style: none; padding-left: 0; }}
+        .language-section li {{ padding: 0.25rem 0; }}
+        .language-section a {{ color: var(--md-primary-fg-color); text-decoration: none; }}
+        .language-section a:hover {{ text-decoration: underline; }}
+        @media (max-width: 768px) {{
+            body {{ padding: 1rem; }}
+            .languages-grid {{ grid-template-columns: 1fr; }}
+        }}
+    </style>
+</head>
+<body>
+    <header>
+        <h1>CodexSpec Sitemap</h1>
+        <a href="{site_url}/">Back to Home</a>
+    </header>
+    <main class="languages-grid">
+{sections_html}
+    </main>
+</body>
+</html>"""
+
+
+def _generate_html_sitemap(site_dir: Path, config) -> None:
+    """Generate an HTML sitemap page for user navigation."""
+    site_url = config.site_url.rstrip("/")
+
+    # 1. Get i18n languages
+    languages = _get_i18n_languages(config)
+
+    # 2. Extract nav pages
+    nav_pages = _extract_nav_pages(config.nav or [])
+
+    # 3. Build section for each language
+    language_sections = []
+    for lang in languages:
+        section_html = _build_language_section(lang, nav_pages, site_url, site_dir)
+        language_sections.append(section_html)
+
+    # 4. Assemble full HTML
+    html = _build_full_html(language_sections, site_url)
+
+    # 5. Write to file
+    (site_dir / "sitemap-page.html").write_text(html, encoding="utf-8")
+    print(f"Generated HTML sitemap at {site_dir / 'sitemap-page.html'}")
+
+
+def _append_sitemap_page_url(site_dir: Path, site_url: str) -> None:
+    """Append sitemap-page.html URL to sitemap.xml."""
+    sitemap_path = site_dir / "sitemap.xml"
+    if not sitemap_path.exists():
+        return
+
+    content = sitemap_path.read_text(encoding="utf-8")
+    url_entry = f"    <url>\n        <loc>{site_url}/sitemap-page.html</loc>\n    </url>\n</urlset>"
+    content = content.replace("</urlset>", url_entry)
+    sitemap_path.write_text(content, encoding="utf-8")
+    print("Appended sitemap-page.html URL to sitemap.xml")
+
+
+def _inject_sitemap_link(site_dir: Path) -> None:
+    """Inject sitemap links into HTML head elements.
+
+    Adds <link rel="sitemap" ...> for sitemap.xml and sitemap-page.html
+    to all HTML pages to help search engines discover the sitemap through
+    page markup in addition to robots.txt.
     """
-    sitemap_link = '  <link rel="sitemap" type="application/xml" href="/sitemap.xml">\n</head>'
+    sitemap_links = (
+        '  <link rel="sitemap" type="application/xml" href="/sitemap.xml">\n'
+        '  <link rel="sitemap" href="/sitemap-page.html">\n</head>'
+    )
     injected_count = 0
 
     for html_file in site_dir.rglob("*.html"):
@@ -154,7 +321,7 @@ def _inject_sitemap_link(site_dir: Path) -> None:
 
         # Inject before </head>
         if "</head>" in content:
-            content = content.replace("</head>", sitemap_link)
+            content = content.replace("</head>", sitemap_links)
             html_file.write_text(content)
             injected_count += 1
 
