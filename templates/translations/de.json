@@ -149,5 +149,9 @@
     "review-react-code": {
         "description": "React/TypeScript-Code auf Komponentenarchitektur, Hooks-Compliance, Zustandsverwaltung, Performance und Verfassungsübereinstimmung überprüfen",
         "argument-hint": "Pfad zur React/TypeScript-Datei oder zum Verzeichnis zur Überprüfung\n\nBeispiele:\n- `src/components/` - Gesamtes Komponentenverzeichnis überprüfen\n- `src/components/Button.tsx` - Einzelne Datei überprüfen\n- `src/hooks/ src/components/` - Mehrere Pfade überprüfen"
+    },
+    "quick": {
+        "description": "Schnelle Komplettimplementierung für kleine Anforderungen — automatisch Spec, Plan, Tasks und Code",
+        "argument-hint": "Beschreiben Sie Ihre Anforderung"
     }
 }

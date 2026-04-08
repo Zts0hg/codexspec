@@ -149,5 +149,9 @@
   "review-react-code": {
     "description": "Review React/TypeScript code for component architecture, hooks compliance, state management, performance, and constitution alignment",
     "argument-hint": "Path to React/TypeScript file or directory to review\n\nExamples:\n- `src/components/` - Review entire components directory\n- `src/components/Button.tsx` - Review single file\n- `src/hooks/ src/components/` - Review multiple paths"
+  },
+  "quick": {
+    "description": "One-stop quick implementation for small requirements — auto spec, plan, tasks, and code",
+    "argument-hint": "Describe your requirement"
   }
 }

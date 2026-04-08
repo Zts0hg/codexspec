@@ -149,5 +149,9 @@
   "review-react-code": {
     "description": "React/TypeScript 코드의 컴포넌트 아키텍처, Hooks 준수, 상태 관리, 성능 및 헌법 정렬 검토",
     "argument-hint": "검토할 React/TypeScript 파일 또는 디렉토리 경로\n\n예시:\n- `src/components/` - 전체 컴포넌트 디렉토리 검토\n- `src/components/Button.tsx` - 단일 파일 검토\n- `src/hooks/ src/components/` - 여러 경로 검토"
+  },
+  "quick": {
+    "description": "소규모 요구사항을 원스톱으로 빠르게 구현 — spec, plan, tasks, 코드 자동 생성",
+    "argument-hint": "요구사항을 설명하세요"
   }
 }

@@ -149,5 +149,9 @@
   "review-react-code": {
     "description": "Revisar código React/TypeScript por arquitectura de componentes, cumplimiento de Hooks, gestión de estado, rendimiento y alineación con la constitución",
     "argument-hint": "Ruta al archivo o directorio React/TypeScript a revisar\n\nEjemplos:\n- `src/components/` - Revisar directorio completo de componentes\n- `src/components/Button.tsx` - Revisar archivo único\n- `src/hooks/ src/components/` - Revisar múltiples rutas"
+  },
+  "quick": {
+    "description": "Implementación rápida integral para requisitos pequeños — spec, plan, tasks y código automáticos",
+    "argument-hint": "Describe tu requisito"
   }
 }
