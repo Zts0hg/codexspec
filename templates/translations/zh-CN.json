@@ -149,5 +149,9 @@
   "review-react-code": {
     "description": "审查 React/TypeScript 代码的组件架构、Hooks 规范、状态管理、性能表现和宪法一致性",
     "argument-hint": "要审查的 React/TypeScript 文件或目录路径\n\n示例：\n- `src/components/` - 审查整个组件目录\n- `src/components/Button.tsx` - 审查单个文件\n- `src/hooks/ src/components/` - 审查多个路径"
+  },
+  "quick": {
+    "description": "一站式快速实现小型需求 — 自动完成 spec、plan、tasks 和代码实现",
+    "argument-hint": "描述你的需求"
   }
 }
