@@ -262,45 +262,6 @@ class TestGenerateHtmlSitemap:
 # ============================================================================
 
 
-class TestAppendSitemapPageUrl:
-    """Tests for _append_sitemap_page_url(site_dir, site_url)."""
-
-    def test_appends_url_to_sitemap_xml(self, site_dir: Path) -> None:
-        from hooks.post_build import _append_sitemap_page_url
-
-        # Create a sitemap.xml
-        sitemap_content = '<?xml version="1.0"?>\n<urlset>\n    <url><loc>https://example.com/</loc></url>\n</urlset>'
-        (site_dir / "sitemap.xml").write_text(sitemap_content)
-
-        _append_sitemap_page_url(site_dir, "https://example.com/codexspec")
-
-        result = (site_dir / "sitemap.xml").read_text()
-        assert "sitemap-page.html" in result
-        assert "<loc>https://example.com/codexspec/sitemap-page.html</loc>" in result
-        assert result.count("</urlset>") == 1
-        assert result.index("sitemap-page.html") < result.index("</urlset>")
-
-    def test_skips_when_no_sitemap_xml(self, site_dir: Path) -> None:
-        from hooks.post_build import _append_sitemap_page_url
-
-        # No sitemap.xml exists - should not error
-        _append_sitemap_page_url(site_dir, "https://example.com/codexspec")
-        assert not (site_dir / "sitemap.xml").exists()
-
-    def test_xml_format_correct_after_append(self, site_dir: Path) -> None:
-        from hooks.post_build import _append_sitemap_page_url
-
-        sitemap_content = '<?xml version="1.0"?>\n<urlset>\n</urlset>'
-        (site_dir / "sitemap.xml").write_text(sitemap_content)
-
-        _append_sitemap_page_url(site_dir, "https://example.com/codexspec")
-
-        result = (site_dir / "sitemap.xml").read_text()
-        assert result.endswith("</urlset>")
-        assert "<url>" in result
-        assert "</url>" in result
-
-
 # ============================================================================
 # Task 5.1: End-to-end verification tests
 # ============================================================================
@@ -312,47 +273,18 @@ class TestEndToEnd:
     def test_full_flow_generates_sitemap_page(
         self, site_with_pages: Path, mock_config: MagicMock, sample_nav: list
     ) -> None:
-        from hooks.post_build import (
-            _append_sitemap_page_url,
-            _generate_html_sitemap,
-        )
+        from hooks.post_build import _generate_html_sitemap
 
         mock_config.nav = sample_nav
-        site_url = mock_config.site_url.rstrip("/")
 
         # Simulate the build pipeline
         _generate_html_sitemap(site_with_pages, mock_config)
-        _append_sitemap_page_url(site_with_pages, site_url)
 
         # Verify sitemap-page.html was generated
         sitemap_page = site_with_pages / "sitemap-page.html"
         assert sitemap_page.exists()
         content = sitemap_page.read_text()
         assert "<!DOCTYPE html>" in content
-
-    def test_sitemap_xml_contains_sitemap_page_url(
-        self, site_with_pages: Path, mock_config: MagicMock, sample_nav: list
-    ) -> None:
-        from hooks.post_build import (
-            _append_sitemap_page_url,
-            _generate_html_sitemap,
-        )
-
-        mock_config.nav = sample_nav
-        site_url = mock_config.site_url.rstrip("/")
-
-        # Create initial sitemap.xml
-        sitemap_xml = '<?xml version="1.0"?>\n<urlset>\n</urlset>'
-        (site_with_pages / "sitemap.xml").write_text(sitemap_xml)
-
-        _generate_html_sitemap(site_with_pages, mock_config)
-        _append_sitemap_page_url(site_with_pages, site_url)
-
-        # Verify sitemap.xml contains sitemap-page.html URL
-        sitemap_result = (site_with_pages / "sitemap.xml").read_text()
-        assert "sitemap-page.html" in sitemap_result
-        assert f"<loc>{site_url}/sitemap-page.html</loc>" in sitemap_result
-        assert sitemap_result.endswith("</urlset>")
 
     def test_html_pages_contain_sitemap_page_link(
         self, site_with_pages: Path, mock_config: MagicMock, sample_nav: list
@@ -369,13 +301,14 @@ class TestEndToEnd:
             original = html_file.read_text()
             html_file.write_text(f"<html><head></head><body>{original}</body></html>")
 
+        site_url = mock_config.site_url.rstrip("/")
         _generate_html_sitemap(site_with_pages, mock_config)
-        _inject_sitemap_link(site_with_pages)
+        _inject_sitemap_link(site_with_pages, site_url)
 
         # Verify HTML files have sitemap links injected
         index_html = (site_with_pages / "index.html").read_text()
-        assert 'href="/sitemap.xml"' in index_html
-        assert 'href="/sitemap-page.html"' in index_html
+        assert 'href="/codexspec/sitemap.xml"' in index_html
+        assert 'href="/codexspec/sitemap-page.html"' in index_html
 
     def test_sitemap_page_not_overwritten_by_injection(
         self, site_with_pages: Path, mock_config: MagicMock, sample_nav: list
@@ -387,8 +320,9 @@ class TestEndToEnd:
 
         mock_config.nav = sample_nav
 
+        site_url = mock_config.site_url.rstrip("/")
         _generate_html_sitemap(site_with_pages, mock_config)
-        _inject_sitemap_link(site_with_pages)
+        _inject_sitemap_link(site_with_pages, site_url)
 
         # The sitemap-page.html itself has no <head> tag with existing content,
         # so it shouldn't be modified by injection (it uses its own inline CSS)
