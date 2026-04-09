@@ -31,6 +31,48 @@ $ARGUMENTS
 
 Transform the feature specification into a detailed technical implementation plan. This is where you define **how** the feature will be built.
 
+### Quality Targets
+
+Before generating the plan, internalize these quality targets. They are aligned with the `review-plan` scoring rubrics to ensure first-pass quality.
+
+#### Spec Alignment (Target: ≥ 90)
+
+- [ ] Every functional requirement (REQ-XXX) has a corresponding implementation component
+- [ ] Every user story has technical coverage in the architecture
+- [ ] All non-functional requirements are addressed in architecture decisions
+- [ ] Edge cases from the spec are handled in implementation phases
+
+#### Tech Stack (Target: ≥ 90)
+
+- [ ] All technologies are clearly listed with version constraints
+- [ ] Each technology choice is justified for the requirements
+- [ ] Tech stack aligns with project constitution (if exists)
+- [ ] No critical category missing (language, framework, testing, etc.)
+
+#### Architecture Quality (Target: ≥ 90)
+
+- [ ] High-level architecture diagram included (ASCII or Mermaid)
+- [ ] Each module has explicit responsibility, dependencies, and interfaces
+- [ ] Module dependency graph is complete
+- [ ] Separation of concerns is maintained
+- [ ] Design patterns are appropriate and documented
+
+#### Phase Planning (Target: ≥ 90)
+
+- [ ] Phases are logically ordered (foundation → core → integration → testing)
+- [ ] Each phase has specific, measurable deliverables
+- [ ] Phase scope is realistic and manageable
+- [ ] Inter-phase dependencies are minimal and documented
+
+#### Constitution Alignment (Target: ≥ 90)
+
+- [ ] Each constitution principle explicitly reviewed
+- [ ] Architecture decisions reference relevant principles
+- [ ] Testing requirements from constitution are incorporated
+- [ ] Naming conventions and workflow guidelines followed
+
+> **Self-Check**: After generating the plan, verify each target above is met before saving. This reduces review iterations.
+
 ### Execution Steps
 
 1. **Load Context**
