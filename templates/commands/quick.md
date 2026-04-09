@@ -19,7 +19,7 @@ argument-hint: "Describe your requirement"
    - Display a one-time prompt:
 
      ```
-     💡 检测到项目未配置语言设置。你可以使用 `/codexspec:config` 命令来创建配置文件。
+     💡 Project language is not configured. Run `/codexspec:config` to create a configuration file.
      ```
 
    - Use default values for current session:

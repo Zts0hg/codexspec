@@ -38,7 +38,7 @@ You are a **Translation Quality Reviewer**. Your task is to analyze translated d
 
 2. **Load Configuration**
    - Read `.codexspec/config.yml` for project settings
-   - Read `.codexspec/i18n/glossary.yml` for terminology guidelines
+   - Read `docs/i18n/glossary.yml` for terminology guidelines (CodexSpec maintainer-only path)
 
 3. **Identify Files to Check**
    - If `source_file` specified: Check only that file across target languages

@@ -352,7 +352,7 @@ git:
 | `/codexspec:review-tasks`    | Review task breakdown                    |
 | `/codexspec:implement-tasks` | Execute implementation                   |
 
-### Enhanced Commands (6) - NEW
+### Enhanced Commands (4) - NEW
 
 | Command                      | Description                                 |
 | ---------------------------- | ------------------------------------------- |
@@ -360,8 +360,17 @@ git:
 | `/codexspec:analyze`         | Cross-artifact consistency analysis         |
 | `/codexspec:checklist`       | Generate requirements quality checklists    |
 | `/codexspec:tasks-to-issues` | Convert tasks to GitHub issues              |
-| `/codexspec:translate-docs`  | Translate project documentation to specified language |
-| `/codexspec:check-i18n-semantics` | Check semantic consistency and quality of multilingual documents |
+
+### Internal Maintenance Commands (NOT distributed to users)
+
+These commands exist **only** in `.claude/commands/codexspec/` and are intentionally absent from `templates/commands/`. They are tightly coupled to CodexSpec's own documentation site (MkDocs i18n, fixed `docs/{lang}/` structure, CodexSpec-specific glossary) and are used by CodexSpec maintainers and the `docs-i18n.yml` CI workflow. **They are not installed by `codexspec init` and are not user-facing features.**
+
+| Command                           | Description                                                          |
+| --------------------------------- | -------------------------------------------------------------------- |
+| `/codexspec:translate-docs`       | Translate CodexSpec's own docs from `docs/en/` to 7 target languages |
+| `/codexspec:check-i18n-semantics` | Verify semantic consistency of CodexSpec's own translated docs       |
+
+Both commands read the project glossary at `docs/i18n/glossary.yml` (canonical, repo-only path). The path `.codexspec/i18n/glossary.yml` is **not** used and should not be referenced in any artifact.
 
 ### Git Workflow Commands
 
@@ -457,8 +466,8 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec:pr`              | ✅ Template | Generate PR/MR descriptions                                                   |
 | `/codexspec:review-python-code` | ✅ Template | Review Python code for PEP 8, type safety, engineering robustness, and constitution alignment |
 | `/codexspec:review-react-code` | ✅ Template | Review React/TypeScript code for component architecture, hooks compliance, state management, performance, and constitution alignment |
-| `/codexspec:translate-docs`  | ✅ Template | Translate project documentation to specified language |
-| `/codexspec:check-i18n-semantics` | ✅ Template | Check semantic consistency and quality of multilingual documents |
+| `/codexspec:translate-docs`  | ✅ Internal | Maintainer-only — lives only in `.claude/commands/codexspec/`, not distributed via `init` |
+| `/codexspec:check-i18n-semantics` | ✅ Internal | Maintainer-only — lives only in `.claude/commands/codexspec/`, not distributed via `init` |
 
 ### Constitution Compliance Feature
 

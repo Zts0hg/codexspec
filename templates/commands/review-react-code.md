@@ -152,7 +152,7 @@ Before scoring, apply these rubrics to ensure consistent, transparent evaluation
 - Missing error handling for async operation: -8 each
 - Race condition in async operation: -10 each
 
-#### Performance & Robustness (20%)
+#### Performance & Robustness (15%)
 
 | Score Range | Criteria |
 |-------------|----------|
@@ -168,7 +168,7 @@ Before scoring, apply these rubrics to ensure consistent, transparent evaluation
 - Missing optional chaining for nullable access: -3 each
 - Missing React.memo for frequently re-rendered component: -5 each
 
-#### Constitution Alignment (5%)
+#### Constitution Alignment (10%)
 
 | Score Range | Criteria |
 |-------------|----------|
@@ -291,8 +291,8 @@ Before scoring, apply these rubrics to ensure consistent, transparent evaluation
 | Component Atomicity & SRP | 25% | X/100 | [Which rubric range applies] | [List specific deductions, e.g., "UserPanel.tsx 350 lines: -5"] | X |
 | Hooks Compliance | 25% | X/100 | [Which rubric range applies] | [e.g., "useEffect missing dep in Form.tsx: -8"] | X |
 | State Management | 25% | X/100 | [Which rubric range applies] | [e.g., "Missing error state in useFetch: -8"] | X |
-| Performance & Robustness | 20% | X/100 | [Which rubric range applies] | [e.g., "Unmemoized filter in List.tsx: -8"] | X |
-| Constitution Alignment | 5% | X/100 | [Which rubric range applies] | [e.g., "All principles followed"] | X |
+| Performance & Robustness | 15% | X/100 | [Which rubric range applies] | [e.g., "Unmemoized filter in List.tsx: -8"] | X |
+| Constitution Alignment | 10% | X/100 | [Which rubric range applies] | [e.g., "All principles followed"] | X |
 | **Total** | **100%** | | | | **X/100** |
 
 > **Suggestion Cap**: LOW suggestions deducted X/5 points (cap: 5 points max)

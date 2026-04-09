@@ -734,8 +734,6 @@ def _create_default_commands(commands_dir: Path) -> None:
         "pr": _get_pr_command(),
         "review-python-code": _get_review_python_code_command(),
         "review-react-code": _get_review_react_code_command(),
-        "translate-docs": _get_translate_docs_command(),
-        "check-i18n-semantics": _get_check_i18n_semantics_command(),
     }
 
     for name, content in commands.items():
@@ -1485,70 +1483,6 @@ This command combines static analysis tools with architectural review to provide
 
 > [!NOTE]
 > Requires eslint and typescript to be installed for full analysis.
-"""
-
-
-def _get_translate_docs_command() -> str:
-    """Return the translate-docs command template."""
-    return """---
-description: Translate documentation to target languages using AI-assisted translation with glossary support
-argument-hint: "--lang <language_codes> (e.g., 'zh,ja,ko') or 'all' for all languages"
-handoffs:
-  - agent: claude
-    step: Execute document translation with glossary guidance
----
-
-# Document Translator
-
-## User Input
-
-$ARGUMENTS
-
-## Instructions
-
-Translate documentation files to specified target languages while maintaining technical accuracy and formatting.
-
-### Steps
-
-1. **Parse Arguments**: Identify target languages from --lang parameter
-2. **Load Glossary**: Read terminology guidelines from .codexspec/i18n/glossary.yml
-3. **Translate Files**: Process each documentation file
-4. **Maintain Formatting**: Preserve markdown structure and code blocks
-
-> [!NOTE]
-> This command supports batch translation for multiple languages.
-"""
-
-
-def _get_check_i18n_semantics_command() -> str:
-    """Return the check-i18n-semantics command template."""
-    return """---
-description: Check semantic consistency between source and translated documentation using AI
-argument-hint: "[source_file] [--lang <lang>] [--strict]"
-allowed-tools: Read, Glob, Grep, Bash
----
-
-# Semantic Consistency Check
-
-## User Input
-
-```
-$ARGUMENTS
-```
-
-## Instructions
-
-Analyze translated documentation for semantic consistency with the source English content.
-
-### Steps
-
-1. **Parse Arguments**: Identify source file and target languages
-2. **Load Files**: Read source and translated versions
-3. **Semantic Analysis**: Compare meaning and accuracy
-4. **Generate Report**: List inconsistencies with severity levels
-
-> [!NOTE]
-> Use --strict flag to fail on any semantic drift.
 """
 
 

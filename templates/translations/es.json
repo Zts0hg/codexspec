@@ -134,14 +134,6 @@
   "pr": {
     "description": "Generar descripción estructurada de Pull Request (GitHub) o Merge Request (GitLab) basada en git diff e integración opcional de spec.md"
   },
-  "check-i18n-semantics": {
-    "description": "Verificar consistencia semántica y calidad de documentación multilingüe",
-    "argument-hint": "[archivo_fuente] [--lang <idioma>] [--strict]"
-  },
-  "translate-docs": {
-    "description": "Traducir documentación del proyecto al idioma especificado",
-    "argument-hint": "--lang <códigos_idioma> (ej: 'zh,ja,ko') o 'all' para todos los idiomas"
-  },
   "review-python-code": {
     "description": "Revisar código Python por conformidad PEP 8, seguridad de tipos, robustez de ingeniería y alineación con la constitución",
     "argument-hint": "Ruta al archivo o directorio Python a revisar\n\nEjemplos:\n- `src/codexspec/` - Revisar paquete completo\n- `src/codexspec/__init__.py` - Revisar archivo único\n- `src/ tests/` - Revisar múltiples rutas"
