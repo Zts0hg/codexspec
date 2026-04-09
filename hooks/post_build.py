@@ -1,7 +1,9 @@
 """Post-build hook to create root redirect if needed and fix 404.html language."""
 
+import gzip
 import re
 from pathlib import Path
+from urllib.parse import urlparse
 
 
 def on_post_build(config, **kwargs):
@@ -30,12 +32,16 @@ def on_post_build(config, **kwargs):
     # Generate HTML sitemap page for user navigation
     _generate_html_sitemap(site_dir, config)
 
-    # Append sitemap-page.html URL to sitemap.xml
     site_url = config.site_url.rstrip("/")
-    _append_sitemap_page_url(site_dir, site_url)
+
+    # Regenerate sitemap.xml.gz to match the (post-hook) sitemap.xml.
+    # MUST run after all sitemap.xml mutations above; otherwise the .gz
+    # served by GitHub Pages diverges from the .xml and crawlers (Google
+    # Search Console) reject the sitemap.
+    _regenerate_sitemap_gz(site_dir)
 
     # Inject sitemap link into HTML heads
-    _inject_sitemap_link(site_dir)
+    _inject_sitemap_link(site_dir, site_url)
 
     # Handle root redirect if needed
     root_index = site_dir / "index.html"
@@ -286,29 +292,40 @@ def _generate_html_sitemap(site_dir: Path, config) -> None:
     print(f"Generated HTML sitemap at {site_dir / 'sitemap-page.html'}")
 
 
-def _append_sitemap_page_url(site_dir: Path, site_url: str) -> None:
-    """Append sitemap-page.html URL to sitemap.xml."""
-    sitemap_path = site_dir / "sitemap.xml"
-    if not sitemap_path.exists():
+def _regenerate_sitemap_gz(site_dir: Path) -> None:
+    """Rewrite sitemap.xml.gz to match the (post-hook) sitemap.xml.
+
+    MkDocs writes both files during build. After we mutate sitemap.xml
+    (e.g. removing changefreq), the .gz becomes stale. GitHub Pages serves
+    both files, so crawlers that fetch the gzipped version receive different
+    content than what robots.txt advertises — a known cause of Google Search
+    Console rejecting the sitemap.
+    """
+    xml_path = site_dir / "sitemap.xml"
+    gz_path = site_dir / "sitemap.xml.gz"
+    if not xml_path.exists():
         return
+    data = xml_path.read_bytes()
+    # mtime=0 keeps the gzip output reproducible across builds.
+    with gzip.GzipFile(gz_path, "wb", mtime=0) as f:
+        f.write(data)
+    print("Regenerated sitemap.xml.gz to match sitemap.xml")
 
-    content = sitemap_path.read_text(encoding="utf-8")
-    url_entry = f"    <url>\n        <loc>{site_url}/sitemap-page.html</loc>\n    </url>\n</urlset>"
-    content = content.replace("</urlset>", url_entry)
-    sitemap_path.write_text(content, encoding="utf-8")
-    print("Appended sitemap-page.html URL to sitemap.xml")
 
-
-def _inject_sitemap_link(site_dir: Path) -> None:
+def _inject_sitemap_link(site_dir: Path, site_url: str) -> None:
     """Inject sitemap links into HTML head elements.
 
     Adds <link rel="sitemap" ...> for sitemap.xml and sitemap-page.html
     to all HTML pages to help search engines discover the sitemap through
     page markup in addition to robots.txt.
+
+    The href is built from the site_url path (e.g. "/codexspec") so links
+    work on project pages served from a subpath, not just the domain root.
     """
+    base = urlparse(site_url).path.rstrip("/")
     sitemap_links = (
-        '  <link rel="sitemap" type="application/xml" href="/sitemap.xml">\n'
-        '  <link rel="sitemap" href="/sitemap-page.html">\n</head>'
+        f'  <link rel="sitemap" type="application/xml" href="{base}/sitemap.xml">\n'
+        f'  <link rel="sitemap" href="{base}/sitemap-page.html">\n</head>'
     )
     injected_count = 0
 
