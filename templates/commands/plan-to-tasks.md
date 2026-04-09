@@ -29,6 +29,48 @@ You are acting as a **Technical Lead**. Your responsibility is to transform tech
 
 Analyze the provided spec and plan documents, then break down the technical implementation plan into specific, actionable tasks.
 
+### Quality Targets
+
+Before generating the task breakdown, internalize these quality targets. They are aligned with the `review-tasks` scoring rubrics to ensure first-pass quality.
+
+#### Plan Coverage (Target: ≥ 90)
+
+- [ ] Every plan phase has corresponding tasks
+- [ ] Every module/component has creation and implementation tasks
+- [ ] Every API endpoint has an implementation task (if applicable)
+- [ ] Every data model has an implementation task (if applicable)
+- [ ] Testing tasks are included per constitution TDD requirements
+
+#### TDD Compliance (Target: ≥ 90)
+
+- [ ] Every code component has a test task that precedes its implementation task
+- [ ] Test tasks are never marked as optional
+- [ ] Integration tests are included where appropriate
+- [ ] Test file paths follow project testing conventions
+
+#### Dependency & Ordering (Target: ≥ 90)
+
+- [ ] All dependencies between tasks are explicitly declared
+- [ ] No circular dependencies exist
+- [ ] Foundation/setup tasks are placed first
+- [ ] Dependencies execute before dependents in the execution order
+
+#### Task Granularity (Target: ≥ 90)
+
+- [ ] Each task involves only ONE primary file
+- [ ] Each task has a clear, single deliverable
+- [ ] Tasks are neither too broad (should be split) nor too narrow (should be combined)
+- [ ] Complexity estimates are reasonable
+
+#### Parallelization & Files (Target: ≥ 90)
+
+- [ ] Truly independent tasks are marked with `[P]`
+- [ ] Dependent tasks are NOT marked `[P]`
+- [ ] All tasks have file paths specified
+- [ ] File paths follow project naming conventions
+
+> **Self-Check**: After generating the tasks, verify each target above is met before saving. This reduces review iterations.
+
 ### Critical Requirements
 
 1. **Task Granularity**: Each task should involve modifying or creating **only one primary file**. Avoid broad tasks like "implement all features".

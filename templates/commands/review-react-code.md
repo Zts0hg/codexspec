@@ -99,6 +99,101 @@ Perform a comprehensive code review of React/TypeScript files at the specified p
     - [ ] Include specific code locations and refactoring suggestions
     - [ ] Calculate quality scores per dimension
 
+### Scoring Rubrics
+
+Before scoring, apply these rubrics to ensure consistent, transparent evaluation.
+
+#### Component Atomicity & SRP (25%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | Each file has one primary component; all under 200 lines; business logic extracted to custom Hooks; clear UI/logic separation |
+| 70-89 | Most components atomic; 1-2 slightly large components; minor mixing of concerns |
+| 50-69 | Several components exceed 200 lines; business logic mixed into UI components |
+| Below 50 | Components are monolithic; no separation of concerns; pervasive SRP violations |
+
+**Typical Deductions**:
+
+- Component exceeding 200 lines: -5 each
+- Business logic not extracted to custom Hook: -8 each
+- Multiple primary components in one file: -8 each
+- No separation between UI and logic: -10 each
+
+#### Hooks Compliance (25%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | All useEffect have complete dependency arrays; no derived-state-as-state; no unnecessary useEffect; no stale closure risks |
+| 70-89 | Minor Hooks issues; 1-2 incomplete dependency arrays or unnecessary useEffect |
+| 50-69 | Several Hooks violations; derived state stored in state; missing dependencies |
+| Below 50 | Pervasive Hooks rule violations; stale closures; incorrect dependency management |
+
+**Typical Deductions**:
+
+- useEffect with incomplete dependency array: -8 each
+- Derived state stored as separate state (should be computed): -8 each
+- Unnecessary useEffect (useMemo or direct computation suffices): -5 each
+- Stale closure risk in async/event handler: -8 each
+
+#### State Management (25%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | State as local as possible; no excessive prop drilling; proper async handling with loading/error states |
+| 70-89 | Mostly good state management; minor prop drilling; 1-2 missing loading states |
+| 50-69 | Unnecessary global state; significant prop drilling; missing error handling |
+| Below 50 | Poor state architecture; pervasive prop drilling; no async error handling |
+
+**Typical Deductions**:
+
+- Unnecessary global/lifted state: -8 each
+- Prop drilling more than 3 levels: -5 each
+- Missing loading state for async operation: -5 each
+- Missing error handling for async operation: -8 each
+- Race condition in async operation: -10 each
+
+#### Performance & Robustness (20%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | No unnecessary re-renders; proper memoization; null/undefined safety; appropriate React.memo usage |
+| 70-89 | Minor performance issues; 1-2 missing memoizations; mostly null-safe |
+| 50-69 | Several re-render issues; missing memoization for expensive computations; null safety gaps |
+| Below 50 | Pervasive performance issues; no memoization; frequent null/undefined crashes |
+
+**Typical Deductions**:
+
+- Unmemoized expensive computation in render: -8 each
+- Object/function created in render without useCallback/useMemo: -5 each
+- Missing optional chaining for nullable access: -3 each
+- Missing React.memo for frequently re-rendered component: -5 each
+
+#### Constitution Alignment (5%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | Fully aligned with all constitution MUST principles; project conventions followed |
+| 70-89 | Mostly aligned; minor gaps in addressing specific principles |
+| 50-69 | Partial alignment; several principles not addressed |
+| Below 50 | Significant violations or disregard of constitution |
+
+> **Note**: If no constitution exists, this category defaults to 100 (full marks) and its weight is redistributed proportionally to other categories.
+
+**Typical Deductions**:
+
+- Constitution MUST violation: -15 each
+- Constitution SHOULD violation: -8 each
+- Naming convention violation: -3 each
+
+#### Suggestion Score Cap Rule
+
+**IMPORTANT**: Suggestions (LOW) items may deduct a **maximum of 5 points** from the total score. After resolving all CRITICAL and HIGH issues, the score should be **≥ 95**.
+
+- CRITICAL Issues: -10 to -20 points each
+- HIGH Issues: -5 to -10 points each
+- MEDIUM Issues: -3 to -5 points each
+- LOW Suggestions: -1 to -2 points each, **capped at 5 points total**
+
 ### Report Template
 
 ````markdown
@@ -191,14 +286,16 @@ Perform a comprehensive code review of React/TypeScript files at the specified p
 
 ## Scoring Breakdown
 
-| Category | Weight | Score | Weighted |
-|----------|--------|-------|----------|
-| Component Atomicity & SRP | 25% | X/100 | X |
-| Hooks Compliance | 25% | X/100 | X |
-| State Management | 25% | X/100 | X |
-| Performance & Robustness | 20% | X/100 | X |
-| Constitution Alignment | 5% | X/100 | X |
-| **Total** | **100%** | | **X/100** |
+| Category | Weight | Score | Rubric Basis | Deduction Details | Weighted |
+|----------|--------|-------|-------------|-------------------|----------|
+| Component Atomicity & SRP | 25% | X/100 | [Which rubric range applies] | [List specific deductions, e.g., "UserPanel.tsx 350 lines: -5"] | X |
+| Hooks Compliance | 25% | X/100 | [Which rubric range applies] | [e.g., "useEffect missing dep in Form.tsx: -8"] | X |
+| State Management | 25% | X/100 | [Which rubric range applies] | [e.g., "Missing error state in useFetch: -8"] | X |
+| Performance & Robustness | 20% | X/100 | [Which rubric range applies] | [e.g., "Unmemoized filter in List.tsx: -8"] | X |
+| Constitution Alignment | 5% | X/100 | [Which rubric range applies] | [e.g., "All principles followed"] | X |
+| **Total** | **100%** | | | | **X/100** |
+
+> **Suggestion Cap**: LOW suggestions deducted X/5 points (cap: 5 points max)
 
 ## Available Follow-up Commands
 
@@ -215,6 +312,33 @@ Based on the review result, consider:
 - **Fail**: Significant rework required - consider `/codexspec:clarify` for design discussion
 ````
 
+### Score Validation Checklist
+
+Before finalizing scores, the reviewer MUST verify:
+
+- [ ] Every deduction in "Deduction Details" column has a corresponding issue in "Detailed Findings"
+- [ ] The arithmetic is correct: each category score = 100 minus sum of deductions
+- [ ] Weighted total = sum of (category score × weight) for all categories
+- [ ] LOW suggestion deductions do not exceed 5-point cap
+- [ ] No "phantom deductions" (deductions without matching issues)
+- [ ] Score is consistent with Overall Status (Pass ≥ 80, Needs Work 50-79, Fail < 50)
+
+### Score Challenge Response Protocol
+
+When a user questions or challenges the score, follow this three-step process:
+
+1. **Provide Evidence**: Present the complete scoring breakdown with all deduction details. Reference the specific rubric criteria and issue IDs that justify each deduction.
+
+2. **Ask for Specifics**: Ask the user which specific scoring item(s) they believe are incorrect. Do NOT preemptively adjust any scores.
+
+3. **Targeted Re-evaluation**: For each challenged item:
+   - Re-read the relevant code section
+   - Re-apply the rubric criteria objectively
+   - If the original score was correct: explain the reasoning and maintain the score
+   - If the original score was indeed incorrect: adjust with clear explanation of what changed and why
+
+> **CRITICAL**: Never adjust scores simply because the user expresses dissatisfaction. Only adjust when re-evaluation reveals a genuine scoring error.
+
 ### Quality Criteria
 
 Before completing the review, verify:
@@ -224,7 +348,7 @@ Before completing the review, verify:
 - [ ] Constitution alignment has been checked (if constitution exists)
 - [ ] Issues are categorized by severity (CRITICAL/HIGH/MEDIUM/LOW)
 - [ ] Each CRITICAL/HIGH issue has specific code refactoring suggestions
-- [ ] Score reflects actual code quality accurately
+- [ ] Score reflects actual code quality accurately (validated via Score Validation Checklist)
 - [ ] Strengths section highlights positive aspects
 - [ ] Recommendations are prioritized and actionable
 

@@ -88,6 +88,98 @@ Review the technical implementation plan for quality and readiness. This command
    - [ ] Naming conventions are followed (if specified)
    - [ ] Testing requirements are addressed
 
+### Scoring Rubrics
+
+Before scoring, apply these rubrics to ensure consistent, transparent evaluation.
+
+#### Spec Alignment (30%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | All functional requirements, user stories, and NFRs have clear implementation coverage; edge cases addressed |
+| 70-89 | Most requirements covered; 1-2 minor gaps in NFR or edge case coverage |
+| 50-69 | Several requirements only partially covered; missing implementation for key user stories |
+| Below 50 | Major requirements missing from plan; significant gaps between spec and plan |
+
+**Typical Deductions**:
+
+- Functional requirement with no implementation: -15 each
+- User story without technical coverage: -10 each
+- NFR not addressed in architecture: -8 each
+- Edge case from spec not handled: -5 each
+
+#### Tech Stack (15%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | All technologies clearly defined with versions; choices well-justified and appropriate for requirements |
+| 70-89 | Tech stack defined; minor version gaps; mostly appropriate choices |
+| 50-69 | Incomplete stack definition; some questionable technology choices |
+| Below 50 | Vague or missing tech stack; inappropriate choices for requirements |
+
+**Typical Deductions**:
+
+- Technology without version constraint: -5 each
+- Unjustified technology choice: -10 each
+- Missing critical category (e.g., no testing framework): -10
+
+#### Architecture Quality (25%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | Clear diagrams; well-defined module responsibilities; proper separation of concerns; dependency graph complete |
+| 70-89 | Good architecture; minor gaps in documentation; mostly clear module boundaries |
+| 50-69 | Architecture outlined but vague; unclear module responsibilities; missing dependency graph |
+| Below 50 | No clear architecture; modules poorly defined; significant design issues |
+
+**Typical Deductions**:
+
+- Missing architecture diagram: -15
+- Module without clear responsibility: -8 each
+- Missing dependency graph: -10
+- Tight coupling between modules: -8 each
+- Missing separation of concerns: -10
+
+#### Phase Planning (15%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | Phases logically ordered; clear deliverables per phase; realistic scope; minimal inter-phase dependencies |
+| 70-89 | Good phasing; 1-2 phases with unclear deliverables or slightly large scope |
+| 50-69 | Phase ordering has issues; several phases lack clear deliverables |
+| Below 50 | No meaningful phase breakdown; deliverables unclear; unrealistic scope |
+
+**Typical Deductions**:
+
+- Phase without clear deliverables: -10 each
+- Illogical phase ordering: -10
+- Overly large phase scope: -5 each
+- Missing phase dependencies: -5
+
+#### Constitution Alignment (15%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | Fully aligned with all constitution principles; architecture principles followed; testing requirements addressed |
+| 70-89 | Mostly aligned; minor gaps in addressing specific principles |
+| 50-69 | Partial alignment; several principles not addressed |
+| Below 50 | Significant violations or disregard of constitution |
+
+> **Note**: If no constitution exists, this category defaults to 100 (full marks) and its weight is redistributed proportionally to other categories.
+
+**Typical Deductions**:
+
+- Constitution principle not addressed: -10 per principle
+- Direct violation of a constitution principle: -20 per violation
+
+#### Suggestion Score Cap Rule
+
+**IMPORTANT**: Suggestions (Nice to Have) items may deduct a **maximum of 5 points** from the total score. After resolving all Critical Issues and Warnings, the score should be **≥ 95**.
+
+- Critical Issues: -10 to -20 points each
+- Warnings: -5 to -10 points each
+- Suggestions: -1 to -2 points each, **capped at 5 points total**
+
 ### Report Template
 
 ```markdown
@@ -207,14 +299,16 @@ Review the technical implementation plan for quality and readiness. This command
 
 ## Scoring Breakdown
 
-| Category | Weight | Score | Weighted |
-|----------|--------|-------|----------|
-| Spec Alignment | 30% | X/100 | X |
-| Tech Stack | 15% | X/100 | X |
-| Architecture Quality | 25% | X/100 | X |
-| Phase Planning | 15% | X/100 | X |
-| Constitution Alignment | 15% | X/100 | X |
-| **Total** | **100%** | | **X/100** |
+| Category | Weight | Score | Rubric Basis | Deduction Details | Weighted |
+|----------|--------|-------|-------------|-------------------|----------|
+| Spec Alignment | 30% | X/100 | [Which rubric range applies] | [List specific deductions, e.g., "REQ-003 not addressed: -15"] | X |
+| Tech Stack | 15% | X/100 | [Which rubric range applies] | [e.g., "No version for DB: -5"] | X |
+| Architecture Quality | 25% | X/100 | [Which rubric range applies] | [e.g., "Missing dependency graph: -10"] | X |
+| Phase Planning | 15% | X/100 | [Which rubric range applies] | [e.g., "Phase 2 scope too large: -5"] | X |
+| Constitution Alignment | 15% | X/100 | [Which rubric range applies] | [e.g., "All principles addressed"] | X |
+| **Total** | **100%** | | | | **X/100** |
+
+> **Suggestion Cap**: Suggestions deducted X/5 points (cap: 5 points max)
 
 ## Recommendations
 
@@ -245,6 +339,33 @@ Based on the review result, the user may consider:
 - **Fail**: `/codexspec:spec-to-plan` - to regenerate the technical plan
 ```
 
+### Score Validation Checklist
+
+Before finalizing scores, the reviewer MUST verify:
+
+- [ ] Every deduction in "Deduction Details" column has a corresponding issue in "Detailed Findings"
+- [ ] The arithmetic is correct: each category score = 100 minus sum of deductions
+- [ ] Weighted total = sum of (category score × weight) for all categories
+- [ ] Suggestion deductions do not exceed 5-point cap
+- [ ] No "phantom deductions" (deductions without matching issues)
+- [ ] Score is consistent with Overall Status (Pass ≥ 80, Needs Work 50-79, Fail < 50)
+
+### Score Challenge Response Protocol
+
+When a user questions or challenges the score, follow this three-step process:
+
+1. **Provide Evidence**: Present the complete scoring breakdown with all deduction details. Reference the specific rubric criteria and issue IDs that justify each deduction.
+
+2. **Ask for Specifics**: Ask the user which specific scoring item(s) they believe are incorrect. Do NOT preemptively adjust any scores.
+
+3. **Targeted Re-evaluation**: For each challenged item:
+   - Re-read the relevant section of the plan
+   - Re-apply the rubric criteria objectively
+   - If the original score was correct: explain the reasoning and maintain the score
+   - If the original score was indeed incorrect: adjust with clear explanation of what changed and why
+
+> **CRITICAL**: Never adjust scores simply because the user expresses dissatisfaction. Only adjust when re-evaluation reveals a genuine scoring error.
+
 ### Quality Criteria
 
 Before completing the review, verify:
@@ -254,7 +375,7 @@ Before completing the review, verify:
 - [ ] Tech stack choices are evaluated
 - [ ] Constitution alignment is checked
 - [ ] Issues have clear, actionable suggestions
-- [ ] Score reflects actual quality accurately
+- [ ] Score reflects actual quality accurately (validated via Score Validation Checklist)
 - [ ] Next steps are clear and appropriate
 
 ### Output
