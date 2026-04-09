@@ -42,7 +42,7 @@ def get_commands_metadata() -> list[CommandMetadata]:
 
     Returns:
         List of CommandMetadata dictionaries sorted by category priority:
-        core (9) -> enhanced (6) -> git (2) -> review (2)
+        core (9) -> enhanced (4) -> git (2) -> review (2)
     """
     return [
         # Core Commands (9)
@@ -137,20 +137,6 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "description": "将任务转换为 GitHub Issues",
             "category": "enhanced",
             "file_name": "tasks-to-issues.md",
-        },
-        {
-            "name": "translate-docs",
-            "display_name": "/codexspec:translate-docs",
-            "description": "翻译项目文档到指定语言",
-            "category": "enhanced",
-            "file_name": "translate-docs.md",
-        },
-        {
-            "name": "check-i18n-semantics",
-            "display_name": "/codexspec:check-i18n-semantics",
-            "description": "检查多语言文档的语义一致性和质量",
-            "category": "enhanced",
-            "file_name": "check-i18n-semantics.md",
         },
         # Git Workflow Commands (2)
         {

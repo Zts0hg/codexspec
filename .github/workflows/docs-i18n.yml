@@ -99,7 +99,7 @@ jobs:
 
                     Use the /codexspec:translate-docs command with --lang ${{ matrix.language }} --incremental
 
-                    Follow the translation guidelines from .codexspec/i18n/glossary.yml
+                    Follow the translation guidelines from docs/i18n/glossary.yml
 
                     Target directory: docs/${{ matrix.language }}/
                     Source directory: docs/en/

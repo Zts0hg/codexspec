@@ -85,11 +85,17 @@ Review the task breakdown for quality and implementation readiness. This command
    - [ ] File paths are consistent with plan
    - [ ] File naming conventions are followed (per constitution)
 
+9. **Constitution Alignment Check**: Verify task breakdown respects project principles:
+   - [ ] TDD enforcement aligns with constitution testing standards
+   - [ ] Quality gates and checkpoints reflect constitution principles
+   - [ ] Naming conventions are followed (per constitution)
+   - [ ] Workflow guidelines from constitution are considered
+
 ### Scoring Rubrics
 
 Before scoring, apply these rubrics to ensure consistent, transparent evaluation.
 
-#### Plan Coverage (30%)
+#### Plan Coverage (25%)
 
 | Score Range | Criteria |
 |-------------|----------|
@@ -136,7 +142,7 @@ Before scoring, apply these rubrics to ensure consistent, transparent evaluation
 - Incorrect task ordering: -8 each
 - Foundation task not placed first: -10
 
-#### Task Granularity (15%)
+#### Task Granularity (10%)
 
 | Score Range | Criteria |
 |-------------|----------|
@@ -166,6 +172,22 @@ Before scoring, apply these rubrics to ensure consistent, transparent evaluation
 - Independent task missing [P] marker: -3 each
 - Task without file path specification: -5 each
 - File path not following project convention: -3 each
+
+#### Constitution Alignment (10%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | Fully aligned with all constitution principles; TDD/quality standards addressed; workflow guidelines followed |
+| 70-89 | Mostly aligned; minor gaps in addressing specific principles |
+| 50-69 | Partial alignment; several principles not addressed |
+| Below 50 | Significant violations or disregard of constitution |
+
+> **Note**: If no constitution exists, this category defaults to 100 (full marks) and its weight is redistributed proportionally to other categories.
+
+**Typical Deductions**:
+
+- Constitution principle not addressed: -10 per principle
+- Direct violation of a constitution principle (e.g., test tasks omitted despite TDD requirement): -20 per violation
 
 #### Suggestion Score Cap Rule
 
@@ -307,6 +329,19 @@ Valid Dependency Chain:
 - [ ] **[FILE-001]**: Task 2.1 file path doesn't match project naming convention
 - [ ] **[FILE-002]**: Task 3.1 missing file path specification
 
+## Constitution Alignment
+
+> [!NOTE]
+> If no constitution exists, state "No project constitution found - using general best practices."
+
+| Principle | Alignment | Notes |
+|-----------|-----------|-------|
+| [Principle 1] | ✅/⚠️/❌ | [How task breakdown aligns or conflicts] |
+| [Principle 2] | ✅/⚠️/❌ | [How task breakdown aligns or conflicts] |
+
+### Constitution Issues
+- [ ] **[CONST-001]**: [Principle violation or gap, e.g., "TDD principle not enforced for Module C"]
+
 ## Detailed Findings
 
 ### Critical Issues (Must Fix)
@@ -328,11 +363,12 @@ Valid Dependency Chain:
 
 | Category | Weight | Score | Rubric Basis | Deduction Details | Weighted |
 |----------|--------|-------|-------------|-------------------|----------|
-| Plan Coverage | 30% | X/100 | [Which rubric range applies] | [List specific deductions, e.g., "Module C missing task: -10"] | X |
+| Plan Coverage | 25% | X/100 | [Which rubric range applies] | [List specific deductions, e.g., "Module C missing task: -10"] | X |
 | TDD Compliance | 25% | X/100 | [Which rubric range applies] | [e.g., "Service X test after impl: -8"] | X |
 | Dependency & Ordering | 20% | X/100 | [Which rubric range applies] | [e.g., "Missing dependency Task 2.3→1.2: -5"] | X |
-| Task Granularity | 15% | X/100 | [Which rubric range applies] | [e.g., "Task 2.5 involves 3 files: -8"] | X |
+| Task Granularity | 10% | X/100 | [Which rubric range applies] | [e.g., "Task 2.5 involves 3 files: -8"] | X |
 | Parallelization & Files | 10% | X/100 | [Which rubric range applies] | [e.g., "Task 2.1 false [P] marker: -8"] | X |
+| Constitution Alignment | 10% | X/100 | [Which rubric range applies] | [e.g., "All principles addressed"] | X |
 | **Total** | **100%** | | | | **X/100** |
 
 > **Suggestion Cap**: Suggestions deducted X/5 points (cap: 5 points max)
@@ -426,6 +462,7 @@ Before completing the review, verify:
 - [ ] Dependency graph is validated with no cycles (Dependency & Ordering)
 - [ ] Task granularity is appropriate (Task Granularity)
 - [ ] Parallelization markers and file paths are correct (Parallelization & Files)
+- [ ] Constitution principles are addressed (Constitution Alignment)
 - [ ] Issues have clear, actionable suggestions
 - [ ] Score reflects actual quality accurately (validated via Score Validation Checklist)
 

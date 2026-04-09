@@ -129,7 +129,7 @@ Before scoring, apply these rubrics to ensure consistent, transparent evaluation
 - Missing `raise ... from err` context: -3 each
 - mypy error: -5 each
 
-#### Engineering Robustness (25%)
+#### Engineering Robustness (30%)
 
 | Score Range | Criteria |
 |-------------|----------|
@@ -146,7 +146,7 @@ Before scoring, apply these rubrics to ensure consistent, transparent evaluation
 - Incorrect log level usage: -3 each
 - ruff violation: -3 each
 
-#### Constitution Alignment (15%)
+#### Constitution Alignment (10%)
 
 | Score Range | Criteria |
 |-------------|----------|
@@ -267,8 +267,8 @@ Before scoring, apply these rubrics to ensure consistent, transparent evaluation
 |----------|--------|-------|-------------|-------------------|----------|
 | Pythonic & KISS | 30% | X/100 | [Which rubric range applies] | [List specific deductions, e.g., "Unnecessary class in utils.py: -8"] | X |
 | Type Safety | 30% | X/100 | [Which rubric range applies] | [e.g., "2 functions missing annotations: -10"] | X |
-| Engineering Robustness | 25% | X/100 | [Which rubric range applies] | [e.g., "File opened without context manager: -8"] | X |
-| Constitution Alignment | 15% | X/100 | [Which rubric range applies] | [e.g., "All principles followed"] | X |
+| Engineering Robustness | 30% | X/100 | [Which rubric range applies] | [e.g., "File opened without context manager: -8"] | X |
+| Constitution Alignment | 10% | X/100 | [Which rubric range applies] | [e.g., "All principles followed"] | X |
 | **Total** | **100%** | | | | **X/100** |
 
 > **Suggestion Cap**: LOW suggestions deducted X/5 points (cap: 5 points max)

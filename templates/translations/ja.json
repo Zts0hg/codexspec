@@ -134,14 +134,6 @@
   "pr": {
     "description": "git diffとオプションのspec.md統合に基づいて構造化されたPull Request (GitHub) またはMerge Request (GitLab) 説明を生成"
   },
-  "check-i18n-semantics": {
-    "description": "多言語ドキュメントの意味的一貫性と品質をチェック",
-    "argument-hint": "[ソースファイル] [--lang <言語>] [--strict]"
-  },
-  "translate-docs": {
-    "description": "プロジェクトドキュメントを指定言語に翻訳",
-    "argument-hint": "--lang <言語コード> (例: 'zh,ja,ko') または 'all' ですべての言語"
-  },
   "review-python-code": {
     "description": "PythonコードのPEP 8準拠、型安全性、エンジニアリングの堅牢性、憲法整合性をレビュー",
     "argument-hint": "レビューするPythonファイルまたはディレクトリへのパス\n\n例：\n- `src/codexspec/` - パッケージ全体をレビュー\n- `src/codexspec/__init__.py` - 単一ファイルをレビュー\n- `src/ tests/` - 複数パスをレビュー"

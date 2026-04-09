@@ -134,14 +134,6 @@
   "pr": {
     "description": "git diff와 선택적 spec.md 통합을 기반으로 구조화된 Pull Request (GitHub) 또는 Merge Request (GitLab) 설명 생성"
   },
-  "check-i18n-semantics": {
-    "description": "다국어 문서의 의미적 일관성과 품질 검사",
-    "argument-hint": "[소스_파일] [--lang <언어>] [--strict]"
-  },
-  "translate-docs": {
-    "description": "프로젝트 문서를 지정된 언어로 번역",
-    "argument-hint": "--lang <언어_코드> (예: 'zh,ja,ko') 또는 'all'로 모든 언어"
-  },
   "review-python-code": {
     "description": "Python 코드의 PEP 8 준수, 타입 안전성, 엔지니어링 견고성 및 헌법 정렬 검토",
     "argument-hint": "검토할 Python 파일 또는 디렉토리 경로\n\n예시:\n- `src/codexspec/` - 전체 패키지 검토\n- `src/codexspec/__init__.py` - 단일 파일 검토\n- `src/ tests/` - 여러 경로 검토"

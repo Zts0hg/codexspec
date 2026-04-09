@@ -140,7 +140,7 @@ Before scoring, apply these rubrics to ensure consistent, transparent evaluation
 - Tight coupling between modules: -8 each
 - Missing separation of concerns: -10
 
-#### Phase Planning (15%)
+#### Phase Planning (20%)
 
 | Score Range | Criteria |
 |-------------|----------|
@@ -156,7 +156,7 @@ Before scoring, apply these rubrics to ensure consistent, transparent evaluation
 - Overly large phase scope: -5 each
 - Missing phase dependencies: -5
 
-#### Constitution Alignment (15%)
+#### Constitution Alignment (10%)
 
 | Score Range | Criteria |
 |-------------|----------|
@@ -304,8 +304,8 @@ Before scoring, apply these rubrics to ensure consistent, transparent evaluation
 | Spec Alignment | 30% | X/100 | [Which rubric range applies] | [List specific deductions, e.g., "REQ-003 not addressed: -15"] | X |
 | Tech Stack | 15% | X/100 | [Which rubric range applies] | [e.g., "No version for DB: -5"] | X |
 | Architecture Quality | 25% | X/100 | [Which rubric range applies] | [e.g., "Missing dependency graph: -10"] | X |
-| Phase Planning | 15% | X/100 | [Which rubric range applies] | [e.g., "Phase 2 scope too large: -5"] | X |
-| Constitution Alignment | 15% | X/100 | [Which rubric range applies] | [e.g., "All principles addressed"] | X |
+| Phase Planning | 20% | X/100 | [Which rubric range applies] | [e.g., "Phase 2 scope too large: -5"] | X |
+| Constitution Alignment | 10% | X/100 | [Which rubric range applies] | [e.g., "All principles addressed"] | X |
 | **Total** | **100%** | | | | **X/100** |
 
 > **Suggestion Cap**: Suggestions deducted X/5 points (cap: 5 points max)

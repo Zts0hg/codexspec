@@ -32,8 +32,6 @@ REQUIRED_ROOT_KEYS = [
     "commit",
     "commit-staged",
     "pr",
-    "check-i18n-semantics",
-    "translate-docs",
 ]
 
 TRANSLATIONS_DIR = Path(__file__).parent.parent / "templates" / "translations"
