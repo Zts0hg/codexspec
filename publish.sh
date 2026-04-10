@@ -125,10 +125,19 @@ if [[ -z "$VERSION" ]]; then
 fi
 echo -e "${GREEN}Version: $VERSION${NC}"
 
-# Safety check: uncommitted changes
+# Safety check: uncommitted changes (hard abort)
+# Publishing with a dirty working tree would ship code that has no corresponding
+# git commit, making the release unreproducible and un-auditable. The previous
+# implementation only warned and continued, which allowed publish.sh's own
+# --auto-bump sed to leave an orphan pyproject.toml in the tree and snowball
+# into off-by-one tags. Refuse to proceed instead.
 if ! git diff-index --quiet HEAD --; then
-    echo -e "${YELLOW}Warning: You have uncommitted changes in the working directory.${NC}"
-    echo -e "${YELLOW}Continuing anyway...${NC}"
+    echo -e "${RED}Error: You have uncommitted changes in the working tree.${NC}"
+    echo -e "${RED}Publishing with a dirty tree would ship code that has no corresponding git commit.${NC}"
+    echo -e "${RED}Please commit or stash your changes and retry.${NC}"
+    echo ""
+    git status --short
+    exit 1
 fi
 
 # Safety check: remote tag exists (only if not skipping tag)
@@ -144,6 +153,22 @@ if ! $SKIP_TAG; then
             # Update pyproject.toml with new version (portable across macOS and Linux)
             sed -i.bak "s/^version = \"${VERSION}\"/version = \"${NEW_VERSION}\"/" pyproject.toml
             rm -f pyproject.toml.bak
+
+            # Sync uv.lock so the release commit is self-consistent
+            echo -e "${YELLOW}Syncing uv.lock to $NEW_VERSION...${NC}"
+            uv lock
+
+            # Commit and push the bump BEFORE building/tagging.
+            # Without this step, the later `git tag "$TAG_NAME"` call would
+            # tag the previous feature commit (which still claims the old
+            # version), producing an off-by-one tag and leaving pyproject.toml
+            # as an orphan in the working tree. See the Oct 2026 post-mortem.
+            echo -e "${YELLOW}Committing version bump...${NC}"
+            git add pyproject.toml uv.lock
+            git commit -m "chore(release): bump version to v$NEW_VERSION"
+
+            echo -e "${YELLOW}Pushing bump commit to origin...${NC}"
+            git push origin HEAD
 
             # Update variables
             VERSION="$NEW_VERSION"
