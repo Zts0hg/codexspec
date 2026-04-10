@@ -376,7 +376,7 @@ Both commands read the project glossary at `docs/i18n/glossary.yml` (canonical, 
 
 | Command                    | Description                                         |
 | -------------------------- | --------------------------------------------------- |
-| `/codexspec:commit-staged` | Generate commit from staged changes with session context awareness |
+| `/codexspec:commit-staged` | Generate commit from staged changes strictly from the staged diff |
 | `/codexspec:pr`            | Generate PR/MR descriptions                         |
 
 ### Code Review Commands (2)
@@ -462,7 +462,7 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec:analyze`         | ✅ Template | Template complete                                                             |
 | `/codexspec:checklist`       | ✅ Template | Template complete                                                             |
 | `/codexspec:tasks-to-issues` | ✅ Template | Template complete                                                             |
-| `/codexspec:commit-staged`   | ✅ Template | Generate commit from staged changes with session context awareness            |
+| `/codexspec:commit-staged`   | ✅ Template | Generate commit from staged changes strictly from the staged diff             |
 | `/codexspec:pr`              | ✅ Template | Generate PR/MR descriptions                                                   |
 | `/codexspec:review-python-code` | ✅ Template | Review Python code for PEP 8, type safety, engineering robustness, and constitution alignment |
 | `/codexspec:review-react-code` | ✅ Template | Review React/TypeScript code for component architecture, hooks compliance, state management, performance, and constitution alignment |
@@ -594,6 +594,22 @@ def get_templates_dir() -> Path:
 - Support both Bash and PowerShell scripts
 
 ## When Working on This Project
+
+### Self-Bootstrap: Never Edit `.claude/commands/codexspec/` Directly
+
+**CRITICAL**: CodexSpec uses itself. The directory `.claude/commands/codexspec/` in this repository is an **install artifact** — it is the output of running `codexspec init` (or equivalent) on the CodexSpec project itself, not a source of truth.
+
+**Rule**:
+
+- ❌ **Never manually edit** files under `.claude/commands/codexspec/` for distributed commands. Any change there will be silently overwritten the next time CodexSpec is reinstalled, and will never reach end users.
+- ✅ **Always edit** the source templates under `templates/commands/` instead. The correct propagation path is:
+  1. Edit `templates/commands/<command>.md`
+  2. Publish a new CodexSpec version (`publish.sh`)
+  3. Re-run `codexspec init` (or `uv tool install --force .`) to sync `.claude/commands/codexspec/` from the updated templates
+
+**The only exception** is the internal maintenance commands (`/codexspec:translate-docs`, `/codexspec:check-i18n-semantics`), which intentionally live *only* in `.claude/commands/codexspec/` and have no counterpart in `templates/commands/`. See `.codexspec/memory/constitution.md` → "Slash Command Template Modification Rules" for the full policy.
+
+**When auditing or analyzing the project**: treat `.claude/commands/codexspec/<distributed-command>.md` as a derived file, the same way you would treat a compiled artifact or a lockfile — read it to observe the installed state, but make fixes upstream in `templates/commands/`.
 
 ### Before Making Changes
 
