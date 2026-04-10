@@ -7,8 +7,15 @@
 /local-ref/
 
 # Project specific
-.codexspec/
+# .codexspec/ holds per-project SDD state (specs, plans, tasks, scripts, config).
+# Keep it ignored to avoid leaking the maintainer's zh-CN working artifacts into
+# this English-facing open-source repo. Exception: constitution.md is governance
+# and must be tracked so the "SUPREME AUTHORITY" claim is real for contributors.
+.codexspec/*
 !.codexspec/.gitkeep
+!.codexspec/memory/
+.codexspec/memory/*
+!.codexspec/memory/constitution.md
 
 
 
