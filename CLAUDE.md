@@ -611,6 +611,24 @@ def get_templates_dir() -> Path:
 
 **When auditing or analyzing the project**: treat `.claude/commands/codexspec/<distributed-command>.md` as a derived file, the same way you would treat a compiled artifact or a lockfile — read it to observe the installed state, but make fixes upstream in `templates/commands/`.
 
+### Two Constitutions, Two Different Purposes — Do Not Confuse Them
+
+There are **two** constitution-related artifacts in this repo. They serve **completely different audiences** and must **never** be treated as copies of each other.
+
+| Artifact | Audience | Purpose |
+|---|---|---|
+| `.codexspec/memory/constitution.md` (tracked) | **CodexSpec project developers** (you, future contributors) | Governance for this specific repository. Contains CodexSpec-project-specific rules like the Slash Command Template Modification Rules and the Self-bootstrap rule. |
+| `_get_default_constitution()` in `src/codexspec/__init__.py` (hardcoded string, L1489-1556) | **End users of CodexSpec** | The **generic baseline** that `codexspec init` writes into a user's brand-new project. Users then customize it for their own project via `/codexspec:constitution`. |
+
+**These are not mirrors of each other.** They are independent documents that happen to share a name ("constitution"):
+
+- ❌ Do **not** "sync" edits between them. A CodexSpec-project-specific rule (e.g. Self-bootstrap, template modification workflow) has no meaning for end users and should stay out of `_get_default_constitution()`.
+- ❌ Do **not** treat `.codexspec/memory/constitution.md` as a "reference" or "template" for the default. It is governance for the project you are working on right now, nothing more.
+- ❌ Do **not** treat `_get_default_constitution()` as the source of truth for this project's principles. This project's principles live in the tracked `.codexspec/memory/constitution.md`.
+- ✅ **Decision rule**: "Is this rule about how to develop CodexSpec itself, or is it a generic principle every CodexSpec end user would want?" Former → `.codexspec/memory/constitution.md`. Latter → `_get_default_constitution()`. Most rules belong in exactly one of the two, never both.
+
+This distinction is also recorded at the top of `.codexspec/memory/constitution.md` as a "SCOPE" callout — if you ever find yourself tempted to "propagate" a change between the two, re-read that callout first.
+
 ### Before Making Changes
 
 1. Read this CLAUDE.md file
