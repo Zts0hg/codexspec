@@ -34,9 +34,9 @@ class TestGetCommandsMetadata:
         assert isinstance(result, list)
 
     def test_returns_correct_count(self) -> None:
-        """Should return 17 commands (9 core + 4 enhanced + 2 git + 2 review)."""
+        """Should return 19 commands (9 core + 4 enhanced + 2 git + 2 review + 2 utility)."""
         result = get_commands_metadata()
-        assert len(result) == 17
+        assert len(result) == 19
 
     def test_core_commands_count(self) -> None:
         """Should have 9 core commands."""
@@ -62,6 +62,12 @@ class TestGetCommandsMetadata:
         review_commands = [c for c in result if c["category"] == "review"]
         assert len(review_commands) == 2
 
+    def test_utility_commands_count(self) -> None:
+        """Should have 2 utility commands."""
+        result = get_commands_metadata()
+        utility_commands = [c for c in result if c["category"] == "utility"]
+        assert len(utility_commands) == 2
+
     def test_metadata_structure(self) -> None:
         """Each command should have all required fields."""
         result = get_commands_metadata()
@@ -76,7 +82,7 @@ class TestGetCommandsMetadata:
             assert cmd["display_name"].startswith("/codexspec:")
 
     def test_sorted_by_category(self) -> None:
-        """Commands should be sorted core -> enhanced -> git -> review."""
+        """Commands should be sorted core -> enhanced -> git -> review -> utility."""
         result = get_commands_metadata()
         categories = [c["category"] for c in result]
         # Find the index of each category section
@@ -84,8 +90,32 @@ class TestGetCommandsMetadata:
         enhanced_idx = categories.index("enhanced")
         git_idx = categories.index("git")
         review_idx = categories.index("review")
-        # Core should come before enhanced, enhanced before git, git before review
-        assert core_idx < enhanced_idx < git_idx < review_idx
+        utility_idx = categories.index("utility")
+        # Core should come before enhanced, enhanced before git, git before review, review before utility
+        assert core_idx < enhanced_idx < git_idx < review_idx < utility_idx
+
+    def test_matches_template_directory(self) -> None:
+        """Metadata must cover exactly the set of distributed templates.
+
+        Drift invariant: every *.md file shipped under templates/commands/
+        must have a corresponding entry in get_commands_metadata(), and
+        every metadata entry must point at an existing template file.
+        This prevents the post-init display from silently omitting newly
+        added commands (or advertising removed ones).
+        """
+        templates_dir = Path(__file__).parent.parent.parent / "templates" / "commands"
+        assert templates_dir.exists(), f"Templates directory not found: {templates_dir}"
+
+        template_files = {p.name for p in templates_dir.glob("*.md")}
+        metadata_files = {cmd["file_name"] for cmd in get_commands_metadata()}
+
+        missing_from_metadata = template_files - metadata_files
+        missing_from_templates = metadata_files - template_files
+
+        assert not missing_from_metadata, (
+            f"Templates exist but are missing from get_commands_metadata(): {missing_from_metadata}"
+        )
+        assert not missing_from_templates, f"Metadata references templates that do not exist: {missing_from_templates}"
 
 
 class TestDetectOldStructure:

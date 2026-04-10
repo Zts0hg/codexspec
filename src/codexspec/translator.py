@@ -48,7 +48,10 @@ _CLI_MESSAGES_EN = {
         "warning_bash_scripts_not_found": "Warning: Bash scripts directory not found",
         "warning_powershell_scripts_not_found": "Warning: PowerShell scripts directory not found",
         "warning_docs_templates_not_found": "Warning: Docs templates directory not found",
-        "warning_templates_not_found": "Warning: Templates directory not found, creating default commands",
+        "error_templates_missing": (
+            "Error: Template directory not found at {path}. "
+            "Your CodexSpec installation is incomplete — please reinstall with 'uv tool install --force codexspec'."
+        ),
         "installed_command": "Installed command: /codexspec:{name}",
         # Command summary
         "commands_summary": "📁 Installed {count} commands to .claude/commands/{path}/",
@@ -56,6 +59,7 @@ _CLI_MESSAGES_EN = {
         "category_enhanced": "Enhanced Commands ({count})",
         "category_git": "Git Workflow ({count})",
         "category_review": "Code Review ({count})",
+        "category_utility": "Utility Commands ({count})",
         # Success panel
         "success_title": "Success",
         "success_message": "CodexSpec project initialized successfully!",
@@ -102,6 +106,7 @@ _CLI_MESSAGES_EN = {
         "category_enhanced": "Enhanced Commands ({count})",
         "category_git": "Git Workflow ({count})",
         "category_review": "Code Review ({count})",
+        "category_utility": "Utility Commands ({count})",
         "no_project": "No CodexSpec project found in current directory.",
         "run_init": "Run codexspec init to create a new project.",
         "usage_hint": "Use /codexspec:<command> to invoke these commands",

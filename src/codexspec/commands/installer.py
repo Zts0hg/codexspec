@@ -22,7 +22,7 @@ class CommandMetadata(TypedDict):
         name: Command name without prefix (e.g., "constitution")
         display_name: Full display name (e.g., "/codexspec:constitution")
         description: Command description for list-commands output
-        category: Command category ("core", "enhanced", "git", or "review")
+        category: Command category ("core", "enhanced", "git", "review", or "utility")
         file_name: Template file name (e.g., "constitution.md")
     """
 
@@ -42,7 +42,8 @@ def get_commands_metadata() -> list[CommandMetadata]:
 
     Returns:
         List of CommandMetadata dictionaries sorted by category priority:
-        core (9) -> enhanced (4) -> git (2) -> review (2)
+        core (9) -> enhanced (4) -> git (2) -> review (2) -> utility (2)
+        Total: 19 commands
     """
     return [
         # Core Commands (9)
@@ -167,6 +168,21 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "description": "审查 React/TypeScript 代码的组件架构、Hooks 规范、状态管理、性能表现和宪法一致性",
             "category": "review",
             "file_name": "review-react-code.md",
+        },
+        # Utility Commands (2)
+        {
+            "name": "config",
+            "display_name": "/codexspec:config",
+            "description": "交互式管理 CodexSpec 项目配置 (.codexspec/config.yml)",
+            "category": "utility",
+            "file_name": "config.md",
+        },
+        {
+            "name": "quick",
+            "display_name": "/codexspec:quick",
+            "description": "小需求的一站式快速实现 — 自动完成 spec、plan、tasks 和代码",
+            "category": "utility",
+            "file_name": "quick.md",
         },
     ]
 
