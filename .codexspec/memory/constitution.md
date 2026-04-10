@@ -1,5 +1,16 @@
 > ⚠️ **SUPREME AUTHORITY**: This constitution defines the governing principles for this project. All code changes and decisions must comply with these principles.
 
+> 🎯 **SCOPE — READ THIS FIRST**: This file governs the **CodexSpec project itself** — i.e. the repository you are working in right now. It is **NOT** a template, default, or reference document for downstream users of CodexSpec.
+>
+> The default constitution shipped to end-user projects lives entirely separately, as a hardcoded string in `_get_default_constitution()` inside `src/codexspec/__init__.py`. That function provides a **generic baseline** that end users then customize for their own projects via the `/codexspec:constitution` slash command.
+>
+> **These two artifacts serve completely different purposes and must not be kept in sync**:
+>
+> - Updating a CodexSpec-project-specific rule here (e.g. the Self-bootstrap rule, Slash Command Template Modification Rules) should **never** be propagated into `_get_default_constitution()`. Those rules are meaningless for end users.
+> - Conversely, if you edit `_get_default_constitution()` to improve the generic baseline shipped to users, that change does **not** need to be mirrored here. This project's constitution is an independent governance document, not a copy of the default.
+>
+> When in doubt: ask "is this rule about how to develop *CodexSpec itself*, or is it a generic principle every CodexSpec end user would want?" The former belongs here; the latter belongs in `_get_default_constitution()`.
+
 # Project Constitution
 
 This document defines the governing principles and development guidelines for this project.
