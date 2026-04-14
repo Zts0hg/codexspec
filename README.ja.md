@@ -539,8 +539,7 @@ claude
 
 | コマンド | 説明 |
 |----------|------|
-| `/codexspec:review-python-code` | Pythonコードをレビュー（PEP 8、型安全性、エンジニアリング堅牢性） |
-| `/codexspec:review-react-code` | React/TypeScriptコードをレビュー（アーキテクチャ、Hooks、パフォーマンス） |
+| `/codexspec:review-code` | あらゆる言語のコードをレビュー（慣用的な明快さ、正確性、堅牢性、アーキテクチャ） |
 
 ---
 

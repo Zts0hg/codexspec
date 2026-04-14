@@ -136,13 +136,9 @@
   "pr": {
     "description": "Générer une description structurée de Pull Request (GitHub) ou Merge Request (GitLab) basée sur git diff et intégration optionnelle de spec.md"
   },
-  "review-python-code": {
-    "description": "Réviser le code Python pour la conformité PEP 8, la sécurité des types, la robustesse d'ingénierie et l'alignement avec la constitution",
-    "argument-hint": "Chemin vers le fichier ou répertoire Python à réviser\n\nExemples:\n- `src/codexspec/` - Réviser le paquet complet\n- `src/codexspec/__init__.py` - Réviser un seul fichier\n- `src/ tests/` - Réviser plusieurs chemins"
-  },
-  "review-react-code": {
-    "description": "Réviser le code React/TypeScript pour l'architecture des composants, la conformité Hooks, la gestion d'état, la performance et l'alignement avec la constitution",
-    "argument-hint": "Chemin vers le fichier ou répertoire React/TypeScript à réviser\n\nExemples:\n- `src/components/` - Réviser le répertoire entier des composants\n- `src/components/Button.tsx` - Réviser un seul fichier\n- `src/hooks/ src/components/` - Réviser plusieurs chemins"
+  "review-code": {
+    "description": "Réviser le code dans n'importe quel langage pour la clarté idiomatique, la correction, la robustesse, l'architecture et l'alignement avec la constitution",
+    "argument-hint": "Chemin vers le fichier source ou répertoire à réviser (tout langage)\n\nExemples:\n- `src/` - Réviser l'arbre source complet\n- `src/components/Button.tsx` - Réviser un seul fichier\n- `src/ tests/` - Réviser plusieurs chemins"
   },
   "quick": {
     "description": "Implémentation rapide tout-en-un pour les petits besoins — spec, plan, tâches et code automatiques",

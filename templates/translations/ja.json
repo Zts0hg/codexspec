@@ -136,13 +136,9 @@
   "pr": {
     "description": "git diffとオプションのspec.md統合に基づいて構造化されたPull Request (GitHub) またはMerge Request (GitLab) 説明を生成"
   },
-  "review-python-code": {
-    "description": "PythonコードのPEP 8準拠、型安全性、エンジニアリングの堅牢性、憲法整合性をレビュー",
-    "argument-hint": "レビューするPythonファイルまたはディレクトリへのパス\n\n例：\n- `src/codexspec/` - パッケージ全体をレビュー\n- `src/codexspec/__init__.py` - 単一ファイルをレビュー\n- `src/ tests/` - 複数パスをレビュー"
-  },
-  "review-react-code": {
-    "description": "React/TypeScript コードをコンポーネントアーキテクチャ、Hooks 準拠、状態管理、パフォーマンス、憲法整合性についてレビュー",
-    "argument-hint": "レビューする React/TypeScript ファイルまたはディレクトリへのパス\n\n例:\n- `src/components/` - コンポーネントディレクトリ全体をレビュー\n- `src/components/Button.tsx` - 単一ファイルをレビュー\n- `src/hooks/ src/components/` - 複数パスをレビュー"
+  "review-code": {
+    "description": "あらゆる言語のコードを慣用的な明快さ、正確性、堅牢性、アーキテクチャ、憲法整合性についてレビュー",
+    "argument-hint": "レビューするソースファイルまたはディレクトリへのパス（任意の言語）\n\n例：\n- `src/` - ソースツリー全体をレビュー\n- `src/components/Button.tsx` - 単一ファイルをレビュー\n- `src/ tests/` - 複数パスをレビュー"
   },
   "quick": {
     "description": "小規模な要件をワンストップで素早く実装 — spec、plan、tasks、コードを自動生成",

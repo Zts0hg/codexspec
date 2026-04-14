@@ -538,8 +538,7 @@ A implementação segue **fluxo de trabalho TDD condicional**:
 
 | Comando | Descrição |
 |---------|-----------|
-| `/codexspec:review-python-code` | Revisar código Python (PEP 8, segurança de tipos, robustez de engenharia) |
-| `/codexspec:review-react-code` | Revisar código React/TypeScript (arquitetura, Hooks, desempenho) |
+| `/codexspec:review-code` | Revisar código em qualquer linguagem (clareza idiomática, correção, robustez, arquitetura) |
 
 ---
 

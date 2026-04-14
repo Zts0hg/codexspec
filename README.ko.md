@@ -538,8 +538,7 @@ claude
 
 | 명령어 | 설명 |
 |--------|------|
-| `/codexspec:review-python-code` | Python 코드 리뷰 (PEP 8, 타입 안전성, 엔지니어링 견고성) |
-| `/codexspec:review-react-code` | React/TypeScript 코드 리뷰 (아키텍처, Hooks, 성능) |
+| `/codexspec:review-code` | 모든 언어의 코드 리뷰 (관용적 명확성, 정확성, 견고성, 아키텍처) |
 
 ---
 

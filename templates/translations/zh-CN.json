@@ -136,13 +136,9 @@
   "pr": {
     "description": "基于 git diff 和可选的 spec.md 集成生成结构化的 Pull Request (GitHub) 或 Merge Request (GitLab) 描述"
   },
-  "review-python-code": {
-    "description": "审查 Python 代码的 PEP 8 合规性、类型安全、工程健壮性和宪法一致性",
-    "argument-hint": "要审查的 Python 文件或目录路径\n\n示例：\n- `src/codexspec/` - 审查整个包\n- `src/codexspec/__init__.py` - 审查单个文件\n- `src/ tests/` - 审查多个路径"
-  },
-  "review-react-code": {
-    "description": "审查 React/TypeScript 代码的组件架构、Hooks 规范、状态管理、性能表现和宪法一致性",
-    "argument-hint": "要审查的 React/TypeScript 文件或目录路径\n\n示例：\n- `src/components/` - 审查整个组件目录\n- `src/components/Button.tsx` - 审查单个文件\n- `src/hooks/ src/components/` - 审查多个路径"
+  "review-code": {
+    "description": "审查任意语言代码的地道表达、正确性、健壮性、架构与宪法一致性",
+    "argument-hint": "要审查的源文件或目录路径（支持任意语言）\n\n示例：\n- `src/` - 审查整个源代码树\n- `src/components/Button.tsx` - 审查单个文件\n- `src/ tests/` - 审查多个路径"
   },
   "quick": {
     "description": "一站式快速实现小型需求 — 自动完成 spec、plan、tasks 和代码实现",

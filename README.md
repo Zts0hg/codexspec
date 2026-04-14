@@ -539,8 +539,7 @@ Implementation follows **conditional TDD workflow**:
 
 | Command                         | Description                                                     |
 | ------------------------------- | --------------------------------------------------------------- |
-| `/codexspec:review-python-code` | Review Python code (PEP 8, type safety, engineering robustness) |
-| `/codexspec:review-react-code`  | Review React/TypeScript code (architecture, hooks, performance) |
+| `/codexspec:review-code` | Review code in any language (idiomatic clarity, correctness, robustness, architecture) |
 
 ---
 
