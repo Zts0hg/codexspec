@@ -136,13 +136,9 @@
   "pr": {
     "description": "git diff와 선택적 spec.md 통합을 기반으로 구조화된 Pull Request (GitHub) 또는 Merge Request (GitLab) 설명 생성"
   },
-  "review-python-code": {
-    "description": "Python 코드의 PEP 8 준수, 타입 안전성, 엔지니어링 견고성 및 헌법 정렬 검토",
-    "argument-hint": "검토할 Python 파일 또는 디렉토리 경로\n\n예시:\n- `src/codexspec/` - 전체 패키지 검토\n- `src/codexspec/__init__.py` - 단일 파일 검토\n- `src/ tests/` - 여러 경로 검토"
-  },
-  "review-react-code": {
-    "description": "React/TypeScript 코드의 컴포넌트 아키텍처, Hooks 준수, 상태 관리, 성능 및 헌법 정렬 검토",
-    "argument-hint": "검토할 React/TypeScript 파일 또는 디렉토리 경로\n\n예시:\n- `src/components/` - 전체 컴포넌트 디렉토리 검토\n- `src/components/Button.tsx` - 단일 파일 검토\n- `src/hooks/ src/components/` - 여러 경로 검토"
+  "review-code": {
+    "description": "모든 언어의 코드를 관용적 명확성, 정확성, 견고성, 아키텍처 및 헌법 정렬에 대해 검토",
+    "argument-hint": "검토할 소스 파일 또는 디렉토리 경로 (모든 언어)\n\n예시:\n- `src/` - 전체 소스 트리 검토\n- `src/components/Button.tsx` - 단일 파일 검토\n- `src/ tests/` - 여러 경로 검토"
   },
   "quick": {
     "description": "소규모 요구사항을 원스톱으로 빠르게 구현 — spec, plan, tasks, 코드 자동 생성",

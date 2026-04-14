@@ -976,8 +976,7 @@ The following slash commands are available in this project:
 
 | Command | Description |
 |---------|-------------|
-| `/codexspec:review-python-code` | Review Python code for PEP 8, type safety, robustness, and constitution alignment |
-| `/codexspec:review-react-code` | Review React/TypeScript code for architecture, hooks, state, and performance |
+| `/codexspec:review-code` | Review code in any language for idiomatic clarity, correctness, and robustness |
 
 ### Utility Commands
 

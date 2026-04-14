@@ -136,13 +136,9 @@
   "pr": {
     "description": "Generar descripción estructurada de Pull Request (GitHub) o Merge Request (GitLab) basada en git diff e integración opcional de spec.md"
   },
-  "review-python-code": {
-    "description": "Revisar código Python por conformidad PEP 8, seguridad de tipos, robustez de ingeniería y alineación con la constitución",
-    "argument-hint": "Ruta al archivo o directorio Python a revisar\n\nEjemplos:\n- `src/codexspec/` - Revisar paquete completo\n- `src/codexspec/__init__.py` - Revisar archivo único\n- `src/ tests/` - Revisar múltiples rutas"
-  },
-  "review-react-code": {
-    "description": "Revisar código React/TypeScript por arquitectura de componentes, cumplimiento de Hooks, gestión de estado, rendimiento y alineación con la constitución",
-    "argument-hint": "Ruta al archivo o directorio React/TypeScript a revisar\n\nEjemplos:\n- `src/components/` - Revisar directorio completo de componentes\n- `src/components/Button.tsx` - Revisar archivo único\n- `src/hooks/ src/components/` - Revisar múltiples rutas"
+  "review-code": {
+    "description": "Revisar código en cualquier lenguaje por claridad idiomática, corrección, robustez, arquitectura y alineación con la constitución",
+    "argument-hint": "Ruta al archivo fuente o directorio a revisar (cualquier lenguaje)\n\nEjemplos:\n- `src/` - Revisar el árbol fuente completo\n- `src/components/Button.tsx` - Revisar archivo único\n- `src/ tests/` - Revisar múltiples rutas"
   },
   "quick": {
     "description": "Implementación rápida integral para requisitos pequeños — spec, plan, tasks y código automáticos",

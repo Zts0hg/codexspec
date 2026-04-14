@@ -538,8 +538,7 @@ Implementierung folgt **bedingtem TDD-Workflow**:
 
 | Befehl                         | Beschreibung                                                     |
 | ------------------------------ | ---------------------------------------------------------------- |
-| `/codexspec:review-python-code`| Python-Code reviewen (PEP 8, Typsicherheit, Engineering-Robustheit) |
-| `/codexspec:review-react-code` | React/TypeScript-Code reviewen (Architektur, Hooks, Performance) |
+| `/codexspec:review-code` | Code in jeder Sprache reviewen (idiomatische Klarheit, Korrektheit, Robustheit, Architektur) |
 
 ---
 

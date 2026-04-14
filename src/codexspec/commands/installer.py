@@ -154,20 +154,13 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "category": "git",
             "file_name": "pr.md",
         },
-        # Code Review Commands (2)
+        # Code Review Commands (1)
         {
-            "name": "review-python-code",
-            "display_name": "/codexspec:review-python-code",
-            "description": "审查 Python 代码的 PEP 8 合规性、类型安全、工程健壮性和宪法一致性",
+            "name": "review-code",
+            "display_name": "/codexspec:review-code",
+            "description": "审查任意语言代码的地道表达、正确性、健壮性、架构与宪法一致性",
             "category": "review",
-            "file_name": "review-python-code.md",
-        },
-        {
-            "name": "review-react-code",
-            "display_name": "/codexspec:review-react-code",
-            "description": "审查 React/TypeScript 代码的组件架构、Hooks 规范、状态管理、性能表现和宪法一致性",
-            "category": "review",
-            "file_name": "review-react-code.md",
+            "file_name": "review-code.md",
         },
         # Utility Commands (2)
         {

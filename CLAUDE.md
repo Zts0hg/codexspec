@@ -379,12 +379,11 @@ Both commands read the project glossary at `docs/i18n/glossary.yml` (canonical, 
 | `/codexspec:commit-staged` | Generate commit from staged changes strictly from the staged diff |
 | `/codexspec:pr`            | Generate PR/MR descriptions                         |
 
-### Code Review Commands (2)
+### Code Review Commands (1)
 
 | Command                      | Description                                      |
 | ---------------------------- | ------------------------------------------------ |
-| `/codexspec:review-python-code` | Review Python code for PEP 8, type safety, engineering robustness, and constitution alignment |
-| `/codexspec:review-react-code` | Review React/TypeScript code for component architecture, hooks compliance, state management, performance, and constitution alignment |
+| `/codexspec:review-code` | Review code in any language for idiomatic clarity, correctness, robustness, architecture, and constitution alignment |
 
 ## Development Guidelines
 
@@ -464,8 +463,7 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec:tasks-to-issues` | ✅ Template | Template complete                                                             |
 | `/codexspec:commit-staged`   | ✅ Template | Generate commit from staged changes strictly from the staged diff             |
 | `/codexspec:pr`              | ✅ Template | Generate PR/MR descriptions                                                   |
-| `/codexspec:review-python-code` | ✅ Template | Review Python code for PEP 8, type safety, engineering robustness, and constitution alignment |
-| `/codexspec:review-react-code` | ✅ Template | Review React/TypeScript code for component architecture, hooks compliance, state management, performance, and constitution alignment |
+| `/codexspec:review-code` | ✅ Template | Review code in any language for idiomatic clarity, correctness, robustness, architecture, and constitution alignment |
 | `/codexspec:translate-docs`  | ✅ Internal | Maintainer-only — lives only in `.claude/commands/codexspec/`, not distributed via `init` |
 | `/codexspec:check-i18n-semantics` | ✅ Internal | Maintainer-only — lives only in `.claude/commands/codexspec/`, not distributed via `init` |
 

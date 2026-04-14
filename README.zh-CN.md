@@ -538,8 +538,7 @@ claude
 
 | 命令 | 描述 |
 |------|------|
-| `/codexspec:review-python-code` | 审查 Python 代码（PEP 8、类型安全、工程健壮性） |
-| `/codexspec:review-react-code` | 审查 React/TypeScript 代码（架构、Hooks、性能） |
+| `/codexspec:review-code` | 审查任意语言代码（地道表达、正确性、健壮性、架构） |
 
 ---
 
