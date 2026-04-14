@@ -30,7 +30,7 @@ forbidden-tools: Bash(git add:*), Bash(git reset:*), Bash(git checkout:*), Bash(
    - Display a one-time prompt:
 
      ```
-     💡 检测到项目未配置语言设置。你可以使用 `/codexspec:config` 命令来创建配置文件。
+     💡 Project language is not configured. Run `/codexspec:config` to create a configuration file.
      ```
 
    - Use default values for current session:
@@ -105,6 +105,8 @@ Before analyzing changes, verify the staged state:
 
 ### Change Analysis
 
+**Source of truth**: The staged diff is the *only* authoritative input for the commit message. Do NOT infer intent, motivation, or scope from prior conversation turns, earlier session messages, or any discussion unrelated to what is actually staged. If the diff alone is insufficient to write a clear and accurate message, ABORT and ask the user for clarification rather than guessing.
+
 1. Execute `git diff --staged` to retrieve staged changes.
 
 2. Analyze the changes and generate a commit message that strictly follows **Conventional Commits** specification:
@@ -113,7 +115,7 @@ Before analyzing changes, verify the staged state:
    - If the project has a `CLAUDE.md` with custom commit conventions, follow those instead
    - **DO NOT** include any AI attribution in the commit message
    - Do not add `Co-Authored-By` lines or any references to AI tools/agents
-   - The commit message should focus solely on describing the changes
+   - The commit message should focus solely on describing the changes present in the staged diff
 
 3. **If preview mode (`-p`)**: Display the generated commit message and stop.
 
@@ -127,16 +129,6 @@ If `git commit` fails due to a pre-commit hook modifying files:
 2. Re-stage ONLY those specific files: `git add <modified-files>`
 3. Retry the commit with the same message
 4. If it still fails or the situation is unclear, ABORT and inform the user
-
-## Session Context Awareness
-
-When analyzing changes, consider the current session context:
-
-- What the user has been working on in this session
-- The purpose and goals discussed in the conversation
-- Any related specifications, plans, or tasks mentioned
-
-This context helps generate more meaningful commit messages that reflect the "why" behind the changes, not just the "what".
 
 ## Important Notes
 
