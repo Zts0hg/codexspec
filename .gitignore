@@ -17,6 +17,9 @@
 .codexspec/memory/*
 !.codexspec/memory/constitution.md
 
+# Promotion content archive (local drafts, not meant for the repo)
+promotion-posts.md
+
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,windows,linux,python,powershell,git
