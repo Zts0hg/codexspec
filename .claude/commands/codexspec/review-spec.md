@@ -76,6 +76,94 @@ Review the feature specification for quality and readiness. This command ensures
    - [ ] Naming conventions are followed (if specified)
    - [ ] Workflow guidelines are considered
 
+### Scoring Rubrics
+
+Before scoring, apply these rubrics to ensure consistent, transparent evaluation.
+
+#### Completeness (25%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | All 8 required sections present with substantive content; each section has concrete, specific details |
+| 70-89 | 6-7 sections present and substantive; 1-2 sections thin but present |
+| 50-69 | 4-5 sections present; several sections missing or placeholder-only |
+| Below 50 | Fewer than 4 sections; major gaps in coverage |
+
+**Typical Deductions**:
+
+- Missing required section entirely: -15 per section
+- Section present but placeholder/stub only: -8 per section
+- Section present but lacks specificity: -5 per section
+
+#### Clarity (25%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | No vague language; all requirements have single clear interpretation; technical terms defined |
+| 70-89 | Minor ambiguities (1-2 vague terms); mostly precise language |
+| 50-69 | Multiple ambiguities; several terms undefined; some requirements open to interpretation |
+| Below 50 | Pervasive vagueness; most requirements unclear or multi-interpretable |
+
+**Typical Deductions**:
+
+- Vague term without metrics (e.g., "fast", "user-friendly"): -5 each
+- Requirement with multiple interpretations: -8 each
+- Undefined technical term or acronym: -3 each
+
+#### Consistency (20%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | No internal contradictions; all sections align perfectly; scope boundaries match goals |
+| 70-89 | Minor inconsistencies (1-2); easily resolved without major impact |
+| 50-69 | Several inconsistencies between sections; conflicting requirements present |
+| Below 50 | Major contradictions; requirements fundamentally conflict with goals or each other |
+
+**Typical Deductions**:
+
+- Direct contradiction between requirements: -15 each
+- Scope boundary inconsistent with goals: -10
+- Minor misalignment between sections: -5 each
+
+#### Testability (20%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | All requirements testable; acceptance criteria concrete and executable; edge cases have expected behaviors |
+| 70-89 | Most requirements testable; 1-2 criteria need more specificity |
+| 50-69 | Several requirements lack testable criteria; edge cases missing expected behaviors |
+| Below 50 | Most requirements not verifiable; no concrete acceptance criteria |
+
+**Typical Deductions**:
+
+- Requirement without testable acceptance criteria: -8 each
+- Edge case without expected behavior: -5 each
+- Non-measurable NFR (e.g., "should be scalable" without metrics): -8 each
+
+#### Constitution Alignment (10%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | Fully aligned with all constitution principles; quality standards addressed |
+| 70-89 | Mostly aligned; minor gaps in addressing specific principles |
+| 50-69 | Partial alignment; several principles not addressed |
+| Below 50 | Significant violations or disregard of constitution |
+
+> **Note**: If no constitution exists, this category defaults to 100 (full marks) and its weight is redistributed proportionally to other categories.
+
+**Typical Deductions**:
+
+- Constitution principle not addressed: -10 per principle
+- Direct violation of a constitution principle: -20 per violation
+
+#### Suggestion Score Cap Rule
+
+**IMPORTANT**: Suggestions (Nice to Have) items may deduct a **maximum of 5 points** from the total score. After resolving all Critical Issues and Warnings, the score should be **≥ 95**.
+
+- Critical Issues: -10 to -20 points each
+- Warnings: -5 to -10 points each
+- Suggestions: -1 to -2 points each, **capped at 5 points total**
+
 ### Report Template
 
 ```markdown
@@ -148,14 +236,16 @@ Review the feature specification for quality and readiness. This command ensures
 
 ## Scoring Breakdown
 
-| Category | Weight | Score | Weighted |
-|----------|--------|-------|----------|
-| Completeness | 25% | X/100 | X |
-| Clarity | 25% | X/100 | X |
-| Consistency | 20% | X/100 | X |
-| Testability | 20% | X/100 | X |
-| Constitution Alignment | 10% | X/100 | X |
-| **Total** | **100%** | | **X/100** |
+| Category | Weight | Score | Rubric Basis | Deduction Details | Weighted |
+|----------|--------|-------|-------------|-------------------|----------|
+| Completeness | 25% | X/100 | [Which rubric range applies] | [List specific deductions, e.g., "Missing Edge Cases section: -15"] | X |
+| Clarity | 25% | X/100 | [Which rubric range applies] | [e.g., "2 vague terms: -10"] | X |
+| Consistency | 20% | X/100 | [Which rubric range applies] | [e.g., "No contradictions found"] | X |
+| Testability | 20% | X/100 | [Which rubric range applies] | [e.g., "REQ-003 not testable: -8"] | X |
+| Constitution Alignment | 10% | X/100 | [Which rubric range applies] | [e.g., "All principles addressed"] | X |
+| **Total** | **100%** | | | | **X/100** |
+
+> **Suggestion Cap**: Suggestions deducted X/5 points (cap: 5 points max)
 
 ## Recommendations
 
@@ -185,6 +275,33 @@ Based on the review result, the user may consider:
 - **Fail**: `/codexspec:clarify` - to systematically identify and fix specification issues
 ```
 
+### Score Validation Checklist
+
+Before finalizing scores, the reviewer MUST verify:
+
+- [ ] Every deduction in "Deduction Details" column has a corresponding issue in "Detailed Findings"
+- [ ] The arithmetic is correct: each category score = 100 minus sum of deductions
+- [ ] Weighted total = sum of (category score × weight) for all categories
+- [ ] Suggestion deductions do not exceed 5-point cap
+- [ ] No "phantom deductions" (deductions without matching issues)
+- [ ] Score is consistent with Overall Status (Pass ≥ 80, Needs Work 50-79, Fail < 50)
+
+### Score Challenge Response Protocol
+
+When a user questions or challenges the score, follow this three-step process:
+
+1. **Provide Evidence**: Present the complete scoring breakdown with all deduction details. Reference the specific rubric criteria and issue IDs that justify each deduction.
+
+2. **Ask for Specifics**: Ask the user which specific scoring item(s) they believe are incorrect. Do NOT preemptively adjust any scores.
+
+3. **Targeted Re-evaluation**: For each challenged item:
+   - Re-read the relevant section of the specification
+   - Re-apply the rubric criteria objectively
+   - If the original score was correct: explain the reasoning and maintain the score
+   - If the original score was indeed incorrect: adjust with clear explanation of what changed and why
+
+> **CRITICAL**: Never adjust scores simply because the user expresses dissatisfaction. Only adjust when re-evaluation reveals a genuine scoring error.
+
 ### Quality Criteria
 
 Before completing the review, verify:
@@ -192,7 +309,7 @@ Before completing the review, verify:
 - [ ] All sections of the spec have been examined
 - [ ] Issues are categorized by severity (Critical/Warning/Suggestion)
 - [ ] Each issue has a clear, actionable suggestion
-- [ ] Score reflects actual quality accurately
+- [ ] Score reflects actual quality accurately (validated via Score Validation Checklist)
 - [ ] Recommendations are prioritized
 - [ ] Next steps are clear and appropriate
 

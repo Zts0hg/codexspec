@@ -85,6 +85,118 @@ Review the task breakdown for quality and implementation readiness. This command
    - [ ] File paths are consistent with plan
    - [ ] File naming conventions are followed (per constitution)
 
+9. **Constitution Alignment Check**: Verify task breakdown respects project principles:
+   - [ ] TDD enforcement aligns with constitution testing standards
+   - [ ] Quality gates and checkpoints reflect constitution principles
+   - [ ] Naming conventions are followed (per constitution)
+   - [ ] Workflow guidelines from constitution are considered
+
+### Scoring Rubrics
+
+Before scoring, apply these rubrics to ensure consistent, transparent evaluation.
+
+#### Plan Coverage (25%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | All plan phases, modules, APIs, and data models have corresponding tasks; no gaps |
+| 70-89 | Most plan items covered; 1-2 minor components missing task coverage |
+| 50-69 | Several plan items lack task coverage; missing tasks for key modules |
+| Below 50 | Major plan phases or components have no corresponding tasks |
+
+**Typical Deductions**:
+
+- Plan phase with no tasks: -15 each
+- Module/component without implementation task: -10 each
+- API endpoint without task: -8 each
+- Missing testing tasks for plan items: -5 each
+
+#### TDD Compliance (25%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | All code components have test tasks before implementation tasks; test tasks are not optional |
+| 70-89 | Most components follow TDD; 1-2 minor ordering issues |
+| 50-69 | Several components lack test-first ordering; some test tasks missing |
+| Below 50 | No TDD enforcement; tests are absent or consistently after implementation |
+
+**Typical Deductions**:
+
+- Component without test task: -12 each
+- Test task ordered after implementation task: -8 each
+- Test task marked as optional: -5 each
+
+#### Dependency & Ordering (20%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | All dependencies correctly identified; no circular dependencies; foundation tasks first; logical ordering |
+| 70-89 | Dependencies mostly correct; 1-2 minor ordering issues |
+| 50-69 | Several missing or incorrect dependencies; some ordering problems |
+| Below 50 | Circular dependencies present; major ordering errors; dependencies largely incorrect |
+
+**Typical Deductions**:
+
+- Circular dependency: -15 each
+- Missing dependency declaration: -5 each
+- Incorrect task ordering: -8 each
+- Foundation task not placed first: -10
+
+#### Task Granularity (10%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | Each task involves one primary file; clear single deliverable; appropriate scope |
+| 70-89 | Most tasks are atomic; 1-2 tasks slightly broad but manageable |
+| 50-69 | Several tasks involve multiple files or unclear scope |
+| Below 50 | Tasks are overly broad or too narrow; no atomic focus |
+
+**Typical Deductions**:
+
+- Task involving multiple primary files: -8 each
+- Task scope too broad (should be split): -5 each
+- Task scope too narrow (should be combined): -3 each
+
+#### Parallelization & Files (10%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | Independent tasks correctly marked [P]; file paths specified and follow conventions; no false parallel markers |
+| 70-89 | Mostly correct parallel markers; minor file path issues |
+| 50-69 | Several incorrect parallel markers; missing file paths |
+| Below 50 | Parallel markers largely incorrect; file paths missing or wrong |
+
+**Typical Deductions**:
+
+- Dependent task incorrectly marked [P]: -8 each
+- Independent task missing [P] marker: -3 each
+- Task without file path specification: -5 each
+- File path not following project convention: -3 each
+
+#### Constitution Alignment (10%)
+
+| Score Range | Criteria |
+|-------------|----------|
+| 90-100 | Fully aligned with all constitution principles; TDD/quality standards addressed; workflow guidelines followed |
+| 70-89 | Mostly aligned; minor gaps in addressing specific principles |
+| 50-69 | Partial alignment; several principles not addressed |
+| Below 50 | Significant violations or disregard of constitution |
+
+> **Note**: If no constitution exists, this category defaults to 100 (full marks) and its weight is redistributed proportionally to other categories.
+
+**Typical Deductions**:
+
+- Constitution principle not addressed: -10 per principle
+- Direct violation of a constitution principle (e.g., test tasks omitted despite TDD requirement): -20 per violation
+
+#### Suggestion Score Cap Rule
+
+**IMPORTANT**: Suggestions (Nice to Have) items may deduct a **maximum of 5 points** from the total score. After resolving all Critical Issues and Warnings, the score should be **≥ 95**.
+
+- Critical Issues: -10 to -20 points each
+- Warnings: -5 to -10 points each
+- Suggestions: -1 to -2 points each, **capped at 5 points total**
+
 ### Report Template
 
 ```markdown
@@ -217,6 +329,19 @@ Valid Dependency Chain:
 - [ ] **[FILE-001]**: Task 2.1 file path doesn't match project naming convention
 - [ ] **[FILE-002]**: Task 3.1 missing file path specification
 
+## Constitution Alignment
+
+> [!NOTE]
+> If no constitution exists, state "No project constitution found - using general best practices."
+
+| Principle | Alignment | Notes |
+|-----------|-----------|-------|
+| [Principle 1] | ✅/⚠️/❌ | [How task breakdown aligns or conflicts] |
+| [Principle 2] | ✅/⚠️/❌ | [How task breakdown aligns or conflicts] |
+
+### Constitution Issues
+- [ ] **[CONST-001]**: [Principle violation or gap, e.g., "TDD principle not enforced for Module C"]
+
 ## Detailed Findings
 
 ### Critical Issues (Must Fix)
@@ -236,14 +361,17 @@ Valid Dependency Chain:
 
 ## Scoring Breakdown
 
-| Category | Weight | Score | Weighted |
-|----------|--------|-------|----------|
-| Plan Coverage | 30% | X/100 | X |
-| TDD Compliance | 25% | X/100 | X |
-| Dependency & Ordering | 20% | X/100 | X |
-| Task Granularity | 15% | X/100 | X |
-| Parallelization & Files | 10% | X/100 | X |
-| **Total** | **100%** | | **X/100** |
+| Category | Weight | Score | Rubric Basis | Deduction Details | Weighted |
+|----------|--------|-------|-------------|-------------------|----------|
+| Plan Coverage | 25% | X/100 | [Which rubric range applies] | [List specific deductions, e.g., "Module C missing task: -10"] | X |
+| TDD Compliance | 25% | X/100 | [Which rubric range applies] | [e.g., "Service X test after impl: -8"] | X |
+| Dependency & Ordering | 20% | X/100 | [Which rubric range applies] | [e.g., "Missing dependency Task 2.3→1.2: -5"] | X |
+| Task Granularity | 10% | X/100 | [Which rubric range applies] | [e.g., "Task 2.5 involves 3 files: -8"] | X |
+| Parallelization & Files | 10% | X/100 | [Which rubric range applies] | [e.g., "Task 2.1 false [P] marker: -8"] | X |
+| Constitution Alignment | 10% | X/100 | [Which rubric range applies] | [e.g., "All principles addressed"] | X |
+| **Total** | **100%** | | | | **X/100** |
+
+> **Suggestion Cap**: Suggestions deducted X/5 points (cap: 5 points max)
 
 ## Execution Timeline Estimate
 
@@ -298,6 +426,33 @@ Based on the review result, the user may consider:
 - **Fail**: `/codexspec:plan-to-tasks` - to regenerate the task breakdown
 ```
 
+### Score Validation Checklist
+
+Before finalizing scores, the reviewer MUST verify:
+
+- [ ] Every deduction in "Deduction Details" column has a corresponding issue in "Detailed Findings"
+- [ ] The arithmetic is correct: each category score = 100 minus sum of deductions
+- [ ] Weighted total = sum of (category score × weight) for all categories
+- [ ] Suggestion deductions do not exceed 5-point cap
+- [ ] No "phantom deductions" (deductions without matching issues)
+- [ ] Score is consistent with Overall Status (Pass ≥ 80, Needs Work 50-79, Fail < 50)
+
+### Score Challenge Response Protocol
+
+When a user questions or challenges the score, follow this three-step process:
+
+1. **Provide Evidence**: Present the complete scoring breakdown with all deduction details. Reference the specific rubric criteria and issue IDs that justify each deduction.
+
+2. **Ask for Specifics**: Ask the user which specific scoring item(s) they believe are incorrect. Do NOT preemptively adjust any scores.
+
+3. **Targeted Re-evaluation**: For each challenged item:
+   - Re-read the relevant section of the tasks document
+   - Re-apply the rubric criteria objectively
+   - If the original score was correct: explain the reasoning and maintain the score
+   - If the original score was indeed incorrect: adjust with clear explanation of what changed and why
+
+> **CRITICAL**: Never adjust scores simply because the user expresses dissatisfaction. Only adjust when re-evaluation reveals a genuine scoring error.
+
 ### Quality Criteria
 
 Before completing the review, verify:
@@ -307,8 +462,9 @@ Before completing the review, verify:
 - [ ] Dependency graph is validated with no cycles (Dependency & Ordering)
 - [ ] Task granularity is appropriate (Task Granularity)
 - [ ] Parallelization markers and file paths are correct (Parallelization & Files)
+- [ ] Constitution principles are addressed (Constitution Alignment)
 - [ ] Issues have clear, actionable suggestions
-- [ ] Score reflects actual quality accurately
+- [ ] Score reflects actual quality accurately (validated via Score Validation Checklist)
 
 ### Output
 
