@@ -617,10 +617,11 @@ class Detector:
         if not self._path.exists():
             return None
 
-        mtime = self._path.stat().st_mtime
-        age_ms = (time.time() - mtime) * 1000
-        if age_ms < self._stable_ms:
-            return None
+        if self._stable_ms > 0:
+            mtime = self._path.stat().st_mtime
+            age_ms = (time.time() - mtime) * 1000
+            if age_ms < self._stable_ms:
+                return None
 
         records = parse_jsonl(self._path)
         if not records:
