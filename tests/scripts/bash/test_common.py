@@ -154,7 +154,8 @@ if [ -z "$result" ]; then
     echo "EMPTY"
 fi
 ''')
-        result = subprocess.run(["bash", str(test_script)], capture_output=True, text=True)
+        env = {**subprocess.os.environ, "GIT_DIR": "/nonexistent"}
+        result = subprocess.run(["bash", str(test_script)], capture_output=True, text=True, env=env)
         assert "EMPTY" in result.stdout
 
 
