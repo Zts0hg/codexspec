@@ -46,6 +46,12 @@ EXIT_INVALID_ARGS = 2
 EXIT_SIGINT = 130
 
 
+class SafetyPolicyError(Exception):
+    """Raised when safety policy file is invalid."""
+
+    pass
+
+
 # ============================================================================
 # Dataclasses (Task 1.5)
 # ============================================================================
@@ -354,10 +360,13 @@ def _classify_segment(segment: str, project_root: Path, policy: Optional[dict] =
 
     # Check redirect to outside project (before whitelist — redirect overrides safety)
     if ">" in segment:
+        allow_outside = policy.get("allow_paths_outside_project", [])
         parts = segment.split(">")
         for part in parts[1:]:
             redir_path = part.strip().split()[0] if part.strip() else ""
             if redir_path.startswith("/") and not is_path_within_project(redir_path, project_root):
+                if any(fnmatch(redir_path, pat) for pat in allow_outside):
+                    continue
                 return ("DANGEROUS", f"重定向到项目外: {redir_path}")
 
     for prefix in SAFE_PREFIXES:
@@ -452,8 +461,7 @@ def load_safety_policy(path: Optional[str]) -> Optional[dict]:
         return None
     p = Path(path)
     if not p.exists():
-        print(f"❌ 安全策略文件不存在: {path}", file=sys.stderr)
-        sys.exit(EXIT_INVALID_ARGS)
+        raise SafetyPolicyError(f"安全策略文件不存在: {path}")
     try:
         with open(p, "r", encoding="utf-8") as f:
             policy = json.load(f)
@@ -461,8 +469,9 @@ def load_safety_policy(path: Optional[str]) -> Optional[dict]:
             raise ValueError("策略文件顶层必须是 JSON 对象")
         return policy
     except (json.JSONDecodeError, ValueError) as e:
-        print(f"❌ 安全策略文件格式错误: {e}", file=sys.stderr)
-        sys.exit(EXIT_INVALID_ARGS)
+        raise SafetyPolicyError(f"安全策略文件格式错误: {e}") from e
+    except OSError as e:
+        raise SafetyPolicyError(f"安全策略文件读取失败: {e}") from e
 
 
 # ============================================================================
@@ -740,6 +749,7 @@ def parse_args(argv: Optional[list] = None) -> argparse.Namespace:
     parser.add_argument("--log-file", default=None, help="可选日志文件路径")
     parser.add_argument("--dry-run", action="store_true", help="仅决策不发送到 tmux")
     parser.add_argument("--decide-timeout", type=int, default=180, help="claude -p 超时秒数 (默认 180)")
+    parser.add_argument("--health-check", action="store_true", help="运行健康检查并输出 JSON 报告")
     return parser.parse_args(argv)
 
 
@@ -758,9 +768,87 @@ def validate_startup(args: argparse.Namespace, logger: Logger) -> bool:
         if not Path(args.safety_policy_file).exists():
             logger.error(f"安全策略文件不存在: {args.safety_policy_file}")
             return False
-        load_safety_policy(args.safety_policy_file)
+        try:
+            load_safety_policy(args.safety_policy_file)
+        except SafetyPolicyError as e:
+            logger.error(f"安全策略文件错误: {e}")
+            return False
 
     return True
+
+
+def health_check(args: argparse.Namespace) -> int:
+    """Run health check and output JSON report to stdout.
+
+    Returns:
+        0 if all checks pass, 1 if any check fails.
+    """
+    checks = []
+    overall_healthy = True
+
+    # Check 1: jsonl file exists and is readable
+    jsonl_path = Path(args.jsonl)
+    jsonl_check = {"name": "jsonl_file", "status": "pass", "message": str(args.jsonl)}
+    if not jsonl_path.exists():
+        jsonl_check["status"] = "fail"
+        jsonl_check["message"] = f"jsonl 文件不存在: {args.jsonl}"
+        overall_healthy = False
+    else:
+        try:
+            with open(jsonl_path, "r"):
+                pass
+        except (OSError, PermissionError) as e:
+            jsonl_check["status"] = "fail"
+            jsonl_check["message"] = f"jsonl 文件不可读: {e}"
+            overall_healthy = False
+    checks.append(jsonl_check)
+
+    # Check 2: tmux pane exists
+    pane_check = {"name": "tmux_pane", "status": "pass", "message": args.tmux_pane}
+    sender = TmuxSender(args.tmux_pane, dry_run=False)
+    if not sender.pane_exists():
+        pane_check["status"] = "fail"
+        pane_check["message"] = f"tmux pane 不存在: {args.tmux_pane}"
+        overall_healthy = False
+    checks.append(pane_check)
+
+    # Check 3: claude CLI is available
+    claude_check = {"name": "claude_cli", "status": "pass", "message": f"{args.claude_bin} 可用"}
+    try:
+        result = subprocess.run(
+            [args.claude_bin, "--version"],
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        if result.returncode != 0:
+            claude_check["status"] = "fail"
+            claude_check["message"] = f"{args.claude_bin} 返回错误: {result.returncode}"
+            overall_healthy = False
+    except (FileNotFoundError, subprocess.TimeoutExpired) as e:
+        claude_check["status"] = "fail"
+        claude_check["message"] = f"{args.claude_bin} 不可用: {type(e).__name__}"
+        overall_healthy = False
+    checks.append(claude_check)
+
+    # Check 4: safety-policy-file is valid (if provided)
+    if args.safety_policy_file:
+        policy_check = {"name": "safety_policy_file", "status": "pass", "message": args.safety_policy_file}
+        try:
+            policy = load_safety_policy(args.safety_policy_file)
+            if policy is None:
+                policy_check["status"] = "fail"
+                policy_check["message"] = f"安全策略文件加载失败: {args.safety_policy_file}"
+                overall_healthy = False
+        except Exception as e:
+            policy_check["status"] = "fail"
+            policy_check["message"] = f"安全策略文件错误: {e}"
+            overall_healthy = False
+        checks.append(policy_check)
+
+    report = {"overall": "healthy" if overall_healthy else "unhealthy", "checks": checks}
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    return 0 if overall_healthy else 1
 
 
 # ============================================================================
@@ -786,7 +874,11 @@ class MainLoop:
         args = self._args
         logger = self._logger
 
-        policy = load_safety_policy(args.safety_policy_file)
+        try:
+            policy = load_safety_policy(args.safety_policy_file)
+        except SafetyPolicyError as e:
+            logger.error(f"安全策略文件错误: {e}")
+            return EXIT_INVALID_ARGS
         system_prompt = None
         if args.system_prompt_file:
             system_prompt = Path(args.system_prompt_file).read_text(encoding="utf-8")
@@ -855,6 +947,11 @@ class MainLoop:
 def main() -> None:
     args = parse_args()
     logger = Logger(log_file=args.log_file)
+
+    # Health check exits early, bypassing normal startup
+    if args.health_check:
+        code = health_check(args)
+        sys.exit(code)
 
     if not validate_startup(args, logger):
         sys.exit(EXIT_INVALID_ARGS)

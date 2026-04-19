@@ -20,8 +20,10 @@ from claude_auto_responder import (
     build_prompt,
     classify_bash_command,
     extract_pending_tool_use,
+    health_check,
     is_path_within_project,
     load_project_context,
+    parse_args,
     parse_jsonl,
 )
 
@@ -379,6 +381,18 @@ class TestBashClassifier:
     def test_redirect_outside_project(self, tmp_path):
         """TC-035: redirect to absolute path outside project → DANGEROUS."""
         cat, reason = classify_bash_command('echo "hello" > /absolute/path', tmp_path)
+        assert cat == "DANGEROUS"
+
+    def test_redirect_outside_allowed_by_policy(self, tmp_path):
+        """Redirect to outside path allowed by allow_paths_outside_project."""
+        policy = {"allow_paths_outside_project": ["/tmp/*"]}
+        cat, reason = classify_bash_command('echo "hello" > /tmp/test.jsonl', tmp_path, policy=policy)
+        assert cat == "SAFE"
+
+    def test_redirect_outside_not_matching_policy(self, tmp_path):
+        """Redirect to outside path not matching policy pattern → DANGEROUS."""
+        policy = {"allow_paths_outside_project": ["/tmp/*"]}
+        cat, reason = classify_bash_command('echo "hello" > /etc/passwd', tmp_path, policy=policy)
         assert cat == "DANGEROUS"
 
     def test_empty_command(self, tmp_path):
@@ -934,3 +948,197 @@ class TestE2E:
             ok = sender.send_permission(resp.allow)
         assert ok is True
         mock_run.assert_not_called()
+
+
+# ============================================================================
+# Health check tests
+# ============================================================================
+
+
+class TestHealthCheck:
+    def test_parse_args_health_check_flag(self):
+        """--health-check flag can be parsed."""
+        args = parse_args(["--jsonl", "test.jsonl", "--tmux-pane", "test:0.0", "--health-check"])
+        assert args.health_check is True
+
+    def test_health_check_all_healthy(self, tmp_path, make_jsonl):
+        """All checks pass → returns 0, overall healthy."""
+        jsonl_path = make_jsonl([])
+        policy_path = tmp_path / "policy.json"
+        policy_path.write_text('{"allow_commands": ["test"]}')
+
+        args = parse_args(
+            [
+                "--jsonl",
+                str(jsonl_path),
+                "--tmux-pane",
+                "test:0.0",
+                "--safety-policy-file",
+                str(policy_path),
+                "--health-check",
+            ]
+        )
+
+        with patch("subprocess.run") as mock_run:
+            # Mock tmux has-session success
+            mock_run.return_value = MagicMock(returncode=0, stdout="claude version 1.0")
+            code = health_check(args)
+
+        assert code == 0
+
+    def test_health_check_jsonl_missing(self, tmp_path):
+        """jsonl file missing → returns 1, overall unhealthy."""
+        jsonl_path = tmp_path / "missing.jsonl"
+
+        args = parse_args(
+            [
+                "--jsonl",
+                str(jsonl_path),
+                "--tmux-pane",
+                "test:0.0",
+                "--health-check",
+            ]
+        )
+
+        with patch("subprocess.run") as mock_run:
+            mock_run.return_value = MagicMock(returncode=0, stdout="claude version 1.0")
+            code = health_check(args)
+
+        assert code == 1
+
+    def test_health_check_tmux_pane_not_exists(self, tmp_path, make_jsonl):
+        """tmux pane does not exist → returns 1, overall unhealthy."""
+        jsonl_path = make_jsonl([])
+
+        args = parse_args(
+            [
+                "--jsonl",
+                str(jsonl_path),
+                "--tmux-pane",
+                "test:0.0",
+                "--health-check",
+            ]
+        )
+
+        with patch("subprocess.run") as mock_run:
+            # Mock tmux has-session failure
+            mock_run.return_value = MagicMock(returncode=1, stderr="no session")
+            code = health_check(args)
+
+        assert code == 1
+
+    def test_health_check_claude_not_available(self, tmp_path, make_jsonl):
+        """claude CLI not available → returns 1, overall unhealthy."""
+        jsonl_path = make_jsonl([])
+
+        args = parse_args(
+            [
+                "--jsonl",
+                str(jsonl_path),
+                "--tmux-pane",
+                "test:0.0",
+                "--claude-bin",
+                "nonexistent-claude",
+                "--health-check",
+            ]
+        )
+
+        with patch("subprocess.run") as mock_run:
+            # Mock FileNotFoundError for claude
+            mock_run.side_effect = FileNotFoundError()
+            code = health_check(args)
+
+        assert code == 1
+
+    def test_health_check_invalid_policy_file(self, tmp_path, make_jsonl):
+        """Invalid safety policy file → returns 1, overall unhealthy."""
+        jsonl_path = make_jsonl([])
+        policy_path = tmp_path / "invalid.json"
+        policy_path.write_text("{not valid json")
+
+        args = parse_args(
+            [
+                "--jsonl",
+                str(jsonl_path),
+                "--tmux-pane",
+                "test:0.0",
+                "--safety-policy-file",
+                str(policy_path),
+                "--health-check",
+            ]
+        )
+
+        with patch("subprocess.run") as mock_run:
+            mock_run.return_value = MagicMock(returncode=0, stdout="claude version 1.0")
+            code = health_check(args)
+
+        assert code == 1
+
+    def test_health_check_no_policy_file(self, tmp_path, make_jsonl):
+        """No safety policy file → still healthy (policy is optional)."""
+        jsonl_path = make_jsonl([])
+
+        args = parse_args(
+            [
+                "--jsonl",
+                str(jsonl_path),
+                "--tmux-pane",
+                "test:0.0",
+                "--health-check",
+            ]
+        )
+
+        with patch("subprocess.run") as mock_run:
+            mock_run.return_value = MagicMock(returncode=0, stdout="claude version 1.0")
+            code = health_check(args)
+
+        assert code == 0
+
+    def test_health_check_jsonl_unreadable(self, tmp_path):
+        """jsonl file exists but unreadable → returns 1."""
+        jsonl_path = tmp_path / "unreadable.jsonl"
+        jsonl_path.write_text("test")
+
+        args = parse_args(
+            [
+                "--jsonl",
+                str(jsonl_path),
+                "--tmux-pane",
+                "test:0.0",
+                "--health-check",
+            ]
+        )
+
+        with patch("subprocess.run") as mock_run:
+            mock_run.return_value = MagicMock(returncode=0, stdout="claude version 1.0")
+            with patch("builtins.open", side_effect=PermissionError("Permission denied")):
+                code = health_check(args)
+
+        assert code == 1
+
+    def test_health_check_outputs_json(self, tmp_path, make_jsonl, capsys):
+        """Health check outputs valid JSON to stdout."""
+        jsonl_path = make_jsonl([])
+
+        args = parse_args(
+            [
+                "--jsonl",
+                str(jsonl_path),
+                "--tmux-pane",
+                "test:0.0",
+                "--health-check",
+            ]
+        )
+
+        with patch("subprocess.run") as mock_run:
+            mock_run.return_value = MagicMock(returncode=0, stdout="claude version 1.0")
+            health_check(args)
+
+        captured = capsys.readouterr()
+        import json
+
+        result = json.loads(captured.out)
+        assert "overall" in result
+        assert result["overall"] in ["healthy", "unhealthy"]
+        assert "checks" in result
+        assert isinstance(result["checks"], list)
