@@ -210,18 +210,19 @@ language:
 
 # Project metadata
 project:
-  ai: "claude"
+  ai: "{ai}"
   created: "{created}"
 """
 
 
-def generate_config_content(language: str = "en", created: str = None) -> str:
+def generate_config_content(language: str = "en", created: str = None, ai: str = "claude") -> str:
     """
     Generate config.yml content.
 
     Args:
         language: Output language code (will be normalized)
         created: Creation date string (defaults to today)
+        ai: AI assistant type (default: "claude")
 
     Returns:
         Config file content as string
@@ -232,7 +233,7 @@ def generate_config_content(language: str = "en", created: str = None) -> str:
     if created is None:
         created = datetime.now().strftime("%Y-%m-%d")
 
-    return CONFIG_TEMPLATE.format(language=normalized_lang, created=created)
+    return CONFIG_TEMPLATE.format(language=normalized_lang, created=created, ai=ai)
 
 
 def get_project_language() -> str:

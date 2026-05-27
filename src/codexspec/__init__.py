@@ -38,6 +38,7 @@ from .i18n import (
     update_config_language,
     update_output_language,
 )
+from .skills.installer import get_skills_metadata, install_skills_from_templates
 from .translator import translate
 
 # Version info
@@ -48,6 +49,7 @@ __author__ = "CodexSpec Team"
 CONSTITUTION_IMPORT_PATH = "@.codexspec/memory/constitution.md"
 CONSTITUTION_FILE_PATH = ".codexspec/memory/constitution.md"
 MARKDOWNLINT_DISABLE_MD041 = "<!-- markdownlint-disable MD041 -->\n"
+SUPPORTED_AI_TOOLS = ["claude", "codex"]
 
 app = typer.Typer(
     name="codexspec",
@@ -446,6 +448,12 @@ def init(
     # Normalize language code early for use throughout the function
     normalized_lang = normalize_locale(lang)
 
+    # Validate --ai parameter
+    if ai not in SUPPORTED_AI_TOOLS:
+        supported = ", ".join(SUPPORTED_AI_TOOLS)
+        console.print(f"[red]Unsupported AI tool: '{ai}'. Supported options: {supported}[/red]")
+        raise typer.Exit(1)
+
     # Determine target directory
     if here or project_name == ".":
         target_dir = Path.cwd()
@@ -519,65 +527,63 @@ def init(
     else:
         console.print("[yellow]Warning: Docs templates directory not found[/yellow]")
 
-    # Create .claude/commands directory for slash commands
-    claude_dir = target_dir / ".claude"
-    claude_commands_dir = claude_dir / "commands"
-    claude_commands_dir.mkdir(parents=True, exist_ok=True)
+    # Create .claude/commands directory for slash commands (Claude only)
+    if ai == "claude":
+        claude_dir = target_dir / ".claude"
+        claude_commands_dir = claude_dir / "commands"
+        claude_commands_dir.mkdir(parents=True, exist_ok=True)
 
-    # Target subdirectory for CodexSpec commands
-    codexspec_commands_dir = claude_commands_dir / COMMANDS_SUBDIR
+        # Target subdirectory for CodexSpec commands
+        codexspec_commands_dir = claude_commands_dir / COMMANDS_SUBDIR
 
-    # Get templates directory
-    templates_dir = get_templates_dir() / "commands"
+        # Get templates directory
+        templates_dir = get_templates_dir() / "commands"
 
-    # Check for old structure and migrate if needed
-    old_files = detect_old_structure(claude_dir)
-    migration_happened = False
-    if old_files:
-        console.print()
-        console.print(
-            f"[yellow]{translate('cli.init.migration_found', normalized_lang, count=len(old_files))}[/yellow]"
-        )
-        console.print(f"[dim]{translate('cli.init.migration_old_structure', normalized_lang)}[/dim]")
-        console.print(f"[dim]{translate('cli.init.migration_new_structure', normalized_lang)}[/dim]")
-
-        if Confirm.ask(translate("cli.init.migration_confirm", normalized_lang), default=True):
-            if migrate_old_commands(claude_dir, old_files):
-                console.print(f"[green]{translate('cli.init.migration_complete', normalized_lang)}[/green]")
-                migration_happened = True
-            else:
-                console.print(f"[red]{translate('cli.init.migration_failed', normalized_lang)}[/red]")
-        else:
-            console.print(f"[dim]{translate('cli.init.migration_skipped', normalized_lang)}[/dim]")
-
-    # Install or update commands (translate after migration if user wants)
-    if migration_happened:
-        # Migration moved files, ask if user wants to update/translate them
-        if Confirm.ask(translate("cli.init.update_confirm", normalized_lang), default=True):
-            count = install_commands_to_subdir(
-                codexspec_commands_dir, templates_dir, force=True, language=normalized_lang
-            )
-            console.print(f"[green]{translate('cli.init.commands_updated', normalized_lang, count=count)}[/green]")
-    elif should_update_commands(codexspec_dir):
-        console.print()
-        if Confirm.ask(translate("cli.init.update_confirm", normalized_lang), default=True):
-            count = install_commands_to_subdir(
-                codexspec_commands_dir, templates_dir, force=True, language=normalized_lang
-            )
-            console.print(f"[green]{translate('cli.init.commands_updated', normalized_lang, count=count)}[/green]")
-    else:
-        if not templates_dir.exists():
-            # Templates directory is part of the wheel; if it's missing the
-            # install is broken and we cannot recover.
+        # Check for old structure and migrate if needed
+        old_files = detect_old_structure(claude_dir)
+        migration_happened = False
+        if old_files:
+            console.print()
             console.print(
-                f"[red]{translate('cli.init.error_templates_missing', normalized_lang, path=str(templates_dir))}[/red]"
+                f"[yellow]{translate('cli.init.migration_found', normalized_lang, count=len(old_files))}[/yellow]"
             )
-            raise typer.Exit(1)
+            console.print(f"[dim]{translate('cli.init.migration_old_structure', normalized_lang)}[/dim]")
+            console.print(f"[dim]{translate('cli.init.migration_new_structure', normalized_lang)}[/dim]")
 
-        count = install_commands_to_subdir(codexspec_commands_dir, templates_dir, language=normalized_lang)
-        cmd_path = f".claude/commands/{COMMANDS_SUBDIR}/"
-        msg = translate("cli.init.commands_installed", normalized_lang, count=count, path=cmd_path)
-        console.print(f"[green]{msg}[/green]")
+            if Confirm.ask(translate("cli.init.migration_confirm", normalized_lang), default=True):
+                if migrate_old_commands(claude_dir, old_files):
+                    console.print(f"[green]{translate('cli.init.migration_complete', normalized_lang)}[/green]")
+                    migration_happened = True
+                else:
+                    console.print(f"[red]{translate('cli.init.migration_failed', normalized_lang)}[/red]")
+            else:
+                console.print(f"[dim]{translate('cli.init.migration_skipped', normalized_lang)}[/dim]")
+
+        # Install or update commands (translate after migration if user wants)
+        if migration_happened:
+            # Migration moved files, ask if user wants to update/translate them
+            if Confirm.ask(translate("cli.init.update_confirm", normalized_lang), default=True):
+                count = install_commands_to_subdir(
+                    codexspec_commands_dir, templates_dir, force=True, language=normalized_lang
+                )
+                console.print(f"[green]{translate('cli.init.commands_updated', normalized_lang, count=count)}[/green]")
+        elif should_update_commands(codexspec_dir):
+            console.print()
+            if Confirm.ask(translate("cli.init.update_confirm", normalized_lang), default=True):
+                count = install_commands_to_subdir(
+                    codexspec_commands_dir, templates_dir, force=True, language=normalized_lang
+                )
+                console.print(f"[green]{translate('cli.init.commands_updated', normalized_lang, count=count)}[/green]")
+        else:
+            if not templates_dir.exists():
+                msg = translate("cli.init.error_templates_missing", normalized_lang, path=str(templates_dir))
+                console.print(f"[red]{msg}[/red]")
+                raise typer.Exit(1)
+
+            count = install_commands_to_subdir(codexspec_commands_dir, templates_dir, language=normalized_lang)
+            cmd_path = f".claude/commands/{COMMANDS_SUBDIR}/"
+            msg = translate("cli.init.commands_installed", normalized_lang, count=count, path=cmd_path)
+            console.print(f"[green]{msg}[/green]")
 
     # Create constitution template
     constitution_file = codexspec_dir / "memory" / "constitution.md"
@@ -592,6 +598,7 @@ def init(
         config_content = generate_config_content(
             language=normalized_lang,
             created=datetime.now().strftime("%Y-%m-%d"),
+            ai=ai,
         )
         config_file.write_text(config_content, encoding="utf-8")
         lang_name = get_language_name(normalized_lang)
@@ -634,18 +641,49 @@ def init(
                 )
                 console.print(f"[green]{msg}[/green]")
 
-    # Create CLAUDE.md
-    claude_md = target_dir / "CLAUDE.md"
-    if not claude_md.exists() or force:
-        project_name = target_dir.name
-        claude_md.write_text(_get_claude_md_content(project_name), encoding="utf-8")
-        console.print(f"[green]{translate('cli.init.created_file', normalized_lang, file='CLAUDE.md')}[/green]")
-    else:
-        # Check if existing CLAUDE.md has compliance section
-        if not has_compliance_section(claude_md):
-            if confirm_add_compliance(normalized_lang):
-                prepend_compliance_section(claude_md)
-                console.print(f"[green]{translate('cli.init.compliance_added', normalized_lang)}[/green]")
+    # Create AI-specific instruction file
+    if ai == "claude":
+        claude_md = target_dir / "CLAUDE.md"
+        if not claude_md.exists() or force:
+            project_name = target_dir.name
+            claude_md.write_text(_get_claude_md_content(project_name), encoding="utf-8")
+            console.print(f"[green]{translate('cli.init.created_file', normalized_lang, file='CLAUDE.md')}[/green]")
+        else:
+            if not has_compliance_section(claude_md):
+                if confirm_add_compliance(normalized_lang):
+                    prepend_compliance_section(claude_md)
+                    console.print(f"[green]{translate('cli.init.compliance_added', normalized_lang)}[/green]")
+    elif ai == "codex":
+        # Create .codex/skills directory for Codex custom skills.
+        codex_dir = target_dir / ".codex"
+        codex_skills_dir = codex_dir / "skills"
+        codex_skills_dir.mkdir(parents=True, exist_ok=True)
+
+        templates_dir = get_templates_dir() / "commands"
+
+        existing_skills = list(codex_skills_dir.glob("codexspec-*/SKILL.md"))
+        if existing_skills:
+            console.print()
+            if Confirm.ask(translate("cli.init.update_confirm", normalized_lang), default=True):
+                count = install_skills_from_templates(
+                    codex_skills_dir, templates_dir, force=True, language=normalized_lang
+                )
+                console.print(f"[green]Updated {count} Codex skills[/green]")
+        else:
+            if not templates_dir.exists():
+                msg = translate("cli.init.error_templates_missing", normalized_lang, path=str(templates_dir))
+                console.print(f"[red]{msg}[/red]")
+                raise typer.Exit(1)
+
+            count = install_skills_from_templates(codex_skills_dir, templates_dir, language=normalized_lang)
+            console.print(f"[green]Installed {count} Codex skills to .codex/skills/[/green]")
+
+        # Create AGENTS.md
+        agents_md = target_dir / "AGENTS.md"
+        if not agents_md.exists() or force:
+            project_name = target_dir.name
+            agents_md.write_text(_get_agents_md_content(project_name), encoding="utf-8")
+            console.print(f"[green]{translate('cli.init.created_file', normalized_lang, file='AGENTS.md')}[/green]")
 
     # Initialize git if requested
     if not no_git and not (target_dir / ".git").exists():
@@ -657,38 +695,65 @@ def init(
 
     # Print success message with command summary
     console.print()
-    _print_command_summary(normalized_lang)
+    if ai == "claude":
+        _print_command_summary(normalized_lang)
+    elif ai == "codex":
+        _print_skill_summary(".codex/skills/")
 
     project_nav = project_name if project_name and project_name != "." else "."
+
+    if ai == "claude":
+        next_step_2 = translate("cli.init.next_step_start_claude", normalized_lang)
+    else:
+        next_step_2 = f"Start {ai.capitalize()} CLI in the project directory"
+
     console.print(
         Panel.fit(
             f"[bold green]{translate('cli.init.success_message', normalized_lang)}[/bold green]\n\n"
             f"{translate('cli.init.success_project_dir', normalized_lang, path=str(target_dir))}\n\n"
             f"[bold]{translate('cli.init.next_steps', normalized_lang)}[/bold]\n"
             f"1. {translate('cli.init.next_step_navigate', normalized_lang, path=project_nav)}\n"
-            f"2. {translate('cli.init.next_step_start_claude', normalized_lang)}\n"
-            f"3. {translate('cli.init.next_step_constitution', normalized_lang)}\n"
-            f"4. {translate('cli.init.next_step_specify', normalized_lang)}",
+            f"2. {next_step_2}\n"
+            f"3. "
+            + (
+                "Run /skills to inspect the installed CodexSpec skills"
+                if ai == "codex"
+                else translate("cli.init.next_step_constitution", normalized_lang)
+            )
+            + "\n"
+            + (
+                "4. Ask Codex to use `codexspec-specify` or `codexspec-quick` for your first task"
+                if ai == "codex"
+                else f"4. {translate('cli.init.next_step_specify', normalized_lang)}"
+            ),
             title=translate("cli.init.success_title", normalized_lang),
         )
     )
 
-    # Git management tip
+    # Tips
     console.print()
     console.print(f"[bold]{translate('cli.init.tips_header', normalized_lang)}[/bold]")
-    console.print(f"   - {translate('cli.init.tips_git', normalized_lang)}")
-    console.print(f"   - {translate('cli.init.tips_list_commands', normalized_lang)}")
-    console.print(f"   - {translate('cli.init.tips_edit', normalized_lang)}")
+    if ai == "claude":
+        console.print(f"   - {translate('cli.init.tips_git', normalized_lang)}")
+        console.print(f"   - {translate('cli.init.tips_list_commands', normalized_lang)}")
+        console.print(f"   - {translate('cli.init.tips_edit', normalized_lang)}")
+    else:
+        console.print("   - Add .codex/ to Git: git add .codex/")
+        console.print("   - Run /skills to inspect installed skills")
+        console.print("   - Edit SKILL.md files directly to customize skill behavior")
 
     # Remind user to customize constitution
     console.print()
     important_header = translate("cli.init.important_header", normalized_lang)
     important_msg = translate("cli.init.important_message", normalized_lang)
     console.print(f"[yellow]{important_header}[/yellow] {important_msg}")
-    console.print(f"[yellow]{translate('cli.init.important_action', normalized_lang)}[/yellow]")
+    if ai == "claude":
+        console.print(f"[yellow]{translate('cli.init.important_action', normalized_lang)}[/yellow]")
+    else:
+        console.print("[yellow]Ask Codex to use `codexspec-constitution` to customize it for your project.[/yellow]")
 
 
-def _print_command_summary(language: str = "en") -> None:
+def _print_command_summary(language: str = "en", commands_path: str = COMMANDS_SUBDIR) -> None:
     """Print a summary of installed commands grouped by category."""
     metadata = get_commands_metadata()
 
@@ -706,7 +771,7 @@ def _print_command_summary(language: str = "en") -> None:
             categories[cat].append(cmd)
 
     console.print(
-        f"[bold]{translate('cli.init.commands_summary', language, count=len(metadata), path=COMMANDS_SUBDIR)}[/bold]"
+        f"[bold]{translate('cli.init.commands_summary', language, count=len(metadata), path=commands_path)}[/bold]"
     )
     console.print()
 
@@ -716,6 +781,18 @@ def _print_command_summary(language: str = "en") -> None:
             for cmd in commands:
                 console.print(f"    [cyan]{cmd['display_name']}[/cyan]")
             console.print()
+
+
+def _print_skill_summary(skills_path: str) -> None:
+    """Print a concise summary of installed Codex skills."""
+    metadata = get_skills_metadata()
+
+    console.print(f"[bold]Installed {len(metadata)} skills to {skills_path}[/bold]")
+    console.print()
+
+    for skill in metadata:
+        console.print(f"  [cyan]{skill['name']}[/cyan]")
+    console.print()
 
 
 def _get_default_constitution() -> str:
@@ -918,6 +995,74 @@ def confirm_add_compliance(language: str = "en") -> bool:
         translate("cli.init.compliance_confirm", language),
         default=False,
     )
+
+
+def _get_agents_md_content(project_name: str) -> str:
+    """Return the AGENTS.md content for a Codex CLI project.
+
+    Args:
+        project_name: The name of the project (used in the title)
+    """
+    return f"""# AGENTS.md - {project_name} Guidelines
+
+> **IMPORTANT**: Before making any decisions, read the project constitution at
+> `.codexspec/memory/constitution.md`. All code changes and decisions must comply
+> with the principles defined there.
+
+## Project Overview
+
+This project uses the **CodexSpec** methodology - a Spec-Driven Development (SDD)
+approach that emphasizes specifications as executable artifacts that directly guide
+implementation.
+
+CodexSpec skills are installed in `.codex/skills/`. Use `/skills` to inspect
+available skills, or ask Codex to use `codexspec-specify`, `codexspec-quick`,
+and the other installed CodexSpec skills.
+
+## Recommended Workflow
+
+1. Start by reading the constitution at `.codexspec/memory/constitution.md`
+2. Create a feature directory: `.codexspec/specs/{{timestamp}}-{{feature-name}}/`
+3. Write `spec.md` — focus on **what** and **why**
+4. Write `plan.md` — focus on **how** (technical design)
+5. Write `tasks.md` — break down into atomic, ordered tasks
+6. Implement tasks in order, writing tests first
+
+## Directory Structure
+
+```
+.codex/
+└── skills/
+    ├── codexspec-specify/ # CodexSpec reusable skills
+    └── codexspec-quick/
+
+.codexspec/
+├── memory/
+│   └── constitution.md    # Project governing principles
+├── specs/
+│   └── {{feature-id}}/
+│       ├── spec.md        # Feature specification
+│       ├── plan.md        # Technical implementation plan
+│       ├── tasks.md       # Task breakdown
+│       └── checklists/    # Quality checklists
+├── templates/             # Custom templates
+├── scripts/               # Helper scripts
+└── config.yml             # Project configuration
+```
+
+## Guidelines
+
+1. **Constitution First**: Read `.codexspec/memory/constitution.md` before ANY action
+2. **Respect the Constitution**: All decisions MUST align with the project constitution
+3. **Follow the Workflow**: Use the SDD workflow in the recommended order
+4. **Be Explicit**: When specifications are unclear, ask for clarification
+5. **Validate**: Always review artifacts before implementation
+6. **Document**: Keep all artifacts up-to-date
+
+---
+
+*This file is maintained by CodexSpec. Manual edits should be made with care.*
+"""
 
 
 def _get_claude_md_content(project_name: str) -> str:

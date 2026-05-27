@@ -250,3 +250,20 @@ class TestGenerateConfigContent:
         content = generate_config_content()
         assert "project:" in content
         assert 'ai: "claude"' in content
+
+    def test_ai_codex(self) -> None:
+        """Config with ai='codex' should include codex."""
+        content = generate_config_content(ai="codex")
+        assert 'ai: "codex"' in content
+        assert 'ai: "claude"' not in content
+
+    def test_ai_default_is_claude(self) -> None:
+        """Default ai parameter should produce claude."""
+        content = generate_config_content()
+        assert 'ai: "claude"' in content
+
+    def test_ai_explicit_claude(self) -> None:
+        """Explicit ai='claude' should match default."""
+        default_content = generate_config_content()
+        explicit_content = generate_config_content(ai="claude")
+        assert default_content == explicit_content
