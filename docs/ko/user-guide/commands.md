@@ -197,7 +197,7 @@ AI:  [요구사항 계속 탐색...]
 
 **수행 작업:**
 
-- `.codexspec/specs/{NNN}-{feature-name}/` 디렉토리 생성
+- `.codexspec/specs/YYYY-MMDD-HHMMxx-{feature-name}/` 디렉토리 생성
 - 다음을 포함한 포괄적인 `spec.md` 생성:
   - 기능 개요 및 목표
   - 수락 기준이 있는 사용자 스토리
@@ -211,7 +211,7 @@ AI:  [요구사항 계속 탐색...]
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── spec.md
 ```
 
@@ -222,7 +222,7 @@ You: /generate-spec
 
 AI:  명세서 생성 중...
 
-     ✓ .codexspec/specs/001-task-management/spec.md 생성됨
+     ✓ .codexspec/specs/2026-0613-1200ab-task-management/spec.md 생성됨
 
      포함된 섹션:
      - 개요: 소규모 개발 팀을 위한 작업 관리
@@ -346,7 +346,7 @@ AI:  ✓ NFR-001 업데이트됨: 응답 시간 읽기 < 500ms, 쓰기 < 1s
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── plan.md    # 기술 구현 계획
 ```
 
@@ -422,7 +422,7 @@ AI:  기술 계획 생성 중...
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── tasks.md    # 작업 분해
 ```
 
@@ -939,7 +939,7 @@ You: /checklist security
 
 AI:  보안 체크리스트 생성 중...
 
-     ✓ .codexspec/specs/001-task-management/checklists/security.md 생성됨
+     ✓ .codexspec/specs/2026-0613-1200ab-task-management/checklists/security.md 생성됨
 
      ## 보안 요구사항 품질 체크리스트
 

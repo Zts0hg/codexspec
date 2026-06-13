@@ -152,7 +152,7 @@ The command shall determine output language in the following priority order:
 
 ### 审查报告保存位置
 
-`.codexspec/specs/001-pr-description-generator/review-spec.md`
+`.codexspec/specs/2026-0613-1200ab-pr-description-generator/review-spec.md`
 
 ---
 
@@ -327,7 +327,7 @@ The command shall determine output language in the following priority order:
 │  /codexspec:generate-spec                                                │
 │  ├─ 生成完整的 spec.md                                                   │
 │  ├─ 4 个用户故事，8 个功能需求，10 个测试用例                             │
-│  └─ 保存到 .codexspec/specs/001-pr-description-generator/spec.md         │
+│  └─ 保存到 .codexspec/specs/2026-0613-1200ab-pr-description-generator/spec.md         │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
@@ -353,7 +353,7 @@ The command shall determine output language in the following priority order:
 │  ├─ 更新技术实现计划                                                     │
 │  ├─ 9 个技术决策，包含 5 个新增决策                                      │
 │  ├─ 5 个实现阶段                                                         │
-│  └─ 保存到 .codexspec/specs/001-pr-description-generator/plan.md         │
+│  └─ 保存到 .codexspec/specs/2026-0613-1200ab-pr-description-generator/plan.md         │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼

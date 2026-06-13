@@ -197,7 +197,7 @@ Das `spec.md`-Dokument aus geklarten Anforderungen generieren. Dieser Befehl fun
 
 **Was es tut:**
 
-- Erstellt Verzeichnis `.codexspec/specs/{NNN}-{feature-name}/`
+- Erstellt Verzeichnis `.codexspec/specs/YYYY-MMDD-HHMMxx-{feature-name}/`
 - Generiert umfassendes `spec.md` mit:
   - Feature-Ueberblick und Ziele
   - User Stories mit Akzeptanzkriterien
@@ -211,7 +211,7 @@ Das `spec.md`-Dokument aus geklarten Anforderungen generieren. Dieser Befehl fun
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── spec.md
 ```
 
@@ -222,7 +222,7 @@ Sie: /codexspec:generate-spec
 
 KI:  Generiere Spezifikation...
 
-     ✓ Erstellt .codexspec/specs/001-task-management/spec.md
+     ✓ Erstellt .codexspec/specs/2026-0613-1200ab-task-management/spec.md
 
      Enthaltene Abschnitte:
      - Ueberblick: Task-Management fuer kleine Dev-Teams
@@ -346,7 +346,7 @@ Die Feature-Spezifikation in einen technischen Implementierungsplan konvertieren
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── plan.md    # Technischer Implementierungsplan
 ```
 
@@ -422,7 +422,7 @@ Den technischen Plan in atomare, umsetzbare Aufgaben mit TDD-Erzwingung aufteile
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── tasks.md    # Aufgabenaufteilung
 ```
 
@@ -939,7 +939,7 @@ Sie: /codexspec:checklist security
 
 KI:  Generiere Security-Checkliste...
 
-     ✓ Erstellt .codexspec/specs/001-task-management/checklists/security.md
+     ✓ Erstellt .codexspec/specs/2026-0613-1200ab-task-management/checklists/security.md
 
      ## Security-Anforderungen Qualitaetscheckliste
 

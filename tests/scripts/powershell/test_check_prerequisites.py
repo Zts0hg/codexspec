@@ -28,6 +28,7 @@ class TestCheckPrerequisites:
         assert "Usage:" in result.stdout
         assert "-Json" in result.stdout
         assert "-RequireTasks" in result.stdout
+        assert "-Feature" in result.stdout
 
     def test_fails_outside_feature_branch(
         self,
@@ -55,7 +56,7 @@ class TestCheckPrerequisites:
         """Fails when feature directory is missing."""
         # Create and checkout a feature branch
         subprocess.run(
-            ["git", "checkout", "-b", "001-test-feature"],
+            ["git", "checkout", "-b", "2026-0613-1200ab-test-feature"],
             cwd=temp_codexspec_git_project,
             check=True,
             capture_output=True,
@@ -79,12 +80,12 @@ class TestCheckPrerequisites:
         """Fails when plan.md is missing."""
         # Create feature branch and directory
         subprocess.run(
-            ["git", "checkout", "-b", "002-test-feature"],
+            ["git", "checkout", "-b", "2026-0613-1201ab-test-feature"],
             cwd=temp_codexspec_git_project,
             check=True,
             capture_output=True,
         )
-        feature_dir = temp_codexspec_git_project / ".codexspec" / "specs" / "002-test-feature"
+        feature_dir = temp_codexspec_git_project / ".codexspec" / "specs" / "2026-0613-1201ab-test-feature"
         feature_dir.mkdir(parents=True)
 
         script_path = powershell_scripts_dir / "check-prerequisites.ps1"
@@ -105,12 +106,12 @@ class TestCheckPrerequisites:
         """Fails when -RequireTasks and tasks.md is missing."""
         # Create feature branch, directory, and plan.md
         subprocess.run(
-            ["git", "checkout", "-b", "003-test-feature"],
+            ["git", "checkout", "-b", "2026-0613-1202ab-test-feature"],
             cwd=temp_codexspec_git_project,
             check=True,
             capture_output=True,
         )
-        feature_dir = temp_codexspec_git_project / ".codexspec" / "specs" / "003-test-feature"
+        feature_dir = temp_codexspec_git_project / ".codexspec" / "specs" / "2026-0613-1202ab-test-feature"
         feature_dir.mkdir(parents=True)
         (feature_dir / "plan.md").write_text("# Plan")
 
@@ -132,7 +133,7 @@ class TestCheckPrerequisites:
         """-PathsOnly outputs paths without validation."""
         # Create and checkout a feature branch
         subprocess.run(
-            ["git", "checkout", "-b", "004-test-feature"],
+            ["git", "checkout", "-b", "2026-0613-1203ab-test-feature"],
             cwd=temp_codexspec_git_project,
             check=True,
             capture_output=True,
@@ -149,8 +150,8 @@ class TestCheckPrerequisites:
         assert "REPO_ROOT:" in result.stdout
         assert "BRANCH:" in result.stdout
         assert "FEATURE_DIR:" in result.stdout
-        # Check that branch reflects our feature branch (004-test-feature)
-        assert "004-test-feature" in result.stdout
+        assert "REQUIREMENTS:" in result.stdout
+        assert "2026-0613-1203ab-test-feature" in result.stdout
 
     def test_paths_only_json_mode(
         self,
@@ -160,7 +161,7 @@ class TestCheckPrerequisites:
         """-PathsOnly -Json outputs JSON format."""
         # Create and checkout a feature branch
         subprocess.run(
-            ["git", "checkout", "-b", "005-test-feature"],
+            ["git", "checkout", "-b", "2026-0613-1204ab-test-feature"],
             cwd=temp_codexspec_git_project,
             check=True,
             capture_output=True,
@@ -180,8 +181,9 @@ class TestCheckPrerequisites:
         assert "REPO_ROOT" in output
         assert "BRANCH" in output
         assert "FEATURE_DIR" in output
+        assert "REQUIREMENTS" in output
         # Check that branch reflects our feature branch
-        assert output["BRANCH"] == "005-test-feature"
+        assert output["BRANCH"] == "2026-0613-1204ab-test-feature"
 
     def test_success_with_plan(
         self,
@@ -191,12 +193,12 @@ class TestCheckPrerequisites:
         """Succeeds when feature dir and plan.md exist."""
         # Create feature branch, directory, and plan.md
         subprocess.run(
-            ["git", "checkout", "-b", "006-test-feature"],
+            ["git", "checkout", "-b", "2026-0613-1205ab-test-feature"],
             cwd=temp_codexspec_git_project,
             check=True,
             capture_output=True,
         )
-        feature_dir = temp_codexspec_git_project / ".codexspec" / "specs" / "006-test-feature"
+        feature_dir = temp_codexspec_git_project / ".codexspec" / "specs" / "2026-0613-1205ab-test-feature"
         feature_dir.mkdir(parents=True)
         (feature_dir / "plan.md").write_text("# Plan")
 
@@ -219,12 +221,12 @@ class TestCheckPrerequisites:
         """-Json outputs valid JSON with feature info."""
         # Create feature branch, directory, and plan.md
         subprocess.run(
-            ["git", "checkout", "-b", "007-test-feature"],
+            ["git", "checkout", "-b", "2026-0613-1206ab-test-feature"],
             cwd=temp_codexspec_git_project,
             check=True,
             capture_output=True,
         )
-        feature_dir = temp_codexspec_git_project / ".codexspec" / "specs" / "007-test-feature"
+        feature_dir = temp_codexspec_git_project / ".codexspec" / "specs" / "2026-0613-1206ab-test-feature"
         feature_dir.mkdir(parents=True)
         (feature_dir / "plan.md").write_text("# Plan")
 
@@ -239,8 +241,65 @@ class TestCheckPrerequisites:
 
         output = json.loads(result.stdout)
         assert "FEATURE_DIR" in output
+        assert "REQUIREMENTS" in output
+        assert "FEATURE_SPEC" in output
+        assert "IMPL_PLAN" in output
+        assert "TASKS" in output
         assert "AVAILABLE_DOCS" in output
         assert isinstance(output["AVAILABLE_DOCS"], list)
+
+    def test_explicit_feature_path(
+        self,
+        powershell_scripts_dir: Path,
+        temp_codexspec_project: Path,
+    ):
+        """-Feature resolves an explicit feature directory without branch inference."""
+        feature_dir = temp_codexspec_project / ".codexspec" / "specs" / "2026-0613-1207ab-explicit"
+        feature_dir.mkdir(parents=True)
+        (feature_dir / "requirements.md").write_text("# Requirements")
+        (feature_dir / "plan.md").write_text("# Plan")
+
+        script_path = powershell_scripts_dir / "check-prerequisites.ps1"
+        result = subprocess.run(
+            ["pwsh", "-File", str(script_path), "-Json", "-Feature", str(feature_dir)],
+            capture_output=True,
+            text=True,
+            cwd=temp_codexspec_project,
+        )
+        assert result.returncode == 0
+
+        output = json.loads(result.stdout)
+        assert Path(output["FEATURE_DIR"]).name == feature_dir.name
+        assert Path(output["REQUIREMENTS"]).name == "requirements.md"
+
+    def test_explicit_feature_id(
+        self,
+        powershell_scripts_dir: Path,
+        temp_codexspec_project: Path,
+    ):
+        """-Feature accepts a unique short feature ID."""
+        feature_dir = temp_codexspec_project / ".codexspec" / "specs" / "2026-0613-1208ab-short-id"
+        feature_dir.mkdir(parents=True)
+
+        script_path = powershell_scripts_dir / "check-prerequisites.ps1"
+        result = subprocess.run(
+            [
+                "pwsh",
+                "-File",
+                str(script_path),
+                "-PathsOnly",
+                "-Json",
+                "-Feature",
+                "2026-0613-1208ab",
+            ],
+            capture_output=True,
+            text=True,
+            cwd=temp_codexspec_project,
+        )
+        assert result.returncode == 0
+
+        output = json.loads(result.stdout)
+        assert Path(output["FEATURE_DIR"]).name == feature_dir.name
 
     def test_available_docs_list(
         self,
@@ -250,12 +309,12 @@ class TestCheckPrerequisites:
         """Lists available optional documents."""
         # Create feature branch with all optional docs
         subprocess.run(
-            ["git", "checkout", "-b", "008-test-feature"],
+            ["git", "checkout", "-b", "2026-0613-1209ab-test-feature"],
             cwd=temp_codexspec_git_project,
             check=True,
             capture_output=True,
         )
-        feature_dir = temp_codexspec_git_project / ".codexspec" / "specs" / "008-test-feature"
+        feature_dir = temp_codexspec_git_project / ".codexspec" / "specs" / "2026-0613-1209ab-test-feature"
         feature_dir.mkdir(parents=True)
         (feature_dir / "plan.md").write_text("# Plan")
         (feature_dir / "research.md").write_text("# Research")

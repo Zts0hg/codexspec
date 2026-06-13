@@ -152,7 +152,7 @@ The command shall determine output language in the following priority order:
 
 ### レビューレポートの保存場所
 
-`.codexspec/specs/001-pr-description-generator/review-spec.md`
+`.codexspec/specs/2026-0613-1200ab-pr-description-generator/review-spec.md`
 
 ---
 
@@ -327,7 +327,7 @@ The command shall determine output language in the following priority order:
 │  /codexspec:generate-spec                                                │
 │  ├─ 完全な spec.md を生成                                                │
 │  ├─ 4 つのユーザーストーリー、8 つの機能要件、10 のテストケース           │
-│  └─ .codexspec/specs/001-pr-description-generator/spec.md に保存         │
+│  └─ .codexspec/specs/2026-0613-1200ab-pr-description-generator/spec.md に保存         │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
@@ -353,7 +353,7 @@ The command shall determine output language in the following priority order:
 │  ├─ 技術実装計画を更新                                                   │
 │  ├─ 9 つの技術決定、5 つの新規決定を含む                                  │
 │  ├─ 5 つの実装フェーズ                                                   │
-│  └─ .codexspec/specs/001-pr-description-generator/plan.md に保存         │
+│  └─ .codexspec/specs/2026-0613-1200ab-pr-description-generator/plan.md に保存         │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼

@@ -197,7 +197,7 @@ Gerar o documento `spec.md` a partir dos requisitos esclarecidos. Este comando a
 
 **O que faz:**
 
-- Cria diretório `.codexspec/specs/{NNN}-{nome-funcionalidade}/`
+- Cria diretório `.codexspec/specs/YYYY-MMDD-HHMMxx-{nome-funcionalidade}/`
 - Gera `spec.md` abrangente com:
   - Visão geral e objetivos da funcionalidade
   - Histórias de usuário com critérios de aceitação
@@ -211,7 +211,7 @@ Gerar o documento `spec.md` a partir dos requisitos esclarecidos. Este comando a
 ```
 .codexspec/
 └── specs/
-    └── 001-gerenciamento-tarefas/
+    └── 2026-0613-1200ab-gerenciamento-tarefas/
         └── spec.md
 ```
 
@@ -222,7 +222,7 @@ Você: /codexspec:generate-spec
 
 AI:  Gerando especificação...
 
-     ✓ Criado .codexspec/specs/001-gerenciamento-tarefas/spec.md
+     ✓ Criado .codexspec/specs/2026-0613-1200ab-gerenciamento-tarefas/spec.md
 
      Seções incluídas:
      - Visão Geral: Gerenciamento de tarefas para pequenas equipes de dev
@@ -346,7 +346,7 @@ Converter a especificação da funcionalidade em um plano de implementação té
 ```
 .codexspec/
 └── specs/
-    └── 001-gerenciamento-tarefas/
+    └── 2026-0613-1200ab-gerenciamento-tarefas/
         └── plan.md    # Plano de implementação técnica
 ```
 
@@ -422,7 +422,7 @@ Dividir o plano técnico em tarefas atômicas e acionáveis com TDD obrigatório
 ```
 .codexspec/
 └── specs/
-    └── 001-gerenciamento-tarefas/
+    └── 2026-0613-1200ab-gerenciamento-tarefas/
         └── tasks.md    # Divisão de tarefas
 ```
 
@@ -939,7 +939,7 @@ Você: /codexspec:checklist security
 
 AI:  Gerando checklist de segurança...
 
-     ✓ Criado .codexspec/specs/001-gerenciamento-tarefas/checklists/security.md
+     ✓ Criado .codexspec/specs/2026-0613-1200ab-gerenciamento-tarefas/checklists/security.md
 
      ## Checklist de Qualidade de Requisitos de Segurança
 

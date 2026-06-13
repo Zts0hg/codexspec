@@ -1,6 +1,7 @@
 """Tests for scripts/powershell/create-new-feature.ps1."""
 
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -16,7 +17,7 @@ class TestCreateNewFeature:
     """Tests for create-new-feature.ps1 script."""
 
     def test_help_flag(self, powershell_scripts_dir: Path, tmp_path: Path):
-        """-Help displays help message."""
+        """-Help displays the current command interface."""
         script_path = powershell_scripts_dir / "create-new-feature.ps1"
         result = subprocess.run(
             ["pwsh", "-File", str(script_path), "-Help"],
@@ -28,7 +29,6 @@ class TestCreateNewFeature:
         assert "Usage:" in result.stdout
         assert "-Json" in result.stdout
         assert "-ShortName" in result.stdout
-        assert "-Number" in result.stdout
 
     def test_requires_description(self, powershell_scripts_dir: Path, tmp_path: Path):
         """Reports error when description is missing."""
@@ -41,10 +41,13 @@ class TestCreateNewFeature:
         )
         assert result.returncode != 0
 
-    def test_creates_feature_dir(self, powershell_scripts_dir: Path, temp_codexspec_project: Path):
-        """Creates feature directory with correct name."""
+    def test_creates_timestamp_feature_dir(
+        self,
+        powershell_scripts_dir: Path,
+        temp_codexspec_project: Path,
+    ):
+        """Creates a feature directory using the timestamp contract."""
         script_path = powershell_scripts_dir / "create-new-feature.ps1"
-        # Use -File to properly pass arguments
         result = subprocess.run(
             ["pwsh", "-File", str(script_path), "user authentication"],
             capture_output=True,
@@ -53,82 +56,13 @@ class TestCreateNewFeature:
         )
         assert result.returncode == 0
 
-        # Check feature directory was created
         specs_dir = temp_codexspec_project / ".codexspec" / "specs"
-        feature_dirs = list(specs_dir.glob("001-*"))
+        feature_dirs = list(specs_dir.glob("20??-????-??????-user-authentication"))
         assert len(feature_dirs) == 1
-
-    def test_creates_spec_file(self, powershell_scripts_dir: Path, temp_codexspec_project: Path):
-        """Creates spec.md file in feature directory."""
-        script_path = powershell_scripts_dir / "create-new-feature.ps1"
-        result = subprocess.run(
-            ["pwsh", "-File", str(script_path), "test feature"],
-            capture_output=True,
-            text=True,
-            cwd=temp_codexspec_project,
-        )
-        assert result.returncode == 0
-
-        # Check spec.md was created
-        specs_dir = temp_codexspec_project / ".codexspec" / "specs"
-        spec_file = list(specs_dir.glob("001-*/spec.md"))
-        assert len(spec_file) == 1
-        assert spec_file[0].exists()
-
-    def test_auto_number_first(self, powershell_scripts_dir: Path, temp_codexspec_project: Path):
-        """First feature gets number 001."""
-        script_path = powershell_scripts_dir / "create-new-feature.ps1"
-        result = subprocess.run(
-            ["pwsh", "-File", str(script_path), "first feature"],
-            capture_output=True,
-            text=True,
-            cwd=temp_codexspec_project,
-        )
-        assert result.returncode == 0
-        assert "FEATURE_NUM: 001" in result.stdout
-
-    def test_auto_number_increment(self, powershell_scripts_dir: Path, temp_codexspec_project: Path):
-        """Feature numbers increment automatically."""
-        script_path = powershell_scripts_dir / "create-new-feature.ps1"
-
-        # Create first feature
-        result1 = subprocess.run(
-            ["pwsh", "-File", str(script_path), "first feature"],
-            capture_output=True,
-            text=True,
-            cwd=temp_codexspec_project,
-        )
-        assert result1.returncode == 0
-        assert "FEATURE_NUM: 001" in result1.stdout
-
-        # Create second feature
-        result2 = subprocess.run(
-            ["pwsh", "-File", str(script_path), "second feature"],
-            capture_output=True,
-            text=True,
-            cwd=temp_codexspec_project,
-        )
-        assert result2.returncode == 0
-        assert "FEATURE_NUM: 002" in result2.stdout
-
-    def test_custom_number(self, powershell_scripts_dir: Path, temp_codexspec_project: Path):
-        """Custom number can be specified with -Number parameter."""
-        script_path = powershell_scripts_dir / "create-new-feature.ps1"
-        result = subprocess.run(
-            ["pwsh", "-File", str(script_path), "-Number", "42", "custom feature"],
-            capture_output=True,
-            text=True,
-            cwd=temp_codexspec_project,
-        )
-        assert result.returncode == 0
-        assert "FEATURE_NUM: 042" in result.stdout
-
-        # Check directory name
-        specs_dir = temp_codexspec_project / ".codexspec" / "specs"
-        assert any("042-" in d.name for d in specs_dir.iterdir())
+        assert (feature_dirs[0] / "requirements.md").exists()
 
     def test_json_output(self, powershell_scripts_dir: Path, temp_codexspec_project: Path):
-        """-Json outputs valid JSON format."""
+        """-Json outputs the generated feature ID and paths."""
         script_path = powershell_scripts_dir / "create-new-feature.ps1"
         result = subprocess.run(
             ["pwsh", "-File", str(script_path), "-Json", "json test feature"],
@@ -139,42 +73,40 @@ class TestCreateNewFeature:
         assert result.returncode == 0
 
         output = json.loads(result.stdout)
-        assert "BRANCH_NAME" in output
+        assert re.fullmatch(r"\d{4}-\d{4}-\d{4}[a-z0-9]{2}", output["FEATURE_ID"])
+        assert output["BRANCH_NAME"].startswith(f"{output['FEATURE_ID']}-")
+        assert "REQUIREMENTS_FILE" in output
         assert "SPEC_FILE" in output
-        assert "FEATURE_NUM" in output
-        assert output["FEATURE_NUM"] == "001"
 
     def test_short_name(self, powershell_scripts_dir: Path, temp_codexspec_project: Path):
-        """-ShortName parameter provides custom branch suffix."""
+        """-ShortName provides the branch suffix."""
         script_path = powershell_scripts_dir / "create-new-feature.ps1"
         result = subprocess.run(
-            ["pwsh", "-File", str(script_path), "-ShortName", "custom-auth", "user authentication system"],
+            [
+                "pwsh",
+                "-File",
+                str(script_path),
+                "-ShortName",
+                "custom-auth",
+                "user authentication system",
+            ],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
         )
         assert result.returncode == 0
-        assert "BRANCH_NAME:" in result.stdout
-        assert "custom-auth" in result.stdout
-
-    def test_branch_name_from_description(self, powershell_scripts_dir: Path, temp_codexspec_project: Path):
-        """Branch name is generated from description."""
-        script_path = powershell_scripts_dir / "create-new-feature.ps1"
-        result = subprocess.run(
-            ["pwsh", "-File", str(script_path), "Add user authentication"],
-            capture_output=True,
-            text=True,
-            cwd=temp_codexspec_project,
+        branch_line = next(line for line in result.stdout.splitlines() if line.startswith("BRANCH_NAME:"))
+        assert re.search(
+            r"\d{4}-\d{4}-\d{4}[a-z0-9]{2}-custom-auth$",
+            branch_line,
         )
-        assert result.returncode == 0
-        assert "BRANCH_NAME:" in result.stdout
-        # Branch name should contain meaningful words from description
-        branch_line = [line for line in result.stdout.split("\n") if "BRANCH_NAME:" in line][0]
-        # Check that the branch contains user or auth related words
-        assert any(word in branch_line.lower() for word in ["user", "auth"])
 
-    def test_creates_git_branch(self, powershell_scripts_dir: Path, temp_codexspec_git_project: Path):
-        """Creates git branch when in a git repository."""
+    def test_creates_git_branch(
+        self,
+        powershell_scripts_dir: Path,
+        temp_codexspec_git_project: Path,
+    ):
+        """Creates and checks out the generated feature branch."""
         script_path = powershell_scripts_dir / "create-new-feature.ps1"
         result = subprocess.run(
             ["pwsh", "-File", str(script_path), "git test feature"],
@@ -184,30 +116,23 @@ class TestCreateNewFeature:
         )
         assert result.returncode == 0
 
-        # Check git branch was created
         branch_result = subprocess.run(
-            ["git", "branch", "--list", "001-*"],
+            ["git", "branch", "--show-current"],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_git_project,
         )
-        # Branch name might differ due to word extraction
-        assert branch_result.stdout.strip() != ""
-
-    def test_no_git_warning(self, powershell_scripts_dir: Path, temp_codexspec_project: Path):
-        """Warns when git is not available but still creates feature."""
-        script_path = powershell_scripts_dir / "create-new-feature.ps1"
-        result = subprocess.run(
-            ["pwsh", "-File", str(script_path), "no git feature"],
-            capture_output=True,
-            text=True,
-            cwd=temp_codexspec_project,
+        assert re.fullmatch(
+            r"\d{4}-\d{4}-\d{4}[a-z0-9]{2}-git-test-feature\n?",
+            branch_result.stdout,
         )
-        assert result.returncode == 0
-        assert "HAS_GIT:" in result.stdout
 
-    def test_output_contains_branch_name(self, powershell_scripts_dir: Path, temp_codexspec_project: Path):
-        """Output contains BRANCH_NAME."""
+    def test_output_contains_feature_id(
+        self,
+        powershell_scripts_dir: Path,
+        temp_codexspec_project: Path,
+    ):
+        """Text output includes the generated feature ID."""
         script_path = powershell_scripts_dir / "create-new-feature.ps1"
         result = subprocess.run(
             ["pwsh", "-File", str(script_path), "output test"],
@@ -217,45 +142,35 @@ class TestCreateNewFeature:
         )
         assert result.returncode == 0
         assert "BRANCH_NAME:" in result.stdout
+        assert "REQUIREMENTS_FILE:" in result.stdout
         assert "SPEC_FILE:" in result.stdout
-        assert "FEATURE_NUM:" in result.stdout
+        assert re.search(
+            r"FEATURE_ID: \d{4}-\d{4}-\d{4}[a-z0-9]{2}",
+            result.stdout,
+        )
 
-    def test_existing_spec_directories_increment(self, powershell_scripts_dir: Path, temp_codexspec_project: Path):
-        """Number increments based on existing spec directories."""
+    def test_truncates_long_branch_name(
+        self,
+        powershell_scripts_dir: Path,
+        temp_codexspec_project: Path,
+    ):
+        """Truncation reserves space for the complete timestamp ID."""
         script_path = powershell_scripts_dir / "create-new-feature.ps1"
-
-        # Create a feature with explicit number 010
-        result1 = subprocess.run(
-            ["pwsh", "-File", str(script_path), "-Number", "10", "tenth feature"],
-            capture_output=True,
-            text=True,
-            cwd=temp_codexspec_project,
-        )
-        assert result1.returncode == 0
-
-        # Next feature should be 011
-        result2 = subprocess.run(
-            ["pwsh", "-File", str(script_path), "next feature"],
-            capture_output=True,
-            text=True,
-            cwd=temp_codexspec_project,
-        )
-        assert result2.returncode == 0
-        assert "FEATURE_NUM: 011" in result2.stdout
-
-    def test_truncates_long_branch_name(self, powershell_scripts_dir: Path, temp_codexspec_project: Path):
-        """Truncates branch names that exceed GitHub's limit."""
-        script_path = powershell_scripts_dir / "create-new-feature.ps1"
-        long_description = (
-            "This is a very long feature description that should result in "
-            "a branch name that needs to be truncated to fit within GitHub limits"
-        )
+        long_short_name = "a" * 300
         result = subprocess.run(
-            ["pwsh", "-File", str(script_path), long_description],
+            [
+                "pwsh",
+                "-File",
+                str(script_path),
+                "-ShortName",
+                long_short_name,
+                "long feature",
+            ],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
         )
         assert result.returncode == 0
-        # Branch name should be created (may be truncated)
-        assert "BRANCH_NAME:" in result.stdout
+        branch_line = next(line for line in result.stdout.splitlines() if line.startswith("BRANCH_NAME:"))
+        branch_name = branch_line.split(": ", 1)[1]
+        assert len(branch_name) <= 244

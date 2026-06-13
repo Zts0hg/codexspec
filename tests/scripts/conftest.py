@@ -8,6 +8,19 @@ from typing import Generator
 import pytest
 
 
+@pytest.fixture(autouse=True)
+def isolate_git_environment(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Prevent test Git commands from operating on the parent repository."""
+    for name in (
+        "GIT_DIR",
+        "GIT_WORK_TREE",
+        "GIT_INDEX_FILE",
+        "GIT_OBJECT_DIRECTORY",
+        "GIT_ALTERNATE_OBJECT_DIRECTORIES",
+    ):
+        monkeypatch.delenv(name, raising=False)
+
+
 @pytest.fixture
 def scripts_dir() -> Path:
     """Get the scripts source directory."""
@@ -45,14 +58,14 @@ def temp_git_repo(tmp_path: Path) -> Generator[Path, None, None]:
     )
     # Set default branch name to main for consistency
     subprocess.run(
-        ["git", "checkout", "-b", "main"],
+        ["git", "checkout", "-B", "main"],
         cwd=repo,
         check=True,
         capture_output=True,
     )
     # Create initial commit so git branch operations work properly
     subprocess.run(
-        ["git", "commit", "--allow-empty", "-m", "Initial commit"],
+        ["git", "commit", "--no-verify", "--allow-empty", "-m", "Initial commit"],
         cwd=repo,
         check=True,
         capture_output=True,
@@ -85,14 +98,14 @@ def temp_codexspec_git_project(
     )
     # Set default branch name to main for consistency
     subprocess.run(
-        ["git", "checkout", "-b", "main"],
+        ["git", "checkout", "-B", "main"],
         cwd=project,
         check=True,
         capture_output=True,
     )
     # Create initial commit so git branch operations work properly
     subprocess.run(
-        ["git", "commit", "--allow-empty", "-m", "Initial commit"],
+        ["git", "commit", "--no-verify", "--allow-empty", "-m", "Initial commit"],
         cwd=project,
         check=True,
         capture_output=True,

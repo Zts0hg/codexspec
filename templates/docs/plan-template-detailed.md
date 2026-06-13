@@ -6,6 +6,7 @@ If not configured, use English.
 -->
 
 **Related Spec**: `.codexspec/specs/{feature-id}/spec.md`
+**Confirmed Requirements**: `.codexspec/specs/{feature-id}/requirements.md`
 **Created**: [DATE]
 **Status**: Draft
 
@@ -36,6 +37,8 @@ If not configured, use English.
 ## Architecture Overview
 
 [High-level architecture description]
+
+**Covers**: REQ-001, REQ-002
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -144,6 +147,10 @@ project/
 
 **Rationale**: [Why this option was chosen]
 
+**Covers**: REQ-001, REQ-003
+
+**Decision Level**: Plan-level technical decision; does not change confirmed product scope
+
 ### Decision 2: [Title]
 
 **Context**: ...
@@ -203,3 +210,9 @@ project/
 - [Metrics to track]
 - [Logs to capture]
 - [Alerts to configure]
+
+## Requirements Coverage
+
+| Spec Requirement | Plan Coverage | Reference |
+|------------------|---------------|-----------|
+| REQ-001 | Full | Architecture / Decision 1 / Phase 2 |

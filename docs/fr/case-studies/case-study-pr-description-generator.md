@@ -152,7 +152,7 @@ La commande doit determiner la langue de sortie dans l'ordre de priorite suivant
 
 ### Emplacement de Sauvegarde du Rapport de Revision
 
-`.codexspec/specs/001-pr-description-generator/review-spec.md`
+`.codexspec/specs/2026-0613-1200ab-pr-description-generator/review-spec.md`
 
 ---
 
@@ -327,7 +327,7 @@ Nouvelle conception : --spec (activer spec, opt-in)
 |  /codexspec:generate-spec                                                |
 |  |-- Generer le spec.md complet                                         |
 |  |-- 4 recits utilisateur, 8 exigences fonctionnelles, 10 cas de test   |
-|  |-- Sauvegarde dans .codexspec/specs/001-pr-description-generator/spec.md |
+|  |-- Sauvegarde dans .codexspec/specs/2026-0613-1200ab-pr-description-generator/spec.md |
 +-------------------------------------------------------------------------+
                                     |
                                     v
@@ -353,7 +353,7 @@ Nouvelle conception : --spec (activer spec, opt-in)
 |  |-- Mise a jour du plan d'implementation technique                     |
 |  |-- 9 decisions techniques, incluant 5 nouvelles decisions             |
 |  |-- 5 phases d'implementation                                          |
-|  |-- Sauvegarde dans .codexspec/specs/001-pr-description-generator/plan.md |
+|  |-- Sauvegarde dans .codexspec/specs/2026-0613-1200ab-pr-description-generator/plan.md |
 +-------------------------------------------------------------------------+
                                     |
                                     v

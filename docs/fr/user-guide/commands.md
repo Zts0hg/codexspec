@@ -197,7 +197,7 @@ Generer le document `spec.md` a partir des exigences clarifiees. Cette commande 
 
 **Ce qu'il fait :**
 
-- Cree le repertoire `.codexspec/specs/{NNN}-{nom-fonctionnalite}/`
+- Cree le repertoire `.codexspec/specs/YYYY-MMDD-HHMMxx-{nom-fonctionnalite}/`
 - Genere un `spec.md` complet avec :
   - Apercu de la fonctionnalite et objectifs
   - Recits utilisateur avec criteres d'acceptation
@@ -211,7 +211,7 @@ Generer le document `spec.md` a partir des exigences clarifiees. Cette commande 
 ```
 .codexspec/
 +-- specs/
-    +-- 001-task-management/
+    +-- 2026-0613-1200ab-task-management/
         +-- spec.md
 ```
 
@@ -222,7 +222,7 @@ Vous : /codexspec:generate-spec
 
 AI  : Generation de la specification...
 
-     + Cree .codexspec/specs/001-task-management/spec.md
+     + Cree .codexspec/specs/2026-0613-1200ab-task-management/spec.md
 
      Sections incluses :
      - Apercu : Gestion de taches pour petites equipes de dev
@@ -346,7 +346,7 @@ Convertir la specification de fonctionnalite en plan d'implementation technique.
 ```
 .codexspec/
 +-- specs/
-    +-- 001-task-management/
+    +-- 2026-0613-1200ab-task-management/
         +-- plan.md    # Plan d'implementation technique
 ```
 
@@ -422,7 +422,7 @@ Decomposer le plan technique en taches atomiques et actionnables avec applicatio
 ```
 .codexspec/
 +-- specs/
-    +-- 001-task-management/
+    +-- 2026-0613-1200ab-task-management/
         +-- tasks.md    # Decomposition des taches
 ```
 
@@ -939,7 +939,7 @@ Vous : /codexspec:checklist securite
 
 AI  : Generation de la liste de controle securite...
 
-     + Cree .codexspec/specs/001-task-management/checklists/security.md
+     + Cree .codexspec/specs/2026-0613-1200ab-task-management/checklists/security.md
 
      ## Liste de Controle de Qualite des Exigences de Securite
 
