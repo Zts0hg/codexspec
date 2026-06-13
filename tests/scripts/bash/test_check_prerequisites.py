@@ -113,3 +113,95 @@ source "{script_path}"
 ''')
         # This test is conceptual - in practice the script will find python3
         # The actual behavior would require modifying PATH or mocking
+
+    def test_paths_only_accepts_explicit_artifact_path(
+        self,
+        bash_scripts_dir: Path,
+        temp_codexspec_project: Path,
+    ):
+        """An explicit artifact path resolves its parent feature directory."""
+        feature_dir = temp_codexspec_project / ".codexspec" / "specs" / "2026-0613-1200ab-test"
+        feature_dir.mkdir(parents=True)
+        spec_file = feature_dir / "spec.md"
+        spec_file.write_text("# Spec", encoding="utf-8")
+
+        script_path = bash_scripts_dir / "check-prerequisites.sh"
+        result = subprocess.run(
+            [
+                "bash",
+                str(script_path),
+                "--paths-only",
+                "--json",
+                "--feature",
+                str(spec_file),
+            ],
+            capture_output=True,
+            text=True,
+            cwd=temp_codexspec_project,
+        )
+
+        assert result.returncode == 0
+        assert f'"FEATURE_DIR":"{feature_dir}"' in result.stdout
+        assert f'"REQUIREMENTS":"{feature_dir / "requirements.md"}"' in result.stdout
+
+    def test_paths_only_rejects_ambiguous_features(
+        self,
+        bash_scripts_dir: Path,
+        temp_codexspec_project: Path,
+    ):
+        """Multiple candidates require an explicit feature selection."""
+        specs_dir = temp_codexspec_project / ".codexspec" / "specs"
+        (specs_dir / "001-first").mkdir()
+        (specs_dir / "2026-0613-1200ab-second").mkdir()
+
+        script_path = bash_scripts_dir / "check-prerequisites.sh"
+        result = subprocess.run(
+            ["bash", str(script_path), "--paths-only"],
+            capture_output=True,
+            text=True,
+            cwd=temp_codexspec_project,
+        )
+
+        assert result.returncode != 0
+        assert "Pass --feature explicitly" in result.stdout
+
+    def test_paths_only_resolves_unique_feature_id(
+        self,
+        bash_scripts_dir: Path,
+        temp_codexspec_project: Path,
+    ):
+        """A unique short feature ID resolves to its full directory name."""
+        feature_dir = temp_codexspec_project / ".codexspec" / "specs" / "042-short-id"
+        feature_dir.mkdir(parents=True)
+
+        script_path = bash_scripts_dir / "check-prerequisites.sh"
+        result = subprocess.run(
+            ["bash", str(script_path), "--paths-only", "--json", "--feature", "042"],
+            capture_output=True,
+            text=True,
+            cwd=temp_codexspec_project,
+        )
+
+        assert result.returncode == 0
+        assert f'"FEATURE_DIR":"{feature_dir}"' in result.stdout
+
+    def test_paths_only_rejects_ambiguous_feature_id(
+        self,
+        bash_scripts_dir: Path,
+        temp_codexspec_project: Path,
+    ):
+        """A short ID must not select arbitrarily between multiple matches."""
+        specs_dir = temp_codexspec_project / ".codexspec" / "specs"
+        (specs_dir / "042-first").mkdir()
+        (specs_dir / "042-second").mkdir()
+
+        script_path = bash_scripts_dir / "check-prerequisites.sh"
+        result = subprocess.run(
+            ["bash", str(script_path), "--paths-only", "--feature", "042"],
+            capture_output=True,
+            text=True,
+            cwd=temp_codexspec_project,
+        )
+
+        assert result.returncode != 0
+        assert "Multiple feature directories match ID" in result.stdout

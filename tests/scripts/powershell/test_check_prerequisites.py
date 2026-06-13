@@ -28,6 +28,7 @@ class TestCheckPrerequisites:
         assert "Usage:" in result.stdout
         assert "-Json" in result.stdout
         assert "-RequireTasks" in result.stdout
+        assert "-Feature" in result.stdout
 
     def test_fails_outside_feature_branch(
         self,
@@ -149,6 +150,7 @@ class TestCheckPrerequisites:
         assert "REPO_ROOT:" in result.stdout
         assert "BRANCH:" in result.stdout
         assert "FEATURE_DIR:" in result.stdout
+        assert "REQUIREMENTS:" in result.stdout
         # Check that branch reflects our feature branch (004-test-feature)
         assert "004-test-feature" in result.stdout
 
@@ -180,6 +182,7 @@ class TestCheckPrerequisites:
         assert "REPO_ROOT" in output
         assert "BRANCH" in output
         assert "FEATURE_DIR" in output
+        assert "REQUIREMENTS" in output
         # Check that branch reflects our feature branch
         assert output["BRANCH"] == "005-test-feature"
 
@@ -239,8 +242,57 @@ class TestCheckPrerequisites:
 
         output = json.loads(result.stdout)
         assert "FEATURE_DIR" in output
+        assert "REQUIREMENTS" in output
+        assert "FEATURE_SPEC" in output
+        assert "IMPL_PLAN" in output
+        assert "TASKS" in output
         assert "AVAILABLE_DOCS" in output
         assert isinstance(output["AVAILABLE_DOCS"], list)
+
+    def test_explicit_feature_path(
+        self,
+        powershell_scripts_dir: Path,
+        temp_codexspec_project: Path,
+    ):
+        """-Feature resolves an explicit feature directory without branch inference."""
+        feature_dir = temp_codexspec_project / ".codexspec" / "specs" / "202606131230001234-explicit"
+        feature_dir.mkdir(parents=True)
+        (feature_dir / "requirements.md").write_text("# Requirements")
+        (feature_dir / "plan.md").write_text("# Plan")
+
+        script_path = powershell_scripts_dir / "check-prerequisites.ps1"
+        result = subprocess.run(
+            ["pwsh", "-File", str(script_path), "-Json", "-Feature", str(feature_dir)],
+            capture_output=True,
+            text=True,
+            cwd=temp_codexspec_project,
+        )
+        assert result.returncode == 0
+
+        output = json.loads(result.stdout)
+        assert Path(output["FEATURE_DIR"]).name == feature_dir.name
+        assert Path(output["REQUIREMENTS"]).name == "requirements.md"
+
+    def test_explicit_feature_id(
+        self,
+        powershell_scripts_dir: Path,
+        temp_codexspec_project: Path,
+    ):
+        """-Feature accepts a unique short feature ID."""
+        feature_dir = temp_codexspec_project / ".codexspec" / "specs" / "042-short-id"
+        feature_dir.mkdir(parents=True)
+
+        script_path = powershell_scripts_dir / "check-prerequisites.ps1"
+        result = subprocess.run(
+            ["pwsh", "-File", str(script_path), "-PathsOnly", "-Json", "-Feature", "042"],
+            capture_output=True,
+            text=True,
+            cwd=temp_codexspec_project,
+        )
+        assert result.returncode == 0
+
+        output = json.loads(result.stdout)
+        assert Path(output["FEATURE_DIR"]).name == feature_dir.name
 
     def test_available_docs_list(
         self,

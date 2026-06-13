@@ -72,41 +72,39 @@ class TestCreateNewFeature:
         assert len(feature_dirs) == 1
         assert "user-authentication" in feature_dirs[0].name
 
-    def test_creates_spec_file(self, bash_scripts_dir: Path, temp_codexspec_project: Path):
-        """Creates spec.md file in feature directory."""
+    def test_creates_requirements_file(self, bash_scripts_dir: Path, temp_codexspec_project: Path):
+        """Creates requirements.md as the first feature artifact."""
         script_path = bash_scripts_dir / "create-new-feature.sh"
         result = subprocess.run(
-            ["bash", str(script_path), "-n", "test feature"],
+            ["bash", str(script_path), "-n", "test feature", "-i", "042"],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
         )
         assert result.returncode == 0
 
-        # Check spec.md was created
         specs_dir = temp_codexspec_project / ".codexspec" / "specs"
-        spec_file = list(specs_dir.glob("001-*/spec.md"))
-        assert len(spec_file) == 1
-        assert spec_file[0].exists()
+        requirements_file = specs_dir / "042-test-feature" / "requirements.md"
+        assert requirements_file.exists()
+        content = requirements_file.read_text(encoding="utf-8")
+        assert "NEED-" in content
+        assert "confirmed" in content
 
-    def test_spec_file_content(self, bash_scripts_dir: Path, temp_codexspec_project: Path):
-        """Spec file contains expected template content."""
+    def test_timestamp_id_mode(self, bash_scripts_dir: Path, temp_codexspec_project: Path):
+        """Timestamp mode creates a current-format feature identifier."""
         script_path = bash_scripts_dir / "create-new-feature.sh"
         result = subprocess.run(
-            ["bash", str(script_path), "-n", "test feature"],
+            ["bash", str(script_path), "-n", "test feature", "--timestamp-id"],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
         )
         assert result.returncode == 0
 
-        # Check spec.md content
         specs_dir = temp_codexspec_project / ".codexspec" / "specs"
-        spec_file = list(specs_dir.glob("001-*/spec.md"))[0]
-        content = spec_file.read_text()
-        assert "# Feature:" in content
-        assert "## Overview" in content
-        assert "## Goals" in content
+        feature_dirs = list(specs_dir.glob("20??-????-??????-test-feature"))
+        assert len(feature_dirs) == 1
+        assert (feature_dirs[0] / "requirements.md").exists()
 
     def test_auto_id_first(self, bash_scripts_dir: Path, temp_codexspec_project: Path):
         """First feature gets ID 001."""
@@ -206,7 +204,7 @@ class TestCreateNewFeature:
         assert "[INFO]" in result.stdout
         assert "[SUCCESS]" in result.stdout
         assert "Created feature directory" in result.stdout
-        assert "Created initial spec file" in result.stdout
+        assert "Created requirements record" in result.stdout
 
     def test_next_steps_guidance(self, bash_scripts_dir: Path, temp_codexspec_project: Path):
         """Provides next steps guidance after creation."""
@@ -219,4 +217,4 @@ class TestCreateNewFeature:
         )
         assert result.returncode == 0
         assert "Next steps:" in result.stdout
-        assert "Edit the spec file" in result.stdout
+        assert "Confirm the requirements record" in result.stdout

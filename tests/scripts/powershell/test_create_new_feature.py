@@ -1,6 +1,7 @@
 """Tests for scripts/powershell/create-new-feature.ps1."""
 
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -29,6 +30,7 @@ class TestCreateNewFeature:
         assert "-Json" in result.stdout
         assert "-ShortName" in result.stdout
         assert "-Number" in result.stdout
+        assert "-TimestampId" in result.stdout
 
     def test_requires_description(self, powershell_scripts_dir: Path, tmp_path: Path):
         """Reports error when description is missing."""
@@ -58,8 +60,8 @@ class TestCreateNewFeature:
         feature_dirs = list(specs_dir.glob("001-*"))
         assert len(feature_dirs) == 1
 
-    def test_creates_spec_file(self, powershell_scripts_dir: Path, temp_codexspec_project: Path):
-        """Creates spec.md file in feature directory."""
+    def test_creates_requirements_file(self, powershell_scripts_dir: Path, temp_codexspec_project: Path):
+        """Creates requirements.md in the feature directory."""
         script_path = powershell_scripts_dir / "create-new-feature.ps1"
         result = subprocess.run(
             ["pwsh", "-File", str(script_path), "test feature"],
@@ -69,11 +71,11 @@ class TestCreateNewFeature:
         )
         assert result.returncode == 0
 
-        # Check spec.md was created
+        # Requirement discussion is persisted before spec generation.
         specs_dir = temp_codexspec_project / ".codexspec" / "specs"
-        spec_file = list(specs_dir.glob("001-*/spec.md"))
-        assert len(spec_file) == 1
-        assert spec_file[0].exists()
+        requirements_file = list(specs_dir.glob("001-*/requirements.md"))
+        assert len(requirements_file) == 1
+        assert requirements_file[0].exists()
 
     def test_auto_number_first(self, powershell_scripts_dir: Path, temp_codexspec_project: Path):
         """First feature gets number 001."""
@@ -140,9 +142,48 @@ class TestCreateNewFeature:
 
         output = json.loads(result.stdout)
         assert "BRANCH_NAME" in output
+        assert "REQUIREMENTS_FILE" in output
         assert "SPEC_FILE" in output
         assert "FEATURE_NUM" in output
         assert output["FEATURE_NUM"] == "001"
+
+    def test_timestamp_id(self, powershell_scripts_dir: Path, temp_codexspec_project: Path):
+        """-TimestampId creates a collision-resistant timestamp feature ID."""
+        script_path = powershell_scripts_dir / "create-new-feature.ps1"
+        result = subprocess.run(
+            ["pwsh", "-File", str(script_path), "-TimestampId", "timestamp feature"],
+            capture_output=True,
+            text=True,
+            cwd=temp_codexspec_project,
+        )
+        assert result.returncode == 0
+
+        branch_line = [line for line in result.stdout.splitlines() if line.startswith("BRANCH_NAME:")][0]
+        assert re.search(r"\b\d{4}-\d{4}-\d{4}[a-z0-9]{2}-timestamp-feature\b", branch_line)
+
+    def test_timestamp_directory_does_not_change_legacy_numbering(
+        self,
+        powershell_scripts_dir: Path,
+        temp_codexspec_project: Path,
+    ):
+        """Timestamp IDs are excluded from legacy NNN auto-numbering."""
+        script_path = powershell_scripts_dir / "create-new-feature.ps1"
+        timestamp_result = subprocess.run(
+            ["pwsh", "-File", str(script_path), "-TimestampId", "timestamp feature"],
+            capture_output=True,
+            text=True,
+            cwd=temp_codexspec_project,
+        )
+        assert timestamp_result.returncode == 0
+
+        numeric_result = subprocess.run(
+            ["pwsh", "-File", str(script_path), "numeric feature"],
+            capture_output=True,
+            text=True,
+            cwd=temp_codexspec_project,
+        )
+        assert numeric_result.returncode == 0
+        assert "FEATURE_NUM: 001" in numeric_result.stdout
 
     def test_short_name(self, powershell_scripts_dir: Path, temp_codexspec_project: Path):
         """-ShortName parameter provides custom branch suffix."""
@@ -217,6 +258,7 @@ class TestCreateNewFeature:
         )
         assert result.returncode == 0
         assert "BRANCH_NAME:" in result.stdout
+        assert "REQUIREMENTS_FILE:" in result.stdout
         assert "SPEC_FILE:" in result.stdout
         assert "FEATURE_NUM:" in result.stdout
 

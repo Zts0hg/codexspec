@@ -11,14 +11,31 @@ function Get-RepoRoot {
         # Git command failed
     }
 
-    # Fall back to script location for non-git repos
-    return (Resolve-Path (Join-Path $PSScriptRoot "../../..")).Path
+    # For non-git repos, walk upward from the current directory.
+    $current = (Resolve-Path ".").Path
+    while ($true) {
+        if (Test-Path (Join-Path $current ".codexspec") -PathType Container) {
+            return $current
+        }
+        $parent = Split-Path $current -Parent
+        if (-not $parent -or $parent -eq $current) {
+            break
+        }
+        $current = $parent
+    }
+
+    # Last-resort fallback for callers outside a project.
+    return (Resolve-Path (Join-Path $PSScriptRoot "../..")).Path
 }
 
 function Get-CurrentBranch {
     # First check if CODEXSPEC_FEATURE environment variable is set
     if ($env:CODEXSPEC_FEATURE) {
         return $env:CODEXSPEC_FEATURE
+    }
+
+    if ($env:SPECIFY_FEATURE) {
+        return $env:SPECIFY_FEATURE
     }
 
     # Then check git if available
@@ -31,26 +48,14 @@ function Get-CurrentBranch {
         # Git command failed
     }
 
-    # For non-git repos, try to find the latest feature directory
+    # For non-git repos, resolve only when exactly one feature exists.
     $repoRoot = Get-RepoRoot
     $specsDir = Join-Path $repoRoot ".codexspec/specs"
 
     if (Test-Path $specsDir) {
-        $latestFeature = ""
-        $highest = 0
-
-        Get-ChildItem -Path $specsDir -Directory | ForEach-Object {
-            if ($_.Name -match '^(\d{3})-') {
-                $num = [int]$matches[1]
-                if ($num -gt $highest) {
-                    $highest = $num
-                    $latestFeature = $_.Name
-                }
-            }
-        }
-
-        if ($latestFeature) {
-            return $latestFeature
+        $features = @(Get-ChildItem -Path $specsDir -Directory)
+        if ($features.Count -eq 1) {
+            return $features[0].Name
         }
     }
 
@@ -79,9 +84,11 @@ function Test-FeatureBranch {
         return $true
     }
 
-    if ($Branch -notmatch '^[0-9]{3}-') {
+    $legacyPattern = '^[0-9]{3}-'
+    $timestampPattern = '^[0-9]{4}-[0-9]{4}-[0-9]{4}[a-z0-9]{2}-'
+    if ($Branch -notmatch $legacyPattern -and $Branch -notmatch $timestampPattern) {
         Write-Output "ERROR: Not on a feature branch. Current branch: $Branch"
-        Write-Output "Feature branches should be named like: 001-feature-name"
+        Write-Output "Feature branches should use NNN-name or YYYY-MMDD-HHMMxx-name"
         return $false
     }
     return $true
@@ -93,10 +100,38 @@ function Get-FeatureDir {
 }
 
 function Get-FeaturePathsEnv {
+    param([string]$Feature)
+
     $repoRoot = Get-RepoRoot
     $currentBranch = Get-CurrentBranch
     $hasGit = Test-HasGit
-    $featureDir = Get-FeatureDir -RepoRoot $repoRoot -Branch $currentBranch
+    if ($Feature) {
+        if (Test-Path $Feature -PathType Container) {
+            $featureDir = (Resolve-Path $Feature).Path
+        } elseif (Test-Path $Feature -PathType Leaf) {
+            $featureDir = (Resolve-Path (Split-Path $Feature -Parent)).Path
+        } else {
+            $candidate = Join-Path $repoRoot ".codexspec/specs/$Feature"
+            if (Test-Path $candidate -PathType Container) {
+                $featureDir = (Resolve-Path $candidate).Path
+            } else {
+                $specsDir = Join-Path $repoRoot ".codexspec/specs"
+                $matches = @(
+                    Get-ChildItem -Path $specsDir -Directory -ErrorAction SilentlyContinue |
+                        Where-Object { $_.Name.StartsWith("$Feature-", [System.StringComparison]::Ordinal) }
+                )
+                if ($matches.Count -eq 1) {
+                    $featureDir = $matches[0].FullName
+                } elseif ($matches.Count -gt 1) {
+                    throw "Multiple feature directories match ID '$Feature'. Pass a full directory or artifact path."
+                } else {
+                    throw "Feature directory not found: $Feature"
+                }
+            }
+        }
+    } else {
+        $featureDir = Get-FeatureDir -RepoRoot $repoRoot -Branch $currentBranch
+    }
 
     [PSCustomObject]@{
         REPO_ROOT     = $repoRoot
@@ -106,6 +141,7 @@ function Get-FeaturePathsEnv {
         FEATURE_SPEC  = Join-Path $featureDir 'spec.md'
         IMPL_PLAN     = Join-Path $featureDir 'plan.md'
         TASKS         = Join-Path $featureDir 'tasks.md'
+        REQUIREMENTS  = Join-Path $featureDir 'requirements.md'
         RESEARCH      = Join-Path $featureDir 'research.md'
         DATA_MODEL    = Join-Path $featureDir 'data-model.md'
         QUICKSTART    = Join-Path $featureDir 'quickstart.md'

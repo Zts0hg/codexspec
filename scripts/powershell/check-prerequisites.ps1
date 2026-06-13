@@ -17,6 +17,7 @@ param(
     [switch]$RequireTasks,
     [switch]$IncludeTasks,
     [switch]$PathsOnly,
+    [string]$Feature,
     [switch]$Help
 )
 
@@ -34,6 +35,7 @@ OPTIONS:
   -RequireTasks       Require tasks.md to exist (for implementation phase)
   -IncludeTasks       Include tasks.md in AVAILABLE_DOCS list
   -PathsOnly          Only output path variables (no prerequisite validation)
+  -Feature PATH|ID    Resolve an explicit feature directory, artifact, or ID
   -Help, -h           Show this help message
 
 EXAMPLES:
@@ -54,9 +56,9 @@ EXAMPLES:
 . "$PSScriptRoot/common.ps1"
 
 # Get feature paths and validate branch
-$paths = Get-FeaturePathsEnv
+$paths = Get-FeaturePathsEnv -Feature $Feature
 
-if (-not (Test-FeatureBranch -Branch $paths.CURRENT_BRANCH -HasGit:$paths.HAS_GIT)) {
+if (-not $Feature -and -not (Test-FeatureBranch -Branch $paths.CURRENT_BRANCH -HasGit:$paths.HAS_GIT)) {
     exit 1
 }
 
@@ -70,6 +72,7 @@ if ($PathsOnly) {
             FEATURE_SPEC = $paths.FEATURE_SPEC
             IMPL_PLAN    = $paths.IMPL_PLAN
             TASKS        = $paths.TASKS
+            REQUIREMENTS = $paths.REQUIREMENTS
         } | ConvertTo-Json -Compress
     } else {
         Write-Output "REPO_ROOT: $($paths.REPO_ROOT)"
@@ -78,6 +81,7 @@ if ($PathsOnly) {
         Write-Output "FEATURE_SPEC: $($paths.FEATURE_SPEC)"
         Write-Output "IMPL_PLAN: $($paths.IMPL_PLAN)"
         Write-Output "TASKS: $($paths.TASKS)"
+        Write-Output "REQUIREMENTS: $($paths.REQUIREMENTS)"
     }
     exit 0
 }
@@ -106,6 +110,7 @@ if ($RequireTasks -and -not (Test-Path $paths.TASKS -PathType Leaf)) {
 $docs = @()
 
 # Always check these optional docs
+if (Test-Path $paths.REQUIREMENTS) { $docs += 'requirements.md' }
 if (Test-Path $paths.RESEARCH) { $docs += 'research.md' }
 if (Test-Path $paths.DATA_MODEL) { $docs += 'data-model.md' }
 
@@ -125,12 +130,20 @@ if ($IncludeTasks -and (Test-Path $paths.TASKS)) {
 if ($Json) {
     # JSON output
     [PSCustomObject]@{
-        FEATURE_DIR = $paths.FEATURE_DIR
+        FEATURE_DIR    = $paths.FEATURE_DIR
+        REQUIREMENTS   = $paths.REQUIREMENTS
+        FEATURE_SPEC   = $paths.FEATURE_SPEC
+        IMPL_PLAN      = $paths.IMPL_PLAN
+        TASKS          = $paths.TASKS
         AVAILABLE_DOCS = $docs
     } | ConvertTo-Json -Compress
 } else {
     # Text output
     Write-Output "FEATURE_DIR:$($paths.FEATURE_DIR)"
+    Write-Output "REQUIREMENTS:$($paths.REQUIREMENTS)"
+    Write-Output "FEATURE_SPEC:$($paths.FEATURE_SPEC)"
+    Write-Output "IMPL_PLAN:$($paths.IMPL_PLAN)"
+    Write-Output "TASKS:$($paths.TASKS)"
     Write-Output "AVAILABLE_DOCS:"
 
     # Show status of each potential document

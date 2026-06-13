@@ -50,6 +50,25 @@ class TestGetRepoRoot:
         # Should return some path (fallback to script location)
         assert result.stdout.strip() != ""
 
+    def test_get_repo_root_codexspec_project(
+        self,
+        powershell_scripts_dir: Path,
+        temp_codexspec_project: Path,
+    ):
+        """Non-git projects resolve from the current .codexspec ancestor."""
+        result = subprocess.run(
+            [
+                "pwsh",
+                "-Command",
+                f'. "{powershell_scripts_dir}/common.ps1"; Get-RepoRoot',
+            ],
+            capture_output=True,
+            text=True,
+            cwd=temp_codexspec_project,
+        )
+        expected = str(temp_codexspec_project).replace("\\", "/")
+        assert result.stdout.strip().replace("\\", "/") == expected
+
 
 @pytest.mark.skipif(
     sys.platform != "win32",
@@ -68,6 +87,17 @@ class TestGetCurrentBranch:
             cwd=tmp_path,
         )
         assert "001-test-feature" in result.stdout
+
+    def test_get_current_branch_legacy_env(self, powershell_scripts_dir: Path, tmp_path: Path):
+        """SPECIFY_FEATURE remains supported for legacy integrations."""
+        cmd = f'$env:SPECIFY_FEATURE = "002-legacy-feature"; . "{powershell_scripts_dir}/common.ps1"; Get-CurrentBranch'
+        result = subprocess.run(
+            ["pwsh", "-Command", cmd],
+            capture_output=True,
+            text=True,
+            cwd=tmp_path,
+        )
+        assert "002-legacy-feature" in result.stdout
 
     def test_get_current_branch_git(self, powershell_scripts_dir: Path, temp_git_repo: Path):
         """Get branch from git."""
@@ -230,6 +260,7 @@ class TestGetFeaturePathsEnv:
                     f'. "{powershell_scripts_dir}/common.ps1"; '
                     f"$paths = Get-FeaturePathsEnv; "
                     f"Write-Output $paths.FEATURE_DIR; "
+                    f"Write-Output $paths.REQUIREMENTS; "
                     f"Write-Output $paths.FEATURE_SPEC; "
                     f"Write-Output $paths.IMPL_PLAN; "
                     f"Write-Output $paths.TASKS"
@@ -242,6 +273,7 @@ class TestGetFeaturePathsEnv:
         # Normalize paths for cross-platform comparison
         normalized_output = result.stdout.replace("\\", "/")
         assert ".codexspec/specs/003-test-feature" in normalized_output
+        assert "requirements.md" in normalized_output
         assert "spec.md" in normalized_output
         assert "plan.md" in normalized_output
         assert "tasks.md" in normalized_output

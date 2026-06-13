@@ -8,7 +8,7 @@ If not configured, use English.
 **Input**: Design documents from `.codexspec/specs/{feature-id}/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories)
 
-**Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
+**Tests**: Tests are required when the constitution, specification, plan, or established repository workflow requires them. Use test-first ordering only when that policy applies; otherwise include the verification work appropriate to the change.
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
@@ -17,6 +17,8 @@ If not configured, use English.
 - **[P]**: Can run in parallel (different files, no dependencies)
 - **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
 - Include exact file paths in descriptions
+- Each task must produce a single verifiable outcome. A task may touch multiple tightly related files when splitting them would make the result unverifiable or create artificial coordination.
+- Add `Covers: REQ-xxx; Plan: <component/phase>` to preserve traceability.
 
 ## Path Conventions
 
@@ -60,9 +62,9 @@ If not configured, use English.
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 1 (OPTIONAL - only if tests requested)
+### Verification for User Story 1
 
-> **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
+> **NOTE**: When test-first is required, write these tests first and verify the expected failure.
 
 - [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
 - [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
@@ -76,6 +78,8 @@ If not configured, use English.
 - [ ] T016 [US1] Add validation and error handling
 - [ ] T017 [US1] Add logging for user story 1 operations
 
+**Traceability**: Covers REQ-001, REQ-002; Plan: Core service and interface
+
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
 ---
@@ -86,7 +90,7 @@ If not configured, use English.
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 2 (OPTIONAL - only if tests requested)
+### Verification for User Story 2
 
 - [ ] T018 [P] [US2] Contract test for [endpoint] in tests/contract/test_[name].py
 - [ ] T019 [P] [US2] Integration test for [user journey] in tests/integration/test_[name].py
@@ -108,7 +112,7 @@ If not configured, use English.
 
 **Independent Test**: [How to verify this story works on its own]
 
-### Tests for User Story 3 (OPTIONAL - only if tests requested)
+### Verification for User Story 3
 
 - [ ] T024 [P] [US3] Contract test for [endpoint] in tests/contract/test_[name].py
 - [ ] T025 [P] [US3] Integration test for [user journey] in tests/integration/test_[name].py

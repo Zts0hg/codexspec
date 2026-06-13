@@ -3,6 +3,7 @@
 [CmdletBinding()]
 param(
     [switch]$Json,
+    [switch]$TimestampId,
     [string]$ShortName,
     [int]$Number = 0,
     [switch]$Help,
@@ -18,7 +19,8 @@ if ($Help) {
     Write-Host "Options:"
     Write-Host "  -Json               Output in JSON format"
     Write-Host "  -ShortName <name>   Provide a custom short name (2-4 words) for the branch"
-    Write-Host "  -Number N           Specify branch number manually (overrides auto-detection)"
+    Write-Host "  -Number N           Specify a legacy numeric branch number"
+    Write-Host "  -TimestampId        Use the YYYY-MMDD-HHMMxx feature ID format"
     Write-Host "  -Help               Show this help message"
     Write-Host ""
     Write-Host "Examples:"
@@ -63,7 +65,7 @@ function Get-HighestNumberFromSpecs {
     $highest = 0
     if (Test-Path $SpecsDir) {
         Get-ChildItem -Path $SpecsDir -Directory | ForEach-Object {
-            if ($_.Name -match '^(\d+)') {
+            if ($_.Name -match '^(\d{3})-') {
                 $num = [int]$matches[1]
                 if ($num -gt $highest) { $highest = $num }
             }
@@ -84,7 +86,7 @@ function Get-HighestNumberFromBranches {
                 $cleanBranch = $branch.Trim() -replace '^\*?\s+', '' -replace '^remotes/[^/]+/', ''
 
                 # Extract feature number if branch matches pattern ###-*
-                if ($cleanBranch -match '^(\d+)-') {
+                if ($cleanBranch -match '^(\d{3})-') {
                     $num = [int]$matches[1]
                     if ($num -gt $highest) { $highest = $num }
                 }
@@ -195,16 +197,23 @@ if ($ShortName) {
     $branchSuffix = Get-BranchName -Description $featureDesc
 }
 
-# Determine branch number
-if ($Number -eq 0) {
+# Determine feature ID
+if ($TimestampId) {
+    $timestamp = Get-Date -Format 'yyyy-MMdd-HHmm'
+    $chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
+    $suffix = -join (1..2 | ForEach-Object { $chars[(Get-Random -Maximum $chars.Length)] })
+    $featureNum = "$timestamp$suffix"
+} elseif ($Number -eq 0) {
     if ($hasGit) {
         $Number = Get-NextBranchNumber -SpecsDir $specsDir
     } else {
         $Number = (Get-HighestNumberFromSpecs -SpecsDir $specsDir) + 1
     }
+    $featureNum = ('{0:000}' -f $Number)
+} else {
+    $featureNum = ('{0:000}' -f $Number)
 }
 
-$featureNum = ('{0:000}' -f $Number)
 $branchName = "$featureNum-$branchSuffix"
 
 # Validate branch name length
@@ -240,12 +249,39 @@ if ($hasGit) {
 $featureDir = Join-Path $specsDir $branchName
 New-Item -ItemType Directory -Path $featureDir -Force | Out-Null
 
-$template = Join-Path $repoRoot '.codexspec/templates/spec-template.md'
+$template = Join-Path $repoRoot '.codexspec/templates/docs/requirements-template.md'
+$requirementsFile = Join-Path $featureDir 'requirements.md'
 $specFile = Join-Path $featureDir 'spec.md'
 if (Test-Path $template) {
-    Copy-Item $template $specFile -Force
+    Copy-Item $template $requirementsFile -Force
 } else {
-    New-Item -ItemType File -Path $specFile | Out-Null
+    @"
+# Confirmed Requirements
+
+Only entries with ``Status: confirmed`` are binding downstream inputs.
+
+## Needs
+
+### NEED-001
+- **Status**: open
+- **User Evidence**: "[Add after confirmation]"
+
+## Constraints
+### CON-001
+- **Status**: open
+
+## Decisions
+### DEC-001
+- **Status**: open
+
+## Out of Scope
+### OUT-001
+- **Status**: open
+
+## Open Questions
+### OPEN-001
+- **Status**: open
+"@ | Set-Content -Path $requirementsFile -Encoding utf8
 }
 
 # Set the CODEXSPEC_FEATURE environment variable
@@ -255,12 +291,14 @@ if ($Json) {
     [PSCustomObject]@{
         BRANCH_NAME = $branchName
         SPEC_FILE = $specFile
+        REQUIREMENTS_FILE = $requirementsFile
         FEATURE_NUM = $featureNum
         HAS_GIT = $hasGit
     } | ConvertTo-Json -Compress
 } else {
     Write-Output "BRANCH_NAME: $branchName"
     Write-Output "SPEC_FILE: $specFile"
+    Write-Output "REQUIREMENTS_FILE: $requirementsFile"
     Write-Output "FEATURE_NUM: $featureNum"
     Write-Output "HAS_GIT: $hasGit"
     Write-Output "CODEXSPEC_FEATURE environment variable set to: $branchName"

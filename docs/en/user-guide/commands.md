@@ -9,15 +9,15 @@ For workflow patterns and when to use each command, see [Workflow](workflow.md).
 | Command | Purpose |
 |---------|---------|
 | `/codexspec:constitution` | Create or update project constitution with cross-artifact validation |
-| `/codexspec:specify` | Clarify requirements through interactive Q&A |
+| `/codexspec:specify` | Clarify, confirm, and persist requirements |
 | `/codexspec:generate-spec` | Generate spec.md document from clarified requirements |
 | `/codexspec:clarify` | Scan existing spec for ambiguities (iterative refinement) |
 | `/codexspec:spec-to-plan` | Convert specification to technical implementation plan |
-| `/codexspec:plan-to-tasks` | Break down plan into atomic, TDD-enforced tasks |
+| `/codexspec:plan-to-tasks` | Break down plan into traceable, verifiable tasks |
 | `/codexspec:implement-tasks` | Execute tasks with conditional TDD workflow |
 | `/codexspec:review-spec` | Validate specification for completeness and quality |
 | `/codexspec:review-plan` | Review technical plan for feasibility and alignment |
-| `/codexspec:review-tasks` | Validate task breakdown for TDD compliance |
+| `/codexspec:review-tasks` | Validate task coverage, ordering, and feasibility |
 | `/codexspec:analyze` | Cross-artifact consistency analysis (read-only) |
 | `/codexspec:checklist` | Generate requirements quality checklists |
 | `/codexspec:tasks-to-issues` | Convert tasks to GitHub issues |
@@ -29,11 +29,11 @@ For workflow patterns and when to use each command, see [Workflow](workflow.md).
 
 ### Core Workflow Commands
 
-Commands for the primary SDD workflow: Constitution → Specification → Plan → Tasks → Implementation.
+Commands for the primary SDD workflow: Constitution → Confirmed Requirements → Specification → Plan → Tasks → Implementation.
 
 ### Review Commands (Quality Gates)
 
-Commands that validate artifacts at each workflow stage. **Recommended before proceeding to the next stage.**
+Commands that validate artifacts at each workflow stage. Defects require evidence; optional design suggestions are reported separately.
 
 ### Advanced Commands
 
@@ -109,7 +109,7 @@ AI:  Creating constitution...
 
 ### `/codexspec:specify`
 
-Clarify requirements through interactive Q&A. This command explores your initial idea without creating any files—you maintain full control.
+Clarify requirements through interactive Q&A, confirm the resulting summary, and persist it for later sessions.
 
 **Syntax:**
 
@@ -129,12 +129,17 @@ Clarify requirements through interactive Q&A. This command explores your initial
 - Explores edge cases you might not have considered
 - Co-creates high-quality requirements through dialogue
 - Focuses on "what" and "why", not technical implementation
-- **Does NOT generate files** - you decide when to create documentation
+- Assigns stable IDs to confirmed needs, constraints, decisions, exclusions, and open questions
+- Records user evidence and a confirmation log
+- Creates the feature workspace and `requirements.md`
 
-**What it does NOT create:**
+**What it creates:**
 
-- No files are created during this command
-- Requirements stay in conversation until you approve
+```text
+.codexspec/specs/{feature-id}-{feature-name}/requirements.md
+```
+
+Only confirmed items become authoritative requirements. Open questions remain explicitly open.
 
 **Example:**
 
@@ -193,11 +198,12 @@ Generate the `spec.md` document from clarified requirements. This command acts a
 
 | Argument | Required | Description |
 |----------|----------|-------------|
-| None | - | Uses context from previous `/codexspec:specify` session |
+| Feature path | No | Explicit feature directory, `requirements.md`, or target `spec.md`; required when resolution is ambiguous |
 
 **What it does:**
 
-- Creates `.codexspec/specs/{NNN}-{feature-name}/` directory
+- Reads confirmed requirements from the selected feature workspace
+- Supports legacy workspaces containing only `spec.md`, with an explicit traceability warning
 - Generates comprehensive `spec.md` with:
   - Feature overview and goals
   - User stories with acceptance criteria
@@ -205,6 +211,9 @@ Generate the `spec.md` document from clarified requirements. This command acts a
   - Non-functional requirements (NFR-XXX format)
   - Edge cases and handling approaches
   - Out of scope items
+- Adds `Sources` references back to requirement IDs
+- Stops for user confirmation instead of resolving authority conflicts by assumption
+- Automatically reviews and may repair evidence-backed defects for at most two rounds
 
 **What it creates:**
 
@@ -264,9 +273,9 @@ Scan an existing specification for ambiguities and gaps. Use this for iterative 
 
 **What it does:**
 
-- Scans spec using 4 focused ambiguity categories
+- Scans requirements and spec using focused ambiguity categories
 - Asks targeted clarification questions (max 5)
-- Updates spec.md with clarification answers
+- Updates `requirements.md` first after user confirmation, then synchronizes `spec.md`
 - Integrates with review-spec findings if available
 
 **Ambiguity Categories:**
@@ -335,11 +344,11 @@ Convert the feature specification into a technical implementation plan. This is 
 **What it does:**
 
 - Reads specification and constitution
-- Defines tech stack with version constraints
-- Performs constitutionality review (mandatory if constitution exists)
-- Creates architecture with module dependency graph
+- Includes only technical detail needed by confirmed requirements and repository constraints
+- Checks applicable constitution rules without treating optional conventions as feature requirements
+- Adds `Covers` links to specification requirements
 - Documents technical decisions with rationale
-- Plans implementation phases
+- Stops when a decision would change confirmed intent
 
 **What it creates:**
 
@@ -387,7 +396,7 @@ AI:  Generating technical plan...
 **Tips:**
 
 - Run after spec is reviewed and stable
-- Constitutionality review is mandatory if constitution exists
+- Applicable constitution rules are mandatory; irrelevant template conventions are not
 - Include relevant sections based on project type
 - Review plan before proceeding to tasks
 
@@ -395,7 +404,7 @@ AI:  Generating technical plan...
 
 ### `/codexspec:plan-to-tasks`
 
-Break down the technical plan into atomic, actionable tasks with TDD enforcement.
+Break down the technical plan into actionable tasks with explicit coverage and verifiable outcomes.
 
 **Syntax:**
 
@@ -411,11 +420,11 @@ Break down the technical plan into atomic, actionable tasks with TDD enforcement
 
 **What it does:**
 
-- Creates atomic tasks (one primary file per task)
-- Enforces TDD: test tasks precede implementation tasks
-- Marks parallelizable tasks with `[P]`
+- Creates tasks with one verifiable outcome; a task may touch multiple related files
+- Uses test-first ordering only when required by the plan, constitution, confirmed needs, or risk
+- Marks tasks `[P]` only when they are genuinely independent
 - Specifies exact file paths for each task
-- Defines phase checkpoints
+- Adds `Covers` links to plan and requirement IDs
 
 **What it creates:**
 
@@ -462,8 +471,8 @@ AI:  Breaking down plan into tasks...
 
 **Tips:**
 
-- Each task should involve only ONE primary file
-- Test tasks always precede implementation tasks
+- Each task should produce one verifiable outcome and may touch tightly related files
+- Test tasks precede implementation only when test-first is required
 - `[P]` marks truly independent parallelizable tasks
 - Review dependencies before implementation
 
@@ -562,7 +571,7 @@ AI:  Starting implementation...
 
 ### `/codexspec:review-spec`
 
-Validate the specification for completeness, clarity, consistency, and readiness for technical planning.
+Validate the specification against confirmed requirements and its own internal quality.
 
 **Syntax:**
 
@@ -578,79 +587,55 @@ Validate the specification for completeness, clarity, consistency, and readiness
 
 **What it does:**
 
-- Checks completeness of all required sections
-- Evaluates clarity and specificity
-- Verifies internal consistency
-- Assesses testability of requirements
-- Checks constitution alignment
-- Generates scored review report
+- Checks fidelity to confirmed `requirements.md` entries
+- Checks internal consistency, clarity, and verifiability
+- Treats a missing template section as a defect only when authoritative content requires it
+- Requires each defect to include `Evidence`, `Location`, `Mismatch`, `Impact`, and `Remediation`
+- Separates `Risk Advisories / Design Opportunities` from defects
+- Generates status plus a compatibility score derived from classified findings
 
-**Review Dimensions:**
+**Shared review contract:**
 
-| Dimension | Weight | What it Validates |
-|-----------|--------|-------------------|
-| Completeness | 25% | All sections present and substantive |
-| Clarity | 25% | No vague language, single interpretations |
-| Consistency | 20% | No internal contradictions |
-| Testability | 20% | Requirements can be verified |
-| Constitution Alignment | 10% | Aligns with project principles |
+| Category | Meaning |
+|----------|---------|
+| Fidelity defect | Conflicts with or omits an authoritative source |
+| Intrinsic defect | Internally contradictory, infeasible, or unverifiable |
+| Advisory | Optional improvement without evidence of a current defect |
+
+Status is `PASS`, `PASS_WITH_WARNINGS`, `NEEDS_REVISION`, or `BLOCKED`. Advisories never change status or score.
 
 **Example:**
 
 ```text
 You: /codexspec:review-spec
 
-AI:  Reviewing specification...
+AI:  Overall Status: NEEDS_REVISION
+     Compatibility Score: 79/100
 
-     # Specification Review Report
+     Warning SPEC-001
+     Evidence: CON-002 requires a measurable response-time limit.
+     Location: spec.md, REQ-006
+     Mismatch: "Respond quickly" has no measurable threshold.
+     Impact: Acceptance cannot be verified.
+     Remediation: Ask the user to confirm a threshold, update requirements.md,
+                  then synchronize REQ-006.
 
-     ## Summary
-     - **Overall Status**: ⚠️ Needs Work
-     - **Quality Score**: 72/100
-     - **Readiness**: Needs Revision
-
-     ## Section Analysis
-     | Section | Status | Completeness | Quality |
-     |---------|--------|--------------|---------|
-     | Overview | ✅ | 100% | High |
-     | Goals | ✅ | 100% | High |
-     | User Stories | ⚠️ | 80% | Medium |
-     | Functional Requirements | ✅ | 100% | High |
-     | Non-Functional Requirements | ⚠️ | 50% | Medium |
-     | Edge Cases | ❌ | 0% | N/A |
-
-     ## Critical Issues (Must Fix)
-     - [SPEC-001]: Edge Cases section is empty
-       - Impact: May miss important failure scenarios
-       - Suggestion: Document at least 3-5 edge cases
-
-     ## Warnings (Should Fix)
-     - [SPEC-002]: NFR-001 uses vague term "fast"
-       - Impact: Cannot verify without metrics
-       - Suggestion: Specify concrete response time
-
-     ## Recommendations
-     1. Add Edge Cases section with handling approaches
-     2. Quantify non-functional requirements
-     3. Add acceptance criteria to User Story 3
-
-     Available follow-up:
-     - /codexspec:clarify - to address ambiguities
-     - /codexspec:spec-to-plan - if issues resolved
+     Risk Advisories / Design Opportunities:
+     - None
 ```
 
 **Tips:**
 
 - Run before `/codexspec:spec-to-plan`
-- Address Critical issues before proceeding
-- Warnings don't block but indicate risk
+- Treat `BLOCKED` and `NEEDS_REVISION` as not ready to proceed
+- Do not promote advisories into requirements
 - Re-run after making fixes
 
 ---
 
 ### `/codexspec:review-plan`
 
-Review the technical implementation plan for feasibility, architecture quality, and alignment with specification.
+Review the technical implementation plan for fidelity, feasibility, and justified technical decisions.
 
 **Syntax:**
 
@@ -666,75 +651,39 @@ Review the technical implementation plan for feasibility, architecture quality, 
 
 **What it does:**
 
-- Verifies spec requirements have plan coverage
-- Evaluates tech stack choices
-- Assesses architecture decisions
-- Validates implementation phases
-- Checks constitution alignment
-- Generates scored review report
-
-**Review Dimensions:**
-
-| Dimension | Weight | What it Validates |
-|-----------|--------|-------------------|
-| Spec Alignment | 30% | All requirements have implementation |
-| Tech Stack | 15% | Appropriate technology choices |
-| Architecture Quality | 25% | Sound design and patterns |
-| Phase Planning | 15% | Logical and realistic phases |
-| Constitution Alignment | 15% | Follows project principles |
+- Verifies `Covers` links and required spec coverage
+- Checks applicable constitution rules and repository facts
+- Flags unjustified complexity only when it creates a concrete cost or conflict
+- Requires evidence fields for every defect and merges findings with the same root cause
+- Reports optional architecture improvements as advisories
+- Uses the shared status and compatibility-score contract
 
 **Example:**
 
 ```text
 You: /codexspec:review-plan
 
-AI:  Reviewing technical plan...
+AI:  Overall Status: PASS
+     Compatibility Score: 100/100
+     Verified defects: none
 
-     # Plan Review Report
-
-     ## Summary
-     - **Overall Status**: ✅ Pass
-     - **Quality Score**: 85/100
-     - **Readiness**: Ready for Task Breakdown
-
-     ## Spec Alignment
-     | Requirement | Coverage | Status |
-     |-------------|----------|--------|
-     | REQ-001 to REQ-012 | ✅ Full | All covered |
-     | US-001 to US-004 | ✅ Full | All covered |
-     | NFR-001 to NFR-003 | ⚠️ Partial | Caching not detailed |
-
-     ## Architecture Review
-     Strengths:
-     - Clean separation of concerns
-     - Well-defined module boundaries
-     - Appropriate design patterns
-
-     Concerns:
-     - Missing error handling strategy documentation
-
-     ## Constitution Alignment
-     | Principle | Compliance |
-     |-----------|------------|
-     | Clean Architecture | ✅ |
-     | TDD | ✅ |
-     | Code Quality | ✅ |
-
-     Ready for /codexspec:plan-to-tasks
+     Risk Advisories / Design Opportunities:
+     - A caching layer may become useful if production measurements exceed
+       the confirmed latency target. It is not required by the current plan.
 ```
 
 **Tips:**
 
 - Run before `/codexspec:plan-to-tasks`
-- Critical issues should be resolved
-- Use to catch architecture problems early
+- Resolve evidence-backed defects before task generation
+- Keep speculative architecture ideas in the advisory section
 - Verify tech stack aligns with team skills
 
 ---
 
 ### `/codexspec:review-tasks`
 
-Validate the task breakdown for completeness, TDD compliance, correct ordering, and proper dependencies.
+Validate the task breakdown for coverage, verifiable outcomes, correct ordering, and feasible dependencies.
 
 **Syntax:**
 
@@ -750,62 +699,36 @@ Validate the task breakdown for completeness, TDD compliance, correct ordering, 
 
 **What it does:**
 
-- Checks all plan items have task coverage
-- Validates TDD compliance (tests before implementation)
-- Verifies task granularity (atomic, single-file focus)
+- Checks all required plan items and requirements have task coverage
+- Validates test-first ordering only where an authoritative source requires it
+- Verifies each task has one outcome that can be checked
 - Validates dependencies (no cycles, correct ordering)
 - Reviews parallelization markers
 - Validates file paths
-
-**Review Dimensions:**
-
-| Dimension | Weight | What it Validates |
-|-----------|--------|-------------------|
-| Plan Coverage | 30% | All plan items have tasks |
-| TDD Compliance | 25% | Test-first workflow enforced |
-| Dependency & Ordering | 20% | Correct dependencies, no cycles |
-| Task Granularity | 15% | Atomic, appropriate scope |
-| Parallelization & Files | 10% | Correct markers and paths |
+- Requires evidence fields for every defect
+- Reports optional process refinements as advisories
+- Uses the shared status and compatibility-score contract
 
 **Example:**
 
 ```text
 You: /codexspec:review-tasks
 
-AI:  Reviewing task breakdown...
+AI:  Overall Status: NEEDS_REVISION
+     Compatibility Score: 79/100
 
-     # Tasks Review Report
-
-     ## Summary
-     - **Overall Status**: ⚠️ Needs Work
-     - **Quality Score**: 78/100
-     - **Total Tasks**: 24
-     - **Parallelizable**: 8 (33%)
-
-     ## TDD Compliance
-     | Component | Test Task | Test Before Impl | Status |
-     |-----------|-----------|------------------|--------|
-     | Task Entity | ✅ | ✅ | ✅ |
-     | User Entity | ✅ | ✅ | ✅ |
-     | TaskService | ❌ Missing | N/A | ❌ |
-
-     ## TDD Violations
-     - [TDD-001]: TaskService missing test task
-
-     ## Dependency Issues
-     - [DEP-001]: Task 2.5 marked [P] but depends on 2.4
-
-     ## Recommendations
-     1. Add test task for TaskService before implementation
-     2. Fix parallelization marker on Task 2.5
-
-     Fix issues before /codexspec:implement-tasks
+     Warning TASK-001
+     Evidence: Task 2.5 declares a dependency on Task 2.4.
+     Location: tasks.md, Task 2.5
+     Mismatch: Task 2.5 is also marked [P].
+     Impact: Parallel execution can start before its prerequisite completes.
+     Remediation: Remove [P] or remove the dependency if the plan proves independence.
 ```
 
 **Tips:**
 
 - Run before `/codexspec:implement-tasks`
-- TDD violations are critical for code quality
+- Test-order findings are defects only when testing is required by an authoritative source
 - Check parallelization markers are accurate
 - Verify file paths match project structure
 
@@ -813,7 +736,7 @@ AI:  Reviewing task breakdown...
 
 ### `/codexspec:analyze`
 
-Perform a non-destructive cross-artifact consistency analysis across spec.md, plan.md, and tasks.md. Identifies inconsistencies, duplications, and coverage gaps.
+Perform a non-destructive consistency analysis across requirements.md, spec.md, plan.md, and tasks.md. Identifies authority conflicts, traceability gaps, duplication, and missing coverage.
 
 **Syntax:**
 
@@ -1102,60 +1025,16 @@ AI:  Preview mode - no commit will be executed
 
 ## Workflow Overview
 
-```
-┌──────────────────────────────────────────────────────────────────────────┐
-│                    CodexSpec Human-AI Collaboration Workflow              │
-├──────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  1. Constitution  ──►  Define project principles                         │
-│         │                         with cross-artifact validation         │
-│         ▼                                                                │
-│  2. Specify  ───────►  Interactive Q&A to clarify requirements           │
-│         │               (no file created - human control)                │
-│         ▼                                                                │
-│  3. Generate Spec  ─►  Create spec.md document                           │
-│         │                                                                │
-│         ▼                                                                │
-│  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ REVIEW GATE 1: /codexspec:review-spec ★                        ║   │
-│  ║  Validate: Completeness, Clarity, Testability, Constitution       ║   │
-│  ╚═══════════════════════════════════════════════════════════════════╝   │
-│         │                                                                │
-│         ▼                                                                │
-│  4. Clarify  ───────►  Resolve ambiguities (iterative)                   │
-│         │               4 targeted categories, max 5 questions           │
-│         ▼                                                                │
-│  5. Spec to Plan  ──►  Create technical plan with:                       │
-│         │               • Constitutionality review (MANDATORY)           │
-│         │               • Module dependency graph                        │
-│         ▼                                                                │
-│  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ REVIEW GATE 2: /codexspec:review-plan ★                        ║   │
-│  ║  Validate: Spec Alignment, Architecture, Tech Stack, Phases        ║   │
-│  ╚═══════════════════════════════════════════════════════════════════╝   │
-│         │                                                                │
-│         ▼                                                                │
-│  6. Plan to Tasks  ─►  Generate atomic tasks with:                       │
-│         │               • TDD enforcement (tests before impl)            │
-│         │               • Parallel markers [P]                           │
-│         │               • File path specifications                       │
-│         ▼                                                                │
-│  ╔═══════════════════════════════════════════════════════════════════╗   │
-│  ║  ★ REVIEW GATE 3: /codexspec:review-tasks ★                       ║   │
-│  ║  Validate: Coverage, TDD Compliance, Dependencies, Granularity     ║   │
-│  ╚═══════════════════════════════════════════════════════════════════╝   │
-│         │                                                                │
-│         ▼                                                                │
-│  7. Analyze  ───────►  Cross-artifact consistency check                  │
-│         │               Detect gaps, duplications, constitution issues   │
-│         ▼                                                                │
-│  8. Implement  ─────►  Execute with conditional TDD workflow             │
-│                          Code: Test-first | Docs/Config: Direct          │
-│                                                                          │
-└──────────────────────────────────────────────────────────────────────────┘
+```text
+Idea
+  -> specify -> requirements.md
+  -> generate-spec -> spec.md -> review-spec
+  -> spec-to-plan -> plan.md -> review-plan
+  -> plan-to-tasks -> tasks.md -> review-tasks
+  -> analyze -> implement-tasks
 ```
 
-**Key Point**: Each review gate (★) is a **human checkpoint** where you validate AI output before investing more time. Skipping these gates often leads to costly rework.
+Each review is a human checkpoint. It validates fidelity and intrinsic quality using evidence-backed findings. Optional improvements remain advisories and do not block progression.
 
 ---
 
@@ -1170,6 +1049,7 @@ The command couldn't locate the feature directory.
 - Run `codexspec init` first to initialize the project
 - Check that `.codexspec/specs/` directory exists
 - Verify you're in the correct project directory
+- Pass an explicit feature directory or artifact path when multiple candidates exist
 
 ### "No spec.md found"
 

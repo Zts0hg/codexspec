@@ -89,16 +89,23 @@ If not configured, use English.
 
 ### Functional Requirements
 
-- **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]
-- **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
-- **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
-- **FR-005**: System MUST [behavior, e.g., "log all security events"]
+- **REQ-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
+  - Sources: NEED-001
+- **REQ-002**: System MUST [specific capability, e.g., "validate email addresses"]
+  - Sources: NEED-002, CON-001
+- **REQ-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
+  - Sources: NEED-003
+- **REQ-004**: System MUST [data requirement, e.g., "persist user preferences"]
+  - Sources: NEED-004, DEC-001
+- **REQ-005**: System MUST [behavior, e.g., "log all security events"]
+  - Sources: NEED-005
 
 *Example of marking unclear requirements:*
 
-- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **OPEN-001**: Authentication method is not confirmed (email/password, SSO, OAuth)
+- **OPEN-002**: Data retention period is not confirmed
+
+> Open items remain questions. They MUST NOT be rewritten as confirmed REQ items.
 
 ### Key Entities *(include if feature involves data)*
 
@@ -133,3 +140,10 @@ If not configured, use English.
 
 - [Dependency 1]
 - [Dependency 2]
+
+## Requirements Traceability
+
+| Confirmed Requirement | Spec Coverage | Notes |
+|-----------------------|---------------|-------|
+| NEED-001 | REQ-001 | Full |
+| DEC-001 | REQ-004 | Decision preserved |

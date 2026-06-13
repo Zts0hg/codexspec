@@ -144,6 +144,27 @@ echo "$(get_feature_id)"
         )
         assert "005-my-feature" in result.stdout
 
+    def test_get_feature_id_from_timestamp_branch(self, bash_scripts_dir: Path, temp_git_repo: Path):
+        """Timestamp feature branches are valid workflow identifiers."""
+        subprocess.run(
+            ["git", "checkout", "-b", "2026-0613-1200ab-my-feature"],
+            cwd=temp_git_repo,
+            check=True,
+            capture_output=True,
+        )
+
+        test_script = temp_git_repo / "test_timestamp_feature.sh"
+        test_script.write_text(
+            f'''#!/bin/bash
+cd "{temp_git_repo}"
+source "{bash_scripts_dir}/common.sh"
+echo "$(get_feature_id)"
+'''
+        )
+        result = subprocess.run(["bash", str(test_script)], capture_output=True, text=True)
+
+        assert "2026-0613-1200ab-my-feature" in result.stdout
+
     def test_get_feature_id_empty(self, bash_scripts_dir: Path, tmp_path: Path):
         """Return empty when no feature is available."""
         test_script = tmp_path / "test_feature.sh"

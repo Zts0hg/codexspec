@@ -7,7 +7,7 @@ If not configured, use English.
 
 ## 1. <!-- Task Group Name -->
 
-- [ ] 1.1 <!-- Task description -->
+- [ ] 1.1 <!-- Task description; Covers: REQ-xxx; Plan: component/phase -->
 - [ ] 1.2 <!-- Task description -->
 - [ ] 1.3 <!-- Task description -->
 
@@ -35,3 +35,5 @@ If not configured, use English.
 ## Notes
 
 - <!-- Additional notes -->
+- Each task should have a single verifiable outcome; do not split work solely to enforce one file per task.
+- Test-first ordering applies only when required by the constitution, specification, plan, or established repository workflow.

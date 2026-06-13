@@ -10,6 +10,7 @@ source "$SCRIPT_DIR/common.sh"
 # Default values
 FEATURE_NAME=""
 FEATURE_ID=""
+TIMESTAMP_ID=false
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -22,12 +23,17 @@ while [[ $# -gt 0 ]]; do
             FEATURE_ID="$2"
             shift 2
             ;;
+        --timestamp-id)
+            TIMESTAMP_ID=true
+            shift
+            ;;
         -h|--help)
             echo "Usage: $0 [OPTIONS]"
             echo ""
             echo "Options:"
             echo "  -n, --name    Feature name (e.g., 'user authentication')"
             echo "  -i, --id      Feature ID (e.g., '001')"
+            echo "  --timestamp-id Use YYYY-MMDD-HHMMxx identifier format"
             echo "  -h, --help    Show this help message"
             exit 0
             ;;
@@ -48,7 +54,11 @@ fi
 require_codexspec_project
 
 # Generate feature ID if not provided
-if [ -z "$FEATURE_ID" ]; then
+if [ -z "$FEATURE_ID" ] && [ "$TIMESTAMP_ID" = true ]; then
+    TIMESTAMP=$(date +"%Y-%m%d-%H%M")
+    RANDOM_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' </dev/urandom | head -c 2)
+    FEATURE_ID="${TIMESTAMP}${RANDOM_SUFFIX}"
+elif [ -z "$FEATURE_ID" ]; then
     # Find the next available ID
     SPECS_DIR=$(get_specs_dir)
     if [ -d "$SPECS_DIR" ]; then
@@ -76,28 +86,51 @@ FEATURE_DIR="$SPECS_DIR/$BRANCH_NAME"
 mkdir -p "$FEATURE_DIR"
 log_success "Created feature directory: $FEATURE_DIR"
 
-# Create initial spec file
-cat > "$FEATURE_DIR/spec.md" << 'EOF'
-# Feature: [Feature Name]
+# Create the authoritative requirements record. spec.md is generated later.
+REQUIREMENTS_TEMPLATE=".codexspec/templates/docs/requirements-template.md"
+REQUIREMENTS_FILE="$FEATURE_DIR/requirements.md"
+if [ -f "$REQUIREMENTS_TEMPLATE" ]; then
+    cp "$REQUIREMENTS_TEMPLATE" "$REQUIREMENTS_FILE"
+else
+    cat > "$REQUIREMENTS_FILE" << 'EOF'
+# Confirmed Requirements
 
-## Overview
-[High-level description of the feature]
+Only entries with `Status: confirmed` are binding downstream inputs.
 
-## Goals
-- [Goal 1]
-- [Goal 2]
+## Needs
 
-## User Stories
-[To be defined]
+### NEED-001
+- **Status**: open
+- **Statement**: [Confirm with the user]
+- **User Evidence**: "[Add a short quote or paraphrase after confirmation]"
 
-## Functional Requirements
-[To be defined]
+## Constraints
 
-## Non-Functional Requirements
-[To be defined]
+### CON-001
+- **Status**: open
+
+## Decisions
+
+### DEC-001
+- **Status**: open
+
+## Out of Scope
+
+### OUT-001
+- **Status**: open
+
+## Open Questions
+
+### OPEN-001
+- **Status**: open
+
+## Superseded Entries
+
+<!-- Keep replaced entries with Status: superseded. -->
 EOF
+fi
 
-log_success "Created initial spec file: $FEATURE_DIR/spec.md"
+log_success "Created requirements record: $REQUIREMENTS_FILE"
 
 # Create git branch if git is available
 if command_exists git && git rev-parse --git-dir >/dev/null 2>&1; then
@@ -110,5 +143,6 @@ fi
 log_success "Feature created successfully!"
 echo ""
 echo "Next steps:"
-echo "  1. Edit the spec file: $FEATURE_DIR/spec.md"
-echo "  2. Use /codexspec:specify to refine the specification"
+echo "  1. Use /codexspec:specify to discuss the requirement"
+echo "  2. Confirm the requirements record: $REQUIREMENTS_FILE"
+echo "  3. Use /codexspec:generate-spec after confirmation"
