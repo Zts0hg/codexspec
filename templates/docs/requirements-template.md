@@ -22,7 +22,7 @@ quotes needed to resolve later interpretation disputes.
 
 ### NEED-001: [User goal or required behavior]
 
-- **Status**: confirmed
+- **Status**: open
 - **Statement**: [What outcome the user confirmed]
 - **Rationale**: [Why it matters]
 - **User Evidence**: "[Short quote or concise paraphrase from the confirmed discussion]"
@@ -32,7 +32,7 @@ quotes needed to resolve later interpretation disputes.
 
 ### CON-001: [Constraint name]
 
-- **Status**: confirmed
+- **Status**: open
 - **Statement**: [Boundary, compatibility, policy, timing, or technology constraint]
 - **User Evidence**: "[Short supporting quote or paraphrase]"
 
@@ -40,7 +40,7 @@ quotes needed to resolve later interpretation disputes.
 
 ### DEC-001: [Decision title]
 
-- **Status**: confirmed
+- **Status**: open
 - **Decision**: [Chosen option]
 - **Alternatives Rejected**: [Only alternatives explicitly discussed]
 - **Reason**: [User-confirmed reason]
@@ -50,7 +50,7 @@ quotes needed to resolve later interpretation disputes.
 
 ### OUT-001: [Excluded item]
 
-- **Status**: confirmed
+- **Status**: open
 - **Statement**: [What is excluded]
 - **Reason**: [Why it is excluded]
 - **User Evidence**: "[Short supporting quote or paraphrase]"

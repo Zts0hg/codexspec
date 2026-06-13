@@ -32,16 +32,22 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Get the current feature ID from an explicit environment override or git branch.
-# Supports both legacy NNN-name identifiers and timestamp identifiers.
+is_feature_id() {
+    [[ "$1" =~ ^[0-9]{4}-[0-9]{4}-[0-9]{4}[a-z0-9]{2}$ ]]
+}
+
+is_feature_name() {
+    [[ "$1" =~ ^[0-9]{4}-[0-9]{4}-[0-9]{4}[a-z0-9]{2}-[a-z0-9][a-z0-9-]*$ ]]
+}
+
+# Get the current feature name from an explicit environment override or git branch.
 get_feature_id() {
     if [ -n "${CODEXSPEC_FEATURE:-}" ]; then
-        echo "$CODEXSPEC_FEATURE"
-        return
-    fi
-
-    if [ -n "${SPECIFY_FEATURE:-}" ]; then
-        echo "$SPECIFY_FEATURE"
+        if is_feature_name "$CODEXSPEC_FEATURE"; then
+            echo "$CODEXSPEC_FEATURE"
+            return
+        fi
+        echo ""
         return
     fi
 
@@ -49,7 +55,7 @@ get_feature_id() {
     if command_exists git && git rev-parse --git-dir >/dev/null 2>&1; then
         local branch
         branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
-        if [[ "$branch" =~ ^[0-9]{3}- ]] || [[ "$branch" =~ ^[0-9]{4}-[0-9]{4}-[0-9]{4}[a-z0-9]{2}- ]]; then
+        if is_feature_name "$branch"; then
             echo "$branch"
             return
         fi

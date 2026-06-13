@@ -152,7 +152,7 @@ The command shall determine output language in the following priority order:
 
 ### 검토 보고서 저장 위치
 
-`.codexspec/specs/001-pr-description-generator/review-spec.md`
+`.codexspec/specs/2026-0613-1200ab-pr-description-generator/review-spec.md`
 
 ---
 
@@ -327,7 +327,7 @@ The command shall determine output language in the following priority order:
 │  /generate-spec                                                          │
 │  ├─ 완전한 spec.md 생성                                                   │
 │  ├─ 4개 사용자 스토리, 8개 기능 요구사항, 10개 테스트 케이스               │
-│  └─ .codexspec/specs/001-pr-description-generator/spec.md에 저장         │
+│  └─ .codexspec/specs/2026-0613-1200ab-pr-description-generator/spec.md에 저장         │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
@@ -353,7 +353,7 @@ The command shall determine output language in the following priority order:
 │  ├─ 기술 구현 계획 업데이트                                               │
 │  ├─ 9개 기술 결정, 5개 신규 결정 포함                                     │
 │  ├─ 5개 구현 단계                                                        │
-│  └─ .codexspec/specs/001-pr-description-generator/plan.md에 저장         │
+│  └─ .codexspec/specs/2026-0613-1200ab-pr-description-generator/plan.md에 저장         │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼

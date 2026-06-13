@@ -29,13 +29,11 @@ function Get-RepoRoot {
 }
 
 function Get-CurrentBranch {
-    # First check if CODEXSPEC_FEATURE environment variable is set
     if ($env:CODEXSPEC_FEATURE) {
-        return $env:CODEXSPEC_FEATURE
-    }
-
-    if ($env:SPECIFY_FEATURE) {
-        return $env:SPECIFY_FEATURE
+        if (Test-FeatureName -Name $env:CODEXSPEC_FEATURE) {
+            return $env:CODEXSPEC_FEATURE
+        }
+        return ""
     }
 
     # Then check git if available
@@ -53,14 +51,26 @@ function Get-CurrentBranch {
     $specsDir = Join-Path $repoRoot ".codexspec/specs"
 
     if (Test-Path $specsDir) {
-        $features = @(Get-ChildItem -Path $specsDir -Directory)
+        $features = @(
+            Get-ChildItem -Path $specsDir -Directory |
+                Where-Object { Test-FeatureName -Name $_.Name }
+        )
         if ($features.Count -eq 1) {
             return $features[0].Name
         }
     }
 
-    # Final fallback
-    return "main"
+    return ""
+}
+
+function Test-FeatureId {
+    param([string]$Id)
+    return $Id -match '^[0-9]{4}-[0-9]{4}-[0-9]{4}[a-z0-9]{2}$'
+}
+
+function Test-FeatureName {
+    param([string]$Name)
+    return $Name -match '^[0-9]{4}-[0-9]{4}-[0-9]{4}[a-z0-9]{2}-[a-z0-9][a-z0-9-]*$'
 }
 
 function Test-HasGit {
@@ -84,11 +94,9 @@ function Test-FeatureBranch {
         return $true
     }
 
-    $legacyPattern = '^[0-9]{3}-'
-    $timestampPattern = '^[0-9]{4}-[0-9]{4}-[0-9]{4}[a-z0-9]{2}-'
-    if ($Branch -notmatch $legacyPattern -and $Branch -notmatch $timestampPattern) {
+    if (-not (Test-FeatureName -Name $Branch)) {
         Write-Output "ERROR: Not on a feature branch. Current branch: $Branch"
-        Write-Output "Feature branches should use NNN-name or YYYY-MMDD-HHMMxx-name"
+        Write-Output "Feature branches must use YYYY-MMDD-HHMMxx-name"
         return $false
     }
     return $true
@@ -108,17 +116,32 @@ function Get-FeaturePathsEnv {
     if ($Feature) {
         if (Test-Path $Feature -PathType Container) {
             $featureDir = (Resolve-Path $Feature).Path
+            if (-not (Test-FeatureName -Name (Split-Path $featureDir -Leaf))) {
+                throw "Invalid feature directory name: $Feature"
+            }
         } elseif (Test-Path $Feature -PathType Leaf) {
             $featureDir = (Resolve-Path (Split-Path $Feature -Parent)).Path
+            if (-not (Test-FeatureName -Name (Split-Path $featureDir -Leaf))) {
+                throw "Invalid feature directory name: $featureDir"
+            }
         } else {
             $candidate = Join-Path $repoRoot ".codexspec/specs/$Feature"
             if (Test-Path $candidate -PathType Container) {
+                if (-not (Test-FeatureName -Name $Feature)) {
+                    throw "Invalid feature directory name: $Feature"
+                }
                 $featureDir = (Resolve-Path $candidate).Path
             } else {
+                if (-not (Test-FeatureId -Id $Feature)) {
+                    throw "Invalid feature ID: $Feature"
+                }
                 $specsDir = Join-Path $repoRoot ".codexspec/specs"
                 $matches = @(
                     Get-ChildItem -Path $specsDir -Directory -ErrorAction SilentlyContinue |
-                        Where-Object { $_.Name.StartsWith("$Feature-", [System.StringComparison]::Ordinal) }
+                        Where-Object {
+                            (Test-FeatureName -Name $_.Name) -and
+                            $_.Name.StartsWith("$Feature-", [System.StringComparison]::Ordinal)
+                        }
                 )
                 if ($matches.Count -eq 1) {
                     $featureDir = $matches[0].FullName
@@ -130,6 +153,9 @@ function Get-FeaturePathsEnv {
             }
         }
     } else {
+        if (-not (Test-FeatureName -Name $currentBranch)) {
+            throw "No timestamp feature could be resolved."
+        }
         $featureDir = Get-FeatureDir -RepoRoot $repoRoot -Branch $currentBranch
     }
 

@@ -109,22 +109,44 @@ echo "$(get_feature_id)"
             ["bash", str(test_script)],
             capture_output=True,
             text=True,
-            env={"SPECIFY_FEATURE": "001-test-feature"},
+            env={"CODEXSPEC_FEATURE": "2026-0613-1200ab-test-feature"},
         )
-        assert "001-test-feature" in result.stdout
+        assert "2026-0613-1200ab-test-feature" in result.stdout
 
-    def test_get_feature_id_from_branch(self, bash_scripts_dir: Path, temp_git_repo: Path):
-        """Get feature ID from git branch."""
+    def test_get_feature_id_ignores_invalid_env(self, bash_scripts_dir: Path, tmp_path: Path):
+        """Environment overrides must use the timestamp feature format."""
+        test_script = tmp_path / "test_invalid_feature.sh"
+        test_script.write_text(f'''
+source "{bash_scripts_dir}/common.sh"
+result="$(get_feature_id)"
+if [ -z "$result" ]; then
+    echo "EMPTY"
+fi
+''')
+        result = subprocess.run(
+            ["bash", str(test_script)],
+            capture_output=True,
+            text=True,
+            env={"CODEXSPEC_FEATURE": "ordinary-work"},
+        )
+        assert "EMPTY" in result.stdout
+
+    def test_get_feature_id_ignores_invalid_branch(
+        self,
+        bash_scripts_dir: Path,
+        temp_git_repo: Path,
+    ):
+        """A git branch outside the timestamp contract is not a feature identifier."""
         # Create initial commit on master/main first (required for git to track branches)
         subprocess.run(
-            ["git", "commit", "--allow-empty", "-m", "Initial commit"],
+            ["git", "commit", "--no-verify", "--allow-empty", "-m", "Initial commit"],
             cwd=temp_git_repo,
             check=True,
             capture_output=True,
         )
         # Create and checkout a feature branch
         subprocess.run(
-            ["git", "checkout", "-b", "005-my-feature"],
+            ["git", "checkout", "-b", "ordinary-work"],
             cwd=temp_git_repo,
             check=True,
             capture_output=True,
@@ -135,14 +157,17 @@ echo "$(get_feature_id)"
         test_script.write_text(f'''#!/bin/bash
 cd "{temp_git_repo}"
 source "{bash_scripts_dir}/common.sh"
-echo "$(get_feature_id)"
+result="$(get_feature_id)"
+if [ -z "$result" ]; then
+    echo "EMPTY"
+fi
 ''')
         result = subprocess.run(
             ["bash", str(test_script)],
             capture_output=True,
             text=True,
         )
-        assert "005-my-feature" in result.stdout
+        assert "EMPTY" in result.stdout
 
     def test_get_feature_id_from_timestamp_branch(self, bash_scripts_dir: Path, temp_git_repo: Path):
         """Timestamp feature branches are valid workflow identifiers."""

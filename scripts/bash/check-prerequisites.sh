@@ -69,16 +69,37 @@ resolve_feature_dir() {
 
     if [ -n "$FEATURE_ARG" ]; then
         if [ -d "$FEATURE_ARG" ]; then
-            (cd "$FEATURE_ARG" && pwd -P)
+            local explicit_dir
+            explicit_dir=$(cd "$FEATURE_ARG" && pwd -P)
+            if ! is_feature_name "$(basename "$explicit_dir")"; then
+                log_error "Invalid feature directory name: $FEATURE_ARG"
+                return 1
+            fi
+            printf "%s\n" "$explicit_dir"
             return
         fi
         if [ -f "$FEATURE_ARG" ]; then
-            (cd "$(dirname "$FEATURE_ARG")" && pwd -P)
+            local artifact_dir
+            artifact_dir=$(cd "$(dirname "$FEATURE_ARG")" && pwd -P)
+            if ! is_feature_name "$(basename "$artifact_dir")"; then
+                log_error "Invalid feature directory name: $artifact_dir"
+                return 1
+            fi
+            printf "%s\n" "$artifact_dir"
             return
         fi
         if [ -d "$specs_dir/$FEATURE_ARG" ]; then
+            if ! is_feature_name "$FEATURE_ARG"; then
+                log_error "Invalid feature directory name: $FEATURE_ARG"
+                return 1
+            fi
             (cd "$specs_dir/$FEATURE_ARG" && pwd -P)
             return
+        fi
+
+        if ! is_feature_id "$FEATURE_ARG"; then
+            log_error "Invalid feature ID: $FEATURE_ARG"
+            return 1
         fi
 
         local id_matches=()
@@ -86,7 +107,8 @@ resolve_feature_dir() {
         if [ -d "$specs_dir" ]; then
             for candidate in "$specs_dir"/*; do
                 [ -d "$candidate" ] || continue
-                if [[ "$(basename "$candidate")" == "$FEATURE_ARG"-* ]]; then
+                if is_feature_name "$(basename "$candidate")" &&
+                    [[ "$(basename "$candidate")" == "$FEATURE_ARG"-* ]]; then
                     id_matches+=("$candidate")
                 fi
             done
@@ -114,7 +136,9 @@ resolve_feature_dir() {
     local candidates=()
     if [ -d "$specs_dir" ]; then
         while IFS= read -r candidate; do
-            candidates+=("$candidate")
+            if is_feature_name "$(basename "$candidate")"; then
+                candidates+=("$candidate")
+            fi
         done < <(find "$specs_dir" -mindepth 1 -maxdepth 1 -type d | sort)
     fi
 
@@ -165,13 +189,24 @@ if [ "$WORKFLOW_MODE" = true ]; then
     fi
 
     if [ "$JSON" = true ]; then
-        docs_json=""
-        for doc in "${AVAILABLE_DOCS[@]}"; do
-            [ -n "$docs_json" ] && docs_json+=","
-            docs_json+="\"$doc\""
-        done
-        printf '{"REPO_ROOT":"%s","BRANCH":"%s","FEATURE_DIR":"%s","REQUIREMENTS":"%s","FEATURE_SPEC":"%s","IMPL_PLAN":"%s","TASKS":"%s","AVAILABLE_DOCS":[%s]}\n' \
-            "$REPO_ROOT" "$BRANCH" "$FEATURE_DIR" "$REQUIREMENTS" "$FEATURE_SPEC" "$IMPL_PLAN" "$TASKS" "$docs_json"
+        python3 -c '
+import json
+import sys
+
+keys = (
+    "REPO_ROOT",
+    "BRANCH",
+    "FEATURE_DIR",
+    "REQUIREMENTS",
+    "FEATURE_SPEC",
+    "IMPL_PLAN",
+    "TASKS",
+)
+values = sys.argv[1:8]
+payload = dict(zip(keys, values))
+payload["AVAILABLE_DOCS"] = sys.argv[8:]
+print(json.dumps(payload, separators=(",", ":")))
+' "$REPO_ROOT" "$BRANCH" "$FEATURE_DIR" "$REQUIREMENTS" "$FEATURE_SPEC" "$IMPL_PLAN" "$TASKS" "${AVAILABLE_DOCS[@]}"
     else
         echo "REPO_ROOT: $REPO_ROOT"
         echo "BRANCH: $BRANCH"

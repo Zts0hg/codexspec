@@ -29,9 +29,9 @@ Do not generate `spec.md` in this command.
 When `$ARGUMENTS` is a new requirement:
 
 1. Derive a short kebab-case feature name.
-2. Run the platform create-new-feature script with timestamp mode:
-   - Bash: `{SCRIPT} --timestamp-id --name "<feature-name>"`
-   - PowerShell: `{SCRIPT} -TimestampId -ShortName "<feature-name>" "<description>"`
+2. Run the platform create-new-feature script:
+   - Bash: `{SCRIPT} --name "<feature-name>"`
+   - PowerShell: `{SCRIPT} -ShortName "<feature-name>" "<description>"`
 3. Parse the created feature directory and `requirements.md` path.
 4. If branch creation is unavailable, continue in the workspace and report the limitation.
 

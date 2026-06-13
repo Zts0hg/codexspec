@@ -1,5 +1,6 @@
 """Tests for scripts/bash/create-new-feature.sh."""
 
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -26,7 +27,6 @@ class TestCreateNewFeature:
         assert result.returncode == 0
         assert "Usage:" in result.stdout
         assert "-n, --name" in result.stdout
-        assert "-i, --id" in result.stdout
 
     def test_requires_feature_name(self, bash_scripts_dir: Path, tmp_path: Path):
         """Reports error when feature name is missing."""
@@ -68,7 +68,7 @@ class TestCreateNewFeature:
 
         # Check feature directory was created
         specs_dir = temp_codexspec_project / ".codexspec" / "specs"
-        feature_dirs = list(specs_dir.glob("001-*"))
+        feature_dirs = list(specs_dir.glob("20??-????-??????-*"))
         assert len(feature_dirs) == 1
         assert "user-authentication" in feature_dirs[0].name
 
@@ -76,7 +76,7 @@ class TestCreateNewFeature:
         """Creates requirements.md as the first feature artifact."""
         script_path = bash_scripts_dir / "create-new-feature.sh"
         result = subprocess.run(
-            ["bash", str(script_path), "-n", "test feature", "-i", "042"],
+            ["bash", str(script_path), "-n", "test feature"],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
@@ -84,17 +84,18 @@ class TestCreateNewFeature:
         assert result.returncode == 0
 
         specs_dir = temp_codexspec_project / ".codexspec" / "specs"
-        requirements_file = specs_dir / "042-test-feature" / "requirements.md"
+        requirements_file = next(specs_dir.glob("20??-????-??????-test-feature/requirements.md"))
         assert requirements_file.exists()
         content = requirements_file.read_text(encoding="utf-8")
-        assert "NEED-" in content
-        assert "confirmed" in content
+        for section in ["NEED-001", "CON-001", "DEC-001", "OUT-001"]:
+            entry = content.split(section, 1)[1].split("\n## ", 1)[0]
+            assert "**Status**: open" in entry
 
-    def test_timestamp_id_mode(self, bash_scripts_dir: Path, temp_codexspec_project: Path):
-        """Timestamp mode creates a current-format feature identifier."""
+    def test_default_id_is_timestamp(self, bash_scripts_dir: Path, temp_codexspec_project: Path):
+        """Feature creation always uses the timestamp identifier format."""
         script_path = bash_scripts_dir / "create-new-feature.sh"
         result = subprocess.run(
-            ["bash", str(script_path), "-n", "test feature", "--timestamp-id"],
+            ["bash", str(script_path), "-n", "test feature"],
             capture_output=True,
             text=True,
             cwd=temp_codexspec_project,
@@ -105,58 +106,7 @@ class TestCreateNewFeature:
         feature_dirs = list(specs_dir.glob("20??-????-??????-test-feature"))
         assert len(feature_dirs) == 1
         assert (feature_dirs[0] / "requirements.md").exists()
-
-    def test_auto_id_first(self, bash_scripts_dir: Path, temp_codexspec_project: Path):
-        """First feature gets ID 001."""
-        script_path = bash_scripts_dir / "create-new-feature.sh"
-        result = subprocess.run(
-            ["bash", str(script_path), "-n", "first feature"],
-            capture_output=True,
-            text=True,
-            cwd=temp_codexspec_project,
-        )
-        assert result.returncode == 0
-        assert "Feature ID: 001" in result.stdout
-
-    def test_auto_id_increment(self, bash_scripts_dir: Path, temp_codexspec_project: Path):
-        """Feature IDs increment automatically."""
-        script_path = bash_scripts_dir / "create-new-feature.sh"
-
-        # Create first feature
-        result1 = subprocess.run(
-            ["bash", str(script_path), "-n", "first feature"],
-            capture_output=True,
-            text=True,
-            cwd=temp_codexspec_project,
-        )
-        assert result1.returncode == 0
-        assert "Feature ID: 001" in result1.stdout
-
-        # Create second feature
-        result2 = subprocess.run(
-            ["bash", str(script_path), "-n", "second feature"],
-            capture_output=True,
-            text=True,
-            cwd=temp_codexspec_project,
-        )
-        assert result2.returncode == 0
-        assert "Feature ID: 002" in result2.stdout
-
-    def test_custom_id(self, bash_scripts_dir: Path, temp_codexspec_project: Path):
-        """Custom ID can be specified with -i flag."""
-        script_path = bash_scripts_dir / "create-new-feature.sh"
-        result = subprocess.run(
-            ["bash", str(script_path), "-n", "custom feature", "-i", "042"],
-            capture_output=True,
-            text=True,
-            cwd=temp_codexspec_project,
-        )
-        assert result.returncode == 0
-        assert "Feature ID: 042" in result.stdout
-
-        # Check directory name
-        specs_dir = temp_codexspec_project / ".codexspec" / "specs"
-        assert (specs_dir / "042-custom-feature").exists()
+        assert re.search(r"Feature ID: \d{4}-\d{4}-\d{4}[a-z0-9]{2}", result.stdout)
 
     def test_branch_name_generation(self, bash_scripts_dir: Path, temp_codexspec_project: Path):
         """Branch name is generated correctly from feature name."""
@@ -168,7 +118,10 @@ class TestCreateNewFeature:
             cwd=temp_codexspec_project,
         )
         assert result.returncode == 0
-        assert "001-user-authentication-system" in result.stdout
+        assert re.search(
+            r"\d{4}-\d{4}-\d{4}[a-z0-9]{2}-user-authentication-system",
+            result.stdout,
+        )
 
     def test_creates_git_branch(self, bash_scripts_dir: Path, temp_codexspec_git_project: Path):
         """Creates git branch when in a git repository."""
@@ -188,8 +141,10 @@ class TestCreateNewFeature:
             text=True,
             cwd=temp_codexspec_git_project,
         )
-        # We should now be on a branch starting with 001-
-        assert "001-" in branch_result.stdout
+        assert re.fullmatch(
+            r"\d{4}-\d{4}-\d{4}[a-z0-9]{2}-git-feature\n?",
+            branch_result.stdout,
+        )
 
     def test_output_messages(self, bash_scripts_dir: Path, temp_codexspec_project: Path):
         """Outputs appropriate success messages."""

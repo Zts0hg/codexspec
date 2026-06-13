@@ -125,8 +125,6 @@ Only when `--spec` is provided, read spec.md for Context section.
 2. If `--spec` is a full directory name like `2025-0321-1430k7-auth`, resolve to `.codexspec/specs/2025-0321-1430k7-auth/spec.md`
 3. If `--spec` is a path, use directly
 
-> **Note**: Legacy sequential format directories (e.g., `001-feature`) are also supported for backward compatibility.
-
 ### Content Extraction (Best-Effort)
 
 Extract content from spec.md with priority order:

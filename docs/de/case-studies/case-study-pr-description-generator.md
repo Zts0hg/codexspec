@@ -152,7 +152,7 @@ Der Befehl soll die Ausgabesprache in folgender Prioritaetsreihenfolge bestimmen
 
 ### Speicherort des Ueberpruefungsberichts
 
-`.codexspec/specs/001-pr-description-generator/review-spec.md`
+`.codexspec/specs/2026-0613-1200ab-pr-description-generator/review-spec.md`
 
 ---
 
@@ -327,7 +327,7 @@ Neues Design: --spec (spec aktivieren, opt-in)
 │  /codexspec:generate-spec                                                │
 │  ├─ Vollstaendige spec.md generieren                                    │
 │  ├─ 4 User Stories, 8 funktionale Anforderungen, 10 Testfaelle          │
-│  └─ Speichern unter .codexspec/specs/001-pr-description-generator/spec.md│
+│  └─ Speichern unter .codexspec/specs/2026-0613-1200ab-pr-description-generator/spec.md│
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
@@ -353,7 +353,7 @@ Neues Design: --spec (spec aktivieren, opt-in)
 │  ├─ Technischen Implementierungsplan aktualisieren                      │
 │  ├─ 9 technische Entscheidungen, einschliesslich 5 neuer                │
 │  ├─ 5 Implementierungsphasen                                             │
-│  └─ Speichern unter .codexspec/specs/001-pr-description-generator/plan.md│
+│  └─ Speichern unter .codexspec/specs/2026-0613-1200ab-pr-description-generator/plan.md│
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼

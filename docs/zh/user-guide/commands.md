@@ -220,7 +220,7 @@ AI:  [继续探索需求...]
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── spec.md
 ```
 
@@ -231,7 +231,7 @@ AI:  [继续探索需求...]
 
 AI:  正在生成规格说明...
 
-     ✓ 已创建 .codexspec/specs/001-task-management/spec.md
+     ✓ 已创建 .codexspec/specs/2026-0613-1200ab-task-management/spec.md
 
      包含的部分：
      - 概述：小型开发团队的任务管理
@@ -355,7 +355,7 @@ AI:  ✓ 已更新 NFR-001：响应时间 读取 < 500ms，写入 < 1s
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── plan.md    # 技术实现方案
 ```
 
@@ -431,7 +431,7 @@ AI:  正在生成技术方案...
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── tasks.md    # 任务分解
 ```
 
@@ -861,7 +861,7 @@ AI:  正在分析工件...
 
 AI:  正在生成安全检查清单...
 
-     ✓ 已创建 .codexspec/specs/001-task-management/checklists/security.md
+     ✓ 已创建 .codexspec/specs/2026-0613-1200ab-task-management/checklists/security.md
 
      ## 安全需求质量检查清单
 

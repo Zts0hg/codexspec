@@ -114,7 +114,7 @@ Run `{SCRIPT}` from repo root and parse JSON for:
 
 #### 核心功能
 
-- 验证当前是否在 feature 分支（格式: `001-feature-name`）
+- 验证当前是否在 feature 分支（格式: `2026-0613-1200ab-feature-name`）
 - 检测必需文件是否存在 (`plan.md`, `tasks.md`)
 - 返回 JSON 格式的路径信息
 
@@ -131,7 +131,7 @@ Run `{SCRIPT}` from repo root and parse JSON for:
 
 ```json
 {
-  "FEATURE_DIR": "/path/to/.codexspec/specs/001-my-feature",
+  "FEATURE_DIR": "/path/to/.codexspec/specs/2026-0613-1200ab-my-feature",
   "AVAILABLE_DOCS": ["research.md", "data-model.md", "tasks.md"]
 }
 ```
@@ -258,7 +258,7 @@ scripts:
 
 ```json
 {
-  "FEATURE_DIR": "/path/to/.codexspec/specs/001-feature",
+  "FEATURE_DIR": "/path/to/.codexspec/specs/2026-0613-1200ab-feature",
   "AVAILABLE_DOCS": ["research.md", "data-model.md"]
 }
 ```
@@ -277,7 +277,7 @@ scripts:
 
 - 自动从分支名提取 feature ID
 - 支持分支命名验证（`^\d{3}-` 格式）
-- 支持环境变量覆盖（`SPECIFY_FEATURE` / `CODEXSPEC_FEATURE`）
+- 支持环境变量覆盖（`CODEXSPEC_FEATURE`）
 
 ## 8. 关键代码路径
 

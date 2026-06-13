@@ -9,8 +9,6 @@ source "$SCRIPT_DIR/common.sh"
 
 # Default values
 FEATURE_NAME=""
-FEATURE_ID=""
-TIMESTAMP_ID=false
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -19,21 +17,11 @@ while [[ $# -gt 0 ]]; do
             FEATURE_NAME="$2"
             shift 2
             ;;
-        -i|--id)
-            FEATURE_ID="$2"
-            shift 2
-            ;;
-        --timestamp-id)
-            TIMESTAMP_ID=true
-            shift
-            ;;
         -h|--help)
             echo "Usage: $0 [OPTIONS]"
             echo ""
             echo "Options:"
             echo "  -n, --name    Feature name (e.g., 'user authentication')"
-            echo "  -i, --id      Feature ID (e.g., '001')"
-            echo "  --timestamp-id Use YYYY-MMDD-HHMMxx identifier format"
             echo "  -h, --help    Show this help message"
             exit 0
             ;;
@@ -53,25 +41,9 @@ fi
 # Check if we're in a CodexSpec project
 require_codexspec_project
 
-# Generate feature ID if not provided
-if [ -z "$FEATURE_ID" ] && [ "$TIMESTAMP_ID" = true ]; then
-    TIMESTAMP=$(date +"%Y-%m%d-%H%M")
-    RANDOM_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' </dev/urandom | head -c 2)
-    FEATURE_ID="${TIMESTAMP}${RANDOM_SUFFIX}"
-elif [ -z "$FEATURE_ID" ]; then
-    # Find the next available ID
-    SPECS_DIR=$(get_specs_dir)
-    if [ -d "$SPECS_DIR" ]; then
-        LAST_ID=$(find "$SPECS_DIR" -maxdepth 1 -type d -name '[0-9]*-*' -exec basename {} \; 2>/dev/null | cut -d'-' -f1 | sort -n | tail -1)
-        if [ -n "$LAST_ID" ]; then
-            FEATURE_ID=$(printf "%03d" $((10#$LAST_ID + 1)))
-        else
-            FEATURE_ID="001"
-        fi
-    else
-        FEATURE_ID="001"
-    fi
-fi
+TIMESTAMP=$(date +"%Y-%m%d-%H%M")
+RANDOM_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' </dev/urandom | head -c 2)
+FEATURE_ID="${TIMESTAMP}${RANDOM_SUFFIX}"
 
 # Generate branch name
 BRANCH_NAME="${FEATURE_ID}-$(echo "$FEATURE_NAME" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd 'a-z0-9-')"

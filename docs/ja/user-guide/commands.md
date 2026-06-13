@@ -197,7 +197,7 @@ AI:  [Continues exploring requirements...]
 
 **動作:**
 
-- `.codexspec/specs/{NNN}-{feature-name}/` ディレクトリを作成
+- `.codexspec/specs/YYYY-MMDD-HHMMxx-{feature-name}/` ディレクトリを作成
 - 包括的な `spec.md` を生成:
   - 機能概要とゴール
   - 受け入れ基準付きのユーザーストーリー
@@ -211,7 +211,7 @@ AI:  [Continues exploring requirements...]
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── spec.md
 ```
 
@@ -222,7 +222,7 @@ You: /codexspec:generate-spec
 
 AI:  Generating specification...
 
-     ✓ Created .codexspec/specs/001-task-management/spec.md
+     ✓ Created .codexspec/specs/2026-0613-1200ab-task-management/spec.md
 
      Sections included:
      - Overview: Task management for small dev teams
@@ -346,7 +346,7 @@ AI:  ✓ Updated NFR-001: Response time < 500ms reads, < 1s writes
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── plan.md    # 技術実装計画
 ```
 
@@ -422,7 +422,7 @@ AI:  Generating technical plan...
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── tasks.md    # タスク分解
 ```
 
@@ -939,7 +939,7 @@ You: /codexspec:checklist security
 
 AI:  Generating security checklist...
 
-     ✓ Created .codexspec/specs/001-task-management/checklists/security.md
+     ✓ Created .codexspec/specs/2026-0613-1200ab-task-management/checklists/security.md
 
      ## Security Requirements Quality Checklist
 

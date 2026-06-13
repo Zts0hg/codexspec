@@ -32,6 +32,10 @@ def test_requirements_template_defines_authoritative_decision_record():
     ]:
         assert marker in content
 
+    for entry_id in ["NEED-001", "CON-001", "DEC-001", "OUT-001"]:
+        entry = content.split(entry_id, 1)[1].split("\n## ", 1)[0]
+        assert "**Status**: open" in entry
+
 
 def test_specify_creates_and_confirms_requirements_record():
     content = read_command("specify")
@@ -134,10 +138,10 @@ def test_platform_scripts_share_feature_resolution_contract():
 
     assert "CODEXSPEC_FEATURE" in bash_common
     assert "[0-9]{4}-[0-9]{4}-[0-9]{4}" in bash_common
-    assert "timestampPattern" in ps_common
+    assert "Test-FeatureName" in ps_common
     assert "REQUIREMENTS" in ps_common
     assert "[string]$Feature" in ps_check
     assert "PathType Leaf" in ps_common
-    assert "TimestampId" in ps_create
+    assert '$featureId = "$timestamp$suffix"' in ps_create
     assert "requirements.md" in ps_create
-    assert "'^(\\d{3})-'" in ps_create
+    assert "^[0-9]{4}-[0-9]{4}-[0-9]{4}[a-z0-9]{2}-" in ps_common

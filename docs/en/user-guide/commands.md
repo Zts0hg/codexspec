@@ -220,7 +220,7 @@ Generate the `spec.md` document from clarified requirements. This command acts a
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── spec.md
 ```
 
@@ -231,7 +231,7 @@ You: /codexspec:generate-spec
 
 AI:  Generating specification...
 
-     ✓ Created .codexspec/specs/001-task-management/spec.md
+     ✓ Created .codexspec/specs/2026-0613-1200ab-task-management/spec.md
 
      Sections included:
      - Overview: Task management for small dev teams
@@ -355,7 +355,7 @@ Convert the feature specification into a technical implementation plan. This is 
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── plan.md    # Technical implementation plan
 ```
 
@@ -431,7 +431,7 @@ Break down the technical plan into actionable tasks with explicit coverage and v
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── tasks.md    # Task breakdown
 ```
 
@@ -862,7 +862,7 @@ You: /codexspec:checklist security
 
 AI:  Generating security checklist...
 
-     ✓ Created .codexspec/specs/001-task-management/checklists/security.md
+     ✓ Created .codexspec/specs/2026-0613-1200ab-task-management/checklists/security.md
 
      ## Security Requirements Quality Checklist
 

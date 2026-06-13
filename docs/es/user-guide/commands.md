@@ -197,7 +197,7 @@ Generar el documento `spec.md` desde requisitos clarificados. Este comando actua
 
 **Que hace:**
 
-- Crea directorio `.codexspec/specs/{NNN}-{feature-name}/`
+- Crea directorio `.codexspec/specs/YYYY-MMDD-HHMMxx-{feature-name}/`
 - Genera `spec.md` completo con:
   - Resumen de funcionalidad y objetivos
   - Historias de usuario con criterios de aceptacion
@@ -211,7 +211,7 @@ Generar el documento `spec.md` desde requisitos clarificados. Este comando actua
 ```
 .codexspec/
 +-- specs/
-    +-- 001-task-management/
+    +-- 2026-0613-1200ab-task-management/
         +-- spec.md
 ```
 
@@ -222,7 +222,7 @@ Tu: /codexspec:generate-spec
 
 AI:  Generando especificacion...
 
-     + Creado .codexspec/specs/001-task-management/spec.md
+     + Creado .codexspec/specs/2026-0613-1200ab-task-management/spec.md
 
      Secciones incluidas:
      - Resumen: Gestion de tareas para equipos de desarrollo pequenos
@@ -346,7 +346,7 @@ Convertir la especificacion de funcionalidad en un plan de implementacion tecnic
 ```
 .codexspec/
 +-- specs/
-    +-- 001-task-management/
+    +-- 2026-0613-1200ab-task-management/
         +-- plan.md    # Plan de implementacion tecnica
 ```
 
@@ -422,7 +422,7 @@ Desglosar el plan tecnico en tareas atomicas y accionables con aplicacion de TDD
 ```
 .codexspec/
 +-- specs/
-    +-- 001-task-management/
+    +-- 2026-0613-1200ab-task-management/
         +-- tasks.md    # Desglose de tareas
 ```
 
@@ -939,7 +939,7 @@ Tu: /codexspec:checklist seguridad
 
 AI:  Generando lista de verificacion de seguridad...
 
-     + Creado .codexspec/specs/001-task-management/checklists/security.md
+     + Creado .codexspec/specs/2026-0613-1200ab-task-management/checklists/security.md
 
      ## Lista de Verificacion de Calidad de Requisitos de Seguridad
 

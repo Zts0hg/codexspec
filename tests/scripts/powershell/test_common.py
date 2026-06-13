@@ -79,31 +79,23 @@ class TestGetCurrentBranch:
 
     def test_get_current_branch_env(self, powershell_scripts_dir: Path, tmp_path: Path):
         """Get branch from environment variable."""
-        cmd = f'$env:CODEXSPEC_FEATURE = "001-test-feature"; . "{powershell_scripts_dir}/common.ps1"; Get-CurrentBranch'
+        cmd = (
+            '$env:CODEXSPEC_FEATURE = "2026-0613-1200ab-test-feature"; '
+            f'. "{powershell_scripts_dir}/common.ps1"; Get-CurrentBranch'
+        )
         result = subprocess.run(
             ["pwsh", "-Command", cmd],
             capture_output=True,
             text=True,
             cwd=tmp_path,
         )
-        assert "001-test-feature" in result.stdout
-
-    def test_get_current_branch_legacy_env(self, powershell_scripts_dir: Path, tmp_path: Path):
-        """SPECIFY_FEATURE remains supported for legacy integrations."""
-        cmd = f'$env:SPECIFY_FEATURE = "002-legacy-feature"; . "{powershell_scripts_dir}/common.ps1"; Get-CurrentBranch'
-        result = subprocess.run(
-            ["pwsh", "-Command", cmd],
-            capture_output=True,
-            text=True,
-            cwd=tmp_path,
-        )
-        assert "002-legacy-feature" in result.stdout
+        assert "2026-0613-1200ab-test-feature" in result.stdout
 
     def test_get_current_branch_git(self, powershell_scripts_dir: Path, temp_git_repo: Path):
         """Get branch from git."""
         # Create and checkout a branch
         subprocess.run(
-            ["git", "checkout", "-b", "002-test-branch"],
+            ["git", "checkout", "-b", "2026-0613-1200ab-test-branch"],
             cwd=temp_git_repo,
             check=True,
             capture_output=True,
@@ -119,7 +111,7 @@ class TestGetCurrentBranch:
             text=True,
             cwd=temp_git_repo,
         )
-        assert "002-test-branch" in result.stdout
+        assert "2026-0613-1200ab-test-branch" in result.stdout
 
 
 @pytest.mark.skipif(
@@ -172,7 +164,7 @@ class TestFeatureBranch:
         """Valid feature branch returns true."""
         cmd = (
             f'. "{powershell_scripts_dir}/common.ps1"; '
-            f'if (Test-FeatureBranch -Branch "001-valid-feature") '
+            f'if (Test-FeatureBranch -Branch "2026-0613-1200ab-valid-feature") '
             f'{{ Write-Output "VALID" }}'
         )
         result = subprocess.run(
@@ -223,7 +215,11 @@ class TestGetFeatureDir:
 
     def test_get_feature_dir(self, powershell_scripts_dir: Path, tmp_path: Path):
         """Returns correct feature directory path."""
-        cmd = f'. "{powershell_scripts_dir}/common.ps1"; Get-FeatureDir -RepoRoot "/test/repo" -Branch "001-my-feature"'
+        cmd = (
+            f'. "{powershell_scripts_dir}/common.ps1"; '
+            'Get-FeatureDir -RepoRoot "/test/repo" '
+            '-Branch "2026-0613-1200ab-my-feature"'
+        )
         result = subprocess.run(
             ["pwsh", "-Command", cmd],
             capture_output=True,
@@ -232,7 +228,7 @@ class TestGetFeatureDir:
         )
         # Normalize path for cross-platform comparison
         normalized_output = result.stdout.replace("\\", "/")
-        assert "/test/repo/.codexspec/specs/001-my-feature" in normalized_output
+        assert "/test/repo/.codexspec/specs/2026-0613-1200ab-my-feature" in normalized_output
 
 
 @pytest.mark.skipif(
@@ -246,7 +242,7 @@ class TestGetFeaturePathsEnv:
         """Returns all feature paths as object."""
         # Checkout a feature branch first
         subprocess.run(
-            ["git", "checkout", "-b", "003-test-feature"],
+            ["git", "checkout", "-b", "2026-0613-1200ab-test-feature"],
             cwd=temp_codexspec_git_project,
             check=True,
             capture_output=True,
@@ -272,7 +268,7 @@ class TestGetFeaturePathsEnv:
         )
         # Normalize paths for cross-platform comparison
         normalized_output = result.stdout.replace("\\", "/")
-        assert ".codexspec/specs/003-test-feature" in normalized_output
+        assert ".codexspec/specs/2026-0613-1200ab-test-feature" in normalized_output
         assert "requirements.md" in normalized_output
         assert "spec.md" in normalized_output
         assert "plan.md" in normalized_output
