@@ -132,16 +132,23 @@ def test_document_templates_use_consistent_requirement_and_task_policies():
 
 def test_platform_scripts_share_feature_resolution_contract():
     bash_common = (ROOT / "scripts" / "bash" / "common.sh").read_text(encoding="utf-8")
+    bash_create = (ROOT / "scripts" / "bash" / "create-new-feature.sh").read_text(encoding="utf-8")
     ps_common = (ROOT / "scripts" / "powershell" / "common.ps1").read_text(encoding="utf-8")
     ps_check = (ROOT / "scripts" / "powershell" / "check-prerequisites.ps1").read_text(encoding="utf-8")
     ps_create = (ROOT / "scripts" / "powershell" / "create-new-feature.ps1").read_text(encoding="utf-8")
+    architecture = (ROOT / "docs" / "en" / "development" / "scripts-architecture.md").read_text(encoding="utf-8")
 
     assert "CODEXSPEC_FEATURE" in bash_common
     assert "[0-9]{4}-[0-9]{4}-[0-9]{4}" in bash_common
+    assert "ASCII letters or numbers" in bash_create
     assert "Test-FeatureName" in ps_common
     assert "REQUIREMENTS" in ps_common
     assert "[string]$Feature" in ps_check
     assert "PathType Leaf" in ps_common
     assert '$featureId = "$timestamp$suffix"' in ps_create
+    assert "ASCII letters or numbers" in ps_create
     assert "requirements.md" in ps_create
     assert "^[0-9]{4}-[0-9]{4}-[0-9]{4}[a-z0-9]{2}-" in ps_common
+    assert "Sequential `NNN-name` identifiers are not supported" in architecture
+    assert "Legacy compatibility applies to artifacts" in architecture
+    assert "The full feature name identifies a workspace" in architecture

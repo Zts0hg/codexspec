@@ -41,12 +41,21 @@ fi
 # Check if we're in a CodexSpec project
 require_codexspec_project
 
+# Normalize the path/branch suffix to the supported ASCII kebab-case contract.
+FEATURE_SUFFIX=$(printf "%s" "$FEATURE_NAME" |
+    tr '[:upper:]' '[:lower:]' |
+    sed 's/[^a-z0-9]/-/g; s/-\{1,\}/-/g; s/^-//; s/-$//')
+if [ -z "$FEATURE_SUFFIX" ]; then
+    log_error "Feature short name must contain ASCII letters or numbers (for example, 'user-auth')."
+    exit 1
+fi
+
 TIMESTAMP=$(date +"%Y-%m%d-%H%M")
 RANDOM_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' </dev/urandom | head -c 2)
 FEATURE_ID="${TIMESTAMP}${RANDOM_SUFFIX}"
 
 # Generate branch name
-BRANCH_NAME="${FEATURE_ID}-$(echo "$FEATURE_NAME" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd 'a-z0-9-')"
+BRANCH_NAME="${FEATURE_ID}-${FEATURE_SUFFIX}"
 
 log_info "Creating feature: $FEATURE_NAME"
 log_info "Feature ID: $FEATURE_ID"

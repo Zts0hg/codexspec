@@ -102,6 +102,8 @@ resolve_feature_dir() {
             return 1
         fi
 
+        # A short ID is only a local lookup convenience. The full directory
+        # name identifies the workspace, and ambiguity must be explicit.
         local id_matches=()
         local candidate
         if [ -d "$specs_dir" ]; then

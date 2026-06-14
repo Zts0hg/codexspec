@@ -36,6 +36,8 @@ is_feature_id() {
     [[ "$1" =~ ^[0-9]{4}-[0-9]{4}-[0-9]{4}[a-z0-9]{2}$ ]]
 }
 
+# Timestamp names are the only supported feature naming contract.
+# Artifact-level legacy mode does not permit sequential NNN-name directories.
 is_feature_name() {
     [[ "$1" =~ ^[0-9]{4}-[0-9]{4}-[0-9]{4}[a-z0-9]{2}-[a-z0-9][a-z0-9-]*$ ]]
 }

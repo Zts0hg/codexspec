@@ -70,6 +70,8 @@ function Test-FeatureId {
 
 function Test-FeatureName {
     param([string]$Name)
+    # Timestamp names are the only supported feature naming contract.
+    # Artifact-level legacy mode does not permit sequential NNN-name directories.
     return $Name -match '^[0-9]{4}-[0-9]{4}-[0-9]{4}[a-z0-9]{2}-[a-z0-9][a-z0-9-]*$'
 }
 
@@ -136,6 +138,8 @@ function Get-FeaturePathsEnv {
                     throw "Invalid feature ID: $Feature"
                 }
                 $specsDir = Join-Path $repoRoot ".codexspec/specs"
+                # A short ID is only a local lookup convenience. The full
+                # directory name identifies the workspace.
                 $matches = @(
                     Get-ChildItem -Path $specsDir -Directory -ErrorAction SilentlyContinue |
                         Where-Object {

@@ -55,6 +55,25 @@ class TestCreateNewFeature:
         assert result.returncode != 0
         assert "Not a CodexSpec project" in result.stdout
 
+    def test_rejects_name_without_ascii_alphanumerics(
+        self,
+        bash_scripts_dir: Path,
+        temp_codexspec_project: Path,
+    ):
+        """A short name must retain at least one ASCII letter or digit."""
+        script_path = bash_scripts_dir / "create-new-feature.sh"
+        result = subprocess.run(
+            ["bash", str(script_path), "-n", "纯中文功能"],
+            capture_output=True,
+            text=True,
+            cwd=temp_codexspec_project,
+        )
+
+        assert result.returncode != 0
+        assert "ASCII letters or numbers" in result.stdout
+        specs_dir = temp_codexspec_project / ".codexspec" / "specs"
+        assert not specs_dir.exists() or not any(specs_dir.iterdir())
+
     def test_creates_feature_dir(self, bash_scripts_dir: Path, temp_codexspec_project: Path):
         """Creates feature directory with correct name."""
         script_path = bash_scripts_dir / "create-new-feature.sh"

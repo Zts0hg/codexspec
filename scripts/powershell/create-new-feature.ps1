@@ -120,15 +120,20 @@ try {
 
 Set-Location $repoRoot
 
-$specsDir = Join-Path $repoRoot '.codexspec/specs'
-New-Item -ItemType Directory -Path $specsDir -Force | Out-Null
-
 # Generate branch name
 if ($ShortName) {
     $branchSuffix = ConvertTo-CleanBranchName -Name $ShortName
 } else {
     $branchSuffix = Get-BranchName -Description $featureDesc
 }
+
+if (-not $branchSuffix) {
+    Write-Error "Feature short name must contain ASCII letters or numbers (for example, 'user-auth')."
+    exit 1
+}
+
+$specsDir = Join-Path $repoRoot '.codexspec/specs'
+New-Item -ItemType Directory -Path $specsDir -Force | Out-Null
 
 $timestamp = Get-Date -Format 'yyyy-MMdd-HHmm'
 $chars = 'abcdefghijklmnopqrstuvwxyz0123456789'

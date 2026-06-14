@@ -41,6 +41,32 @@ class TestCreateNewFeature:
         )
         assert result.returncode != 0
 
+    def test_rejects_short_name_without_ascii_alphanumerics(
+        self,
+        powershell_scripts_dir: Path,
+        temp_codexspec_project: Path,
+    ):
+        """A custom short name must retain an ASCII letter or digit."""
+        script_path = powershell_scripts_dir / "create-new-feature.ps1"
+        result = subprocess.run(
+            [
+                "pwsh",
+                "-File",
+                str(script_path),
+                "-ShortName",
+                "纯中文功能",
+                "Chinese feature description",
+            ],
+            capture_output=True,
+            text=True,
+            cwd=temp_codexspec_project,
+        )
+
+        assert result.returncode != 0
+        assert "ASCII letters or numbers" in f"{result.stdout}\n{result.stderr}"
+        specs_dir = temp_codexspec_project / ".codexspec" / "specs"
+        assert not specs_dir.exists() or not any(specs_dir.iterdir())
+
     def test_creates_timestamp_feature_dir(
         self,
         powershell_scripts_dir: Path,
