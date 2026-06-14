@@ -177,12 +177,18 @@ New-Item -ItemType Directory -Path $featureDir -Force | Out-Null
 
 $template = Join-Path $repoRoot '.codexspec/templates/docs/requirements-template.md'
 $requirementsFile = Join-Path $featureDir 'requirements.md'
-$specFile = Join-Path $featureDir 'spec.md'
 if (Test-Path $template) {
-    Copy-Item $template $requirementsFile -Force
+    $requirementsContent = Get-Content -Path $template -Raw
+    $requirementsContent = $requirementsContent.Replace('[FEATURE NAME]', $branchSuffix)
+    $requirementsContent = $requirementsContent.Replace('[feature-id]', $featureId)
+    Set-Content -Path $requirementsFile -Value $requirementsContent -Encoding utf8
 } else {
     @"
-# Confirmed Requirements
+# Confirmed Requirements: $branchSuffix
+
+**Feature ID**: ``$featureId``
+**Status**: Discovery
+**Last Confirmed**: [DATE]
 
 Only entries with ``Status: confirmed`` are binding downstream inputs.
 
@@ -216,14 +222,12 @@ $env:CODEXSPEC_FEATURE = $branchName
 if ($Json) {
     [PSCustomObject]@{
         BRANCH_NAME = $branchName
-        SPEC_FILE = $specFile
         REQUIREMENTS_FILE = $requirementsFile
         FEATURE_ID = $featureId
         HAS_GIT = $hasGit
     } | ConvertTo-Json -Compress
 } else {
     Write-Output "BRANCH_NAME: $branchName"
-    Write-Output "SPEC_FILE: $specFile"
     Write-Output "REQUIREMENTS_FILE: $requirementsFile"
     Write-Output "FEATURE_ID: $featureId"
     Write-Output "HAS_GIT: $hasGit"

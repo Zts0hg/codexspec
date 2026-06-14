@@ -71,10 +71,17 @@ log_success "Created feature directory: $FEATURE_DIR"
 REQUIREMENTS_TEMPLATE=".codexspec/templates/docs/requirements-template.md"
 REQUIREMENTS_FILE="$FEATURE_DIR/requirements.md"
 if [ -f "$REQUIREMENTS_TEMPLATE" ]; then
-    cp "$REQUIREMENTS_TEMPLATE" "$REQUIREMENTS_FILE"
+    sed \
+        -e "s/\[FEATURE NAME\]/$FEATURE_SUFFIX/g" \
+        -e "s/\[feature-id\]/$FEATURE_ID/g" \
+        "$REQUIREMENTS_TEMPLATE" > "$REQUIREMENTS_FILE"
 else
     cat > "$REQUIREMENTS_FILE" << 'EOF'
-# Confirmed Requirements
+# Confirmed Requirements: __FEATURE_NAME__
+
+**Feature ID**: `__FEATURE_ID__`
+**Status**: Discovery
+**Last Confirmed**: [DATE]
 
 Only entries with `Status: confirmed` are binding downstream inputs.
 
@@ -109,6 +116,11 @@ Only entries with `Status: confirmed` are binding downstream inputs.
 
 <!-- Keep replaced entries with Status: superseded. -->
 EOF
+    sed \
+        -e "s/__FEATURE_NAME__/$FEATURE_SUFFIX/g" \
+        -e "s/__FEATURE_ID__/$FEATURE_ID/g" \
+        "$REQUIREMENTS_FILE" > "$REQUIREMENTS_FILE.tmp"
+    mv "$REQUIREMENTS_FILE.tmp" "$REQUIREMENTS_FILE"
 fi
 
 log_success "Created requirements record: $REQUIREMENTS_FILE"

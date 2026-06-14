@@ -12,7 +12,7 @@ CodexSpec structure le développement en **points de vérification examinables**
 │  1. Constitution  ──►  Définir les principes du projet                    │
 │         │                                                                │
 │         ▼                                                                │
-│  2. Specify  ───────►  Q&R interactives pour clarifier les exigences     │
+│  2. Specify  ───────►  Clarifier et enregistrer requirements.md          │
 │         │                                                                │
 │         ▼                                                                │
 │  3. Generate Spec  ─►  Créer le document spec.md                          │
@@ -100,8 +100,8 @@ Lorsque des problèmes sont trouvés dans les rapports de révision, décrivez l
 | Étape | Commande | Objectif |
 |-------|----------|----------|
 | 1 | `/codexspec:constitution` | Définir les principes du projet |
-| 2 | `/codexspec:specify` | Q&R interactives pour les exigences |
-| 3 | `/codexspec:generate-spec` | Créer le document de spécification (★ Révision automatique) |
+| 2 | `/codexspec:specify` | Clarifier, confirmer et enregistrer requirements.md |
+| 3 | `/codexspec:generate-spec` | Créer spec.md depuis requirements.md confirmée (★ Révision automatique) |
 | - | `/codexspec:review-spec` | Invoquée automatiquement, ou revalider manuellement |
 | 4 | `/codexspec:spec-to-plan` | Créer le plan technique (★ Révision automatique) |
 | - | `/codexspec:review-plan` | Invoquée automatiquement, ou revalider manuellement |
@@ -118,7 +118,9 @@ Lorsque des problèmes sont trouvés dans les rapports de révision, décrivez l
 | **Objectif** | Exploration initiale | Raffinement itératif |
 | **Quand** | Aucun spec.md n'existe | spec.md existe, nécessite des compléments |
 | **Entrée** | Votre idée initiale | spec.md existant |
-| **Sortie** | Aucune (dialogue uniquement) | Met à jour spec.md |
+| **Sortie** | Crée ou met à jour requirements.md | Met à jour spec.md |
+
+`requirements.md` est la source de référence pour générer la spécification. Un chemin de fonctionnalité explicite est prioritaire ; sinon la branche timestamp courante est utilisée.
 
 ## TDD Conditionnel
 

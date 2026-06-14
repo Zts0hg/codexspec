@@ -102,7 +102,39 @@ class TestCreateNewFeature:
         assert re.fullmatch(r"\d{4}-\d{4}-\d{4}[a-z0-9]{2}", output["FEATURE_ID"])
         assert output["BRANCH_NAME"].startswith(f"{output['FEATURE_ID']}-")
         assert "REQUIREMENTS_FILE" in output
-        assert "SPEC_FILE" in output
+        assert "SPEC_FILE" not in output
+        assert Path(output["REQUIREMENTS_FILE"]).exists()
+
+    def test_initializes_requirements_template_metadata(
+        self,
+        powershell_scripts_dir: Path,
+        temp_codexspec_project: Path,
+    ):
+        """Copied requirements templates contain the generated feature metadata."""
+        template_source = Path(__file__).parents[3] / "templates" / "docs" / "requirements-template.md"
+        template_dir = temp_codexspec_project / ".codexspec" / "templates" / "docs"
+        template_dir.mkdir(parents=True)
+        (template_dir / "requirements-template.md").write_text(
+            template_source.read_text(encoding="utf-8"),
+            encoding="utf-8",
+        )
+
+        script_path = powershell_scripts_dir / "create-new-feature.ps1"
+        result = subprocess.run(
+            ["pwsh", "-File", str(script_path), "-Json", "-ShortName", "Test Feature", "Description"],
+            capture_output=True,
+            text=True,
+            cwd=temp_codexspec_project,
+        )
+
+        assert result.returncode == 0
+        output = json.loads(result.stdout)
+        content = Path(output["REQUIREMENTS_FILE"]).read_text(encoding="utf-8")
+        assert "# Confirmed Requirements: test-feature" in content
+        assert f"**Feature ID**: `{output['FEATURE_ID']}`" in content
+        assert "[FEATURE NAME]" not in content
+        assert "[feature-id]" not in content
+        assert "[DATE]" in content
 
     def test_short_name(self, powershell_scripts_dir: Path, temp_codexspec_project: Path):
         """-ShortName provides the branch suffix."""
@@ -169,7 +201,7 @@ class TestCreateNewFeature:
         assert result.returncode == 0
         assert "BRANCH_NAME:" in result.stdout
         assert "REQUIREMENTS_FILE:" in result.stdout
-        assert "SPEC_FILE:" in result.stdout
+        assert "SPEC_FILE:" not in result.stdout
         assert re.search(
             r"FEATURE_ID: \d{4}-\d{4}-\d{4}[a-z0-9]{2}",
             result.stdout,

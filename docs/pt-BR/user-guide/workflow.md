@@ -12,8 +12,8 @@ O CodexSpec estrutura o desenvolvimento em **pontos de verificação revisáveis
 │  1. Constitution  ──►  Definir princípios do projeto                     │
 │         │                                                                │
 │         ▼                                                                │
-│  2. Specify  ───────►  Perguntas e respostas interativas para esclarecer │
-│         │               requisitos                                       │
+│  2. Specify  ───────►  Esclarecer e salvar requirements.md               │
+│         │                                                                │
 │         ▼                                                                │
 │  3. Generate Spec  ─►  Criar documento spec.md                           │
 │         │               ✓ Revisão automática: gera review-spec.md        │
@@ -100,8 +100,8 @@ Quando problemas são encontrados nos relatórios de revisão, descreva as corre
 | Etapa | Comando | Propósito |
 |-------|---------|-----------|
 | 1 | `/codexspec:constitution` | Definir princípios do projeto |
-| 2 | `/codexspec:specify` | Perguntas e respostas interativas para requisitos |
-| 3 | `/codexspec:generate-spec` | Criar documento de especificação (★ Revisão automática) |
+| 2 | `/codexspec:specify` | Esclarecer, confirmar e salvar requirements.md |
+| 3 | `/codexspec:generate-spec` | Criar spec.md a partir de requirements.md confirmada (★ Revisão automática) |
 | - | `/codexspec:review-spec` | Invocado automaticamente, ou revalidar manualmente |
 | 4 | `/codexspec:spec-to-plan` | Criar plano técnico (★ Revisão automática) |
 | - | `/codexspec:review-plan` | Invocado automaticamente, ou revalidar manualmente |
@@ -118,7 +118,9 @@ Quando problemas são encontrados nos relatórios de revisão, descreva as corre
 | **Propósito** | Exploração inicial | Refinamento iterativo |
 | **Quando** | Nenhum spec.md existe | spec.md existe, precisa preencher lacunas |
 | **Entrada** | Sua ideia inicial | spec.md existente |
-| **Saída** | Nenhuma (apenas diálogo) | Atualiza spec.md |
+| **Saída** | Cria ou atualiza requirements.md | Atualiza spec.md |
+
+`requirements.md` é a fonte autoritativa para gerar a especificação. Um caminho explícito da funcionalidade tem prioridade; caso contrário, a branch timestamp atual é usada.
 
 ## TDD Condicional
 

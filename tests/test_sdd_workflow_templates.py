@@ -111,11 +111,30 @@ def test_adjacent_commands_preserve_requirements_authority():
     clarify = read_command("clarify")
     quick = read_command("quick")
     analyze = read_command("analyze")
+    implement = read_command("implement-tasks")
 
     assert "Update `requirements.md` first" in clarify
     assert "confirmed requirement summary" in quick
     assert "requirements.md" in analyze
     assert "end-to-end traceability" in analyze.lower()
+    assert "requirements.md" in implement
+    assert "explicit path" in implement.lower()
+    assert "current branch" in implement.lower()
+    assert "legacy spec-only" in implement.lower()
+    assert "latest/only" not in implement.lower()
+    assert "latest feature" not in implement.lower()
+
+
+@pytest.mark.parametrize("language", ["de", "es", "fr", "ja", "ko", "pt-BR"])
+def test_localized_guides_describe_requirements_first_workflow(language):
+    guide = (ROOT / "docs" / language / "user-guide" / "commands.md").read_text(encoding="utf-8")
+    workflow = (ROOT / "docs" / language / "user-guide" / "workflow.md").read_text(encoding="utf-8")
+
+    assert "requirements.md" in guide
+    assert "requirements.md" in workflow
+    assert "specify" in guide.lower()
+    assert "generate-spec" in guide.lower()
+    assert "requirements.md" in guide[guide.lower().index("specify") :]
 
 
 def test_document_templates_use_consistent_requirement_and_task_policies():

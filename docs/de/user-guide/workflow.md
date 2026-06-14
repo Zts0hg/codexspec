@@ -12,7 +12,7 @@ CodexSpec strukturiert die Entwicklung in **überprüfbare Prüfpunkte** mit men
 │  1. Constitution  ──►  Projektprinzipien definieren                      │
 │         │                                                                │
 │         ▼                                                                │
-│  2. Specify  ───────►  Interaktives Q&A zur Anforderungenklärung        │
+│  2. Specify  ───────►  Anforderungen klären und requirements.md sichern │
 │         │                                                                │
 │         ▼                                                                │
 │  3. Generate Spec  ─►  spec.md Dokument erstellen                        │
@@ -101,8 +101,8 @@ Wenn im Überprüfungsbericht Probleme gefunden werden, beschreiben Sie die Korr
 | Phase | Befehl | Zweck |
 |-------|--------|-------|
 | 1 | `/codexspec:constitution` | Projektprinzipien definieren |
-| 2 | `/codexspec:specify` | Interaktives Q&A für Anforderungen |
-| 3 | `/codexspec:generate-spec` | Spezifikationsdokument erstellen (★ Automatische Überprüfung) |
+| 2 | `/codexspec:specify` | Anforderungen klären, bestätigen und in requirements.md speichern |
+| 3 | `/codexspec:generate-spec` | spec.md aus bestätigter requirements.md erstellen (★ Automatische Überprüfung) |
 | - | `/codexspec:review-spec` | Automatisch aufgerufen, oder manuell neu validieren |
 | 4 | `/codexspec:spec-to-plan` | Technischen Plan erstellen (★ Automatische Überprüfung) |
 | - | `/codexspec:review-plan` | Automatisch aufgerufen, oder manuell neu validieren |
@@ -119,7 +119,9 @@ Wenn im Überprüfungsbericht Probleme gefunden werden, beschreiben Sie die Korr
 | **Zweck** | Initiale Erkundung | Iterative Verfeinerung |
 | **Wann** | Kein spec.md existiert | spec.md existiert, Lücken müssen gefüllt werden |
 | **Eingabe** | Ihre ursprüngliche Idee | spec.md existent |
-| **Ausgabe** | Keine (nur Dialog) | Aktualisiert spec.md |
+| **Ausgabe** | Erstellt oder aktualisiert requirements.md | Aktualisiert spec.md |
+
+`requirements.md` ist die verbindliche Quelle für die Spec-Generierung. Ein expliziter Feature-Pfad hat Vorrang; andernfalls wird der aktuelle Timestamp-Feature-Branch verwendet.
 
 ## Bedingtes TDD
 

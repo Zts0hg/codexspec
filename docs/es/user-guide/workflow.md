@@ -12,7 +12,7 @@ CodexSpec estructura el desarrollo en **puntos de control revisables** con valid
 │  1. Constitution  ──►  Definir principios del proyecto                   │
 │         │                                                                │
 │         ▼                                                                │
-│  2. Specify  ───────►  Q&A interactivo para clarificar requisitos        │
+│  2. Specify  ───────►  Clarificar y guardar requirements.md              │
 │         │                                                                │
 │         ▼                                                                │
 │  3. Generate Spec  ─►  Crear documento spec.md                           │
@@ -100,8 +100,8 @@ Cuando se encuentran problemas en los informes de revisión, describe las correc
 | Etapa | Comando | Propósito |
 |-------|---------|---------|
 | 1 | `/codexspec:constitution` | Definir principios del proyecto |
-| 2 | `/codexspec:specify` | Q&A interactivo para requisitos |
-| 3 | `/codexspec:generate-spec` | Crear documento de especificación (★ Revisión automática) |
+| 2 | `/codexspec:specify` | Clarificar, confirmar y guardar requirements.md |
+| 3 | `/codexspec:generate-spec` | Crear spec.md desde requirements.md confirmada (★ Revisión automática) |
 | - | `/codexspec:review-spec` | Invocado automáticamente, o revalidar manualmente |
 | 4 | `/codexspec:spec-to-plan` | Crear plan técnico (★ Revisión automática) |
 | - | `/codexspec:review-plan` | Invocado automáticamente, o revalidar manualmente |
@@ -118,7 +118,9 @@ Cuando se encuentran problemas en los informes de revisión, describe las correc
 | **Propósito** | Exploración inicial | Refinamiento iterativo |
 | **Cuándo** | No existe spec.md | spec.md existe, necesita llenar brechas |
 | **Entrada** | Tu idea inicial | spec.md existente |
-| **Salida** | Ninguna (solo diálogo) | Actualiza spec.md |
+| **Salida** | Crea o actualiza requirements.md | Actualiza spec.md |
+
+`requirements.md` es la fuente autoritativa para generar la especificación. Una ruta de funcionalidad explícita tiene prioridad; de lo contrario se usa la rama timestamp actual.
 
 ## TDD Condicional
 

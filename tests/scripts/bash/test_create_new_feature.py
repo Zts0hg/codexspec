@@ -110,6 +110,41 @@ class TestCreateNewFeature:
             entry = content.split(section, 1)[1].split("\n## ", 1)[0]
             assert "**Status**: open" in entry
 
+    def test_initializes_requirements_template_metadata(
+        self,
+        bash_scripts_dir: Path,
+        temp_codexspec_project: Path,
+    ):
+        """Copied requirements templates contain the generated feature metadata."""
+        template_source = Path(__file__).parents[3] / "templates" / "docs" / "requirements-template.md"
+        template_dir = temp_codexspec_project / ".codexspec" / "templates" / "docs"
+        template_dir.mkdir(parents=True)
+        (template_dir / "requirements-template.md").write_text(
+            template_source.read_text(encoding="utf-8"),
+            encoding="utf-8",
+        )
+
+        script_path = bash_scripts_dir / "create-new-feature.sh"
+        result = subprocess.run(
+            ["bash", str(script_path), "-n", "Test Feature"],
+            capture_output=True,
+            text=True,
+            cwd=temp_codexspec_project,
+        )
+
+        assert result.returncode == 0
+        requirements_file = next(
+            (temp_codexspec_project / ".codexspec" / "specs").glob("20??-????-??????-test-feature/requirements.md")
+        )
+        content = requirements_file.read_text(encoding="utf-8")
+        feature_id = re.search(r"Feature ID: (\d{4}-\d{4}-\d{4}[a-z0-9]{2})", result.stdout)
+        assert feature_id
+        assert "# Confirmed Requirements: test-feature" in content
+        assert f"**Feature ID**: `{feature_id.group(1)}`" in content
+        assert "[FEATURE NAME]" not in content
+        assert "[feature-id]" not in content
+        assert "[DATE]" in content
+
     def test_default_id_is_timestamp(self, bash_scripts_dir: Path, temp_codexspec_project: Path):
         """Feature creation always uses the timestamp identifier format."""
         script_path = bash_scripts_dir / "create-new-feature.sh"
