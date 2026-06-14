@@ -1,214 +1,104 @@
 ---
 description: 通过交互式问答澄清需求，探索和完善初始想法
 argument-hint: "描述你的初始想法或需求"
+scripts:
+  sh: .codexspec/scripts/create-new-feature.sh
+  ps: .codexspec/scripts/create-new-feature.ps1
 ---
 
-# Requirement Clarification
-
-## Configuration Check
-
-**IMPORTANT**: Before proceeding, check if the project configuration exists.
-
-### Execution Steps
-
-1. **Check Configuration File**
-   - Check if `.codexspec/config.yml` exists
-   - This is a simple file existence check, no parsing needed at this stage
-
-2. **If Configuration Does NOT Exist**
-   - Display a one-time prompt:
-
-     ```
-     💡 Project language is not configured. Run `/codexspec:config` to create a configuration file.
-     ```
-
-   - Use default values for current session:
-     - `language.output`: "en"
-     - `language.commit`: "en"
-     - `language.templates`: "en"
-   - Continue with command execution normally
-
-3. **If Configuration Exists**
-   - Proceed to `## Language Preference` section
-   - Read configuration and apply language settings as before
-
-4. **Session State** (Implicit)
-   - The prompt is shown only once per conversation session
-   - Claude's conversation context naturally maintains this state
-   - No additional mechanism needed
+# Requirement Discovery
 
 ## Language Preference
 
-**IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
-
-- If `language.output` is set to a language other than "en", respond and generate all content in that language
-- If not configured or set to "en", use English as default
-- Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
-- All user-facing messages, questions, and generated documents should use the configured language
+Read `.codexspec/config.yml`. Use `language.output`; default to English.
 
 ## User Input
 
-$ARGUMENTS
+`$ARGUMENTS`
 
-## Git Branch Safety Check
+## Goal
 
-**IMPORTANT**: Before proceeding with requirement clarification, perform the following branch safety check:
+Turn the user discussion into a persistent, traceable `requirements.md`. The discussion is the richest source of intent, but only the user's confirmed stage summary becomes binding downstream authority.
 
-### Execution Steps
+Do not generate `spec.md` in this command.
 
-1. **Check Git Environment**
-   - Run: `git rev-parse --is-inside-work-tree 2>/dev/null`
-   - If the result is not "true", skip this check and continue with the command
+## Feature Workspace
 
-2. **Get Current Branch**
-   - Run: `git branch --show-current`
-   - Store the result as the current branch name
+### New Feature
 
-3. **Check Main Branch**
-   - Read main branch names from `.codexspec/config.yml` (key: `git.main_branches`)
-   - Default main branches: `["main", "master"]`
-   - If the current branch is in the main branches list, proceed to step 4
-   - Otherwise, skip to `## Instructions` and continue with the command
+When `$ARGUMENTS` is a new requirement:
 
-4. **Interactive Prompt**
-   Use the `AskUserQuestion` tool with the following structure:
+1. Derive a short kebab-case feature name.
+2. Run the platform create-new-feature script:
+   - Bash: `{SCRIPT} --name "<feature-name>"`
+   - PowerShell: `{SCRIPT} -ShortName "<feature-name>" "<description>"`
+3. Parse the created feature directory and `requirements.md` path.
+4. If branch creation is unavailable, continue in the workspace and report the limitation.
 
-   ```json
-   {
-     "questions": [{
-       "question": "You are currently on the main branch '{current_branch}'. It is recommended to create a separate branch for new features. Please select:",
-       "header": "Branch Choice",
-       "options": [
-         {"label": "Create new feature branch (Recommended)", "description": "Create and switch to a new feature branch"},
-         {"label": "Continue on current branch", "description": "Work directly on the main branch without creating a new branch"},
-         {"label": "Cancel operation", "description": "Stop the current command execution"}
-       ]
-     }]
-   }
-   ```
+### Existing Feature
 
-   **Note**: Adjust the question text based on the project's language configuration (`.codexspec/config.yml` → `language.output`).
+When the argument identifies an existing feature:
 
-5. **Branch Creation** (if user chose "Create new feature branch")
-   - Ask for feature name using `AskUserQuestion` tool
-   - Generate branch name format: `{YYYY-MMDD-HHMM}{random}-{feature-name}`
+1. Use the explicit directory first.
+2. Otherwise match the current branch.
+3. If multiple features are possible, ask the user to select one. Never silently select the latest.
+4. Load the existing `requirements.md`.
+5. Legacy feature: if only `spec.md` exists, extract candidate entries from it, mark them `open`, and require user confirmation before they become authoritative.
 
-     ```bash
-     TIMESTAMP=$(date +"%Y-%m%d-%H%M")
-     RANDOM_SUFFIX=$(head /dev/urandom | LC_ALL=C tr -dc 'a-z0-9' | head -c 2)
-     BRANCH_NAME="${TIMESTAMP}${RANDOM_SUFFIX}-${feature_name}"
-     ```
+## Discussion Rules
 
-   - Run: `git checkout -b {BRANCH_NAME}`
-   - Confirm success message: "✅ Branch created successfully: {BRANCH_NAME}"
+- Ask one material question at a time.
+- Use structured choices when there are 2-4 meaningful options.
+- Explore user goals, workflows, constraints, error behavior, compatibility, scope boundaries, and important trade-offs.
+- Prefer the user's actual objective over generic methods or idealized architecture.
+- Distinguish the user's statement from AI inference.
+- Do not mark an inference as `confirmed`.
+- Record rejected alternatives only when they clarify a confirmed decision.
+- Do not preserve the entire chat transcript.
 
-6. **Handle User Choice**
-   - If user chose "Continue on current branch": Continue with the command without creating a branch
-   - If user chose "Cancel operation": Stop execution and return control to the user
+## Candidate Entries
 
-7. **Continue Command**
-   After branch handling (or if skipped), proceed with the `## Instructions` section.
+Maintain candidate entries using:
 
-## Instructions
+- `NEED-xxx`: goals and required behavior
+- `CON-xxx`: constraints and boundaries
+- `DEC-xxx`: confirmed trade-offs or choices
+- `OUT-xxx`: exclusions
+- `OPEN-xxx`: unresolved questions
 
-You are an experienced software engineer and product manager. Your task is to help clarify requirements through interactive Q&A.
+Each candidate includes a concise statement and, when useful, short **User Evidence**.
 
-### Your Role
+## Stage Summary Confirmation
 
-1. **Ask clarifying questions** to understand the user's initial idea
-2. **Explore edge cases** that the user might not have considered
-3. **Co-create high-quality requirements** through dialogue
-4. **Focus on "what" and "why"**, not technical implementation details
+After a coherent topic or at the end of discovery:
 
-### Key Principles
+1. Present a concise stage summary grouped by candidate IDs.
+2. Clearly separate:
+   - Proposed confirmed entries
+   - Open questions
+   - AI assumptions that still need confirmation
+3. Ask the user to confirm or correct the stage summary.
+4. Only after explicit confirmation:
+   - Write the entries to `requirements.md`.
+   - Set their status to `confirmed`.
+   - Append a Confirmation Log entry.
+5. If a decision changes, keep the old entry with `Status: superseded` and link it to the replacement.
 
-- **DO NOT** generate `spec.md` without explicit user approval
-- Ask one topic at a time, don't overwhelm the user
-- Summarize understanding periodically to ensure alignment
-- When requirements are sufficiently clarified, ask the user if they want to generate the spec document
+Do not treat silence or lack of objection as confirmation.
 
-### Question Format
+## Completion
 
-**IMPORTANT**: Use the `AskUserQuestion` tool for structured questions to reduce user typing burden.
+Discovery is complete when:
 
-**When you have 2-4 candidate options**, use structured choice format:
+- The primary goal and required behaviors are confirmed.
+- Material constraints and exclusions are confirmed.
+- Important trade-offs are recorded.
+- Remaining open questions are either non-blocking or explicitly deferred.
 
-**Single-select questions:**
+Report:
 
-```json
-{
-  "questions": [{
-    "question": "What is the primary user role for this feature?",
-    "header": "Target User",
-    "options": [
-      {"label": "End User", "description": "Regular users of the application"},
-      {"label": "Administrator", "description": "Users with management permissions"},
-      {"label": "Developer", "description": "Technical users integrating with APIs"}
-    ]
-  }]
-}
-```
-
-**Multi-select questions:**
-
-```json
-{
-  "questions": [{
-    "question": "Which platforms should this feature support?",
-    "header": "Platforms",
-    "multiSelect": true,
-    "options": [
-      {"label": "Web Browser", "description": "Desktop and mobile browsers"},
-      {"label": "iOS App", "description": "Native iOS application"},
-      {"label": "Android App", "description": "Native Android application"}
-    ]
-  }]
-}
-```
-
-**Benefits:**
-
-- Reduces typing burden for users
-- Ensures consistent option naming for later processing
-- **"Type something" option is ALWAYS auto-generated** - users can type custom answers for any question
-- Supports `preview` field for visual comparisons
-
-> [!NOTE]
-> Do NOT add explicit "Custom" or "Let me describe..." options - the system already provides a "Type something" option automatically. Adding your own would be redundant.
-
-**When NOT to use structured questions:**
-
-- Open-ended exploration (e.g., "Tell me about your vision for this feature")
-- Fewer than 2 or more than 4 reasonable options
-- When you need detailed textual explanation
-
-### Clarification Topics
-
-Consider exploring these aspects (as relevant to the feature):
-
-1. **User Perspective**: Who are the target users? What are their goals?
-2. **Use Cases**: What are the main workflows? Happy path and alternatives?
-3. **Data Requirements**: What data is involved? Input/output formats?
-4. **Integration Points**: Does this interact with existing systems?
-5. **Error Handling**: What could go wrong? How should errors be handled?
-6. **Constraints**: Time, budget, technical, or regulatory constraints?
-7. **Out of Scope**: What should this feature NOT do?
-8. **Priority**: What's essential vs nice-to-have?
-
-### Reference Context
-
-Before asking questions, review:
-
-- Project constitution: `.codexspec/memory/constitution.md`
-- Existing specs: `.codexspec/specs/` (to avoid duplication)
-
-### When Requirements Are Clear
-
-Once you believe requirements are sufficiently clarified:
-
-1. Summarize the clarified requirements
-2. Ask: "Are you satisfied with this requirement summary? If so, you can use `/codexspec:generate-spec` to generate the `spec.md` document."
-3. **Wait for user confirmation** before taking any file creation action
-
-> [!IMPORTANT]
-> This command is for requirement clarification only. Document generation should be done via `/codexspec:generate-spec`.
+- Feature directory
+- Requirements record path
+- Confirmed IDs
+- Open IDs and whether they block specification generation
+- Next command: `/codexspec:generate-spec <feature-dir>`

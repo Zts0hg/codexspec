@@ -17,41 +17,21 @@ handoffs:
 - Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
 - All user-facing messages, questions, and generated documents should use the configured language
 
-## Feature Resolution
+## Input Documents
 
-Resolve the feature in this order:
+**Usage:**
 
-1. Use an explicit path from `$ARGUMENTS` when it identifies a `tasks.md` file
-   or feature directory.
-2. Otherwise match the current branch, which must use the timestamp format, to
-   `.codexspec/specs/<branch>/`.
-3. If no unique feature can be resolved, ask the user to select one. Never
-   silently select the latest workspace.
+- `/implement-tasks` → Auto-detect from `.codexspec/specs/`
+- `/implement-tasks tasks.md` → `$1` as tasks path, derive others
+- `/implement-tasks spec.md plan.md tasks.md` → All paths explicit
 
-Derive all artifact paths from the selected feature directory. All
-implementation-side output belongs to that workspace.
+### File Resolution
 
-## Input Documents and Authority
+- **No arguments**: Auto-detect the latest/only feature under `.codexspec/specs/`
+- **One argument**: Treat `$1` as `tasks.md` path, derive `spec.md` and `plan.md` from same directory
+- **Three arguments**: `$1` = spec.md, `$2` = plan.md, `$3` = tasks.md
 
-Read:
-
-- `requirements.md`
-- `spec.md`
-- `plan.md`
-- `tasks.md`
-- `.codexspec/memory/constitution.md` when present
-
-Authority order:
-
-1. Confirmed entries in `requirements.md`
-2. `spec.md`
-3. Constitution and verified repository facts
-4. Approved `plan.md`
-5. `tasks.md`
-
-When `requirements.md` is absent, use legacy spec-only mode. Treat `spec.md` as
-the temporary highest feature authority and state that fidelity to the original
-discussion cannot be verified.
+**Output Location**: All output files go in the same directory as `tasks.md`.
 
 ## Role
 
@@ -61,9 +41,12 @@ You are an **autonomous implementation agent**. Your responsibility is to execut
 
 ### 1. Prerequisites
 
-Before starting, verify that `spec.md`, `plan.md`, and `tasks.md` exist in the
-resolved workspace. Stop if tasks conflict with higher-authority artifacts
-instead of silently implementing the conflict.
+Before starting, verify these files exist and load them:
+
+- Specification file (spec.md)
+- Technical plan file (plan.md)
+- Tasks file (tasks.md)
+- Project constitution (from `.codexspec/memory/constitution.md` if exists)
 
 ### 2. Tech Stack Detection
 
