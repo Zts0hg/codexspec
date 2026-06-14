@@ -9,8 +9,8 @@ Para padrões de fluxo de trabalho e quando usar cada comando, consulte [Fluxo d
 | Comando | Propósito |
 |---------|-----------|
 | `/codexspec:constitution` | Criar ou atualizar a constituição do projeto com validação cruzada de artefatos |
-| `/codexspec:specify` | Esclarecer requisitos através de perguntas e respostas interativas |
-| `/codexspec:generate-spec` | Gerar documento spec.md a partir dos requisitos esclarecidos |
+| `/codexspec:specify` | Esclarecer, confirmar e salvar requisitos em requirements.md |
+| `/codexspec:generate-spec` | Gerar spec.md a partir dos requisitos confirmados |
 | `/codexspec:clarify` | Escanear spec existente por ambiguidades (refinamento iterativo) |
 | `/codexspec:spec-to-plan` | Converter especificação em plano de implementação técnica |
 | `/codexspec:plan-to-tasks` | Dividir o plano em tarefas atômicas com TDD obrigatório |
@@ -109,7 +109,7 @@ AI:  Criando constituição...
 
 ### `/codexspec:specify`
 
-Esclarecer requisitos através de perguntas e respostas interativas. Este comando explora sua ideia inicial sem criar nenhum arquivo — você mantém controle total.
+Esclarecer requisitos através de perguntas e respostas interativas, confirmar o resumo e salvar o resultado de forma persistente em `requirements.md`.
 
 **Sintaxe:**
 
@@ -129,12 +129,15 @@ Esclarecer requisitos através de perguntas e respostas interativas. Este comand
 - Explora casos de borda que você pode não ter considerado
 - Co-cria requisitos de alta qualidade através de diálogo
 - Foca em "o quê" e "por quê", não na implementação técnica
-- **NÃO gera arquivos** - você decide quando criar documentação
+- Cria um workspace de funcionalidade e salva apenas requisitos confirmados
 
-**O que NÃO cria:**
+**O que cria:**
 
-- Nenhum arquivo é criado durante este comando
-- Requisitos permanecem na conversa até você aprovar
+```
+.codexspec/specs/YYYY-MMDD-HHMMxx-{nome-funcionalidade}/requirements.md
+```
+
+Perguntas em aberto permanecem marcadas como abertas; `spec.md` é gerado depois por `/codexspec:generate-spec`.
 
 **Exemplo:**
 
@@ -193,11 +196,11 @@ Gerar o documento `spec.md` a partir dos requisitos esclarecidos. Este comando a
 
 | Argumento | Obrigatório | Descrição |
 |-----------|-------------|-----------|
-| Nenhum | - | Usa contexto da sessão `/codexspec:specify` anterior |
+| Caminho da funcionalidade | Não | Usa um caminho explícito ou a branch timestamp atual |
 
 **O que faz:**
 
-- Cria diretório `.codexspec/specs/{NNN}-{nome-funcionalidade}/`
+- Lê o `requirements.md` confirmado da funcionalidade selecionada
 - Gera `spec.md` abrangente com:
   - Visão geral e objetivos da funcionalidade
   - Histórias de usuário com critérios de aceitação
@@ -211,7 +214,7 @@ Gerar o documento `spec.md` a partir dos requisitos esclarecidos. Este comando a
 ```
 .codexspec/
 └── specs/
-    └── 001-gerenciamento-tarefas/
+    └── 2026-0613-1200ab-gerenciamento-tarefas/
         └── spec.md
 ```
 
@@ -222,7 +225,7 @@ Você: /codexspec:generate-spec
 
 AI:  Gerando especificação...
 
-     ✓ Criado .codexspec/specs/001-gerenciamento-tarefas/spec.md
+     ✓ Criado .codexspec/specs/2026-0613-1200ab-gerenciamento-tarefas/spec.md
 
      Seções incluídas:
      - Visão Geral: Gerenciamento de tarefas para pequenas equipes de dev
@@ -346,7 +349,7 @@ Converter a especificação da funcionalidade em um plano de implementação té
 ```
 .codexspec/
 └── specs/
-    └── 001-gerenciamento-tarefas/
+    └── 2026-0613-1200ab-gerenciamento-tarefas/
         └── plan.md    # Plano de implementação técnica
 ```
 
@@ -422,7 +425,7 @@ Dividir o plano técnico em tarefas atômicas e acionáveis com TDD obrigatório
 ```
 .codexspec/
 └── specs/
-    └── 001-gerenciamento-tarefas/
+    └── 2026-0613-1200ab-gerenciamento-tarefas/
         └── tasks.md    # Divisão de tarefas
 ```
 
@@ -939,7 +942,7 @@ Você: /codexspec:checklist security
 
 AI:  Gerando checklist de segurança...
 
-     ✓ Criado .codexspec/specs/001-gerenciamento-tarefas/checklists/security.md
+     ✓ Criado .codexspec/specs/2026-0613-1200ab-gerenciamento-tarefas/checklists/security.md
 
      ## Checklist de Qualidade de Requisitos de Segurança
 

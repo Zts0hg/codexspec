@@ -9,8 +9,8 @@ Para patrones de flujo de trabajo y cuando usar cada comando, ver [Flujo de Trab
 | Comando | Proposito |
 |---------|---------|
 | `/codexspec:constitution` | Crear o actualizar la constitucion del proyecto con validacion cruzada de artefactos |
-| `/codexspec:specify` | Clarificar requisitos a traves de Q&A interactivo |
-| `/codexspec:generate-spec` | Generar documento spec.md desde requisitos clarificados |
+| `/codexspec:specify` | Clarificar, confirmar y guardar requisitos en requirements.md |
+| `/codexspec:generate-spec` | Generar spec.md desde requisitos confirmados |
 | `/codexspec:clarify` | Escanear spec existente en busca de ambiguedades (refinamiento iterativo) |
 | `/codexspec:spec-to-plan` | Convertir especificacion en plan de implementacion tecnica |
 | `/codexspec:plan-to-tasks` | Desglosar plan en tareas atomicas con TDD aplicado |
@@ -109,7 +109,7 @@ AI:  Creando constitucion...
 
 ### `/codexspec:specify`
 
-Clarificar requisitos a traves de Q&A interactivo. Este comando explora tu idea inicial sin crear ningun archivo: mantienes control total.
+Clarificar requisitos mediante Q&A interactivo, confirmar el resumen y guardar el resultado de forma persistente en `requirements.md`.
 
 **Sintaxis:**
 
@@ -129,12 +129,15 @@ Clarificar requisitos a traves de Q&A interactivo. Este comando explora tu idea 
 - Explora casos limite que podrias no haber considerado
 - Co-crea requisitos de alta calidad a traves del dialogo
 - Se enfoca en "que" y "por que", no en implementacion tecnica
-- **NO genera archivos** - tu decides cuando crear documentacion
+- Crea un espacio de trabajo de funcionalidad y guarda solo los requisitos confirmados
 
-**Que NO crea:**
+**Que crea:**
 
-- No se crean archivos durante este comando
-- Los requisitos permanecen en la conversacion hasta que apruebes
+```
+.codexspec/specs/YYYY-MMDD-HHMMxx-{feature-name}/requirements.md
+```
+
+Las preguntas abiertas permanecen marcadas como abiertas; `spec.md` se genera despues con `/codexspec:generate-spec`.
 
 **Ejemplo:**
 
@@ -193,11 +196,11 @@ Generar el documento `spec.md` desde requisitos clarificados. Este comando actua
 
 | Argumento | Requerido | Descripcion |
 |----------|----------|-------------|
-| Ninguno | - | Usa contexto de sesion `/codexspec:specify` previa |
+| Ruta de funcionalidad | No | Usa una ruta explicita o la rama timestamp de funcionalidad actual |
 
 **Que hace:**
 
-- Crea directorio `.codexspec/specs/{NNN}-{feature-name}/`
+- Lee el `requirements.md` confirmado de la funcionalidad seleccionada
 - Genera `spec.md` completo con:
   - Resumen de funcionalidad y objetivos
   - Historias de usuario con criterios de aceptacion
@@ -211,7 +214,7 @@ Generar el documento `spec.md` desde requisitos clarificados. Este comando actua
 ```
 .codexspec/
 +-- specs/
-    +-- 001-task-management/
+    +-- 2026-0613-1200ab-task-management/
         +-- spec.md
 ```
 
@@ -222,7 +225,7 @@ Tu: /codexspec:generate-spec
 
 AI:  Generando especificacion...
 
-     + Creado .codexspec/specs/001-task-management/spec.md
+     + Creado .codexspec/specs/2026-0613-1200ab-task-management/spec.md
 
      Secciones incluidas:
      - Resumen: Gestion de tareas para equipos de desarrollo pequenos
@@ -346,7 +349,7 @@ Convertir la especificacion de funcionalidad en un plan de implementacion tecnic
 ```
 .codexspec/
 +-- specs/
-    +-- 001-task-management/
+    +-- 2026-0613-1200ab-task-management/
         +-- plan.md    # Plan de implementacion tecnica
 ```
 
@@ -422,7 +425,7 @@ Desglosar el plan tecnico en tareas atomicas y accionables con aplicacion de TDD
 ```
 .codexspec/
 +-- specs/
-    +-- 001-task-management/
+    +-- 2026-0613-1200ab-task-management/
         +-- tasks.md    # Desglose de tareas
 ```
 
@@ -939,7 +942,7 @@ Tu: /codexspec:checklist seguridad
 
 AI:  Generando lista de verificacion de seguridad...
 
-     + Creado .codexspec/specs/001-task-management/checklists/security.md
+     + Creado .codexspec/specs/2026-0613-1200ab-task-management/checklists/security.md
 
      ## Lista de Verificacion de Calidad de Requisitos de Seguridad
 

@@ -9,8 +9,8 @@ Pour les patterns de workflow et quand utiliser chaque commande, voir [Workflow]
 | Commande | Objectif |
 |----------|----------|
 | `/codexspec:constitution` | Creer ou mettre a jour la constitution du projet avec validation croisee des artefacts |
-| `/codexspec:specify` | Clarifier les exigences via Q&R interactives |
-| `/codexspec:generate-spec` | Generer le document spec.md a partir des exigences clarifiees |
+| `/codexspec:specify` | Clarifier, confirmer et enregistrer les exigences dans requirements.md |
+| `/codexspec:generate-spec` | Generer spec.md a partir des exigences confirmees |
 | `/codexspec:clarify` | Scanner un spec existant pour les ambiguites (raffinement iteratif) |
 | `/codexspec:spec-to-plan` | Convertir la specification en plan d'implementation technique |
 | `/codexspec:plan-to-tasks` | Decomposer le plan en taches atomiques avec application TDD |
@@ -109,7 +109,7 @@ AI  : Creation de la constitution...
 
 ### `/codexspec:specify`
 
-Clarifier les exigences via Q&R interactives. Cette commande explore votre idee initiale sans creer aucun fichier - vous gardez un controle total.
+Clarifier les exigences via Q&R interactives, faire confirmer le resume et enregistrer durablement le resultat dans `requirements.md`.
 
 **Syntaxe :**
 
@@ -129,12 +129,15 @@ Clarifier les exigences via Q&R interactives. Cette commande explore votre idee 
 - Explore les cas limites que vous n'avez peut-etre pas envisages
 - Co-cree des exigences de haute qualite via le dialogue
 - Se concentre sur le "quoi" et le "pourquoi", pas l'implementation technique
-- **Ne genere PAS de fichiers** - vous decidez quand creer la documentation
+- Cree un espace de travail de fonctionnalite et enregistre uniquement les exigences confirmees
 
-**Ce qu'il ne cree PAS :**
+**Ce qu'il cree :**
 
-- Aucun fichier n'est cree pendant cette commande
-- Les exigences restent dans la conversation jusqu'a votre approbation
+```
+.codexspec/specs/YYYY-MMDD-HHMMxx-{nom-fonctionnalite}/requirements.md
+```
+
+Les questions ouvertes restent signalees comme telles ; `spec.md` est genere ensuite par `/codexspec:generate-spec`.
 
 **Exemple :**
 
@@ -193,11 +196,11 @@ Generer le document `spec.md` a partir des exigences clarifiees. Cette commande 
 
 | Argument | Requis | Description |
 |----------|--------|-------------|
-| Aucun | - | Utilise le contexte de la session `/codexspec:specify` precedente |
+| Chemin de fonctionnalite | Non | Utilise un chemin explicite ou la branche timestamp courante |
 
 **Ce qu'il fait :**
 
-- Cree le repertoire `.codexspec/specs/{NNN}-{nom-fonctionnalite}/`
+- Lit le `requirements.md` confirme de la fonctionnalite selectionnee
 - Genere un `spec.md` complet avec :
   - Apercu de la fonctionnalite et objectifs
   - Recits utilisateur avec criteres d'acceptation
@@ -211,7 +214,7 @@ Generer le document `spec.md` a partir des exigences clarifiees. Cette commande 
 ```
 .codexspec/
 +-- specs/
-    +-- 001-task-management/
+    +-- 2026-0613-1200ab-task-management/
         +-- spec.md
 ```
 
@@ -222,7 +225,7 @@ Vous : /codexspec:generate-spec
 
 AI  : Generation de la specification...
 
-     + Cree .codexspec/specs/001-task-management/spec.md
+     + Cree .codexspec/specs/2026-0613-1200ab-task-management/spec.md
 
      Sections incluses :
      - Apercu : Gestion de taches pour petites equipes de dev
@@ -346,7 +349,7 @@ Convertir la specification de fonctionnalite en plan d'implementation technique.
 ```
 .codexspec/
 +-- specs/
-    +-- 001-task-management/
+    +-- 2026-0613-1200ab-task-management/
         +-- plan.md    # Plan d'implementation technique
 ```
 
@@ -422,7 +425,7 @@ Decomposer le plan technique en taches atomiques et actionnables avec applicatio
 ```
 .codexspec/
 +-- specs/
-    +-- 001-task-management/
+    +-- 2026-0613-1200ab-task-management/
         +-- tasks.md    # Decomposition des taches
 ```
 
@@ -939,7 +942,7 @@ Vous : /codexspec:checklist securite
 
 AI  : Generation de la liste de controle securite...
 
-     + Cree .codexspec/specs/001-task-management/checklists/security.md
+     + Cree .codexspec/specs/2026-0613-1200ab-task-management/checklists/security.md
 
      ## Liste de Controle de Qualite des Exigences de Securite
 

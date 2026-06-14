@@ -114,7 +114,7 @@ Dies ist das wichtigste Skript zur Validierung des Umgebungszustands und zur Rue
 
 #### Kernfunktionen
 
-- Validierung, ob sich in einem Feature-Branch (Format: `001-feature-name`)
+- Validierung, ob sich in einem Feature-Branch (Format: `2026-0613-1200ab-feature-name`)
 - Erkennung, ob erforderliche Dateien existieren (`plan.md`, `tasks.md`)
 - Rueckgabe von Pfadinformationen im JSON-Format
 
@@ -131,7 +131,7 @@ Dies ist das wichtigste Skript zur Validierung des Umgebungszustands und zur Rue
 
 ```json
 {
-  "FEATURE_DIR": "/path/to/.codexspec/specs/001-my-feature",
+  "FEATURE_DIR": "/path/to/.codexspec/specs/2026-0613-1200ab-my-feature",
   "AVAILABLE_DOCS": ["research.md", "data-model.md", "tasks.md"]
 }
 ```
@@ -258,7 +258,7 @@ Skripte geben strukturierte Daten aus, einfach von Claude zu parsen:
 
 ```json
 {
-  "FEATURE_DIR": "/path/to/.codexspec/specs/001-feature",
+  "FEATURE_DIR": "/path/to/.codexspec/specs/2026-0613-1200ab-feature",
   "AVAILABLE_DOCS": ["research.md", "data-model.md"]
 }
 ```
@@ -277,7 +277,7 @@ Verschiedene Befehle verwenden verschiedene Parameter, validieren nach Bedarf:
 
 - Automatische Extraktion der Feature-ID aus dem Branch-Namen
 - Unterstuetzung Branch-Namensvalidierung (`^\d{3}-` Format)
-- Unterstuetzung Umgebungsvariablen-Ueberschreibung (`SPECIFY_FEATURE` / `CODEXSPEC_FEATURE`)
+- Unterstuetzung Umgebungsvariablen-Ueberschreibung (`CODEXSPEC_FEATURE`)
 
 ## 8. Wichtige Codepfade
 

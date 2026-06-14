@@ -114,7 +114,7 @@ Run `{SCRIPT}` from repo root and parse JSON for:
 
 #### 核心功能
 
-- 验证当前是否在 feature 分支（格式: `001-feature-name`）
+- 验证当前是否在 feature 分支（格式: `2026-0613-1200ab-feature-name`）
 - 检测必需文件是否存在 (`plan.md`, `tasks.md`)
 - 返回 JSON 格式的路径信息
 
@@ -131,7 +131,7 @@ Run `{SCRIPT}` from repo root and parse JSON for:
 
 ```json
 {
-  "FEATURE_DIR": "/path/to/.codexspec/specs/001-my-feature",
+  "FEATURE_DIR": "/path/to/.codexspec/specs/2026-0613-1200ab-my-feature",
   "AVAILABLE_DOCS": ["research.md", "data-model.md", "tasks.md"]
 }
 ```
@@ -167,15 +167,30 @@ Run `{SCRIPT}` from repo root and parse JSON for:
 
 #### 功能
 
-- 自动生成递增的 feature ID（001, 002, ...）
-- 创建 feature 目录和初始 spec.md
+- 自动生成 `YYYY-MMDD-HHMMxx` 格式的 feature ID
+- 创建 feature 目录和初始 requirements.md
 - 创建对应的 Git 分支
+- 要求短名称清洗后至少包含一个 ASCII 字母或数字
 
 #### 使用示例
 
 ```bash
-./create-new-feature.sh -n "user authentication" -i 001
+./create-new-feature.sh -n "user authentication"
 ```
+
+#### Feature naming contract
+
+- Sequential `NNN-name` identifiers are not supported. Timestamp names are the
+  only feature naming format.
+- Legacy compatibility applies to artifacts: an existing `spec.md` may be used
+  when `requirements.md` is absent. It does not enable alternate directory or
+  branch naming formats.
+- The full feature name identifies a workspace:
+  `YYYY-MMDD-HHMMxx-short-name`. Independently created workspaces may share the
+  timestamp ID when their short names differ.
+- Short-ID lookup is a local convenience only. If more than one directory
+  matches, resolution reports ambiguity instead of selecting or overwriting a
+  workspace.
 
 ## 5. 使用 Scripts 的命令
 
@@ -258,7 +273,7 @@ scripts:
 
 ```json
 {
-  "FEATURE_DIR": "/path/to/.codexspec/specs/001-feature",
+  "FEATURE_DIR": "/path/to/.codexspec/specs/2026-0613-1200ab-feature",
   "AVAILABLE_DOCS": ["research.md", "data-model.md"]
 }
 ```
@@ -277,7 +292,7 @@ scripts:
 
 - 自动从分支名提取 feature ID
 - 支持分支命名验证（`^\d{3}-` 格式）
-- 支持环境变量覆盖（`SPECIFY_FEATURE` / `CODEXSPEC_FEATURE`）
+- 支持环境变量覆盖（`CODEXSPEC_FEATURE`）
 
 ## 8. 关键代码路径
 

@@ -116,7 +116,7 @@ Este es el script mas importante, usado para verificar el estado del entorno y d
 
 #### Funciones Principales
 
-- Verificar si esta en una rama feature (formato: `001-feature-name`)
+- Verificar si esta en una rama feature (formato: `2026-0613-1200ab-feature-name`)
 - Detectar si existen archivos requeridos (`plan.md`, `tasks.md`)
 - Devolver informacion de rutas en formato JSON
 
@@ -133,7 +133,7 @@ Este es el script mas importante, usado para verificar el estado del entorno y d
 
 ```json
 {
-  "FEATURE_DIR": "/path/to/.codexspec/specs/001-my-feature",
+  "FEATURE_DIR": "/path/to/.codexspec/specs/2026-0613-1200ab-my-feature",
   "AVAILABLE_DOCS": ["research.md", "data-model.md", "tasks.md"]
 }
 ```
@@ -261,7 +261,7 @@ Los scripts generan datos estructurados, faciles de analizar por Claude:
 
 ```json
 {
-  "FEATURE_DIR": "/path/to/.codexspec/specs/001-feature",
+  "FEATURE_DIR": "/path/to/.codexspec/specs/2026-0613-1200ab-feature",
   "AVAILABLE_DOCS": ["research.md", "data-model.md"]
 }
 ```
@@ -280,7 +280,7 @@ Diferentes comandos usan diferentes parametros, verificacion segun necesidad:
 
 - Extraccion automatica de feature ID desde nombre de rama
 - Soporte para validacion de nomenclatura de ramas (formato `^\d{3}-`)
-- Soporte para sobrescritura via variables de entorno (`SPECIFY_FEATURE` / `CODEXSPEC_FEATURE`)
+- Soporte para sobrescritura via variables de entorno (`CODEXSPEC_FEATURE`)
 
 ## 8. Rutas de Codigo Clave
 

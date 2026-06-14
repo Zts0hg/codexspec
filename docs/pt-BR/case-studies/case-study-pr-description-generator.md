@@ -152,7 +152,7 @@ The command shall determine output language in the following priority order:
 
 ### Local de Salvamento do Relatório de Revisão
 
-`.codexspec/specs/001-pr-description-generator/review-spec.md`
+`.codexspec/specs/2026-0613-1200ab-pr-description-generator/review-spec.md`
 
 ---
 
@@ -327,7 +327,7 @@ Novo Design: --spec (habilitar spec, opt-in)
 │  /codexspec:generate-spec                                                │
 │  ├─ Gerar spec.md completo                                               │
 │  ├─ 4 histórias de usuário, 8 requisitos funcionais, 10 casos de teste   │
-│  └─ Salvar em .codexspec/specs/001-pr-description-generator/spec.md      │
+│  └─ Salvar em .codexspec/specs/2026-0613-1200ab-pr-description-generator/spec.md      │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
@@ -353,7 +353,7 @@ Novo Design: --spec (habilitar spec, opt-in)
 │  ├─ Atualizar plano de implementação técnica                             │
 │  ├─ 9 decisões técnicas, incluindo 5 novas decisões                      │
 │  ├─ 5 fases de implementação                                             │
-│  └─ Salvar em .codexspec/specs/001-pr-description-generator/plan.md      │
+│  └─ Salvar em .codexspec/specs/2026-0613-1200ab-pr-description-generator/plan.md      │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼

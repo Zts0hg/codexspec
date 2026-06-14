@@ -114,7 +114,7 @@ Este é o script mais importante, usado para verificar o estado do ambiente e re
 
 #### Funcionalidades Principais
 
-- Verifica se está em uma branch feature (formato: `001-feature-name`)
+- Verifica se está em uma branch feature (formato: `2026-0613-1200ab-feature-name`)
 - Detecta se arquivos obrigatórios existem (`plan.md`, `tasks.md`)
 - Retorna informações de caminho em formato JSON
 
@@ -131,7 +131,7 @@ Este é o script mais importante, usado para verificar o estado do ambiente e re
 
 ```json
 {
-  "FEATURE_DIR": "/caminho/para/.codexspec/specs/001-minha-funcionalidade",
+  "FEATURE_DIR": "/caminho/para/.codexspec/specs/2026-0613-1200ab-minha-funcionalidade",
   "AVAILABLE_DOCS": ["research.md", "data-model.md", "tasks.md"]
 }
 ```
@@ -258,7 +258,7 @@ Scripts retornam dados estruturados, fáceis para Claude analisar:
 
 ```json
 {
-  "FEATURE_DIR": "/caminho/para/.codexspec/specs/001-feature",
+  "FEATURE_DIR": "/caminho/para/.codexspec/specs/2026-0613-1200ab-feature",
   "AVAILABLE_DOCS": ["research.md", "data-model.md"]
 }
 ```
@@ -277,7 +277,7 @@ Diferentes comandos usam diferentes parâmetros, verificação sob demanda:
 
 - Extração automática de feature ID do nome da branch
 - Suporte a validação de nomenclatura de branch (formato `^\d{3}-`)
-- Suporte a substituição por variável de ambiente (`SPECIFY_FEATURE` / `CODEXSPEC_FEATURE`)
+- Suporte a substituição por variável de ambiente (`CODEXSPEC_FEATURE`)
 
 ## 8. Caminhos de Código Chave
 

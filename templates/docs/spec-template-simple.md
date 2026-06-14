@@ -9,6 +9,7 @@ If not configured, use English.
 
 ### Requirement: <!-- requirement name -->
 <!-- requirement text -->
+<!-- Sources: NEED-xxx, CON-xxx, DEC-xxx -->
 
 #### Scenario: <!-- scenario name -->
 
@@ -49,3 +50,9 @@ If not configured, use English.
 
 - <!-- assumption 1 -->
 - <!-- assumption 2 -->
+
+## Requirements Traceability
+
+| Confirmed Requirement | Spec Coverage |
+|-----------------------|---------------|
+| NEED-xxx | Requirement: ... |

@@ -9,8 +9,8 @@ CodexSpec의 슬래시 명령에 대한 참조입니다. 이 명령들은 Claude
 | 명령 | 목적 |
 |---------|---------|
 | `/constitution` | 교차 산출물 검증으로 프로젝트 constitution 생성 또는 업데이트 |
-| `/specify` | 대화형 Q&A로 요구사항 명확화 |
-| `/generate-spec` | 명확화된 요구사항에서 spec.md 문서 생성 |
+| `/specify` | 요구사항을 명확화하고 확인하여 requirements.md에 저장 |
+| `/generate-spec` | 확인된 요구사항에서 spec.md 생성 |
 | `/clarify` | 기존 spec 스캔하여 모호성 발견 (반복적 정제) |
 | `/spec-to-plan` | 명세서를 기술 구현 계획으로 변환 |
 | `/plan-to-tasks` | 계획을 원자적이고 TDD가 적용된 작업으로 분해 |
@@ -109,7 +109,7 @@ AI:  constitution 생성 중...
 
 ### `/specify`
 
-대화형 Q&A를 통해 요구사항을 명확화합니다. 이 명령은 어떤 파일도 생성하지 않고 초기 아이디어를 탐색합니다 - 사용자가 완전한 제어권을 유지합니다.
+대화형 Q&A를 통해 요구사항을 명확화하고 요약을 확인받은 뒤 결과를 `requirements.md`에 영구 저장합니다.
 
 **구문:**
 
@@ -129,12 +129,15 @@ AI:  constitution 생성 중...
 - 고려하지 못했을 수 있는 경계 사례 탐색
 - 대화를 통한 고품질 요구사항 공동 창작
 - "무엇"과 "왜"에 집중, 기술 구현이 아님
-- **파일을 생성하지 않음** - 사용자가 문서화 시점 결정
+- 기능 워크스페이스를 만들고 확인된 요구사항만 저장
 
-**생성하지 않는 것:**
+**생성하는 파일:**
 
-- 이 명령 중에 생성되는 파일 없음
-- 승인할 때까지 요구사항이 대화에 유지
+```
+.codexspec/specs/YYYY-MMDD-HHMMxx-{feature-name}/requirements.md
+```
+
+열린 질문은 열린 상태로 기록되며, `spec.md`는 이후 `/generate-spec`에서 생성됩니다.
 
 **예시:**
 
@@ -193,11 +196,11 @@ AI:  [요구사항 계속 탐색...]
 
 | 인자 | 필수 | 설명 |
 |----------|----------|-------------|
-| 없음 | - | 이전 `/specify` 세션의 컨텍스트 사용 |
+| 기능 경로 | 아니오 | 명시적 경로 또는 현재 timestamp 기능 브랜치 사용 |
 
 **수행 작업:**
 
-- `.codexspec/specs/{NNN}-{feature-name}/` 디렉토리 생성
+- 선택한 기능의 확인된 `requirements.md` 읽기
 - 다음을 포함한 포괄적인 `spec.md` 생성:
   - 기능 개요 및 목표
   - 수락 기준이 있는 사용자 스토리
@@ -211,7 +214,7 @@ AI:  [요구사항 계속 탐색...]
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── spec.md
 ```
 
@@ -222,7 +225,7 @@ You: /generate-spec
 
 AI:  명세서 생성 중...
 
-     ✓ .codexspec/specs/001-task-management/spec.md 생성됨
+     ✓ .codexspec/specs/2026-0613-1200ab-task-management/spec.md 생성됨
 
      포함된 섹션:
      - 개요: 소규모 개발 팀을 위한 작업 관리
@@ -346,7 +349,7 @@ AI:  ✓ NFR-001 업데이트됨: 응답 시간 읽기 < 500ms, 쓰기 < 1s
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── plan.md    # 기술 구현 계획
 ```
 
@@ -422,7 +425,7 @@ AI:  기술 계획 생성 중...
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── tasks.md    # 작업 분해
 ```
 
@@ -939,7 +942,7 @@ You: /checklist security
 
 AI:  보안 체크리스트 생성 중...
 
-     ✓ .codexspec/specs/001-task-management/checklists/security.md 생성됨
+     ✓ .codexspec/specs/2026-0613-1200ab-task-management/checklists/security.md 생성됨
 
      ## 보안 요구사항 품질 체크리스트
 

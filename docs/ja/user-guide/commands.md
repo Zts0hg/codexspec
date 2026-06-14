@@ -9,8 +9,8 @@
 | コマンド | 目的 |
 |---------|---------|
 | `/codexspec:constitution` | プロジェクト憲法を作成または更新（クロスアーティファクト検証付き） |
-| `/codexspec:specify` | インタラクティブな Q&A で要件を明確化 |
-| `/codexspec:generate-spec` | 明確化された要件から spec.md ドキュメントを生成 |
+| `/codexspec:specify` | 要件を明確化・確認し requirements.md に保存 |
+| `/codexspec:generate-spec` | 確認済み要件から spec.md を生成 |
 | `/codexspec:clarify` | 既存の仕様をスキャンして曖昧さを発見（反復的な改善） |
 | `/codexspec:spec-to-plan` | 仕様を技術実装計画に変換 |
 | `/codexspec:plan-to-tasks` | 計画をアトミックで TDD 適用のタスクに分解 |
@@ -109,7 +109,7 @@ AI:  Creating constitution...
 
 ### `/codexspec:specify`
 
-インタラクティブな Q&A で要件を明確化します。このコマンドは初期アイデアを探索し、ファイルは作成しません。完全な制御権はユーザーが保持します。
+インタラクティブな Q&A で要件を明確化し、要約の確認後に結果を `requirements.md` へ永続化します。
 
 **構文:**
 
@@ -129,12 +129,15 @@ AI:  Creating constitution...
 - 考慮していないかもしれないエッジケースを探索
 - 対話を通じて高品質な要件を共創
 - "何を" と "なぜ" に焦点を当て、技術実装には焦点を当てない
-- **ファイルを生成しない** - ドキュメントを作成するタイミングはユーザーが決定
+- 機能ワークスペースを作成し、確認済みの要件だけを保存
 
-**作成されないもの:**
+**作成されるもの:**
 
-- このコマンド中にファイルは作成されない
-- 要件はユーザーが承認するまで会話に残る
+```
+.codexspec/specs/YYYY-MMDD-HHMMxx-{feature-name}/requirements.md
+```
+
+未解決の質問は未解決のまま記録され、`spec.md` は後で `/codexspec:generate-spec` が生成します。
 
 **例:**
 
@@ -193,11 +196,11 @@ AI:  [Continues exploring requirements...]
 
 | 引数 | 必須 | 説明 |
 |----------|----------|-------------|
-| なし | - | 前の `/codexspec:specify` セッションからのコンテキストを使用 |
+| 機能パス | いいえ | 明示的なパス、または現在の timestamp 機能ブランチを使用 |
 
 **動作:**
 
-- `.codexspec/specs/{NNN}-{feature-name}/` ディレクトリを作成
+- 選択した機能の確認済み `requirements.md` を読み込む
 - 包括的な `spec.md` を生成:
   - 機能概要とゴール
   - 受け入れ基準付きのユーザーストーリー
@@ -211,7 +214,7 @@ AI:  [Continues exploring requirements...]
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── spec.md
 ```
 
@@ -222,7 +225,7 @@ You: /codexspec:generate-spec
 
 AI:  Generating specification...
 
-     ✓ Created .codexspec/specs/001-task-management/spec.md
+     ✓ Created .codexspec/specs/2026-0613-1200ab-task-management/spec.md
 
      Sections included:
      - Overview: Task management for small dev teams
@@ -346,7 +349,7 @@ AI:  ✓ Updated NFR-001: Response time < 500ms reads, < 1s writes
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── plan.md    # 技術実装計画
 ```
 
@@ -422,7 +425,7 @@ AI:  Generating technical plan...
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── tasks.md    # タスク分解
 ```
 
@@ -939,7 +942,7 @@ You: /codexspec:checklist security
 
 AI:  Generating security checklist...
 
-     ✓ Created .codexspec/specs/001-task-management/checklists/security.md
+     ✓ Created .codexspec/specs/2026-0613-1200ab-task-management/checklists/security.md
 
      ## Security Requirements Quality Checklist
 

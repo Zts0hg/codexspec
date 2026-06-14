@@ -9,8 +9,8 @@ Fuer Workflow-Muster und wann jeder Befehl zu verwenden ist, siehe [Workflow](wo
 | Befehl | Zweck |
 |---------|---------|
 | `/codexspec:constitution` | Projekt-Verfassung erstellen oder aktualisieren mit artefaktuebergreifender Validierung |
-| `/codexspec:specify` | Anforderungen durch interaktives Q&A klaeren |
-| `/codexspec:generate-spec` | spec.md-Dokument aus geklaerten Anforderungen generieren |
+| `/codexspec:specify` | Anforderungen klaeren, bestaetigen und in requirements.md speichern |
+| `/codexspec:generate-spec` | spec.md aus bestaetigten Anforderungen generieren |
 | `/codexspec:clarify` | Bestehende Spec auf Unklarheiten scannen (iterative Verfeinerung) |
 | `/codexspec:spec-to-plan` | Spezifikation in technischen Implementierungsplan konvertieren |
 | `/codexspec:plan-to-tasks` | Plan in atomare, TDD-erzwungene Aufgaben aufteilen |
@@ -109,7 +109,7 @@ KI:  Erstelle Verfassung...
 
 ### `/codexspec:specify`
 
-Anforderungen durch interaktives Q&A klaeren. Dieser Befehl erkundet Ihre urspruengliche Idee, ohne Dateien zu erstellen – Sie behalten die volle Kontrolle.
+Anforderungen durch interaktives Q&A klaeren, die Zusammenfassung bestaetigen lassen und das Ergebnis dauerhaft in `requirements.md` speichern.
 
 **Syntax:**
 
@@ -129,12 +129,15 @@ Anforderungen durch interaktives Q&A klaeren. Dieser Befehl erkundet Ihre urspru
 - Erkundet Randfaelle, die Sie moeglicherweise nicht beruecksichtigt haben
 - Erarbeitet gemeinsam qualitativ hochwertige Anforderungen durch Dialog
 - Fokussiert auf "Was" und "Warum", nicht auf technische Implementierung
-- **Erstellt KEINE Dateien** – Sie entscheiden, wann Dokumentation erstellt wird
+- Erstellt einen Feature-Arbeitsbereich und speichert nur bestaetigte Anforderungen verbindlich
 
-**Was es NICHT erstellt:**
+**Was es erstellt:**
 
-- Keine Dateien werden waehrend dieses Befehls erstellt
-- Anforderungen bleiben im Gespraech, bis Sie zustimmen
+```
+.codexspec/specs/YYYY-MMDD-HHMMxx-{feature-name}/requirements.md
+```
+
+Offene Fragen bleiben als offen markiert; `spec.md` wird erst durch `/codexspec:generate-spec` erzeugt.
 
 **Beispiel:**
 
@@ -193,11 +196,11 @@ Das `spec.md`-Dokument aus geklarten Anforderungen generieren. Dieser Befehl fun
 
 | Argument | Erforderlich | Beschreibung |
 |----------|----------|-------------|
-| Keine | - | Verwendet Kontext aus vorheriger `/codexspec:specify`-Sitzung |
+| Feature-Pfad | Nein | Verwendet expliziten Pfad oder den aktuellen Timestamp-Feature-Branch |
 
 **Was es tut:**
 
-- Erstellt Verzeichnis `.codexspec/specs/{NNN}-{feature-name}/`
+- Liest die bestaetigte `requirements.md` des ausgewaehlten Features
 - Generiert umfassendes `spec.md` mit:
   - Feature-Ueberblick und Ziele
   - User Stories mit Akzeptanzkriterien
@@ -211,7 +214,7 @@ Das `spec.md`-Dokument aus geklarten Anforderungen generieren. Dieser Befehl fun
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── spec.md
 ```
 
@@ -222,7 +225,7 @@ Sie: /codexspec:generate-spec
 
 KI:  Generiere Spezifikation...
 
-     ✓ Erstellt .codexspec/specs/001-task-management/spec.md
+     ✓ Erstellt .codexspec/specs/2026-0613-1200ab-task-management/spec.md
 
      Enthaltene Abschnitte:
      - Ueberblick: Task-Management fuer kleine Dev-Teams
@@ -346,7 +349,7 @@ Die Feature-Spezifikation in einen technischen Implementierungsplan konvertieren
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── plan.md    # Technischer Implementierungsplan
 ```
 
@@ -422,7 +425,7 @@ Den technischen Plan in atomare, umsetzbare Aufgaben mit TDD-Erzwingung aufteile
 ```
 .codexspec/
 └── specs/
-    └── 001-task-management/
+    └── 2026-0613-1200ab-task-management/
         └── tasks.md    # Aufgabenaufteilung
 ```
 
@@ -939,7 +942,7 @@ Sie: /codexspec:checklist security
 
 KI:  Generiere Security-Checkliste...
 
-     ✓ Erstellt .codexspec/specs/001-task-management/checklists/security.md
+     ✓ Erstellt .codexspec/specs/2026-0613-1200ab-task-management/checklists/security.md
 
      ## Security-Anforderungen Qualitaetscheckliste
 

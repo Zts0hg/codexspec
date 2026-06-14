@@ -4,7 +4,6 @@
 param(
     [switch]$Json,
     [string]$ShortName,
-    [int]$Number = 0,
     [switch]$Help,
     [Parameter(Position = 0)]
     [string]$FeatureDescription
@@ -13,12 +12,11 @@ $ErrorActionPreference = 'Stop'
 
 # Show help if requested
 if ($Help) {
-    Write-Host "Usage: ./create-new-feature.ps1 [-Json] [-ShortName <name>] [-Number N] <feature description>"
+    Write-Host "Usage: ./create-new-feature.ps1 [-Json] [-ShortName <name>] <feature description>"
     Write-Host ""
     Write-Host "Options:"
     Write-Host "  -Json               Output in JSON format"
     Write-Host "  -ShortName <name>   Provide a custom short name (2-4 words) for the branch"
-    Write-Host "  -Number N           Specify branch number manually (overrides auto-detection)"
     Write-Host "  -Help               Show this help message"
     Write-Host ""
     Write-Host "Examples:"
@@ -55,69 +53,6 @@ function Find-RepositoryRoot {
         }
         $current = $parent
     }
-}
-
-function Get-HighestNumberFromSpecs {
-    param([string]$SpecsDir)
-
-    $highest = 0
-    if (Test-Path $SpecsDir) {
-        Get-ChildItem -Path $SpecsDir -Directory | ForEach-Object {
-            if ($_.Name -match '^(\d+)') {
-                $num = [int]$matches[1]
-                if ($num -gt $highest) { $highest = $num }
-            }
-        }
-    }
-    return $highest
-}
-
-function Get-HighestNumberFromBranches {
-    param()
-
-    $highest = 0
-    try {
-        $branches = git branch -a 2>$null
-        if ($LASTEXITCODE -eq 0) {
-            foreach ($branch in $branches) {
-                # Clean branch name: remove leading markers and remote prefixes
-                $cleanBranch = $branch.Trim() -replace '^\*?\s+', '' -replace '^remotes/[^/]+/', ''
-
-                # Extract feature number if branch matches pattern ###-*
-                if ($cleanBranch -match '^(\d+)-') {
-                    $num = [int]$matches[1]
-                    if ($num -gt $highest) { $highest = $num }
-                }
-            }
-        }
-    } catch {
-        Write-Verbose "Could not check Git branches: $_"
-    }
-    return $highest
-}
-
-function Get-NextBranchNumber {
-    param(
-        [string]$SpecsDir
-    )
-
-    # Fetch all remotes to get latest branch info
-    try {
-        git fetch --all --prune 2>$null | Out-Null
-    } catch {
-        # Ignore fetch errors
-    }
-
-    # Get highest number from ALL branches
-    $highestBranch = Get-HighestNumberFromBranches
-
-    # Get highest number from ALL specs
-    $highestSpec = Get-HighestNumberFromSpecs -SpecsDir $SpecsDir
-
-    # Take the maximum of both
-    $maxNum = [Math]::Max($highestBranch, $highestSpec)
-
-    return $maxNum + 1
 }
 
 function ConvertTo-CleanBranchName {
@@ -185,9 +120,6 @@ try {
 
 Set-Location $repoRoot
 
-$specsDir = Join-Path $repoRoot '.codexspec/specs'
-New-Item -ItemType Directory -Path $specsDir -Force | Out-Null
-
 # Generate branch name
 if ($ShortName) {
     $branchSuffix = ConvertTo-CleanBranchName -Name $ShortName
@@ -195,27 +127,30 @@ if ($ShortName) {
     $branchSuffix = Get-BranchName -Description $featureDesc
 }
 
-# Determine branch number
-if ($Number -eq 0) {
-    if ($hasGit) {
-        $Number = Get-NextBranchNumber -SpecsDir $specsDir
-    } else {
-        $Number = (Get-HighestNumberFromSpecs -SpecsDir $specsDir) + 1
-    }
+if (-not $branchSuffix) {
+    Write-Error "Feature short name must contain ASCII letters or numbers (for example, 'user-auth')."
+    exit 1
 }
 
-$featureNum = ('{0:000}' -f $Number)
-$branchName = "$featureNum-$branchSuffix"
+$specsDir = Join-Path $repoRoot '.codexspec/specs'
+New-Item -ItemType Directory -Path $specsDir -Force | Out-Null
+
+$timestamp = Get-Date -Format 'yyyy-MMdd-HHmm'
+$chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
+$suffix = -join (1..2 | ForEach-Object { $chars[(Get-Random -Maximum $chars.Length)] })
+$featureId = "$timestamp$suffix"
+
+$branchName = "$featureId-$branchSuffix"
 
 # Validate branch name length
 $maxBranchLength = 244
 if ($branchName.Length -gt $maxBranchLength) {
-    $maxSuffixLength = $maxBranchLength - 4
+    $maxSuffixLength = $maxBranchLength - $featureId.Length - 1
     $truncatedSuffix = $branchSuffix.Substring(0, [Math]::Min($branchSuffix.Length, $maxSuffixLength))
     $truncatedSuffix = $truncatedSuffix -replace '-$', ''
 
     $originalBranchName = $branchName
-    $branchName = "$featureNum-$truncatedSuffix"
+    $branchName = "$featureId-$truncatedSuffix"
 
     if (-not $Json) {
         Write-Warning "[codexspec] Branch name exceeded GitHub's 244-byte limit"
@@ -240,12 +175,45 @@ if ($hasGit) {
 $featureDir = Join-Path $specsDir $branchName
 New-Item -ItemType Directory -Path $featureDir -Force | Out-Null
 
-$template = Join-Path $repoRoot '.codexspec/templates/spec-template.md'
-$specFile = Join-Path $featureDir 'spec.md'
+$template = Join-Path $repoRoot '.codexspec/templates/docs/requirements-template.md'
+$requirementsFile = Join-Path $featureDir 'requirements.md'
 if (Test-Path $template) {
-    Copy-Item $template $specFile -Force
+    $requirementsContent = Get-Content -Path $template -Raw
+    $requirementsContent = $requirementsContent.Replace('[FEATURE NAME]', $branchSuffix)
+    $requirementsContent = $requirementsContent.Replace('[feature-id]', $featureId)
+    Set-Content -Path $requirementsFile -Value $requirementsContent -Encoding utf8
 } else {
-    New-Item -ItemType File -Path $specFile | Out-Null
+    @"
+# Confirmed Requirements: $branchSuffix
+
+**Feature ID**: ``$featureId``
+**Status**: Discovery
+**Last Confirmed**: [DATE]
+
+Only entries with ``Status: confirmed`` are binding downstream inputs.
+
+## Needs
+
+### NEED-001
+- **Status**: open
+- **User Evidence**: "[Add after confirmation]"
+
+## Constraints
+### CON-001
+- **Status**: open
+
+## Decisions
+### DEC-001
+- **Status**: open
+
+## Out of Scope
+### OUT-001
+- **Status**: open
+
+## Open Questions
+### OPEN-001
+- **Status**: open
+"@ | Set-Content -Path $requirementsFile -Encoding utf8
 }
 
 # Set the CODEXSPEC_FEATURE environment variable
@@ -254,14 +222,14 @@ $env:CODEXSPEC_FEATURE = $branchName
 if ($Json) {
     [PSCustomObject]@{
         BRANCH_NAME = $branchName
-        SPEC_FILE = $specFile
-        FEATURE_NUM = $featureNum
+        REQUIREMENTS_FILE = $requirementsFile
+        FEATURE_ID = $featureId
         HAS_GIT = $hasGit
     } | ConvertTo-Json -Compress
 } else {
     Write-Output "BRANCH_NAME: $branchName"
-    Write-Output "SPEC_FILE: $specFile"
-    Write-Output "FEATURE_NUM: $featureNum"
+    Write-Output "REQUIREMENTS_FILE: $requirementsFile"
+    Write-Output "FEATURE_ID: $featureId"
     Write-Output "HAS_GIT: $hasGit"
     Write-Output "CODEXSPEC_FEATURE environment variable set to: $branchName"
 }

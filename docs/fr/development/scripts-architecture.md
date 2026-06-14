@@ -114,7 +114,7 @@ C'est le script le plus important, utilise pour verifier l'etat de l'environneme
 
 #### Fonctionnalites Core
 
-- Verifier si on est sur une branche feature (format : `001-feature-name`)
+- Verifier si on est sur une branche feature (format : `2026-0613-1200ab-feature-name`)
 - Detecter si les fichiers requis existent (`plan.md`, `tasks.md`)
 - Retourner les informations de chemin au format JSON
 
@@ -131,7 +131,7 @@ C'est le script le plus important, utilise pour verifier l'etat de l'environneme
 
 ```json
 {
-  "FEATURE_DIR": "/path/to/.codexspec/specs/001-my-feature",
+  "FEATURE_DIR": "/path/to/.codexspec/specs/2026-0613-1200ab-my-feature",
   "AVAILABLE_DOCS": ["research.md", "data-model.md", "tasks.md"]
 }
 ```
@@ -258,7 +258,7 @@ Les scripts produisent des donnees structurees, faciles a analyser par Claude :
 
 ```json
 {
-  "FEATURE_DIR": "/path/to/.codexspec/specs/001-feature",
+  "FEATURE_DIR": "/path/to/.codexspec/specs/2026-0613-1200ab-feature",
   "AVAILABLE_DOCS": ["research.md", "data-model.md"]
 }
 ```
@@ -277,7 +277,7 @@ Differentes commandes utilisent differents parametres, verification a la demande
 
 - Extraction automatique de l'ID de feature depuis le nom de branche
 - Prise en charge de la verification de nommage de branche (format `^\d{3}-`)
-- Prise en charge du remplacement par variable d'environnement (`SPECIFY_FEATURE` / `CODEXSPEC_FEATURE`)
+- Prise en charge du remplacement par variable d'environnement (`CODEXSPEC_FEATURE`)
 
 ## 8. Chemins de Code Cles
 

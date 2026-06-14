@@ -114,7 +114,7 @@ Run `{SCRIPT}` from repo root and parse JSON for:
 
 #### コア機能
 
-- 現在 feature ブランチにいるか検証（形式: `001-feature-name`）
+- 現在 feature ブランチにいるか検証（形式: `2026-0613-1200ab-feature-name`）
 - 必要なファイルの存在を検出 (`plan.md`, `tasks.md`)
 - JSON 形式のパス情報を返す
 
@@ -131,7 +131,7 @@ Run `{SCRIPT}` from repo root and parse JSON for:
 
 ```json
 {
-  "FEATURE_DIR": "/path/to/.codexspec/specs/001-my-feature",
+  "FEATURE_DIR": "/path/to/.codexspec/specs/2026-0613-1200ab-my-feature",
   "AVAILABLE_DOCS": ["research.md", "data-model.md", "tasks.md"]
 }
 ```
@@ -258,7 +258,7 @@ scripts:
 
 ```json
 {
-  "FEATURE_DIR": "/path/to/.codexspec/specs/001-feature",
+  "FEATURE_DIR": "/path/to/.codexspec/specs/2026-0613-1200ab-feature",
   "AVAILABLE_DOCS": ["research.md", "data-model.md"]
 }
 ```
@@ -277,7 +277,7 @@ scripts:
 
 - ブランチ名から自動的に feature ID を抽出
 - ブランチ命名検証をサポート（`^\d{3}-` 形式）
-- 環境変数オーバーライドをサポート（`SPECIFY_FEATURE` / `CODEXSPEC_FEATURE`）
+- 環境変数オーバーライドをサポート（`CODEXSPEC_FEATURE`）
 
 ## 8. 重要なコードパス
 

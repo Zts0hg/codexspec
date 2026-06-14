@@ -57,7 +57,7 @@ Why use CodexSpec on top of Claude Code? Here's the comparison:
 
 ```
 Traditional:  Idea → Code → Debug → Rewrite
-SDD:          Idea → Spec → Plan → Tasks → Code
+SDD:          Idea → Confirmed Requirements → Spec → Plan → Tasks → Code
 ```
 
 **Why use SDD?**
@@ -75,9 +75,9 @@ SDD:          Idea → Spec → Plan → Tasks → Code
 ### Core Workflow
 
 - **Constitution-Based Development** - Establish project principles that guide all decisions
-- **Two-Phase Specification** - Interactive clarification (`/specify`) followed by document generation (`/generate-spec`)
-- **Automatic Reviews** - Every artifact includes built-in quality checks
-- **TDD-Ready Tasks** - Task breakdowns enforce test-first methodology
+- **Persistent Requirement Capture** - `/specify` records confirmed discussion in `requirements.md` before document generation
+- **Automatic Reviews** - Every generated spec, plan, and task artifact includes built-in quality checks
+- **Traceable Tasks** - Task breakdowns preserve requirement and plan coverage, applying test-first only where required
 
 ### Human-AI Collaboration
 
@@ -115,14 +115,14 @@ CodexSpec is built on the belief that **effective AI-assisted development requir
 CodexSpec structures development into **reviewable checkpoints**:
 
 ```
-Idea → /specify → /generate-spec → /spec-to-plan → /plan-to-tasks → /implement
-                         │                  │                │
-                    Review spec        Review plan      Review tasks
-                         │                  │                │
-                      ✅ Human            ✅ Human          ✅ Human
+Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+                                                   │                         │                            │
+                                              Review spec               Review plan                  Review tasks
 ```
 
-**Every artifact has a corresponding review command:**
+Confirmed requirements are the highest-priority feature authority. Derived artifacts carry explicit source links so conflicts can be traced back instead of silently propagated.
+
+**Every generated artifact has a corresponding review command:**
 
 - `spec.md` → `/codexspec:review-spec`
 - `plan.md` → `/codexspec:review-plan`
@@ -301,11 +301,9 @@ The config command will guide you through:
 CodexSpec breaks development into **reviewable checkpoints**:
 
 ```
-Idea → /specify → /generate-spec → /spec-to-plan → /plan-to-tasks → /implement
-                         │                  │                │
-                    Review spec        Review plan      Review tasks
-                         │                  │                │
-                      ✅ Human            ✅ Human          ✅ Human
+Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+                                                   │                         │                            │
+                                              Review spec               Review plan                  Review tasks
 ```
 
 ### Workflow Steps
@@ -313,7 +311,7 @@ Idea → /specify → /generate-spec → /spec-to-plan → /plan-to-tasks → /i
 | Step                         | Command                      | Output                      | Human Check |
 | ---------------------------- | ---------------------------- | --------------------------- | ----------- |
 | 1. Project Principles        | `/codexspec:constitution`    | `constitution.md`           | ✅           |
-| 2. Requirement Clarification | `/codexspec:specify`         | None (interactive dialogue) | ✅           |
+| 2. Requirement Clarification | `/codexspec:specify`         | `requirements.md`           | ✅           |
 | 3. Generate Spec             | `/codexspec:generate-spec`   | `spec.md` + auto-review     | ✅           |
 | 4. Technical Planning        | `/codexspec:spec-to-plan`    | `plan.md` + auto-review     | ✅           |
 | 5. Task Breakdown            | `/codexspec:plan-to-tasks`   | `tasks.md` + auto-review    | ✅           |
@@ -324,15 +322,15 @@ Idea → /specify → /generate-spec → /spec-to-plan → /plan-to-tasks → /i
 
 | Aspect | `/codexspec:specify` | `/codexspec:clarify` |
 |--------|----------------------|----------------------|
-| **Purpose** | Initial requirement exploration | Refine existing spec |
-| **When to Use** | No spec.md exists yet | spec.md needs improvement |
-| **Output** | None (dialogue only) | Updates spec.md |
+| **Purpose** | Initial requirement exploration and confirmation | Refine confirmed requirements or derived spec |
+| **When to Use** | Starting a feature | Requirements or spec need clarification |
+| **Output** | Creates/updates `requirements.md` | Updates `requirements.md` first, then synchronizes `spec.md` |
 | **Method** | Open-ended Q&A | Structured scan (4 categories) |
 | **Questions** | Unlimited | Max 5 per run |
 
 ### Key Concept: Iterative Quality Loop
 
-Every generation command includes **automatic review**, generating a review report. You can:
+Every generation command includes **automatic review**. Verified defects may be fixed and re-reviewed for at most two rounds; advisory suggestions remain separate and never trigger automatic changes.
 
 1. Review the report
 2. Describe issues to fix in natural language
@@ -360,8 +358,8 @@ flowchart TB
     A["Generate Spec/Plan/Tasks"]:::rectStyle --> B["Auto Review"]:::rectStyle
     B --> C{"Issues Found?"}:::diamondStyle
 
-    C -->|Yes| D["Describe Fix in Natural Language"]:::rectStyle
-    D --> E["Update Spec + Review Report"]:::rectStyle
+    C -->|Verified defect| D["Fix with evidence"]:::rectStyle
+    D --> E["Update artifact + review report"]:::rectStyle
 
     E --> B
 
@@ -397,7 +395,8 @@ This command will:
 
 - Ask clarifying questions to understand your idea
 - Explore edge cases you might not have considered
-- **NOT** generate files automatically - you stay in control
+- Ask you to confirm the final requirement summary
+- Persist confirmed needs, constraints, decisions, exclusions, and open questions in `requirements.md`
 
 ### 4. Generate Specification Document
 
@@ -409,7 +408,8 @@ Once requirements are clarified:
 
 This command:
 
-- Compiles clarified requirements into structured specification
+- Compiles confirmed entries from `requirements.md` into a structured specification
+- Adds source references for requirement traceability
 - **Automatically** runs review and generates `review-spec.md`
 
 ### 5. Create Technical Plan
@@ -418,7 +418,7 @@ This command:
 /codexspec:spec-to-plan Use Python FastAPI for backend, PostgreSQL for database, React for frontend
 ```
 
-Includes **constitutionality review** - verifies plan aligns with project principles.
+Uses only relevant planning sections, records `Covers` links to specification requirements, and verifies applicable project principles.
 
 ### 6. Generate Tasks
 
@@ -426,11 +426,12 @@ Includes **constitutionality review** - verifies plan aligns with project princi
 /codexspec:plan-to-tasks
 ```
 
-Tasks are organized into standard phases:
+Tasks are organized around verifiable outcomes:
 
-- **TDD Enforcement**: Test tasks precede implementation tasks
-- **Parallel Markers `[P]`**: Identify independent tasks
+- **Conditional testing**: Test-first ordering is used when required by the plan, constitution, or task risk
+- **Parallel Markers `[P]`**: Used only for genuinely independent tasks
 - **File Path Specifications**: Clear deliverables per task
+- **Traceability**: Each task links to the plan and requirements it covers
 
 ### 7. Cross-Artifact Analysis (Optional but Recommended)
 
@@ -438,7 +439,7 @@ Tasks are organized into standard phases:
 /codexspec:analyze
 ```
 
-Detects issues across spec, plan, and tasks:
+Detects issues across requirements, spec, plan, and tasks:
 
 - Coverage gaps (requirements without tasks)
 - Duplication and inconsistencies
@@ -504,10 +505,10 @@ Implementation follows **conditional TDD workflow**:
 | Command                      | Description                                                       |
 | ---------------------------- | ----------------------------------------------------------------- |
 | `/codexspec:constitution`    | Create/update project constitution with cross-artifact validation |
-| `/codexspec:specify`         | Clarify requirements through interactive Q&A                      |
+| `/codexspec:specify`         | Clarify, confirm, and persist requirements in `requirements.md`    |
 | `/codexspec:generate-spec`   | Generate `spec.md` document ★ Auto-review                         |
 | `/codexspec:spec-to-plan`    | Convert spec to technical plan ★ Auto-review                      |
-| `/codexspec:plan-to-tasks`   | Break down plan into atomic tasks ★ Auto-review                   |
+| `/codexspec:plan-to-tasks`   | Break down plan into traceable, verifiable tasks ★ Auto-review    |
 | `/codexspec:implement-tasks` | Execute tasks (conditional TDD)                                   |
 
 #### Review Commands (Quality Gates)
@@ -557,7 +558,7 @@ CodexSpec is inspired by GitHub spec-kit with key differences:
 | Review Commands     | Optional                | 3 dedicated review commands + scoring         |
 | Clarify Command     | Yes                     | 4 focus categories, review integration        |
 | Analyze Command     | Yes                     | Read-only, severity-based, constitution-aware |
-| TDD in Tasks        | Optional                | Enforced (tests before implementation)        |
+| TDD in Tasks        | Optional                | Conditional on requirements, risk, and policy |
 | Implementation      | Standard                | Conditional TDD (code vs docs/config)         |
 | Extension System    | Yes                     | Yes                                           |
 | PowerShell Scripts  | Yes                     | Yes                                           |
@@ -567,7 +568,7 @@ CodexSpec is inspired by GitHub spec-kit with key differences:
 
 1. **Review-First Culture**: Every major artifact has a dedicated review command
 2. **Constitution Governance**: Principles are validated, not just documented
-3. **TDD by Default**: Test-first methodology enforced in task generation
+3. **Evidence-Based Review**: Defects require concrete evidence; advisory design ideas do not affect acceptance
 4. **Human Checkpoints**: Workflow designed around validation gates
 
 ---

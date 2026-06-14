@@ -32,10 +32,24 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Get the current feature ID from git branch or SPECIFY_FEATURE env var
+is_feature_id() {
+    [[ "$1" =~ ^[0-9]{4}-[0-9]{4}-[0-9]{4}[a-z0-9]{2}$ ]]
+}
+
+# Timestamp names are the only supported feature naming contract.
+# Artifact-level legacy mode does not permit sequential NNN-name directories.
+is_feature_name() {
+    [[ "$1" =~ ^[0-9]{4}-[0-9]{4}-[0-9]{4}[a-z0-9]{2}-[a-z0-9][a-z0-9-]*$ ]]
+}
+
+# Get the current feature name from an explicit environment override or git branch.
 get_feature_id() {
-    if [ -n "$SPECIFY_FEATURE" ]; then
-        echo "$SPECIFY_FEATURE"
+    if [ -n "${CODEXSPEC_FEATURE:-}" ]; then
+        if is_feature_name "$CODEXSPEC_FEATURE"; then
+            echo "$CODEXSPEC_FEATURE"
+            return
+        fi
+        echo ""
         return
     fi
 
@@ -43,7 +57,7 @@ get_feature_id() {
     if command_exists git && git rev-parse --git-dir >/dev/null 2>&1; then
         local branch
         branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "")
-        if [[ "$branch" =~ ^[0-9]+- ]]; then
+        if is_feature_name "$branch"; then
             echo "$branch"
             return
         fi

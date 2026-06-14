@@ -1,318 +1,129 @@
 ---
-description: Review and validate a feature specification for completeness, clarity, and quality
-argument-hint: "[path_to_spec.md] (optional, defaults to .codexspec/specs/{feature-id}/)"
+description: Review spec fidelity, internal quality, and planning readiness
+argument-hint: "[spec.md or feature directory]"
 handoffs:
   - agent: claude
-    step: Review specification against quality criteria
+    step: Review specification against confirmed requirements
 ---
 
 # Specification Reviewer
 
 ## Language Preference
 
-**IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
-
-- If `language.output` is set to a language other than "en", respond and generate all content in that language
-- If not configured or set to "en", use English as default
-- Technical terms (e.g., API, JWT, OAuth) may remain in English when appropriate
-- All user-facing messages, questions, and generated documents should use the configured language
+Read `.codexspec/config.yml`. Use `language.output`; default to English.
 
 ## User Input
 
-$ARGUMENTS
+`$ARGUMENTS`
 
-## Role
+## Review Authority
 
-You are a **Senior Product Manager and Business Analyst**. Your responsibility is to critically review specifications for completeness, clarity, consistency, and readiness for technical planning.
+Resolve the feature by explicit path, then current branch. Never silently select the latest feature.
 
-## Instructions
+Read `requirements.md`, `spec.md`, and the constitution. If `requirements.md` is absent, enter legacy compatibility mode: use `spec.md` as temporary authority and state that fidelity to the original discussion cannot be verified.
 
-Review the feature specification for quality and readiness. This command ensures specifications are well-defined before investing time in technical planning.
+Authority order:
 
-### File Resolution
+1. Confirmed requirements and decisions
+2. The specification being reviewed
+3. Constitution and verified repository facts
+4. Applicable best practices
 
-- **With argument**: Treat `$1` as the path to `spec.md`
-- **Without argument**: Auto-detect the latest/only feature under `.codexspec/specs/`
+## Review Passes
 
-### Steps
+### 1. Fidelity
 
-1. **Load Context**
-   - Read the specification from the located path
-   - Read `.codexspec/memory/constitution.md` for project quality standards (if exists)
-   - Check for existing specs in `.codexspec/specs/` to identify potential overlaps or conflicts
+- Map every confirmed `NEED`, `CON`, `DEC`, and `OUT` entry to the specification.
+- Detect omissions, semantic changes, scope expansion, promoted open questions, and ignored superseding decisions.
+- Verify every `REQ`/`NFR` has valid `Sources:`.
 
-2. **Completeness Check**: Verify all required sections are present and substantive:
-   - [ ] **Feature Overview**: Clear description of what is being built
-   - [ ] **Goals**: Measurable objectives (at least 2-3)
-   - [ ] **User Stories**: Complete with "As a/I want/So that" format
-   - [ ] **Acceptance Criteria**: Each user story has specific, testable criteria
-   - [ ] **Functional Requirements**: Numbered and specific (REQ-XXX format)
-   - [ ] **Non-Functional Requirements**: Measurable (e.g., "< 200ms response time")
-   - [ ] **Edge Cases**: Identified with handling approaches
-   - [ ] **Out of Scope**: Clear boundaries defined
+### 2. Intrinsic Quality
 
-3. **Clarity Check**: Ensure requirements are unambiguous:
-   - [ ] No vague language ("fast", "good", "user-friendly", "scalable" without metrics)
-   - [ ] Each requirement has a single, clear interpretation
-   - [ ] Technical terms are defined or linked to documentation
-   - [ ] User roles and personas are clearly defined
-   - [ ] Input/output formats are specified where applicable
+Report only defects that can affect the user goal or technical planning:
 
-4. **Consistency Check**: Verify no internal contradictions:
-   - [ ] Requirements don't conflict with each other
-   - [ ] User stories align with stated goals
-   - [ ] Non-functional requirements don't contradict functional requirements
-   - [ ] Scope boundaries are consistent with goals
+- Contradictions
+- Multiple materially different interpretations
+- Untestable required behavior
+- Missing expected behavior for relevant failure or boundary cases
+- Impossible or unverifiable requirements
 
-5. **Testability Check**: Verify requirements can be verified:
-   - [ ] Each functional requirement can be tested
-   - [ ] Acceptance criteria are concrete and executable
-   - [ ] Edge cases have expected behaviors defined
-   - [ ] Error conditions have specified responses
+Do not require a section, metric, persona format, or example merely because a template contains it.
 
-6. **Constitution Alignment** (if constitution exists):
-   - [ ] Requirements support constitution's project goals
-   - [ ] Quality standards are addressed
-   - [ ] Naming conventions are followed (if specified)
-   - [ ] Workflow guidelines are considered
+### 3. Advisories
 
-### Scoring Rubrics
+Applicable best practices may be offered under **Risk Advisories** or **Design Opportunities** only. State the applicability condition, concrete risk or benefit, and relationship to the confirmed goal.
 
-Before scoring, apply these rubrics to ensure consistent, transparent evaluation.
+Advisories do not affect status, do not affect the score, and must not be auto-fixed.
 
-#### Completeness (25%)
+## Finding Validation
 
-| Score Range | Criteria |
-|-------------|----------|
-| 90-100 | All 8 required sections present with substantive content; each section has concrete, specific details |
-| 70-89 | 6-7 sections present and substantive; 1-2 sections thin but present |
-| 50-69 | 4-5 sections present; several sections missing or placeholder-only |
-| Below 50 | Fewer than 4 sections; major gaps in coverage |
+Before reporting a defect, provide:
 
-**Typical Deductions**:
+- **Evidence**: confirmed requirement, upstream statement, constitution rule, or verified fact
+- **Location**: exact section or requirement
+- **Mismatch**: difference between evidence and current content
+- **Impact**: concrete effect on the goal or next stage
+- **Remediation**: minimum correction that introduces no new decision
 
-- Missing required section entirely: -15 per section
-- Section present but placeholder/stub only: -8 per section
-- Section present but lacks specificity: -5 per section
+Merge findings with the same root cause. Never deduct or report the same defect again under another category.
 
-#### Clarity (25%)
+Reject a candidate finding when it is only a preferred method, cannot describe a concrete impact, or would overwrite a confirmed user trade-off.
 
-| Score Range | Criteria |
-|-------------|----------|
-| 90-100 | No vague language; all requirements have single clear interpretation; technical terms defined |
-| 70-89 | Minor ambiguities (1-2 vague terms); mostly precise language |
-| 50-69 | Multiple ambiguities; several terms undefined; some requirements open to interpretation |
-| Below 50 | Pervasive vagueness; most requirements unclear or multi-interpretable |
+It is valid and preferred to report zero defects when none are substantiated.
 
-**Typical Deductions**:
+## Severity and Status
 
-- Vague term without metrics (e.g., "fast", "user-friendly"): -5 each
-- Requirement with multiple interpretations: -8 each
-- Undefined technical term or acronym: -3 each
+- **Critical**: core requirement is wrong, impossible, unsafe, or materially contradicts confirmed intent; blocks planning.
+- **Warning**: likely to cause incorrect planning or major rework; should be fixed first.
+- **Minor**: localized, verified defect with limited impact; does not block planning.
+- **Advisory**: optional risk note or opportunity; not a defect.
 
-#### Consistency (20%)
+Status:
 
-| Score Range | Criteria |
-|-------------|----------|
-| 90-100 | No internal contradictions; all sections align perfectly; scope boundaries match goals |
-| 70-89 | Minor inconsistencies (1-2); easily resolved without major impact |
-| 50-69 | Several inconsistencies between sections; conflicting requirements present |
-| Below 50 | Major contradictions; requirements fundamentally conflict with goals or each other |
+- Any Critical: `BLOCKED`
+- No Critical and at least one Warning: `NEEDS_REVISION`
+- Only Minor defects: `PASS_WITH_WARNINGS`
+- No defects: `PASS`
 
-**Typical Deductions**:
+## Compatibility Score
 
-- Direct contradiction between requirements: -15 each
-- Scope boundary inconsistent with goals: -10
-- Minor misalignment between sections: -5 each
+Calculate only after validating and deduplicating defects:
 
-#### Testability (20%)
+- No defects: `100`
+- Minor only: `max(80, 100 - 3 × Minor)`
+- Warning present: `max(50, 79 - 8 × (Warning - 1) - 3 × Minor)`
+- Critical present: `max(0, 49 - 15 × (Critical - 1) - 8 × Warning - 3 × Minor)`
 
-| Score Range | Criteria |
-|-------------|----------|
-| 90-100 | All requirements testable; acceptance criteria concrete and executable; edge cases have expected behaviors |
-| 70-89 | Most requirements testable; 1-2 criteria need more specificity |
-| 50-69 | Several requirements lack testable criteria; edge cases missing expected behaviors |
-| Below 50 | Most requirements not verifiable; no concrete acceptance criteria |
+Advisory does not affect the score. Fixed template omissions and optional formatting never create automatic deductions.
 
-**Typical Deductions**:
+## Report
 
-- Requirement without testable acceptance criteria: -8 each
-- Edge case without expected behavior: -5 each
-- Non-measurable NFR (e.g., "should be scalable" without metrics): -8 each
-
-#### Constitution Alignment (10%)
-
-| Score Range | Criteria |
-|-------------|----------|
-| 90-100 | Fully aligned with all constitution principles; quality standards addressed |
-| 70-89 | Mostly aligned; minor gaps in addressing specific principles |
-| 50-69 | Partial alignment; several principles not addressed |
-| Below 50 | Significant violations or disregard of constitution |
-
-> **Note**: If no constitution exists, this category defaults to 100 (full marks) and its weight is redistributed proportionally to other categories.
-
-**Typical Deductions**:
-
-- Constitution principle not addressed: -10 per principle
-- Direct violation of a constitution principle: -20 per violation
-
-#### Suggestion Score Cap Rule
-
-**IMPORTANT**: Suggestions (Nice to Have) items may deduct a **maximum of 5 points** from the total score. After resolving all Critical Issues and Warnings, the score should be **≥ 95**.
-
-- Critical Issues: -10 to -20 points each
-- Warnings: -5 to -10 points each
-- Suggestions: -1 to -2 points each, **capped at 5 points total**
-
-### Report Template
+Save `<feature-dir>/review-spec.md`:
 
 ```markdown
 # Specification Review Report
 
-## Meta Information
-- **Specification**: {feature-id}/spec.md
-- **Review Date**: {date}
-- **Reviewer Role**: Senior Product Manager / Business Analyst
-
 ## Summary
-- **Overall Status**: ✅ Pass / ⚠️ Needs Work / ❌ Fail
-- **Quality Score**: X/100
-- **Readiness**: Ready for Planning / Needs Revision / Major Rework Required
+- **Overall Status**: PASS / PASS_WITH_WARNINGS / NEEDS_REVISION / BLOCKED
+- **Compatibility Score**: X/100
+- **Authority Mode**: Requirements-first / Legacy spec-only
+- **Readiness**: Ready for Planning / Revision Required
 
-## Section Analysis
+## Traceability
+| Confirmed Entry | Spec Reference | Result |
 
-| Section | Status | Completeness | Quality | Notes |
-|---------|--------|--------------|---------|-------|
-| Overview | ✅/⚠️/❌ | 100% | High/Medium/Low | [Specific feedback] |
-| Goals | ✅/⚠️/❌ | 100% | High/Medium/Low | [Specific feedback] |
-| User Stories | ✅/⚠️/❌ | 80% | Medium | [Specific feedback] |
-| Acceptance Criteria | ✅/⚠️/❌ | 60% | Low | [Specific feedback] |
-| Functional Requirements | ✅/⚠️/❌ | 100% | High | [Specific feedback] |
-| Non-Functional Requirements | ✅/⚠️/❌ | 50% | Medium | [Specific feedback] |
-| Edge Cases | ✅/⚠️/❌ | 0% | N/A | [Section missing] |
-| Out of Scope | ✅/⚠️/❌ | 100% | High | [Specific feedback] |
+## Verified Defects
+### Critical
+### Warnings
+### Minor
 
-## Detailed Findings
+## Risk Advisories
 
-### Critical Issues (Must Fix)
-- [ ] **[SPEC-001]**: [Issue description with specific location]
-  - **Impact**: [Why this matters]
-  - **Suggestion**: [How to fix it]
+## Design Opportunities
 
-### Warnings (Should Fix)
-- [ ] **[SPEC-002]**: [Issue description]
-  - **Impact**: [Potential risk]
-  - **Suggestion**: [Recommended fix]
-
-### Suggestions (Nice to Have)
-- [ ] **[SPEC-003]**: [Enhancement description]
-  - **Benefit**: [Value of making this change]
-
-## Clarity Assessment
-
-| Aspect | Rating | Notes |
-|--------|--------|-------|
-| Ambiguity Level | Low/Medium/High | [Examples of vague terms if any] |
-| Technical Precision | High/Medium/Low | [Areas needing clarification] |
-| Stakeholder Readability | High/Medium/Low | [Jargon that may need explanation] |
-
-## Testability Assessment
-
-| Requirement | Testable? | Notes |
-|-------------|-----------|-------|
-| REQ-001 | ✅ | Clear test case possible |
-| REQ-002 | ⚠️ | Needs more specific acceptance criteria |
-| REQ-003 | ❌ | Cannot verify without metrics |
-
-## Constitution Alignment
-
-> [!NOTE]
-> If no constitution exists, state "No project constitution found - using general best practices."
-
-| Principle | Alignment | Notes |
-|-----------|-----------|-------|
-| [Principle 1] | ✅/⚠️/❌ | [How spec aligns or conflicts] |
-| [Principle 2] | ✅/⚠️/❌ | [How spec aligns or conflicts] |
-
-## Scoring Breakdown
-
-| Category | Weight | Score | Rubric Basis | Deduction Details | Weighted |
-|----------|--------|-------|-------------|-------------------|----------|
-| Completeness | 25% | X/100 | [Which rubric range applies] | [List specific deductions, e.g., "Missing Edge Cases section: -15"] | X |
-| Clarity | 25% | X/100 | [Which rubric range applies] | [e.g., "2 vague terms: -10"] | X |
-| Consistency | 20% | X/100 | [Which rubric range applies] | [e.g., "No contradictions found"] | X |
-| Testability | 20% | X/100 | [Which rubric range applies] | [e.g., "REQ-003 not testable: -8"] | X |
-| Constitution Alignment | 10% | X/100 | [Which rubric range applies] | [e.g., "All principles addressed"] | X |
-| **Total** | **100%** | | | | **X/100** |
-
-> **Suggestion Cap**: Suggestions deducted X/5 points (cap: 5 points max)
-
-## Recommendations
-
-### Priority 1: Before Planning
-1. [Most critical action item]
-2. [Second most critical]
-
-### Priority 2: Quality Improvements
-1. [Important improvement]
-2. [Another improvement]
-
-### Priority 3: Future Considerations
-1. [Nice-to-have enhancement]
-
-## Available Follow-up Commands
-
-Based on the review result, the user may consider:
-
-### If Issues Found (Warnings or Suggestions)
-- **Direct Fix**: Simply describe the changes you want to make (e.g., "Fix SPEC-001 and update the acceptance criteria") and I will update the specification accordingly
-- **Re-run Review**: `/codexspec:review-spec` - to verify changes after fixing issues
-- **Proceed Anyway**: If you decide the warnings/suggestions are not critical or out of scope for the current iteration, you can proceed directly to `/codexspec:spec-to-plan`
-
-### Next Steps Based on Review Result
-- **Pass**: `/codexspec:spec-to-plan` - to proceed with technical implementation planning
-- **Needs Work**: Fix the identified issues first, then re-run `/codexspec:review-spec` to verify, or proceed anyway if issues are acceptable
-- **Fail**: `/codexspec:clarify` - to systematically identify and fix specification issues
+## Score Derivation
+- Critical root causes: X
+- Warning root causes: X
+- Minor root causes: X
+- Formula: ...
 ```
-
-### Score Validation Checklist
-
-Before finalizing scores, the reviewer MUST verify:
-
-- [ ] Every deduction in "Deduction Details" column has a corresponding issue in "Detailed Findings"
-- [ ] The arithmetic is correct: each category score = 100 minus sum of deductions
-- [ ] Weighted total = sum of (category score × weight) for all categories
-- [ ] Suggestion deductions do not exceed 5-point cap
-- [ ] No "phantom deductions" (deductions without matching issues)
-- [ ] Score is consistent with Overall Status (Pass ≥ 80, Needs Work 50-79, Fail < 50)
-
-### Score Challenge Response Protocol
-
-When a user questions or challenges the score, follow this three-step process:
-
-1. **Provide Evidence**: Present the complete scoring breakdown with all deduction details. Reference the specific rubric criteria and issue IDs that justify each deduction.
-
-2. **Ask for Specifics**: Ask the user which specific scoring item(s) they believe are incorrect. Do NOT preemptively adjust any scores.
-
-3. **Targeted Re-evaluation**: For each challenged item:
-   - Re-read the relevant section of the specification
-   - Re-apply the rubric criteria objectively
-   - If the original score was correct: explain the reasoning and maintain the score
-   - If the original score was indeed incorrect: adjust with clear explanation of what changed and why
-
-> **CRITICAL**: Never adjust scores simply because the user expresses dissatisfaction. Only adjust when re-evaluation reveals a genuine scoring error.
-
-### Quality Criteria
-
-Before completing the review, verify:
-
-- [ ] All sections of the spec have been examined
-- [ ] Issues are categorized by severity (Critical/Warning/Suggestion)
-- [ ] Each issue has a clear, actionable suggestion
-- [ ] Score reflects actual quality accurately (validated via Score Validation Checklist)
-- [ ] Recommendations are prioritized
-- [ ] Next steps are clear and appropriate
-
-### Output
-
-Save the review report to: `.codexspec/specs/{feature-id}/review-spec.md`

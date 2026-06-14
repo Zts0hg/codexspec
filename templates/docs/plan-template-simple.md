@@ -32,6 +32,7 @@ If not configured, use English.
 ## Architecture
 
 <!-- High-level architecture description -->
+<!-- Covers: REQ-xxx -->
 
 ```
 ┌─────────────────────────────────────────┐
@@ -48,3 +49,9 @@ If not configured, use English.
 ## Implementation Notes
 
 <!-- Additional implementation considerations -->
+
+## Requirements Coverage
+
+| Spec Requirement | Plan Coverage |
+|------------------|---------------|
+| REQ-xxx | Decision/phase reference |

@@ -114,7 +114,7 @@ scripts:
 
 #### 핵심 기능
 
-- 현재 feature 브랜치에 있는지 확인 (형식: `001-feature-name`)
+- 현재 feature 브랜치에 있는지 확인 (형식: `2026-0613-1200ab-feature-name`)
 - 필수 파일 존재 여부 감지 (`plan.md`, `tasks.md`)
 - JSON 형식의 경로 정보 반환
 
@@ -131,7 +131,7 @@ scripts:
 
 ```json
 {
-  "FEATURE_DIR": "/path/to/.codexspec/specs/001-my-feature",
+  "FEATURE_DIR": "/path/to/.codexspec/specs/2026-0613-1200ab-my-feature",
   "AVAILABLE_DOCS": ["research.md", "data-model.md", "tasks.md"]
 }
 ```
@@ -258,7 +258,7 @@ scripts:
 
 ```json
 {
-  "FEATURE_DIR": "/path/to/.codexspec/specs/001-feature",
+  "FEATURE_DIR": "/path/to/.codexspec/specs/2026-0613-1200ab-feature",
   "AVAILABLE_DOCS": ["research.md", "data-model.md"]
 }
 ```
@@ -277,7 +277,7 @@ scripts:
 
 - 브랜치 이름에서 자동으로 feature ID 추출
 - 브랜치 이름 검증 지원 (`^\d{3}-` 형식)
-- 환경 변수 오버라이드 지원 (`SPECIFY_FEATURE` / `CODEXSPEC_FEATURE`)
+- 환경 변수 오버라이드 지원 (`CODEXSPEC_FEATURE`)
 
 ## 8. 핵심 코드 경로
 

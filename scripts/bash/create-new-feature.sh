@@ -9,7 +9,6 @@ source "$SCRIPT_DIR/common.sh"
 
 # Default values
 FEATURE_NAME=""
-FEATURE_ID=""
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -18,16 +17,11 @@ while [[ $# -gt 0 ]]; do
             FEATURE_NAME="$2"
             shift 2
             ;;
-        -i|--id)
-            FEATURE_ID="$2"
-            shift 2
-            ;;
         -h|--help)
             echo "Usage: $0 [OPTIONS]"
             echo ""
             echo "Options:"
             echo "  -n, --name    Feature name (e.g., 'user authentication')"
-            echo "  -i, --id      Feature ID (e.g., '001')"
             echo "  -h, --help    Show this help message"
             exit 0
             ;;
@@ -47,24 +41,21 @@ fi
 # Check if we're in a CodexSpec project
 require_codexspec_project
 
-# Generate feature ID if not provided
-if [ -z "$FEATURE_ID" ]; then
-    # Find the next available ID
-    SPECS_DIR=$(get_specs_dir)
-    if [ -d "$SPECS_DIR" ]; then
-        LAST_ID=$(find "$SPECS_DIR" -maxdepth 1 -type d -name '[0-9]*-*' -exec basename {} \; 2>/dev/null | cut -d'-' -f1 | sort -n | tail -1)
-        if [ -n "$LAST_ID" ]; then
-            FEATURE_ID=$(printf "%03d" $((10#$LAST_ID + 1)))
-        else
-            FEATURE_ID="001"
-        fi
-    else
-        FEATURE_ID="001"
-    fi
+# Normalize the path/branch suffix to the supported ASCII kebab-case contract.
+FEATURE_SUFFIX=$(printf "%s" "$FEATURE_NAME" |
+    tr '[:upper:]' '[:lower:]' |
+    sed 's/[^a-z0-9]/-/g; s/-\{1,\}/-/g; s/^-//; s/-$//')
+if [ -z "$FEATURE_SUFFIX" ]; then
+    log_error "Feature short name must contain ASCII letters or numbers (for example, 'user-auth')."
+    exit 1
 fi
 
+TIMESTAMP=$(date +"%Y-%m%d-%H%M")
+RANDOM_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' </dev/urandom | head -c 2)
+FEATURE_ID="${TIMESTAMP}${RANDOM_SUFFIX}"
+
 # Generate branch name
-BRANCH_NAME="${FEATURE_ID}-$(echo "$FEATURE_NAME" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | tr -cd 'a-z0-9-')"
+BRANCH_NAME="${FEATURE_ID}-${FEATURE_SUFFIX}"
 
 log_info "Creating feature: $FEATURE_NAME"
 log_info "Feature ID: $FEATURE_ID"
@@ -76,28 +67,63 @@ FEATURE_DIR="$SPECS_DIR/$BRANCH_NAME"
 mkdir -p "$FEATURE_DIR"
 log_success "Created feature directory: $FEATURE_DIR"
 
-# Create initial spec file
-cat > "$FEATURE_DIR/spec.md" << 'EOF'
-# Feature: [Feature Name]
+# Create the authoritative requirements record. spec.md is generated later.
+REQUIREMENTS_TEMPLATE=".codexspec/templates/docs/requirements-template.md"
+REQUIREMENTS_FILE="$FEATURE_DIR/requirements.md"
+if [ -f "$REQUIREMENTS_TEMPLATE" ]; then
+    sed \
+        -e "s/\[FEATURE NAME\]/$FEATURE_SUFFIX/g" \
+        -e "s/\[feature-id\]/$FEATURE_ID/g" \
+        "$REQUIREMENTS_TEMPLATE" > "$REQUIREMENTS_FILE"
+else
+    cat > "$REQUIREMENTS_FILE" << 'EOF'
+# Confirmed Requirements: __FEATURE_NAME__
 
-## Overview
-[High-level description of the feature]
+**Feature ID**: `__FEATURE_ID__`
+**Status**: Discovery
+**Last Confirmed**: [DATE]
 
-## Goals
-- [Goal 1]
-- [Goal 2]
+Only entries with `Status: confirmed` are binding downstream inputs.
 
-## User Stories
-[To be defined]
+## Needs
 
-## Functional Requirements
-[To be defined]
+### NEED-001
+- **Status**: open
+- **Statement**: [Confirm with the user]
+- **User Evidence**: "[Add a short quote or paraphrase after confirmation]"
 
-## Non-Functional Requirements
-[To be defined]
+## Constraints
+
+### CON-001
+- **Status**: open
+
+## Decisions
+
+### DEC-001
+- **Status**: open
+
+## Out of Scope
+
+### OUT-001
+- **Status**: open
+
+## Open Questions
+
+### OPEN-001
+- **Status**: open
+
+## Superseded Entries
+
+<!-- Keep replaced entries with Status: superseded. -->
 EOF
+    sed \
+        -e "s/__FEATURE_NAME__/$FEATURE_SUFFIX/g" \
+        -e "s/__FEATURE_ID__/$FEATURE_ID/g" \
+        "$REQUIREMENTS_FILE" > "$REQUIREMENTS_FILE.tmp"
+    mv "$REQUIREMENTS_FILE.tmp" "$REQUIREMENTS_FILE"
+fi
 
-log_success "Created initial spec file: $FEATURE_DIR/spec.md"
+log_success "Created requirements record: $REQUIREMENTS_FILE"
 
 # Create git branch if git is available
 if command_exists git && git rev-parse --git-dir >/dev/null 2>&1; then
@@ -110,5 +136,6 @@ fi
 log_success "Feature created successfully!"
 echo ""
 echo "Next steps:"
-echo "  1. Edit the spec file: $FEATURE_DIR/spec.md"
-echo "  2. Use /codexspec:specify to refine the specification"
+echo "  1. Use /codexspec:specify to discuss the requirement"
+echo "  2. Confirm the requirements record: $REQUIREMENTS_FILE"
+echo "  3. Use /codexspec:generate-spec after confirmation"
