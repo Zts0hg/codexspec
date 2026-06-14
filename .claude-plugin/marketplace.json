@@ -12,10 +12,10 @@
       "source": {
         "source": "github",
         "repo": "Zts0hg/codexspec",
-        "ref": "v0.5.20",
+        "ref": "v0.6.0",
         "path": ".claude/commands/codexspec"
       },
-      "version": "0.5.20",
+      "version": "0.6.0",
       "author": {
         "name": "Zts0hg"
       },
