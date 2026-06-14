@@ -41,7 +41,7 @@ from .i18n import (
 from .translator import translate
 
 # Version info
-__version__ = "0.4.1"
+__version__ = "0.6.0"
 __author__ = "CodexSpec Team"
 
 # Constitution file path constants
