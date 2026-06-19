@@ -1,0 +1,4 @@
+# Canonicalize author identities for git/GitHub contributor aggregation.
+# Absorb any residual AI-tool attribution email into the canonical author,
+# so it can never surface as a separate contributor.
+Aki <zhangzhaobin1025@gmail.com> <noreply@anthropic.com>
