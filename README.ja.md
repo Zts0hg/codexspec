@@ -6,15 +6,21 @@
   </picture>
 </div>
 
-# CodexSpec
+<h1 align="center">CodexSpec</h1>
 
-[English](README.md) | [中文](README.zh-CN.md) | **日本語** | [Español](README.es.md) | [Português](README.pt-BR.md) | [한국어](README.ko.md) | [Deutsch](README.de.md) | [Français](README.fr.md)
+<p align="center">
+  <a href="README.md">English</a> | <a href="README.zh-CN.md">中文</a> | <b>日本語</b> | <a href="README.es.md">Español</a> | <a href="README.pt-BR.md">Português</a> | <a href="README.ko.md">한국어</a> | <a href="README.de.md">Deutsch</a> | <a href="README.fr.md">Français</a>
+</p>
 
-[![PyPI version](https://img.shields.io/pypi/v/codexspec.svg)](https://pypi.org/project/codexspec/)
-[![Python](https://img.shields.io/pypi/pyversions/codexspec.svg)](https://pypi.org/project/codexspec/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<p align="center">
+  <a href="https://pypi.org/project/codexspec/"><img src="https://img.shields.io/pypi/v/codexspec.svg?style=for-the-badge" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/codexspec/"><img src="https://img.shields.io/pypi/pyversions/codexspec.svg?style=for-the-badge" alt="Python versions"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="License: MIT"></a>
+</p>
 
-**Claude Code 向けスペック駆動開発 (SDD) ツールキット**
+<p align="center">
+  <strong>Claude Code 向けスペック駆動開発 (SDD) ツールキット</strong>
+</p>
 
 CodexSpec は、構造化されたスペック駆動アプローチを使用して高品質なソフトウェアを構築するのに役立つツールキットです。**どのように**構築するかを決める前に、**何を**構築するか、**なぜ**構築するかを先に定義します。
 

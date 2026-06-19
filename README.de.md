@@ -6,15 +6,21 @@
   </picture>
 </div>
 
-# CodexSpec
+<h1 align="center">CodexSpec</h1>
 
-[English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md) | [Español](README.es.md) | [Português](README.pt-BR.md) | [한국어](README.ko.md) | **Deutsch** | [Français](README.fr.md)
+<p align="center">
+  <a href="README.md">English</a> | <a href="README.zh-CN.md">中文</a> | <a href="README.ja.md">日本語</a> | <a href="README.es.md">Español</a> | <a href="README.pt-BR.md">Português</a> | <a href="README.ko.md">한국어</a> | <b>Deutsch</b> | <a href="README.fr.md">Français</a>
+</p>
 
-[![PyPI version](https://img.shields.io/pypi/v/codexspec.svg)](https://pypi.org/project/codexspec/)
-[![Python](https://img.shields.io/pypi/pyversions/codexspec.svg)](https://pypi.org/project/codexspec/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<p align="center">
+  <a href="https://pypi.org/project/codexspec/"><img src="https://img.shields.io/pypi/v/codexspec.svg?style=for-the-badge" alt="PyPI version"></a>
+  <a href="https://pypi.org/project/codexspec/"><img src="https://img.shields.io/pypi/pyversions/codexspec.svg?style=for-the-badge" alt="Python versions"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="License: MIT"></a>
+</p>
 
-**Ein Spec-Driven Development (SDD) Toolkit für Claude Code**
+<p align="center">
+  <strong>Ein Spec-Driven Development (SDD) Toolkit für Claude Code</strong>
+</p>
 
 CodexSpec hilft Ihnen, hochwertige Software durch einen strukturierten, spezifikationsgesteuerten Ansatz zu erstellen. Anstatt direkt zum Code zu springen, definieren Sie **was** zu bauen ist und **warum**, bevor Sie entscheiden, **wie** es zu bauen ist.
 
