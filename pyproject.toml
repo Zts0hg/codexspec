@@ -64,13 +64,21 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/codexspec"]
-force-include = { "templates" = "codexspec/templates", "scripts" = "codexspec/scripts" }
+# scripts/ is split by AUDIENCE:
+#   - bash/ + powershell/ -> user-facing, copied verbatim by `codexspec init`
+#   - python/             -> maintainer-only tooling (auto-responder, notifier...)
+# force-include does NOT honor .gitignore, so we ship ONLY the two user subdirs;
+# including all of scripts/ would leak scripts/python/.env (secrets), notify
+# logs, and maintainer-only scripts. Other maintainer tools live in /internal
+# (outside scripts/ entirely). The sdist `include` below mirrors this boundary.
+force-include = { "templates" = "codexspec/templates", "scripts/bash" = "codexspec/scripts/bash", "scripts/powershell" = "codexspec/scripts/powershell" }
 
 [tool.hatch.build.targets.sdist]
 include = [
     "/src",
     "/templates",
-    "/scripts",
+    "/scripts/bash",
+    "/scripts/powershell",
     "/codexspec-icon.svg",
     "/codexspec-logo-dark.svg",
     "/codexspec-logo-light.svg",

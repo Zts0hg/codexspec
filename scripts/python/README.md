@@ -1,5 +1,7 @@
 # Claude Code Session Monitor
 
+> 🔒 **维护者内部工具，不随 CodexSpec 分发**：本目录（`scripts/python/`）及其脚本仅用于 CodexSpec 仓库维护者自身的工作流（如监听/通知），**不会**被 `codexspec init` 复制，也**不会**打进 wheel / sdist。用户侧脚本只有 `scripts/bash/` 和 `scripts/powershell/`。打包边界见 `pyproject.toml` 的 `force-include` 与 sdist `include`。
+
 监听 Claude Code 执行状态，在执行完成时输出最后内容。
 
 ## 安装依赖

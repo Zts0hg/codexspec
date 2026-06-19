@@ -1,5 +1,6 @@
 <!-- markdownlint-disable MD041 -->
 @.codexspec/memory/constitution.md
+@docs/internal/repository-layout.md
 
 # CLAUDE.md - CodexSpec Development Guide
 
@@ -28,45 +29,6 @@ CodexSpec helps developers:
 - **Build System**: Hatchling
 - **Testing**: pytest
 - **Linting**: ruff
-
-## Project Structure
-
-```
-codexspec/
-├── src/
-│   └── codexspec/
-│       ├── __init__.py        # Main CLI implementation
-│       └── i18n.py            # Internationalization utilities
-├── templates/
-│   └── commands/              # Slash command templates
-│       ├── constitution.md
-│       ├── specify.md
-│       ├── clarify.md         # NEW
-│       ├── analyze.md         # NEW
-│       ├── checklist.md       # NEW
-│       ├── generate-spec.md
-│       ├── spec-to-plan.md
-│       ├── plan-to-tasks.md
-│       ├── review-spec.md
-│       ├── review-plan.md
-│       ├── review-tasks.md
-│       ├── implement-tasks.md
-│       └── tasks-to-issues.md # NEW
-├── scripts/
-│   ├── bash/                  # Bash helper scripts
-│   └── powershell/            # PowerShell scripts
-├── extensions/                # Extension system
-│   ├── catalog.json
-│   ├── EXTENSION-DEVELOPMENT-GUIDE.md
-│   └── template/
-│       ├── extension.yml
-│       └── commands/example.md
-├── .claude-plugin/            # Plugin marketplace configuration
-│   └── marketplace.json       # Claude Code plugin marketplace definition
-├── pyproject.toml             # Project configuration
-├── README.md                  # User documentation
-└── CLAUDE.md                  # This file
-```
 
 ## Architecture
 
