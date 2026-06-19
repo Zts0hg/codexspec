@@ -13,22 +13,24 @@
   <!-- ── Wordmark: {code} × <spec> ── -->
 
   <!-- { -->
-  <text class="mono" x="36"  y="47" font-size="40" font-weight="700" fill="#58a6ff" dominant-baseline="middle">{</text>
+  <text class="mono" x="51"  y="47" font-size="40" font-weight="700" fill="#58a6ff" dominant-baseline="middle">{</text>
   <!-- code -->
-  <text class="mono" x="62"  y="47" font-size="33" font-weight="500" fill="#e6edf3" dominant-baseline="middle">code</text>
+  <text class="mono" x="77"  y="47" font-size="33" font-weight="500" fill="#e6edf3" dominant-baseline="middle">code</text>
   <!-- } -->
-  <text class="mono" x="145" y="47" font-size="40" font-weight="700" fill="#58a6ff" dominant-baseline="middle">}</text>
+  <text class="mono" x="160" y="47" font-size="40" font-weight="700" fill="#58a6ff" dominant-baseline="middle">}</text>
 
   <!-- × operator -->
-  <text class="mono" x="196" y="46" font-size="26" font-weight="700" fill="#f0883e" dominant-baseline="middle" text-anchor="middle">×</text>
+  <text class="mono" x="210" y="46" font-size="26" font-weight="700" fill="#f0883e" dominant-baseline="middle" text-anchor="middle">×</text>
 
   <!-- < -->
-  <text class="mono" x="221" y="47" font-size="40" font-weight="700" fill="#3fb950" dominant-baseline="middle">&lt;</text>
+  <text class="mono" x="236" y="47" font-size="40" font-weight="700" fill="#3fb950" dominant-baseline="middle">&lt;</text>
   <!-- spec -->
-  <text class="mono" x="247" y="47" font-size="33" font-weight="500" fill="#e6edf3" dominant-baseline="middle">spec</text>
+  <text class="mono" x="262" y="47" font-size="33" font-weight="500" fill="#e6edf3" dominant-baseline="middle">spec</text>
   <!-- > -->
-  <text class="mono" x="330" y="47" font-size="40" font-weight="700" fill="#3fb950" dominant-baseline="middle">&gt;</text>
+  <text class="mono" x="345" y="47" font-size="40" font-weight="700" fill="#3fb950" dominant-baseline="middle">&gt;</text>
 
-  <!-- Tagline -->
-  <text class="mono" x="210" y="75" font-size="9" font-weight="400" fill="#6e7681" text-anchor="middle" letter-spacing="2.8">SPEC · DRIVEN · DEVELOPMENT</text>
+  <!-- Tagline: three words centered under the wordmark columns {code} × <spec> -->
+  <text class="mono" x="118.5" y="75" font-size="9" font-weight="400" fill="#6e7681" text-anchor="middle" letter-spacing="2.8">SPEC</text>
+  <text class="mono" x="211.0" y="75" font-size="9" font-weight="400" fill="#6e7681" text-anchor="middle" letter-spacing="2.8">DRIVEN</text>
+  <text class="mono" x="304.0" y="75" font-size="9" font-weight="400" fill="#6e7681" text-anchor="middle" letter-spacing="2.8">DEVELOPMENT</text>
 </svg>
