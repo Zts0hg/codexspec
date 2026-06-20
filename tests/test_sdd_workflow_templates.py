@@ -242,3 +242,25 @@ def test_localized_translation_catalogs_cover_every_command(language):
             assert localized[command].get("argument-hint"), (
                 f"{language}.json/{command} has an empty argument-hint (en.json declares one)"
             )
+
+
+def test_command_templates_split_interaction_and_document_language():
+    """Non-commit templates use the unified Language Preference block distinguishing
+    interaction vs document language; commit-affected templates keep the commit-priority
+    block unchanged."""
+    commit_templates = {"commit-staged", "pr"}
+
+    for command_file in COMMANDS.glob("*.md"):
+        command = command_file.stem
+        content = command_file.read_text(encoding="utf-8")
+
+        if command in commit_templates:
+            # Commit path is unchanged (REQ-008): still references language.commit priority.
+            assert "language.commit" in content, f"{command} lost its commit-language priority block"
+        else:
+            assert "language.interaction" in content, (
+                f"{command} must reference language.interaction in its Language Preference block"
+            )
+            assert "language.document" in content, (
+                f"{command} must reference language.document in its Language Preference block"
+            )

@@ -7,12 +7,12 @@ argument-hint: "[--view] View current configuration without modification"
 
 ## Language Preference
 
-**IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
+Read `.codexspec/config.yml`. Two independent language controls apply (each falls back to `language.output`, then English):
 
-- If `language.output` is set to a language other than "en", respond and generate all content in that language
-- If not configured or set to "en", use English as default
-- Technical terms (e.g., API, config.yml) may remain in English when appropriate
-- All user-facing messages, questions, and generated documents should use the configured language
+- **Interaction language** (`language.interaction`): language for all conversation with the user — questions, explanations, status messages, and `codexspec` CLI terminal output.
+- **Document language** (`language.document`): language for generated artifact files (requirements/spec/plan/tasks).
+
+Converse in the interaction language and author artifacts in the document language. Apply the project's translation standard to both: translate by meaning (not word-for-word), keep English for terms with no good native equivalent, and write as if originally in that language.
 
 ## Parameter Check
 
@@ -98,7 +98,9 @@ Display the configuration as in Step 2, then exit.
     "question": "Which setting would you like to modify?",
     "header": "Modify",
     "options": [
-      {"label": "Output language", "description": "Language for generated content (currently: {current value})"},
+      {"label": "Interaction language", "description": "Language for conversing with you (LLM dialogue + codexspec CLI terminal output) (currently: {current value})"},
+      {"label": "Document language", "description": "Language for generated artifact files (requirements/spec/plan/tasks) (currently: {current value})"},
+      {"label": "Output language (legacy)", "description": "Fallback language used when interaction/document are not set (currently: {current value})"},
       {"label": "Commit language", "description": "Language for commit messages (currently: {current value})"},
       {"label": "Back", "description": "Return to main menu"}
     ]

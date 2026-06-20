@@ -8,6 +8,7 @@ at runtime.
 """
 
 import os
+import re
 from pathlib import Path
 from typing import Optional
 
@@ -194,9 +195,18 @@ version: "1.0"
 
 # Language settings for internationalization (i18n)
 language:
-  # Output language - Claude will use this language for interactions
-  # and generated documents. Supports any Claude-supported language.
+  # Interaction language - language for conversing with the user (LLM dialogue
+  # and codexspec CLI terminal output). Supports any Claude-supported language.
   # Common values: en, zh-CN, zh-TW, ja, ko, es, fr, de, pt, ru
+  interaction: "{language}"
+
+  # Document language - language for generated artifact files
+  # (requirements/spec/plan/tasks). Set this differently from interaction to
+  # keep documents in one language while conversing in another.
+  document: "{language}"
+
+  # Output language (legacy) - fallback used when interaction/document are not
+  # set. Kept for backward compatibility; prefer setting interaction/document.
   output: "{language}"
 
   # Commit message language - language for git commit messages
@@ -235,29 +245,89 @@ def generate_config_content(language: str = "en", created: str = None) -> str:
     return CONFIG_TEMPLATE.format(language=normalized_lang, created=created)
 
 
-def get_project_language() -> str:
+def _read_language_key(content: str, key: str) -> Optional[str]:
+    """Read a `key: value` language setting from config content (YAML-like regex).
+
+    Returns the raw value (quotes stripped) or None if the key is absent.
+    """
+    match = re.search(rf"^\s*{re.escape(key)}:\s*['\"]?(\S+?)['\"]?\s*$", content, re.MULTILINE)
+    return match.group(1) if match else None
+
+
+def _resolve_language(config_file: Path, primary_key: str) -> str:
+    """Resolve a language setting: primary_key -> output (legacy) -> 'en'.
+
+    Args:
+        config_file: Path to the project's config.yml.
+        primary_key: The primary language key to try first ('interaction' or 'document').
+
+    Returns:
+        The normalized language code, defaulting to 'en'.
+    """
+    if not config_file.exists():
+        return "en"
+    try:
+        content = config_file.read_text(encoding="utf-8")
+        for key in (primary_key, "output"):
+            value = _read_language_key(content, key)
+            if value:
+                return normalize_locale(value) or "en"
+    except (OSError, re.error):
+        pass
+    return "en"
+
+
+def _default_config_path() -> Path:
+    return Path.cwd() / ".codexspec" / "config.yml"
+
+
+def get_interaction_language(config_file: Optional[Path] = None) -> str:
+    """Resolve the interaction language (user<->LLM conversation and CLI terminal).
+
+    Resolution order: explicit `language.interaction` -> `language.output`
+    (legacy) -> 'en'. Existing configs that only set `output` behave exactly as
+    before.
+
+    Args:
+        config_file: Optional explicit path to config.yml; defaults to
+            `.codexspec/config.yml` in the current working directory.
+
+    Returns:
+        The normalized interaction language code.
+    """
+    return _resolve_language(config_file or _default_config_path(), "interaction")
+
+
+def get_document_language(config_file: Optional[Path] = None) -> str:
+    """Resolve the document language (generated artifact files).
+
+    Resolution order: explicit `language.document` -> `language.output`
+    (legacy) -> 'en'. Existing configs that only set `output` behave exactly as
+    before.
+
+    Args:
+        config_file: Optional explicit path to config.yml; defaults to
+            `.codexspec/config.yml` in the current working directory.
+
+    Returns:
+        The normalized document language code.
+    """
+    return _resolve_language(config_file or _default_config_path(), "document")
+
+
+def get_project_language(config_file: Optional[Path] = None) -> str:
     """Get the project language from .codexspec/config.yml.
+
+    Backward-compatibility alias for the interaction language. Historically this
+    returned the `output` language; it now resolves the interaction language,
+    which falls back to `output` then `en` — so output-only configs are
+    unaffected. Prefer :func:`get_interaction_language` / :func:`get_document_language`
+    for new code.
 
     Returns:
         The configured language code, or "en" if not configured or file doesn't exist.
     """
-    import re
-    from pathlib import Path
-
-    config_file = Path.cwd() / ".codexspec" / "config.yml"
-    if not config_file.exists():
-        return "en"
-
-    try:
-        content = config_file.read_text(encoding="utf-8")
-        # Parse the language setting from YAML-like format
-        match = re.search(r"^\s*output:\s*['\"]?(\S+?)['\"]?\s*$", content, re.MULTILINE)
-        if match:
-            return normalize_locale(match.group(1)) or "en"
-    except (OSError, re.error):
-        pass
-
-    return "en"
+    return get_interaction_language(config_file)
 
 
 def get_commit_language(config_file: Path) -> Optional[str]:
@@ -284,6 +354,44 @@ def get_commit_language(config_file: Path) -> Optional[str]:
         pass
 
     return None
+
+
+def update_language_field(config_file: Path, key: str, language: str) -> bool:
+    """Update a single ``language.<key>`` setting in config.yml.
+
+    Updates the value in place when ``key`` already exists; otherwise inserts
+    ``<indent>{key}: "{language}"`` immediately after the ``language:`` line.
+    The value is normalized via :func:`normalize_locale`.
+
+    Args:
+        config_file: Path to the project's config.yml.
+        key: Language sub-key to set (e.g. "interaction", "document").
+        language: New language code (will be normalized).
+
+    Returns:
+        True if updated or inserted; False if there is no ``language:`` section
+        to insert into or the file cannot be written.
+    """
+    normalized = normalize_locale(language)
+    try:
+        content = config_file.read_text(encoding="utf-8")
+        pattern = rf'^(\s*{re.escape(key)}:\s*)["\']?\S+?["\']?\s*$'
+        new_content, count = re.subn(pattern, rf'\g<1>"{normalized}"', content, flags=re.MULTILINE)
+        if count:
+            config_file.write_text(new_content, encoding="utf-8")
+            return True
+
+        # Key absent: insert under the `language:` section.
+        lang_match = re.search(r"^(\s*)language:\s*$", content, re.MULTILINE)
+        if not lang_match:
+            return False
+        indent = lang_match.group(1) + "  "
+        insert_line = f'{indent}{key}: "{normalized}"'
+        end = lang_match.end()
+        config_file.write_text(content[:end] + "\n" + insert_line + content[end:], encoding="utf-8")
+        return True
+    except (OSError, re.error):
+        return False
 
 
 def update_output_language(config_file: Path, language: str) -> bool:
