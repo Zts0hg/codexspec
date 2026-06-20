@@ -7,12 +7,14 @@ argument-hint: "[--view] View current configuration without modification"
 
 ## Language Preference
 
-**IMPORTANT**: Before proceeding, read the project's language configuration from `.codexspec/config.yml`.
+Read `.codexspec/config.yml`. Two independent language controls apply (each falls back to `language.output`, then English):
 
-- If `language.output` is set to a language other than "en", respond and generate all content in that language
-- If not configured or set to "en", use English as default
-- Technical terms (e.g., API, config.yml) may remain in English when appropriate
-- All user-facing messages, questions, and generated documents should use the configured language
+- **Interaction language** (`language.interaction`): language for all conversation with the user — questions, explanations, status messages, and `codexspec` CLI terminal output.
+- **Document language** (`language.document`): language for generated artifact files (requirements/spec/plan/tasks).
+
+Converse in the interaction language and author artifacts in the document language. Apply the project's translation standard to both: translate by meaning (not word-for-word), keep English for terms with no good native equivalent, and write as if originally in that language.
+
+A fresh or reset config writes only `output`; `interaction` and `document` resolve to it via the fallback above, so an `output`-only config is fully functional (non-blocking). Set `interaction` or `document` individually only to make them differ from `output`. That is why the YAML examples below stay `output`-only.
 
 ## Parameter Check
 
@@ -98,7 +100,9 @@ Display the configuration as in Step 2, then exit.
     "question": "Which setting would you like to modify?",
     "header": "Modify",
     "options": [
-      {"label": "Output language", "description": "Language for generated content (currently: {current value})"},
+      {"label": "Interaction language", "description": "Language for conversing with you (LLM dialogue + codexspec CLI terminal output) (currently: {current value})"},
+      {"label": "Document language", "description": "Language for generated artifact files (requirements/spec/plan/tasks) (currently: {current value})"},
+      {"label": "Output language (legacy)", "description": "Fallback language used when interaction/document are not set (currently: {current value})"},
       {"label": "Commit language", "description": "Language for commit messages (currently: {current value})"},
       {"label": "Back", "description": "Return to main menu"}
     ]
@@ -182,7 +186,7 @@ Let's configure your language preferences.
 ```json
 {
   "questions": [{
-    "question": "Select your preferred output language (for generated content, documentation, etc.):",
+    "question": "Select your project's base language (sets `output`; interaction and document inherit it unless set individually):",
     "header": "Output Lang",
     "options": [
       {"label": "English (en)", "description": "Default, recommended for international projects"},
@@ -280,6 +284,6 @@ project:
 
 ## Output Format
 
-All messages should follow the project's language configuration. If not configured, use English as default.
+Converse in the interaction language and author generated artifacts in the document language. If either is unset, it falls back to `output`, then English.
 
 Technical terms and file paths should remain in English for clarity.

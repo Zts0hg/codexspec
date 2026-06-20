@@ -64,6 +64,7 @@ You are a **Translation Quality Reviewer**. Your task is to analyze translated d
       - **Added content**: Extra information not in source
       - **Semantic drift**: Meaning changed in translation
       - **Inconsistent terminology**: Not following glossary
+      - **Unnatural phrasing**: Translation mirrors English word-order or grammar instead of reading as native prose (see Translation Methodology in translate-docs)
 
 5. **Generate Report**
 
@@ -110,6 +111,7 @@ A translation passes semantic check if:
 - [ ] All sections from source are present
 - [ ] No significant content added or removed
 - [ ] Technical terms match glossary
+- [ ] Reads as natural target-language prose, not a word-for-word rendering of the English
 - [ ] Code examples are functionally equivalent
 - [ ] Links work and point to correct destinations
 - [ ] Warnings/notes maintain same severity

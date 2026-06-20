@@ -30,12 +30,13 @@ from .commands.installer import (
 from .i18n import (
     generate_config_content,
     get_commit_language,
+    get_interaction_language,
     get_language_name,
-    get_project_language,
     get_supported_languages,
     is_supported_language,
     normalize_locale,
     update_config_language,
+    update_language_field,
     update_output_language,
 )
 from .translator import translate
@@ -185,6 +186,16 @@ def config(
         "-c",
         help="Set the commit message language (defaults to output language)",
     ),
+    set_interaction_lang: Optional[str] = typer.Option(
+        None,
+        "--set-interaction-lang",
+        help="Set the interaction language (LLM dialogue + codexspec CLI terminal output)",
+    ),
+    set_document_lang: Optional[str] = typer.Option(
+        None,
+        "--set-document-lang",
+        help="Set the document language (generated requirements/spec/plan/tasks files)",
+    ),
     list_langs: bool = typer.Option(
         False,
         "--list-langs",
@@ -322,6 +333,45 @@ def config(
         console.print(f"[green]Commit message language set to:[/green] {normalized} ({lang_name})")
         return
 
+    # Handle set interaction language
+    if set_interaction_lang:
+        normalized = normalize_locale(set_interaction_lang)
+        if not is_supported_language(normalized):
+            console.print(
+                f"[yellow]Warning: '{set_interaction_lang}' is not in the list of "
+                "commonly supported languages.[/yellow]"
+            )
+            console.print(
+                "It may still work if Claude supports it. "
+                "Run [cyan]codexspec config --list-langs[/cyan] to see supported languages."
+            )
+        if update_language_field(config_file, "interaction", normalized):
+            lang_name = get_language_name(normalized)
+            console.print(f"[green]Interaction language set to:[/green] {normalized} ({lang_name})")
+        else:
+            console.print("[red]Failed to update interaction language setting[/red]")
+            raise typer.Exit(1)
+        return
+
+    # Handle set document language
+    if set_document_lang:
+        normalized = normalize_locale(set_document_lang)
+        if not is_supported_language(normalized):
+            console.print(
+                f"[yellow]Warning: '{set_document_lang}' is not in the list of commonly supported languages.[/yellow]"
+            )
+            console.print(
+                "It may still work if Claude supports it. "
+                "Run [cyan]codexspec config --list-langs[/cyan] to see supported languages."
+            )
+        if update_language_field(config_file, "document", normalized):
+            lang_name = get_language_name(normalized)
+            console.print(f"[green]Document language set to:[/green] {normalized} ({lang_name})")
+        else:
+            console.print("[red]Failed to update document language setting[/red]")
+            raise typer.Exit(1)
+        return
+
     # Display current configuration
     console.print(
         Panel(
@@ -340,8 +390,8 @@ def list_commands() -> None:
     showing their display names and descriptions.
     """
 
-    # Get user's language preference
-    language = get_project_language()
+    # Get user's language preference (CLI terminal output uses the interaction language)
+    language = get_interaction_language()
 
     metadata = get_installed_commands_metadata()
 

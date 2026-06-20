@@ -5,11 +5,15 @@ import os
 from codexspec.i18n import (
     generate_config_content,
     get_all_supported_languages,
+    get_document_language,
+    get_interaction_language,
     get_language_from_env,
     get_language_name,
+    get_project_language,
     get_supported_languages,
     is_supported_language,
     normalize_locale,
+    update_language_field,
 )
 
 
@@ -227,12 +231,16 @@ class TestGenerateConfigContent:
     def test_default_config(self) -> None:
         """Default config should use English."""
         content = generate_config_content()
+        assert 'interaction: "en"' in content
+        assert 'document: "en"' in content
         assert 'output: "en"' in content
         assert 'version: "1.0"' in content
 
     def test_custom_language(self) -> None:
-        """Custom language should be normalized and included."""
+        """Custom language should be normalized and included in all three fields."""
         content = generate_config_content(language="zh")
+        assert 'interaction: "zh-CN"' in content
+        assert 'document: "zh-CN"' in content
         assert 'output: "zh-CN"' in content
 
     def test_custom_date(self) -> None:
@@ -250,3 +258,102 @@ class TestGenerateConfigContent:
         content = generate_config_content()
         assert "project:" in content
         assert 'ai: "claude"' in content
+
+
+class TestLanguageResolution:
+    """Tests for get_interaction_language / get_document_language resolution."""
+
+    @staticmethod
+    def _write_config(tmp_path, body: str):
+        cfg = tmp_path / ".codexspec" / "config.yml"
+        cfg.parent.mkdir(parents=True, exist_ok=True)
+        cfg.write_text(body, encoding="utf-8")
+        return cfg
+
+    def test_explicit_interaction_and_document(self, tmp_path) -> None:
+        """Explicit interaction/document should win over output."""
+        cfg = self._write_config(tmp_path, 'language:\n  interaction: "zh-CN"\n  document: "en"\n  output: "en"\n')
+        assert get_interaction_language(cfg) == "zh-CN"
+        assert get_document_language(cfg) == "en"
+
+    def test_fallback_to_output_when_primary_absent(self, tmp_path) -> None:
+        """Missing primary field should fall back to output (legacy)."""
+        cfg = self._write_config(tmp_path, 'language:\n  output: "zh-CN"\n')
+        assert get_interaction_language(cfg) == "zh-CN"
+        assert get_document_language(cfg) == "zh-CN"
+
+    def test_explicit_overrides_output(self, tmp_path) -> None:
+        """Explicit primary should override output."""
+        cfg = self._write_config(tmp_path, 'language:\n  interaction: "ja"\n  output: "en"\n')
+        assert get_interaction_language(cfg) == "ja"
+
+    def test_defaults_to_en_when_nothing_set(self, tmp_path) -> None:
+        """No interaction/document/output should resolve to en."""
+        cfg = self._write_config(tmp_path, 'language:\n  templates: "en"\n')
+        assert get_interaction_language(cfg) == "en"
+        assert get_document_language(cfg) == "en"
+
+    def test_missing_config_file_returns_en(self, tmp_path) -> None:
+        """A non-existent config file should resolve to en."""
+        cfg = tmp_path / "does-not-exist.yml"
+        assert get_interaction_language(cfg) == "en"
+        assert get_document_language(cfg) == "en"
+
+    def test_normalizes_aliases(self, tmp_path) -> None:
+        """Resolved values should be normalized (alias -> canonical)."""
+        cfg = self._write_config(tmp_path, 'language:\n  interaction: "chinese"\n  document: "jp"\n')
+        assert get_interaction_language(cfg) == "zh-CN"
+        assert get_document_language(cfg) == "ja"
+
+    def test_unquoted_values(self, tmp_path) -> None:
+        """Unquoted YAML values should be read correctly."""
+        cfg = self._write_config(tmp_path, "language:\n  document: ko\n")
+        assert get_document_language(cfg) == "ko"
+
+    def test_output_only_config_no_deprecation(self, tmp_path, capsys) -> None:
+        """NFR-001/NFR-002: output-only config resolves identically for all three
+        accessors and emits no deprecation warning."""
+        cfg = self._write_config(tmp_path, 'language:\n  output: "zh-CN"\n')
+        assert get_interaction_language(cfg) == "zh-CN"
+        assert get_document_language(cfg) == "zh-CN"
+        assert get_project_language(cfg) == "zh-CN"
+        captured = capsys.readouterr()
+        assert "deprecat" not in captured.out.lower()
+        assert "deprecat" not in captured.err.lower()
+
+    def test_project_language_is_interaction_alias(self, tmp_path) -> None:
+        """get_project_language should mirror interaction (backward-compat alias)."""
+        cfg = self._write_config(tmp_path, 'language:\n  interaction: "ko"\n  output: "en"\n')
+        assert get_project_language(cfg) == "ko"
+        # output-only legacy config: alias returns output (behavior unchanged)
+        cfg_legacy = self._write_config(tmp_path, 'language:\n  output: "fr"\n')
+        assert get_project_language(cfg_legacy) == "fr"
+
+
+class TestUpdateLanguageField:
+    """Tests for update_language_field (update-or-insert)."""
+
+    def test_update_existing_field(self, tmp_path) -> None:
+        cfg = tmp_path / "config.yml"
+        cfg.write_text('language:\n  interaction: "en"\n  output: "en"\n', encoding="utf-8")
+        assert update_language_field(cfg, "interaction", "zh-CN") is True
+        assert 'interaction: "zh-CN"' in cfg.read_text(encoding="utf-8")
+
+    def test_insert_when_absent(self, tmp_path) -> None:
+        cfg = tmp_path / "config.yml"
+        cfg.write_text('language:\n  output: "en"\n', encoding="utf-8")
+        assert update_language_field(cfg, "document", "ja") is True
+        content = cfg.read_text(encoding="utf-8")
+        assert 'document: "ja"' in content
+        assert content.index("language:") < content.index('document: "ja"')
+
+    def test_returns_false_without_language_section(self, tmp_path) -> None:
+        cfg = tmp_path / "config.yml"
+        cfg.write_text('version: "1.0"\n', encoding="utf-8")
+        assert update_language_field(cfg, "interaction", "en") is False
+
+    def test_normalizes_value(self, tmp_path) -> None:
+        cfg = tmp_path / "config.yml"
+        cfg.write_text('language:\n  interaction: "en"\n', encoding="utf-8")
+        update_language_field(cfg, "interaction", "chinese")
+        assert 'interaction: "zh-CN"' in cfg.read_text(encoding="utf-8")

@@ -159,9 +159,31 @@ If a translation fails:
 
 ## Translation Guidelines
 
+### Translation Methodology
+
+Translate to communicate the same understanding to a native reader — not to mirror the English sentence. Apply these three principles in order. Each example uses explicit **Prefer** / **Avoid** labels with a short rationale, so the rule generalizes instead of memorizing a single case.
+
+1. **Translate meaning, not words.** First determine what the sentence tells the reader, then express that meaning in the target language's own idiom and sentence structure. Do not translate word-for-word or copy English grammar.
+   - *Rationale*: word-for-word translation preserves English structure and produces "translationese"; restructuring around the meaning reads like native writing.
+   - Source: `keeps session history across multiple runs`
+   - Prefer: `在多次运行中保留会话历史记录` — restructured into natural Chinese; "记录" added so the meaning is complete.
+   - Avoid: `跨多次运行维护会话历史` — copies the English structure; reads as a translation, not native prose.
+
+2. **Keep English when no good native term exists.** Prefer an established, widely-understood native term; if none exists (or the English term is more recognizable to your audience), keep the English term rather than forcing an awkward coinage. A natural native phrase wrapping a retained English term is often ideal.
+   - *Rationale*: this stays clear and searchable; a forced translation can be harder to understand than the original term.
+   - Source: `AI Coding Agent`
+   - Prefer: `AI 编程助手` or `AI 编程 Agent` — a natural native phrasing or a retained recognizable term, not a stiff literal such as "代理".
+   - Prefer: `Constitution` → `项目宪法` (zh, an established native term); `Pull Request` → keep `Pull Request` in es/fr/de/pt-BR (more recognizable than a forced translation).
+   - The `keep_english` list below is the **specific authoritative** set; this principle covers terms not on that list.
+
+3. **Read as if originally written in the target language.** The result should sound like fluent technical writing in the target language, not a translation. Restructure sentences, add or drop words, and choose native idioms to get there — while preserving code blocks, file paths, commands, URLs, and the document structure exactly (see *Content to NOT Translate* and *Formatting Preservation* below).
+   - *Rationale*: the goal is that a native reader does not notice it is a translation, not that a reviewer can map every word back to the English.
+
+For a broader set of good-translation exemplars (zh/ja/…), see the multilingual READMEs in the foxharness-go repository.
+
 ### Terms to Keep in English
 
-Based on glossary.yml `keep_english` list, these should NOT be translated:
+These are the **specific authoritative** terms to keep in English; the general principle ("keep English when no good native term exists") is in *Translation Methodology* above. From glossary.yml `keep_english`, these should NOT be translated:
 
 - Tool names: uv, pip, pytest, ruff, MkDocs
 - File formats: JSON, YAML, TOML, Markdown
@@ -193,7 +215,7 @@ Based on glossary.yml `keep_english` list, these should NOT be translated:
 Each translation should:
 
 1. **Be technically accurate**: Correct terminology and concepts
-2. **Read naturally**: Appropriate phrasing for target language
+2. **Read naturally**: Native, fluent phrasing per *Translation Methodology* (meaning-based, not word-for-word)
 3. **Maintain consistency**: Same term translated same way throughout
 4. **Preserve structure**: Same heading hierarchy and formatting
 5. **Respect glossary**: Follow terminology definitions

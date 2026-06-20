@@ -10,7 +10,12 @@ scripts:
 
 ## Language Preference
 
-Read `.codexspec/config.yml`. Use `language.output`; default to English.
+Read `.codexspec/config.yml`. Two independent language controls apply (each falls back to `language.output`, then English):
+
+- **Interaction language** (`language.interaction`): language for all conversation with the user — questions, explanations, status messages, and `codexspec` CLI terminal output.
+- **Document language** (`language.document`): language for generated artifact files (requirements/spec/plan/tasks).
+
+Converse in the interaction language and author artifacts in the document language. Apply the project's translation standard to both: translate by meaning (not word-for-word), keep English for terms with no good native equivalent, and write as if originally in that language.
 
 ## User Input
 
