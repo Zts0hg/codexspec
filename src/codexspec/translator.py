@@ -93,6 +93,12 @@ _CLI_MESSAGES_EN = {
         ),
         "commit_lang_updated": "Updated: Commit message language changed to {lang}",
         "commit_lang_kept": "Commit message language kept as '{lang}'",
+        # Language dimension notices (per-dimension init flags)
+        "language_key_set": "Language settings applied: {details}",
+        "language_dimensions_hint": (
+            "Tip: control interaction, document, and commit languages separately with "
+            "--interaction-lang, --document-lang, --commit-lang (or: codexspec config)."
+        ),
         # Errors
         "error_dir_exists": "Error: Directory '{path}' already exists",
         "error_use_force": "Use --force to overwrite or choose a different name",

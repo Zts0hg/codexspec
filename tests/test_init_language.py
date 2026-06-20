@@ -266,3 +266,235 @@ class TestLanguageChoicesDisplay:
 
         # Should show warning about pre-translated content
         assert "Pre-translated" in output or "may not be available" in output.lower() or "Note" in output
+
+
+# ---------------------------------------------------------------------------
+# Per-dimension language flags (--interaction-lang / --document-lang / --commit-lang)
+# and the unified --force behavior. These exercise the full CLI via CliRunner,
+# which is non-TTY by default (the contract automation relies on).
+# ---------------------------------------------------------------------------
+
+from pathlib import Path  # noqa: E402
+
+from typer.testing import CliRunner  # noqa: E402
+
+from codexspec import app  # noqa: E402
+from codexspec.i18n import (  # noqa: E402
+    get_commit_language,
+    get_document_language,
+    get_interaction_language,
+)
+
+_runner = CliRunner()
+
+
+def _init(proj: Path, *extra: str):
+    """Invoke `codexspec init <proj> ...` via the CLI runner and return the result."""
+    return _runner.invoke(app, ["init", str(proj), "--no-git", *extra])
+
+
+def _config(proj: Path) -> str:
+    return (proj / ".codexspec" / "config.yml").read_text(encoding="utf-8")
+
+
+class TestInitPerDimensionFlags:
+    """REQ-001 / REQ-002: per-dimension flags write only their key; --lang writes only output."""
+
+    def test_three_flags_write_only_those_keys(self, tmp_path) -> None:
+        proj = tmp_path / "p"
+        result = _init(
+            proj,
+            "--interaction-lang",
+            "en",
+            "--document-lang",
+            "zh-CN",
+            "--commit-lang",
+            "ja",
+        )
+        assert result.exit_code == 0, result.output
+        cfg = _config(proj)
+        assert 'interaction: "en"' in cfg
+        assert 'document: "zh-CN"' in cfg
+        assert 'commit: "ja"' in cfg
+        # Sparse: no output key when only the three dimensions are given.
+        assert "output:" not in cfg
+
+    def test_lang_only_writes_output_only(self, tmp_path) -> None:
+        proj = tmp_path / "p"
+        result = _init(proj, "--lang", "zh-CN")
+        assert result.exit_code == 0, result.output
+        cfg = _config(proj)
+        assert 'output: "zh-CN"' in cfg
+        assert "interaction:" not in cfg
+        assert "document:" not in cfg
+        assert "commit:" not in cfg
+
+    def test_lang_plus_override(self, tmp_path) -> None:
+        proj = tmp_path / "p"
+        result = _init(proj, "--lang", "zh-CN", "--commit-lang", "en")
+        assert result.exit_code == 0, result.output
+        cfg = _config(proj)
+        assert 'output: "zh-CN"' in cfg
+        assert 'commit: "en"' in cfg
+        assert "interaction:" not in cfg
+        assert "document:" not in cfg
+
+    def test_invalid_code_warns_not_errors(self, tmp_path) -> None:
+        proj = tmp_path / "p"
+        result = _init(proj, "--interaction-lang", "xx")
+        assert result.exit_code == 0, result.output  # REQ-011: warn, do not error
+        assert 'interaction: "xx"' in _config(proj)
+
+    def test_backward_compat_lang_resolves_all_dimensions(self, tmp_path) -> None:
+        """REQ-014: --lang zh-CN resolves interaction/document/commit to zh-CN via fallback."""
+        proj = tmp_path / "p"
+        result = _init(proj, "--lang", "zh-CN")
+        assert result.exit_code == 0, result.output
+        cfg = proj / ".codexspec" / "config.yml"
+        assert get_interaction_language(cfg) == "zh-CN"
+        assert get_document_language(cfg) == "zh-CN"
+        assert get_commit_language(cfg) == "zh-CN"
+
+    def test_determinism_same_flags_same_config(self, tmp_path) -> None:
+        """NFR-003: identical flags produce identical language content."""
+        proj_a = tmp_path / "a"
+        proj_b = tmp_path / "b"
+        _init(proj_a, "--interaction-lang", "en", "--document-lang", "zh-CN", "--commit-lang", "ja")
+        _init(proj_b, "--interaction-lang", "en", "--document-lang", "zh-CN", "--commit-lang", "ja")
+        # Normalize out the creation date before comparing.
+
+        def _norm(s: str) -> str:
+            return re.sub(r'created: ".*?"', 'created: "X"', s)
+
+        assert _norm(_config(proj_a)) == _norm(_config(proj_b))
+
+
+class TestInitSurgicalReinit:
+    """REQ-005: re-init updates only the specified key(s), preserving the rest."""
+
+    def test_reinit_changes_only_one_key(self, tmp_path) -> None:
+        proj = tmp_path / "p"
+        _init(proj, "--interaction-lang", "en", "--document-lang", "en", "--commit-lang", "en")
+        before = _config(proj)
+        # Change only document.
+        result = _init(proj, "--document-lang", "ja", "--force")
+        assert result.exit_code == 0, result.output
+        after = _config(proj)
+        assert 'interaction: "en"' in after
+        assert 'document: "ja"' in after
+        assert 'commit: "en"' in after
+        # interaction/commit lines unchanged from before.
+        assert 'interaction: "en"' in before
+        assert 'commit: "en"' in before
+
+    def test_reinit_no_flag_preserves_everything(self, tmp_path) -> None:
+        proj = tmp_path / "p"
+        _init(proj, "--interaction-lang", "en", "--document-lang", "zh-CN", "--commit-lang", "ja")
+        before = _config(proj)
+        result = _init(proj, "--force")  # no language flag
+        assert result.exit_code == 0, result.output
+        assert _config(proj) == before  # byte-identical
+
+    def test_force_does_not_regenerate_config(self, tmp_path) -> None:
+        """REQ-013: --force does not wipe existing keys / regenerate config."""
+        proj = tmp_path / "p"
+        _init(proj, "--interaction-lang", "en", "--document-lang", "zh-CN", "--commit-lang", "ja")
+        result = _init(proj, "--force")  # no language flags
+        assert result.exit_code == 0, result.output
+        cfg = _config(proj)
+        # All three explicit keys are still present (not wiped by regeneration).
+        assert 'interaction: "en"' in cfg
+        assert 'document: "zh-CN"' in cfg
+        assert 'commit: "ja"' in cfg
+
+
+class TestInitForceNonInteractive:
+    """REQ-012: --force makes re-init fully non-interactive on an existing project."""
+
+    def test_force_reinit_no_prompts_exit_zero(self, tmp_path) -> None:
+        proj = tmp_path / "p"
+        _init(proj, "--interaction-lang", "en", "--document-lang", "en", "--commit-lang", "en")
+        # Re-init with --force: should not block on any confirmation, exit 0.
+        result = _init(proj, "--force", "--interaction-lang", "ja")
+        assert result.exit_code == 0, result.output
+        assert 'interaction: "ja"' in _config(proj)
+        # document/commit preserved.
+        assert 'document: "en"' in _config(proj)
+        assert 'commit: "en"' in _config(proj)
+
+
+class TestInitPromptGating:
+    """REQ-006 / REQ-007: prompt only on first-time + base-undeterminable + TTY."""
+
+    @pytest.fixture
+    def mock_console(self):
+        return Console(file=StringIO(), force_terminal=True, width=100)
+
+    def test_existing_config_no_flag_does_not_prompt(self, mock_console, tmp_path) -> None:
+        """REQ-007: existing config.yml + no language flag → no prompt, keys preserved."""
+        from codexspec import init
+
+        proj = tmp_path / "p"
+        # First, create a project with a config.
+        _init(proj, "--lang", "zh-CN")
+        assert (proj / ".codexspec" / "config.yml").exists()
+
+        with patch("codexspec.console", mock_console):
+            with patch("sys.stdin.isatty", return_value=True):
+                with patch("codexspec.prompt_language_selection") as mock_prompt:
+                    with patch("typer.Exit"):
+                        try:
+                            # force=True passes the directory-exists gate; the point
+                            # under test is that NO language flag → no language prompt.
+                            init(project_name=str(proj), here=False, lang=None, force=True, no_git=True, debug=False)
+                        except Exception:
+                            pass
+                        mock_prompt.assert_not_called()
+
+    def test_all_three_flags_skip_prompt_first_time(self, mock_console, tmp_path) -> None:
+        """All three specific flags → base determinable → no prompt even first-time TTY."""
+        from codexspec import init
+
+        proj = tmp_path / "fresh"
+        with patch("codexspec.console", mock_console):
+            with patch("sys.stdin.isatty", return_value=True):
+                with patch("codexspec.prompt_language_selection") as mock_prompt:
+                    try:
+                        init(
+                            project_name=str(proj),
+                            here=False,
+                            lang=None,
+                            interaction_lang="en",
+                            document_lang="en",
+                            commit_lang="en",
+                            force=False,
+                            no_git=True,
+                            debug=False,
+                        )
+                    except Exception:
+                        pass
+                    mock_prompt.assert_not_called()
+
+    def test_partial_flags_still_prompt_first_time(self, mock_console, tmp_path) -> None:
+        """Only 2 of 3 flags + no --lang → base undeterminable → prompt (first-time TTY)."""
+        from codexspec import init
+
+        proj = tmp_path / "fresh"
+        with patch("codexspec.console", mock_console):
+            with patch("sys.stdin.isatty", return_value=True):
+                with patch("codexspec.prompt_language_selection", return_value="en") as mock_prompt:
+                    with patch("typer.Exit"):
+                        try:
+                            init(
+                                project_name=str(proj),
+                                here=False,
+                                lang=None,
+                                interaction_lang="en",
+                                document_lang="en",
+                                force=False,
+                                no_git=True,
+                                debug=False,
+                            )
+                        except Exception:
+                            pass
+                        mock_prompt.assert_called()

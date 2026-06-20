@@ -52,6 +52,8 @@
       "commit_lang_differs": "'{selected}' をAIとの対話言語として選択しました。現在のgitコミットメッセージ言語は '{current}' に設定されています。\nコミットメッセージ言語も選択した言語に更新しますか？",
       "commit_lang_updated": "更新完了: コミットメッセージ言語を {lang} に変更しました",
       "commit_lang_kept": "コミットメッセージ言語は '{lang}' のままです",
+      "language_key_set": "言語設定を適用しました：{details}",
+      "language_dimensions_hint": "ヒント：--interaction-lang、--document-lang、--commit-lang で対話・ドキュメント・コミットの言語を個別に設定できます（または codexspec config）。",
       "error_dir_exists": "エラー: ディレクトリ '{path}' は既に存在します",
       "error_use_force": "--force を使用して上書きするか、別の名前を選択してください",
       "error_no_project_name": "エラー: プロジェクト名を指定するか --here フラグを使用してください"

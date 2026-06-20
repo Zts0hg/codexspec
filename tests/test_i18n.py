@@ -5,6 +5,7 @@ import os
 from codexspec.i18n import (
     generate_config_content,
     get_all_supported_languages,
+    get_commit_language,
     get_document_language,
     get_interaction_language,
     get_language_from_env,
@@ -226,22 +227,41 @@ class TestGetAllSupportedLanguages:
 
 
 class TestGenerateConfigContent:
-    """Tests for generate_config_content function."""
+    """Tests for generate_config_content (sparse, per-dimension signature)."""
 
-    def test_default_config(self) -> None:
-        """Default config should use English."""
+    def test_default_config_is_sparse_output_only(self) -> None:
+        """No-arg default writes only `output: "en"` (sparse, not all four keys)."""
         content = generate_config_content()
-        assert 'interaction: "en"' in content
-        assert 'document: "en"' in content
         assert 'output: "en"' in content
         assert 'version: "1.0"' in content
+        # Sparse: the other dimensions are intentionally absent.
+        assert "interaction:" not in content
+        assert "document:" not in content
+        assert "commit:" not in content
 
-    def test_custom_language(self) -> None:
-        """Custom language should be normalized and included in all three fields."""
-        content = generate_config_content(language="zh")
-        assert 'interaction: "zh-CN"' in content
-        assert 'document: "zh-CN"' in content
+    def test_output_only_is_normalized(self) -> None:
+        """output is normalized and written alone."""
+        content = generate_config_content(output="zh")
         assert 'output: "zh-CN"' in content
+        assert "interaction:" not in content
+        assert "document:" not in content
+        assert "commit:" not in content
+
+    def test_specific_keys_only(self) -> None:
+        """Passing only specific dimensions writes exactly those keys, no output."""
+        content = generate_config_content(interaction="en", document="zh-CN", commit="en")
+        assert 'interaction: "en"' in content
+        assert 'document: "zh-CN"' in content
+        assert 'commit: "en"' in content
+        assert "output:" not in content
+
+    def test_output_plus_overrides(self) -> None:
+        """output can be combined with specific dimensions."""
+        content = generate_config_content(output="en", commit="ja")
+        assert 'output: "en"' in content
+        assert 'commit: "ja"' in content
+        assert "interaction:" not in content
+        assert "document:" not in content
 
     def test_custom_date(self) -> None:
         """Custom date should be included."""
@@ -249,12 +269,12 @@ class TestGenerateConfigContent:
         assert 'created: "2025-01-15"' in content
 
     def test_contains_templates_setting(self) -> None:
-        """Config should include templates setting."""
+        """Config should always include the templates setting."""
         content = generate_config_content()
         assert 'templates: "en"' in content
 
     def test_contains_project_section(self) -> None:
-        """Config should include project section."""
+        """Config should include the project section."""
         content = generate_config_content()
         assert "project:" in content
         assert 'ai: "claude"' in content
@@ -328,6 +348,26 @@ class TestLanguageResolution:
         # output-only legacy config: alias returns output (behavior unchanged)
         cfg_legacy = self._write_config(tmp_path, 'language:\n  output: "fr"\n')
         assert get_project_language(cfg_legacy) == "fr"
+
+    def test_commit_explicit_wins(self, tmp_path) -> None:
+        """Explicit commit should override output."""
+        cfg = self._write_config(tmp_path, 'language:\n  commit: "ja"\n  output: "en"\n')
+        assert get_commit_language(cfg) == "ja"
+
+    def test_commit_falls_back_to_output(self, tmp_path) -> None:
+        """REQ-004: missing commit should fall back to output."""
+        cfg = self._write_config(tmp_path, 'language:\n  output: "zh-CN"\n')
+        assert get_commit_language(cfg) == "zh-CN"
+
+    def test_commit_defaults_to_en(self, tmp_path) -> None:
+        """Neither commit nor output should resolve to en (matches other accessors)."""
+        cfg = self._write_config(tmp_path, 'language:\n  templates: "en"\n')
+        assert get_commit_language(cfg) == "en"
+
+    def test_commit_missing_config_file_returns_en(self, tmp_path) -> None:
+        """A non-existent config file should resolve commit to en."""
+        cfg = tmp_path / "does-not-exist.yml"
+        assert get_commit_language(cfg) == "en"
 
 
 class TestUpdateLanguageField:

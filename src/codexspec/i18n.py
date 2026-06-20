@@ -193,27 +193,12 @@ CONFIG_TEMPLATE = """# CodexSpec Configuration
 
 version: "1.0"
 
-# Language settings for internationalization (i18n)
+# Language settings for internationalization (i18n).
+# `output` is the base language. `interaction`, `document`, and `commit` override
+# it when set; when absent they fall back to `output` (then "en"). Only the keys
+# you choose are written, so a freshly initialized project is intentionally sparse.
 language:
-  # Interaction language - language for conversing with the user (LLM dialogue
-  # and codexspec CLI terminal output). Supports any Claude-supported language.
-  # Common values: en, zh-CN, zh-TW, ja, ko, es, fr, de, pt, ru
-  interaction: "{language}"
-
-  # Document language - language for generated artifact files
-  # (requirements/spec/plan/tasks). Set this differently from interaction to
-  # keep documents in one language while conversing in another.
-  document: "{language}"
-
-  # Output language (legacy) - fallback used when interaction/document are not
-  # set. Kept for backward compatibility; prefer setting interaction/document.
-  output: "{language}"
-
-  # Commit message language - language for git commit messages
-  # Defaults to output language if not specified
-  # Set to "en" for English commit messages regardless of output language
-  commit: "{language}"
-
+{language_lines}
   # Template language - keep as "en" for best compatibility
   # All command templates are in English and translated dynamically
   templates: "en"
@@ -225,24 +210,52 @@ project:
 """
 
 
-def generate_config_content(language: str = "en", created: str = None) -> str:
-    """
-    Generate config.yml content.
+def generate_config_content(
+    *,
+    output: Optional[str] = None,
+    interaction: Optional[str] = None,
+    document: Optional[str] = None,
+    commit: Optional[str] = None,
+    created: Optional[str] = None,
+) -> str:
+    """Generate ``config.yml`` content, emitting only the specified language keys.
+
+    Each provided key is normalized and written; omitted keys are intentionally
+    not emitted (they resolve at read time via the ``output`` fallback). When no
+    language key is specified at all, ``output`` defaults to ``"en"`` so the
+    no-argument call still produces a valid base config.
 
     Args:
-        language: Output language code (will be normalized)
-        created: Creation date string (defaults to today)
+        output: Output (base) language code.
+        interaction: Interaction language code.
+        document: Document language code.
+        commit: Commit message language code.
+        created: Creation date string (defaults to today).
 
     Returns:
-        Config file content as string
+        Config file content as a string.
     """
     from datetime import datetime
 
-    normalized_lang = normalize_locale(language)
     if created is None:
         created = datetime.now().strftime("%Y-%m-%d")
 
-    return CONFIG_TEMPLATE.format(language=normalized_lang, created=created)
+    keys: list[tuple[str, str]] = []
+    if output is not None:
+        keys.append(("output", normalize_locale(output)))
+    if interaction is not None:
+        keys.append(("interaction", normalize_locale(interaction)))
+    if document is not None:
+        keys.append(("document", normalize_locale(document)))
+    if commit is not None:
+        keys.append(("commit", normalize_locale(commit)))
+
+    # No language specified at all: default the base to "en".
+    if not keys:
+        keys.append(("output", "en"))
+
+    language_lines = "\n".join(f'  {key}: "{value}"' for key, value in keys)
+    return CONFIG_TEMPLATE.format(language_lines=language_lines, created=created)
 
 
 def _read_language_key(content: str, key: str) -> Optional[str]:
@@ -330,30 +343,23 @@ def get_project_language(config_file: Optional[Path] = None) -> str:
     return get_interaction_language(config_file)
 
 
-def get_commit_language(config_file: Path) -> Optional[str]:
-    """Get the commit language from a config.yml file.
+def get_commit_language(config_file: Optional[Path] = None) -> str:
+    """Resolve the commit language (git commit messages).
+
+    Resolution order: explicit ``language.commit`` -> ``language.output``
+    (legacy) -> ``"en"``. This aligns Python resolution with the fallback already
+    documented in the ``commit-staged.md`` template and mirrors
+    :func:`get_interaction_language` / :func:`get_document_language`, making
+    ``output`` the true base for all four dimensions.
 
     Args:
-        config_file: Path to the config.yml file
+        config_file: Optional explicit path to config.yml; defaults to
+            ``.codexspec/config.yml`` in the current working directory.
 
     Returns:
-        The commit language code, or None if not found or file doesn't exist
+        The normalized commit language code.
     """
-    import re
-
-    if not config_file.exists():
-        return None
-
-    try:
-        content = config_file.read_text(encoding="utf-8")
-        # Parse the commit language setting from YAML-like format
-        match = re.search(r"^\s*commit:\s*['\"]?(\S+?)['\"]?\s*$", content, re.MULTILINE)
-        if match:
-            return normalize_locale(match.group(1))
-    except (OSError, re.error):
-        pass
-
-    return None
+    return _resolve_language(config_file or _default_config_path(), "commit")
 
 
 def update_language_field(config_file: Path, key: str, language: str) -> bool:
@@ -389,76 +395,6 @@ def update_language_field(config_file: Path, key: str, language: str) -> bool:
         insert_line = f'{indent}{key}: "{normalized}"'
         end = lang_match.end()
         config_file.write_text(content[:end] + "\n" + insert_line + content[end:], encoding="utf-8")
-        return True
-    except (OSError, re.error):
-        return False
-
-
-def update_output_language(config_file: Path, language: str) -> bool:
-    """Update only the output language setting in config.yml.
-
-    Args:
-        config_file: Path to the config.yml file
-        language: New language code to set
-
-    Returns:
-        True if update was successful, False otherwise
-    """
-    import re
-
-    normalized_lang = normalize_locale(language)
-
-    try:
-        content = config_file.read_text(encoding="utf-8")
-
-        # Update output language only
-        content = re.sub(
-            r'^(\s*output:\s*)["\']?\S+?["\']?\s*$',
-            rf'\g<1>"{normalized_lang}"',
-            content,
-            flags=re.MULTILINE,
-        )
-
-        config_file.write_text(content, encoding="utf-8")
-        return True
-    except (OSError, re.error):
-        return False
-
-
-def update_config_language(config_file: Path, language: str) -> bool:
-    """Update the language setting in an existing config.yml file.
-
-    Args:
-        config_file: Path to the config.yml file
-        language: New language code to set
-
-    Returns:
-        True if update was successful, False otherwise
-    """
-    import re
-
-    normalized_lang = normalize_locale(language)
-
-    try:
-        content = config_file.read_text(encoding="utf-8")
-
-        # Update output language
-        content = re.sub(
-            r'^(\s*output:\s*)["\']?\S+?["\']?\s*$',
-            rf'\g<1>"{normalized_lang}"',
-            content,
-            flags=re.MULTILINE,
-        )
-
-        # Update commit language (defaults to output language)
-        content = re.sub(
-            r'^(\s*commit:\s*)["\']?\S+?["\']?\s*$',
-            rf'\g<1>"{normalized_lang}"',
-            content,
-            flags=re.MULTILINE,
-        )
-
-        config_file.write_text(content, encoding="utf-8")
         return True
     except (OSError, re.error):
         return False
