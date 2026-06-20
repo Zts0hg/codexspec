@@ -82,41 +82,43 @@
         "argument-hint": "[quick|deep | Projektprinzipien] (optional)\n\nDieser Befehl erstellt/aktualisiert die Projektverfassung unter .codexspec/memory/constitution.md.\n\nDrei Verwendungsmöglichkeiten:\n1. Ohne Argumente → Interaktiver Modus: Explorationstiefe wählen (quick/deep)\n2. quick → Leichte Exploration: Konfigurationsdateien + README + Haupteinstiegspunkte (~5-10 Dateien)\n3. deep → Vollständige Exploration: alles oben + Quellcode-Analyse + Architektur-Patterns\n4. <Beschreibung> → Exploration überspringen, Prinzipien direkt verwenden\n\nBeispiele:\n  /codexspec:constitution\n  /codexspec:constitution quick\n  /codexspec:constitution deep\n  /codexspec:constitution Python FastAPI Backend mit pytest, Fokus auf Typsicherheit"
     },
     "specify": {
-        "description": "Anforderungen durch interaktives Q&A klären und erste Ideen erkunden und verfeinern",
-        "argument-hint": "Beschreiben Sie Ihre ursprüngliche Idee oder Anforderung"
+        "description": "Den maßgeblichen Anforderungsdatensatz besprechen, bestätigen und speichern",
+        "argument-hint": "Beschreiben Sie die ursprüngliche Idee, oder geben Sie ein vorhandenes Feature-Verzeichnis an"
     },
     "clarify": {
-        "description": "Unklare Bereiche in der Funktionsspezifikation durch gezielte Fragen vor der technischen Planung identifizieren",
-        "argument-hint": "[pfad_zu_spec.md] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
+        "description": "Anforderungsmehrdeutigkeiten auflösen und requirements.md mit spec.md synchronisieren",
+        "argument-hint": "[spec.md, requirements.md oder Feature-Verzeichnis]"
     },
     "analyze": {
-        "description": "Nicht-destruktive Konsistenz- und Qualitätsanalyse zwischen Artefakten spec.md, plan.md und tasks.md durchführen"
+        "description": "Durchgängige Nachverfolgbarkeit und Konsistenz über alle SDD-Artefakte analysieren",
+        "argument-hint": "[Feature-Verzeichnis]"
     },
     "checklist": {
         "description": "Benutzerdefinierte Qualitätschecklisten zur Validierung von Vollständigkeit, Klarheit und Konsistenz der Anforderungen generieren"
     },
     "generate-spec": {
-        "description": "spec.md-Dokument generieren nachdem Anforderungen geklärt sind"
+        "description": "Bestätigte Anforderungen in ein nachverfolgbares spec.md kompilieren",
+        "argument-hint": "[requirements.md oder Feature-Verzeichnis]"
     },
     "spec-to-plan": {
-        "description": "Funktionsspezifikation in technischen Implementierungsplan umwandeln",
-        "argument-hint": ".codexspec/specs/{feature-id}/spec.md"
+        "description": "Eine bestätigte Spezifikation in einen nachverfolgbaren technischen Plan umwandeln",
+        "argument-hint": "[spec.md oder Feature-Verzeichnis]"
     },
     "plan-to-tasks": {
-        "description": "Technischen Implementierungsplan in ausführbare Aufgaben zerlegen",
-        "argument-hint": "[spec.md_pfad plan.md_pfad] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
+        "description": "Einen genehmigten Plan in nachverfolgbare, ausführbare Aufgaben ausweiten",
+        "argument-hint": "[tasks Feature-Verzeichnis, plan.md oder spec.md]"
     },
     "review-spec": {
-        "description": "Vollständigkeit, Klarheit und Qualität der Funktionsspezifikation überprüfen und validieren",
-        "argument-hint": "[spec.md_pfad] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
+        "description": "Spezifikationstreue, interne Qualität und Planbereitschaft überprüfen",
+        "argument-hint": "[spec.md oder Feature-Verzeichnis]"
     },
     "review-plan": {
-        "description": "Machbarkeit und Konsistenz des technischen Implementierungsplans überprüfen und validieren",
-        "argument-hint": "[plan.md_pfad] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
+        "description": "Plangenauigkeit, Machbarkeit und Implementierungsbereitschaft überprüfen",
+        "argument-hint": "[plan.md oder Feature-Verzeichnis]"
     },
     "review-tasks": {
-        "description": "Vollständigkeit, Reihenfolge und TDD-Konformität der Aufgabenaufschlüsselung überprüfen und validieren",
-        "argument-hint": "[tasks.md_pfad] (optional, standardmäßig .codexspec/specs/{feature-id}/)"
+        "description": "Aufgabengenauigkeit, Ausführbarkeit, Abhängigkeiten und Verifizierung überprüfen",
+        "argument-hint": "[tasks.md oder Feature-Verzeichnis]"
     },
     "implement-tasks": {
         "description": "Implementierungsaufgaben mit bedingtem TDD-Workflow ausführen (TDD für Code, direkte Implementierung für Docs/Config)",
@@ -141,7 +143,7 @@
         "argument-hint": "Pfad zur Quelldatei oder zum Verzeichnis zur Überprüfung (jede Sprache)\n\nBeispiele:\n- `src/` - Gesamten Quellbaum überprüfen\n- `src/components/Button.tsx` - Einzelne Datei überprüfen\n- `src/ tests/` - Mehrere Pfade überprüfen"
     },
     "quick": {
-        "description": "Schnelle Komplettimplementierung für kleine Anforderungen — automatisch Spec, Plan, Tasks und Code",
-        "argument-hint": "Beschreiben Sie Ihre Anforderung"
+        "description": "Einen kompakten Requirements-First-SDD-Ablauf für eine kleine Änderung ausführen",
+        "argument-hint": "Beschreiben Sie eine kleine Anforderung"
     }
 }

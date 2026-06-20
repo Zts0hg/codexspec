@@ -82,41 +82,43 @@
     "argument-hint": "[quick|deep | princípios do projeto] (opcional)\n\nEste comando cria/atualiza a constituição do projeto em .codexspec/memory/constitution.md.\n\nTrês formas de uso:\n1. Sem argumentos → Modo interativo: escolher profundidade de exploração (quick/deep)\n2. quick → Exploração leve: arquivos de configuração + README + pontos de entrada principais (~5-10 arquivos)\n3. deep → Exploração completa: tudo acima + análise de código fonte + padrões de arquitetura\n4. <descrição> → Pular exploração, usar seus princípios diretamente\n\nExemplos:\n  /codexspec:constitution\n  /codexspec:constitution quick\n  /codexspec:constitution deep\n  /codexspec:constitution Python FastAPI backend com pytest, focado em segurança de tipos"
   },
   "specify": {
-    "description": "Esclarecer requisitos através de Q&A interativo para explorar e refinar ideias iniciais",
-    "argument-hint": "Descreva sua ideia inicial ou requisito"
+    "description": "Discutir, confirmar e persistir o registro autoritativo de requisitos",
+    "argument-hint": "Descreva a ideia inicial, ou forneça um diretório de funcionalidade existente"
   },
   "clarify": {
-    "description": "Identificar áreas pouco claras na especificação funcional através de perguntas direcionadas antes do planejamento técnico",
-    "argument-hint": "[caminho_para_spec.md] (opcional, padrão .codexspec/specs/{feature-id}/)"
+    "description": "Resolver ambiguidades de requisitos e sincronizar requirements.md com spec.md",
+    "argument-hint": "[spec.md, requirements.md ou diretório de funcionalidade]"
   },
   "analyze": {
-    "description": "Realizar análise não destrutiva de consistência e qualidade entre artefatos spec.md, plan.md e tasks.md"
+    "description": "Analisar a rastreabilidade de ponta a ponta e a consistência entre artefatos SDD",
+    "argument-hint": "[diretório de funcionalidade]"
   },
   "checklist": {
     "description": "Gerar checklists de qualidade personalizadas para validar completude, clareza e consistência dos requisitos"
   },
   "generate-spec": {
-    "description": "Gerar documento spec.md após os requisitos estarem claros"
+    "description": "Compilar requisitos confirmados em um spec.md rastreável",
+    "argument-hint": "[requirements.md ou diretório de funcionalidade]"
   },
   "spec-to-plan": {
-    "description": "Converter especificação funcional em plano de implementação técnica",
-    "argument-hint": ".codexspec/specs/{feature-id}/spec.md"
+    "description": "Converter uma especificação confirmada em um plano técnico rastreável",
+    "argument-hint": "[spec.md ou diretório de funcionalidade]"
   },
   "plan-to-tasks": {
-    "description": "Decompor plano de implementação técnica em tarefas executáveis",
-    "argument-hint": "[caminho_spec.md caminho_plan.md] (opcional, padrão .codexspec/specs/{feature-id}/)"
+    "description": "Expandir um plano aprovado em tarefas rastreáveis e executáveis",
+    "argument-hint": "[diretório de funcionalidade de tasks, plan.md ou spec.md]"
   },
   "review-spec": {
-    "description": "Revisar e validar completude, clareza e qualidade da especificação funcional",
-    "argument-hint": "[caminho_spec.md] (opcional, padrão .codexspec/specs/{feature-id}/)"
+    "description": "Revisar a fidelidade da spec, a qualidade interna e a prontidão de planejamento",
+    "argument-hint": "[spec.md ou diretório de funcionalidade]"
   },
   "review-plan": {
-    "description": "Revisar e validar viabilidade e consistência do plano de implementação técnica",
-    "argument-hint": "[caminho_plan.md] (opcional, padrão .codexspec/specs/{feature-id}/)"
+    "description": "Revisar a fidelidade do plano, a viabilidade e a prontidão de implementação",
+    "argument-hint": "[plan.md ou diretório de funcionalidade]"
   },
   "review-tasks": {
-    "description": "Revisar e validar completude, ordenação e conformidade TDD da decomposição de tarefas",
-    "argument-hint": "[caminho_tasks.md] (opcional, padrão .codexspec/specs/{feature-id}/)"
+    "description": "Revisar a fidelidade das tarefas, a executabilidade, as dependências e a verificação",
+    "argument-hint": "[tasks.md ou diretório de funcionalidade]"
   },
   "implement-tasks": {
     "description": "Executar tarefas de implementação com workflow TDD condicional (TDD para código, implementação direta para docs/config)",
@@ -141,7 +143,7 @@
     "argument-hint": "Caminho para arquivo fonte ou diretório a revisar (qualquer linguagem)\n\nExemplos:\n- `src/` - Revisar a árvore fonte completa\n- `src/components/Button.tsx` - Revisar arquivo único\n- `src/ tests/` - Revisar múltiplos caminhos"
   },
   "quick": {
-    "description": "Implementação rápida completa para requisitos pequenos — spec, plan, tasks e código automáticos",
-    "argument-hint": "Descreva seu requisito"
+    "description": "Executar um fluxo SDD compacto Requirements-First para uma pequena mudança",
+    "argument-hint": "Descreva um requisito pequeno"
   }
 }

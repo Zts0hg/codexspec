@@ -82,41 +82,43 @@
     "argument-hint": "[quick|deep | principes du projet] (optionnel)\n\nCette commande crée/met à jour la constitution du projet dans .codexspec/memory/constitution.md.\n\nTrois modes d'utilisation :\n1. Sans arguments → Mode interactif : choisir la profondeur d'exploration (quick/deep)\n2. quick → Exploration légère : fichiers de configuration + README + points d'entrée principaux (~5-10 fichiers)\n3. deep → Exploration complète : tout ce qui précède + analyse du code source + patterns d'architecture\n4. <description> → Ignorer l'exploration, utiliser vos principes directement\n\nExemples :\n  /codexspec:constitution\n  /codexspec:constitution quick\n  /codexspec:constitution deep\n  /codexspec:constitution Python FastAPI backend avec pytest, axé sur la sécurité des types"
   },
   "specify": {
-    "description": "Clarifier les exigences via Q&R interactif pour explorer et affiner les idées initiales",
-    "argument-hint": "Décrivez votre idée initiale ou vos exigences"
+    "description": "Discuter, confirmer et conserver le registre faisant autorité des exigences",
+    "argument-hint": "Décrivez l'idée initiale, ou indiquez un répertoire de fonctionnalité existant"
   },
   "clarify": {
-    "description": "Identifier les zones floues dans la spécification fonctionnelle via des questions ciblées avant la planification technique",
-    "argument-hint": "[chemin_vers_spec.md] (optionnel, par défaut .codexspec/specs/{feature-id}/)"
+    "description": "Résoudre les ambiguïtés d'exigences et synchroniser requirements.md avec spec.md",
+    "argument-hint": "[spec.md, requirements.md ou répertoire de fonctionnalité]"
   },
   "analyze": {
-    "description": "Effectuer une analyse non destructive de cohérence et qualité entre artefacts spec.md, plan.md et tasks.md"
+    "description": "Analyser la traçabilité de bout en bout et la cohérence entre artefacts SDD",
+    "argument-hint": "[répertoire de fonctionnalité]"
   },
   "checklist": {
     "description": "Générer des listes de contrôle qualité personnalisées pour valider complétude, clarté et cohérence des exigences"
   },
   "generate-spec": {
-    "description": "Générer le document spec.md une fois les exigences clarifiées"
+    "description": "Compiler les exigences confirmées en un spec.md traçable",
+    "argument-hint": "[requirements.md ou répertoire de fonctionnalité]"
   },
   "spec-to-plan": {
-    "description": "Convertir la spécification fonctionnelle en plan d'implémentation technique",
-    "argument-hint": ".codexspec/specs/{feature-id}/spec.md"
+    "description": "Convertir une spécification confirmée en un plan technique traçable",
+    "argument-hint": "[spec.md ou répertoire de fonctionnalité]"
   },
   "plan-to-tasks": {
-    "description": "Décomposer le plan d'implémentation technique en tâches exécutables",
-    "argument-hint": "[chemin_spec.md chemin_plan.md] (optionnel, par défaut .codexspec/specs/{feature-id}/)"
+    "description": "Développer un plan approuvé en tâches traçables et exécutables",
+    "argument-hint": "[répertoire de fonctionnalité tasks, plan.md ou spec.md]"
   },
   "review-spec": {
-    "description": "Réviser et valider complétude, clarté et qualité de la spécification fonctionnelle",
-    "argument-hint": "[chemin_spec.md] (optionnel, par défaut .codexspec/specs/{feature-id}/)"
+    "description": "Réviser la fidélité de la spec, la qualité interne et la maturité de planification",
+    "argument-hint": "[spec.md ou répertoire de fonctionnalité]"
   },
   "review-plan": {
-    "description": "Réviser et valider faisabilité et cohérence du plan d'implémentation technique",
-    "argument-hint": "[chemin_plan.md] (optionnel, par défaut .codexspec/specs/{feature-id}/)"
+    "description": "Réviser la fidélité du plan, la faisabilité et la maturité d'implémentation",
+    "argument-hint": "[plan.md ou répertoire de fonctionnalité]"
   },
   "review-tasks": {
-    "description": "Réviser et valider complétude, ordonnancement et conformité TDD de la décomposition des tâches",
-    "argument-hint": "[chemin_tasks.md] (optionnel, par défaut .codexspec/specs/{feature-id}/)"
+    "description": "Réviser la fidélité des tâches, l'exécutabilité, les dépendances et la vérification",
+    "argument-hint": "[tasks.md ou répertoire de fonctionnalité]"
   },
   "implement-tasks": {
     "description": "Exécuter les tâches d'implémentation avec workflow TDD conditionnel (TDD pour code, implémentation directe pour docs/config)",
@@ -141,7 +143,7 @@
     "argument-hint": "Chemin vers le fichier source ou répertoire à réviser (tout langage)\n\nExemples:\n- `src/` - Réviser l'arbre source complet\n- `src/components/Button.tsx` - Réviser un seul fichier\n- `src/ tests/` - Réviser plusieurs chemins"
   },
   "quick": {
-    "description": "Implémentation rapide tout-en-un pour les petits besoins — spec, plan, tâches et code automatiques",
-    "argument-hint": "Décrivez votre besoin"
+    "description": "Exécuter un flux SDD compact Requirements-First pour un petit changement",
+    "argument-hint": "Décrivez une petite exigence"
   }
 }

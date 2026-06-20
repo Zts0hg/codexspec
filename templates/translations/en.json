@@ -78,70 +78,72 @@
     }
   },
   "constitution": {
-    "description": "Create or update project constitution from interactive or provided principles input, keeping all dependent templates in sync.",
-    "argument-hint": "[quick|deep | project principles] (optional)\n\nThis command creates/updates the project constitution at .codexspec/memory/constitution.md.\n\nThree usage modes:\n1. No arguments → Interactive mode: choose exploration depth (quick/deep)\n2. quick → Light exploration: config files + README + core entry points (~5-10 files)\n3. deep → Full exploration: above + source code analysis + architecture patterns\n4. <description> → Skip exploration, use your principles directly\n\nExamples:\n  /codexspec:constitution\n  /codexspec:constitution quick\n  /codexspec:constitution deep\n  /codexspec:constitution Python FastAPI backend using pytest, focused on type safety"
+    "description": "Create or update the project constitution from interactive or provided principle inputs, ensuring all dependent templates stay in sync.",
+    "argument-hint": "[quick|deep | project principles] (optional)\n\nThis command creates/updates the project constitution at .codexspec/memory/constitution.md.\n\nThree ways to use:\n1. No arguments → Interactive mode: choose exploration depth (quick/deep)\n2. quick → Lightweight exploration: config files + README + core entry points (~5-10 files)\n3. deep → Full exploration: all of above + source code analysis + architecture patterns\n4. <description> → Skip exploration, use your principles directly\n\nExamples:\n  /codexspec:constitution\n  /codexspec:constitution quick\n  /codexspec:constitution deep\n  /codexspec:constitution Python FastAPI backend with pytest, focus on type safety"
   },
   "specify": {
-    "description": "Clarify requirements through interactive Q&A to explore and refine initial ideas",
-    "argument-hint": "Describe your initial idea or requirements"
+    "description": "Discuss, confirm, and persist the authoritative requirements record",
+    "argument-hint": "Describe the initial idea, or provide an existing feature directory"
   },
   "clarify": {
-    "description": "Identify unclear areas in functional specification through targeted questions before technical planning",
-    "argument-hint": "[path_to_spec.md] (optional, defaults to .codexspec/specs/{feature-id}/)"
+    "description": "Resolve requirement ambiguities and synchronize requirements.md with spec.md",
+    "argument-hint": "[spec.md, requirements.md, or feature directory]"
   },
   "analyze": {
-    "description": "Perform non-destructive consistency and quality analysis between spec.md, plan.md, and tasks.md artifacts"
+    "description": "Analyze end-to-end traceability and consistency across SDD artifacts",
+    "argument-hint": "[feature directory]"
   },
   "checklist": {
-    "description": "Generate custom quality checklists to validate requirements completeness, clarity, and consistency"
+    "description": "Generate a custom quality checklist for validating requirements completeness, clarity, and consistency"
   },
   "generate-spec": {
-    "description": "Generate spec.md document after requirements are clarified"
+    "description": "Compile confirmed requirements into a traceable spec.md",
+    "argument-hint": "[requirements.md or feature directory]"
   },
   "spec-to-plan": {
-    "description": "Convert functional specification to technical implementation plan",
-    "argument-hint": ".codexspec/specs/{feature-id}/spec.md"
+    "description": "Convert a confirmed specification into a traceable technical plan",
+    "argument-hint": "[spec.md or feature directory]"
   },
   "plan-to-tasks": {
-    "description": "Break down technical implementation plan into actionable tasks",
-    "argument-hint": "[spec.md_path plan.md_path] (optional, defaults to .codexspec/specs/{feature-id}/)"
+    "description": "Expand an approved plan into traceable, executable tasks",
+    "argument-hint": "[tasks feature directory, plan.md, or spec.md]"
   },
   "review-spec": {
-    "description": "Review and validate functional specification for completeness, clarity, and quality",
-    "argument-hint": "[spec.md_path] (optional, defaults to .codexspec/specs/{feature-id}/)"
+    "description": "Review spec fidelity, internal quality, and planning readiness",
+    "argument-hint": "[spec.md or feature directory]"
   },
   "review-plan": {
-    "description": "Review and validate technical implementation plan for feasibility and consistency",
-    "argument-hint": "[plan.md_path] (optional, defaults to .codexspec/specs/{feature-id}/)"
+    "description": "Review plan fidelity, feasibility, and implementation readiness",
+    "argument-hint": "[plan.md or feature directory]"
   },
   "review-tasks": {
-    "description": "Review and validate task breakdown for completeness, ordering, and TDD compliance",
-    "argument-hint": "[tasks.md_path] (optional, defaults to .codexspec/specs/{feature-id}/)"
+    "description": "Review task fidelity, executability, dependencies, and verification",
+    "argument-hint": "[tasks.md or feature directory]"
   },
   "implement-tasks": {
     "description": "Execute implementation tasks with conditional TDD workflow (TDD for code, direct implementation for docs/config)",
     "argument-hint": "[tasks_path] | [spec_path plan_path tasks_path]"
   },
   "tasks-to-issues": {
-    "description": "Convert existing tasks to actionable GitHub Issues for this feature"
+    "description": "Convert existing tasks into actionable GitHub issues for the feature"
   },
   "commit": {
     "description": "Generate and execute Conventional Commits compliant commit messages based on git status and session context",
     "argument-hint": "[-p] Use -p to only preview the message without committing"
   },
   "commit-staged": {
-    "description": "Analyze staged git changes and generate Conventional Commits compliant commit message",
+    "description": "Analyze staged git changes and generate Conventional Commits compliant commit messages strictly from the staged diff",
     "argument-hint": "[-p] Use -p to only preview the message without committing"
   },
   "pr": {
-    "description": "Generate structured Pull Request (GitHub) or Merge Request (GitLab) description based on git diff and optional spec.md integration"
+    "description": "Generate structured Pull Request (GitHub) or Merge Request (GitLab) descriptions based on git diff and optional spec.md integration"
   },
   "review-code": {
     "description": "Review code in any language for idiomatic clarity, correctness, robustness, architecture, and constitution alignment",
     "argument-hint": "Path to source file or directory to review (any language)\n\nExamples:\n- `src/` - Review entire source tree\n- `src/components/Button.tsx` - Review single file\n- `src/ tests/` - Review multiple paths"
   },
   "quick": {
-    "description": "One-stop quick implementation for small requirements — auto spec, plan, tasks, and code",
-    "argument-hint": "Describe your requirement"
+    "description": "Run a compact requirements-first SDD flow for a small change",
+    "argument-hint": "Describe a small requirement"
   }
 }

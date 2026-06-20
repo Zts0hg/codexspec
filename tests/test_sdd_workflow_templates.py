@@ -1,16 +1,26 @@
 """Contract tests for the requirements-first SDD workflow."""
 
+import json
 from pathlib import Path
 
 import pytest
 
+from codexspec.translator import extract_frontmatter_fields
+
 ROOT = Path(__file__).parent.parent
 COMMANDS = ROOT / "templates" / "commands"
 DOCS = ROOT / "templates" / "docs"
+TRANSLATIONS = ROOT / "templates" / "translations"
+SUPPORTED_LANGS = ["en", "zh-CN", "ja", "ko", "de", "es", "fr", "pt-BR"]
 
 
 def read_command(name: str) -> str:
     return (COMMANDS / f"{name}.md").read_text(encoding="utf-8")
+
+
+def _template_frontmatter(command: str) -> tuple[str | None, str | None]:
+    fields = extract_frontmatter_fields(read_command(command))
+    return fields.get("description"), fields.get("argument-hint")
 
 
 def read_doc(name: str) -> str:
@@ -171,3 +181,64 @@ def test_platform_scripts_share_feature_resolution_contract():
     assert "Sequential `NNN-name` identifiers are not supported" in architecture
     assert "Legacy compatibility applies to artifacts" in architecture
     assert "The full feature name identifies a workspace" in architecture
+
+
+# --- Translation-catalog drift guards ---------------------------------------
+# Regression for the bug where a redesign updated template frontmatter but the
+# translation JSONs (the cache `codexspec init` copies from for non-English
+# installs) were not synced, so re-running init kept regenerating stale
+# descriptions forever. en.json is the canonical English catalog; localized
+# JSONs must mirror its command coverage field-for-field.
+
+
+def test_en_translation_catalog_matches_template_frontmatter():
+    """en.json must exactly track every distributed command's template frontmatter.
+
+    If a template's description/argument-hint changes, en.json must change with
+    it or this test fails — forcing the author to also update the localized
+    JSONs rather than silently leaving installs on stale strings.
+    """
+    en = json.loads((TRANSLATIONS / "en.json").read_text(encoding="utf-8"))
+
+    for command_file in COMMANDS.glob("*.md"):
+        command = command_file.stem
+        if command not in en:
+            continue  # command has no catalog entry (e.g. maintainer-only commands)
+        description, argument_hint = _template_frontmatter(command)
+        assert en[command]["description"] == description, (
+            f"en.json/{command} description drifted from template:\n"
+            f"  template: {description}\n  en.json : {en[command]['description']}"
+        )
+        if argument_hint is not None:
+            assert en[command].get("argument-hint") == argument_hint, (
+                f"en.json/{command} argument-hint drifted from template:\n"
+                f"  template: {argument_hint}\n  en.json : {en[command].get('argument-hint')}"
+            )
+
+
+@pytest.mark.parametrize("language", ["zh-CN", "ja", "ko", "de", "es", "fr", "pt-BR"])
+def test_localized_translation_catalogs_cover_every_command(language):
+    """Every command cataloged in en.json must appear in each localized JSON with a
+    non-empty description, and a non-empty argument-hint whenever en.json has one.
+
+    This keeps `codexspec init` from regenerating a stale or missing description for
+    any supported language.
+    """
+    en = json.loads((TRANSLATIONS / "en.json").read_text(encoding="utf-8"))
+    localized = json.loads((TRANSLATIONS / f"{language}.json").read_text(encoding="utf-8"))
+
+    cataloged = [
+        command
+        for command, value in en.items()
+        if isinstance(value, dict) and "description" in value and (COMMANDS / f"{command}.md").exists()
+    ]
+
+    assert cataloged, "sanity: en.json should catalog at least one command"
+
+    for command in cataloged:
+        assert command in localized, f"{language}.json is missing command '{command}' (present in en.json)"
+        assert localized[command].get("description"), f"{language}.json/{command} has an empty description"
+        if en[command].get("argument-hint"):
+            assert localized[command].get("argument-hint"), (
+                f"{language}.json/{command} has an empty argument-hint (en.json declares one)"
+            )

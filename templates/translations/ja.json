@@ -82,41 +82,43 @@
     "argument-hint": "[quick|deep | プロジェクト原則] (オプション)\n\nこのコマンドは .codexspec/memory/constitution.md にプロジェクト憲法を作成/更新します。\n\n3つの使用方法：\n1. 引数なし → 対話モード：探索深度を選択 (quick/deep)\n2. quick → 軽量探索：設定ファイル + README + コアエントリーポイント (~5-10ファイル)\n3. deep → 完全探索：上記 + ソースコード分析 + アーキテクチャパターン\n4. <説明> → 探索をスキップし、あなたの原則を直接使用\n\n例：\n  /codexspec:constitution\n  /codexspec:constitution quick\n  /codexspec:constitution deep\n  /codexspec:constitution Python FastAPI バックエンドで pytest 使用、型安全性重視"
   },
   "specify": {
-    "description": "対話型Q&Aを通じて要件を明確化し、初期アイデアを探索・洗練",
-    "argument-hint": "初期アイデアや要件を記述してください"
+    "description": "権威ある要件記録を議論・確認し、永続化する",
+    "argument-hint": "初期アイデアを記述、または既存の機能ディレクトリを指定"
   },
   "clarify": {
-    "description": "技術計画前にターゲットを絞った質問で機能仕様の不明確な領域を特定",
-    "argument-hint": "[spec.md へのパス] (オプション、デフォルトは .codexspec/specs/{feature-id}/)"
+    "description": "要件の曖昧さを解消し、requirements.md と spec.md を同期",
+    "argument-hint": "[spec.md、requirements.md または 機能ディレクトリ]"
   },
   "analyze": {
-    "description": "spec.md、plan.md、tasks.md間の整合性と品質を非破壊的に分析"
+    "description": "SDDアーティファクト間のエンドツーエンドのトレーサビリティと整合性を分析",
+    "argument-hint": "[機能ディレクトリ]"
   },
   "checklist": {
     "description": "要件の完全性、明確性、一貫性を検証するカスタム品質チェックリストを生成"
   },
   "generate-spec": {
-    "description": "要件が明確になった後にspec.mdドキュメントを生成"
+    "description": "確認済み要件をトレーサブルな spec.md にまとめる",
+    "argument-hint": "[requirements.md または 機能ディレクトリ]"
   },
   "spec-to-plan": {
-    "description": "機能仕様を技術実装計画に変換",
-    "argument-hint": ".codexspec/specs/{feature-id}/spec.md"
+    "description": "確認済み仕様をトレーサブルな技術計画に変換",
+    "argument-hint": "[spec.md または 機能ディレクトリ]"
   },
   "plan-to-tasks": {
-    "description": "技術実装計画を実行可能なタスクに分解",
-    "argument-hint": "[spec.md へのパス plan.md へのパス] (オプション、デフォルトは .codexspec/specs/{feature-id}/)"
+    "description": "承認済み計画をトレーサブルで実行可能なタスクに展開",
+    "argument-hint": "[tasks 機能ディレクトリ、plan.md または spec.md]"
   },
   "review-spec": {
-    "description": "機能仕様の完全性、明確性、品質をレビュー・検証",
-    "argument-hint": "[spec.md へのパス] (オプション、デフォルトは .codexspec/specs/{feature-id}/)"
+    "description": "仕様の忠実性、内部品質、計画準備性をレビュー",
+    "argument-hint": "[spec.md または 機能ディレクトリ]"
   },
   "review-plan": {
-    "description": "技術実装計画の実現可能性と整合性をレビュー・検証",
-    "argument-hint": "[plan.md へのパス] (オプション、デフォルトは .codexspec/specs/{feature-id}/)"
+    "description": "計画の忠実性、実現可能性、実装準備性をレビュー",
+    "argument-hint": "[plan.md または 機能ディレクトリ]"
   },
   "review-tasks": {
-    "description": "タスク分解の完全性、順序、TDD準拠をレビュー・検証",
-    "argument-hint": "[tasks.md へのパス] (オプション、デフォルトは .codexspec/specs/{feature-id}/)"
+    "description": "タスクの忠実性、実行可能性、依存関係、検証をレビュー",
+    "argument-hint": "[tasks.md または 機能ディレクトリ]"
   },
   "implement-tasks": {
     "description": "条件付きTDDワークフローで実装タスクを実行（コードはTDD、ドキュメント/設定は直接実装）",
@@ -141,7 +143,7 @@
     "argument-hint": "レビューするソースファイルまたはディレクトリへのパス（任意の言語）\n\n例：\n- `src/` - ソースツリー全体をレビュー\n- `src/components/Button.tsx` - 単一ファイルをレビュー\n- `src/ tests/` - 複数パスをレビュー"
   },
   "quick": {
-    "description": "小規模な要件をワンストップで素早く実装 — spec、plan、tasks、コードを自動生成",
-    "argument-hint": "要件を記述してください"
+    "description": "小さな変更向けにコンパクトな Requirements-First SDD フローを実行",
+    "argument-hint": "小さな要件を記述してください"
   }
 }

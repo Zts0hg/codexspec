@@ -82,41 +82,43 @@
     "argument-hint": "[quick|deep | 项目原则] (可选)\n\n此命令创建/更新位于 .codexspec/memory/constitution.md 的项目宪法。\n\n三种使用方式：\n1. 无参数 → 交互模式：选择探索深度 (quick/deep)\n2. quick → 轻量探索：配置文件 + README + 核心入口点 (~5-10 个文件)\n3. deep → 完整探索：以上内容 + 源代码分析 + 架构模式\n4. <描述> → 跳过探索，直接使用你的原则\n\n示例：\n  /codexspec:constitution\n  /codexspec:constitution quick\n  /codexspec:constitution deep\n  /codexspec:constitution Python FastAPI 后端使用 pytest，注重类型安全"
   },
   "specify": {
-    "description": "通过交互式问答澄清需求，探索和完善初始想法",
-    "argument-hint": "描述你的初始想法或需求"
+    "description": "讨论、确认并固化权威的需求记录",
+    "argument-hint": "描述初始想法，或提供已有的功能目录"
   },
   "clarify": {
-    "description": "在技术规划前通过定向澄清问题识别功能规格中的不明确区域",
-    "argument-hint": "[spec.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
+    "description": "解决需求歧义，并将 requirements.md 与 spec.md 同步",
+    "argument-hint": "[spec.md、requirements.md 或 功能目录]"
   },
   "analyze": {
-    "description": "对 spec.md、plan.md 和 tasks.md 执行非破坏性的跨工件一致性和质量分析"
+    "description": "分析 SDD 工件间的端到端可追溯性与一致性",
+    "argument-hint": "[功能目录]"
   },
   "checklist": {
     "description": "生成自定义质量检查清单，用于验证需求完整性、清晰性和一致性"
   },
   "generate-spec": {
-    "description": "需求明确后生成 spec.md 文档"
+    "description": "将已确认的需求编写为可追溯的 spec.md",
+    "argument-hint": "[requirements.md 或 功能目录]"
   },
   "spec-to-plan": {
-    "description": "将功能规格转换为技术实现计划",
-    "argument-hint": ".codexspec/specs/{feature-id}/spec.md"
+    "description": "将已确认的规格转换为可追溯的技术计划",
+    "argument-hint": "[spec.md 或 功能目录]"
   },
   "plan-to-tasks": {
-    "description": "将技术实现计划分解为可执行的任务",
-    "argument-hint": "[spec.md 路径 plan.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
+    "description": "将已批准的计划展开为可追溯、可执行的任务",
+    "argument-hint": "[tasks 功能目录、plan.md 或 spec.md]"
   },
   "review-spec": {
-    "description": "审查和验证功能规格的完整性、清晰度和质量",
-    "argument-hint": "[spec.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
+    "description": "审查规格的忠实度、内部质量与计划就绪度",
+    "argument-hint": "[spec.md 或 功能目录]"
   },
   "review-plan": {
-    "description": "审查和验证技术实现计划的可行性和一致性",
-    "argument-hint": "[plan.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
+    "description": "审查计划的忠实度、可行性与实现就绪度",
+    "argument-hint": "[plan.md 或 功能目录]"
   },
   "review-tasks": {
-    "description": "审查和验证任务分解的完整性、排序和 TDD 合规性",
-    "argument-hint": "[tasks.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
+    "description": "审查任务的忠实度、可执行性、依赖关系与验证",
+    "argument-hint": "[tasks.md 或 功能目录]"
   },
   "implement-tasks": {
     "description": "执行实现任务，支持条件 TDD 工作流（代码使用 TDD，文档/配置直接实现）",
@@ -141,7 +143,7 @@
     "argument-hint": "要审查的源文件或目录路径（支持任意语言）\n\n示例：\n- `src/` - 审查整个源代码树\n- `src/components/Button.tsx` - 审查单个文件\n- `src/ tests/` - 审查多个路径"
   },
   "quick": {
-    "description": "一站式快速实现小型需求 — 自动完成 spec、plan、tasks 和代码实现",
-    "argument-hint": "描述你的需求"
+    "description": "为小型变更运行精简的 Requirements-First SDD 流程",
+    "argument-hint": "描述一个小需求"
   }
 }
