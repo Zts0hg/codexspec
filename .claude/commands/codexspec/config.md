@@ -14,6 +14,8 @@ Read `.codexspec/config.yml`. Two independent language controls apply (each fall
 
 Converse in the interaction language and author artifacts in the document language. Apply the project's translation standard to both: translate by meaning (not word-for-word), keep English for terms with no good native equivalent, and write as if originally in that language.
 
+A fresh or reset config writes only `output`; `interaction` and `document` resolve to it via the fallback above, so an `output`-only config is fully functional (non-blocking). Set `interaction` or `document` individually only to make them differ from `output`. That is why the YAML examples below stay `output`-only.
+
 ## Parameter Check
 
 Check if `$ARGUMENTS` contains `--view`:
@@ -184,7 +186,7 @@ Let's configure your language preferences.
 ```json
 {
   "questions": [{
-    "question": "Select your preferred output language (for generated content, documentation, etc.):",
+    "question": "Select your project's base language (sets `output`; interaction and document inherit it unless set individually):",
     "header": "Output Lang",
     "options": [
       {"label": "English (en)", "description": "Default, recommended for international projects"},
@@ -282,6 +284,6 @@ project:
 
 ## Output Format
 
-All messages should follow the project's language configuration. If not configured, use English as default.
+Converse in the interaction language and author generated artifacts in the document language. If either is unset, it falls back to `output`, then English.
 
 Technical terms and file paths should remain in English for clarity.
