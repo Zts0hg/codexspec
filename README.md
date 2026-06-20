@@ -19,11 +19,11 @@
 </p>
 
 <p align="center">
-  <strong>A Spec-Driven Development (SDD) toolkit for Claude Code</strong>
+  <strong>A Requirements-First SDD toolkit for Claude Code</strong>
 </p>
 
-CodexSpec helps you build high-quality software through a structured, specification-first approach.
-Instead of jumping straight to code, you define **what** to build and **why** before deciding **how** to build it.
+CodexSpec helps you build high-quality software through **Requirements-First Spec-Driven Development (SDD)** — confirmed requirements come first, and nothing is binding until you explicitly confirm it.
+Instead of jumping straight to code, you confirm **what** to build and **why** before deciding **how** to build it.
 
 [📖 Documentation](https://zts0hg.github.io/codexspec/) | [中文文档](https://zts0hg.github.io/codexspec/zh/) | [日本語ドキュメント](https://zts0hg.github.io/codexspec/ja/) | [한국어 문서](https://zts0hg.github.io/codexspec/ko/) | [Documentación](https://zts0hg.github.io/codexspec/es/) | [Documentation](https://zts0hg.github.io/codexspec/fr/) | [Dokumentation](https://zts0hg.github.io/codexspec/de/) | [Documentação](https://zts0hg.github.io/codexspec/pt-BR/)
 
@@ -32,7 +32,7 @@ Instead of jumping straight to code, you define **what** to build and **why** be
 ## Table of Contents
 
 - [Why Choose CodexSpec?](#why-choose-codexspec)
-- [What is Spec-Driven Development?](#what-is-spec-driven-development)
+- [What is Requirements-First SDD?](#what-is-requirements-first-sdd)
 - [Design Philosophy: Human-AI Collaboration](#design-philosophy-human-ai-collaboration)
 - [30-Second Quick Start](#-30-second-quick-start)
 - [Installation](#installation)
@@ -57,23 +57,23 @@ Why use CodexSpec on top of Claude Code? Here's the comparison:
 
 ---
 
-## What is Spec-Driven Development?
+## What is Requirements-First SDD?
 
-**Spec-Driven Development (SDD)** is a "specifications first, code later" methodology:
+**Requirements-First SDD** is the Spec-Driven Development (SDD) methodology with one upgrade: **confirmed requirements are the highest-priority authority**. You define and confirm *what* to build and *why* before deciding *how* — and nothing becomes binding until you explicitly confirm it.
 
 ```
 Traditional:  Idea → Code → Debug → Rewrite
 SDD:          Idea → Confirmed Requirements → Spec → Plan → Tasks → Code
 ```
 
-**Why use SDD?**
+**Why use Requirements-First SDD?**
 
-| Problem              | SDD Solution                                     |
-| -------------------- | ------------------------------------------------ |
-| AI misunderstandings | Specs clarify "what to build", AI stops guessing |
-| Missing requirements | Interactive clarification discovers edge cases   |
-| Architecture drift   | Review checkpoints ensure correct direction      |
-| Wasted rework        | Problems are found before code is written        |
+| Problem              | Requirements-First SDD Solution                          |
+| -------------------- | -------------------------------------------------------- |
+| AI misunderstandings | Confirmed requirements tell AI "what to build"; AI stops guessing |
+| Missing requirements | Interactive clarification + a confirmation gate surface edge cases |
+| Architecture drift   | Review checkpoints ensure correct direction              |
+| Wasted rework        | Problems are found and confirmed before code is written  |
 
 <details>
 <summary>✨ Key Features</summary>
@@ -556,7 +556,7 @@ CodexSpec is inspired by GitHub spec-kit with key differences:
 
 | Feature             | spec-kit                | CodexSpec                                     |
 | ------------------- | ----------------------- | --------------------------------------------- |
-| Core Philosophy     | Spec-driven development | Spec-driven + Human-AI collaboration          |
+| Core Philosophy     | Spec-driven development | Requirements-First SDD + Human-AI collaboration |
 | CLI Name            | `specify`               | `codexspec`                                   |
 | Primary AI          | Multi-agent support     | Focused on Claude Code                        |
 | Constitution System | Basic                   | Full constitution + cross-artifact validation |
@@ -575,7 +575,7 @@ CodexSpec is inspired by GitHub spec-kit with key differences:
 1. **Review-First Culture**: Every major artifact has a dedicated review command
 2. **Constitution Governance**: Principles are validated, not just documented
 3. **Evidence-Based Review**: Defects require concrete evidence; advisory design ideas do not affect acceptance
-4. **Human Checkpoints**: Workflow designed around validation gates
+4. **Confirmation Gate**: Requirements, specs, plans, and tasks become binding only after explicit human confirmation
 
 ---
 

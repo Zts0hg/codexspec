@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <strong>Une boîte à outils de Développement Piloté par les Spécifications (SDD) pour Claude Code</strong>
+  <strong>Une boîte à outils Requirements-First SDD pour Claude Code</strong>
 </p>
 
 CodexSpec vous aide à construire des logiciels de haute qualité grâce à une approche structurée et pilotée par les spécifications. Au lieu de passer directement au code, vous définissez **quoi** construire et **pourquoi** avant de décider **comment** le construire.

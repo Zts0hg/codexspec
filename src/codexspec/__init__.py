@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-CodexSpec - A Spec-Driven Development (SDD) toolkit for Claude Code.
+CodexSpec - A Requirements-First SDD toolkit for Claude Code.
 
 This toolkit provides a structured approach to software development using
 executable specifications that guide AI-assisted implementation.
@@ -51,7 +51,7 @@ MARKDOWNLINT_DISABLE_MD041 = "<!-- markdownlint-disable MD041 -->\n"
 
 app = typer.Typer(
     name="codexspec",
-    help="CodexSpec - A Spec-Driven Development (SDD) toolkit for Claude Code",
+    help="CodexSpec - A Requirements-First SDD toolkit for Claude Code",
     add_completion=False,
 )
 console = Console()
@@ -935,8 +935,9 @@ This document provides comprehensive context and guidelines for Claude Code when
 
 ## Project Overview
 
-This project uses the **CodexSpec** methodology - a Spec-Driven Development (SDD) approach
-that emphasizes specifications as executable artifacts that directly guide implementation.
+This project uses the **CodexSpec** methodology - a Requirements-First Spec-Driven Development (SDD)
+approach where confirmed requirements are the highest-priority authority, and nothing is binding
+until explicitly confirmed. Specifications and plans are executable artifacts that guide implementation.
 
 ## Available Commands
 

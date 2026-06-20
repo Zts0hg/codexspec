@@ -8,7 +8,7 @@ This document provides comprehensive context and guidelines for Claude Code when
 
 ## Project Overview
 
-**CodexSpec** is a Spec-Driven Development (SDD) toolkit for Claude Code. It is a Python CLI tool that can be installed via `uv tool install` and provides structured slash commands for AI-assisted software development.
+**CodexSpec** is a Requirements-First SDD toolkit for Claude Code. It is a Python CLI tool that can be installed via `uv tool install` and provides structured slash commands for AI-assisted software development.
 
 ### Purpose
 
@@ -40,7 +40,7 @@ The CLI is built using Typer and follows a modular structure:
 # Main entry point
 app = typer.Typer(
     name="codexspec",
-    help="CodexSpec - A Spec-Driven Development (SDD) toolkit for Claude Code",
+    help="CodexSpec - A Requirements-First SDD toolkit for Claude Code",
 )
 
 # Commands
@@ -247,7 +247,7 @@ git:
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "codexspec-market",
-  "description": "Spec-Driven Development (SDD) toolkit for Claude Code",
+  "description": "Requirements-First SDD toolkit for Claude Code",
   "owner": {
     "name": "Zts0hg"
   },

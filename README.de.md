@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <strong>Ein Spec-Driven Development (SDD) Toolkit für Claude Code</strong>
+  <strong>Ein Requirements-First SDD Toolkit für Claude Code</strong>
 </p>
 
 CodexSpec hilft Ihnen, hochwertige Software durch einen strukturierten, spezifikationsgesteuerten Ansatz zu erstellen. Anstatt direkt zum Code zu springen, definieren Sie **was** zu bauen ist und **warum**, bevor Sie entscheiden, **wie** es zu bauen ist.

@@ -10,7 +10,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/codexspec:svg)](https://pypi.org/project/codexspec/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Claude Code를 위한 스펙 주도 개발(SDD) 툴킷**
+**Claude Code를 위한 Requirements-First SDD 툴킷**
 
 CodexSpec은 구조화되고 명세 중심의 접근 방식을 사용하여 고품질 소프트웨어를 구축하는 데 도움이 되는 툴킷입니다. 전통적인 개발 방식과 달리 명세를 구현을 직접 안내하는 실행 가능한 산출물로 만듭니다.
 

@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <strong>Claude Code 向けスペック駆動開発 (SDD) ツールキット</strong>
+  <strong>Claude Code 向け Requirements-First SDD ツールキット</strong>
 </p>
 
 CodexSpec は、構造化されたスペック駆動アプローチを使用して高品質なソフトウェアを構築するのに役立つツールキットです。**どのように**構築するかを決める前に、**何を**構築するか、**なぜ**構築するかを先に定義します。

@@ -19,7 +19,7 @@
 </p>
 
 <p align="center">
-  <strong>面向 Claude Code 的规格驱动开发 (SDD) 工具包</strong>
+  <strong>面向 Claude Code 的 Requirements-First SDD 工具包</strong>
 </p>
 
 CodexSpec 帮助您通过结构化、规格优先的方法构建高质量软件。在决定**如何**构建之前，先定义**构建什么**以及**为什么**构建，而不是直接跳到代码。

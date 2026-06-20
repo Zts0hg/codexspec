@@ -10,7 +10,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/codexspec:svg)](https://pypi.org/project/codexspec/)
 [![Licence : MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Une boite a outils de Developpement Pilot par les Specifications (SDD) pour Claude Code**
+**Une boite a outils de Requirements-First SDD pour Claude Code**
 
 CodexSpec est une boite a outils qui vous aide a construire des logiciels de haute qualite en utilisant une approche structuree et pilotee par les specifications. Elle revoit les methodes traditionnelles de developpement en faisant des specifications des artefacts executables qui guident directement l'implementation.
 

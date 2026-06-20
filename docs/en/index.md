@@ -10,9 +10,9 @@
 [![Python](https://img.shields.io/pypi/pyversions/codexspec:svg)](https://pypi.org/project/codexspec/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**A Spec-Driven Development (SDD) toolkit for Claude Code**
+**A Requirements-First SDD toolkit for Claude Code**
 
-CodexSpec is a toolkit that helps you build high-quality software using a structured, specification-driven approach. It flips the script on traditional development by making specifications executable artifacts that directly guide implementation.
+CodexSpec is a toolkit that helps you build high-quality software using Requirements-First Spec-Driven Development (SDD): confirmed requirements come first, and nothing is binding until you explicitly confirm it. It flips the script on traditional development by making requirements and specifications executable artifacts that directly guide implementation.
 
 ## Why CodexSpec?
 

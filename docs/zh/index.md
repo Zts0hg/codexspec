@@ -10,7 +10,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/codexspec:svg)](https://pypi.org/project/codexspec/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**一款专为 Claude Code 打造的规格驱动开发（SDD）工具包**
+**一款专为 Claude Code 打造的Requirements-First SDD工具包**
 
 CodexSpec 是一款工具包，帮助你使用结构化的、规格驱动的方法来构建高质量软件。它颠覆了传统开发模式，将规格说明转化为可执行的工件，直接指导实现过程。
 

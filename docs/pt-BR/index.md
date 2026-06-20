@@ -10,7 +10,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/codexspec:svg)](https://pypi.org/project/codexspec/)
 [![Licença: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Um kit de ferramentas Spec-Driven Development (SDD) para Claude Code**
+**Um kit de ferramentas Requirements-First SDD para Claude Code**
 
 O CodexSpec é um kit de ferramentas que ajuda você a construir software de alta qualidade usando uma abordagem estruturada e orientada a especificações. Ele muda o paradigma do desenvolvimento tradicional ao tornar as especificações artefatos executáveis que guiam diretamente a implementação.
 

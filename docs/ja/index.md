@@ -10,7 +10,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/codexspec:svg)](https://pypi.org/project/codexspec/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Claude Code向けSpec-Driven Development (SDD) ツールキット**
+**Claude Code向けRequirements-First SDD ツールキット**
 
 CodexSpecは、構造化された仕様駆動アプローチを使用して高品質なソフトウェアを構築するのに役立つツールキットです。仕様を直接実装をガイドする実行可能なアーティファクトにすることで、従来の開発アプローチを転換します。
 
