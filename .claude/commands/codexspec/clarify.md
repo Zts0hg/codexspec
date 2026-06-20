@@ -1,6 +1,6 @@
 ---
-description: 在技术规划前通过定向澄清问题识别功能规格中的不明确区域
-argument-hint: "[spec.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
+description: 解决需求歧义，并将 requirements.md 与 spec.md 同步
+argument-hint: "[spec.md、requirements.md 或 功能目录]"
 ---
 
 # Requirements Clarifier

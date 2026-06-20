@@ -1,6 +1,6 @@
 ---
-description: 对 spec.md、plan.md 和 tasks.md 执行非破坏性的跨工件一致性和质量分析
-argument-hint: "[feature directory]"
+description: 分析 SDD 工件间的端到端可追溯性与一致性
+argument-hint: "[功能目录]"
 ---
 
 # Cross-Artifact Analyzer

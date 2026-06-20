@@ -1,6 +1,6 @@
 ---
-description: 将技术实现计划分解为可执行的任务
-argument-hint: "[spec.md 路径 plan.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
+description: 将已批准的计划展开为可追溯、可执行的任务
+argument-hint: "[tasks 功能目录、plan.md 或 spec.md]"
 handoffs:
   - agent: claude
     step: Generate tasks from the approved plan

@@ -1,6 +1,6 @@
 ---
-description: 通过交互式问答澄清需求，探索和完善初始想法
-argument-hint: "描述你的初始想法或需求"
+description: 讨论、确认并固化权威的需求记录
+argument-hint: "描述初始想法，或提供已有的功能目录"
 scripts:
   sh: .codexspec/scripts/create-new-feature.sh
   ps: .codexspec/scripts/create-new-feature.ps1

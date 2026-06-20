@@ -1,6 +1,6 @@
 ---
-description: 一站式快速实现小型需求 — 自动完成 spec、plan、tasks 和代码实现
-argument-hint: "描述你的需求"
+description: 为小型变更运行精简的 Requirements-First SDD 流程
+argument-hint: "描述一个小需求"
 ---
 
 # Quick Implementation

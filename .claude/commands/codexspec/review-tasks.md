@@ -1,6 +1,6 @@
 ---
-description: 审查和验证任务分解的完整性、排序和 TDD 合规性
-argument-hint: "[tasks.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
+description: 审查任务的忠实度、可执行性、依赖关系与验证
+argument-hint: "[tasks.md 或 功能目录]"
 handoffs:
   - agent: claude
     step: Review tasks against the approved plan and confirmed requirements

@@ -1,6 +1,6 @@
 ---
-description: 需求明确后生成 spec.md 文档
-argument-hint: "[requirements.md or feature directory]"
+description: 将已确认的需求编写为可追溯的 spec.md
+argument-hint: "[requirements.md 或 功能目录]"
 handoffs:
   - agent: claude
     step: Generate a specification from confirmed requirements

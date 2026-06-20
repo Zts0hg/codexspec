@@ -1,6 +1,6 @@
 ---
-description: 审查和验证技术实现计划的可行性和一致性
-argument-hint: "[plan.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
+description: 审查计划的忠实度、可行性与实现就绪度
+argument-hint: "[plan.md 或 功能目录]"
 handoffs:
   - agent: claude
     step: Review plan against confirmed requirements, spec, and repository facts

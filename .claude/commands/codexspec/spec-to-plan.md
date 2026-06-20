@@ -1,6 +1,6 @@
 ---
-description: 将功能规格转换为技术实现计划
-argument-hint: ".codexspec/specs/{feature-id}/spec.md"
+description: 将已确认的规格转换为可追溯的技术计划
+argument-hint: "[spec.md 或 功能目录]"
 handoffs:
   - agent: claude
     step: Generate a technical plan constrained by confirmed requirements

@@ -1,6 +1,6 @@
 ---
-description: 审查和验证功能规格的完整性、清晰度和质量
-argument-hint: "[spec.md 路径] (可选，默认为 .codexspec/specs/{feature-id}/)"
+description: 审查规格的忠实度、内部质量与计划就绪度
+argument-hint: "[spec.md 或 功能目录]"
 handoffs:
   - agent: claude
     step: Review specification against confirmed requirements
