@@ -52,6 +52,8 @@
       "commit_lang_differs": "您选择了 '{selected}' 作为与AI的交互语言，检测到当前git提交消息语言设置为 '{current}'。\n是否要将git提交消息语言也更新为所选语言？",
       "commit_lang_updated": "已更新: 提交消息语言已更改为 {lang}",
       "commit_lang_kept": "提交消息语言保持为 '{lang}'",
+      "language_key_set": "语言设置已写入：{details}",
+      "language_dimensions_hint": "提示：可用 --interaction-lang、--document-lang、--commit-lang 分别设置交互/文档/commit 语言（或使用 codexspec config）。",
       "error_dir_exists": "错误: 目录 '{path}' 已存在",
       "error_use_force": "使用 --force 覆盖或选择其他名称",
       "error_no_project_name": "错误: 请提供项目名称或使用 --here 标志"

@@ -52,6 +52,8 @@
       "commit_lang_differs": "'{selected}'을(를) AI 상호작용 언어로 선택했습니다. 현재 git 커밋 메시지 언어가 '{current}'(으)로 설정되어 있습니다.\n커밋 메시지 언어도 선택한 언어로 업데이트하시겠습니까?",
       "commit_lang_updated": "업데이트 완료: 커밋 메시지 언어가 {lang}(으)로 변경되었습니다",
       "commit_lang_kept": "커밋 메시지 언어는 '{lang}'(으)로 유지됩니다",
+      "language_key_set": "언어 설정이 적용되었습니다: {details}",
+      "language_dimensions_hint": "팁: --interaction-lang, --document-lang, --commit-lang으로 대화·문서·커밋 언어를 각각 설정할 수 있습니다 (또는 codexspec config).",
       "error_dir_exists": "오류: 디렉토리 '{path}'이(가) 이미 존재함",
       "error_use_force": "--force를 사용하여 덮어쓰거나 다른 이름을 선택하세요",
       "error_no_project_name": "오류: 프로젝트 이름을 지정하거나 --here 플래그를 사용하세요"

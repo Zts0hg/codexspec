@@ -52,6 +52,8 @@
       "commit_lang_differs": "Ha seleccionado '{selected}' como idioma de interacción con la IA. El idioma actual de los mensajes de commit de git está configurado como '{current}'.\n¿Desea actualizar el idioma de los mensajes de commit de git para que coincida?",
       "commit_lang_updated": "Actualizado: El idioma de los mensajes de commit se ha cambiado a {lang}",
       "commit_lang_kept": "El idioma de los mensajes de commit se mantiene como '{lang}'",
+      "language_key_set": "Configuración de idioma aplicada: {details}",
+      "language_dimensions_hint": "Consejo: controla los idiomas de interacción, documento y commit por separado con --interaction-lang, --document-lang, --commit-lang (o: codexspec config).",
       "error_dir_exists": "Error: El directorio '{path}' ya existe",
       "error_use_force": "Use --force para sobrescribir o elija un nombre diferente",
       "error_no_project_name": "Error: Proporcione un nombre de proyecto o use el flag --here"

@@ -29,15 +29,12 @@ from .commands.installer import (
 )
 from .i18n import (
     generate_config_content,
-    get_commit_language,
     get_interaction_language,
     get_language_name,
     get_supported_languages,
     is_supported_language,
     normalize_locale,
-    update_config_language,
     update_language_field,
-    update_output_language,
 )
 from .translator import translate
 
@@ -445,13 +442,35 @@ def init(
         None,
         "--lang",
         "-l",
-        help="Output language (e.g., en, zh-CN, ja). Interactive prompt if not specified in TTY.",
+        help=(
+            "Output (base) language (e.g., en, zh-CN, ja). interaction/document/commit "
+            "fall back to it. Prompted on first-time init if not given in a TTY."
+        ),
+    ),
+    interaction_lang: Optional[str] = typer.Option(
+        None,
+        "--interaction-lang",
+        help=("Interaction language (LLM dialogue + codexspec CLI output); overrides --lang for this dimension."),
+    ),
+    document_lang: Optional[str] = typer.Option(
+        None,
+        "--document-lang",
+        help="Document language (generated requirements/spec/plan/tasks); overrides --lang.",
+    ),
+    commit_lang: Optional[str] = typer.Option(
+        None,
+        "--commit-lang",
+        help="Commit-message language; overrides --lang.",
     ),
     force: bool = typer.Option(
         False,
         "--force",
         "-f",
-        help="Force merge/overwrite when initializing in current directory",
+        help=(
+            "Overwrite existing files and auto-confirm prompts (skips the language "
+            "prompt and command-update/migration confirms). Language config is updated "
+            "surgically, never fully regenerated."
+        ),
     ),
     no_git: bool = typer.Option(
         False,
@@ -478,37 +497,85 @@ def init(
         codexspec init . --ai claude
         codexspec init --here --ai claude
         codexspec init . --force --ai claude
+        codexspec init my-project --interaction-lang en --document-lang zh-CN --commit-lang en
     """
-    # Handle interactive language selection when --lang not specified
-    if lang is None:
-        if sys.stdin.isatty():
-            # TTY environment: show interactive prompt
-            try:
-                lang = prompt_language_selection()
-            except KeyboardInterrupt:
-                console.print()
-                console.print("[yellow]Selection cancelled, using default language (en)[/yellow]")
-                lang = "en"
-        else:
-            # Non-TTY environment: use default
-            lang = "en"
+    # When init() is invoked directly (not via the Typer CLI), typer.Option defaults
+    # arrive as OptionInfo sentinels rather than None. Coerce the language params to
+    # Optional[str] so the resolution logic below is robust in both call paths.
+    lang = lang if isinstance(lang, str) else None
+    interaction_lang = interaction_lang if isinstance(interaction_lang, str) else None
+    document_lang = document_lang if isinstance(document_lang, str) else None
+    commit_lang = commit_lang if isinstance(commit_lang, str) else None
 
-    # Normalize language code early for use throughout the function
-    normalized_lang = normalize_locale(lang)
-
-    # Determine target directory
+    # Determine target directory first — needed to detect an existing config.yml
+    # before resolving the language base (REQ-007).
     if here or project_name == ".":
         target_dir = Path.cwd()
     elif project_name:
         target_dir = Path.cwd() / project_name
     else:
-        console.print(f"[red]{translate('cli.init.error_no_project_name', normalized_lang)}[/red]")
+        console.print(f"[red]{translate('cli.init.error_no_project_name', 'en')}[/red]")
         raise typer.Exit(1)
+
+    config_file = target_dir / ".codexspec" / "config.yml"
+    config_exists = config_file.exists()
+
+    def _normalize_lang_option(raw: str) -> str:
+        """Normalize a language flag value; warn (do not error) if unsupported."""
+        normalized = normalize_locale(raw)
+        if not is_supported_language(normalized):
+            console.print(f"[yellow]Warning: '{raw}' is not in the list of commonly supported languages.[/yellow]")
+            console.print(
+                "It may still work if Claude supports it. "
+                "Run [cyan]codexspec config --list-langs[/cyan] to see supported languages."
+            )
+        return normalized
+
+    # Per-dimension overrides: each flag maps to exactly one config key, with no
+    # CLI-level precedence between them (DEC-001).
+    lang_overrides: dict[str, str] = {}
+    if interaction_lang is not None:
+        lang_overrides["interaction"] = _normalize_lang_option(interaction_lang)
+    if document_lang is not None:
+        lang_overrides["document"] = _normalize_lang_option(document_lang)
+    if commit_lang is not None:
+        lang_overrides["commit"] = _normalize_lang_option(commit_lang)
+
+    # The output base is determinable if --lang was given OR all three specific
+    # dimensions are explicit (output is then irrelevant). Otherwise it must be
+    # prompted (first-time, TTY) or defaulted (first-time, non-TTY); on an
+    # existing config with no flag, everything is preserved (REQ-007).
+    output_value: Optional[str] = None
+    if lang is not None:
+        output_value = _normalize_lang_option(lang)
+    base_determinable = output_value is not None or (
+        "interaction" in lang_overrides and "document" in lang_overrides and "commit" in lang_overrides
+    )
+    prompted_base = False
+    if base_determinable:
+        normalized_lang = normalize_locale(output_value) if output_value else "en"
+    elif config_exists:
+        normalized_lang = get_interaction_language(config_file)
+    elif sys.stdin.isatty():
+        try:
+            output_value = normalize_locale(prompt_language_selection())
+            prompted_base = True
+            normalized_lang = output_value
+        except KeyboardInterrupt:
+            console.print()
+            console.print("[yellow]Selection cancelled, using default language (en)[/yellow]")
+            output_value = "en"
+            normalized_lang = "en"
+    else:
+        output_value = "en"
+        normalized_lang = "en"
 
     if debug:
         console.print(f"[dim]Target directory: {target_dir}[/dim]")
         console.print(f"[dim]AI assistant: {ai}[/dim]")
-        console.print(f"[dim]Language: {lang} (normalized: {normalized_lang})[/dim]")
+        console.print(
+            f"[dim]Language base: {output_value} (messages: {normalized_lang}); overrides: {lang_overrides}[/dim]"
+        )
 
     # Check if directory exists and handle accordingly
     if target_dir.exists() and not here and project_name != ".":
@@ -591,7 +658,7 @@ def init(
         console.print(f"[dim]{translate('cli.init.migration_old_structure', normalized_lang)}[/dim]")
         console.print(f"[dim]{translate('cli.init.migration_new_structure', normalized_lang)}[/dim]")
 
-        if Confirm.ask(translate("cli.init.migration_confirm", normalized_lang), default=True):
+        if force or Confirm.ask(translate("cli.init.migration_confirm", normalized_lang), default=True):
             if migrate_old_commands(claude_dir, old_files):
                 console.print(f"[green]{translate('cli.init.migration_complete', normalized_lang)}[/green]")
                 migration_happened = True
@@ -603,14 +670,14 @@ def init(
     # Install or update commands (translate after migration if user wants)
     if migration_happened:
         # Migration moved files, ask if user wants to update/translate them
-        if Confirm.ask(translate("cli.init.update_confirm", normalized_lang), default=True):
+        if force or Confirm.ask(translate("cli.init.update_confirm", normalized_lang), default=True):
             count = install_commands_to_subdir(
                 codexspec_commands_dir, templates_dir, force=True, language=normalized_lang
             )
             console.print(f"[green]{translate('cli.init.commands_updated', normalized_lang, count=count)}[/green]")
     elif should_update_commands(codexspec_dir):
         console.print()
-        if Confirm.ask(translate("cli.init.update_confirm", normalized_lang), default=True):
+        if force or Confirm.ask(translate("cli.init.update_confirm", normalized_lang), default=True):
             count = install_commands_to_subdir(
                 codexspec_commands_dir, templates_dir, force=True, language=normalized_lang
             )
@@ -636,53 +703,50 @@ def init(
         msg = translate("cli.init.created_file", normalized_lang, file=".codexspec/memory/constitution.md")
         console.print(f"[green]{msg}[/green]")
 
-    # Create config.yml with language settings
+    # Apply language settings surgically (DEC-001 / CON-005 / REQ-005 / REQ-010).
+    # Build the full {key: value} map to write: the output base (if resolved) plus
+    # the per-dimension overrides. config.yml is never fully regenerated -- not
+    # even under --force -- and keys the user did not specify are always preserved.
     config_file = codexspec_dir / "config.yml"
-    if not config_file.exists() or force:
-        config_content = generate_config_content(
-            language=normalized_lang,
-            created=datetime.now().strftime("%Y-%m-%d"),
-        )
-        config_file.write_text(config_content, encoding="utf-8")
-        lang_name = get_language_name(normalized_lang)
-        msg = translate(
-            "cli.init.created_file",
-            normalized_lang,
-            file=f".codexspec/config.yml (language: {lang_name})",
-        )
-        console.print(f"[green]{msg}[/green]")
-    elif lang != "en":  # User explicitly provided --lang (not default)
-        # Check if commit language differs from selected language
-        current_commit_lang = get_commit_language(config_file)
-        if current_commit_lang and current_commit_lang != normalized_lang:
-            # Prompt user to update commit language
-            msg = translate(
-                "cli.init.commit_lang_differs",
-                normalized_lang,
-                current=current_commit_lang,
-                selected=normalized_lang,
+    keys_to_write: dict[str, str] = {}
+    if output_value is not None:
+        keys_to_write["output"] = output_value
+    keys_to_write.update(lang_overrides)
+
+    wrote_keys: list[str] = []
+    if keys_to_write:
+        if not config_exists:
+            # Fresh project: emit only the chosen keys (sparse config).
+            config_content = generate_config_content(
+                output=keys_to_write.get("output"),
+                interaction=keys_to_write.get("interaction"),
+                document=keys_to_write.get("document"),
+                commit=keys_to_write.get("commit"),
+                created=datetime.now().strftime("%Y-%m-%d"),
             )
-            if Confirm.ask(msg, default=True):
-                update_config_language(config_file, normalized_lang)
-                console.print(
-                    f"[green]{translate('cli.init.commit_lang_updated', normalized_lang, lang=normalized_lang)}[/green]"
-                )
-            else:
-                # Update only output language, keep commit language
-                update_output_language(config_file, normalized_lang)
-                console.print(
-                    f"[dim]{translate('cli.init.commit_lang_kept', normalized_lang, lang=current_commit_lang)}[/dim]"
-                )
+            config_file.write_text(config_content, encoding="utf-8")
+            wrote_keys = list(keys_to_write.keys())
+            lang_name = get_language_name(normalized_lang)
+            msg = translate(
+                "cli.init.created_file",
+                normalized_lang,
+                file=f".codexspec/config.yml (language: {lang_name})",
+            )
+            console.print(f"[green]{msg}[/green]")
         else:
-            # No difference or commit lang not set, update both
-            if update_config_language(config_file, normalized_lang):
-                lang_name = get_language_name(normalized_lang)
-                msg = translate(
-                    "cli.init.language_updated",
-                    normalized_lang,
-                    lang_name=lang_name,
-                )
-                console.print(f"[green]{msg}[/green]")
+            # Existing project: update each chosen key in place, preserving the rest.
+            for key, value in keys_to_write.items():
+                if update_language_field(config_file, key, value):
+                    wrote_keys.append(key)
+
+    # Non-blocking notice of which language keys were set (REQ-010).
+    if wrote_keys:
+        details = ", ".join(f"{k}={keys_to_write[k]}" for k in wrote_keys)
+        console.print(f"[dim]{translate('cli.init.language_key_set', normalized_lang, details=details)}[/dim]")
+
+    # Discoverability hint after a first-time interactive base selection (REQ-009).
+    if prompted_base:
+        console.print(f"[dim]{translate('cli.init.language_dimensions_hint', normalized_lang)}[/dim]")
 
     # Create CLAUDE.md
     claude_md = target_dir / "CLAUDE.md"
