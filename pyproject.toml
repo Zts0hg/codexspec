@@ -1,6 +1,6 @@
 [project]
 name = "codexspec"
-version = "0.6.2"
+version = "0.6.3"
 description = "CodexSpec - A Requirements-First SDD toolkit for Claude Code"
 readme = "README.md"
 requires-python = ">=3.11"
