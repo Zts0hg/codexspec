@@ -279,6 +279,7 @@ from pathlib import Path  # noqa: E402
 from typer.testing import CliRunner  # noqa: E402
 
 from codexspec import app  # noqa: E402
+from codexspec.commands.installer import COMMANDS_SUBDIR  # noqa: E402
 from codexspec.i18n import (  # noqa: E402
     get_commit_language,
     get_document_language,
@@ -498,3 +499,187 @@ class TestInitPromptGating:
                         except Exception:
                             pass
                         mock_prompt.assert_called()
+
+
+# ---------------------------------------------------------------------------
+# Frontmatter render-language coverage (Fix B: init renders in the effective
+# interaction language) and config re-render coverage (Fix A: `config` re-renders
+# installed command frontmatter after an interaction-affecting language change).
+# ---------------------------------------------------------------------------
+
+_TEMPLATES = Path(__file__).resolve().parents[1] / "templates" / "commands"
+
+
+def _desc(file_path: Path) -> str | None:
+    """Read the single-line ``description:`` value from a command markdown file."""
+    text = Path(file_path).read_text(encoding="utf-8")
+    m = re.search(r"^description:\s*(.+?)\s*$", text, re.MULTILINE)
+    return m.group(1) if m else None
+
+
+def _frontmatter_desc(proj: Path, cmd: str = "constitution") -> str | None:
+    """Rendered ``description:`` of an installed command, or None if not installed."""
+    return _desc(proj / ".claude" / "commands" / COMMANDS_SUBDIR / f"{cmd}.md")
+
+
+def _expected_desc(cmd: str, lang: str) -> str | None:
+    """Expected rendered description: English source line, or the cached translation."""
+    if lang == "en":
+        return _desc(_TEMPLATES / f"{cmd}.md")
+    from codexspec.translator import load_translation_cache
+
+    cache = load_translation_cache(lang)
+    return cache.get(cmd, {}).get("description") if cache else None
+
+
+class TestInitRendersFrontmatter:
+    """Fix B: init renders command frontmatter in the effective interaction language."""
+
+    def test_interaction_lang_renders_in_that_language(self, tmp_path) -> None:
+        proj = tmp_path / "p"
+        result = _init(proj, "--interaction-lang", "zh-CN")
+        assert result.exit_code == 0, result.output
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "zh-CN")
+
+    def test_three_dims_uses_interaction_not_en(self, tmp_path) -> None:
+        """The :556 bug: all three flags without --lang must not fall back to 'en'."""
+        proj = tmp_path / "p"
+        result = _init(proj, "--interaction-lang", "zh-CN", "--document-lang", "en", "--commit-lang", "en")
+        assert result.exit_code == 0, result.output
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "zh-CN")
+
+    def test_lang_en_interaction_zh_uses_interaction(self, tmp_path) -> None:
+        proj = tmp_path / "p"
+        result = _init(proj, "--lang", "en", "--interaction-lang", "zh-CN")
+        assert result.exit_code == 0, result.output
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "zh-CN")
+
+    def test_lang_zh_renders_zh(self, tmp_path) -> None:
+        proj = tmp_path / "p"
+        result = _init(proj, "--lang", "zh-CN")
+        assert result.exit_code == 0, result.output
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "zh-CN")
+
+    def test_lang_en_renders_en(self, tmp_path) -> None:
+        proj = tmp_path / "p"
+        result = _init(proj, "--lang", "en")
+        assert result.exit_code == 0, result.output
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "en")
+
+    def test_reinit_no_flag_preserves_frontmatter_lang(self, tmp_path) -> None:
+        proj = tmp_path / "p"
+        _init(proj, "--interaction-lang", "zh-CN")
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "zh-CN")
+        result = _init(proj, "--force")  # no language flag
+        assert result.exit_code == 0, result.output
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "zh-CN")
+
+    def test_reinit_config_output_only_renders_output_lang(self, tmp_path) -> None:
+        proj = tmp_path / "p"
+        _seed_config(proj, 'output: "zh-CN"')
+        result = _init(proj, "--force")
+        assert result.exit_code == 0, result.output
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "zh-CN")
+
+    def test_reinit_lang_prefers_new_lang_over_existing_output(self, tmp_path) -> None:
+        proj = tmp_path / "p"
+        _seed_config(proj, 'output: "zh-CN"')
+        result = _init(proj, "--force", "--lang", "ja")
+        assert result.exit_code == 0, result.output
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "ja")
+
+    def test_reinit_lang_preserves_existing_interaction_precedence(self, tmp_path) -> None:
+        proj = tmp_path / "p"
+        _seed_config(proj, 'interaction: "en"\n  output: "zh-CN"')
+        result = _init(proj, "--force", "--lang", "ja")
+        assert result.exit_code == 0, result.output
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "en")
+
+    def test_reinit_config_no_lang_keys_renders_en(self, tmp_path) -> None:
+        proj = tmp_path / "p"
+        _seed_config(proj, "")  # language section present but no keys
+        result = _init(proj, "--force")
+        assert result.exit_code == 0, result.output
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "en")
+
+    def test_reinit_config_interaction_en_output_zh_renders_en(self, tmp_path) -> None:
+        proj = tmp_path / "p"
+        _seed_config(proj, 'interaction: "en"\n  output: "zh-CN"')
+        result = _init(proj, "--force")
+        assert result.exit_code == 0, result.output
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "en")
+
+
+def _seed_config(proj: Path, language_keys: str) -> None:
+    """Create a .codexspec/config.yml with the given language sub-keys (indented)."""
+    (proj / ".codexspec").mkdir(parents=True, exist_ok=True)
+    body = "language:\n"
+    if language_keys:
+        body += "  " + language_keys.strip().replace("\n", "\n  ") + "\n"
+    body += '  templates: "en"\n\nproject:\n  ai: "claude"\n  created: "2026-06-21"\n'
+    (proj / ".codexspec" / "config.yml").write_text(body, encoding="utf-8")
+
+
+class TestConfigRerendersFrontmatter:
+    """Fix A: `config` re-renders installed frontmatter after an interaction change."""
+
+    def test_set_interaction_lang_rerenders(self, tmp_path, monkeypatch) -> None:
+        proj = tmp_path / "p"
+        _init(proj, "--lang", "en")
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "en")
+        monkeypatch.chdir(proj)
+        result = _runner.invoke(app, ["config", "--set-interaction-lang", "zh-CN"])
+        assert result.exit_code == 0, result.output
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "zh-CN")
+
+    def test_set_lang_rerenders_when_interaction_unset(self, tmp_path, monkeypatch) -> None:
+        proj = tmp_path / "p"
+        _init(proj, "--lang", "en")
+        monkeypatch.chdir(proj)
+        result = _runner.invoke(app, ["config", "--set-lang", "zh-CN"])
+        assert result.exit_code == 0, result.output
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "zh-CN")
+
+    def test_set_lang_preserves_custom_command_body(self, tmp_path, monkeypatch) -> None:
+        proj = tmp_path / "p"
+        _init(proj, "--lang", "en")
+        command_file = proj / ".claude" / "commands" / COMMANDS_SUBDIR / "constitution.md"
+        command_file.write_text(
+            command_file.read_text(encoding="utf-8").replace("## User Input", "## Custom User Input", 1),
+            encoding="utf-8",
+        )
+
+        monkeypatch.chdir(proj)
+        result = _runner.invoke(app, ["config", "--set-lang", "zh-CN"])
+
+        assert result.exit_code == 0, result.output
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "zh-CN")
+        assert "## Custom User Input" in command_file.read_text(encoding="utf-8")
+
+    def test_set_lang_does_not_override_explicit_interaction(self, tmp_path, monkeypatch) -> None:
+        proj = tmp_path / "p"
+        _init(proj, "--interaction-lang", "en", "--lang", "en")
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "en")
+        monkeypatch.chdir(proj)
+        result = _runner.invoke(app, ["config", "--set-lang", "zh-CN"])
+        assert result.exit_code == 0, result.output
+        # interaction=en is explicit; changing output must not re-render to Chinese.
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "en")
+
+    def test_set_document_lang_does_not_rerender(self, tmp_path, monkeypatch) -> None:
+        proj = tmp_path / "p"
+        _init(proj, "--lang", "en")
+        monkeypatch.chdir(proj)
+        result = _runner.invoke(app, ["config", "--set-document-lang", "zh-CN"])
+        assert result.exit_code == 0, result.output
+        assert _frontmatter_desc(proj) == _expected_desc("constitution", "en")
+
+    def test_rerender_noop_without_commands_subdir(self, tmp_path, monkeypatch) -> None:
+        proj = tmp_path / "p"
+        _init(proj, "--lang", "en")
+        import shutil
+
+        shutil.rmtree(proj / ".claude" / "commands" / COMMANDS_SUBDIR)
+        monkeypatch.chdir(proj)
+        result = _runner.invoke(app, ["config", "--set-interaction-lang", "zh-CN"])
+        assert result.exit_code == 0, result.output

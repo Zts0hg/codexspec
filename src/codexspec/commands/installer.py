@@ -8,7 +8,12 @@ import shutil
 from pathlib import Path
 from typing import Optional, TypedDict
 
-from codexspec.translator import extract_frontmatter_fields, load_translation_cache, translate_template_frontmatter
+from codexspec.translator import (
+    apply_translations_to_template,
+    extract_frontmatter_fields,
+    load_translation_cache,
+    translate_template_frontmatter,
+)
 
 # Constants
 COMMANDS_SUBDIR = "codexspec"  # Subdirectory name for commands
@@ -346,6 +351,49 @@ def install_commands_to_subdir(
         installed_count += 1
 
     return installed_count
+
+
+def update_installed_command_frontmatter(
+    target_dir: Path,
+    templates_dir: Path,
+    language: str = "en",
+    translations_dir: Optional[Path] = None,
+) -> int:
+    """Update frontmatter translations for already-installed command files.
+
+    This preserves command bodies and any non-translated frontmatter while
+    refreshing the language-specific ``description`` and ``argument-hint`` fields.
+    Missing installed commands are intentionally skipped.
+    """
+    if not target_dir.exists() or not templates_dir.exists():
+        return 0
+
+    translation_cache = None
+    if language != "en":
+        translation_cache = load_translation_cache(language, translations_dir)
+
+    updated_count = 0
+    for template_file in templates_dir.glob("*.md"):
+        target_path = target_dir / template_file.name
+        if not target_path.exists():
+            continue
+
+        template_content = template_file.read_text(encoding="utf-8")
+        template_name = template_file.stem
+        rendered_template = translate_template_frontmatter(template_content, template_name, language, translation_cache)
+        fields = {
+            key: value for key, value in extract_frontmatter_fields(rendered_template).items() if value is not None
+        }
+        if not fields:
+            continue
+
+        current_content = target_path.read_text(encoding="utf-8")
+        updated_content = apply_translations_to_template(current_content, fields)
+        if updated_content != current_content:
+            target_path.write_text(updated_content, encoding="utf-8")
+            updated_count += 1
+
+    return updated_count
 
 
 def should_update_commands(codexspec_dir: Path) -> bool:

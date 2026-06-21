@@ -26,9 +26,11 @@ from .commands.installer import (
     install_commands_to_subdir,
     migrate_old_commands,
     should_update_commands,
+    update_installed_command_frontmatter,
 )
 from .i18n import (
     generate_config_content,
+    get_explicit_language_key,
     get_interaction_language,
     get_language_name,
     get_supported_languages,
@@ -36,7 +38,7 @@ from .i18n import (
     normalize_locale,
     update_language_field,
 )
-from .translator import translate
+from .translator import SUPPORTED_LANGUAGES, translate
 
 # Version info
 __version__ = "0.6.0"
@@ -270,6 +272,7 @@ def config(
         else:
             console.print("[red]Failed to update language setting[/red]")
             raise typer.Exit(1)
+        _rerender_command_frontmatter(config_file)
         return
 
     # Handle set commit language
@@ -348,6 +351,7 @@ def config(
         else:
             console.print("[red]Failed to update interaction language setting[/red]")
             raise typer.Exit(1)
+        _rerender_command_frontmatter(config_file)
         return
 
     # Handle set document language
@@ -553,21 +557,40 @@ def init(
     )
     prompted_base = False
     if base_determinable:
-        normalized_lang = normalize_locale(output_value) if output_value else "en"
+        # Output base already resolved (or None when only dimension flags were
+        # given); no prompt needed to resolve it.
+        pass
     elif config_exists:
-        normalized_lang = get_interaction_language(config_file)
+        # Existing project: preserve every unspecified key (REQ-007); no prompt.
+        pass
     elif sys.stdin.isatty():
         try:
             output_value = normalize_locale(prompt_language_selection())
             prompted_base = True
-            normalized_lang = output_value
         except KeyboardInterrupt:
             console.print()
             console.print("[yellow]Selection cancelled, using default language (en)[/yellow]")
             output_value = "en"
-            normalized_lang = "en"
     else:
         output_value = "en"
+
+    # Render/CLI-message language = the effective interaction language for THIS
+    # run (frontmatter descriptions are an interaction-language artifact). This is
+    # deliberately decoupled from output_value/prompted_base above, which only
+    # drive config writing and the first-time prompt. Precedence: explicit
+    # --interaction-lang -> explicitly-configured interaction -> --lang (output
+    # base) -> explicitly-configured output -> "en". Existing interaction is
+    # deliberately stronger than --lang; existing output is only a fallback when
+    # this run did not provide a new base.
+    if "interaction" in lang_overrides:
+        normalized_lang = lang_overrides["interaction"]
+    elif config_exists and (explicit_interaction := get_explicit_language_key(config_file, "interaction")) is not None:
+        normalized_lang = explicit_interaction
+    elif output_value is not None:
+        normalized_lang = output_value
+    elif config_exists and (explicit_output := get_explicit_language_key(config_file, "output")) is not None:
+        normalized_lang = explicit_output
+    else:
         normalized_lang = "en"
 
     if debug:
@@ -800,6 +823,29 @@ def init(
     important_msg = translate("cli.init.important_message", normalized_lang)
     console.print(f"[yellow]{important_header}[/yellow] {important_msg}")
     console.print(f"[yellow]{translate('cli.init.important_action', normalized_lang)}[/yellow]")
+
+
+def _rerender_command_frontmatter(config_file: Path) -> None:
+    """Re-render installed command frontmatter in the current interaction language.
+
+    Called after a ``config`` language change so ``.claude/commands/codexspec/*.md``
+    descriptions follow the new interaction language immediately, mirroring what
+    ``init`` does. No-op when commands are not installed. Languages without a
+    pre-translated cache are not re-rendered here (that path would invoke the
+    ``claude`` CLI once per command); the user is advised to run ``codexspec init``.
+    """
+    commands_subdir = Path.cwd() / ".claude" / "commands" / COMMANDS_SUBDIR
+    if not commands_subdir.exists():
+        return
+    language = get_interaction_language(config_file)  # re-read AFTER the config write
+    if language != "en" and language not in SUPPORTED_LANGUAGES:
+        console.print(f"[dim]Run [cyan]codexspec init[/cyan] to update command descriptions for {language}.[/dim]")
+        return
+    templates_dir = get_templates_dir() / "commands"
+    if not templates_dir.exists():
+        return
+    update_installed_command_frontmatter(commands_subdir, templates_dir, language=language)
+    console.print(f"[dim]Updated command descriptions to: {get_language_name(language)}[/dim]")
 
 
 def _print_command_summary(language: str = "en") -> None:

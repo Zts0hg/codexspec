@@ -290,6 +290,24 @@ def _resolve_language(config_file: Path, primary_key: str) -> str:
     return "en"
 
 
+def get_explicit_language_key(config_file: Optional[Path], key: str) -> Optional[str]:
+    """Return one explicitly configured ``language.<key>`` value, if present.
+
+    This differs from the public language-resolution helpers because it never
+    falls back to ``language.output`` or ``"en"``.
+    """
+    path = config_file or _default_config_path()
+    if not path.exists():
+        return None
+    try:
+        value = _read_language_key(path.read_text(encoding="utf-8"), key)
+        if value:
+            return normalize_locale(value) or None
+    except (OSError, re.error):
+        pass
+    return None
+
+
 def _default_config_path() -> Path:
     return Path.cwd() / ".codexspec" / "config.yml"
 

@@ -7,8 +7,6 @@ frontmatter fields (description, argument-hint).
 import json
 import logging
 import re
-import shutil
-import subprocess
 from pathlib import Path
 from typing import Optional
 
@@ -336,87 +334,56 @@ def apply_translations_to_template(content: str, translations: dict) -> str:
     Returns:
         Template content with translated frontmatter
     """
+    frontmatter_match = re.match(r"^(---\n)(.*?)(\n---(?:\n|$))", content, re.DOTALL)
+    if not frontmatter_match:
+        return content
+
+    prefix, frontmatter, suffix = frontmatter_match.groups()
+
     # Replace description
     if "description" in translations:
-        content = re.sub(r"^(description:\s*).+$", rf"\g<1>{translations['description']}", content, flags=re.MULTILINE)
+        frontmatter = re.sub(
+            r"^(description:\s*).+$",
+            lambda match: f"{match.group(1)}{translations['description']}",
+            frontmatter,
+            flags=re.MULTILINE,
+        )
 
     # Replace argument-hint (handle both single-line and multiline)
     if "argument-hint" in translations:
         new_hint = translations["argument-hint"]
         # Check if original hint is multiline (uses |)
-        if re.search(r"^argument-hint:\s*\|", content, re.MULTILINE):
+        if re.search(r"^argument-hint:\s*\|", frontmatter, re.MULTILINE):
             # Build new multiline content with proper indentation
             # Only add indentation to non-empty lines
             hint_lines = new_hint.split("\n")
             indented_lines = [("  " + line) if line else "" for line in hint_lines]
             indented_hint = "\n".join(indented_lines)
             # Replace multiline hint - match the entire multiline block (supports empty lines)
-            content = re.sub(
+            frontmatter = re.sub(
                 r"(argument-hint:\s*\|)\s*\n((?:  .+\n?|\s*\n)+)",
-                rf"\g<1>\n{indented_hint}\n",
-                content,
+                lambda match: f"{match.group(1)}\n{indented_hint}\n",
+                frontmatter,
                 flags=re.MULTILINE,
             )
         else:
             # Replace single-line hint (with or without quotes)
-            if re.search(r'^argument-hint:\s*"', content, re.MULTILINE):
-                content = re.sub(r'^(argument-hint:\s*)"[^"]+"$', rf'\g<1>"{new_hint}"', content, flags=re.MULTILINE)
+            if re.search(r'^argument-hint:\s*"', frontmatter, re.MULTILINE):
+                frontmatter = re.sub(
+                    r'^(argument-hint:\s*)"[^"]+"$',
+                    lambda match: f'{match.group(1)}"{new_hint}"',
+                    frontmatter,
+                    flags=re.MULTILINE,
+                )
             else:
-                content = re.sub(r"^(argument-hint:\s*).+$", rf"\g<1>{new_hint}", content, flags=re.MULTILINE)
+                frontmatter = re.sub(
+                    r"^(argument-hint:\s*).+$",
+                    lambda match: f"{match.group(1)}{new_hint}",
+                    frontmatter,
+                    flags=re.MULTILINE,
+                )
 
-    return content
-
-
-def check_claude_cli_available() -> bool:
-    """Check if Claude CLI is available.
-
-    Returns:
-        True if claude command is available
-    """
-    return shutil.which("claude") is not None
-
-
-def translate_with_claude_cli(
-    texts: dict[str, dict[str, str]], target_lang: str, timeout: int = 60
-) -> Optional[dict[str, dict[str, str]]]:
-    """Translate texts using Claude CLI.
-
-    Args:
-        texts: Dictionary of {command_name: {field: text}}
-        target_lang: Target language code
-        timeout: Timeout in seconds
-
-    Returns:
-        Translated dictionary or None on failure
-    """
-    if not check_claude_cli_available():
-        return None
-
-    # Build prompt
-    input_json = json.dumps(texts, ensure_ascii=False, indent=2)
-    prompt = f"""Translate the following JSON values to {target_lang}.
-Keep all keys unchanged. Return only valid JSON with the same structure.
-Do not translate technical terms like "spec.md", "plan.md", "TDD", etc.
-
-{input_json}"""
-
-    try:
-        result = subprocess.run(["claude", "--print", prompt], capture_output=True, text=True, timeout=timeout)
-
-        if result.returncode != 0:
-            return None
-
-        # Parse JSON from output
-        output = result.stdout.strip()
-        # Remove potential markdown code blocks
-        if output.startswith("```"):
-            output = re.sub(r"^```(?:json)?\n?", "", output)
-            output = re.sub(r"\n?```$", "", output)
-
-        return json.loads(output)
-
-    except (subprocess.TimeoutExpired, json.JSONDecodeError, OSError):
-        return None
+    return f"{prefix}{frontmatter}{suffix}{content[frontmatter_match.end() :]}"
 
 
 def translate_template_frontmatter(
@@ -445,13 +412,8 @@ def translate_template_frontmatter(
     if cache and template_name in cache:
         return apply_translations_to_template(template_content, cache[template_name])
 
-    # For non-cached languages, try dynamic translation
-    if target_lang not in SUPPORTED_LANGUAGES:
-        fields = extract_frontmatter_fields(template_content)
-        if fields.get("description") or fields.get("argument-hint"):
-            translations = translate_with_claude_cli({template_name: fields}, target_lang)
-            if translations and template_name in translations:
-                return apply_translations_to_template(template_content, translations[template_name])
-
-    # Return original if all translation attempts fail
+    # No cache for this language: keep the original (English) frontmatter.
+    # Command templates are translated at runtime by Claude reading config.yml
+    # (see the template "Language Preference" section), never via a subprocess
+    # at install time.
     return template_content
