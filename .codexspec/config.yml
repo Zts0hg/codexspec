@@ -5,6 +5,8 @@ version: "1.0"
 
 # Language settings for internationalization (i18n)
 language:
+  document: "en"
+  interaction: "zh-CN"
   # Output language - Claude will use this language for interactions
   # and generated documents. Supports any Claude-supported language.
   # Common values: en, zh-CN, zh-TW, ja, ko, es, fr, de, pt, ru
