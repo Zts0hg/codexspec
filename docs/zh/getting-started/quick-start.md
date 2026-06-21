@@ -13,6 +13,9 @@ codexspec init . --ai claude
 
 # 使用中文输出
 codexspec init my-project --lang zh-CN
+
+# 完全非交互（CI/脚本）：zh-CN 输出，英文提交信息
+codexspec init my-project --lang zh-CN --commit-lang en
 ```
 
 ## 2. 建立项目原则

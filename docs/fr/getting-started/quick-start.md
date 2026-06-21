@@ -13,6 +13,9 @@ codexspec init . --ai claude
 
 # Avec sortie en chinois
 codexspec init mon-projet --lang zh-CN
+
+# Entierement non-interactif (CI/scripts) : sortie zh-CN, messages de commit en anglais
+codexspec init mon-projet --lang zh-CN --commit-lang en
 ```
 
 ## 2. Etablir les Principes du Projet

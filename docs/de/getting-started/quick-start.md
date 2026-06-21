@@ -13,6 +13,9 @@ codexspec init . --ai claude
 
 # Mit chinesischer Ausgabe
 codexspec init mein-projekt --lang zh-CN
+
+# Vollstaendig nicht-interaktiv (CI/Skripte): zh-CN-Ausgabe, englische Commit-Nachrichten
+codexspec init mein-projekt --lang zh-CN --commit-lang en
 ```
 
 ## 2. Projektprinzipien festlegen

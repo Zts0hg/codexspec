@@ -13,6 +13,9 @@ codexspec init . --ai claude
 
 # Con salida en espanol
 codexspec init my-project --lang es
+
+# Totalmente no interactivo (CI/scripts): salida zh-CN, mensajes de commit en ingles
+codexspec init my-project --lang zh-CN --commit-lang en
 ```
 
 ## 2. Establecer Principios del Proyecto

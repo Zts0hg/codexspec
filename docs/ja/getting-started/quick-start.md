@@ -13,6 +13,9 @@ codexspec init . --ai claude
 
 # 中国語出力で作成
 codexspec init my-project --lang zh-CN
+
+# 完全に非対話型 (CI/スクリプト): zh-CN 出力、英語のコミットメッセージ
+codexspec init my-project --lang zh-CN --commit-lang en
 ```
 
 ## 2. プロジェクト原則の確立

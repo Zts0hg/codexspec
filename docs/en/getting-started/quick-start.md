@@ -13,6 +13,9 @@ codexspec init . --ai claude
 
 # With Chinese output
 codexspec init my-project --lang zh-CN
+
+# Fully non-interactive (CI/scripts): zh-CN output, English commit messages
+codexspec init my-project --lang zh-CN --commit-lang en
 ```
 
 ## 2. Establish Project Principles

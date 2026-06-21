@@ -13,6 +13,9 @@ codexspec init . --ai claude
 
 # 중국어 출력으로
 codexspec init my-project --lang zh-CN
+
+# 완전히 비대화형 (CI/스크립트): zh-CN 출력, 영어 커밋 메시지
+codexspec init my-project --lang zh-CN --commit-lang en
 ```
 
 ## 2. 프로젝트 원칙 수립

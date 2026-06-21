@@ -482,12 +482,15 @@ claude
 
 | オプション | 説明 |
 |------------|------|
-| `PROJECT_NAME` | プロジェクトディレクトリ名 |
+| `PROJECT_NAME` | プロジェクトディレクトリ名 (現在のディレクトリには `.` または `--here`) |
 | `--here`, `-h` | 現在のディレクトリで初期化 |
 | `--ai`, `-a` | 使用するAIアシスタント（デフォルト：claude） |
-| `--lang`, `-l` | 出力言語（例：en, ja, zh-CN） |
-| `--force`, `-f` | 既存ファイルを強制上書き |
-| `--no-git` | git初期化をスキップ |
+| `--lang`, `-l` | 出力 (ベース) 言語。interaction/document/commit はこれにフォールバック (例: en, zh-CN, ja) |
+| `--interaction-lang` | インタラクション言語 (LLMとの対話 + CLI出力)。`--lang` を上書き |
+| `--document-lang` | ドキュメント言語 (生成される spec/plan/tasks)。`--lang` を上書き |
+| `--commit-lang` | コミットメッセージ言語。`--lang` を上書き |
+| `--force`, `-f` | 既存ファイルを上書きしプロンプトを自動承認。`config.yml` は再生成しない |
+| `--no-git` | gitリポジトリの初期化をスキップ |
 | `--debug`, `-d` | デバッグ出力を有効化 |
 
 </details>
@@ -497,7 +500,9 @@ claude
 
 | オプション | 説明 |
 |------------|------|
-| `--set-lang`, `-l` | 出力言語を設定 |
+| `--set-lang`, `-l` | 出力 (ベース) 言語を設定 |
+| `--set-interaction-lang` | インタラクション言語を設定 |
+| `--set-document-lang` | ドキュメント言語を設定 |
 | `--set-commit-lang`, `-c` | コミットメッセージ言語を設定 |
 | `--list-langs` | サポートされている言語を一覧表示 |
 
@@ -582,17 +587,35 @@ CodexSpecはGitHubのspec-kitに触発されていますが、いくつかの重
 
 CodexSpecは**LLM動的翻訳**を通じて複数の言語をサポートしています。翻訳されたテンプレートを維持するのではなく、Claudeが実行時に言語設定に基づいてコンテンツを翻訳します。
 
+### 言語の次元
+
+CodexSpec は言語を独立に設定可能な 4 つの次元に分割しています。`output` がベースであり、他はこれを上書きし、未設定時はこれに (次いで `en`) フォールバックします。これにより、ある言語で Claude と対話しながら生成されるアーティファクトやコミットメッセージは別の言語に保つ、といった運用が可能です。
+
+| 次元 | `config.yml` キー | init で設定 | 後から設定 | 制御対象 | フォールバック先 |
+|-----------|------------------|-------------|-----------|----------|---------------|
+| Output (ベース) | `output` | `--lang` | `config --set-lang` | 他 3 つのベース | `en` |
+| Interaction | `interaction` | `--interaction-lang` | `config --set-interaction-lang` | LLMとの対話 + CLI出力 | output → `en` |
+| Document | `document` | `--document-lang` | `config --set-document-lang` | 生成される spec/plan/tasks | output → `en` |
+| Commit | `commit` | `--commit-lang` | `config --set-commit-lang` | gitコミットメッセージ | output → `en` |
+| Templates | `templates` | — | — | テンプレートのソース (常に `en`) | — |
+
 ### 言語の設定
 
 **初期化時：**
 
 ```bash
-# 日本語出力でプロジェクトを作成
-codexspec init my-project --lang ja
-
-# 中国語出力でプロジェクトを作成
+# 中国語出力 (output ベースを設定)
 codexspec init my-project --lang zh-CN
+
+# 完全に非対話型: zh-CN ベース、英語のコミットメッセージ
+codexspec init my-project --lang zh-CN --commit-lang en
+
+# 各次域を明示的に設定 (スクリプト可能、プロンプトなし)
+codexspec init my-project \
+  --interaction-lang zh-CN --document-lang en --commit-lang en
 ```
+
+TTY 環境で `--lang` を付けずに (かつ 3 つの次元フラグすべてを付けずに) 初回 init を実行するとベース言語の入力を求められます。非 TTY (CI/スクリプト) では `en` がデフォルトです。`init` を再実行しても、指定しなかった言語キーは保持されます。
 
 **初期化後：**
 
@@ -600,10 +623,10 @@ codexspec init my-project --lang zh-CN
 # 現在の設定を表示
 codexspec config
 
-# 言語設定を変更
-codexspec config --set-lang ja
-
-# コミットメッセージ言語を設定
+# 単一次元を変更
+codexspec config --set-lang zh-CN
+codexspec config --set-interaction-lang zh-CN
+codexspec config --set-document-lang en
 codexspec config --set-commit-lang en
 ```
 
@@ -634,9 +657,11 @@ codexspec config --set-commit-lang en
 version: "1.0"
 
 language:
-  output: "ja"           # 出力言語
-  commit: "ja"           # コミットメッセージ言語（デフォルト：出力言語）
-  templates: "en"        # "en"のまま
+  output: "zh-CN"        # ベース言語。以下 3 つはこれに (次いで "en") フォールバック
+  interaction: "zh-CN"   # LLM との対話 + codexspec CLI 出力 (省略可 → デフォルトは output)
+  document: "en"         # 生成される requirements/spec/plan/tasks (省略可 → デフォルトは output)
+  commit: "en"           # git コミットメッセージ (省略可 → デフォルトは output)
+  templates: "en"        # "en" のまま
 
 project:
   ai: "claude"

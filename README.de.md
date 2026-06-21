@@ -481,12 +481,15 @@ Implementierung folgt **bedingtem TDD-Workflow**:
 
 | Option          | Beschreibung                           |
 | --------------- | ------------------------------------- |
-| `PROJECT_NAME`  | Projektverzeichnisname                |
+| `PROJECT_NAME`  | Name des Projektverzeichnisses (`.` oder `--here` für aktuelles Verzeichnis) |
 | `--here`, `-h`  | Im aktuellen Verzeichnis initialisieren |
-| `--ai`, `-a`    | KI-Assistent (Standard: claude)       |
-| `--lang`, `-l`  | Ausgabesprache (z.B. de, en, zh-CN)   |
-| `--force`, `-f` | Bestehende Dateien überschreiben      |
-| `--no-git`      | Git-Initialisierung überspringen      |
+| `--ai`, `-a`    | Zu verwendender KI-Assistent (Standard: claude) |
+| `--lang`, `-l`  | Basis-Ausgabesprache; interaction/document/commit fallen darauf zurück (z.B. en, zh-CN, ja) |
+| `--interaction-lang` | Interaktionssprache (LLM-Dialog + CLI-Ausgabe); überschreibt `--lang` |
+| `--document-lang` | Dokumentensprache (generierte Spec/Plan/Tasks); überschreibt `--lang` |
+| `--commit-lang` | Commit-Nachrichten-Sprache; überschreibt `--lang` |
+| `--force`, `-f` | Dateien überschreiben + Prompts automatisch bestätigen; `config.yml` wird nie neu erzeugt |
+| `--no-git`      | Git-Repository-Initialisierung überspringen |
 | `--debug`, `-d` | Debug-Ausgabe aktivieren              |
 
 </details>
@@ -496,7 +499,9 @@ Implementierung folgt **bedingtem TDD-Workflow**:
 
 | Option                    | Beschreibung                  |
 | ------------------------- | ----------------------------- |
-| `--set-lang`, `-l`        | Ausgabesprache festlegen      |
+| `--set-lang`, `-l`        | Basis-Ausgabesprache festlegen |
+| `--set-interaction-lang`  | Interaktionssprache festlegen |
+| `--set-document-lang`     | Dokumentensprache festlegen   |
 | `--set-commit-lang`, `-c` | Commit-Nachrichten-Sprache festlegen |
 | `--list-langs`            | Alle unterstützten Sprachen auflisten |
 
@@ -581,17 +586,35 @@ CodexSpec ist von GitHub spec-kit inspiriert mit wichtigen Unterschieden:
 
 CodexSpec unterstützt mehrere Sprachen durch **LLM-Dynamische Übersetzung**. Keine Übersetzungsvorlagen zu pflegen - Claude übersetzt Inhalte zur Laufzeit basierend auf Ihrer Sprachkonfiguration.
 
+### Sprach-Dimensionen
+
+CodexSpec unterteilt die Sprache in vier unabhängig konfigurierbare Dimensionen. `output` ist die Basis; die anderen überschreiben sie und fallen darauf (und dann auf `en`) zurück, wenn sie nicht gesetzt sind — sodass Sie mit Claude in einer Sprache kommunizieren können, während generierte Artefakte oder Commit-Nachrichten in einer anderen verbleiben.
+
+| Dimension | `config.yml`-Schlüssel | Bei init setzen | Später setzen | Steuert | Fällt zurück auf |
+|-----------|-------------------------|-----------------|----------------|---------|------------------|
+| Output (Basis) | `output` | `--lang` | `config --set-lang` | Basis für die anderen drei | `en` |
+| Interaction | `interaction` | `--interaction-lang` | `config --set-interaction-lang` | LLM-Dialog + CLI-Ausgabe | output → `en` |
+| Document | `document` | `--document-lang` | `config --set-document-lang` | generierte Spec/Plan/Tasks | output → `en` |
+| Commit | `commit` | `--commit-lang` | `config --set-commit-lang` | Git-Commit-Nachrichten | output → `en` |
+| Templates | `templates` | — | — | Vorlagenquelle (immer `en`) | — |
+
 ### Sprache festlegen
 
 **Während der Initialisierung:**
 
 ```bash
-# Projekt mit deutscher Ausgabe erstellen
-codexspec init my-project --lang de
+# Chinesische Ausgabe (setzt die Basis output)
+codexspec init my-project --lang zh-CN
 
-# Projekt mit japanischer Ausgabe erstellen
-codexspec init my-project --lang ja
+# Vollständig nicht-interaktiv: zh-CN-Basis, englische Commit-Nachrichten
+codexspec init my-project --lang zh-CN --commit-lang en
+
+# Jede Dimension explizit festlegen (skriptbar, keine Prompts)
+codexspec init my-project \
+  --interaction-lang zh-CN --document-lang en --commit-lang en
 ```
+
+Die erstmalige Initialisierung in einem TTY ohne `--lang` (und ohne alle drei Dimensions-Flags) fragt nach einer Basissprache; in einem Nicht-TTY (CI/Skripte) wird standardmäßig `en` verwendet. Ein erneuter `init`-Aufruf behält jeden Sprach-Schlüssel bei, den Sie nicht angegeben haben.
 
 **Nach der Initialisierung:**
 
@@ -599,10 +622,10 @@ codexspec init my-project --lang ja
 # Aktuelle Konfiguration anzeigen
 codexspec config
 
-# Ausgabesprache ändern
-codexspec config --set-lang de
-
-# Commit-Nachrichten-Sprache festlegen
+# Eine einzelne Dimension ändern
+codexspec config --set-lang zh-CN
+codexspec config --set-interaction-lang zh-CN
+codexspec config --set-document-lang en
 codexspec config --set-commit-lang en
 ```
 
@@ -633,9 +656,11 @@ codexspec config --set-commit-lang en
 version: "1.0"
 
 language:
-  output: "de"         # Ausgabesprache
-  commit: "de"         # Commit-Nachrichten-Sprache (Standard: output)
-  templates: "en"      # Als "en" belassen
+  output: "zh-CN"        # Basissprache; die drei unten fallen darauf zurück, dann "en"
+  interaction: "zh-CN"   # LLM-Dialog + codexspec CLI-Ausgabe (optional → Standardwert ist output)
+  document: "en"         # Generierte Anforderungen/Spec/Plan/Tasks (optional → Standardwert ist output)
+  commit: "en"           # Git-Commit-Nachrichten (optional → Standardwert ist output)
+  templates: "en"        # Als "en" belassen
 
 project:
   ai: "claude"

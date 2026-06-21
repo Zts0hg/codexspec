@@ -481,11 +481,14 @@ A implementação segue **fluxo de trabalho TDD condicional**:
 
 | Opção | Descrição |
 |-------|-----------|
-| `PROJECT_NAME` | Nome do diretório do projeto |
+| `PROJECT_NAME` | Nome do diretório do projeto (`.` ou `--here` para o diretório atual) |
 | `--here`, `-h` | Inicializar no diretório atual |
 | `--ai`, `-a` | Assistente de IA a usar (padrão: claude) |
-| `--lang`, `-l` | Idioma de saída (ex: en, pt-BR, zh-CN, ja) |
-| `--force`, `-f` | Forçar sobrescrita de arquivos existentes |
+| `--lang`, `-l` | Idioma (base) de saída; interaction/document/commit recaem sobre ele (ex: en, zh-CN, ja) |
+| `--interaction-lang` | Idioma de interação (diálogo com o LLM + saída do CLI); sobrescreve `--lang` |
+| `--document-lang` | Idioma dos documentos (spec/plan/tasks gerados); sobrescreve `--lang` |
+| `--commit-lang` | Idioma das mensagens de commit; sobrescreve `--lang` |
+| `--force`, `-f` | Sobrescrever arquivos + confirmar prompts automaticamente; nunca regenera `config.yml` |
 | `--no-git` | Pular inicialização do git |
 | `--debug`, `-d` | Habilitar saída de debug |
 
@@ -496,7 +499,9 @@ A implementação segue **fluxo de trabalho TDD condicional**:
 
 | Opção | Descrição |
 |-------|-----------|
-| `--set-lang`, `-l` | Definir o idioma de saída |
+| `--set-lang`, `-l` | Definir o idioma (base) de saída |
+| `--set-interaction-lang` | Definir o idioma de interação |
+| `--set-document-lang` | Definir o idioma dos documentos |
 | `--set-commit-lang`, `-c` | Definir o idioma das mensagens de commit |
 | `--list-langs` | Listar todos os idiomas suportados |
 
@@ -581,17 +586,35 @@ CodexSpec é inspirado no spec-kit do GitHub mas com algumas diferenças importa
 
 CodexSpec suporta múltiplos idiomas através de **tradução dinâmica LLM**. Em vez de manter templates traduzidos, deixamos o Claude traduzir o conteúdo em tempo real com base na sua configuração de idioma.
 
+### Dimensões de Idioma
+
+O CodexSpec divide o idioma em quatro dimensões configuráveis de forma independente. `output` é a base; as demais a sobrescrevem e recaem sobre ela (e depois sobre `en`) quando não definidas — assim você pode conversar com o Claude em um idioma enquanto mantém os artefatos gerados ou as mensagens de commit em outro.
+
+| Dimensão | Chave do `config.yml` | Definir no init | Definir depois | Controla | Recai sobre |
+|-----------|------------------------|-----------------|----------------|----------|-------------|
+| Saída (base) | `output` | `--lang` | `config --set-lang` | base para as outras três | `en` |
+| Interação | `interaction` | `--interaction-lang` | `config --set-interaction-lang` | diálogo com o LLM + saída do CLI | output → `en` |
+| Documento | `document` | `--document-lang` | `config --set-document-lang` | spec/plan/tasks gerados | output → `en` |
+| Commit | `commit` | `--commit-lang` | `config --set-commit-lang` | mensagens de commit do git | output → `en` |
+| Templates | `templates` | — | — | origem dos templates (sempre `en`) | — |
+
 ### Definir Idioma
 
 **Durante a inicialização:**
 
 ```bash
-# Criar um projeto com saída em português
-codexspec init my-project --lang pt-BR
+# Saída em chinês (define a base de output)
+codexspec init my-project --lang zh-CN
 
-# Criar um projeto com saída em japonês
-codexspec init my-project --lang ja
+# Totalmente não interativo: base em zh-CN, mensagens de commit em inglês
+codexspec init my-project --lang zh-CN --commit-lang en
+
+# Definir cada dimensão explicitamente (scriptável, sem prompts)
+codexspec init my-project \
+  --interaction-lang zh-CN --document-lang en --commit-lang en
 ```
+
+A primeira execução de `init` em um TTY sem `--lang` (e sem as três flags de dimensão) solicita um idioma base; em um ambiente não-TTY (CI/scripts) o padrão é `en`. Executar `init` novamente preserva qualquer chave de idioma que você não tenha especificado.
 
 **Após a inicialização:**
 
@@ -599,10 +622,10 @@ codexspec init my-project --lang ja
 # Ver configuração atual
 codexspec config
 
-# Alterar configuração de idioma
-codexspec config --set-lang pt-BR
-
-# Definir idioma das mensagens de commit
+# Alterar uma única dimensão
+codexspec config --set-lang zh-CN
+codexspec config --set-interaction-lang zh-CN
+codexspec config --set-document-lang en
 codexspec config --set-commit-lang en
 ```
 
@@ -633,9 +656,11 @@ codexspec config --set-commit-lang en
 version: "1.0"
 
 language:
-  output: "pt-BR"       # Idioma de saída
-  commit: "pt-BR"       # Idioma das mensagens de commit (padrão: idioma de saída)
-  templates: "en"       # Manter "en"
+  output: "zh-CN"        # Idioma base; os três abaixo recaem sobre ele e depois sobre "en"
+  interaction: "zh-CN"   # Diálogo com o LLM + saída do CLI codexspec (opcional → padrão: output)
+  document: "en"         # Requisitos/spec/plan/tasks gerados (opcional → padrão: output)
+  commit: "en"           # Mensagens de commit do git (opcional → padrão: output)
+  templates: "en"        # Manter como "en"
 
 project:
   ai: "claude"

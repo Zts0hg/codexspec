@@ -482,11 +482,14 @@ claude
 
 | 选项 | 描述 |
 |------|------|
-| `PROJECT_NAME` | 项目目录名称 |
+| `PROJECT_NAME` | 项目目录名称（`.` 或 `--here` 指代当前目录） |
 | `--here`, `-h` | 在当前目录初始化 |
 | `--ai`, `-a` | 使用的 AI 助手（默认：claude） |
-| `--lang`, `-l` | 输出语言（如：en, zh-CN, ja） |
-| `--force`, `-f` | 强制覆盖现有文件 |
+| `--lang`, `-l` | 输出（基础）语言；interaction/document/commit 在未设置时回退到它（如：en, zh-CN, ja） |
+| `--interaction-lang` | 交互语言（LLM 对话 + CLI 输出）；覆盖 `--lang` |
+| `--document-lang` | 文档语言（生成的 spec/plan/tasks）；覆盖 `--lang` |
+| `--commit-lang` | 提交信息语言；覆盖 `--lang` |
+| `--force`, `-f` | 覆盖文件并自动确认提示；永不重新生成 `config.yml` |
 | `--no-git` | 跳过 git 初始化 |
 | `--debug`, `-d` | 启用调试输出 |
 
@@ -497,8 +500,10 @@ claude
 
 | 选项 | 描述 |
 |------|------|
-| `--set-lang`, `-l` | 设置输出语言 |
-| `--set-commit-lang`, `-c` | 设置提交消息语言 |
+| `--set-lang`, `-l` | 设置输出（基础）语言 |
+| `--set-interaction-lang` | 设置交互语言 |
+| `--set-document-lang` | 设置文档语言 |
+| `--set-commit-lang`, `-c` | 设置提交信息语言 |
 | `--list-langs` | 列出所有支持的语言 |
 
 </details>
@@ -582,17 +587,35 @@ CodexSpec 灵感来源于 GitHub 的 spec-kit，但有一些关键差异：
 
 CodexSpec 通过 **LLM 动态翻译**支持多种语言。无需维护翻译模板 - Claude 根据您的语言配置在运行时翻译内容。
 
+### 语言维度
+
+CodexSpec 将语言拆分为四个可独立配置的维度。`output` 是基础；其余三项覆盖它，并在未设置时回退到它（再到 `en`）—— 这样你就可以用一种语言与 Claude 对话，同时把生成的产物或提交信息保留在另一种语言。
+
+| 维度 | `config.yml` 键 | 初始化时设置 | 之后设置 | 控制 | 回退到 |
+|------|------------------|-------------|-----------|------|--------|
+| Output（基础） | `output` | `--lang` | `config --set-lang` | 其他三项的基础 | `en` |
+| Interaction | `interaction` | `--interaction-lang` | `config --set-interaction-lang` | LLM 对话 + CLI 输出 | output → `en` |
+| Document | `document` | `--document-lang` | `config --set-document-lang` | 生成的 spec/plan/tasks | output → `en` |
+| Commit | `commit` | `--commit-lang` | `config --set-commit-lang` | git 提交信息 | output → `en` |
+| Templates | `templates` | — | — | 模板来源（始终为 `en`） | — |
+
 ### 设置语言
 
 **初始化时：**
 
 ```bash
-# 创建中文输出的项目
+# 中文输出（设置 output 基础语言）
 codexspec init my-project --lang zh-CN
 
-# 创建日语输出的项目
-codexspec init my-project --lang ja
+# 完全非交互：zh-CN 基础语言，英文提交信息
+codexspec init my-project --lang zh-CN --commit-lang en
+
+# 显式设置每个维度（可脚本化，无提示）
+codexspec init my-project \
+  --interaction-lang zh-CN --document-lang en --commit-lang en
 ```
+
+在 TTY 中首次运行 `init` 且未指定 `--lang`（也未同时指定全部三个维度标志）时会提示选择基础语言；在非 TTY 环境（CI/脚本）下默认为 `en`。重新运行 `init` 会保留你未指定的任何语言键。
 
 **初始化后：**
 
@@ -600,10 +623,10 @@ codexspec init my-project --lang ja
 # 查看当前配置
 codexspec config
 
-# 更改语言设置
+# 更改单个维度
 codexspec config --set-lang zh-CN
-
-# 设置提交消息语言
+codexspec config --set-interaction-lang zh-CN
+codexspec config --set-document-lang en
 codexspec config --set-commit-lang en
 ```
 
@@ -634,9 +657,11 @@ codexspec config --set-commit-lang en
 version: "1.0"
 
 language:
-  output: "zh-CN"        # 输出语言
-  commit: "zh-CN"        # 提交消息语言（默认为输出语言）
-  templates: "en"        # 保持 "en"
+  output: "zh-CN"        # 基础语言；以下三项回退到它，再到 "en"
+  interaction: "zh-CN"   # LLM 对话 + codexspec CLI 输出（可选 → 默认为 output）
+  document: "en"         # 生成的 requirements/spec/plan/tasks（可选 → 默认为 output）
+  commit: "en"           # git 提交信息（可选 → 默认为 output）
+  templates: "en"        # 保持为 "en"
 
 project:
   ai: "claude"
