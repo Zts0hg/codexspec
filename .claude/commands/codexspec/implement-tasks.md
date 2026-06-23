@@ -133,10 +133,103 @@ When encountering problems, create/update `issues.md` in the same directory as `
 - **Status**: Blocked / Workaround Found / Needs Discussion
 ```
 
-### 6. Completion
+### 6. Pre-Review Baseline
 
-After all tasks:
+After all tasks are implemented:
 
-- Run full test suite (if applicable)
-- Final commit if needed
-- Report completion summary with files modified
+- Run the full test suite.
+- Confirm the suite is green. This green state is the baseline for the Final
+  Code Review Loop; no auto-fix may regress it. If the suite is already red at
+  this point, stop and fix the implementation before reviewing.
+
+### 7. Final Code Review Loop
+
+After the baseline is green, review the implemented code and auto-fix verified
+defects. This mirrors the `review-spec` / `review-plan` / `review-tasks` loops
+the sibling generation commands run.
+
+#### 7.1 Determine the Review Target
+
+Review only the analyzable code changed by this implementation, not the whole
+repository and not per task. Compute the candidate file set:
+
+```
+git diff --name-only $(git merge-base HEAD <main>)..HEAD
+git diff --name-only                       # uncommitted tracked changes
+git ls-files --others --exclude-standard   # untracked files
+```
+
+`<main>` is the project's default branch, resolved from `git.main_branches` in
+`.codexspec/config.yml` (default: `main`, `master`, `develop`).
+
+Then filter the candidate set:
+
+- Keep only analyzable source extensions: `.py .ts .tsx .js .jsx .go .rs .java
+  .kt .kts .rb .sh .bash .zsh .c .h .cpp .hpp .cc .cxx .cs .swift .php`.
+- Exclude `.codexspec/specs/` and generated/vendored paths (e.g. `dist/`,
+  lockfiles, `.venv/`).
+
+If the filtered set is empty (e.g. the implementation produced only docs,
+config, or assets), report "no code to review", skip this loop, and proceed to
+step 8.
+
+Fallback: if git is unavailable or the current branch is not a feature branch
+(so the diff base cannot be determined), review the project's primary source
+directory as `/codexspec:review-code` would by default, and explicitly note the
+degraded fidelity (the review may include pre-existing code).
+
+#### 7.2 Invoke the Review
+
+Invoke `/codexspec:review-code <filtered-paths>`.
+
+`/codexspec:review-code` is **review-only**; it produces findings and scores but
+does not edit code. Apply every fix **yourself**, under this command's tool
+scope (which includes `Edit`/`Write` and running the test suite via `Bash`).
+
+#### 7.3 Auto-Fix Scope
+
+- Auto-fix **CRITICAL, HIGH, and MEDIUM** findings only.
+- **LOW** (suggestion) findings are report-only; never auto-fix them.
+- A **MEDIUM** finding is auto-fixed only when it is grounded in
+  `.codexspec/memory/constitution.md` and the confirmed requirements/spec, and
+  it concerns **maintainability, readability, or testability**. Ungrounded or
+  purely stylistic MEDIUM findings are report-only.
+- Do not auto-fix advisories or design opportunities, and do not introduce any
+  new product decision.
+
+#### 7.4 Test-Safe Fixes (never ship red)
+
+Every fix must be test-safe. A fix that breaks tests is, by definition, an
+incorrect change — it is never shipped and never silently skipped.
+
+- **Functional defects** (logic, correctness, security): follow TDD — add a
+  failing test that reproduces the defect (red), apply the fix until that test
+  passes (green), then refactor while tests stay green.
+- **Non-functional fixes** (refactors for maintainability, readability,
+  testability): run the suite before and after the change. If the change turns
+  any test red, revert it, confirm the suite is green again, and re-attempt the
+  refactor.
+- If a fix cannot be made green after retry, treat it as **unresolved** and stop
+  (see 7.5).
+
+#### 7.5 Loop Bounds and Stop Conditions
+
+- Run at most **two** fix-and-review rounds. (The per-fix TDD retry in 7.4
+  happens within a round; the two-round limit bounds overall effort.)
+- Stop when a defect repeats, remains unresolved, or requires a user or
+  architecture decision.
+- After each green round, commit the fixes (see step 8).
+
+#### 7.6 Terminal Status
+
+- If CRITICAL or HIGH defects remain unresolved after the maximum rounds, the
+  status is **"needs work"** — do not claim success.
+- Otherwise report the review outcome: scores, items fixed, items deferred, and
+  the final test status.
+
+### 8. Final Report and Commit
+
+- Commit any review-driven changes from step 7 that are not already committed.
+- Report the completion summary: files modified, review status (scores, items
+  fixed, items deferred, final test status), and the overall status (success or
+  "needs work").

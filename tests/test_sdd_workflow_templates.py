@@ -135,6 +135,44 @@ def test_adjacent_commands_preserve_requirements_authority():
     assert "latest feature" not in implement.lower()
 
 
+def test_implement_tasks_has_final_code_review_loop():
+    """implement-tasks chains to review-code with a test-safe auto-fix loop."""
+    content = read_command("implement-tasks")
+
+    # The loop exists and invokes review-code once, at end of run (REQ-001).
+    assert "Final Code Review Loop" in content
+    assert "/codexspec:review-code" in content
+
+    # Only analyzable code in this implementation's diff is reviewed; an
+    # all-non-code diff is a graceful skip (REQ-002 / CON-003).
+    assert "no code to review" in content
+
+    # Severity gate: CRITICAL+HIGH+MEDIUM auto-fixed, LOW report-only (REQ-003).
+    assert "CRITICAL, HIGH, and MEDIUM" in content
+    assert "report-only" in content
+
+    # MEDIUM must be grounded in constitution + requirements and focus on the
+    # three meta-qualities (REQ-004 / DEC-001).
+    assert "constitution.md" in content
+    assert "maintainability, readability, or testability" in content
+
+    # Test-safe fixes: a refactor that breaks tests is reverted and retried;
+    # nothing red is ever shipped or silently skipped (REQ-006 / DEC-002).
+    assert "revert it, confirm the suite is green again" in content
+    assert "never silently skipped" in content
+
+    # Two-round bound and "needs work" on residual high-severity (REQ-007/009).
+    assert "two-round limit" in content
+    assert "fix-and-review rounds" in content
+    assert "needs work" in content
+
+    # Fixes are committed before reporting completion (REQ-008).
+    assert "commit the fixes" in content
+
+    # The existing per-task Review & Refactor step is preserved (REQ-010).
+    assert "Review & Refactor" in content
+
+
 @pytest.mark.parametrize("language", ["de", "es", "fr", "ja", "ko", "pt-BR"])
 def test_localized_guides_describe_requirements_first_workflow(language):
     guide = (ROOT / "docs" / language / "user-guide" / "commands.md").read_text(encoding="utf-8")
