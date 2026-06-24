@@ -471,9 +471,11 @@ def init(
         "--force",
         "-f",
         help=(
-            "Overwrite existing files and auto-confirm prompts (skips the language "
-            "prompt and command-update/migration confirms). Language config is updated "
-            "surgically, never fully regenerated."
+            "Overwrite regenerable files (commands/scripts) and auto-confirm prompts "
+            "(skips the language prompt and command-update/migration confirms). "
+            "User-authored content is preserved: language config is updated surgically "
+            "and an existing CLAUDE.md body is never overwritten (only the constitution "
+            "@import is prepended if missing)."
         ),
     ),
     no_git: bool = typer.Option(
@@ -772,15 +774,19 @@ def init(
         console.print(f"[dim]{translate('cli.init.language_dimensions_hint', normalized_lang)}[/dim]")
 
     # Create CLAUDE.md
+    # CLAUDE.md is user-authored content (like the constitution), not a
+    # regenerable artifact (like commands/scripts). Never overwrite an existing
+    # body -- even under --force. --force only auto-confirms the one safe,
+    # idempotent change: prepending the constitution @import if it is missing.
     claude_md = target_dir / "CLAUDE.md"
-    if not claude_md.exists() or force:
+    if not claude_md.exists():
         project_name = target_dir.name
         claude_md.write_text(_get_claude_md_content(project_name), encoding="utf-8")
         console.print(f"[green]{translate('cli.init.created_file', normalized_lang, file='CLAUDE.md')}[/green]")
     else:
-        # Check if existing CLAUDE.md has compliance section
+        # Existing CLAUDE.md: ensure the compliance @import, never clobber the body.
         if not has_compliance_section(claude_md):
-            if confirm_add_compliance(normalized_lang):
+            if force or confirm_add_compliance(normalized_lang):
                 prepend_compliance_section(claude_md)
                 console.print(f"[green]{translate('cli.init.compliance_added', normalized_lang)}[/green]")
 

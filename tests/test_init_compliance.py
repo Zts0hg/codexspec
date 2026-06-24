@@ -9,8 +9,11 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+from typer.testing import CliRunner
 
-from codexspec import has_compliance_section, prepend_compliance_section
+from codexspec import app, has_compliance_section, prepend_compliance_section
+
+_runner = CliRunner()
 
 # ============================================================================
 # Fixtures
@@ -149,43 +152,73 @@ This has old manual compliance section but no @ import.
 
 
 # ============================================================================
-# TC-008: --force flag behavior unchanged
+# TC-008: --force preserves an existing CLAUDE.md (user-authored content)
 # ============================================================================
 
 
 class TestForceFlagBehavior:
-    """Tests for TC-008: --force flag should overwrite entire file."""
+    """Tests for --force with an existing CLAUDE.md.
 
-    def test_force_creates_new_claude_md(self, project_with_claude_md):
-        """TC-008: --force should create new CLAUDE.md content."""
+    CLAUDE.md is user-authored content (like the constitution), not a
+    regenerable artifact. --force never overwrites an existing body; it only
+    auto-confirms the one safe, idempotent change -- prepending the
+    constitution @import when it is missing. These exercise the real init
+    command via the CLI runner.
+    """
+
+    def test_force_preserves_body_and_prepends_import(self, tmp_path):
+        """--force on an existing CLAUDE.md without @import: body preserved, import prepended."""
+        proj = tmp_path / "proj"
+        proj.mkdir()
+        claude_md = proj / "CLAUDE.md"
+        claude_md.write_text(
+            "# CLAUDE.md - Existing Project\n\nCustom hand-maintained content.\n",
+            encoding="utf-8",
+        )
+
+        result = _runner.invoke(app, ["init", str(proj), "--no-git", "--force"])
+        assert result.exit_code == 0, result.output
+
+        content = claude_md.read_text(encoding="utf-8")
+        # The existing body is preserved, not replaced by the generic template.
+        assert "Custom hand-maintained content." in content
+        assert "Existing Project" in content
         from codexspec import _get_claude_md_content
 
-        claude_md = project_with_claude_md / "CLAUDE.md"
-        project_name = project_with_claude_md.name
-
-        # Simulate --force behavior: overwrite entire file
-        claude_md.write_text(_get_claude_md_content(project_name), encoding="utf-8")
-
-        # Verify file was completely replaced
+        assert _get_claude_md_content(proj.name) not in content
+        # The constitution @import was prepended (idempotent, body-safe).
         assert has_compliance_section(claude_md) is True
+        assert content.startswith("<!-- markdownlint-disable MD041 -->")
 
-    def test_force_removes_custom_content(self, project_with_claude_md):
-        """TC-008: --force should remove user's custom content."""
-        from codexspec import _get_claude_md_content
+    def test_force_leaves_compliant_file_unchanged(self, tmp_path):
+        """--force on a CLAUDE.md that already has @import: left byte-identical."""
+        proj = tmp_path / "proj"
+        proj.mkdir()
+        claude_md = proj / "CLAUDE.md"
+        original = (
+            "<!-- markdownlint-disable MD041 -->\n"
+            "@.codexspec/memory/constitution.md\n\n"
+            "# CLAUDE.md - Existing Project\n\nCustom content.\n"
+        )
+        claude_md.write_text(original, encoding="utf-8")
 
-        claude_md = project_with_claude_md / "CLAUDE.md"
-        original_content = claude_md.read_text(encoding="utf-8")
+        result = _runner.invoke(app, ["init", str(proj), "--no-git", "--force"])
+        assert result.exit_code == 0, result.output
 
-        # Verify original had custom content
-        assert "Existing Project" in original_content
+        # Already compliant -- nothing is written.
+        assert claude_md.read_text(encoding="utf-8") == original
 
-        project_name = project_with_claude_md.name
-        # Simulate --force behavior
-        claude_md.write_text(_get_claude_md_content(project_name), encoding="utf-8")
+    def test_force_creates_claude_md_when_absent(self, tmp_path):
+        """--force still creates CLAUDE.md from the template when none exists."""
+        proj = tmp_path / "proj"
+        proj.mkdir()
 
-        new_content = claude_md.read_text(encoding="utf-8")
-        # Custom content should be gone
-        assert "Existing Project" not in new_content
+        result = _runner.invoke(app, ["init", str(proj), "--no-git", "--force"])
+        assert result.exit_code == 0, result.output
+
+        claude_md = proj / "CLAUDE.md"
+        assert claude_md.exists()
+        assert has_compliance_section(claude_md) is True
 
 
 # ============================================================================
