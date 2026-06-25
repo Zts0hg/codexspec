@@ -10,7 +10,7 @@ language:
   # Output language - Claude will use this language for interactions
   # and generated documents. Supports any Claude-supported language.
   # Common values: en, zh-CN, zh-TW, ja, ko, es, fr, de, pt, ru
-  output: "zh-CN"
+  output: "en"
   # Commit message language - language for git commit messages
   # Defaults to output language if not specified
   # Set to "en" for English commit messages regardless of output language
@@ -21,5 +21,5 @@ language:
 
 # Project metadata
 project:
-  ai: "claude"
+  ai: "codex"
   created: "2026-03-16"
