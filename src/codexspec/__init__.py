@@ -43,7 +43,7 @@ from .integrations import get_integrations
 from .translator import SUPPORTED_LANGUAGES, translate
 
 # Version info
-__version__ = "0.6.0"
+__version__ = "0.7.0"
 __author__ = "CodexSpec Team"
 
 # Constitution file path constants
