@@ -206,6 +206,9 @@ uvx codexspec init my-project
 # Initialize in existing project
 cd your-existing-project
 uvx codexspec init . --ai claude
+
+# Initialize for Codex CLI
+uvx codexspec init . --ai codex
 ```
 
 #### Install Development Version from GitHub
@@ -485,7 +488,7 @@ Implementation follows **conditional TDD workflow**:
 | --------------- | ------------------------------------- |
 | `PROJECT_NAME`  | Project directory name (`.` or `--here` for current dir) |
 | `--here`, `-h`  | Initialize in the current directory   |
-| `--ai`, `-a`    | AI assistant to use (default: claude) |
+| `--ai`, `-a`    | AI assistant to use: `claude`, `codex`, or `both` (default: claude) |
 | `--lang`, `-l`  | Output (base) language; interaction/document/commit fall back to it (e.g., en, zh-CN, ja) |
 | `--interaction-lang` | Interaction language (LLM dialogue + CLI output); overrides `--lang` |
 | `--document-lang` | Document language (generated spec/plan/tasks); overrides `--lang` |
@@ -693,7 +696,10 @@ my-project/
 │   └── extensions/            # Custom extensions
 ├── .claude/
 │   └── commands/              # Claude Code slash commands
-└── CLAUDE.md                  # Claude Code context
+├── .agents/
+│   └── skills/                # Codex skills (when initialized with --ai codex or both)
+├── CLAUDE.md                  # Claude Code context
+└── AGENTS.md                  # Codex context
 ```
 
 ---
