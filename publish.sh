@@ -163,6 +163,18 @@ if ! $SKIP_TAG; then
             # tag the previous feature commit (which still claims the old
             # version), producing an off-by-one tag and leaving pyproject.toml
             # as an orphan in the working tree. See the Oct 2026 post-mortem.
+            #
+            # NOTE: the pre-commit `pip-audit` hook queries pypi.org once per
+            # dependency and can abort mid-release on a transient SSL/network
+            # error (e.g. "SSL: UNEXPECTED_EOF_WHILE_READING"), which `set -e`
+            # treats as a hard failure. That is NOT a real vulnerability finding
+            # (bandit, the source-code audit, still runs). If it aborts here,
+            # the tree is left dirty with the bump staged but uncommitted.
+            # Recover by resetting the half-bump and re-running with the flaky
+            # hook skipped:
+            #   git restore --staged pyproject.toml uv.lock
+            #   git checkout -- pyproject.toml uv.lock
+            #   SKIP=pip-audit ./publish.sh --auto-bump
             echo -e "${YELLOW}Committing version bump...${NC}"
             git add pyproject.toml uv.lock
             git commit -m "chore(release): bump version to v$NEW_VERSION"
