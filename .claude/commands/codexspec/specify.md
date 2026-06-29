@@ -107,3 +107,14 @@ Report:
 - Confirmed IDs
 - Open IDs and whether they block specification generation
 - Next command: `/codexspec:generate-spec <feature-dir>`
+
+## Auto-Next Chain Advance
+
+Read `workflow.auto_next` from `.codexspec/config.yml` (default `false`; only the literal value `true` enables it).
+
+When `workflow.auto_next` is `true` AND discovery is complete — the Completion criteria above are met and the user has explicitly confirmed the final stage summary (not each intermediate topic confirmation) — advance the chain automatically:
+
+1. Emit exactly one notice line, in the interaction language, e.g. `auto_next: requirements confirmed → invoking /codexspec:generate-spec <feature-dir>`.
+2. Invoke `/codexspec:generate-spec <feature-dir>` exactly once, then end this command.
+
+Do not auto-advance on intermediate topic confirmations, or when `workflow.auto_next` is disabled (absent, `false`, or non-`true`); in those cases report normally and hand off to the next command manually. This advances the chain and does not modify the Completion report.

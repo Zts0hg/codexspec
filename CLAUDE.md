@@ -235,6 +235,30 @@ git:
 
 **Implementation**: The check is implemented as a `## Git Branch Safety Check` section in the command templates, executed before `## Instructions`.
 
+### Auto-Next Chain Advance
+
+**Feature**: When `workflow.auto_next` is enabled, the SDD pipeline advances to the next command automatically once the current stage passes, instead of requiring manual triggering between stages.
+
+**Affected Commands**: `/codexspec:specify`, `/codexspec:generate-spec`, `/codexspec:spec-to-plan`, `/codexspec:plan-to-tasks` each gain an `## Auto-Next Chain Advance` section. `/codexspec:implement-tasks` is the terminal stage (nothing auto-fires after it).
+
+**Chain**: `specify → generate-spec → spec-to-plan → plan-to-tasks → implement-tasks`.
+
+**Pass gate**:
+
+- `generate-spec` / `spec-to-plan` / `plan-to-tasks`: the command's built-in review loop Overall Status is `PASS` or `PASS_WITH_WARNINGS`. (`NEEDS_REVISION` / `BLOCKED` stops the chain and returns control to the user.)
+- `specify`: has no review loop; the gate is the user's explicit confirmation that requirements discovery is complete (the **final** stage summary, not each intermediate one).
+
+Before each advance the agent emits one notice line (e.g. `auto_next: review passed → invoking /codexspec:spec-to-plan`). For `plan-to-tasks`, the existing `analyze` auto-invoke runs first and is informational (does not block `implement-tasks`); the jump into `implement-tasks` proceeds with no confirmation prompt.
+
+**Configuration** (`.codexspec/config.yml`):
+
+```yaml
+workflow:
+  auto_next: true   # Default false (opt-in). Only literal `true` enables.
+```
+
+**Implementation**: A conditional `## Auto-Next Chain Advance` section in the command templates, mirroring the `## Automatic Cross-Artifact Analysis` pattern in `plan-to-tasks`. Edit `templates/commands/`; the `.claude/commands/codexspec/` and `.agents/skills/codexspec-*/` forms are regenerated from templates (do not hand-edit the derived copies).
+
 ### Plugin Marketplace Support
 
 **Feature**: CodexSpec is available as a Claude Code plugin via the plugin marketplace.

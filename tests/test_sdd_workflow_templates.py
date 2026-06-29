@@ -302,3 +302,84 @@ def test_command_templates_split_interaction_and_document_language():
             assert "language.document" in content, (
                 f"{command} must reference language.document in its Language Preference block"
             )
+
+
+# --- auto-next chain advance -----------------------------------------------
+# `workflow.auto_next`: when enabled and a stage passes, a command auto-invokes
+# the next command in the SDD chain (specify -> generate-spec -> spec-to-plan
+# -> plan-to-tasks -> implement-tasks). Mirrors the analyze auto-invoke pattern
+# added in #17. The source templates live in templates/commands/; installed
+# forms live under .claude/commands/codexspec/ (slash) and .agents/skills/
+# codexspec-*/ ($mention).
+
+_AUTO_NEXT_SUCCESSOR = {
+    "specify": "generate-spec",
+    "generate-spec": "spec-to-plan",
+    "spec-to-plan": "plan-to-tasks",
+    "plan-to-tasks": "implement-tasks",
+}
+
+
+@pytest.mark.parametrize("command", list(_AUTO_NEXT_SUCCESSOR))
+def test_chain_commands_have_auto_next_advance(command):
+    content = read_command(command)
+    successor = _AUTO_NEXT_SUCCESSOR[command]
+
+    assert "Auto-Next Chain Advance" in content
+    assert "workflow.auto_next" in content
+    # Opt-in: only literal `true` enables (default false / backwards compatible).
+    assert "only the literal value `true`" in content
+    # Advances to the correct next command.
+    assert successor in content
+    # One-line transparency notice is emitted (DEC-004).
+    assert "auto_next:" in content
+
+    if command == "specify":
+        # specify has no review loop; the gate is Completion / final confirmation.
+        assert "Completion" in content
+        assert "final stage summary" in content
+        assert "not each intermediate" in content
+    else:
+        # Generation commands gate on the review verdict and stop on non-pass.
+        assert "PASS" in content
+        assert "PASS_WITH_WARNINGS" in content
+        assert "NEEDS_REVISION" in content
+        assert "BLOCKED" in content
+
+
+def test_plan_to_tasks_auto_next_runs_after_analyze_and_is_nonblocking():
+    content = read_command("plan-to-tasks")
+
+    # analyze runs first (informational) and must not gate implement-tasks (CON-005).
+    assert "do NOT block this advance" in content
+    # No confirmation prompt before implement-tasks (DEC-001).
+    assert "no confirmation prompt" in content
+    # The auto-next section is placed after the analyze section.
+    assert content.index("Automatic Cross-Artifact Analysis") < content.index("Auto-Next Chain Advance")
+
+
+def test_implement_tasks_is_terminal_no_auto_next():
+    """implement-tasks is the terminal stage; nothing auto-fires after it (REQ-007)."""
+    assert "Auto-Next Chain Advance" not in read_command("implement-tasks")
+
+
+@pytest.mark.parametrize("command", list(_AUTO_NEXT_SUCCESSOR))
+def test_auto_next_section_synced_across_distribution_forms(command):
+    """The auto-next section is present in all three distribution forms: the source
+    template (slash form), the installed Claude command under .claude/ (slash form),
+    and the Codex skill under .agents/skills/ ($mention form). Guards self-bootstrap
+    drift where a template is edited but a derived copy is not regenerated."""
+    successor = _AUTO_NEXT_SUCCESSOR[command]
+    template = read_command(command)
+    claude_copy = (ROOT / ".claude" / "commands" / "codexspec" / f"{command}.md").read_text(encoding="utf-8")
+    skill_copy = (ROOT / ".agents" / "skills" / f"codexspec-{command}" / "SKILL.md").read_text(encoding="utf-8")
+
+    for label, form in [("template", template), ("claude", claude_copy), ("skill", skill_copy)]:
+        assert "Auto-Next Chain Advance" in form, f"{command} {label} missing auto-next section"
+        assert "workflow.auto_next" in form, f"{command} {label} missing workflow.auto_next"
+        assert successor in form, f"{command} {label} missing successor {successor}"
+
+    # Form-specific invocation syntax.
+    assert "/codexspec:" in template
+    assert "/codexspec:" in claude_copy
+    assert "$codexspec:" in skill_copy
