@@ -92,6 +92,16 @@ Invoke `/codexspec:review-tasks <feature-dir>/tasks.md`.
 - Run a maximum of two automatic fix-and-review rounds.
 - Stop if defects repeat, remain unresolved, or require a user or architecture decision.
 
+## Automatic Cross-Artifact Analysis
+
+When the review loop above concludes in a passing state — the final `/codexspec:review-tasks` Overall Status is `PASS` or `PASS_WITH_WARNINGS` — invoke `/codexspec:analyze <feature-dir>` exactly once.
+
+- Do not invoke analyze when the review loop stopped at `NEEDS_REVISION` or `BLOCKED`, or stopped early per the conditions above; in those cases end here, handing control back to the user as the review loop already does.
+- analyze runs once and is read-only. Present its output as-is; do not auto-fix its findings and do not run a fix-and-reanalyze loop.
+- If `requirements.md` is absent, analyze still runs and discloses its legacy limitation (it starts at `spec.md` and cannot verify fidelity to the original discussion) per its own behavior.
+- analyze's results are informational only. They do not change whether tasks are ready for implementation and do not add a gate before `/codexspec:implement-tasks`.
+- Do not modify the Output Summary for analyze, and do not save an additional analyze report file; analyze's own output is the report.
+
 ## Output Summary
 
 Report the tasks path, plan/requirement coverage, dependency summary, unresolved items, and auto-review status.
