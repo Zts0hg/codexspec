@@ -21,5 +21,12 @@ language:
 
 # Project metadata
 project:
-  ai: "codex"
+  ai: "both"
   created: "2026-03-16"
+
+# Auto-next: advance the SDD pipeline to the next command automatically once a
+# stage passes (specify -> generate-spec -> spec-to-plan -> plan-to-tasks ->
+# implement-tasks). Default false; only literal `true` enables. implement-tasks
+# is terminal; NEEDS_REVISION/BLOCKED halts the chain.
+workflow:
+  auto_next: true
