@@ -104,6 +104,7 @@ Display the configuration as in Step 2, then exit.
       {"label": "Document language", "description": "Language for generated artifact files (requirements/spec/plan/tasks) (currently: {current value})"},
       {"label": "Output language (legacy)", "description": "Fallback language used when interaction/document are not set (currently: {current value})"},
       {"label": "Commit language", "description": "Language for commit messages (currently: {current value})"},
+      {"label": "Auto-next chain", "description": "Auto-advance the SDD pipeline once a stage passes (workflow.auto_next) (currently: {current value})"},
       {"label": "Back", "description": "Return to main menu"}
     ]
   }]
@@ -127,9 +128,32 @@ Display the configuration as in Step 2, then exit.
 }
 ```
 
-3. Update the configuration file with the new value
-4. Display the updated configuration
-5. Exit
+3. For "Auto-next chain", ask whether to enable or disable:
+
+```json
+{
+  "questions": [{
+    "question": "Set workflow.auto_next:",
+    "header": "Auto-next",
+    "options": [
+      {"label": "Enable", "description": "Auto-advance the SDD pipeline once a stage passes"},
+      {"label": "Disable", "description": "Do not auto-advance; advance to the next command manually"},
+      {"label": "Back", "description": "Return without changing"}
+    ]
+  }]
+}
+```
+
+   Then read `.codexspec/config.yml`. The current value is enabled only when
+   `workflow.auto_next` is the literal `true`; an absent key/section, `false`,
+   or any other value is disabled. Write `workflow.auto_next` as an unquoted
+   `true`/`false` (update the value in place when the key exists; otherwise add
+   a `workflow:` section with `auto_next: <bool>`), preserving every other
+   line and comment.
+
+4. Update the configuration file with the new value
+5. Display the updated configuration
+6. Exit
 
 #### Option: Reset to defaults
 

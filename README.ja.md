@@ -505,6 +505,7 @@ claude
 | `--set-document-lang` | ドキュメント言語を設定 |
 | `--set-commit-lang`, `-c` | コミットメッセージ言語を設定 |
 | `--list-langs` | サポートされている言語を一覧表示 |
+| `--auto-next` | `workflow.auto_next` を切り替え/設定（値なしで切り替え、または on/off） |
 
 </details>
 
@@ -628,6 +629,7 @@ codexspec config --set-lang zh-CN
 codexspec config --set-interaction-lang zh-CN
 codexspec config --set-document-lang en
 codexspec config --set-commit-lang en
+codexspec config --auto-next
 ```
 
 ### サポートされている言語

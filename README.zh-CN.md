@@ -505,6 +505,7 @@ claude
 | `--set-document-lang` | 设置文档语言 |
 | `--set-commit-lang`, `-c` | 设置提交信息语言 |
 | `--list-langs` | 列出所有支持的语言 |
+| `--auto-next` | 切换/设置 `workflow.auto_next`（无值则切换；或 on/off） |
 
 </details>
 
@@ -628,6 +629,7 @@ codexspec config --set-lang zh-CN
 codexspec config --set-interaction-lang zh-CN
 codexspec config --set-document-lang en
 codexspec config --set-commit-lang en
+codexspec config --auto-next
 ```
 
 ### 支持的语言

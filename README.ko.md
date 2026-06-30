@@ -504,6 +504,7 @@ claude
 | `--set-document-lang` | 문서 언어 설정 |
 | `--set-commit-lang`, `-c` | 커밋 메시지 언어 설정 |
 | `--list-langs` | 지원되는 모든 언어 나열 |
+| `--auto-next` | `workflow.auto_next` 토글/설정 (값 없으면 토글, 또는 on/off) |
 
 </details>
 
@@ -627,6 +628,7 @@ codexspec config --set-lang zh-CN
 codexspec config --set-interaction-lang zh-CN
 codexspec config --set-document-lang en
 codexspec config --set-commit-lang en
+codexspec config --auto-next
 ```
 
 ### 지원되는 언어
