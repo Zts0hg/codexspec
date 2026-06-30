@@ -504,6 +504,7 @@ La implementación sigue **flujo de trabajo TDD condicional**:
 | `--set-document-lang` | Establecer el idioma de documentos |
 | `--set-commit-lang`, `-c` | Establecer el idioma de los mensajes de commit |
 | `--list-langs` | Listar todos los idiomas soportados |
+| `--auto-next` | Alternar/establecer `workflow.auto_next` (sin valor alterna; o on/off) |
 
 </details>
 
@@ -627,6 +628,7 @@ codexspec config --set-lang zh-CN
 codexspec config --set-interaction-lang zh-CN
 codexspec config --set-document-lang en
 codexspec config --set-commit-lang en
+codexspec config --auto-next
 ```
 
 ### Idiomas Soportados
