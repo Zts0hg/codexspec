@@ -173,6 +173,15 @@ def check() -> None:
     console.print(table)
 
 
+# workflow.auto_next toggle (used by the ``config --auto-next`` option).
+# Defined here because ``config()``'s ``flag_value`` default is evaluated at
+# function-definition time.
+_AUTO_NEXT_TRUE = {"on", "true", "1", "yes"}
+_AUTO_NEXT_FALSE = {"off", "false", "0", "no"}
+_AUTO_NEXT_SENTINEL = "__toggle__"
+_AUTO_NEXT_ACCEPTED = "on/off, true/false, 1/0, yes/no"
+
+
 @app.command()
 def config(
     set_lang: Optional[str] = typer.Option(
@@ -202,6 +211,16 @@ def config(
         "--list-langs",
         help="List all supported languages",
     ),
+    # ``--auto-next`` accepts an explicit value (on/off|true/false|1/0|yes/no).
+    # The bare form (toggle) is rewritten to ``--auto-next=<sentinel>`` by
+    # ``_normalize_auto_next_argv`` in ``main()``: Click 8.3 no longer honors
+    # ``flag_value`` for a bare optional-value option (it errors "requires an
+    # argument"), so the bare case is handled before Click parses.
+    auto_next: Optional[str] = typer.Option(
+        None,
+        "--auto-next",
+        help="Toggle workflow.auto_next (bare), or set it (on/off|true/false|1/0|yes/no).",
+    ),
 ) -> None:
     """
     View or modify CodexSpec project configuration.
@@ -213,6 +232,7 @@ def config(
         codexspec config                       # Show current configuration
         codexspec config --set-lang zh-CN      # Set language to Chinese
         codexspec config --set-commit-lang en  # Set commit messages to English
+        codexspec config --auto-next           # Toggle workflow.auto_next
         codexspec config --list-langs          # List supported languages
     """
     # Handle list languages
@@ -234,6 +254,25 @@ def config(
         console.print("[yellow]No CodexSpec project found in current directory.[/yellow]")
         console.print("Run [cyan]codexspec init[/cyan] to create a new project.")
         raise typer.Exit(1)
+
+    # Handle auto-next toggle/set
+    if auto_next is not None:
+        if auto_next == _AUTO_NEXT_SENTINEL:
+            target = not _read_auto_next(config_file)
+        else:
+            try:
+                target = parse_auto_next_value(auto_next)
+            except ValueError:
+                console.print(f"[red]Invalid --auto-next value:[/red] {auto_next!r}")
+                console.print(f"Accepted values: {_AUTO_NEXT_ACCEPTED} (or pass --auto-next bare to toggle).")
+                raise typer.Exit(1)
+        if _write_auto_next(config_file, target):
+            state = "enabled" if target else "disabled"
+            console.print(f"[green]auto_next {state}[/green] (workflow.auto_next = {str(target).lower()})")
+        else:
+            console.print("[red]Failed to update workflow.auto_next[/red]")
+            raise typer.Exit(1)
+        return
 
     # Handle set language
     if set_lang:
@@ -898,6 +937,111 @@ def _update_project_ai(config_file: Path, ai: str) -> None:
         return
 
 
+# --- workflow.auto_next toggle helpers -------------------------------------
+
+
+def parse_auto_next_value(raw: str) -> bool:
+    """Parse an explicit ``--auto-next`` value into a boolean.
+
+    Accepts ``on/off``, ``true/false``, ``1/0``, ``yes/no`` (case-insensitive,
+    surrounding whitespace ignored). Raises ``ValueError`` for any other token
+    so the caller can report the error and exit non-zero.
+    """
+    token = (raw or "").strip().lower()
+    if token in _AUTO_NEXT_TRUE:
+        return True
+    if token in _AUTO_NEXT_FALSE:
+        return False
+    raise ValueError(f"invalid --auto-next value: {raw!r}")
+
+
+def _read_auto_next(config_file: Path) -> bool:
+    """Return True only when ``workflow.auto_next`` is the literal ``true``.
+
+    An absent key/section, ``false``, or any malformed value is treated as
+    ``False`` — matching the runtime rule that only literal ``true`` enables
+    auto-next.
+    """
+    try:
+        content = config_file.read_text(encoding="utf-8")
+    except OSError:
+        return False
+    in_workflow = False
+    for line in content.splitlines():
+        if not line.strip():
+            continue
+        if not line[0].isspace():  # top-level key (or comment)
+            key = line.split("#", 1)[0].strip()
+            in_workflow = key == "workflow:"
+            continue
+        if in_workflow:
+            match = re.match(r"^\s*auto_next:\s*(\S+?)\s*(?:#.*)?$", line)
+            if match:
+                return match.group(1) == "true"
+    return False
+
+
+def _write_auto_next(config_file: Path, value: bool) -> bool:
+    """Set ``workflow.auto_next`` to an unquoted boolean.
+
+    Three cases: (1) the key exists under the ``workflow:`` section — update
+    the value in place; (2) the section exists but the key is absent — insert
+    ``auto_next: <bool>`` as its first child; (3) the section is absent —
+    append a ``workflow:`` section at the end of the file. All other lines and
+    comments are preserved; the inserted line is bare (no reconstructed
+    comment). Returns ``False`` on I/O error.
+    """
+    try:
+        content = config_file.read_text(encoding="utf-8")
+    except OSError:
+        return False
+
+    token = "true" if value else "false"
+    lines = content.split("\n")
+
+    workflow_idx: Optional[int] = None
+    in_workflow = False
+    for i, line in enumerate(lines):
+        if not line.strip():
+            continue
+        if not line[0].isspace():
+            key = line.split("#", 1)[0].strip()
+            in_workflow = key == "workflow:"
+            if in_workflow:
+                workflow_idx = i
+            continue
+        if in_workflow and re.match(r"^\s*auto_next:\s*\S+", line):
+            indent = line[: len(line) - len(line.lstrip())]
+            lines[i] = f"{indent}auto_next: {token}"
+            return _dump_lines(config_file, lines)
+
+    if workflow_idx is not None:
+        lines.insert(workflow_idx + 1, f"  auto_next: {token}")
+        return _dump_lines(config_file, lines)
+
+    section = f"workflow:\n  auto_next: {token}"
+    if not content:
+        new_content = section + "\n"
+    elif content.endswith("\n"):
+        new_content = content + "\n" + section + "\n"
+    else:
+        new_content = content + "\n\n" + section + "\n"
+    try:
+        config_file.write_text(new_content, encoding="utf-8")
+    except OSError:
+        return False
+    return True
+
+
+def _dump_lines(path: Path, lines: list[str]) -> bool:
+    """Write ``lines`` joined by newlines; return False on I/O error."""
+    try:
+        path.write_text("\n".join(lines), encoding="utf-8")
+    except OSError:
+        return False
+    return True
+
+
 def _next_step_start(integration_keys: set[str], language: str) -> str:
     """Return a target-aware start instruction."""
     if integration_keys == {"codex"}:
@@ -1295,8 +1439,38 @@ The following slash commands are available in this project:
 """
 
 
+def _normalize_auto_next_argv(argv: list[str]) -> list[str]:
+    """Rewrite a bare ``--auto-next`` into ``--auto-next=<sentinel>``.
+
+    Click 8.3 no longer honors ``flag_value`` for a bare optional-value option
+    (it errors "requires an argument"). To preserve ``codexspec config
+    --auto-next`` (bare) as a toggle, a standalone ``--auto-next`` token — one
+    that is not already in ``--auto-next=...`` form and is not followed by a
+    value token — is rewritten to ``--auto-next=<sentinel>``, which the
+    ``config`` handler interprets as a toggle.
+    """
+    out: list[str] = []
+    i = 0
+    while i < len(argv):
+        tok = argv[i]
+        if tok == "--auto-next":
+            nxt = argv[i + 1] if i + 1 < len(argv) else None
+            if nxt is None or nxt.startswith("-"):
+                out.append(f"--auto-next={_AUTO_NEXT_SENTINEL}")
+            else:
+                out.append(tok)
+                out.append(nxt)
+                i += 1
+        else:
+            out.append(tok)
+        i += 1
+    return out
+
+
 def main() -> None:
     """Main entry point for the CLI."""
+    if "--auto-next" in sys.argv:
+        sys.argv = _normalize_auto_next_argv(sys.argv)
     app()
 
 

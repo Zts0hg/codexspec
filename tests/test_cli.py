@@ -1,6 +1,7 @@
 """Tests for CodexSpec CLI commands."""
 
 import os
+import subprocess
 import sys
 from pathlib import Path
 from typing import Generator
@@ -80,6 +81,129 @@ class TestConfig:
         assert "Supported Languages" in result.stdout
         assert "en" in result.stdout
         assert "zh-CN" in result.stdout
+
+    # --- config --auto-next (workflow.auto_next toggle) ---
+
+    @staticmethod
+    def _write_config(project_dir: Path, body: str) -> Path:
+        cfg = project_dir / ".codexspec" / "config.yml"
+        cfg.parent.mkdir(parents=True, exist_ok=True)
+        cfg.write_text(body, encoding="utf-8")
+        return cfg
+
+    def test_auto_next_toggle_true_to_false(self, isolated_runner: Path, runner: CliRunner) -> None:
+        from codexspec import _AUTO_NEXT_SENTINEL
+
+        cfg = self._write_config(isolated_runner, "workflow:\n  auto_next: true\n")
+        result = runner.invoke(app, ["config", "--auto-next", _AUTO_NEXT_SENTINEL])
+        assert result.exit_code == 0
+        assert "auto_next disabled" in result.stdout
+        assert "auto_next: false" in cfg.read_text()
+
+    def test_auto_next_toggle_false_to_true(self, isolated_runner: Path, runner: CliRunner) -> None:
+        from codexspec import _AUTO_NEXT_SENTINEL
+
+        cfg = self._write_config(isolated_runner, "workflow:\n  auto_next: false\n")
+        result = runner.invoke(app, ["config", "--auto-next", _AUTO_NEXT_SENTINEL])
+        assert result.exit_code == 0
+        assert "auto_next enabled" in result.stdout
+        assert "auto_next: true" in cfg.read_text()
+
+    def test_auto_next_explicit_off(self, isolated_runner: Path, runner: CliRunner) -> None:
+        cfg = self._write_config(isolated_runner, "workflow:\n  auto_next: true\n")
+        result = runner.invoke(app, ["config", "--auto-next", "off"])
+        assert result.exit_code == 0
+        assert "auto_next: false" in cfg.read_text()
+
+    @pytest.mark.parametrize("val", ["on", "ON", "yes", "1", "true"])
+    def test_auto_next_explicit_truthy(self, isolated_runner: Path, runner: CliRunner, val: str) -> None:
+        cfg = self._write_config(isolated_runner, "workflow:\n  auto_next: false\n")
+        result = runner.invoke(app, ["config", "--auto-next", val])
+        assert result.exit_code == 0
+        assert "auto_next: true" in cfg.read_text()
+
+    def test_auto_next_invalid_value_exit1_and_unchanged(self, isolated_runner: Path, runner: CliRunner) -> None:
+        cfg = self._write_config(isolated_runner, "workflow:\n  auto_next: true\n")
+        result = runner.invoke(app, ["config", "--auto-next", "yep"])
+        assert result.exit_code == 1
+        assert "Invalid --auto-next value" in result.stdout
+        # File must be unchanged on invalid input.
+        assert "auto_next: true" in cfg.read_text()
+
+    def test_auto_next_creates_missing_key(self, isolated_runner: Path, runner: CliRunner) -> None:
+        cfg = self._write_config(isolated_runner, "language:\n  output: en\nworkflow:\n  other: 1\n")
+        result = runner.invoke(app, ["config", "--auto-next", "on"])
+        assert result.exit_code == 0
+        text = cfg.read_text()
+        assert text.count("workflow:") == 1  # no duplicate section
+        assert "auto_next: true" in text
+        assert "other: 1" in text  # existing child preserved
+
+    def test_auto_next_creates_missing_section(self, isolated_runner: Path, runner: CliRunner) -> None:
+        cfg = self._write_config(isolated_runner, "language:\n  output: en\n")
+        result = runner.invoke(app, ["config", "--auto-next", "on"])
+        assert result.exit_code == 0
+        text = cfg.read_text()
+        assert text.count("workflow:") == 1
+        assert "auto_next: true" in text
+        assert "output: en" in text  # prior content preserved
+
+    def test_auto_next_scopes_to_workflow_section(self, isolated_runner: Path, runner: CliRunner) -> None:
+        from codexspec import _AUTO_NEXT_SENTINEL
+
+        # An auto_next under a different section must not be read/written.
+        body = "project:\n  auto_next: true\nworkflow:\n  auto_next: false\n"
+        cfg = self._write_config(isolated_runner, body)
+        result = runner.invoke(app, ["config", "--auto-next", _AUTO_NEXT_SENTINEL])
+        assert result.exit_code == 0
+        # workflow.auto_next was false -> toggle -> true; project.auto_next untouched
+        assert "workflow:\n  auto_next: true" in cfg.read_text()
+        assert "project:\n  auto_next: true" in cfg.read_text()
+
+    def test_auto_next_no_project(self, isolated_runner: Path, runner: CliRunner) -> None:
+        # isolated_runner has no .codexspec/config.yml; the no-project guard
+        # fires before the auto_next handler.
+        result = runner.invoke(app, ["config", "--auto-next", "on"])
+        assert result.exit_code == 1
+        assert "No CodexSpec project found" in result.stdout
+
+    def test_auto_next_bare_toggle_via_main(self, tmp_path: Path) -> None:
+        """The bare `--auto-next` form is normalized in main(); CliRunner
+        bypasses sys.argv, so exercise the real entry point via subprocess."""
+        from codexspec import _AUTO_NEXT_SENTINEL
+
+        cfg = tmp_path / ".codexspec" / "config.yml"
+        cfg.parent.mkdir(parents=True, exist_ok=True)
+        cfg.write_text("workflow:\n  auto_next: true\n", encoding="utf-8")
+        code = "import sys; sys.argv=['codexspec','config','--auto-next'];from codexspec import main; main()"
+        result = subprocess.run([sys.executable, "-c", code], cwd=tmp_path, capture_output=True, text=True)
+        assert result.returncode == 0
+        assert "disabled" in result.stdout
+        assert "auto_next: false" in cfg.read_text()
+        # The sentinel must not leak into the written file.
+        assert _AUTO_NEXT_SENTINEL not in cfg.read_text()
+
+    def test_normalize_auto_next_argv(self) -> None:
+        from codexspec import _AUTO_NEXT_SENTINEL, _normalize_auto_next_argv
+
+        def norm(*a: str) -> list[str]:
+            return _normalize_auto_next_argv(list(a))
+
+        assert norm("config", "--auto-next") == [
+            "config",
+            f"--auto-next={_AUTO_NEXT_SENTINEL}",
+        ]
+        # Explicit value passes through unchanged.
+        assert norm("config", "--auto-next", "off") == ["config", "--auto-next", "off"]
+        # Already in =-form is left alone.
+        assert norm("config", "--auto-next=off") == ["config", "--auto-next=off"]
+        # Bare flag before another option still toggles.
+        assert norm("config", "--set-lang", "en", "--auto-next") == [
+            "config",
+            "--set-lang",
+            "en",
+            f"--auto-next={_AUTO_NEXT_SENTINEL}",
+        ]
 
 
 class TestInit:
