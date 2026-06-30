@@ -99,6 +99,17 @@ When the review loop above concludes in a passing state — the final `$codexspe
 - analyze's results are informational only. They do not change whether tasks are ready for implementation and do not add a gate before `$codexspec:implement-tasks`.
 - Do not modify the Output Summary for analyze, and do not save an additional analyze report file; analyze's own output is the report.
 
+## Auto-Next Chain Advance
+
+Read `workflow.auto_next` from `.codexspec/config.yml` (default `false`; only the literal value `true` enables it).
+
+When `workflow.auto_next` is `true` AND the review loop above concluded in a passing state (`PASS` or `PASS_WITH_WARNINGS`) — after the analyze step above has run — advance the chain automatically:
+
+1. Emit exactly one notice line, in the interaction language, e.g. `auto_next: review passed → invoking $codexspec:implement-tasks <feature-dir>`.
+2. Invoke `$codexspec:implement-tasks <feature-dir>` exactly once, with no confirmation prompt, then end this command.
+
+analyze's findings are informational only and do NOT block this advance (see the Automatic Cross-Artifact Analysis section above). Do not auto-advance when `workflow.auto_next` is disabled, or the review loop stopped at `NEEDS_REVISION` or `BLOCKED`, or stopped early; hand control back to the user as the review loop already does. This advances the chain and does not modify the Output Summary.
+
 ## Output Summary
 
 Report the tasks path, plan/requirement coverage, dependency summary, unresolved items, and auto-review status.

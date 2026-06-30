@@ -330,6 +330,29 @@ class TestLanguageResolution:
         cfg = self._write_config(tmp_path, "language:\n  document: ko\n")
         assert get_document_language(cfg) == "ko"
 
+    def test_unknown_workflow_section_does_not_break_resolution(self, tmp_path) -> None:
+        """A `workflow.auto_next` key (the auto-next feature) is ignored by i18n: the
+        config still parses and interaction/document resolution is unaffected. Guards
+        backwards-compatibility for opt-in feature keys (NFR-001)."""
+        import yaml
+
+        cfg = self._write_config(
+            tmp_path,
+            'version: "1.0"\n'
+            "language:\n"
+            '  output: "en"\n'
+            '  interaction: "zh-CN"\n'
+            '  document: "en"\n'
+            "workflow:\n"
+            "  auto_next: true\n",
+        )
+        # The config parses cleanly and the unknown key round-trips.
+        data = yaml.safe_load(cfg.read_text(encoding="utf-8"))
+        assert data["workflow"]["auto_next"] is True
+        # i18n resolution is unaffected by the unknown workflow section.
+        assert get_interaction_language(cfg) == "zh-CN"
+        assert get_document_language(cfg) == "en"
+
     def test_output_only_config_no_deprecation(self, tmp_path, capsys) -> None:
         """NFR-001/NFR-002: output-only config resolves identically for all three
         accessors and emits no deprecation warning."""
