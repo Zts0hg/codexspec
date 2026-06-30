@@ -54,7 +54,8 @@ quotes needed to resolve later interpretation disputes.
 
 - **Status**: confirmed
 - **Statement**: `workflow.auto_next` defaults to `false`. When absent or `false`, existing behavior is unchanged — every command ends and the next is triggered manually by the user.
-- **User Evidence**: Confirmed as part of the consolidated stage summary ("其他都同意").
+- **Rationale**: The chain terminates in `implement-tasks`, which writes and commits code — a high-blast-radius, hard-to-reverse action. The `git.branch_check_enabled: true` precedent does **not** transfer: that setting's `true` is a protective *prompt* (low cost, reversible), whereas `auto_next`'s `true` is autonomous *action* (high cost, hard to reverse). The opt-in/opt-out costs are asymmetric — wanting automation costs one config line; not wanting it under a `true` default costs unwanted commits discovered only after the fact — so the default favors the safer side. A `true` default would additionally flip existing users into an autonomous code-writing pipeline on upgrade without their opt-in, violating least astonishment.
+- **User Evidence**: Confirmed as part of the consolidated stage summary ("其他都同意"); default re-examined and reaffirmed as `false` after explicit comparison against `branch_check_enabled`.
 
 ### CON-004: Single global boolean under a `workflow` section
 
@@ -120,11 +121,11 @@ quotes needed to resolve later interpretation disputes.
 
 ## Open Questions
 
-_None — all material decisions are confirmed. No blocking open questions remain for specification generation._
+*None — all material decisions are confirmed. No blocking open questions remain for specification generation.*
 
 ## Superseded Entries
 
-_None._
+*None.*
 
 ## Confirmation Log
 
