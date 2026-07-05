@@ -6,22 +6,57 @@ For workflow patterns and when to use each command, see [Workflow](workflow.md).
 
 ## Quick Reference
 
+Grouped by category, mirroring the README catalog. Within each group, commands appear in workflow order.
+
+### Core Workflow Commands
+
 | Command | Purpose |
 |---------|---------|
 | `/codexspec:constitution` | Create or update project constitution with cross-artifact validation |
-| `/codexspec:specify` | Clarify, confirm, and persist requirements |
-| `/codexspec:generate-spec` | Generate spec.md document from clarified requirements |
-| `/codexspec:clarify` | Scan existing spec for ambiguities (iterative refinement) |
-| `/codexspec:spec-to-plan` | Convert specification to technical implementation plan |
-| `/codexspec:plan-to-tasks` | Break down plan into traceable, verifiable tasks |
+| `/codexspec:specify` | Clarify, confirm, and persist requirements in `requirements.md` |
+| `/codexspec:generate-spec` | Generate `spec.md` document from clarified requirements (★ Auto-review) |
+| `/codexspec:spec-to-plan` | Convert specification to technical implementation plan (★ Auto-review) |
+| `/codexspec:plan-to-tasks` | Break down plan into traceable, verifiable tasks (★ Auto-review) |
 | `/codexspec:implement-tasks` | Execute tasks with conditional TDD workflow |
+
+### Review Commands (Quality Gates)
+
+| Command | Purpose |
+|---------|---------|
 | `/codexspec:review-spec` | Validate specification for completeness and quality |
 | `/codexspec:review-plan` | Review technical plan for feasibility and alignment |
 | `/codexspec:review-tasks` | Validate task coverage, ordering, and feasibility |
-| `/codexspec:analyze` | Cross-artifact consistency analysis (read-only) |
+
+### Enhancement Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/codexspec:config` | Manage project configuration interactively (create/view/modify/reset) |
+| `/codexspec:clarify` | Scan existing spec for ambiguities (4 categories, max 5 questions) |
+| `/codexspec:analyze` | Cross-artifact consistency analysis (read-only, severity-based) |
 | `/codexspec:checklist` | Generate requirements quality checklists |
-| `/codexspec:tasks-to-issues` | Convert tasks to GitHub issues |
-| `/codexspec:commit-staged` | Generate commit message from staged changes with session context awareness |
+| `/codexspec:tasks-to-issues` | Convert tasks to GitHub Issues |
+
+### Git Workflow Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/codexspec:commit-staged` | Generate commit message from staged changes (session-context aware) |
+| `/codexspec:pr` | Generate PR/MR description from git diff (auto-detects platform) |
+
+### Code Review Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/codexspec:review-code` | Review code in any language (idiomatic clarity, correctness, robustness, architecture) |
+| `/codexspec:review-python-code` | Review Python code (PEP 8, type safety, robustness, constitution consistency) |
+| `/codexspec:review-react-code` | Review React/TypeScript code (component architecture, Hooks rules, state, performance) |
+
+### Fast Track
+
+| Command | Purpose |
+|---------|---------|
+| `/codexspec:quick` | Run a streamlined Requirements-First SDD flow for small changes |
 
 ---
 
@@ -29,15 +64,27 @@ For workflow patterns and when to use each command, see [Workflow](workflow.md).
 
 ### Core Workflow Commands
 
-Commands for the primary SDD workflow: Constitution → Confirmed Requirements → Specification → Plan → Tasks → Implementation.
+Commands for the primary Requirements-First SDD workflow: Constitution → Confirmed Requirements → Specification → Plan → Tasks → Implementation. Confirmed requirements are the highest-priority authority here — nothing in the chain is binding until you explicitly confirm it at the Confirmation Gate.
 
 ### Review Commands (Quality Gates)
 
-Commands that validate artifacts at each workflow stage. Defects require evidence; optional design suggestions are reported separately.
+Commands that validate artifacts at each workflow stage under an **evidence-based review** contract: every defect must include concrete `Evidence`, `Location`, `Mismatch`, `Impact`, and `Remediation`. Advisory design suggestions are reported separately and never change status or trigger automatic changes. Verified defects may be fixed and re-reviewed for at most two rounds; advisories remain optional throughout.
 
-### Advanced Commands
+### Enhancement Commands
 
-Commands for iterative refinement, cross-artifact validation, and project management integration.
+Commands for iterative refinement, cross-artifact validation, configuration, and project management integration.
+
+### Git Workflow Commands
+
+Commands that turn finished work into shareable artifacts: commit messages from the staged diff and structured PR/MR descriptions from the branch diff.
+
+### Code Review Commands
+
+Commands that review source code (any language, Python-specific, React/TypeScript-specific) for idiomatic clarity, correctness, robustness, architecture, and constitution alignment. Findings use the same severity discipline as the artifact reviews: CRITICAL/HIGH issues must cite concrete evidence; LOW suggestions are advisory only.
+
+### Fast Track
+
+A streamlined command that runs the Requirements-First SDD flow end-to-end for small, well-bounded changes.
 
 ---
 
@@ -139,7 +186,7 @@ Clarify requirements through interactive Q&A, confirm the resulting summary, and
 .codexspec/specs/{feature-id}-{feature-name}/requirements.md
 ```
 
-Only confirmed items become authoritative requirements. Open questions remain explicitly open.
+Only confirmed items become authoritative requirements. Open questions remain explicitly open. This is the Confirmation Gate for requirements: nothing is binding until you explicitly confirm the final summary.
 
 **Example:**
 
@@ -1023,18 +1070,392 @@ AI:  Preview mode - no commit will be executed
 
 ---
 
+### `/codexspec:review-code`
+
+Review code in any language for idiomatic clarity, correctness, robustness, architecture, and constitution alignment.
+
+**Syntax:**
+
+```
+/codexspec:review-code [path...]
+```
+
+**Arguments:**
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `path...` | No | One or more source files or directories to review (space-separated). Defaults to `src/` if omitted |
+
+**What it does:**
+
+- Detects the primary language(s) from file extensions and runs a per-language pass for mixed-language targets
+- Runs static analysis tools when their config is present (`ruff`/`mypy`, `eslint`/`tsc`, `go vet`/`gofmt`, `cargo check`/`cargo clippy`, `shellcheck`); skips gracefully and reports degraded coverage otherwise
+- Scores four dimensions: Idiomatic Clarity & Simplicity, Correctness & Explicit Contracts, Runtime Robustness & Resource Discipline, and Architecture & Design Integrity
+- Injects mandatory subsections for detected frameworks (e.g., Hooks Compliance for React, Ownership & Borrowing for Rust, Goroutine & Context Discipline for Go, Memory & Lifetime Safety for C/C++, Execution Safety for Shell)
+- Cross-references findings against `.codexspec/memory/constitution.md` when present; if absent, the constitution axis is dropped and its weight is redistributed
+- Classifies findings by severity: CRITICAL, HIGH, MEDIUM, LOW (LOW suggestions are capped at a 5-point total deduction)
+
+**Example:**
+
+```text
+You: /codexspec:review-code src/
+
+AI:  # Code Review Report
+
+     ## Summary
+     - Overall Status: Needs Work
+     - Quality Score: 78/100
+     - Detected Language: Python
+
+     ## Static Analysis Results
+     | Tool   | Status | Issues | Details                |
+     |--------|--------|--------|------------------------|
+     | ruff   | Warn   | 3      | Unused imports, line length |
+     | mypy   | Pass   | 0      | No type errors         |
+
+     ## Detailed Findings
+     ### Critical Issues (CRITICAL)
+     - [ ] [CODE-001] src/auth/service.py:42 - bare `except Exception:` swallows the original cause
+       Impact: Original error context is lost during debugging.
+       Suggestion: narrow the exception and re-raise with `raise ... from err`.
+
+     ### Suggestions (LOW)
+     - [ ] [CODE-004] src/auth/service.py:120 - manual loop where a comprehension suffices
+
+     ## Recommendations
+     1. Priority 1: Fix CODE-001 before merge.
+     2. Priority 2: Apply LOW suggestions opportunistically.
+```
+
+**Tips:**
+
+- Pass multiple paths to review a focused slice, e.g., `src/ tests/`
+- The score is advisory; CRITICAL/HIGH findings are the actionable signal
+- For Python-only or React-only projects, prefer the dedicated `/codexspec:review-python-code` or `/codexspec:review-react-code` for deeper, language-specific checks
+- Re-run after fixes to confirm the score recovers (≥ 95 expected once CRITICAL/HIGH issues are resolved)
+
+---
+
+### `/codexspec:review-python-code`
+
+Review Python code for PEP 8 compliance, type safety, engineering robustness, and constitution consistency.
+
+**Syntax:**
+
+```
+/codexspec:review-python-code [path...]
+```
+
+**Arguments:**
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `path...` | No | One or more Python files or directories to review (space-separated). Defaults to `src/` if omitted |
+
+**What it does:**
+
+- Runs `ruff check` for PEP 8 / linting results and `mypy` for type-checking results
+- Reviews four Python-specific dimensions: Pythonic & KISS Principle, Type Safety & Explicitness, Engineering Robustness, and Constitution Alignment
+- Checks type-annotation completeness, broad-exception handling, and `raise ... from err` context preservation
+- Validates resource management (`with` context managers), async/await correctness, and structured `logging` discipline
+- Cross-references findings against `.codexspec/memory/constitution.md` MUST/SHOULD principles when present
+- Classifies findings by severity: CRITICAL (constitution MUST violations, logic bugs, security vulnerabilities), HIGH (type-safety gaps, ruff/mypy errors, resource leaks), MEDIUM (design/refactor opportunities, missing annotations), LOW (readability, Pythonic sugar)
+
+**Example:**
+
+```text
+You: /codexspec:review-python-code src/codexspec/
+
+AI:  # Python Code Review Report
+
+     ## Static Analysis
+     | Tool  | Status | Issues |
+     |-------|--------|--------|
+     | ruff  | Pass   | 0      |
+     | mypy  | Pass   | 0      |
+
+     ## Findings
+     ### Warnings (HIGH)
+     - [ ] [CODE-002] src/codexspec/__init__.py:218 - public function missing return type annotation
+       Suggestion: add the return type and verify with mypy.
+
+     ### Suggestions (LOW)
+     - [ ] [CODE-004] src/codexspec/cli.py:140 - use `pathlib.Path` instead of `os.path` string concatenation
+```
+
+**Tips:**
+
+- Use instead of `/codexspec:review-code` when the target is Python-only and you want the PEP 8 / type-safety depth
+- Both `ruff` and `mypy` must be installed and configured in the target project for full coverage; the command reports degraded coverage when they are absent
+- Constitution MUST principles are scored; language-agnostic meta-principles (testability, simplicity) apply when no constitution exists
+
+---
+
+### `/codexspec:review-react-code`
+
+Review React/TypeScript code for component architecture, Hooks rules, state management, performance, and constitution consistency.
+
+**Syntax:**
+
+```
+/codexspec:review-react-code [path...]
+```
+
+**Arguments:**
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `path...` | No | One or more React/TypeScript files or directories to review (space-separated; expects `.tsx`, `.ts`, `.jsx`, `.js`). Defaults to `src/` if omitted |
+
+**What it does:**
+
+- Runs `npx eslint` (when an ESLint config exists) and `npx tsc --noEmit` (when a `tsconfig.json` exists)
+- Reviews four React-specific dimensions: Component Atomicity & Single Responsibility, Hooks Compliance & Side-Effects Management, State Management & Data Flow, and Performance & Robustness
+- Verifies `useEffect` dependency arrays are exhaustive, detects derived-state-as-state misuse, and flags unnecessary effects
+- Checks for stale-closure risks, missing effect cleanup, prop drilling, unmemoized expensive renders, and missing loading/error states
+- Cross-references findings against `.codexspec/memory/constitution.md` when present
+- Classifies findings by severity: CRITICAL (Hooks-of violations, race conditions), HIGH (missing cleanup, unhandled promise rejections), MEDIUM (refactor candidates), LOW (readability)
+
+**Example:**
+
+```text
+You: /codexspec:review-react-code src/components/
+
+AI:  # React Code Review Report
+
+     ## Static Analysis
+     | Tool  | Status | Issues |
+     |-------|--------|--------|
+     | eslint| Warn   | 2      |
+     | tsc   | Pass   | 0      |
+
+     ## Findings
+     ### Critical Issues (CRITICAL)
+     - [ ] [CODE-001] src/components/UserProfile.tsx:38 - `useEffect` missing `userId` in dependency array
+       Impact: stale closure fetches the wrong user after navigation.
+       Suggestion: add `userId` to the dependency array or extract to a custom hook.
+
+     ### Suggestions (LOW)
+     - [ ] [CODE-004] src/components/Button.tsx:12 - extract derived value instead of `useState`
+```
+
+**Tips:**
+
+- Use instead of `/codexspec:review-code` when the target is React/TypeScript-only and you want Hooks/component-architecture depth
+- Both ESLint and a `tsconfig.json` should be present for full coverage; the command reports degraded coverage when they are absent
+- React findings layer on top of the base TypeScript checks, so type-safety issues are still surfaced
+
+---
+
+### `/codexspec:quick`
+
+Run a streamlined Requirements-First SDD flow for small changes.
+
+**Syntax:**
+
+```
+/codexspec:quick [describe a small requirement]
+```
+
+**Arguments:**
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `describe a small requirement` | No | Short description of the small, well-bounded change (you will be prompted if not provided) |
+
+**What it does:**
+
+- Assesses scope (files touched, module span, new dependencies, unresolved product decisions) and, if the change is broad or has multiple independent outcomes, recommends the standard flow
+- Creates a feature workspace and `requirements.md` using the same timestamp convention as `/codexspec:specify`
+- Resolves only ambiguities that materially change implementation; presents a concise confirmed summary (`NEED-*`, relevant `CON-*`/`DEC-*`, `OUT-*`, unresolved `OPEN-*`)
+- Holds at the Confirmation Gate: nothing is generated until you confirm the summary
+- Chains the generation commands against the new feature directory: `/codexspec:generate-spec`, `/codexspec:spec-to-plan`, `/codexspec:plan-to-tasks`, `/codexspec:implement-tasks`
+- Defers to each generation command's own auto-review loop; pauses and asks the user if a review needs a new product or architecture decision
+- Reports the feature directory, artifact paths, review outcomes, implementation verification, and unresolved advisories separately
+
+**What it creates:**
+
+```text
+.codexspec/specs/{timestamp}-{feature-name}/
+├── requirements.md
+├── spec.md
+├── plan.md
+└── tasks.md
+```
+
+**Example:**
+
+```text
+You: /codexspec:quick Add a "remember me" checkbox to the login form
+
+AI:  Scope check: 1 component, 1 form field, no new dependencies. Quick is appropriate.
+
+     Confirmed requirements:
+     - NEED-1: "Remember me" checkbox on the login form (default unchecked)
+     - DEC-1: Persist a long-lived refresh token only when checked
+     OUT-1: SSO / social login (unchanged)
+
+     Confirm this summary to start the automated flow. [y/N]
+
+You: y
+
+AI:  Running generate-spec → spec-to-plan → plan-to-tasks → implement-tasks ...
+
+     ✓ Feature dir: .codexspec/specs/2026-0713-0915ab-remember-me/
+     ✓ All reviews PASS_WITH_WARNINGS or higher
+     ✓ Implementation verified
+     Open advisories: none
+```
+
+**Tips:**
+
+- Reserve Quick for genuinely small, single-outcome changes; otherwise run `/codexspec:specify` and the standard flow
+- Confirmation is still required — Quick never infers a product decision to keep automation moving
+- If any generation review returns `NEEDS_REVISION`/`BLOCKED`, Quick stops and hands control back to you
+
+---
+
+### `/codexspec:pr`
+
+Generate a structured GitHub Pull Request / GitLab Merge Request description from the git diff. Optionally integrates `spec.md` for SDD-traced context.
+
+**Syntax:**
+
+```
+/codexspec:pr [--target-branch <branch>] [--sections <list>] [--spec <id-or-path>] [--output <file>]
+```
+
+**Arguments:**
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `--target-branch <branch>` | No | Branch to compare against (default: `origin/main`) |
+| `--sections <list>` | No | Comma-separated subset of `summary, changes, testing, verify, checklist, notes` (default: `all`) |
+| `--spec <id-or-path>` | No | Opt-in spec integration: a feature id (e.g., `2025-0321-1430k7-auth`) resolved under `.codexspec/specs/`, or an explicit `path/to/spec.md`. Omit to generate from git only |
+| `--output <file>` | No | Save the description to a file instead of the terminal |
+
+**What it does:**
+
+- Collects git context (current branch, remote URL, commits ahead, file changes, full diff, commit messages) against the target branch
+- Auto-detects the platform from the remote URL: GitHub → "Pull Request", GitLab → "Merge Request", other/none → defaults to GitHub terminology with a warning
+- Loads `.codexspec/memory/constitution.md` when present and aligns the description with documentation/code-review standards
+- Honors `language.commit` (then `language.output`, then English) for the description language; technical terms (API, JWT, PR, MR) stay in English where appropriate
+- When `--spec` is provided, adds a Context section with user stories and requirements pulled from spec.md; otherwise generates purely from the diff
+- Emits sections per `--sections` (Summary, Changes, Testing, Verification Steps, Pre-merge Checklist, Notes / Breaking Changes)
+
+**Example:**
+
+```text
+You: /codexspec:pr --spec 2026-0613-1200ab-task-management
+
+AI:  Generating Pull Request description...
+
+     Platform: GitHub (github.com/example/taskman)
+     Branch:   feature/task-management  →  origin/main
+     Commits:  8 ahead
+
+     ## Pull Request: Task management for small dev teams
+
+     ### Context
+     - User stories and REQ-* pulled from spec.md
+
+     ### Summary
+     - Adds task CRUD, sub-tasks, and real-time updates
+
+     ### Changes
+     - src/taskman/models/task.py (new)
+     - src/taskman/api/tasks.py (new)
+     - ...
+
+     ### Verification Steps
+     1. `uv run pytest`
+     2. `uv run codexspec check`
+```
+
+**Tips:**
+
+- Skip `--spec` for small bug fixes or changes with no formal specification
+- Combine with `/codexspec:commit-staged` to produce both a commit message and a PR description from the same work
+- See the [PR description generator case study](../case-studies/case-study-pr-description-generator.md) for a worked, end-to-end example of this command (including how spec.md context is wired in)
+
+---
+
+### `/codexspec:config`
+
+Manage project configuration interactively (create/view/modify/reset). This is the slash-command counterpart to the `codexspec config` CLI, ideal for Plugin Marketplace installs.
+
+**Syntax:**
+
+```
+/codexspec:config [--view]
+```
+
+**Arguments:**
+
+| Argument | Required | Description |
+|----------|----------|-------------|
+| `--view` | No | Display the current configuration without modifying it. With no arguments, opens the interactive management menu |
+
+**What it does:**
+
+- Targets `.codexspec/config.yml` exclusively
+- `--view` (or the "View current config" menu option) prints the file in a readable format; reports "Configuration Not Found" if absent
+- Interactive mode, when a config exists, offers: View, Modify, Reset to defaults, Cancel
+- If no config exists, runs the creation flow that writes a minimal, `output`-only config (interaction/document/commit resolve to `output`, then `en`, so an `output`-only file is fully functional)
+- Lets you set each language dimension independently (output, interaction, document, commit) and toggle workflow options such as `auto_next`
+
+**What it creates/edits:**
+
+```
+.codexspec/config.yml
+```
+
+**Example:**
+
+```text
+You: /codexspec:config
+
+AI:  ## Configuration Manager
+
+     Configuration file found at .codexspec/config.yml.
+     What would you like to do?
+     - View current config
+     - Modify config
+     - Reset to defaults
+     - Cancel
+
+You: Modify config
+
+AI:  Select a dimension to change:
+     - Output language (base)
+     - Interaction language
+     - Document language
+     - Commit-message language
+     - workflow.auto_next
+
+You: Output language (base) → zh-CN
+
+AI:  ✓ Updated language.output: "zh-CN"
+     (interaction and document fall back to output, then en.)
+```
+
+**Tips:**
+
+- Use `/codexspec:config --view` to inspect the current state before changing anything
+- A fresh or reset config writes only `output`; set `interaction`/`document` only when they should differ from `output`
+- For scripted changes in a terminal, prefer the `codexspec config` CLI (`--set-lang`, `--set-interaction-lang`, `--set-document-lang`, `--set-commit-lang`, `--auto-next`)
+
+---
+
 ## Workflow Overview
 
 ```text
-Idea
-  -> specify -> requirements.md
-  -> generate-spec -> spec.md -> review-spec
-  -> spec-to-plan -> plan.md -> review-plan
-  -> plan-to-tasks -> tasks.md -> review-tasks
-  -> analyze -> implement-tasks
+Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+                                                   │                         │                            │
+                                              Review spec               Review plan                  Review tasks
 ```
 
-Each review is a human checkpoint. It validates fidelity and intrinsic quality using evidence-backed findings. Optional improvements remain advisories and do not block progression.
+Each review is a human checkpoint. It validates fidelity and intrinsic quality using evidence-backed findings. Advisory design suggestions remain separate and never block progression. Verified defects may be fixed and re-reviewed for at most two rounds.
 
 ---
 

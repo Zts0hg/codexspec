@@ -1,58 +1,58 @@
-# Analyse de l'Architecture des Scripts
+# Analyse de l'architecture des scripts
 
-Ce document detaille le flux logique du code des scripts dans le projet CodexSpec et comment ils sont utilises dans Claude Code.
+Ce document détaille la logique de code des scripts dans le projet CodexSpec et la façon dont ils sont utilisés dans Claude Code.
 
-## 1. Apercu de l'Architecture Globale
+## 1. Vue d'ensemble de l'architecture
 
-CodexSpec est une boite a outils **Spec-Driven Development (SDD)** adoptant une architecture a trois couches : CLI + modeles + scripts auxiliaires.
+CodexSpec est une boîte à outils **Spec-Driven Development (SDD)** qui adopte une architecture en trois couches : CLI + modèles + scripts auxiliaires.
 
 ```
-+-----------------------------------------------------------------+
-|                        Couche Utilisateur (CLI)                  |
-|  codexspec init | check | version | config                       |
-+-----------------------------------------------------------------+
-                              |
-+-----------------------------------------------------------------+
-|                    Couche d'Interaction Claude Code              |
-|  /codexspec:specify | /codexspec:analyze | ...                  |
-|  (.claude/commands/*.md)                                        |
-+-----------------------------------------------------------------+
-                              |
-+-----------------------------------------------------------------+
-|                      Couche Scripts Auxiliaires                  |
-|  .codexspec/scripts/*.sh (Bash) ou *.ps1 (PowerShell)          |
-+-----------------------------------------------------------------+
+┌─────────────────────────────────────────────────────────────────┐
+│                        Couche utilisateur (CLI)                  │
+│  codexspec init | check | version | config                      │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│                    Couche d'interaction Claude Code              │
+│  /codexspec:specify | /codexspec:analyze | ...                  │
+│  (.claude/commands/*.md)                                        │
+└─────────────────────────────────────────────────────────────────┘
+                              ↓
+┌─────────────────────────────────────────────────────────────────┐
+│                      Couche des scripts auxiliaires              │
+│  .codexspec/scripts/*.sh (Bash) ou *.ps1 (PowerShell)          │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-## 2. Flux de Deploiement des Scripts
+## 2. Flux de déploiement des scripts
 
-### Etape 1 : Initialisation `codexspec init`
+### Étape 1 : initialisation par `codexspec init`
 
-Dans la fonction `init()` de `src/codexspec/__init__.py` (lignes 343-368), les scripts appropries sont copies automatiquement selon le systeme d'exploitation :
+Dans la fonction `init()` de `src/codexspec/__init__.py` (lignes 343-368), les scripts appropriés sont copiés automatiquement selon le système d'exploitation :
 
 ```python
 # Copy helper scripts based on platform
 scripts_source_dir = get_scripts_dir()
 if scripts_source_dir.exists():
     if sys.platform == "win32":
-        # Windows: copier les scripts PowerShell
+        # Windows : copier les scripts PowerShell
         ps_scripts = scripts_source_dir / "powershell"
         for script_file in ps_scripts.glob("*.ps1"):
             dest_file = codexspec_dir / "scripts" / script_file.name
             dest_file.write_text(script_file.read_text(encoding="utf-8"), encoding="utf-8")
     else:
-        # macOS/Linux: copier les scripts Bash
+        # macOS/Linux : copier les scripts Bash
         bash_scripts = scripts_source_dir / "bash"
         for script_file in bash_scripts.glob("*.sh"):
             dest_file = codexspec_dir / "scripts" / script_file.name
             dest_file.write_text(script_file.read_text(encoding="utf-8"), encoding="utf-8")
 ```
 
-**Resultat** : Selon le systeme d'exploitation, les scripts de `scripts/bash/` ou `scripts/powershell/` sont copies dans le repertoire `.codexspec/scripts/` du projet.
+**Résultat** : selon le système d'exploitation, les scripts de `scripts/bash/` ou `scripts/powershell/` sont copiés dans le répertoire `.codexspec/scripts/` du projet.
 
-### Mecanisme de Resolution de Chemin
+### Mécanisme de résolution des chemins
 
-La fonction `get_scripts_dir()` (lignes 71-90) gere plusieurs scenarios d'installation :
+La fonction `get_scripts_dir()` (lignes 71-90) gère plusieurs scénarios d'installation :
 
 ```python
 def get_scripts_dir() -> Path:
@@ -70,11 +70,11 @@ def get_scripts_dir() -> Path:
     return installed_scripts
 ```
 
-## 3. Mecanisme d'Appel des Scripts dans Claude Code
+## 3. Mécanisme d'appel des scripts depuis Claude Code
 
-### Mecanisme Core : Declaration YAML Frontmatter
+### Mécanisme central : déclaration YAML frontmatter
 
-Les fichiers modeles declarent les dependances de scripts via YAML frontmatter :
+Les fichiers modèles déclarent leurs dépendances de scripts via le YAML frontmatter :
 
 ```yaml
 ---
@@ -85,49 +85,49 @@ scripts:
 ---
 ```
 
-### Remplacement des Espaces Reserveurs
+### Remplacement de l'espace réservé
 
-Utiliser l'espace reserveur `{SCRIPT}` dans les modeles :
+Le placeholder `{SCRIPT}` est utilisé dans les modèles :
 
 ```markdown
 ### 1. Initialize Context
 
-Executez `{SCRIPT}` depuis la racine du depot et analysez le JSON pour :
-- `FEATURE_DIR` - Chemin du repertoire de fonctionnalite
+Run `{SCRIPT}` from repo root and parse JSON for:
+- `FEATURE_DIR` - Chemin du répertoire de fonctionnalité
 - `AVAILABLE_DOCS` - Liste des documents disponibles
 ```
 
-### Flux d'Appel
+### Flux d'appel
 
 1. L'utilisateur saisit `/codexspec:analyze` dans Claude Code
-2. Claude lit le modele `.claude/commands/codexspec:analyze.md`
-3. Selon le systeme d'exploitation, Claude remplace `{SCRIPT}` par :
+2. Claude lit le modèle `.claude/commands/codexspec:analyze.md`
+3. Selon le système d'exploitation, Claude remplace `{SCRIPT}` par :
    - **macOS/Linux** : `.codexspec/scripts/check-prerequisites.sh --json --require-tasks --include-tasks`
    - **Windows** : `.codexspec/scripts/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks`
-4. Claude execute le script, analyse la sortie JSON, poursuit les operations
+4. Claude exécute le script, analyse la sortie JSON et poursuit les opérations
 
-## 4. Details des Fonctionnalites des Scripts
+## 4. Détail des fonctionnalités des scripts
 
-### 4.1 `check-prerequisites.sh/ps1` - Script de Verification Prealable
+### 4.1 `check-prerequisites.sh/ps1` — script de vérification préalable
 
-C'est le script le plus important, utilise pour verifier l'etat de l'environnement et retourner des informations structurees.
+C'est le script le plus important ; il valide l'état de l'environnement et renvoie des informations structurées.
 
-#### Fonctionnalites Core
+#### Fonctionnalités principales
 
-- Verifier si on est sur une branche feature (format : `2026-0613-1200ab-feature-name`)
-- Detecter si les fichiers requis existent (`plan.md`, `tasks.md`)
-- Retourner les informations de chemin au format JSON
+- Vérifie que l'on se trouve sur une branche feature (format : `2026-0613-1200ab-feature-name`)
+- Détecte la présence des fichiers requis (`plan.md`, `tasks.md`)
+- Renvoie les informations de chemin au format JSON
 
-#### Options de Parametres
+#### Options des paramètres
 
-| Parametre | Bash | PowerShell | Effet |
-|-----------|------|------------|-------|
+| Paramètre | Bash | PowerShell | Rôle |
+|-----------|------|------------|------|
 | Sortie JSON | `--json` | `-Json` | Sortie au format JSON |
-| Exiger tasks.md | `--require-tasks` | `-RequireTasks` | Verifier l'existence de tasks.md |
-| Inclure tasks.md | `--include-tasks` | `-IncludeTasks` | Inclure tasks.md dans AVAILABLE_DOCS |
-| Chemins uniquement | `--paths-only` | `-PathsOnly` | Passer la verification, retourner uniquement les chemins |
+| Exiger tasks.md | `--require-tasks` | `-RequireTasks` | Vérifie l'existence de tasks.md |
+| Inclure tasks.md | `--include-tasks` | `-IncludeTasks` | Inclut tasks.md dans AVAILABLE_DOCS |
+| Chemins uniquement | `--paths-only` | `-PathsOnly` | Saute la validation, ne sort que les chemins |
 
-#### Exemple de Sortie JSON
+#### Exemple de sortie JSON
 
 ```json
 {
@@ -136,104 +136,112 @@ C'est le script le plus important, utilise pour verifier l'etat de l'environneme
 }
 ```
 
-### 4.2 `common.sh/ps1` - Fonctions Utilitaires Generales
+### 4.2 `common.sh/ps1` — fonctions utilitaires générales
 
-Fournit des fonctionnalites generiques multi-plateformes :
+Fournit des fonctionnalités génériques multi-plateformes.
 
-#### Fonctions Version Bash
+#### Fonctions de la version Bash
 
-| Fonction | Effet |
-|----------|-------|
-| `get_feature_id()` | Obtenir l'ID de feature depuis la branche Git ou variable d'environnement |
-| `get_specs_dir()` | Obtenir le chemin du repertoire specs |
-| `is_codexspec_project()` | Verifier si on est dans un projet CodexSpec |
-| `require_codexspec_project()` | S'assurer qu'on est dans un projet CodexSpec, sinon quitter |
-| `log_info/success/warning/error()` | Sortie de journal coloree |
-| `command_exists()` | Verifier si une commande existe |
+| Fonction | Rôle |
+|----------|------|
+| `get_feature_id()` | Récupère le feature ID depuis la branche Git ou une variable d'environnement |
+| `get_specs_dir()` | Renvoie le chemin du répertoire specs |
+| `is_codexspec_project()` | Vérifie que l'on est dans un projet CodexSpec |
+| `require_codexspec_project()` | Garantit que l'on est dans un projet CodexSpec, sinon quitte |
+| `log_info/success/warning/error()` | Sortie de journal colorée |
+| `command_exists()` | Vérifie l'existence d'une commande |
 
-#### Fonctions Version PowerShell
+#### Fonctions de la version PowerShell
 
-| Fonction | Effet |
-|----------|-------|
-| `Get-RepoRoot` | Obtenir le repertoire racine du depot Git |
-| `Get-CurrentBranch` | Obtenir le nom de la branche courante |
-| `Test-HasGit` | Detecter s'il y a un depot Git |
-| `Test-FeatureBranch` | Verifier si on est sur une branche feature |
-| `Get-FeaturePathsEnv` | Obtenir tous les chemins lies a la feature |
-| `Test-FileExists` | Verifier si un fichier existe |
-| `Test-DirHasFiles` | Verifier si un repertoire a des fichiers |
+| Fonction | Rôle |
+|----------|------|
+| `Get-RepoRoot` | Renvoie la racine du dépôt Git |
+| `Get-CurrentBranch` | Renvoie le nom de la branche courante |
+| `Test-HasGit` | Détecte la présence d'un dépôt Git |
+| `Test-FeatureBranch` | Vérifie que l'on est sur une branche feature |
+| `Get-FeaturePathsEnv` | Renvoie tous les chemins liés à la feature |
+| `Test-FileExists` | Vérifie l'existence d'un fichier |
+| `Test-DirHasFiles` | Vérifie qu'un répertoire contient des fichiers |
 
-### 4.3 `create-new-feature.sh/ps1` - Creer une Nouvelle Fonctionnalite
+### 4.3 `create-new-feature.sh/ps1` — créer une nouvelle fonctionnalité
 
-#### Fonctionnalites
+#### Fonctionnalités
 
-- Generer automatiquement un ID de feature incrementiel (001, 002, ...)
-- Creer le repertoire de feature et spec.md initial
-- Creer la branche Git correspondante
+- Génère automatiquement un feature ID au format `YYYY-MMDD-HHMMxx`
+- Crée le répertoire de feature et un `requirements.md` initial
+- Crée la branche Git correspondante
+- Exige que le nom court nettoyé contienne au moins une lettre ou un chiffre ASCII
 
-#### Exemple d'Utilisation
+#### Exemple d'utilisation
 
 ```bash
-./create-new-feature.sh -n "user authentication" -i 001
+./create-new-feature.sh -n "user authentication"
 ```
 
-## 5. Commandes Utilisant les Scripts
+#### Contrat de nommage des features
 
-Les 4 commandes suivantes utilisent les scripts :
+- Les identifiants séquentiels `NNN-name` ne sont pas pris en charge. Seuls les noms à horodatage sont autorisés.
+- La compatibilité héritée s'applique aux artefacts : un `spec.md` existant peut être utilisé en l'absence de `requirements.md`. Cela ne valide aucun autre format de nommage de répertoire ou de branche.
+- Le nom complet identifie un espace de travail : `YYYY-MMDD-HHMMxx-short-name`. Des espaces de travail créés indépendamment peuvent partager le même ID d'horodatage si leurs noms courts diffèrent.
+- La résolution par short-ID n'est qu'une commodité locale. Si plusieurs répertoires correspondent, la résolution signale une ambiguïté plutôt que de sélectionner ou d'écraser un espace de travail.
 
-| Commande | Parametres Scripts | Effet |
-|----------|-------------------|-------|
-| `/codexspec:clarify` | `--json --paths-only` | Obtenir les chemins, ne pas verifier les fichiers |
-| `/codexspec:checklist` | `--json` | Verifier l'existence de plan.md |
-| `/codexspec:analyze` | `--json --require-tasks --include-tasks` | Verifier plan.md + tasks.md |
-| `/codexspec:tasks-to-issues` | `--json --require-tasks --include-tasks` | Verifier plan.md + tasks.md |
+## 5. Commandes utilisant les scripts
 
-## 6. Diagramme de Flux Complet
+Les 4 commandes suivantes ont recours aux scripts :
+
+| Commande | Paramètres des scripts | Rôle |
+|----------|------------------------|------|
+| `/codexspec:clarify` | `--json --paths-only` | Récupère les chemins sans valider les fichiers |
+| `/codexspec:checklist` | `--json` | Vérifie l'existence de plan.md |
+| `/codexspec:analyze` | `--json --require-tasks --include-tasks` | Vérifie plan.md + tasks.md |
+| `/codexspec:tasks-to-issues` | `--json --require-tasks --include-tasks` | Vérifie plan.md + tasks.md |
+
+## 6. Diagramme de flux complet
 
 ```
-+--------------------------------------------------------------------------+
-|                        Phase d'Initialisation                             |
-|                                                                          |
-|  $ codexspec init mon-project                                            |
-|       |                                                                  |
-|       |-- Creer la structure de repertoire .codexspec/                   |
-|       |-- Copier scripts/*.sh -> .codexspec/scripts/                    |
-|       |-- Copier templates/commands/*.md -> .claude/commands/           |
-|       |-- Creer constitution.md, config.yml, CLAUDE.md                  |
-|                                                                          |
-+--------------------------------------------------------------------------+
-                                    |
-+--------------------------------------------------------------------------+
-|                        Phase d'Utilisation (Claude Code)                  |
-|                                                                          |
-|  Utilisateur : /codexspec:analyze                                        |
-|       |                                                                  |
-|       |-- Claude lit .claude/commands/codexspec:analyze.md              |
-|       |                                                                  |
-|       |-- Analyser la declaration scripts dans YAML frontmatter         |
-|       |   scripts:                                                       |
-|       |     sh: .codexspec/scripts/check-prerequisites.sh --json ...   |
-|       |                                                                  |
-|       |-- Remplacer l'espace reserveur {SCRIPT}                         |
-|       |                                                                  |
-|       |-- Executer le script :                                          |
-|       |   $ .codexspec/scripts/check-prerequisites.sh --json ...       |
-|       |                                                                  |
-|       |-- Analyser la sortie JSON :                                    |
-|       |   {"FEATURE_DIR": "...", "AVAILABLE_DOCS": [...]}              |
-|       |                                                                  |
-|       |-- Lire spec.md, plan.md, tasks.md                              |
-|       |                                                                  |
-|       |-- Generer le rapport d'analyse                                  |
-|                                                                          |
-+--------------------------------------------------------------------------+
+┌──────────────────────────────────────────────────────────────────────────┐
+│                        Phase d'initialisation                            │
+│                                                                          │
+│  $ codexspec init my-project                                             │
+│       │                                                                  │
+│       ├── Crée la structure de répertoires .codexspec/                   │
+│       ├── Copie scripts/*.sh → .codexspec/scripts/                       │
+│       ├── Copie templates/commands/*.md → .claude/commands/              │
+│       └── Crée constitution.md, config.yml, CLAUDE.md                    │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+                                    ↓
+┌──────────────────────────────────────────────────────────────────────────┐
+│                        Phase d'utilisation (Claude Code)                  │
+│                                                                          │
+│  Utilisateur : /codexspec:analyze                                        │
+│       │                                                                  │
+│       ├── Claude lit .claude/commands/codexspec:analyze.md              │
+│       │                                                                  │
+│       ├── Analyse la déclaration scripts du YAML frontmatter             │
+│       │   scripts:                                                       │
+│       │     sh: .codexspec/scripts/check-prerequisites.sh --json ...     │
+│       │                                                                  │
+│       ├── Remplace le placeholder {SCRIPT}                               │
+│       │                                                                  │
+│       ├── Exécute le script :                                            │
+│       │   $ .codexspec/scripts/check-prerequisites.sh --json ...         │
+│       │                                                                  │
+│       ├── Analyse la sortie JSON :                                       │
+│       │   {"FEATURE_DIR": "...", "AVAILABLE_DOCS": [...]}                │
+│       │                                                                  │
+│       ├── Lit spec.md, plan.md, tasks.md                                │
+│       │                                                                  │
+│       └── Génère le rapport d'analyse                                    │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 7. Points Forts de la Conception
+## 7. Atouts de conception
 
-### 7.1 Compatibilite Multi-Plateformes
+### 7.1 Compatibilité multi-plateformes
 
-Maintenance simultanee des versions Bash et PowerShell, selection automatique via `sys.platform` :
+Les versions Bash et PowerShell sont maintenues simultanément, avec sélection automatique via `sys.platform` :
 
 ```python
 if sys.platform == "win32":
@@ -242,9 +250,9 @@ else:
     # Copier les scripts Bash
 ```
 
-### 7.2 Configuration Declarative
+### 7.2 Configuration déclarative
 
-Declaration des dependances de scripts via YAML frontmatter, claire et intuitive :
+Les dépendances de scripts sont déclarées via le YAML frontmatter, ce qui reste clair et intuitif :
 
 ```yaml
 scripts:
@@ -254,7 +262,7 @@ scripts:
 
 ### 7.3 Sortie JSON
 
-Les scripts produisent des donnees structurees, faciles a analyser par Claude :
+Les scripts produisent des données structurées faciles à analyser par Claude :
 
 ```json
 {
@@ -263,54 +271,54 @@ Les scripts produisent des donnees structurees, faciles a analyser par Claude :
 }
 ```
 
-### 7.4 Verification Progressive
+### 7.4 Validation progressive
 
-Differentes commandes utilisent differents parametres, verification a la demande :
+Différentes commandes utilisent différents paramètres, et valident selon leurs besoins :
 
-| Etape | Commande | Niveau de Verification |
-|-------|----------|------------------------|
+| Étape | Commande | Niveau de validation |
+|-------|----------|----------------------|
 | Avant planification | `/codexspec:clarify` | Chemins uniquement |
-| Apres planification | `/codexspec:checklist` | plan.md |
-| Apres taches | `/codexspec:analyze` | plan.md + tasks.md |
+| Après planification | `/codexspec:checklist` | plan.md |
+| Après tâches | `/codexspec:analyze` | plan.md + tasks.md |
 
-### 7.5 Integration Git
+### 7.5 Intégration Git
 
-- Extraction automatique de l'ID de feature depuis le nom de branche
-- Prise en charge de la verification de nommage de branche (format `^\d{3}-`)
-- Prise en charge du remplacement par variable d'environnement (`CODEXSPEC_FEATURE`)
+- Extraction automatique du feature ID depuis le nom de branche
+- Prise en charge de la validation du nommage de branche (format `^\d{3}-`)
+- Prise en charge de la surcharge par variable d'environnement (`CODEXSPEC_FEATURE`)
 
-## 8. Chemins de Code Cles
+## 8. Chemins de code clés
 
-| Fichier | Ligne/Position | Fonction |
-|---------|----------------|----------|
-| `src/codexspec/__init__.py` | 343-368 | Logique de copie de scripts |
-| `src/codexspec/__init__.py` | 71-90 | Resolution de chemin `get_scripts_dir()` |
-| `scripts/bash/check-prerequisites.sh` | Texte complet | Script principal de verification prealable Bash |
-| `scripts/powershell/check-prerequisites.ps1` | 56-146 | Script de verification prealable PowerShell |
-| `scripts/bash/common.sh` | Texte complet | Fonctions utilitaires generales Bash |
-| `scripts/powershell/common.ps1` | Texte complet | Fonctions utilitaires generales PowerShell |
-| `templates/commands/*.md` | YAML frontmatter | Declaration de scripts |
+| Fichier | Lignes/position | Rôle |
+|---------|-----------------|------|
+| `src/codexspec/__init__.py` | 343-368 | Logique de copie des scripts |
+| `src/codexspec/__init__.py` | 71-90 | Résolution de chemin `get_scripts_dir()` |
+| `scripts/bash/check-prerequisites.sh` | tout le fichier | Script Bash principal de vérification préalable |
+| `scripts/powershell/check-prerequisites.ps1` | 56-146 | Script PowerShell de vérification préalable |
+| `scripts/bash/common.sh` | tout le fichier | Fonctions utilitaires Bash |
+| `scripts/powershell/common.ps1` | tout le fichier | Fonctions utilitaires PowerShell |
+| `templates/commands/*.md` | YAML frontmatter | Déclaration des scripts |
 
-## 9. Liste des Fichiers Scripts
+## 9. Inventaire des fichiers de scripts
 
 ### Scripts Bash (`scripts/bash/`)
 
 ```
 scripts/bash/
-+-- check-prerequisites.sh   # Script principal de verification prealable
-+-- common.sh                # Fonctions utilitaires generales
-+-- create-new-feature.sh    # Creer une nouvelle fonctionnalite
+├── check-prerequisites.sh   # Script principal de vérification préalable
+├── common.sh                # Fonctions utilitaires générales
+└── create-new-feature.sh    # Création d'une nouvelle fonctionnalité
 ```
 
 ### Scripts PowerShell (`scripts/powershell/`)
 
 ```
 scripts/powershell/
-+-- check-prerequisites.ps1  # Script principal de verification prealable
-+-- common.ps1               # Fonctions utilitaires generales
-+-- create-new-feature.ps1   # Creer une nouvelle fonctionnalite
+├── check-prerequisites.ps1  # Script principal de vérification préalable
+├── common.ps1               # Fonctions utilitaires générales
+└── create-new-feature.ps1   # Création d'une nouvelle fonctionnalité
 ```
 
 ---
 
-*Ce document enregistre l'architecture complete et le flux d'utilisation des scripts dans le projet CodexSpec. En cas de mise a jour, veuillez modifier en consequence.*
+*Ce document décrit l'architecture complète et le flux d'utilisation des scripts dans le projet CodexSpec. En cas de mise à jour, merci de le modifier en conséquence.*

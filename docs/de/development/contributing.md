@@ -1,4 +1,4 @@
-# Mitwirken
+# Beitragen
 
 ## Voraussetzungen
 
@@ -10,16 +10,16 @@
 
 ```bash
 # Repository klonen
-git clone https://github.com/Zts0hg/codexspec:git
+git clone https://github.com/Zts0hg/codexspec.git
 cd codexspec
 
-# Entwicklungsabhaengigkeiten installieren
+# Entwicklungsabhängigkeiten installieren
 uv sync --dev
 
-# Lokal ausfuehren
+# Lokal ausführen
 uv run codexspec --help
 
-# Tests ausfuehren
+# Tests ausführen
 uv run pytest
 
 # Code linten
@@ -29,17 +29,17 @@ uv run ruff check src/
 ## Dokumentation
 
 ```bash
-# Dokumentationsabhaengigkeiten installieren
+# Doku-Abhängigkeiten installieren
 uv sync --extra docs
 
 # Dokumentation lokal vorschauen
 uv run mkdocs serve
 
-# Dokumentation erstellen
+# Dokumentation bauen
 uv run mkdocs build
 ```
 
-## Erstellung
+## Bauen
 
 ```bash
 uv build
@@ -48,13 +48,13 @@ uv build
 ## Pull-Request-Prozess
 
 1. Repository forken
-2. Feature-Branch erstellen
-3. Aenderungen vornehmen
-4. Tests und Linting ausfuehren
+2. Feature-Branch anlegen
+3. Änderungen vornehmen
+4. Tests und Linting ausführen
 5. Pull-Request einreichen
 
 ## Code-Stil
 
-- Zeilenlaenge: maximal 120 Zeichen
+- Zeilenlänge: maximal 120 Zeichen
 - PEP 8 befolgen
-- Type-Hints fuer oeffentliche Funktionen verwenden
+- Type-Hints für öffentliche Funktionen verwenden

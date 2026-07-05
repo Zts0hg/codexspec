@@ -1,131 +1,143 @@
 # Workflow
 
-CodexSpec strukturiert die Entwicklung in **überprüfbare Prüfpunkte** mit menschlicher Validierung in jeder Phase.
+CodexSpec gliedert die Entwicklung in überprüfbare Checkpoints, wobei die bestätigte Absicht des Nutzers über Sessions hinweg erhalten bleibt. Er basiert auf **Requirements-First SDD**: bestätigte Anforderungen stehen zuerst, und nichts ist verbindlich, bis Sie es ausdrücklich bestätigen. Sie definieren und bestätigen *was* gebaut wird und *warum*, bevor Sie entscheiden *wie*.
 
-## Workflow-Übersicht
+## Workflow-Überblick
 
-```
-┌──────────────────────────────────────────────────────────────────────────┐
-│                    CodexSpec Mensch-KI-Zusammenarbeit-Workflow            │
-├──────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  1. Constitution  ──►  Projektprinzipien definieren                      │
-│         │                                                                │
-│         ▼                                                                │
-│  2. Specify  ───────►  Anforderungen klären und requirements.md sichern │
-│         │                                                                │
-│         ▼                                                                │
-│  3. Generate Spec  ─►  spec.md Dokument erstellen                        │
-│         │               ✓ Automatische Überprüfung: review-spec.md       │
-│         ▼                                                                │
-│  4. Spec to Plan  ──►  Technischen Plan erstellen                        │
-│         │               ✓ Automatische Überprüfung: review-plan.md       │
-│         ▼                                                                │
-│  5. Plan to Tasks  ─►  Atomare Aufgaben generieren                       │
-│         │               ✓ Automatische Überprüfung: review-tasks.md      │
-│         ▼                                                                │
-│  6. Implement  ─────►  Ausführung mit bedingtem TDD-Workflow             │
-│                                                                          │
-└──────────────────────────────────────────────────────────────────────────┘
+Auf konzeptioneller Ebene ersetzt Requirements-First SDD die traditionelle „Idee → Code → Debuggen → Neuschreiben"-Schleife durch eine explizite Kette bestätigter Artefakte:
+
+```text
+Traditionell:  Idee → Code → Debuggen → Neuschreiben
+SDD:           Idee → Bestätigte Anforderungen → Spec → Plan → Aufgaben → Code
 ```
 
-## Warum Überprüfung wichtig ist
+In CodexSpec wird diese Kette zu einer Folge von Slash-Befehls-Checkpoints, von denen jeder ein persistentes Artefakt mit einem Review-Marker erzeugt:
 
-| Ohne Überprüfung | Mit Überprüfung |
-|-------------|------------|
-| KI trifft falsche Annahmen | Mensch erfasst Fehlinterpretationen früh |
-| Unvollständige Anforderungen verbreiten sich | Lücken vor der Implementierung identifiziert |
-| Architektur driftet von der Absicht ab | Ausrichtung in jeder Phase verifiziert |
-| **Ergebnis: Nachbesserung** | **Ergebnis: Beim ersten Mal richtig** |
-
-## Automatische Überprüfung
-
-Jeder Generierungsbefehl führt jetzt **automatisch eine Überprüfung durch**:
-
-- `/codexspec:generate-spec` → ruft automatisch `review-spec` auf
-- `/codexspec:spec-to-plan` → ruft automatisch `review-plan` auf
-- `/codexspec:plan-to-tasks` → ruft automatisch `review-tasks` auf
-
-Überprüfungsberichte werden zusammen mit den Artefakten erstellt, sodass Sie Probleme sofort sehen können.
-
-## Iterative Qualitätsschleife
-
-Wenn im Überprüfungsbericht Probleme gefunden werden, beschreiben Sie die Korrekturen in natürlicher Sprache und das System aktualisiert sowohl das Artefakt als auch den Bericht:
-
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│                    Iterative Qualitätsschleife                        │
-├──────────────────────────────────────────────────────────────────────┤
-│                                                                       │
-│  Artefakt (spec/plan/tasks.md)                                        │
-│         │                                                             │
-│         ▼                                                             │
-│  Automatische        Überprüfungsbericht                              │
-│  Überprüfung  ───►  (review-*.md)                                     │
-│         │                    │                                        │
-│         │                    ▼                                        │
-│         │             Probleme gefunden?                              │
-│         │                    │                                        │
-│         │              ┌─────┴─────┐                                  │
-│         │              │           │                                  │
-│         │             Ja        Nein                                   │
-│         │              │           │                                  │
-│         │              ▼           ▼                                  │
-│         │     Korrektur im    Zum nächsten                            │
-│         │     Gespräch        Schritt gehen                           │
-│         │     beschreiben                                             │
-│         │              │                                              │
-│         │              ▼                                              │
-│         │     Gleichzeitig aktualisieren:                             │
-│         │       • Artefakt (spec/plan/tasks.md)                       │
-│         │       • Überprüfungsbericht (review-*.md)                   │
-│         │              │                                              │
-│         └──────────────┘                                              │
-│           (Wiederholen bis zufrieden)                                 │
-│                                                                       │
-│  Manuelle Neubewertung: Führen Sie /codexspec:review-*               │
-│  jederzeit für eine neue Analyse aus                                  │
-│                                                                       │
-└──────────────────────────────────────────────────────────────────────┘
+```text
+Idee → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+                                                   │                         │                            │
+                                              Spec reviewen              Plan reviewen               Aufgaben reviewen
 ```
 
-**Funktionsweise**:
+`requirements.md` persistiert das Ergebnis der Anforderungsdiskussionen. Es erfasst bestätigte Bedürfnisse, Einschränkungen, Entscheidungen, Ausschlüsse, offene Fragen, Nutzer-Belege und ein Bestätigungs-Log.
 
-1. **Automatische Überprüfung**: Jeder Generierungsbefehl führt automatisch die entsprechende Überprüfung durch
-2. **Überprüfungsbericht**: Erstellt `review-*.md` Dateien mit gefundenen Problemen
-3. **Iterative Korrektur**: Beschreiben Sie im Gespräch, was korrigiert werden muss, Artefakt und Bericht werden gemeinsam aktualisiert
-4. **Manuelle Neubewertung**: Führen Sie `/codexspec:review-spec|plan|tasks` jederzeit für eine neue Analyse aus
+## Workflow-Schritte
 
-## Kernbefehle
+| Schritt                          | Befehl                      | Ausgabe                       | Menschen-Prüfung |
+| -------------------------------- | --------------------------- | ----------------------------- | ---------------- |
+| 1. Projektprinzipien             | `/codexspec:constitution`   | `constitution.md`             | Ja               |
+| 2. Anforderungs-Klärung          | `/codexspec:specify`        | `requirements.md`             | Ja               |
+| 3. Spec erzeugen                 | `/codexspec:generate-spec`  | `spec.md` + Auto-Review       | Ja               |
+| 4. Technische Planung            | `/codexspec:spec-to-plan`   | `plan.md` + Auto-Review       | Ja               |
+| 5. Aufgaben-Aufteilung           | `/codexspec:plan-to-tasks`  | `tasks.md` + Auto-Review      | Ja               |
+| 6. Artefaktübergreifende Analyse | `/codexspec:analyze`        | Analyse-Bericht               | Ja               |
+| 7. Implementierung               | `/codexspec:implement-tasks`| Code                          | –                |
 
-| Phase | Befehl | Zweck |
-|-------|--------|-------|
-| 1 | `/codexspec:constitution` | Projektprinzipien definieren |
-| 2 | `/codexspec:specify` | Anforderungen klären, bestätigen und in requirements.md speichern |
-| 3 | `/codexspec:generate-spec` | spec.md aus bestätigter requirements.md erstellen (★ Automatische Überprüfung) |
-| - | `/codexspec:review-spec` | Automatisch aufgerufen, oder manuell neu validieren |
-| 4 | `/codexspec:spec-to-plan` | Technischen Plan erstellen (★ Automatische Überprüfung) |
-| - | `/codexspec:review-plan` | Automatisch aufgerufen, oder manuell neu validieren |
-| 5 | `/codexspec:plan-to-tasks` | In Aufgaben aufteilen (★ Automatische Überprüfung) |
-| - | `/codexspec:review-tasks` | Automatisch aufgerufen, oder manuell neu validieren |
-| 6 | `/codexspec:implement-tasks` | Implementierung ausführen |
+Geben Sie ein explizites Feature-Verzeichnis oder einen Artefaktpfad an, wenn mehr als ein Feature existiert. Befehle wählen niemals implizit das neueste Verzeichnis.
 
-## Zwei-Phasen-Spezifikation
+## Confirmation Gate
 
-### specify vs clarify
+**Anforderungen, Specs, Pläne und Aufgaben werden erst nach ausdrücklicher menschlicher Bestätigung verbindlich.** CodexSpec befördert nie stillschweigend einen Entwurf zum autorisierenden Artefakt – an jedem Checkpoint wird der Nutzer zur Bestätigung aufgefordert, bevor Downstream-Befehle es als Quelle der Wahrheit behandeln dürfen.
+
+### Autorität und Nachvollziehbarkeit
+
+Bei Konflikten zwischen Quellen verwenden die Befehle diese Reihenfolge:
+
+1. Bestätigte Einträge in `requirements.md`
+2. `spec.md`
+3. Anwendbare Verfassungs-Regeln und Repository-Fakten
+4. `plan.md`
+5. `tasks.md`
+6. Allgemeine Best Practices
+
+Spätere Artefakte können frühere nicht stillschweigend umdefinieren. Anforderungen verwenden stabile IDs, Spezifikations-Items zitieren `Sources`, Pläne und Aufgaben zitieren `Covers`, und ungelöste Konflikte stoppen die Generierung zur Nutzerbestätigung. Mit anderen Worten: **bestätigte Anforderungen sind die höchstrangige Autorität**.
+
+Bestehende Feature-Verzeichnisse, die nur `spec.md` enthalten, bleiben unterstützt. Befehle weisen explizit darauf hin, dass Traceability zur ursprünglichen Diskussion nicht verfügbar ist.
+
+## Schlüsselkonzept: Iterative Qualitätsschleife
+
+Jeder Generierungsbefehl enthält ein **automatisches Review**. Verifizierte Mängel dürfen behoben und für höchstens zwei Runden erneut geprüft werden; empfehlende Hinweise bleiben getrennt und lösen nie automatische Änderungen aus.
+
+1. Review-Bericht lesen.
+2. Zu behebende Probleme in natürlicher Sprache beschreiben.
+3. Das System aktualisiert automatisch Specs und Review-Berichte.
+
+```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'lineColor': '#888888',
+    'primaryColor': '#2d2d2d',
+    'primaryTextColor': '#ffffff',
+    'primaryBorderColor': '#666666'
+  },
+  'flowchart': {
+    'curve': 'stepBefore',
+    'nodeSpacing': 50,
+    'rankSpacing': 40
+  }
+}}%%
+flowchart TB
+    classDef rectStyle fill:#2d2d2d,stroke:#666,stroke-width:1px,color:#fff,width:220px;
+    classDef diamondStyle fill:#3d3d3d,stroke:#888,stroke-width:2px,color:#fff;
+
+    A["Spec/Plan/Aufgaben erzeugen"]:::rectStyle --> B["Auto-Review"]:::rectStyle
+    B --> C{"Probleme gefunden?"}:::diamondStyle
+
+    C -->|Verifizierter Mangel| D["Mit Beweis beheben"]:::rectStyle
+    D --> E["Artefakt + Review-Bericht aktualisieren"]:::rectStyle
+
+    E --> B
+
+    C -->|Nein| F["Zum nächsten Schritt"]:::rectStyle
+
+    linkStyle 2,4 stroke:#aaa,stroke-width:1px;
+```
+
+## Review-Modell
+
+Reviews trennen drei Arten von Aussagen:
+
+- **Fidelity-Mängel**: Konflikt mit einer autorisierenden Quelle oder fehlende geforderte Abdeckung.
+- **Intrinsische Mängel**: das Artefakt ist intern widersprüchlich, nicht überprüfbar oder nicht durchführbar.
+- **Risiko-Hinweise / Design-Möglichkeiten**: optionale Verbesserungen ohne Beweis für einen aktuellen Mangel.
+
+Jeder Mangel muss seine Beweise, Position, Abweichung, Auswirkung und minimale Behebung identifizieren. Befunde mit derselben Ursache werden zusammengeführt. Hinweise beeinflussen Status, Score oder automatische Fixes nicht.
+
+Der Review-Status ist:
+
+- `PASS`: keine kritischen, Warn- oder Minor-Mängel.
+- `PASS_WITH_WARNINGS`: nur Minor-Mängel verbleiben.
+- `NEEDS_REVISION`: eine oder mehrere Warnungen verbleiben.
+- `BLOCKED`: ein kritischer Konflikt verhindert zuverlässiges Fortfahren.
+
+Der Kompatibilitäts-Score wird aus denselben klassifizierten Befunden abgeleitet statt aus festen Vorlagen-Abschnitten. Der Status ist autorisierend; der Score existiert für Integrationen, die noch eine Zahl erwarten.
+
+## Begrenztes Auto-Review
+
+Generierungsbefehle führen das passende Review automatisch aus. Das ist die **evidenzbasierte Review**-Disziplin in Aktion: Sie dürfen nur evidenzbasierte Mängel reparieren und für höchstens zwei Runden erneut prüfen. Sie stoppen früher bei `PASS` und stoppen für Nutzereingabe, wenn:
+
+- eine autorisierende Quelle mit einer anderen Quelle konfligiert;
+- ein Fix bestätigte Absicht ändern würde;
+- das verbleibende Element eher ein Hinweis als ein Mangel ist;
+- zwei Reparatur-Runden aufgebraucht sind.
+
+Manuelle `/codexspec:review-*`-Befehle können jederzeit für einen frischen Bericht ausgeführt werden.
+
+## specify vs clarify
 
 | Aspekt | `/codexspec:specify` | `/codexspec:clarify` |
 |--------|----------------------|----------------------|
-| **Zweck** | Initiale Erkundung | Iterative Verfeinerung |
-| **Wann** | Kein spec.md existiert | spec.md existiert, Lücken müssen gefüllt werden |
-| **Eingabe** | Ihre ursprüngliche Idee | spec.md existent |
-| **Ausgabe** | Erstellt oder aktualisiert requirements.md | Aktualisiert spec.md |
+| Zweck | Ursprüngliche Absicht etablieren und bestätigen | Lücken oder Mehrdeutigkeiten auflösen |
+| Haupt-Artefakt | `requirements.md` | `requirements.md` |
+| Spec-Behandlung | Später erzeugt | Nach bestätigten Änderungen synchronisiert |
+| Offene Fragen | Ohne Beförderung erfasst | Nur nach Nutzerbestätigung aktualisiert |
 
-`requirements.md` ist die verbindliche Quelle für die Spec-Generierung. Ein expliziter Feature-Pfad hat Vorrang; andernfalls wird der aktuelle Timestamp-Feature-Branch verwendet.
+## Conditional TDD
 
-## Bedingtes TDD
+CodexSpec verwendet **Conditional TDD**: test-first-Reihenfolge wird nur angewendet, wo Plan, Verfassung oder Implementierungsrisiko es erfordern. Dokumentations- und Konfigurationsarbeiten können direkt implementiert werden. Jede Aufgabe sollte ein überprüfbares Ergebnis liefern; sie muss nicht zwingend nur eine Datei berühren.
 
-Die Implementierung folgt bedingtem TDD:
+Bei Aufgaben mit test-first-Reihenfolge folgt die Implementierung der Red → Green → Verify → Refactor-Schleife:
 
-- **Code-Aufgaben**: Test-First (Rot → Grün → Verifizieren → Refaktorieren)
-- **Nicht-testbare Aufgaben** (Dokumentation, Konfiguration): Direkte Implementierung
+- **Code-Aufgaben**: Test-first – einen fehlschlagenden Test schreiben (Red), ihn zum Laufen bringen (Green), das Verhalten verifizieren (Verify), dann die Implementierung verfeinern, ohne das Verhalten zu ändern (Refactor).
+- **Nicht-testbare Aufgaben** (Doku, Konfiguration): direkte Implementierung, wobei das Ergebnis gegen das angegebene Aufgaben-Ergebnis statt gegen einen Unit-Test verifiziert wird.

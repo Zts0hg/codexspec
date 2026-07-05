@@ -21,7 +21,7 @@ codexspec init [PROJECT_NAME] [OPTIONS]
 | Option | Short | Description |
 |--------|-------|-------------|
 | `--here` | `-h` | Initialize in the current directory |
-| `--ai` | `-a` | AI assistant to use (default: claude) |
+| `--ai` | `-a` | AI assistant to use: `claude`, `codex`, or `both` (default: claude) |
 | `--lang` | `-l` | Output (base) language; interaction/document/commit fall back to it (e.g., en, zh-CN, ja) |
 | `--interaction-lang` | | Interaction language (LLM dialogue + `codexspec` CLI output); overrides `--lang` |
 | `--document-lang` | | Document language (generated requirements/spec/plan/tasks); overrides `--lang` |
@@ -42,6 +42,10 @@ codexspec init my-project
 
 # Initialize in current directory
 codexspec init . --ai claude
+
+# One-time usage (no installation) — initialize for Codex CLI or both
+uvx codexspec init . --ai codex
+uvx codexspec init . --ai both
 
 # Fully non-interactive: zh-CN base, English commit messages
 codexspec init my-project --lang zh-CN --commit-lang en
@@ -90,5 +94,6 @@ codexspec config [OPTIONS]
 | `--set-document-lang` | | Set the document language (generated spec/plan/tasks) |
 | `--set-commit-lang` | `-c` | Set the commit-message language |
 | `--list-langs` | | List all supported languages |
+| `--auto-next` | | Toggle/set `workflow.auto_next` (bare toggles; or on/off) |
 
 Each `--set-*-lang` updates one [language dimension](../user-guide/i18n.md); any dimension you do not set falls back to `output`, then `en`.

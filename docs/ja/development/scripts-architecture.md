@@ -1,10 +1,10 @@
 # Scripts アーキテクチャ分析
 
-このドキュメントは、CodexSpec プロジェクトにおける scripts のコードロジックフローと、それらが Claude Code でどのように使用されるかを詳細に説明します。
+このドキュメントは、CodexSpec プロジェクトにおける scripts のコードロジックフローと、それらが Claude Code でどのように使われるかを詳細に説明します。
 
-## 1. 全体アーキテクチャ概要
+## 1. 全体アーキテクチャの概要
 
-CodexSpec は **Spec-Driven Development (SDD)** ツールキットであり、CLI + テンプレート + 補助スクリプトの 3 層アーキテクチャを採用しています:
+CodexSpec は **Spec-Driven Development (SDD)** ツールキットであり、CLI + テンプレート + 補助スクリプトの 3 層アーキテクチャを採用しています。
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -13,7 +13,7 @@ CodexSpec は **Spec-Driven Development (SDD)** ツールキットであり、CL
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│                    Claude Code インタラクション層                │
+│                    Claude Code 対話層                            │
 │  /codexspec:specify | /codexspec:analyze | ...                  │
 │  (.claude/commands/*.md)                                        │
 └─────────────────────────────────────────────────────────────────┘
@@ -26,9 +26,9 @@ CodexSpec は **Spec-Driven Development (SDD)** ツールキットであり、CL
 
 ## 2. Scripts のデプロイフロー
 
-### フェーズ 1: `codexspec init` 初期化
+### フェーズ 1: `codexspec init` による初期化
 
-`src/codexspec/__init__.py` の `init()` 関数（第 343-368 行）で、オペレーティングシステムに基づいて対応するスクリプトを自動コピーします:
+`src/codexspec/__init__.py` の `init()` 関数 (343-368 行目) で、OS に応じて対応するスクリプトを自動コピーします。
 
 ```python
 # Copy helper scripts based on platform
@@ -48,11 +48,11 @@ if scripts_source_dir.exists():
             dest_file.write_text(script_file.read_text(encoding="utf-8"), encoding="utf-8")
 ```
 
-**結果**: オペレーティングシステムに基づいて、`scripts/bash/` または `scripts/powershell/` のスクリプトをプロジェクトの `.codexspec/scripts/` ディレクトリにコピーします。
+**結果**: OS に応じて、`scripts/bash/` または `scripts/powershell/` のスクリプトがプロジェクトの `.codexspec/scripts/` ディレクトリにコピーされます。
 
-### パス解決メカニズム
+### パス解決の仕組み
 
-`get_scripts_dir()` 関数（第 71-90 行）は複数のインストールシナリオを処理します:
+`get_scripts_dir()` 関数 (71-90 行目) は複数のインストール形態を扱います。
 
 ```python
 def get_scripts_dir() -> Path:
@@ -70,11 +70,11 @@ def get_scripts_dir() -> Path:
     return installed_scripts
 ```
 
-## 3. Scripts の Claude Code での呼び出しメカニズム
+## 3. Claude Code におけるスクリプトの呼び出し仕組み
 
-### コアメカニズム: YAML Frontmatter 宣言
+### 中核の仕組み: YAML frontmatter による宣言
 
-テンプレートファイルは YAML frontmatter でスクリプト依存関係を宣言します:
+テンプレートファイルは YAML frontmatter でスクリプトの依存関係を宣言します。
 
 ```yaml
 ---
@@ -85,49 +85,49 @@ scripts:
 ---
 ```
 
-### プレースホルダー置換
+### プレースホルダの置き換え
 
-テンプレート内で `{SCRIPT}` プレースホルダーを使用:
+テンプレート内では `{SCRIPT}` プレースホルダを使います。
 
 ```markdown
 ### 1. Initialize Context
 
 Run `{SCRIPT}` from repo root and parse JSON for:
-- `FEATURE_DIR` - Feature directory path
-- `AVAILABLE_DOCS` - Available documents list
+- `FEATURE_DIR` - 機能ディレクトリのパス
+- `AVAILABLE_DOCS` - 利用可能なドキュメントの一覧
 ```
 
 ### 呼び出しフロー
 
 1. ユーザーが Claude Code で `/codexspec:analyze` を入力
 2. Claude が `.claude/commands/codexspec:analyze.md` テンプレートを読み込む
-3. オペレーティングシステムに基づいて、Claude が `{SCRIPT}` を置換:
+3. OS に応じて、Claude は `{SCRIPT}` を次のように置き換える:
    - **macOS/Linux**: `.codexspec/scripts/check-prerequisites.sh --json --require-tasks --include-tasks`
    - **Windows**: `.codexspec/scripts/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks`
-4. Claude がスクリプトを実行し、JSON 出力を解析して、後続の操作を継続
+4. Claude がスクリプトを実行し、JSON 出力をパースして後続の操作に進む
 
-## 4. Scripts 機能詳細
+## 4. Scripts の機能詳細
 
 ### 4.1 `check-prerequisites.sh/ps1` - 前提条件チェックスクリプト
 
-これが最も重要なスクリプトで、環境状態を検証し、構造化された情報を返します。
+最も重要なスクリプトで、環境状態を検証して構造化された情報を返します。
 
 #### コア機能
 
-- 現在 feature ブランチにいるか検証（形式: `2026-0613-1200ab-feature-name`）
-- 必要なファイルの存在を検出 (`plan.md`, `tasks.md`)
-- JSON 形式のパス情報を返す
+- 現在 feature ブランチにいるかを検証 (フォーマット: `2026-0613-1200ab-feature-name`)
+- 必須ファイル (`plan.md`, `tasks.md`) の存在を検出
+- JSON 形式でパス情報を返す
 
 #### パラメータオプション
 
-| パラメータ | Bash | PowerShell | 機能 |
+| パラメータ | Bash | PowerShell | 役割 |
 |------|------|------------|------|
 | JSON 出力 | `--json` | `-Json` | JSON 形式で出力 |
-| tasks.md 要件 | `--require-tasks` | `-RequireTasks` | tasks.md の存在を検証 |
-| tasks.md 含有 | `--include-tasks` | `-IncludeTasks` | AVAILABLE_DOCS に tasks.md を含める |
-| パスのみ | `--paths-only` | `-PathsOnly` | 検証をスキップし、パスのみ出力 |
+| tasks.md を要求 | `--require-tasks` | `-RequireTasks` | tasks.md の存在を検証 |
+| tasks.md を含める | `--include-tasks` | `-IncludeTasks` | AVAILABLE_DOCS に tasks.md を含める |
+| パスのみ | `--paths-only` | `-PathsOnly` | 検証をスキップしパスのみ出力 |
 
-#### JSON 出力例
+#### JSON 出力の例
 
 ```json
 {
@@ -138,61 +138,75 @@ Run `{SCRIPT}` from repo root and parse JSON for:
 
 ### 4.2 `common.sh/ps1` - 共通ユーティリティ関数
 
-クロスプラットフォームの共通機能を提供:
+クロスプラットフォームな共通機能を提供します。
 
-#### Bash バージョン関数
+#### Bash 版の関数
 
-| 関数 | 機能 |
+| 関数 | 役割 |
 |------|------|
-| `get_feature_id()` | Git ブランチまたは環境変数から feature ID を取得 |
-| `get_specs_dir()` | specs ディレクトリパスを取得 |
-| `is_codexspec_project()` | CodexSpec プロジェクトかどうかをチェック |
-| `require_codexspec_project()` | CodexSpec プロジェクトであることを確認、そうでなければ終了 |
-| `log_info/success/warning/error()` | カラーログ出力 |
-| `command_exists()` | コマンドが存在するかチェック |
+| `get_feature_id()` | Git ブランチや環境変数から feature ID を取得 |
+| `get_specs_dir()` | specs ディレクトリのパスを取得 |
+| `is_codexspec_project()` | CodexSpec プロジェクトかどうかを確認 |
+| `require_codexspec_project()` | CodexSpec プロジェクト内であることを保証、そうでなければ終了 |
+| `log_info/success/warning/error()` | カラー付きログ出力 |
+| `command_exists()` | コマンドが存在するかを確認 |
 
-#### PowerShell バージョン関数
+#### PowerShell 版の関数
 
-| 関数 | 機能 |
+| 関数 | 役割 |
 |------|------|
 | `Get-RepoRoot` | Git リポジトリのルートディレクトリを取得 |
 | `Get-CurrentBranch` | 現在のブランチ名を取得 |
-| `Test-HasGit` | Git リポジトリがあるか検出 |
-| `Test-FeatureBranch` | feature ブランチにいるか検証 |
-| `Get-FeaturePathsEnv` | すべての feature 関連パスを取得 |
-| `Test-FileExists` | ファイルが存在するかチェック |
-| `Test-DirHasFiles` | ディレクトリにファイルがあるかチェック |
+| `Test-HasGit` | Git リポジトリがあるかを検出 |
+| `Test-FeatureBranch` | feature ブランチにいるかを検証 |
+| `Get-FeaturePathsEnv` | feature 関連のすべてのパスを取得 |
+| `Test-FileExists` | ファイルが存在するかを確認 |
+| `Test-DirHasFiles` | ディレクトリにファイルがあるかを確認 |
 
 ### 4.3 `create-new-feature.sh/ps1` - 新機能の作成
 
 #### 機能
 
-- 自動的にインクリメントする feature ID を生成（001, 002, ...）
-- feature ディレクトリと初期 spec.md を作成
+- `YYYY-MMDD-HHMMxx` 形式の feature ID を自動生成
+- feature ディレクトリと初期 requirements.md を作成
 - 対応する Git ブランチを作成
+- 短縮名を正規化したあと、ASCII 文字または数字を少なくとも 1 つ含むことを要求
 
 #### 使用例
 
 ```bash
-./create-new-feature.sh -n "user authentication" -i 001
+./create-new-feature.sh -n "user authentication"
 ```
+
+#### 機能の命名規約
+
+- 連番 `NNN-name` 形式の識別子はサポートされません。タイムスタンプ名のみが
+  サポートされる機能命名形式です。
+- レガシー互換性は成果物に適用されます。`requirements.md` が存在しない場合は、
+  既存の `spec.md` が使われることがあります。これは代替のディレクトリや
+  ブランチ命名形式を有効にするものではありません。
+- 機能のフルネームはワークスペースを一意に特定します:
+  `YYYY-MMDD-HHMMxx-short-name`。独立して作成されたワークスペースは、
+  短縮名が異なる場合に同じタイムスタンプ ID を共有することがあります。
+- 短縮 ID のルックアップはローカルの利便性のためだけのものです。複数ディレクトリが
+  一致する場合、解決はワークスペースを選択・上書きせずに曖昧さを報告します。
 
 ## 5. Scripts を使用するコマンド
 
-以下の 4 つのコマンドが scripts を使用します:
+次の 4 つのコマンドが scripts を使用します。
 
-| コマンド | Scripts パラメータ | 機能 |
+| コマンド | Scripts パラメータ | 役割 |
 |------|--------------|------|
-| `/codexspec:clarify` | `--json --paths-only` | パスを取得、ファイル検証なし |
+| `/codexspec:clarify` | `--json --paths-only` | パスを取得し、ファイルを検証しない |
 | `/codexspec:checklist` | `--json` | plan.md の存在を検証 |
-| `/codexspec:analyze` | `--json --require-tasks --include-tasks` | plan.md + tasks.md を検証 |
-| `/codexspec:tasks-to-issues` | `--json --require-tasks --include-tasks` | plan.md + tasks.md を検証 |
+| `/codexspec:analyze` | `--json --require-tasks --include-tasks` | plan.md と tasks.md を検証 |
+| `/codexspec:tasks-to-issues` | `--json --require-tasks --include-tasks` | plan.md と tasks.md を検証 |
 
 ## 6. 完全なワークフロー図
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                        初期化フェーズ                                      │
+│                        初期化フェーズ                                     │
 │                                                                          │
 │  $ codexspec init my-project                                             │
 │       │                                                                  │
@@ -204,22 +218,22 @@ Run `{SCRIPT}` from repo root and parse JSON for:
 └──────────────────────────────────────────────────────────────────────────┘
                                     ↓
 ┌──────────────────────────────────────────────────────────────────────────┐
-│                        使用フェーズ (Claude Code)                          │
+│                        使用フェーズ (Claude Code)                         │
 │                                                                          │
 │  ユーザー: /codexspec:analyze                                            │
 │       │                                                                  │
 │       ├── Claude が .claude/commands/codexspec:analyze.md を読み込み     │
 │       │                                                                  │
-│       ├── YAML frontmatter の scripts 宣言を解析                         │
+│       ├── YAML frontmatter の scripts 宣言をパース                       │
 │       │   scripts:                                                       │
-│       │     sh: .codexspec/scripts/check-prerequisites.sh --json ...    │
+│       │     sh: .codexspec/scripts/check-prerequisites.sh --json ...     │
 │       │                                                                  │
-│       ├── {SCRIPT} プレースホルダーを置換                                 │
+│       ├── {SCRIPT} プレースホルダを置き換え                               │
 │       │                                                                  │
 │       ├── スクリプトを実行:                                              │
-│       │   $ .codexspec/scripts/check-prerequisites.sh --json ...        │
+│       │   $ .codexspec/scripts/check-prerequisites.sh --json ...         │
 │       │                                                                  │
-│       ├── JSON 出力を解析:                                               │
+│       ├── JSON 出力をパース:                                             │
 │       │   {"FEATURE_DIR": "...", "AVAILABLE_DOCS": [...]}               │
 │       │                                                                  │
 │       ├── spec.md, plan.md, tasks.md を読み込み                          │
@@ -229,11 +243,11 @@ Run `{SCRIPT}` from repo root and parse JSON for:
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-## 7. 設計のハイライト
+## 7. 設計の亮点
 
-### 7.1 クロスプラットフォーム互換性
+### 7.1 クロスプラットフォーム互換
 
-Bash と PowerShell バージョンの両方をメンテナンスし、`sys.platform` で自動選択:
+Bash 版と PowerShell 版を両方保守し、`sys.platform` で自動選択します。
 
 ```python
 if sys.platform == "win32":
@@ -244,7 +258,7 @@ else:
 
 ### 7.2 宣言的設定
 
-YAML frontmatter でスクリプト依存関係を宣言し、明確で直感的:
+YAML frontmatter でスクリプトの依存関係を宣言し、明快さを実現します。
 
 ```yaml
 scripts:
@@ -254,7 +268,7 @@ scripts:
 
 ### 7.3 JSON 出力
 
-スクリプトは構造化データを出力し、Claude が解析しやすい:
+スクリプトが構造化データを出力するため、Claude がパースしやすくなります。
 
 ```json
 {
@@ -265,7 +279,7 @@ scripts:
 
 ### 7.4 段階的検証
 
-異なるコマンドは異なるパラメータを使用し、必要に応じて検証:
+コマンドごとに異なるパラメータを使い、必要に応じて検証します。
 
 | フェーズ | コマンド | 検証レベル |
 |------|------|----------|
@@ -273,31 +287,31 @@ scripts:
 | 計画後 | `/codexspec:checklist` | plan.md |
 | タスク後 | `/codexspec:analyze` | plan.md + tasks.md |
 
-### 7.5 Git 統合
+### 7.5 Git 連携
 
-- ブランチ名から自動的に feature ID を抽出
-- ブランチ命名検証をサポート（`^\d{3}-` 形式）
-- 環境変数オーバーライドをサポート（`CODEXSPEC_FEATURE`）
+- ブランチ名から feature ID を自動抽出
+- ブランチ命名の検証をサポート (`^\d{3}-` 形式)
+- 環境変数による上書きをサポート (`CODEXSPEC_FEATURE`)
 
-## 8. 重要なコードパス
+## 8. 主要コードパス
 
-| ファイル | 行番号/場所 | 機能 |
+| ファイル | 行番号/位置 | 機能 |
 |------|-----------|------|
-| `src/codexspec/__init__.py` | 343-368 | スクリプトコピーロジック |
-| `src/codexspec/__init__.py` | 71-90 | `get_scripts_dir()` パス解決 |
-| `scripts/bash/check-prerequisites.sh` | 全文 | Bash 前提条件チェックメインスクリプト |
+| `src/codexspec/__init__.py` | 343-368 | スクリプトコピーのロジック |
+| `src/codexspec/__init__.py` | 71-90 | `get_scripts_dir()` のパス解決 |
+| `scripts/bash/check-prerequisites.sh` | 全文 | Bash 前提条件チェックのメインスクリプト |
 | `scripts/powershell/check-prerequisites.ps1` | 56-146 | PowerShell 前提条件チェックスクリプト |
 | `scripts/bash/common.sh` | 全文 | Bash 共通ユーティリティ関数 |
 | `scripts/powershell/common.ps1` | 全文 | PowerShell 共通ユーティリティ関数 |
 | `templates/commands/*.md` | YAML frontmatter | スクリプト宣言 |
 
-## 9. スクリプトファイルリスト
+## 9. スクリプトファイル一覧
 
 ### Bash スクリプト (`scripts/bash/`)
 
 ```
 scripts/bash/
-├── check-prerequisites.sh   # 前提条件チェックメインスクリプト
+├── check-prerequisites.sh   # 前提条件チェックのメインスクリプト
 ├── common.sh                # 共通ユーティリティ関数
 └── create-new-feature.sh    # 新機能の作成
 ```
@@ -306,11 +320,11 @@ scripts/bash/
 
 ```
 scripts/powershell/
-├── check-prerequisites.ps1  # 前提条件チェックメインスクリプト
+├── check-prerequisites.ps1  # 前提条件チェックのメインスクリプト
 ├── common.ps1               # 共通ユーティリティ関数
 └── create-new-feature.ps1   # 新機能の作成
 ```
 
 ---
 
-*このドキュメントは CodexSpec プロジェクトにおける scripts の完全なアーキテクチャと使用フローを記録しています。更新がある場合は、同期して修正してください。*
+*このドキュメントは CodexSpec プロジェクトにおける scripts の完全なアーキテクチャと利用フローを記録したものです。更新があれば、合わせて修正してください。*

@@ -6,36 +6,36 @@
 - Gerenciador de pacotes uv
 - Git
 
-## Desenvolvimento Local
+## Desenvolvimento local
 
 ```bash
 # Clonar o repositório
-git clone https://github.com/Zts0hg/codexspec:git
+git clone https://github.com/Zts0hg/codexspec.git
 cd codexspec
 
-# Instalar dependências de desenvolvimento
+# Instalar as dependências de desenvolvimento
 uv sync --dev
 
 # Executar localmente
 uv run codexspec --help
 
-# Executar testes
+# Rodar os testes
 uv run pytest
 
-# Verificar código com linter
+# Lint do código
 uv run ruff check src/
 ```
 
 ## Documentação
 
 ```bash
-# Instalar dependências de docs
+# Instalar as dependências de docs
 uv sync --extra docs
 
-# Visualizar documentação localmente
+# Pré-visualizar a documentação localmente
 uv run mkdocs serve
 
-# Construir documentação
+# Construir a documentação
 uv run mkdocs build
 ```
 
@@ -45,16 +45,16 @@ uv run mkdocs build
 uv build
 ```
 
-## Processo de Pull Request
+## Processo de pull request
 
-1. Faça fork do repositório
+1. Faça um fork do repositório
 2. Crie uma branch de funcionalidade
 3. Faça suas alterações
-4. Execute testes e linting
+4. Rode os testes e o lint
 5. Envie um pull request
 
-## Estilo de Código
+## Estilo de código
 
-- Comprimento de linha: máximo 120 caracteres
-- Siga PEP 8
-- Use type hints para funções públicas
+- Tamanho de linha: no máximo 120 caracteres
+- Siga a PEP 8
+- Use type hints em funções públicas

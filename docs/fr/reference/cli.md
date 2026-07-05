@@ -1,53 +1,57 @@
-# Reference CLI
+# Référence CLI
 
 ## Commandes
 
 ### `codexspec init`
 
-Initialiser un nouveau projet CodexSpec.
+Initialise un nouveau projet CodexSpec.
 
 ```bash
-codexspec init [NOM_PROJET] [OPTIONS]
+codexspec init [PROJECT_NAME] [OPTIONS]
 ```
 
 **Arguments :**
 
 | Argument | Description |
 |----------|-------------|
-| `NOM_PROJET` | Nom de votre nouveau repertoire de projet (utilisez `.` ou `--here` pour le repertoire courant) |
+| `PROJECT_NAME` | Nom du nouveau répertoire de projet (utilisez `.` ou `--here` pour le répertoire courant) |
 
 **Options :**
 
 | Option | Raccourci | Description |
 |--------|-----------|-------------|
-| `--here` | `-h` | Initialiser dans le repertoire courant |
-| `--ai` | `-a` | Assistant AI a utiliser (par defaut : claude) |
-| `--lang` | `-l` | Langue de sortie (base) ; interaction/document/commit se rabattent sur elle (ex. en, zh-CN, ja) |
-| `--interaction-lang` | | Langue d'interaction (dialogue LLM + sortie CLI `codexspec`) ; remplace `--lang` |
-| `--document-lang` | | Langue des documents (exigences/spec/plan/taches generes) ; remplace `--lang` |
-| `--commit-lang` | | Langue des messages de commit ; remplace `--lang` |
-| `--force` | `-f` | Ecraser les fichiers existants et confirmer automatiquement les invites ; ne regenere jamais `config.yml` |
-| `--no-git` | | Passer l'initialisation git |
-| `--debug` | `-d` | Activer la sortie de debogage |
+| `--here` | `-h` | Initialiser dans le répertoire courant |
+| `--ai` | `-a` | Assistant AI à utiliser : `claude`, `codex` ou `both` (par défaut : claude) |
+| `--lang` | `-l` | Langue de sortie (base) ; interaction/document/commit s'y rapportent (ex. en, zh-CN, ja) |
+| `--interaction-lang` | | Langue d'interaction (dialogue LLM + sortie CLI `codexspec`) ; surcharge `--lang` |
+| `--document-lang` | | Langue des documents (exigences/spec/plan/tasks générés) ; surcharge `--lang` |
+| `--commit-lang` | | Langue des messages de commit ; surcharge `--lang` |
+| `--force` | `-f` | Écraser les fichiers existants et confirmer automatiquement les invites ; ne régénère jamais `config.yml` |
+| `--no-git` | | Passer l'initialisation du dépôt git |
+| `--debug` | `-d` | Activer la sortie de débogage |
 
-`--lang` definit la langue de base `output` ; `--interaction-lang`, `--document-lang` et `--commit-lang` la remplacent pour leur dimension (chacune se rabat sur `output`, puis `en`). Voir [Internationalisation](../user-guide/i18n.md) pour le modele complet.
+`--lang` définit la langue de base `output` ; `--interaction-lang`, `--document-lang` et `--commit-lang` la surchargent pour leur dimension (chacune se rabat sur `output`, puis sur `en`). Voir [Internationalisation](../user-guide/i18n.md) pour le modèle complet.
 
-La premiere initialisation dans un TTY sans `--lang` (et sans les trois indicateurs de dimension) demande une langue de base ; dans un environnement non-TTY (CI/scripts), elle utilise `en` par defaut — **entierement non-interactif**. Relancer `init` preserve toute cle de langue que vous n'avez pas specifiee ; `--force` ne regenere jamais `config.yml`.
+La première initialisation dans un TTY sans `--lang` (et sans les trois indicateurs de dimension) demande une langue de base ; dans un environnement non-TTY (CI/scripts) elle utilise `en` par défaut — **entièrement non interactive**. Relancer `init` préserve toute clé de langue que vous n'avez pas explicitement fournie ; `--force` ne régénère jamais `config.yml`.
 
 **Exemples :**
 
 ```bash
-# Creer un nouveau projet
-codexspec init mon-projet
+# Créer un nouveau projet
+codexspec init my-project
 
-# Initialiser dans le repertoire courant
+# Initialiser dans le répertoire courant
 codexspec init . --ai claude
 
-# Entierement non-interactif : base zh-CN, messages de commit en anglais
-codexspec init mon-projet --lang zh-CN --commit-lang en
+# Usage ponctuel (sans installation) — initialiser pour Codex CLI ou les deux
+uvx codexspec init . --ai codex
+uvx codexspec init . --ai both
 
-# Definir chaque dimension explicitement (scriptable, sans invite)
-codexspec init mon-projet \
+# Entièrement non interactif : base zh-CN, messages de commit en anglais
+codexspec init my-project --lang zh-CN --commit-lang en
+
+# Définir chaque dimension explicitement (scriptable, sans invite)
+codexspec init my-project \
   --interaction-lang zh-CN --document-lang en --commit-lang en
 ```
 
@@ -55,7 +59,7 @@ codexspec init mon-projet \
 
 ### `codexspec check`
 
-Verifier les outils installes.
+Vérifie les outils installés.
 
 ```bash
 codexspec check
@@ -65,7 +69,7 @@ codexspec check
 
 ### `codexspec version`
 
-Afficher les informations de version.
+Affiche les informations de version.
 
 ```bash
 codexspec version
@@ -75,7 +79,7 @@ codexspec version
 
 ### `codexspec config`
 
-Afficher ou modifier la configuration du projet.
+Affiche ou modifie la configuration du projet.
 
 ```bash
 codexspec config [OPTIONS]
@@ -85,10 +89,11 @@ codexspec config [OPTIONS]
 
 | Option | Raccourci | Description |
 |--------|-----------|-------------|
-| `--set-lang` | `-l` | Definir la langue de sortie (base) |
-| `--set-interaction-lang` | | Definir la langue d'interaction (dialogue LLM + sortie CLI) |
-| `--set-document-lang` | | Definir la langue des documents (spec/plan/taches generes) |
-| `--set-commit-lang` | `-c` | Definir la langue des messages de commit |
+| `--set-lang` | `-l` | Définir la langue de sortie (base) |
+| `--set-interaction-lang` | | Définir la langue d'interaction (dialogue LLM + sortie CLI) |
+| `--set-document-lang` | | Définir la langue des documents (spec/plan/tasks générés) |
+| `--set-commit-lang` | `-c` | Définir la langue des messages de commit |
 | `--list-langs` | | Lister toutes les langues prises en charge |
+| `--auto-next` | | Basculer/définir `workflow.auto_next` (à nu bascule ; ou on/off) |
 
-Chaque `--set-*-lang` met a jour une [dimension de langue](../user-guide/i18n.md) ; toute dimension que vous ne definissez pas se rabat sur `output`, puis `en`.
+Chaque `--set-*-lang` met à jour une [dimension de langue](../user-guide/i18n.md) ; toute dimension que vous ne définissez pas se rabat sur `output`, puis sur `en`.

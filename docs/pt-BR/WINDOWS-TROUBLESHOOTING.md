@@ -1,4 +1,4 @@
-# Guia de Solução de Problemas para Windows
+# Guia de solução de problemas no Windows
 
 Este guia ajuda usuários Windows a resolver problemas comuns ao instalar e executar o CodexSpec.
 
@@ -9,22 +9,22 @@ Este guia ajuda usuários Windows a resolver problemas comuns ao instalar e exec
 - Executar `codexspec --version` ou `codexspec init` no CMD falha com "Access denied" ou "spawn codexspec access denied (OSError 5)"
 - Os mesmos comandos funcionam corretamente no PowerShell
 
-### Causa Raiz
+### Causa raiz
 
-Isso é causado por diferenças em como o Windows CMD e PowerShell lidam com variáveis de ambiente do usuário:
+Isso é causado por diferenças em como o CMD e o PowerShell do Windows tratam as variáveis de ambiente do usuário:
 
-1. **Atualização da variável de ambiente PATH**: Quando uv instala o codexspec, ele adiciona `%USERPROFILE%\.local\bin` ao PATH do usuário. O PowerShell tipicamente reconhece isso imediatamente, enquanto o CMD pode não atualizar as variáveis de ambiente até que o terminal seja reiniciado.
+1. **Atualização da variável de ambiente PATH**: quando o uv instala o codexspec, ele adiciona `%USERPROFILE%\.local\bin` ao PATH do usuário. O PowerShell tipicamente reconhece isso imediatamente, enquanto o CMD pode não atualizar as variáveis de ambiente até o terminal ser reiniciado.
 
-2. **Diferenças na criação de processos**: O CMD usa a API Windows CreateProcess, enquanto o PowerShell usa um mecanismo diferente que pode ser mais tolerante a problemas de resolução de caminho.
+2. **Diferenças na criação de processos**: o CMD usa a API Windows CreateProcess, enquanto o PowerShell usa um mecanismo diferente, que pode ser mais tolerante a problemas de resolução de caminho.
 
 ### Soluções
 
-#### Solução 1: Usar PowerShell (Recomendado)
+#### Solução 1: Usar o PowerShell (recomendado)
 
-A solução mais simples é usar PowerShell em vez de CMD:
+A solução mais simples é usar o PowerShell em vez do CMD:
 
 ```powershell
-# Instalar e executar codexspec no PowerShell
+# Instalar e executar o codexspec no PowerShell
 uv tool install codexspec
 codexspec --version
 ```
@@ -33,47 +33,47 @@ codexspec --version
 
 Feche todas as janelas do CMD e abra uma nova. Isso força o CMD a recarregar as variáveis de ambiente.
 
-#### Solução 3: Atualizar PATH Manualmente no CMD
+#### Solução 3: Atualizar o PATH manualmente no CMD
 
 ```cmd
-# Adicionar diretório bin do uv ao PATH para a sessão atual
+# Adicionar o diretório bin do uv ao PATH para a sessão atual
 set PATH=%PATH%;%USERPROFILE%\.local\bin
 
 # Verificar
 codexspec --version
 ```
 
-#### Solução 4: Usar Caminho Completo
+#### Solução 4: Usar o caminho completo
 
 ```cmd
-# Executar codexspec usando seu caminho completo
+# Executar o codexspec usando seu caminho completo
 %USERPROFILE%\.local\bin\codexspec.exe --version
 ```
 
-#### Solução 5: Adicionar ao PATH do Sistema Permanentemente
+#### Solução 5: Adicionar ao PATH do sistema de forma permanente
 
 1. Abra **Propriedades do Sistema** → **Variáveis de Ambiente**
-2. Encontre `Path` nas **Variáveis de usuário** ou **Variáveis do sistema**
+2. Encontre `Path` em **Variáveis de usuário** ou **Variáveis do sistema**
 3. Adicione: `%USERPROFILE%\.local\bin`
-4. Clique OK e reinicie todos os terminais
+4. Clique em OK e reinicie todos os terminais
 
-#### Solução 6: Usar pipx em Vez de uv tool
+#### Solução 6: Usar pipx em vez de uv tool
 
-Se uv continuar com problemas, use pipx como alternativa:
+Se o uv continuar apresentando problemas, use o pipx como alternativa:
 
 ```cmd
 # Instalar pipx
 pip install pipx
 pipx ensurepath
 
-# Reiniciar CMD, então instalar codexspec
+# Reinicie o CMD e então instale o codexspec
 pipx install codexspec
 
 # Verificar
 codexspec --version
 ```
 
-## Passos de Verificação
+## Etapas de verificação
 
 Para diagnosticar o problema, execute estes comandos no CMD:
 
@@ -84,47 +84,47 @@ echo %PATH% | findstr ".local\bin"
 # Verificar se o executável codexspec existe
 dir %USERPROFILE%\.local\bin\codexspec.*
 
-# Tentar executar com caminho completo
+# Tentar executar com o caminho completo
 %USERPROFILE%\.local\bin\codexspec.exe --version
 ```
 
-## Problemas Comuns
+## Problemas comuns
 
 ### Problema: "uv is not recognized"
 
-**Causa**: uv não está instalado ou não está no PATH.
+**Causa**: o uv não está instalado ou não está no PATH.
 
 **Solução**:
 
 ```powershell
-# Instalar uv usando PowerShell
+# Instalar o uv usando o PowerShell
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 
-# Reiniciar terminal e verificar
+# Reiniciar o terminal e verificar
 uv --version
 ```
 
 ### Problema: "python is not recognized"
 
-**Causa**: Python não está instalado ou não está no PATH.
+**Causa**: o Python não está instalado ou não está no PATH.
 
 **Solução**:
 
-1. Instale Python 3.11+ de [python.org](https://www.python.org/downloads/)
+1. Instale o Python 3.11+ a partir de [python.org](https://www.python.org/downloads/)
 2. Durante a instalação, marque "Add Python to PATH"
 3. Reinicie o terminal
 
-### Problema: Antivírus Bloqueando Execução
+### Problema: antivírus bloqueando a execução
 
-**Sintomas**: Codexspec funciona brevemente depois para, ou mostra erros intermitentes.
+**Sintomas**: o codexspec funciona brevemente e depois para, ou mostra erros intermitentes.
 
-**Solução**: Adicione codexspec à lista de permissões do seu antivírus:
+**Solução**: adicione o codexspec à lista de permissões do seu antivírus:
 
 - **Windows Defender**: Configurações → Atualização e Segurança → Segurança do Windows → Proteção contra vírus e ameaças → Gerenciar configurações → Exclusões
 - Adicione o caminho: `%USERPROFILE%\.local\bin\codexspec.exe`
 
-## Recursos Relacionados
+## Recursos relacionados
 
-- [uv GitHub Issue #16747](https://github.com/astral-sh/uv/issues/16747) - Problemas conhecidos de permissão Windows com uv
-- [Guia de Instalação do uv para Windows](https://docs.astral.sh/uv/getting-started/installation/)
+- [uv GitHub Issue #16747](https://github.com/astral-sh/uv/issues/16747) - Problemas conhecidos de permissão no Windows com o uv
+- [Guia de instalação do uv no Windows](https://docs.astral.sh/uv/getting-started/installation/)
 - [Documentação do pipx](https://pypa.github.io/pipx/) - Instalador alternativo de aplicações Python

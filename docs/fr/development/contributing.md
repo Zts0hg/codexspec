@@ -1,25 +1,25 @@
-# Contribution
+# Contribuer
 
-## Prerequis
+## Prérequis
 
 - Python 3.11+
-- Gestionnaire de paquets uv
+- gestionnaire de paquets uv
 - Git
 
-## Developpement Local
+## Développement local
 
 ```bash
-# Cloner le depot
-git clone https://github.com/Zts0hg/codexspec:git
+# Cloner le dépôt
+git clone https://github.com/Zts0hg/codexspec.git
 cd codexspec
 
-# Installer les dependances de developpement
+# Installer les dépendances de développement
 uv sync --dev
 
-# Executer localement
+# Exécuter localement
 uv run codexspec --help
 
-# Executer les tests
+# Lancer les tests
 uv run pytest
 
 # Linter le code
@@ -29,32 +29,32 @@ uv run ruff check src/
 ## Documentation
 
 ```bash
-# Installer les dependances de documentation
+# Installer les dépendances de documentation
 uv sync --extra docs
 
-# Previsualiser la documentation localement
+# Prévisualiser la documentation localement
 uv run mkdocs serve
 
 # Construire la documentation
 uv run mkdocs build
 ```
 
-## Construction
+## Build
 
 ```bash
 uv build
 ```
 
-## Processus de Pull Request
+## Processus de pull request
 
-1. Forker le depot
-2. Creer une branche de fonctionnalite
-3. Effectuer vos modifications
-4. Executer les tests et le linting
-5. Soumettre une pull request
+1. Forkez le dépôt
+2. Créez une branche de fonctionnalité
+3. Effectuez vos modifications
+4. Lancez les tests et le linting
+5. Soumettez une pull request
 
-## Style de Code
+## Style de code
 
-- Longueur de ligne : 120 caracteres maximum
+- Longueur de ligne : 120 caractères maximum
 - Suivre PEP 8
-- Utiliser des indices de type pour les fonctions publiques
+- Utiliser des indications de type pour les fonctions publiques

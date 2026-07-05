@@ -1,27 +1,27 @@
-# Guia de Solucion de Problemas para Windows
+# Guía de resolución de problemas en Windows
 
-Esta guia ayuda a los usuarios de Windows a resolver problemas comunes al instalar y ejecutar CodexSpec.
+Esta guía ayuda a los usuarios de Windows a resolver los problemas más comunes al instalar y ejecutar CodexSpec.
 
 ## Problema: "spawn codexspec access denied" (OSError 5) en CMD
 
-### Sintomas
+### Síntomas
 
 - Ejecutar `codexspec --version` o `codexspec init` en CMD falla con "Access denied" o "spawn codexspec access denied (OSError 5)"
 - Los mismos comandos funcionan correctamente en PowerShell
 
-### Causa Raiz
+### Causa raíz
 
-Esto es causado por diferencias en como Windows CMD y PowerShell manejan las variables de entorno de usuario:
+Se debe a diferencias en cómo Windows CMD y PowerShell gestionan las variables de entorno de usuario:
 
-1. **Actualizacion de variable de entorno PATH**: Cuando uv instala codexspec, agrega `%USERPROFILE%\.local\bin` al PATH de usuario. PowerShell tipicamente reconoce esto inmediatamente, mientras que CMD puede no actualizar las variables de entorno hasta que se reinicie la terminal.
+1. **Refresco de la variable de entorno PATH**: cuando uv instala codexspec, añade `%USERPROFILE%\.local\bin` al PATH de usuario. PowerShell normalmente lo reconoce de inmediato, mientras que CMD puede no refrescar las variables de entorno hasta que se reinicia el terminal.
 
-2. **Diferencias de creacion de procesos**: CMD usa la API CreateProcess de Windows, mientras que PowerShell usa un mecanismo diferente que puede ser mas tolerante a problemas de resolucion de rutas.
+2. **Diferencias en la creación de procesos**: CMD usa la API CreateProcess de Windows, mientras que PowerShell emplea un mecanismo distinto que puede tolerar mejor los problemas de resolución de rutas.
 
 ### Soluciones
 
-#### Solucion 1: Usar PowerShell (Recomendado)
+#### Solución 1: usar PowerShell (recomendado)
 
-La solucion mas simple es usar PowerShell en lugar de CMD:
+La solución más sencilla es usar PowerShell en lugar de CMD:
 
 ```powershell
 # Instalar y ejecutar codexspec en PowerShell
@@ -29,102 +29,102 @@ uv tool install codexspec
 codexspec --version
 ```
 
-#### Solucion 2: Reiniciar CMD
+#### Solución 2: reiniciar CMD
 
-Cierra todas las ventanas de CMD y abre una nueva. Esto fuerza a CMD a recargar las variables de entorno.
+Cierra todas las ventanas de CMD y abre una nueva. Esto obliga a CMD a recargar las variables de entorno.
 
-#### Solucion 3: Actualizar PATH Manualmente en CMD
+#### Solución 3: refrescar PATH manualmente en CMD
 
 ```cmd
-# Agregar el directorio bin de uv al PATH para la sesion actual
+# Añade el directorio bin de uv al PATH de la sesión actual
 set PATH=%PATH%;%USERPROFILE%\.local\bin
 
-# Verificar
+# Verifica
 codexspec --version
 ```
 
-#### Solucion 4: Usar Ruta Completa
+#### Solución 4: usar la ruta completa
 
 ```cmd
-# Ejecutar codexspec usando su ruta completa
+# Ejecuta codexspec usando su ruta completa
 %USERPROFILE%\.local\bin\codexspec.exe --version
 ```
 
-#### Solucion 5: Agregar al PATH del Sistema Permanentemente
+#### Solución 5: añadir al PATH del sistema de forma permanente
 
-1. Abrir **Propiedades del Sistema** -> **Variables de Entorno**
-2. Encontrar `Path` en **Variables de usuario** o **Variables del sistema**
-3. Agregar: `%USERPROFILE%\.local\bin`
-4. Hacer clic en OK y reiniciar todas las terminales
+1. Abre **Propiedades del sistema** → **Variables de entorno**
+2. Busca `Path` en **Variables de usuario** o **Variables del sistema**
+3. Añade: `%USERPROFILE%\.local\bin`
+4. Haz clic en Aceptar y reinicia todos los terminales
 
-#### Solucion 6: Usar pipx en Lugar de uv tool
+#### Solución 6: usar pipx en lugar de uv tool
 
-Si uv continua teniendo problemas, usa pipx como alternativa:
+Si uv sigue dando problemas, usa pipx como alternativa:
 
 ```cmd
-# Instalar pipx
+# Instala pipx
 pip install pipx
 pipx ensurepath
 
-# Reiniciar CMD, luego instalar codexspec
+# Reinicia CMD y luego instala codexspec
 pipx install codexspec
 
-# Verificar
+# Verifica
 codexspec --version
 ```
 
-## Pasos de Verificacion
+## Pasos de verificación
 
 Para diagnosticar el problema, ejecuta estos comandos en CMD:
 
 ```cmd
-# Verificar si el directorio bin de uv esta en PATH
+# Comprueba si el directorio bin de uv está en PATH
 echo %PATH% | findstr ".local\bin"
 
-# Verificar si el ejecutable codexspec existe
+# Comprueba si existe el ejecutable de codexspec
 dir %USERPROFILE%\.local\bin\codexspec.*
 
-# Intentar ejecutar con ruta completa
+# Prueba a ejecutarlo con la ruta completa
 %USERPROFILE%\.local\bin\codexspec.exe --version
 ```
 
-## Problemas Comunes
+## Problemas habituales
 
 ### Problema: "uv is not recognized"
 
-**Causa**: uv no esta instalado o no esta en PATH.
+**Causa**: uv no está instalado o no está en PATH.
 
-**Solucion**:
+**Solución**:
 
 ```powershell
-# Instalar uv usando PowerShell
+# Instala uv con PowerShell
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
 
-# Reiniciar terminal y verificar
+# Reinicia el terminal y verifica
 uv --version
 ```
 
 ### Problema: "python is not recognized"
 
-**Causa**: Python no esta instalado o no esta en PATH.
+**Causa**: Python no está instalado o no está en PATH.
 
-**Solucion**:
+**Solución**:
 
-1. Instalar Python 3.11+ desde [python.org](https://www.python.org/downloads/)
-2. Durante la instalacion, marcar "Add Python to PATH"
-3. Reiniciar terminal
+1. Instala Python 3.11+ desde [python.org](https://www.python.org/downloads/)
+2. Durante la instalación, marca "Add Python to PATH"
+3. Reinicia el terminal
 
-### Problema: Antivirus Bloqueando Ejecucion
+### Problema: el antivirus bloquea la ejecución
 
-**Sintomas**: Codexspec funciona brevemente y luego se detiene, o muestra errores intermitentes.
+**Síntomas**: codexspec funciona brevemente y luego se detiene, o muestra errores intermitentes.
 
-**Solucion**: Agregar codexspec a la lista blanca de tu antivirus:
+**Solución**: añade codexspec a la lista de exclusiones de tu antivirus:
 
-- **Windows Defender**: Configuracion -> Actualizacion y seguridad -> Seguridad de Windows -> Proteccion contra virus y amenazas -> Administrar configuracion -> Exclusiones
-- Agregar ruta: `%USERPROFILE%\.local\bin\codexspec.exe`
+- **Windows Defender**: Configuración → Actualización y seguridad → Seguridad de Windows → Protección contra virus y amenazas → Administrar configuración → Exclusiones
+- Añade la ruta: `%USERPROFILE%\.local\bin\codexspec.exe`
 
-## Recursos Relacionados
+## Recursos relacionados
 
-- [uv GitHub Issue #16747](https://github.com/astral-sh/uv/issues/16747) - Problemas conocidos de permisos en Windows con uv
-- [Guia de Instalacion de uv para Windows](https://docs.astral.sh/uv/getting-started/installation/)
-- [Documentacion de pipx](https://pypa.github.io/pipx/) - Instalador alternativo de aplicaciones Python
+- [uv GitHub Issue #16747](https://github.com/astral-sh/uv/issues/16747): problemas conocidos de permisos de uv en Windows
+- [Guía de instalación de uv en Windows](https://docs.astral.sh/uv/getting-started/installation/)
+- [Documentación de pipx](https://pypa.github.io/pipx/): instalador alternativo de aplicaciones Python

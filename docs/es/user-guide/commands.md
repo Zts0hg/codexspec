@@ -1,115 +1,162 @@
 # Comandos
 
-Esta es la referencia de los comandos slash de CodexSpec. Estos comandos se invocan en la interfaz de chat de Claude Code.
+Esta es la referencia de los slash commands de CodexSpec. Estos comandos se invocan en la interfaz de chat de Claude Code.
 
-Para patrones de flujo de trabajo y cuando usar cada comando, ver [Flujo de Trabajo](workflow.md). Para comandos CLI, ver [CLI](../reference/cli.md).
+Para ver los patrones de flujo de trabajo y cuándo usar cada comando, consulta [Flujo de trabajo](workflow.md). Para los comandos de la CLI, consulta [CLI](../reference/cli.md).
 
-## Referencia Rapida
+## Referencia rápida
 
-| Comando | Proposito |
+Agrupados por categoría, reflejando el catálogo del README. Dentro de cada grupo, los comandos aparecen en el orden del flujo de trabajo.
+
+### Comandos del flujo de trabajo principal
+
+| Comando | Propósito |
 |---------|---------|
-| `/codexspec:constitution` | Crear o actualizar la constitucion del proyecto con validacion cruzada de artefactos |
-| `/codexspec:specify` | Clarificar, confirmar y guardar requisitos en requirements.md |
-| `/codexspec:generate-spec` | Generar spec.md desde requisitos confirmados |
-| `/codexspec:clarify` | Escanear spec existente en busca de ambiguedades (refinamiento iterativo) |
-| `/codexspec:spec-to-plan` | Convertir especificacion en plan de implementacion tecnica |
-| `/codexspec:plan-to-tasks` | Desglosar plan en tareas atomicas con TDD aplicado |
+| `/codexspec:constitution` | Crear o actualizar la constitución del proyecto con validación entre artefactos |
+| `/codexspec:specify` | Aclarar, confirmar y persistir requisitos en `requirements.md` |
+| `/codexspec:generate-spec` | Generar el documento `spec.md` a partir de los requisitos aclarados (★ Auto-revisión) |
+| `/codexspec:spec-to-plan` | Convertir la especificación en un plan de implementación técnica (★ Auto-revisión) |
+| `/codexspec:plan-to-tasks` | Desglosar el plan en tareas trazables y verificables (★ Auto-revisión) |
 | `/codexspec:implement-tasks` | Ejecutar tareas con flujo de trabajo TDD condicional |
-| `/codexspec:review-spec` | Validar especificacion por completitud y calidad |
-| `/codexspec:review-plan` | Revisar plan tecnico por viabilidad y alineacion |
-| `/codexspec:review-tasks` | Validar desglose de tareas por cumplimiento TDD |
-| `/codexspec:analyze` | Analisis de consistencia cruzada entre artefactos (solo lectura) |
-| `/codexspec:checklist` | Generar listas de verificacion de calidad de requisitos |
-| `/codexspec:tasks-to-issues` | Convertir tareas en issues de GitHub |
-| `/codexspec:commit-staged` | Generar mensaje de commit desde cambios en staging (con conciencia de contexto de sesion) |
+
+### Comandos de revisión (puertas de calidad)
+
+| Comando | Propósito |
+|---------|---------|
+| `/codexspec:review-spec` | Validar la completitud y calidad de la especificación |
+| `/codexspec:review-plan` | Revisar la viabilidad y alineación del plan técnico |
+| `/codexspec:review-tasks` | Validar la cobertura, el orden y la viabilidad de las tareas |
+
+### Comandos de mejora
+
+| Comando | Propósito |
+|---------|---------|
+| `/codexspec:config` | Gestionar la configuración del proyecto de forma interactiva (crear/ver/modificar/restablecer) |
+| `/codexspec:clarify` | Escanear una especificación existente en busca de ambigüedades (4 categorías, máximo 5 preguntas) |
+| `/codexspec:analyze` | Análisis de consistencia entre artefactos (solo lectura, basado en severidad) |
+| `/codexspec:checklist` | Generar checklists de calidad de requisitos |
+| `/codexspec:tasks-to-issues` | Convertir tareas en GitHub Issues |
+
+### Comandos del flujo de trabajo con Git
+
+| Comando | Propósito |
+|---------|---------|
+| `/codexspec:commit-staged` | Generar un mensaje de commit a partir de los cambios en staging (consciente del contexto de sesión) |
+| `/codexspec:pr` | Generar una descripción de PR/MR a partir del git diff (detecta la plataforma automáticamente) |
+
+### Comandos de revisión de código
+
+| Comando | Propósito |
+|---------|---------|
+| `/codexspec:review-code` | Revisar código en cualquier lenguaje (claridez idiomática, corrección, robustez, arquitectura) |
+| `/codexspec:review-python-code` | Revisar código Python (PEP 8, seguridad de tipos, robustez, consistencia con la constitución) |
+| `/codexspec:review-react-code` | Revisar código React/TypeScript (arquitectura de componentes, reglas de Hooks, estado, rendimiento) |
+
+### Vía rápida
+
+| Comando | Propósito |
+|---------|---------|
+| `/codexspec:quick` | Ejecutar un flujo Requirements-First SDD simplificado para cambios pequeños |
 
 ---
 
-## Categorias de Comandos
+## Categorías de comandos
 
-### Comandos de Flujo de Trabajo Principal
+### Comandos del flujo de trabajo principal
 
-Comandos para el flujo SDD principal: Constitution -> Specification -> Plan -> Tasks -> Implementation.
+Comandos para el flujo de trabajo principal de Requirements-First SDD: Constitución → Requisitos Confirmados → Especificación → Plan → Tareas → Implementación. Aquí los requisitos confirmados son la autoridad de máxima prioridad: nada en la cadena es vinculante hasta que lo confirmes explícitamente en la Confirmation Gate.
 
-### Comandos de Revision (Puertas de Calidad)
+### Comandos de revisión (puertas de calidad)
 
-Comandos que validan artefactos en cada etapa del flujo de trabajo. **Recomendados antes de continuar a la siguiente etapa.**
+Comandos que validan los artefactos en cada etapa del flujo de trabajo bajo un contrato de **revisión basada en evidencia**: cada defecto debe incluir `Evidence`, `Location`, `Mismatch`, `Impact` y `Remediation` concretos. Las sugerencias de diseño consultivas se reportan por separado y nunca cambian el estado ni disparan cambios automáticos. Los defectos verificados pueden corregirse y volver a revisarse durante un máximo de dos rondas; los avisos siguen siendo opcionales en todo momento.
 
-### Comandos Avanzados
+### Comandos de mejora
 
-Comandos para refinamiento iterativo, validacion cruzada de artefactos e integracion con gestion de proyectos.
+Comandos para el refinamiento iterativo, la validación entre artefactos, la configuración y la integración con la gestión de proyectos.
+
+### Comandos del flujo de trabajo con Git
+
+Comandos que convierten el trabajo terminado en artefactos compartibles: mensajes de commit a partir del diff en staging y descripciones estructuradas de PR/MR a partir del diff de la rama.
+
+### Comandos de revisión de código
+
+Comandos que revisan código fuente (cualquier lenguaje, específicos para Python, específicos para React/TypeScript) en busca de claridez idiomática, corrección, robustez, arquitectura y alineación con la constitución. Los hallazgos aplican la misma disciplina de severidad que las revisiones de artefactos: los problemas CRITICAL/HIGH deben citar evidencia concreta; las sugerencias LOW son únicamente consultivas.
+
+### Vía rápida
+
+Un comando simplificado que ejecuta el flujo Requirements-First SDD de extremo a extremo para cambios pequeños y bien delimitados.
 
 ---
 
-## Referencia de Comandos
+## Referencia de comandos
 
 ### `/codexspec:constitution`
 
-Crear o actualizar la constitucion del proyecto. La constitucion define principios arquitectonicos, stack tecnologico, estandares de codigo y reglas de gobierno que guian todas las decisiones de desarrollo posteriores.
+Crea o actualiza la constitución del proyecto. La constitución define los principios arquitectónicos, el stack tecnológico, los estándares de código y las reglas de gobernanza que guían todas las decisiones de desarrollo posteriores.
 
 **Sintaxis:**
 
 ```
-/codexspec:constitution [descripcion de principios]
+/codexspec:constitution [descripción de principios]
 ```
 
 **Argumentos:**
 
-| Argumento | Requerido | Descripcion |
+| Argumento | Requerido | Descripción |
 |----------|----------|-------------|
-| `descripcion de principios` | No | Descripcion de principios a incluir (se solicitara si no se proporciona) |
+| `descripción de principios` | No | Descripción de los principios a incluir (se solicitará si no se proporciona) |
 
-**Que hace:**
+**Lo que hace:**
 
 - Crea `.codexspec/memory/constitution.md` si no existe
-- Actualiza constitucion existente con nuevos principios
-- Valida consistencia cruzada con plantillas
-- Genera Informe de Impacto de Sincronizacion mostrando cambios y archivos afectados
-- Incluye revision de constitucionalidad para plantillas dependientes
+- Actualiza la constitución existente con nuevos principios
+- Valida la consistencia entre artefactos con las plantillas
+- Genera un Informe de Impacto de Sincronización que muestra los cambios y los archivos afectados
+- Incluye una revisión de constitucionalidad para las plantillas dependientes
 
-**Que crea:**
+**Lo que crea:**
 
 ```
 .codexspec/
-+-- memory/
-    +-- constitution.md    # Documento de gobierno del proyecto
+└── memory/
+    └── constitution.md    # Documento de gobernanza del proyecto
 ```
 
 **Ejemplo:**
 
 ```text
-Tu: /codexspec:constitution Enfocarse en calidad de codigo, estandares de pruebas y clean architecture
+You: /codexspec:constitution Focus on code quality, testing standards, and clean architecture
 
-AI:  Creando constitucion...
+AI:  Creating constitution...
 
-     + Creado .codexspec/memory/constitution.md
+     ✓ Created .codexspec/memory/constitution.md
      Version: 1.0.0
 
-     Informe de Impacto de Sincronizacion:
-     - plan-template-*.md: OK alineado
-     - spec-template-*.md: OK alineado
-     - tasks-template-*.md: OK alineado
+     Sync Impact Report:
+     - plan-template-*.md: ✅ aligned
+     - spec-template-*.md: ✅ aligned
+     - tasks-template-*.md: ✅ aligned
 
-     Principios Principales:
-     1. Calidad de Codigo Primero
+     Core Principles:
+     1. Code Quality First
      2. Test-Driven Development
      3. Clean Architecture
 
-     Commit sugerido: docs: create constitution v1.0.0
+     Suggested commit: docs: create constitution v1.0.0
 ```
 
 **Consejos:**
 
-- Define principios temprano en el proyecto para toma de decisiones consistente
-- Incluye tanto principios tecnicos como de proceso
-- Revisa la constitucion antes del desarrollo de funcionalidades importantes
-- Los cambios en la constitucion activan validacion cruzada de artefactos
+- Define los principios al inicio del proyecto para una toma de decisiones consistente
+- Incluye tanto principios técnicos como de proceso
+- Revisa la constitución antes de desarrollar funcionalidades importantes
+- Los cambios en la constitución disparan validación entre artefactos
 
 ---
 
 ### `/codexspec:specify`
 
-Clarificar requisitos mediante Q&A interactivo, confirmar el resumen y guardar el resultado de forma persistente en `requirements.md`.
+Aclara los requisitos mediante preguntas y respuestas interactivas, confirma el resumen resultante y lo persiste para sesiones posteriores.
 
 **Sintaxis:**
 
@@ -119,72 +166,74 @@ Clarificar requisitos mediante Q&A interactivo, confirmar el resumen y guardar e
 
 **Argumentos:**
 
-| Argumento | Requerido | Descripcion |
+| Argumento | Requerido | Descripción |
 |----------|----------|-------------|
-| `tu idea o requisito` | No | Descripcion inicial de lo que quieres construir (se solicitara si no se proporciona) |
+| `tu idea o requisito` | No | Descripción inicial de lo que quieres construir (se solicitará si no se proporciona) |
 
-**Que hace:**
+**Lo que hace:**
 
-- Hace preguntas clarificadoras para entender tu idea
-- Explora casos limite que podrias no haber considerado
-- Co-crea requisitos de alta calidad a traves del dialogo
-- Se enfoca en "que" y "por que", no en implementacion tecnica
-- Crea un espacio de trabajo de funcionalidad y guarda solo los requisitos confirmados
+- Hace preguntas aclaratorias para entender tu idea
+- Explora casos extremos que quizás no habías considerado
+- Cocrea requisitos de alta calidad mediante el diálogo
+- Se centra en el "qué" y el "porqué", no en la implementación técnica
+- Asigna IDs estables a necesidades, restricciones, decisiones, exclusiones y preguntas abiertas confirmadas
+- Registra evidencia del usuario y un registro de confirmación
+- Crea el espacio de trabajo de la funcionalidad y `requirements.md`
 
-**Que crea:**
+**Lo que crea:**
 
+```text
+.codexspec/specs/{feature-id}-{feature-name}/requirements.md
 ```
-.codexspec/specs/YYYY-MMDD-HHMMxx-{feature-name}/requirements.md
-```
 
-Las preguntas abiertas permanecen marcadas como abiertas; `spec.md` se genera despues con `/codexspec:generate-spec`.
+Solo los elementos confirmados se convierten en requisitos autoritativos. Las preguntas abiertas permanecen explícitamente abiertas. Esta es la Confirmation Gate para los requisitos: nada es vinculante hasta que confirmes explícitamente el resumen final.
 
 **Ejemplo:**
 
 ```text
-Tu: /codexspec:specify Quiero construir una app de gestion de tareas
+You: /codexspec:specify I want to build a task management app
 
-AI:  Excelente! Te ayudo a clarificar los requisitos.
+AI:  Great! Let me help you clarify the requirements.
 
-     Primero, quienes son los usuarios objetivo de esta app?
-     - Profesionales individuales
-     - Equipos pequenos
-     - Organizaciones empresariales
-     - Todos los anteriores
+     First, who are the target users for this app?
+     - Individual professionals
+     - Small teams
+     - Enterprise organizations
+     - All of the above
 
-Tu: Equipos pequenos, principalmente equipos de desarrollo de software
+You: Small teams, mainly software development teams
 
-AI:  Entendido. Para equipos de desarrollo pequenos:
-     - Necesitas funciones de colaboracion en tiempo real?
-     - Las tareas deben soportar subtareas o solo listas planas?
-     - AlgUn requisito de integracion (GitHub, Slack, etc.)?
+AI:  Got it. For small dev teams:
+     - Do you need real-time collaboration features?
+     - Should tasks support sub-tasks or just flat lists?
+     - Any integration requirements (GitHub, Slack, etc.)?
 
-Tu: Tiempo real es importante. Subtareas si. Integracion con GitHub seria bueno.
+You: Real-time is important. Sub-tasks yes. GitHub integration would be nice.
 
-AI:  [Continua explorando requisitos...]
+AI:  [Continues exploring requirements...]
 
-     Resumen de requisitos clarificados:
-     - Objetivo: Equipos de desarrollo pequenos (5-20 personas)
-     - Principal: Tareas con subtareas, actualizaciones en tiempo real
-     - Integracion: GitHub (opcional)
-     - Prioridad: Colaboracion en tiempo real > Subtareas > GitHub
+     Summary of clarified requirements:
+     - Target: Small dev teams (5-20 people)
+     - Core: Tasks with sub-tasks, real-time updates
+     - Integration: GitHub (optional)
+     - Priority: Real-time collaboration > Sub-tasks > GitHub
 
-     Listo para generar el documento de especificacion?
-     Usa /codexspec:generate-spec para crear spec.md
+     Ready to generate the spec document?
+     Use /codexspec:generate-spec to create spec.md
 ```
 
 **Consejos:**
 
-- Usar para exploracion inicial de requisitos
-- No te preocupes por estar completo - el refinamiento es iterativo
-- Pregunta si AI hace suposiciones
-- Revisa el resumen antes de generar spec
+- Úsalo para la exploración inicial de requisitos
+- No te preocupes por ser completo: el refinamiento es iterativo
+- Pregunta si la IA hace suposiciones
+- Revisa el resumen antes de generar la especificación
 
 ---
 
 ### `/codexspec:generate-spec`
 
-Generar el documento `spec.md` desde requisitos clarificados. Este comando actua como un "compilador de requisitos" que transforma tus requisitos clarificados en una especificacion estructurada.
+Genera el documento `spec.md` a partir de los requisitos aclarados. Este comando actúa como un "compilador de requisitos" que transforma tus requisitos aclarados en una especificación estructurada.
 
 **Sintaxis:**
 
@@ -194,64 +243,68 @@ Generar el documento `spec.md` desde requisitos clarificados. Este comando actua
 
 **Argumentos:**
 
-| Argumento | Requerido | Descripcion |
+| Argumento | Requerido | Descripción |
 |----------|----------|-------------|
-| Ruta de funcionalidad | No | Usa una ruta explicita o la rama timestamp de funcionalidad actual |
+| Ruta de la funcionalidad | No | Directorio de funcionalidad explícito, `requirements.md` o `spec.md` destino; obligatorio cuando la resolución es ambigua |
 
-**Que hace:**
+**Lo que hace:**
 
-- Lee el `requirements.md` confirmado de la funcionalidad seleccionada
-- Genera `spec.md` completo con:
-  - Resumen de funcionalidad y objetivos
-  - Historias de usuario con criterios de aceptacion
+- Lee los requisitos confirmados del espacio de trabajo de la funcionalidad seleccionado
+- Admite espacios de trabajo heredados que solo contienen `spec.md`, con una advertencia explícita de trazabilidad
+- Genera un `spec.md` completo con:
+  - Resumen y objetivos de la funcionalidad
+  - Historias de usuario con criterios de aceptación
   - Requisitos funcionales (formato REQ-XXX)
   - Requisitos no funcionales (formato NFR-XXX)
-  - Casos limite y enfoques de manejo
-  - Elementos fuera del alcance
+  - Casos extremos y enfoques de manejo
+  - Elementos fuera de alcance
+- Añade referencias `Sources` hacia los IDs de requisitos
+- Se detiene para confirmación del usuario en lugar de resolver conflictos de autoridad por suposición
+- Revisa automáticamente y puede reparar defectos con evidencia durante un máximo de dos rondas
 
-**Que crea:**
+**Lo que crea:**
 
 ```
 .codexspec/
-+-- specs/
-    +-- 2026-0613-1200ab-task-management/
-        +-- spec.md
+└── specs/
+    └── 2026-0613-1200ab-task-management/
+        └── spec.md
 ```
 
 **Ejemplo:**
 
 ```text
-Tu: /codexspec:generate-spec
+You: /codexspec:generate-spec
 
-AI:  Generando especificacion...
+AI:  Generating specification...
 
-     + Creado .codexspec/specs/2026-0613-1200ab-task-management/spec.md
+     ✓ Created .codexspec/specs/2026-0613-1200ab-task-management/spec.md
 
-     Secciones incluidas:
-     - Resumen: Gestion de tareas para equipos de desarrollo pequenos
-     - 4 Historias de Usuario con criterios de aceptacion
-     - 12 Requisitos Funcionales (REQ-001 a REQ-012)
-     - 3 Requisitos No Funcionales (NFR-001 a NFR-003)
-     - 5 Casos Limite documentados
-     - Fuera del Alcance: Apps moviles, SSO empresarial
+     Sections included:
+     - Overview: Task management for small dev teams
+     - 4 User Stories with acceptance criteria
+     - 12 Functional Requirements (REQ-001 to REQ-012)
+     - 3 Non-Functional Requirements (NFR-001 to NFR-003)
+     - 5 Edge Cases documented
+     - Out of Scope: Mobile apps, Enterprise SSO
 
-     Proximos pasos:
-     - Revisar el spec con /codexspec:review-spec
-     - O continuar con /codexspec:spec-to-plan
+     Next steps:
+     - Review the spec with /codexspec:review-spec
+     - Or proceed to /codexspec:spec-to-plan
 ```
 
 **Consejos:**
 
-- Ejecutar despues de que `/codexspec:specify` ha clarificado requisitos
-- Revisar el spec generado antes de continuar
-- Usar `/codexspec:review-spec` para validacion de calidad
-- Editar spec.md directamente si se necesitan ajustes menores
+- Ejecútalo después de que `/codexspec:specify` haya aclarado los requisitos
+- Revisa la especificación generada antes de continuar
+- Usa `/codexspec:review-spec` para validación de calidad
+- Edita spec.md directamente si necesitas ajustes menores
 
 ---
 
 ### `/codexspec:clarify`
 
-Escanear una especificacion existente en busca de ambiguedades y brechas. Usar esto para refinamiento iterativo despues de la creacion inicial del spec.
+Escanea una especificación existente en busca de ambigüedades y vacíos. Úsalo para refinamiento iterativo tras la creación inicial de la especificación.
 
 **Sintaxis:**
 
@@ -261,67 +314,67 @@ Escanear una especificacion existente en busca de ambiguedades y brechas. Usar e
 
 **Argumentos:**
 
-| Argumento | Requerido | Descripcion |
+| Argumento | Requerido | Descripción |
 |----------|----------|-------------|
-| `ruta_a_spec.md` | No | Ruta al archivo spec (auto-detectado si no se proporciona) |
+| `ruta_a_spec.md` | No | Ruta al archivo de especificación (se detecta automáticamente si no se proporciona) |
 
-**Que hace:**
+**Lo que hace:**
 
-- Escanea spec usando 4 categorias de ambiguedad enfocadas
-- Hace preguntas de clarificacion dirigidas (maximo 5)
-- Actualiza spec.md con respuestas de clarificacion
-- Se integra con hallazgos de review-spec si estan disponibles
+- Escanea requisitos y especificación usando categorías de ambigüedad enfocadas
+- Hace preguntas de aclaración dirigidas (máximo 5)
+- Actualiza primero `requirements.md` tras la confirmación del usuario, luego sincroniza `spec.md`
+- Se integra con los hallazgos de review-spec si están disponibles
 
-**Categorias de Ambiguedad:**
+**Categorías de ambigüedad:**
 
-| Categoria | Que Detecta |
+| Categoría | Lo que detecta |
 |----------|-----------------|
-| **Brechas de Completitud** | Secciones faltantes, contenido vacio, criterios de aceptacion ausentes |
-| **Problemas de Especificidad** | Terminos vagos ("rapido", "escalable"), restricciones no definidas |
-| **Claridad Conductual** | Brechas en manejo de errores, transiciones de estado no definidas |
-| **Problemas de Medibilidad** | Requisitos no funcionales sin metricas |
+| **Vacíos de completitud** | Secciones faltantes, contenido vacío, criterios de aceptación ausentes |
+| **Problemas de especificidad** | Términos vagos ("rápido", "escalable"), restricciones indefinidas |
+| **Claridad de comportamiento** | Vacíos en manejo de errores, transiciones de estado indefinidas |
+| **Problemas de medibilidad** | Requisitos no funcionales sin métricas |
 
 **Ejemplo:**
 
 ```text
-Tu: /codexspec:clarify
+You: /codexspec:clarify
 
-AI:  Escaneando spec.md en busca de ambiguedades...
+AI:  Scanning spec.md for ambiguities...
 
-     Problemas encontrados en 3 categorias.
+     Found issues in 3 categories.
 
-     ## Pregunta 1/5: Especificidad
+     ## Question 1/5: Specificity
 
-     **Contexto**: NFR-001 establece "El sistema debe responder rapidamente"
+     **Context**: NFR-001 states "System should respond quickly"
 
-     **Pregunta**: Cual es el tiempo de respuesta objetivo?
+     **Question**: What is the target response time?
 
-     | Opcion | Descripcion | Impacto |
+     | Option | Description | Impact |
      |--------|-------------|--------|
-     | A | < 100ms para todas las operaciones | Requisito de alto rendimiento |
-     | B | < 500ms para lecturas, < 1s para escrituras | Enfoque equilibrado |
-     | Custom | Proporcionar una respuesta diferente | - |
+     | A | < 100ms for all operations | High performance requirement |
+     | B | < 500ms for reads, < 1s for writes | Balanced approach |
+     | Custom | Provide a different answer | - |
 
-     **Recomendacion**: Opcion B - equilibrado para app web tipica
+     **Recommendation**: Option B - balanced for typical web app
 
-Tu: B
+You: B
 
-AI:  + Actualizado NFR-001: Tiempo de respuesta < 500ms lecturas, < 1s escrituras
-     Agregado a seccion Clarifications en spec.md
+AI:  ✓ Updated NFR-001: Response time < 500ms reads, < 1s writes
+     Added to Clarifications section in spec.md
 ```
 
 **Consejos:**
 
-- Usar cuando spec.md existe pero necesita refinamiento
-- Se integra con hallazgos de `/codexspec:review-spec`
-- Maximo 5 preguntas por sesion
-- Ejecutar multiples veces para especificaciones complejas
+- Úsalo cuando spec.md existe pero necesita refinamiento
+- Se integra con los hallazgos de `/codexspec:review-spec`
+- Máximo 5 preguntas por sesión
+- Ejecútalo varias veces para especificaciones complejas
 
 ---
 
 ### `/codexspec:spec-to-plan`
 
-Convertir la especificacion de funcionalidad en un plan de implementacion tecnica. Aqui es donde defines **como** se construira la funcionalidad.
+Convierte la especificación de la funcionalidad en un plan de implementación técnica. Aquí es donde defines **cómo** se construirá la funcionalidad.
 
 **Sintaxis:**
 
@@ -331,74 +384,74 @@ Convertir la especificacion de funcionalidad en un plan de implementacion tecnic
 
 **Argumentos:**
 
-| Argumento | Requerido | Descripcion |
+| Argumento | Requerido | Descripción |
 |----------|----------|-------------|
-| `ruta_a_spec.md` | No | Ruta al archivo spec (auto-detectado desde `.codexspec/specs/` si no se proporciona) |
+| `ruta_a_spec.md` | No | Ruta al archivo de especificación (se detecta automáticamente desde `.codexspec/specs/` si no se proporciona) |
 
-**Que hace:**
+**Lo que hace:**
 
-- Lee especificacion y constitucion
-- Define stack tecnologico con restricciones de version
-- Realiza revision de constitucionalidad (obligatoria si existe constitucion)
-- Crea arquitectura con grafo de dependencia de modulos
-- Documenta decisiones tecnicas con justificacion
-- Planifica fases de implementacion
+- Lee la especificación y la constitución
+- Incluye solo el detalle técnico que requieren los requisitos confirmados y las restricciones del repositorio
+- Comprueba las reglas aplicables de la constitución sin tratar convenciones opcionales como requisitos de la funcionalidad
+- Añade enlaces `Covers` a los requisitos de la especificación
+- Documenta las decisiones técnicas con su justificación
+- Se detiene cuando una decisión cambiaría la intención confirmada
 
-**Que crea:**
+**Lo que crea:**
 
 ```
 .codexspec/
-+-- specs/
-    +-- 2026-0613-1200ab-task-management/
-        +-- plan.md    # Plan de implementacion tecnica
+└── specs/
+    └── 2026-0613-1200ab-task-management/
+        └── plan.md    # Plan de implementación técnica
 ```
 
 **Ejemplo:**
 
 ```text
-Tu: /codexspec:spec-to-plan Usar Python FastAPI para backend, React para frontend, PostgreSQL para base de datos
+You: /codexspec:spec-to-plan Use Python FastAPI for backend, React for frontend, PostgreSQL for database
 
-AI:  Generando plan tecnico...
+AI:  Generating technical plan...
 
-     Revision de Constitucionalidad:
-     + Clean Architecture: Diseno modular con limites claros
-     + TDD: Enfoque test-first aplicado en fases
-     + Calidad de Codigo: Linting y type hints requeridos
+     Constitutionality Review:
+     ✓ Clean Architecture: Modular design with clear boundaries
+     ✓ TDD: Test-first approach enforced in phases
+     ✓ Code Quality: Linting and type hints required
 
-     Arquitectura:
-     - Backend: FastAPI con arquitectura en capas
-     - Frontend: React con estructura de componentes
-     - Base de datos: PostgreSQL con estrategia de migracion
+     Architecture:
+     - Backend: FastAPI with layered architecture
+     - Frontend: React with component structure
+     - Database: PostgreSQL with migration strategy
 
-     Grafo de Dependencia de Modulos:
-     +-------------+
-     |    API      |
-     +------+------+
-            |
-     +------v------+
-     |  Services   |
-     +------+------+
-            |
-     +------v------+
-     |    Data     |
-     +-------------+
+     Module Dependency Graph:
+     ┌─────────────┐
+     │    API      │
+     └──────┬──────┘
+            │
+     ┌──────▼──────┐
+     │  Services   │
+     └──────┬──────┘
+            │
+     ┌──────▼──────┐
+     │    Data     │
+     └─────────────┘
 
-     + Creado plan.md
-     5 Fases de Implementacion definidas
+     ✓ Created plan.md
+     5 Implementation Phases defined
 ```
 
 **Consejos:**
 
-- Ejecutar despues de que el spec esta revisado y estable
-- La revision de constitucionalidad es obligatoria si existe constitucion
-- Incluir secciones relevantes segun el tipo de proyecto
-- Revisar plan antes de continuar con tareas
+- Ejecútalo después de que la especificación esté revisada y estable
+- Las reglas aplicables de la constitución son obligatorias; las convenciones de plantilla irrelevantes no lo son
+- Incluye las secciones relevantes según el tipo de proyecto
+- Revisa el plan antes de continuar con las tareas
 
 ---
 
 ### `/codexspec:plan-to-tasks`
 
-Desglosar el plan tecnico en tareas atomicas y accionables con aplicacion de TDD.
+Desglosa el plan técnico en tareas accionables con cobertura explícita y resultados verificables.
 
 **Sintaxis:**
 
@@ -408,28 +461,28 @@ Desglosar el plan tecnico en tareas atomicas y accionables con aplicacion de TDD
 
 **Argumentos:**
 
-| Argumento | Requerido | Descripcion |
+| Argumento | Requerido | Descripción |
 |----------|----------|-------------|
-| `rutas` | No | Rutas a spec y plan (auto-detectadas si no se proporcionan) |
+| `rutas` | No | Rutas a la especificación y al plan (se detectan automáticamente si no se proporcionan) |
 
-**Que hace:**
+**Lo que hace:**
 
-- Crea tareas atomicas (un archivo principal por tarea)
-- Aplica TDD: tareas de prueba preceden tareas de implementacion
-- Marca tareas paralelizables con `[P]`
-- Especifica rutas de archivo exactas para cada tarea
-- Define puntos de control de fase
+- Crea tareas con un resultado verificable; una tarea puede tocar varios archivos relacionados
+- Usa orden test-first solo cuando lo requiere el plan, la constitución, las necesidades confirmadas o el riesgo
+- Marca las tareas `[P]` solo cuando son genuinamente independientes
+- Especifica las rutas de archivo exactas para cada tarea
+- Añade enlaces `Covers` a los IDs del plan y de los requisitos
 
-**Que crea:**
+**Lo que crea:**
 
 ```
 .codexspec/
-+-- specs/
-    +-- 2026-0613-1200ab-task-management/
-        +-- tasks.md    # Desglose de tareas
+└── specs/
+    └── 2026-0613-1200ab-task-management/
+        └── tasks.md    # Desglose de tareas
 ```
 
-**Estructura de Tarea:**
+**Estructura de tareas:**
 
 ```markdown
 ### Task 2.1: Write Tests for Entity A [P]
@@ -443,129 +496,129 @@ Desglosar el plan tecnico en tareas atomicas y accionables con aplicacion de TDD
 **Ejemplo:**
 
 ```text
-Tu: /codexspec:plan-to-tasks
+You: /codexspec:plan-to-tasks
 
-AI:  Desglosando plan en tareas...
+AI:  Breaking down plan into tasks...
 
-     + Creado tasks.md
-     Total: 24 tareas
-     Paralelizables: 8 tareas (33%)
+     ✓ Created tasks.md
+     Total: 24 tasks
+     Parallelizable: 8 tasks (33%)
 
-     Fase 1: Fundacion (4 tareas)
-     Fase 2: Implementacion Principal - TDD (10 tareas)
-     Fase 3: Integracion (4 tareas)
-     Fase 4: Capa de Interfaz (3 tareas)
-     Fase 5: Pruebas y Documentacion (3 tareas)
+     Phase 1: Foundation (4 tasks)
+     Phase 2: Core Implementation - TDD (10 tasks)
+     Phase 3: Integration (4 tasks)
+     Phase 4: Interface Layer (3 tasks)
+     Phase 5: Testing & Documentation (3 tasks)
 
-     Orden de Ejecucion:
-     Fase 1 -> [Fase 2 tareas en grupos paralelos] -> Fase 3 -> Fase 4 -> Fase 5
+     Execution Order:
+     Phase 1 → [Phase 2 tasks in parallel groups] → Phase 3 → Phase 4 → Phase 5
 
-     Puntos de control definidos en cada limite de fase.
+     Checkpoints defined at each phase boundary.
 ```
 
 **Consejos:**
 
-- Cada tarea debe involucrar solo UN archivo principal
-- Las tareas de prueba siempre preceden tareas de implementacion
-- `[P]` marca tareas verdaderamente independientes paralelizables
-- Revisar dependencias antes de implementacion
+- Cada tarea debe producir un resultado verificable y puede tocar archivos estrechamente relacionados
+- Las tareas de prueba preceden a la implementación solo cuando se requiere test-first
+- `[P]` marca tareas paralelizables verdaderamente independientes
+- Revisa las dependencias antes de la implementación
 
 ---
 
 ### `/codexspec:implement-tasks`
 
-Ejecutar tareas de implementacion con flujo de trabajo TDD condicional. Trabaja a traves de la lista de tareas sistematicamente.
+Ejecuta las tareas de implementación con un flujo de trabajo TDD condicional. Recorre la lista de tareas de forma sistemática.
 
 **Sintaxis:**
 
 ```
-/codexspec:implement-tasks [ruta_tasks]
-/codexspec:implement-tasks [ruta_spec ruta_plan ruta_tasks]
+/codexspec:implement-tasks [ruta_tareas]
+/codexspec:implement-tasks [ruta_spec ruta_plan ruta_tareas]
 ```
 
 **Argumentos:**
 
-| Argumento | Requerido | Descripcion |
+| Argumento | Requerido | Descripción |
 |----------|----------|-------------|
-| `ruta_tasks` | No | Ruta a tasks.md (auto-detectado si no se proporciona) |
-| `ruta_spec ruta_plan ruta_tasks` | No | Rutas explicitas a los tres documentos |
+| `ruta_tareas` | No | Ruta a tasks.md (se detecta automáticamente si no se proporciona) |
+| `ruta_spec ruta_plan ruta_tareas` | No | Rutas explícitas a los tres documentos |
 
-**Resolucion de Archivos:**
+**Resolución de archivos:**
 
-- **Sin argumentos**: Auto-detectar desde `.codexspec/specs/`
-- **Un argumento**: Tratar como ruta `tasks.md`, derivar otros del mismo directorio
-- **Tres argumentos**: Rutas explicitas a spec.md, plan.md y tasks.md
+- **Sin argumentos**: Se detecta automáticamente desde `.codexspec/specs/`
+- **Un argumento**: Se trata como ruta de `tasks.md`, las demás se deducen del mismo directorio
+- **Tres argumentos**: Rutas explícitas a spec.md, plan.md y tasks.md
 
-**Que hace:**
+**Lo que hace:**
 
-- Lee tasks.md e identifica tareas incompletas
-- Aplica flujo de trabajo TDD para tareas de codigo:
-  - **Red**: Escribir pruebas que fallan primero
-  - **Green**: Implementar para pasar pruebas
-  - **Verify**: Ejecutar todas las pruebas
-  - **Refactor**: Mejorar manteniendo pruebas en verde
-- Implementacion directa para tareas no testeables (docs, config)
-- Actualiza checkboxes de tareas a medida que progresa el trabajo
-- Registra bloqueos en issues.md si se encuentran
+- Lee tasks.md e identifica las tareas incompletas
+- Aplica el flujo TDD para tareas de código:
+  - **Red**: Escribe primero las pruebas que fallan
+  - **Green**: Implementa para que pasen las pruebas
+  - **Verifica**: Ejecuta todas las pruebas
+  - **Refactoriza**: Mejora manteniendo las pruebas en verde
+- Implementación directa para tareas no testeables (documentación, configuración)
+- Actualiza las casillas de verificación de las tareas a medida que avanza el trabajo
+- Registra bloqueos en issues.md si los encuentra
 
-**Flujo de Trabajo TDD para Tareas de Codigo:**
+**Flujo TDD para tareas de código:**
 
 ```
-Red -> Green -> Verify -> Refactor -> Marcar Completo
+Red → Green → Verify → Refactor → Mark Complete
 ```
 
-**Implementacion Directa para No Testeables:**
+**Implementación directa para lo no testeable:**
 
-- Archivos de documentacion
-- Archivos de configuracion
-- Recursos estaticos
+- Archivos de documentación
+- Archivos de configuración
+- Recursos estáticos
 - Archivos de infraestructura
 
 **Ejemplo:**
 
 ```text
-Tu: /codexspec:implement-tasks
+You: /codexspec:implement-tasks
 
-AI:  Iniciando implementacion...
+AI:  Starting implementation...
 
-     Cargando contexto:
-     - spec.md OK
-     - plan.md OK
-     - tasks.md OK
-     - constitution.md OK
+     Loading context:
+     - spec.md ✓
+     - plan.md ✓
+     - tasks.md ✓
+     - constitution.md ✓
 
-     Stack Tecnologico: Python 3.11+ / FastAPI / PostgreSQL / pytest
+     Tech Stack: Python 3.11+ / FastAPI / PostgreSQL / pytest
 
-     Trabajando en Task 1.1: Setup Project Structure
-     + Creado src/taskman/__init__.py
-     + Creado pyproject.toml
-     [x] Task 1.1 Completo
+     Working on Task 1.1: Setup Project Structure
+     ✓ Created src/taskman/__init__.py
+     ✓ Created pyproject.toml
+     [x] Task 1.1 Complete
 
-     Trabajando en Task 2.1: Write Tests for Task Entity [P]
-     + Creado tests/test_task.py
-     Ejecutando pruebas... 5 pasadas (todas fallas esperadas)
-     [x] Task 2.1 Completo
+     Working on Task 2.1: Write Tests for Task Entity [P]
+     ✓ Created tests/test_task.py
+     Running tests... 5 passed (all expected failures)
+     [x] Task 2.1 Complete
 
-     Trabajando en Task 2.2: Implement Task Entity
-     + Creado src/taskman/models/task.py
-     Ejecutando pruebas... 5 pasadas
-     [x] Task 2.2 Completo
+     Working on Task 2.2: Implement Task Entity
+     ✓ Created src/taskman/models/task.py
+     Running tests... 5 passed
+     [x] Task 2.2 Complete
 
      ...
 ```
 
 **Consejos:**
 
-- Puede continuar donde se quedo si se interrumpe
+- Puede reanudarse donde se dejó si se interrumpe
 - Los bloqueos se registran en issues.md
-- Los commits se hacen despues de tareas/fases significativas
-- Ejecutar `/codexspec:review-tasks` primero para validacion
+- Los commits se hacen después de tareas/fases significativas
+- Ejecuta primero `/codexspec:review-tasks` para validación
 
 ---
 
 ### `/codexspec:review-spec`
 
-Validar la especificacion por completitud, claridad, consistencia y preparacion para planificacion tecnica.
+Valida la especificación frente a los requisitos confirmados y su propia calidad interna.
 
 **Sintaxis:**
 
@@ -575,85 +628,61 @@ Validar la especificacion por completitud, claridad, consistencia y preparacion 
 
 **Argumentos:**
 
-| Argumento | Requerido | Descripcion |
+| Argumento | Requerido | Descripción |
 |----------|----------|-------------|
-| `ruta_a_spec.md` | No | Ruta al archivo spec (auto-detectado si no se proporciona) |
+| `ruta_a_spec.md` | No | Ruta al archivo de especificación (se detecta automáticamente si no se proporciona) |
 
-**Que hace:**
+**Lo que hace:**
 
-- Verifica completitud de todas las secciones requeridas
-- Evalua claridad y especificidad
-- Verifica consistencia interna
-- Evalua testeabilidad de requisitos
-- Verifica alineacion con constitucion
-- Genera informe de revision con puntuacion
+- Comprueba la fidelidad a las entradas confirmadas de `requirements.md`
+- Comprueba la consistencia interna, la claridad y la verificabilidad
+- Trata una sección de plantilla faltante como defecto solo cuando el contenido autoritativo la requiere
+- Exige que cada defecto incluya `Evidence`, `Location`, `Mismatch`, `Impact` y `Remediation`
+- Separa los `Risk Advisories / Design Opportunities` de los defectos
+- Genera un estado más una puntuación de compatibilidad derivada de los hallazgos clasificados
 
-**Dimensiones de Revision:**
+**Contrato de revisión compartido:**
 
-| Dimension | Peso | Que Valida |
-|-----------|--------|-------------------|
-| Completitud | 25% | Todas las secciones presentes y sustanciales |
-| Claridad | 25% | Sin lenguaje vago, interpretaciones unicas |
-| Consistencia | 20% | Sin contradicciones internas |
-| Testeabilidad | 20% | Los requisitos pueden verificarse |
-| Alineacion con Constitucion | 10% | Se alinea con principios del proyecto |
+| Categoría | Significado |
+|----------|---------|
+| Defecto de fidelidad | Conflicta con una fuente autoritativa o la omite |
+| Defecto intrínseco | Internamente contradictorio, inviable o no verificable |
+| Aviso | Mejora opcional sin evidencia de un defecto actual |
+
+El estado es `PASS`, `PASS_WITH_WARNINGS`, `NEEDS_REVISION` o `BLOCKED`. Los avisos nunca cambian el estado ni la puntuación.
 
 **Ejemplo:**
 
 ```text
-Tu: /codexspec:review-spec
+You: /codexspec:review-spec
 
-AI:  Revisando especificacion...
+AI:  Overall Status: NEEDS_REVISION
+     Compatibility Score: 79/100
 
-     # Informe de Revision de Especificacion
+     Warning SPEC-001
+     Evidence: CON-002 requires a measurable response-time limit.
+     Location: spec.md, REQ-006
+     Mismatch: "Respond quickly" has no measurable threshold.
+     Impact: Acceptance cannot be verified.
+     Remediation: Ask the user to confirm a threshold, update requirements.md,
+                  then synchronize REQ-006.
 
-     ## Resumen
-     - **Estado General**: ! Necesita Trabajo
-     - **Puntuacion de Calidad**: 72/100
-     - **Preparacion**: Necesita Revision
-
-     ## Analisis de Secciones
-     | Seccion | Estado | Completitud | Calidad |
-     |---------|--------|--------------|---------|
-     | Resumen | OK | 100% | Alta |
-     | Objetivos | OK | 100% | Alta |
-     | Historias de Usuario | ! | 80% | Media |
-     | Requisitos Funcionales | OK | 100% | Alta |
-     | Requisitos No Funcionales | ! | 50% | Media |
-     | Casos Limite | X | 0% | N/A |
-
-     ## Problemas Criticos (Debe Corregir)
-     - [SPEC-001]: La seccion Casos Limite esta vacia
-       - Impacto: Puede perder escenarios de fallo importantes
-       - Sugerencia: Documentar al menos 3-5 casos limite
-
-     ## Advertencias (Deberia Corregir)
-     - [SPEC-002]: NFR-001 usa termino vago "rapido"
-       - Impacto: No se puede verificar sin metricas
-       - Sugerencia: Especificar tiempo de respuesta concreto
-
-     ## Recomendaciones
-     1. Agregar seccion de Casos Limite con enfoques de manejo
-     2. Cuantificar requisitos no funcionales
-     3. Agregar criterios de aceptacion a Historia de Usuario 3
-
-     Seguimiento disponible:
-     - /codexspec:clarify - para abordar ambiguedades
-     - /codexspec:spec-to-plan - si problemas resueltos
+     Risk Advisories / Design Opportunities:
+     - None
 ```
 
 **Consejos:**
 
-- Ejecutar antes de `/codexspec:spec-to-plan`
-- Abordar problemas Criticos antes de continuar
-- Las Advertencias no bloquean pero indican riesgo
-- Re-ejecutar despues de hacer correcciones
+- Ejecútalo antes de `/codexspec:spec-to-plan`
+- Trata `BLOCKED` y `NEEDS_REVISION` como no listos para continuar
+- No promuevas avisos a requisitos
+- Vuelve a ejecutarlo tras aplicar correcciones
 
 ---
 
 ### `/codexspec:review-plan`
 
-Revisar el plan de implementacion tecnica por viabilidad, calidad de arquitectura y alineacion con la especificacion.
+Revisa el plan de implementación técnica en busca de fidelidad, viabilidad y decisiones técnicas justificadas.
 
 **Sintaxis:**
 
@@ -663,81 +692,45 @@ Revisar el plan de implementacion tecnica por viabilidad, calidad de arquitectur
 
 **Argumentos:**
 
-| Argumento | Requerido | Descripcion |
+| Argumento | Requerido | Descripción |
 |----------|----------|-------------|
-| `ruta_a_plan.md` | No | Ruta al archivo plan (auto-detectado si no se proporciona) |
+| `ruta_a_plan.md` | No | Ruta al archivo del plan (se detecta automáticamente si no se proporciona) |
 
-**Que hace:**
+**Lo que hace:**
 
-- Verifica que los requisitos del spec tengan cobertura en el plan
-- Evalua elecciones de stack tecnologico
-- Evalua decisiones de arquitectura
-- Valida fases de implementacion
-- Verifica alineacion con constitucion
-- Genera informe de revision con puntuacion
-
-**Dimensiones de Revision:**
-
-| Dimension | Peso | Que Valida |
-|-----------|--------|-------------------|
-| Alineacion con Spec | 30% | Todos los requisitos tienen implementacion |
-| Stack Tecnologico | 15% | Elecciones de tecnologia apropiadas |
-| Calidad de Arquitectura | 25% | Diseno y patrones solidos |
-| Planificacion de Fases | 15% | Fases logicas y realistas |
-| Alineacion con Constitucion | 15% | Sigue principios del proyecto |
+- Verifica los enlaces `Covers` y la cobertura requerida de la especificación
+- Comprueba las reglas aplicables de la constitución y los hechos del repositorio
+- Marca complejidad injustificada solo cuando crea un coste o conflicto concreto
+- Exige los campos de evidencia para cada defecto y fusiona hallazgos con la misma causa raíz
+- Reporta mejoras de arquitectura opcionales como avisos
+- Usa el contrato compartido de estado y puntuación de compatibilidad
 
 **Ejemplo:**
 
 ```text
-Tu: /codexspec:review-plan
+You: /codexspec:review-plan
 
-AI:  Revisando plan tecnico...
+AI:  Overall Status: PASS
+     Compatibility Score: 100/100
+     Verified defects: none
 
-     # Informe de Revision de Plan
-
-     ## Resumen
-     - **Estado General**: OK Pasar
-     - **Puntuacion de Calidad**: 85/100
-     - **Preparacion**: Listo para Desglose de Tareas
-
-     ## Alineacion con Spec
-     | Requisito | Cobertura | Estado |
-     |-------------|----------|--------|
-     | REQ-001 a REQ-012 | OK Completo | Todos cubiertos |
-     | US-001 a US-004 | OK Completo | Todos cubiertos |
-     | NFR-001 a NFR-003 | ! Parcial | Caching no detallado |
-
-     ## Revision de Arquitectura
-     Fortalezas:
-     - Separacion clara de responsabilidades
-     - Limites de modulo bien definidos
-     - Patrones de diseno apropiados
-
-     Preocupaciones:
-     - Falta documentacion de estrategia de manejo de errores
-
-     ## Alineacion con Constitucion
-     | Principio | Cumplimiento |
-     |-----------|------------|
-     | Clean Architecture | OK |
-     | TDD | OK |
-     | Calidad de Codigo | OK |
-
-     Listo para /codexspec:plan-to-tasks
+     Risk Advisories / Design Opportunities:
+     - A caching layer may become useful if production measurements exceed
+       the confirmed latency target. It is not required by the current plan.
 ```
 
 **Consejos:**
 
-- Ejecutar antes de `/codexspec:plan-to-tasks`
-- Los problemas criticos deben resolverse
-- Usar para detectar problemas de arquitectura temprano
-- Verificar que el stack tecnologico se alinea con las habilidades del equipo
+- Ejecútalo antes de `/codexspec:plan-to-tasks`
+- Resuelve los defectos con evidencia antes de la generación de tareas
+- Mantén las ideas especulativas de arquitectura en la sección de avisos
+- Verifica que el stack tecnológico se alinea con las habilidades del equipo
 
 ---
 
 ### `/codexspec:review-tasks`
 
-Validar el desglose de tareas por completitud, cumplimiento TDD, ordenamiento correcto y dependencias apropiadas.
+Valida el desglose de tareas en cuanto a cobertura, resultados verificables, orden correcto y dependencias viables.
 
 **Sintaxis:**
 
@@ -747,76 +740,50 @@ Validar el desglose de tareas por completitud, cumplimiento TDD, ordenamiento co
 
 **Argumentos:**
 
-| Argumento | Requerido | Descripcion |
+| Argumento | Requerido | Descripción |
 |----------|----------|-------------|
-| `ruta_a_tasks.md` | No | Ruta al archivo tasks (auto-detectado si no se proporciona) |
+| `ruta_a_tasks.md` | No | Ruta al archivo de tareas (se detecta automáticamente si no se proporciona) |
 
-**Que hace:**
+**Lo que hace:**
 
-- Verifica que todos los items del plan tengan cobertura de tareas
-- Valida cumplimiento TDD (pruebas antes de implementacion)
-- Verifica granularidad de tareas (atomicas, enfoque de archivo unico)
-- Valida dependencias (sin ciclos, ordenamiento correcto)
-- Revisa marcadores de paralelizacion
-- Valida rutas de archivos
-
-**Dimensiones de Revision:**
-
-| Dimension | Peso | Que Valida |
-|-----------|--------|-------------------|
-| Cobertura del Plan | 30% | Todos los items del plan tienen tareas |
-| Cumplimiento TDD | 25% | Flujo test-first aplicado |
-| Dependencias y Ordenamiento | 20% | Dependencias correctas, sin ciclos |
-| Granularidad de Tareas | 15% | Atomicas, alcance apropiado |
-| Paralelizacion y Archivos | 10% | Marcadores y rutas correctos |
+- Comprueba que todos los elementos requeridos del plan y los requisitos tengan cobertura de tareas
+- Valida el orden test-first solo donde una fuente autoritativa lo requiere
+- Verifica que cada tarea tenga un resultado verificable
+- Valida las dependencias (sin ciclos, orden correcto)
+- Revisa los marcadores de paralelización
+- Valida las rutas de archivo
+- Exige los campos de evidencia para cada defecto
+- Reporta refinamientos de proceso opcionales como avisos
+- Usa el contrato compartido de estado y puntuación de compatibilidad
 
 **Ejemplo:**
 
 ```text
-Tu: /codexspec:review-tasks
+You: /codexspec:review-tasks
 
-AI:  Revisando desglose de tareas...
+AI:  Overall Status: NEEDS_REVISION
+     Compatibility Score: 79/100
 
-     # Informe de Revision de Tareas
-
-     ## Resumen
-     - **Estado General**: ! Necesita Trabajo
-     - **Puntuacion de Calidad**: 78/100
-     - **Total Tareas**: 24
-     - **Paralelizables**: 8 (33%)
-
-     ## Cumplimiento TDD
-     | Componente | Tarea Prueba | Prueba Antes de Impl | Estado |
-     |-----------|-----------|------------------|--------|
-     | Task Entity | OK | OK | OK |
-     | User Entity | OK | OK | OK |
-     | TaskService | X Falta | N/A | X |
-
-     ## Violaciones TDD
-     - [TDD-001]: TaskService falta tarea de prueba
-
-     ## Problemas de Dependencias
-     - [DEP-001]: Task 2.5 marcada [P] pero depende de 2.4
-
-     ## Recomendaciones
-     1. Agregar tarea de prueba para TaskService antes de implementacion
-     2. Corregir marcador de paralelizacion en Task 2.5
-
-     Corregir problemas antes de /codexspec:implement-tasks
+     Warning TASK-001
+     Evidence: Task 2.5 declares a dependency on Task 2.4.
+     Location: tasks.md, Task 2.5
+     Mismatch: Task 2.5 is also marked [P].
+     Impact: Parallel execution can start before its prerequisite completes.
+     Remediation: Remove [P] or remove the dependency if the plan proves independence.
 ```
 
 **Consejos:**
 
-- Ejecutar antes de `/codexspec:implement-tasks`
-- Las violaciones TDD son criticas para calidad de codigo
-- Verificar que los marcadores de paralelizacion son precisos
-- Verificar que las rutas de archivos coinciden con estructura del proyecto
+- Ejecútalo antes de `/codexspec:implement-tasks`
+- Los hallazgos de orden de pruebas son defectos solo cuando una fuente autoritativa requiere testing
+- Comprueba que los marcadores de paralelización sean precisos
+- Verifica que las rutas de archivo coincidan con la estructura del proyecto
 
 ---
 
 ### `/codexspec:analyze`
 
-Realizar un analisis de consistencia cruzada entre artefactos no destructivo a traves de spec.md, plan.md y tasks.md. Identifica inconsistencias, duplicaciones y brechas de cobertura.
+Realiza un análisis de consistencia no destructivo entre requirements.md, spec.md, plan.md y tasks.md. Identifica conflictos de autoridad, vacíos de trazabilidad, duplicación y cobertura faltante.
 
 **Sintaxis:**
 
@@ -826,151 +793,151 @@ Realizar un analisis de consistencia cruzada entre artefactos no destructivo a t
 
 **Argumentos:**
 
-| Argumento | Requerido | Descripcion |
+| Argumento | Requerido | Descripción |
 |----------|----------|-------------|
 | Ninguno | - | Analiza los artefactos de la funcionalidad actual |
 
-**Que hace:**
+**Lo que hace:**
 
 - Detecta duplicaciones entre artefactos
-- Identifica ambiguedades que carecen de criterios medibles
-- Encuentra items sub-especificados
-- Verifica alineacion con constitucion
-- Mapea cobertura de requisitos a tareas
-- Reporta inconsistencias en terminologia y ordenamiento
+- Identifica ambigüedades que carecen de criterios medibles
+- Encuentra elementos poco especificados
+- Comprueba la alineación con la constitución
+- Mapea la cobertura de requisitos a tareas
+- Reporta inconsistencias en terminología y orden
 
-**Niveles de Severidad:**
+**Niveles de severidad:**
 
-| Nivel | Definicion |
+| Nivel | Definición |
 |-------|------------|
-| **CRITICAL** | Violacion de constitucion, artefacto principal faltante, cobertura cero |
-| **HIGH** | Requisito duplicado/contradictorio, atributo de seguridad ambiguo |
-| **MEDIUM** | Deriva de terminologia, falta cobertura no funcional |
-| **LOW** | Mejoras de estilo/redaccion |
+| **CRITICAL** | Violación de la constitución, artefacto central faltante, cobertura cero |
+| **HIGH** | Requisito duplicado/en conflicto, atributo de seguridad ambiguo |
+| **MEDIUM** | Deriva terminológica, cobertura no funcional faltante |
+| **LOW** | Mejoras de estilo/redacción |
 
 **Ejemplo:**
 
 ```text
-Tu: /codexspec:analyze
+You: /codexspec:analyze
 
-AI:  Analizando artefactos...
+AI:  Analyzing artifacts...
 
-     # Informe de Analisis de Especificacion
+     # Specification Analysis Report
 
-     ## Resumen de Cobertura
-     | Clave de Requisito | Tiene Tarea? | IDs de Tarea |
+     ## Coverage Summary
+     | Requirement Key | Has Task? | Task IDs |
      |-----------------|-----------|----------|
-     | REQ-001 | OK | 2.1, 2.2 |
-     | REQ-002 | OK | 2.3, 2.4 |
-     | REQ-003 | X | Ninguno |
+     | REQ-001 | ✅ | 2.1, 2.2 |
+     | REQ-002 | ✅ | 2.3, 2.4 |
+     | REQ-003 | ❌ | None |
 
-     ## Problemas Encontrados
+     ## Issues Found
 
-     | ID | Categoria | Severidad | Resumen |
+     | ID | Category | Severity | Summary |
      |----|----------|----------|---------|
-     | A1 | Cobertura | CRITICAL | REQ-003 no tiene cobertura de tarea |
-     | A2 | Duplicacion | HIGH | REQ-005 y REQ-008 se superponen |
-     | A3 | Ambiguedad | MEDIUM | NFR-002 "seguro" no definido |
+     | A1 | Coverage | CRITICAL | REQ-003 has no task coverage |
+     | A2 | Duplication | HIGH | REQ-005 and REQ-008 overlap |
+     | A3 | Ambiguity | MEDIUM | NFR-002 "secure" not defined |
 
-     ## Metricas
-     - Total Requisitos: 12
-     - Total Tareas: 24
-     - Cobertura: 92% (11/12 requisitos)
-     - Problemas Criticos: 1
+     ## Metrics
+     - Total Requirements: 12
+     - Total Tasks: 24
+     - Coverage: 92% (11/12 requirements)
+     - Critical Issues: 1
 
-     ## Proximas Acciones
-     1. Agregar tareas para REQ-003 (CRITICAL)
-     2. Considerar fusionar REQ-005 y REQ-008
-     3. Definir "seguro" en NFR-002
+     ## Next Actions
+     1. Add tasks for REQ-003 (CRITICAL)
+     2. Consider merging REQ-005 and REQ-008
+     3. Define "secure" in NFR-002
 
-     Resolver problemas CRITICAL antes de /codexspec:implement-tasks
+     Resolve CRITICAL issues before /codexspec:implement-tasks
 ```
 
 **Consejos:**
 
-- Ejecutar despues de `/codexspec:plan-to-tasks`, antes de implementacion
-- Los problemas CRITICAL deben bloquear implementacion
-- Analisis de solo lectura - no se modifican archivos
-- Usar hallazgos para mejorar calidad de artefactos
+- Ejecútalo después de `/codexspec:plan-to-tasks`, antes de la implementación
+- Los problemas CRITICAL deberían bloquear la implementación
+- Análisis de solo lectura: no se modifican archivos
+- Usa los hallazgos para mejorar la calidad de los artefactos
 
 ---
 
 ### `/codexspec:checklist`
 
-Generar listas de verificacion de calidad para validar completitud, claridad y consistencia de requisitos. Estas son "pruebas unitarias para escritura de requisitos".
+Genera checklists de calidad para validar la completitud, claridad y consistencia de los requisitos. Son "pruebas unitarias para la redacción de requisitos".
 
 **Sintaxis:**
 
 ```
-/codexspec:checklist [area_enfoque]
+/codexspec:checklist [área_de_enfoque]
 ```
 
 **Argumentos:**
 
-| Argumento | Requerido | Descripcion |
+| Argumento | Requerido | Descripción |
 |----------|----------|-------------|
-| `area_enfoque` | No | Enfoque de dominio (ej., "ux", "api", "seguridad", "rendimiento") |
+| `área_de_enfoque` | No | Enfoque de dominio (p. ej., "ux", "api", "security", "performance") |
 
-**Que hace:**
+**Lo que hace:**
 
-- Genera listas de verificacion organizadas por dimensiones de calidad
-- Crea listas de verificacion en directorio `FEATURE_DIR/checklists/`
-- Los items se enfocan en calidad de requisitos, no pruebas de implementacion
+- Genera checklists organizadas por dimensiones de calidad
+- Crea checklists en el directorio `FEATURE_DIR/checklists/`
+- Los elementos se centran en la calidad de los requisitos, no en las pruebas de implementación
 
-**Dimensiones de Calidad:**
+**Dimensiones de calidad:**
 
-- **Completitud de Requisitos**: Estan todos los requisitos necesarios presentes?
-- **Claridad de Requisitos**: Son los requisitos especificos y sin ambiguedades?
-- **Consistencia de Requisitos**: Los requisitos se alinean sin conflictos?
-- **Calidad de Criterios de Aceptacion**: Son los criterios de exito medibles?
-- **Cobertura de Escenarios**: Estan todos los flujos/casos abordados?
-- **Cobertura de Casos Limite**: Estan las condiciones limite definidas?
-- **Requisitos No Funcionales**: Rendimiento, Seguridad, Accesibilidad especificados?
-- **Dependencias y Suposiciones**: Estan documentadas?
+- **Completitud de requisitos**: ¿Están presentes todos los requisitos necesarios?
+- **Claridad de requisitos**: ¿Los requisitos son específicos y sin ambigüedades?
+- **Consistencia de requisitos**: ¿Los requisitos se alinean sin conflictos?
+- **Calidad de los criterios de aceptación**: ¿Los criterios de éxito son medibles?
+- **Cobertura de escenarios**: ¿Se abordan todos los flujos/casos?
+- **Cobertura de casos extremos**: ¿Están definidas las condiciones de frontera?
+- **Requisitos no funcionales**: ¿Se especifican rendimiento, seguridad, accesibilidad?
+- **Dependencias y supuestos**: ¿Están documentados?
 
-**Ejemplos de Tipos de Lista de Verificacion:**
+**Ejemplos de tipos de checklist:**
 
-- `ux.md` - Jerarquia visual, estados de interaccion, accesibilidad
-- `api.md` - Formatos de error, rate limiting, autenticacion
-- `security.md` - Proteccion de datos, modelo de amenazas, respuesta a brechas
-- `performance.md` - Metricas, condiciones de carga, degradacion
+- `ux.md` - Jerarquía visual, estados de interacción, accesibilidad
+- `api.md` - Formatos de error, limitación de tasa, autenticación
+- `security.md` - Protección de datos, modelo de amenazas, respuesta a brechas
+- `performance.md` - Métricas, condiciones de carga, degradación
 
 **Ejemplo:**
 
 ```text
-Tu: /codexspec:checklist seguridad
+You: /codexspec:checklist security
 
-AI:  Generando lista de verificacion de seguridad...
+AI:  Generating security checklist...
 
-     + Creado .codexspec/specs/2026-0613-1200ab-task-management/checklists/security.md
+     ✓ Created .codexspec/specs/2026-0613-1200ab-task-management/checklists/security.md
 
-     ## Lista de Verificacion de Calidad de Requisitos de Seguridad
+     ## Security Requirements Quality Checklist
 
-     ### Requisitos de Autenticacion
-     - [ ] CHK001 - Estan definidos los requisitos de autenticacion para todos los endpoints protegidos? [Completitud]
-     - [ ] CHK002 - Esta la complejidad de contrasena explicitamente especificada? [Claridad]
-     - [ ] CHK003 - Estan cuantificados los requisitos de timeout de sesion? [Medibilidad]
+     ### Authentication Requirements
+     - [ ] CHK001 - Are authentication requirements defined for all protected endpoints? [Completeness]
+     - [ ] CHK002 - Is password complexity explicitly specified? [Clarity]
+     - [ ] CHK003 - Are session timeout requirements quantified? [Measurability]
 
-     ### Proteccion de Datos
-     - [ ] CHK004 - Estan especificados los requisitos de encriptacion de datos en reposo? [Completitud]
-     - [ ] CHK005 - Estan especificados los requisitos de encriptacion de datos en transito? [Completitud]
-     - [ ] CHK006 - Esta el manejo de PII explicitamente documentado? [Claridad]
+     ### Data Protection
+     - [ ] CHK004 - Are data encryption requirements specified at rest? [Completeness]
+     - [ ] CHK005 - Are data encryption requirements specified in transit? [Completeness]
+     - [ ] CHK006 - Is PII handling explicitly documented? [Clarity]
 
-     Total: 15 items a traves de 4 categorias
+     Total: 15 items across 4 categories
 ```
 
 **Consejos:**
 
-- Las listas de verificacion validan calidad de requisitos, no correccion de implementacion
-- Usar para revision y mejora de requisitos
-- Crear listas de verificacion especificas de dominio para validacion enfocada
-- Ejecutar antes de continuar con planificacion tecnica
+- Las checklists validan la calidad de los requisitos, no la corrección de la implementación
+- Úsalas para la revisión y mejora de requisitos
+- Crea checklists específicas de dominio para validación enfocada
+- Ejecútalo antes de pasar a la planificación técnica
 
 ---
 
 ### `/codexspec:tasks-to-issues`
 
-Convertir tareas de `tasks.md` en issues de GitHub para seguimiento de proyecto y colaboracion.
+Convierte tareas de `tasks.md` en GitHub issues para el seguimiento y la colaboración del proyecto.
 
 **Sintaxis:**
 
@@ -980,59 +947,59 @@ Convertir tareas de `tasks.md` en issues de GitHub para seguimiento de proyecto 
 
 **Argumentos:**
 
-| Argumento | Requerido | Descripcion |
+| Argumento | Requerido | Descripción |
 |----------|----------|-------------|
 | Ninguno | - | Convierte todas las tareas de la funcionalidad actual |
 
-**Que hace:**
+**Lo que hace:**
 
-- Parsea IDs de tarea, descripciones, dependencias y rutas de archivo
-- Crea issues de GitHub con cuerpo estructurado
-- Agrega etiquetas basadas en tipo de tarea (setup, implementation, testing, documentation)
+- Analiza IDs de tareas, descripciones, dependencias y rutas de archivo
+- Crea GitHub issues con un cuerpo estructurado
+- Añade etiquetas según el tipo de tarea (setup, implementation, testing, documentation)
 - Vincula dependencias entre issues
-- Reporta issues creados con URLs
+- Reporta las issues creadas con sus URLs
 
-**Requisitos Previos:**
+**Requisitos previos:**
 
-- Repositorio Git con remote de GitHub
-- GitHub CLI (`gh`) instalado y autenticado
-- Archivo `tasks.md` existe
+- Repositorio Git con remoto en GitHub
+- GitHub CLI (`gh`) instalada y autenticada
+- El archivo `tasks.md` existe
 
 **Ejemplo:**
 
 ```text
-Tu: /codexspec:tasks-to-issues
+You: /codexspec:tasks-to-issues
 
-AI:  Convirtiendo tareas a issues de GitHub...
+AI:  Converting tasks to GitHub issues...
 
-     Repositorio: github.com/example/taskman
+     Repository: github.com/example/taskman
 
-     Creando issues:
-     + #42: Task 1.1 - Setup Project Structure (setup)
-     + #43: Task 2.1 - Write Tests for Task Entity (testing)
-     + #44: Task 2.2 - Implement Task Entity (implementation)
+     Creating issues:
+     ✓ #42: Task 1.1 - Setup Project Structure (setup)
+     ✓ #43: Task 2.1 - Write Tests for Task Entity (testing)
+     ✓ #44: Task 2.2 - Implement Task Entity (implementation)
      ...
 
-     Resumen:
-     - Issues creados: 24
-     - Etiquetas aplicadas: setup(4), implementation(12), testing(5), documentation(3)
-     - Dependencias vinculadas: 18
+     Summary:
+     - Issues created: 24
+     - Labels applied: setup(4), implementation(12), testing(5), documentation(3)
+     - Dependencies linked: 18
 
-     Ver issues: https://github.com/example/taskman/issues
+     View issues: https://github.com/example/taskman/issues
 ```
 
 **Consejos:**
 
-- Requiere autenticacion de GitHub CLI (`gh auth login`)
+- Requiere autenticación con GitHub CLI (`gh auth login`)
 - Solo funciona con repositorios de GitHub
-- Crea issues en la configuracion predeterminada del repositorio
-- Verificar duplicados antes de ejecutar
+- Crea issues en la configuración predeterminada del repositorio
+- Comprueba si hay duplicados antes de ejecutarlo
 
 ---
 
 ### `/codexspec:commit-staged`
 
-Generar un mensaje de commit conforme a Conventional Commits basado en cambios de git en staging, con conciencia del contexto de sesion. Este comando entiende tu sesion de desarrollo para generar mensajes de commit significativos.
+Genera un mensaje de commit conforme a Conventional Commits basado en los cambios en staging de git, con conciencia del contexto de sesión. Este comando entiende tu sesión de desarrollo para generar mensajes de commit significativos.
 
 **Sintaxis:**
 
@@ -1042,155 +1009,486 @@ Generar un mensaje de commit conforme a Conventional Commits basado en cambios d
 
 **Argumentos:**
 
-| Argumento | Requerido | Descripcion |
+| Argumento | Requerido | Descripción |
 |----------|----------|-------------|
-| `-p` | No | Modo vista previa - mostrar mensaje sin hacer commit |
+| `-p` | No | Modo vista previa: muestra el mensaje sin hacer commit |
 
-**Que hace:**
+**Lo que hace:**
 
-- Ejecuta `git diff --staged` para obtener cambios en staging
-- Analiza cambios y contexto de sesion para entender la intencion
-- Sigue especificacion Conventional Commits
-- Modo ejecucion (predeterminado): hace commit directamente despues de generar el mensaje
-- Modo vista previa (`-p`): muestra el mensaje sin hacer commit
-- Reporta error si no existen cambios en staging
+- Ejecuta `git diff --staged` para recuperar los cambios en staging
+- Analiza los cambios y el contexto de la sesión para entender la intención
+- Sigue la especificación Conventional Commits
+- En modo ejecución (predeterminado): hace commit directamente tras generar el mensaje
+- En modo vista previa (`-p`): muestra el mensaje sin hacer commit
+- Reporta un error si no hay cambios en staging
 
 **Ejemplo:**
 
 ```text
-Tu: /codexspec:commit-staged
+You: /codexspec:commit-staged
 
-AI:  Analizando cambios en staging...
+AI:  Analyzing staged changes...
 
-     Archivos en staging:
+     Files staged:
      - src/auth/service.py
      - tests/test_auth.py
 
-     Mensaje de commit generado:
-     feat(auth): implementar logica de refresco de token
+     Generated commit message:
+     feat(auth): implement token refresh logic
 
-     - Agregar generacion de token de refresco
-     - Incluir manejo de expiracion de token
-     - Agregar pruebas para flujo de refresco
+     - Add refresh token generation
+     - Include token expiration handling
+     - Add tests for refresh flow
 
-     Ejecutando commit...
+     Executing commit...
 
-     + Committed: def5678
+     ✓ Committed: def5678
 ```
 
-**Ejemplo de Modo Vista Previa:**
+**Ejemplo de modo vista previa:**
 
 ```text
-Tu: /codexspec:commit-staged -p
+You: /codexspec:commit-staged -p
 
-AI:  Modo vista previa - no se ejecutara commit
+AI:  Preview mode - no commit will be executed
 
-     Mensaje de commit sugerido:
-     feat(auth): implementar logica de refresco de token
+     Suggested commit message:
+     feat(auth): implement token refresh logic
 
-     - Agregar generacion de token de refresco
-     - Incluir manejo de expiracion de token
-     - Agregar pruebas para flujo de refresco
+     - Add refresh token generation
+     - Include token expiration handling
+     - Add tests for refresh flow
 ```
 
 **Consejos:**
 
-- Haz stage de cambios primero con `git add`
-- Solo analiza contenido en staging - respetando el flujo de trabajo de commit en dos fases de Git
-- Considera el contexto de sesion para mensajes de commit significativos
-- Usa el flag `-p` para previsualizar antes de hacer commit
-- Sigue la especificacion Conventional Commits por defecto
+- Haz staging de los cambios primero con `git add`
+- Solo analiza el contenido en staging: respetal flujo de commit en dos etapas de Git
+- Considera el contexto de la sesión para mensajes de commit significativos
+- Usa el flag `-p` para vista previa antes de hacer commit
+- Sigue la especificación Conventional Commits por defecto
 
 ---
 
-## Resumen del Flujo de Trabajo
+### `/codexspec:review-code`
+
+Revisa código en cualquier lenguaje en busca de claridad idiomática, corrección, robustez, arquitectura y alineación con la constitución.
+
+**Sintaxis:**
 
 ```
-+--------------------------------------------------------------------------+
-|                    Flujo de Trabajo de Colaboracion Humano-AI CodexSpec  |
-+--------------------------------------------------------------------------+
-|                                                                          |
-|  1. Constitution  -->  Definir principios del proyecto                   |
-|         |                         con validacion cruzada de artefactos   |
-|         v                                                                |
-|  2. Specify  --------->  Q&A interactivo para clarificar requisitos      |
-|         |               (ningun archivo creado - control humano)         |
-|         v                                                                |
-|  3. Generate Spec  -->  Crear documento spec.md                          |
-|         |                                                                |
-|         v                                                                |
-|  +==================================================================+   |
-|  |  ★ PUERTA DE REVISION 1: /codexspec:review-spec ★                 |   |
-|  |  Validar: Completitud, Claridad, Testeabilidad, Constitucion      |   |
-|  +==================================================================+   |
-|         |                                                                |
-|         v                                                                |
-|  4. Clarify  --------->  Resolver ambiguedades (iterativo)               |
-|         |               4 categorias dirigidas, maximo 5 preguntas       |
-|         v                                                                |
-|  5. Spec to Plan  -->  Crear plan tecnico con:                           |
-|         |               * Revision de constitucionalidad (OBLIGATORIO)   |
-|         |               * Grafo de dependencia de modulos                |
-|         v                                                                |
-|  +==================================================================+   |
-|  |  ★ PUERTA DE REVISION 2: /codexspec:review-plan ★                 |   |
-|  |  Validar: Alineacion Spec, Arquitectura, Stack Tech, Fases         |   |
-|  +==================================================================+   |
-|         |                                                                |
-|         v                                                                |
-|  6. Plan to Tasks  ->  Generar tareas atomicas con:                      |
-|         |               * Aplicacion TDD (pruebas antes de impl)         |
-|         |               * Marcadores Paralelos [P]                       |
-|         |               * Especificaciones de rutas de archivo          |
-|         v                                                                |
-|  +==================================================================+   |
-|  |  ★ PUERTA DE REVISION 3: /codexspec:review-tasks ★                |   |
-|  |  Validar: Cobertura, Cumplimiento TDD, Dependencias, Granularidad  |   |
-|  +==================================================================+   |
-|         |                                                                |
-|         v                                                                |
-|  7. Analyze  --------->  Verificacion de consistencia cruzada            |
-|         |               Detectar brechas, duplicaciones, problemas const |
-|         v                                                                |
-|  8. Implement  -------->  Ejecutar con flujo de trabajo TDD condicional  |
-|                          Codigo: Test-first | Docs/Config: Directo       |
-|                                                                          |
-+--------------------------------------------------------------------------+
+/codexspec:review-code [ruta...]
 ```
 
-**Punto Clave**: Cada puerta de revision (★) es un **punto de control humano** donde validas la salida de AI antes de invertir mas tiempo. Saltar estas puertas a menudo conduce a costoso retrabajo.
+**Argumentos:**
+
+| Argumento | Requerido | Descripción |
+|----------|----------|-------------|
+| `ruta...` | No | Uno o más archivos o directorios fuente a revisar (separados por espacios). Por defecto `src/` si se omite |
+
+**Lo que hace:**
+
+- Detecta el lenguaje o lenguajes principales a partir de las extensiones de archivo y ejecuta una pasada por idioma para objetivos multilenguaje
+- Ejecuta herramientas de análisis estático cuando su configuración está presente (`ruff`/`mypy`, `eslint`/`tsc`, `go vet`/`gofmt`, `cargo check`/`cargo clippy`, `shellcheck`); si no, las omite elegantemente y reporta cobertura degradada
+- Puntúa cuatro dimensiones: Claridad y simplicidad idiomática, Corrección y contratos explícitos, Robustez en tiempo de ejecución y disciplina de recursos, e Integridad arquitectónica y de diseño
+- Inyecta subsecciones obligatorias para los frameworks detectados (p. ej., Cumplimiento de Hooks para React, Ownership y Borrowing para Rust, Disciplina de Goroutine y Context para Go, Seguridad de Memoria y Lifetime para C/C++, Seguridad de Ejecución para Shell)
+- Referencia cruzada los hallazgos contra `.codexspec/memory/constitution.md` cuando está presente; si está ausente, el eje de constitución se descarta y su peso se redistribuye
+- Clasifica los hallazgos por severidad: CRITICAL, HIGH, MEDIUM, LOW (las sugerencias LOW se limitan a una deducción total de 5 puntos)
+
+**Ejemplo:**
+
+```text
+You: /codexspec:review-code src/
+
+AI:  # Code Review Report
+
+     ## Summary
+     - Overall Status: Needs Work
+     - Quality Score: 78/100
+     - Detected Language: Python
+
+     ## Static Analysis Results
+     | Tool   | Status | Issues | Details                |
+     |--------|--------|--------|------------------------|
+     | ruff   | Warn   | 3      | Unused imports, line length |
+     | mypy   | Pass   | 0      | No type errors         |
+
+     ## Detailed Findings
+     ### Critical Issues (CRITICAL)
+     - [ ] [CODE-001] src/auth/service.py:42 - bare `except Exception:` swallows the original cause
+       Impact: Original error context is lost during debugging.
+       Suggestion: narrow the exception and re-raise with `raise ... from err`.
+
+     ### Suggestions (LOW)
+     - [ ] [CODE-004] src/auth/service.py:120 - manual loop where a comprehension suffices
+
+     ## Recommendations
+     1. Priority 1: Fix CODE-001 before merge.
+     2. Priority 2: Apply LOW suggestions opportunistically.
+```
+
+**Consejos:**
+
+- Pasa varias rutas para revisar una porción enfocada, p. ej., `src/ tests/`
+- La puntuación es consultiva; los hallazgos CRITICAL/HIGH son la señal accionable
+- Para proyectos solo Python o solo React, prefiere los dedicados `/codexspec:review-python-code` o `/codexspec:review-react-code` para comprobaciones más profundas y específicas del lenguaje
+- Vuelve a ejecutarlo tras las correcciones para confirmar que la puntuación se recupera (se espera ≥ 95 una vez resueltos los problemas CRITICAL/HIGH)
 
 ---
 
-## Solucion de Problemas
+### `/codexspec:review-python-code`
+
+Revisa código Python en busca de cumplimiento de PEP 8, seguridad de tipos, robustez de ingeniería y consistencia con la constitución.
+
+**Sintaxis:**
+
+```
+/codexspec:review-python-code [ruta...]
+```
+
+**Argumentos:**
+
+| Argumento | Requerido | Descripción |
+|----------|----------|-------------|
+| `ruta...` | No | Uno o más archivos o directorios Python a revisar (separados por espacios). Por defecto `src/` si se omite |
+
+**Lo que hace:**
+
+- Ejecuta `ruff check` para resultados de PEP 8 / linting y `mypy` para resultados de comprobación de tipos
+- Revisa cuatro dimensiones específicas de Python: Principio Pythonic y KISS, Seguridad y explicitud de tipos, Robustez de ingeniería y Alineación con la constitución
+- Comprueba la completitud de anotaciones de tipo, el manejo de excepciones amplias y la preservación del contexto `raise ... from err`
+- Valida la gestión de recursos (gestores de contexto `with`), la corrección de async/await y la disciplina de `logging` estructurado
+- Referencia cruzada los hallazgos contra los principios MUST/SHOULD de `.codexspec/memory/constitution.md` cuando está presente
+- Clasifica los hallazgos por severidad: CRITICAL (violaciones MUST de la constitución, errores lógicos, vulnerabilidades de seguridad), HIGH (vacíos de seguridad de tipos, errores de ruff/mypy, fugas de recursos), MEDIUM (oportunidades de diseño/refactor, anotaciones faltantes), LOW (legibilidad, azúcar Pythonic)
+
+**Ejemplo:**
+
+```text
+You: /codexspec:review-python-code src/codexspec/
+
+AI:  # Python Code Review Report
+
+     ## Static Analysis
+     | Tool  | Status | Issues |
+     |-------|--------|--------|
+     | ruff  | Pass   | 0      |
+     | mypy  | Pass   | 0      |
+
+     ## Findings
+     ### Warnings (HIGH)
+     - [ ] [CODE-002] src/codexspec/__init__.py:218 - public function missing return type annotation
+       Suggestion: add the return type and verify with mypy.
+
+     ### Suggestions (LOW)
+     - [ ] [CODE-004] src/codexspec/cli.py:140 - use `pathlib.Path` instead of `os.path` string concatenation
+```
+
+**Consejos:**
+
+- Úsalo en lugar de `/codexspec:review-code` cuando el objetivo sea solo Python y quieras la profundidad de PEP 8 / seguridad de tipos
+- Tanto `ruff` como `mypy` deben estar instalados y configurados en el proyecto destino para cobertura completa; el comando reporta cobertura degradada cuando están ausentes
+- Los principios MUST de la constitución se puntúan; los metaprincipios generales del lenguaje (testeabilidad, simplicidad) aplican cuando no existe constitución
+
+---
+
+### `/codexspec:review-react-code`
+
+Revisa código React/TypeScript en busca de arquitectura de componentes, reglas de Hooks, gestión de estado, rendimiento y consistencia con la constitución.
+
+**Sintaxis:**
+
+```
+/codexspec:review-react-code [ruta...]
+```
+
+**Argumentos:**
+
+| Argumento | Requerido | Descripción |
+|----------|----------|-------------|
+| `ruta...` | No | Uno o más archivos o directorios React/TypeScript a revisar (separados por espacios; espera `.tsx`, `.ts`, `.jsx`, `.js`). Por defecto `src/` si se omite |
+
+**Lo que hace:**
+
+- Ejecuta `npx eslint` (cuando existe configuración de ESLint) y `npx tsc --noEmit` (cuando existe un `tsconfig.json`)
+- Revisa cuatro dimensiones específicas de React: Atomicidad y responsabilidad única del componente, Cumplimiento de Hooks y gestión de efectos secundarios, Gestión de estado y flujo de datos, y Rendimiento y robustez
+- Verifica que los arrays de dependencias de `useEffect` sean exhaustivos, detecta el uso indebido de estado derivado como estado y marca efectos innecesarios
+- Comprueba riesgos de closures obsoletos, falta de limpieza de efectos, prop drilling, renders costosos sin memoización y ausencia de estados de carga/error
+- Referencia cruzada los hallazgos contra `.codexspec/memory/constitution.md` cuando está presente
+- Clasifica los hallazgos por severidad: CRITICAL (violaciones de reglas de Hooks, condiciones de carrera), HIGH (falta de limpieza, rechazos de promesas no manejados), MEDIUM (candidatos a refactor), LOW (legibilidad)
+
+**Ejemplo:**
+
+```text
+You: /codexspec:review-react-code src/components/
+
+AI:  # React Code Review Report
+
+     ## Static Analysis
+     | Tool  | Status | Issues |
+     |-------|--------|--------|
+     | eslint| Warn   | 2      |
+     | tsc   | Pass   | 0      |
+
+     ## Findings
+     ### Critical Issues (CRITICAL)
+     - [ ] [CODE-001] src/components/UserProfile.tsx:38 - `useEffect` missing `userId` in dependency array
+       Impact: stale closure fetches the wrong user after navigation.
+       Suggestion: add `userId` to the dependency array or extract to a custom hook.
+
+     ### Suggestions (LOW)
+     - [ ] [CODE-004] src/components/Button.tsx:12 - extract derived value instead of `useState`
+```
+
+**Consejos:**
+
+- Úsalo en lugar de `/codexspec:review-code` cuando el objetivo sea solo React/TypeScript y quieras profundidad en Hooks y arquitectura de componentes
+- Deben estar presentes tanto ESLint como un `tsconfig.json` para cobertura completa; el comando reporta cobertura degradada cuando están ausentes
+- Los hallazgos de React se superponen a las comprobaciones base de TypeScript, por lo que los problemas de seguridad de tipos siguen apareciendo
+
+---
+
+### `/codexspec:quick`
+
+Ejecuta un flujo Requirements-First SDD simplificado para cambios pequeños.
+
+**Sintaxis:**
+
+```
+/codexspec:quick [describe un requisito pequeño]
+```
+
+**Argumentos:**
+
+| Argumento | Requerido | Descripción |
+|----------|----------|-------------|
+| `describe un requisito pequeño` | No | Descripción breve del cambio pequeño y bien delimitado (se solicitará si no se proporciona) |
+
+**Lo que hace:**
+
+- Evalúa el alcance (archivos afectados, extensión del módulo, nuevas dependencias, decisiones de producto sin resolver) y, si el cambio es amplio o tiene varios resultados independientes, recomienda el flujo estándar
+- Crea un espacio de trabajo de funcionalidad y `requirements.md` usando la misma convención de marca de tiempo que `/codexspec:specify`
+- Resuelve solo ambigüedades que cambien materialmente la implementación; presenta un resumen conciso confirmado (`NEED-*`, `CON-*`/`DEC-*` relevantes, `OUT-*`, `OPEN-*` sin resolver)
+- Se detiene en la Confirmation Gate: no se genera nada hasta que confirmes el resumen
+- Encadena los comandos de generación contra el nuevo directorio de la funcionalidad: `/codexspec:generate-spec`, `/codexspec:spec-to-plan`, `/codexspec:plan-to-tasks`, `/codexspec:implement-tasks`
+- Difiere al propio bucle de auto-revisión de cada comando de generación; hace una pausa y pregunta al usuario si una revisión necesita una decisión nueva de producto o arquitectura
+- Reporta el directorio de la funcionalidad, las rutas de los artefactos, los resultados de las revisiones, la verificación de la implementación y los avisos sin resolver por separado
+
+**Lo que crea:**
+
+```text
+.codexspec/specs/{timestamp}-{feature-name}/
+├── requirements.md
+├── spec.md
+├── plan.md
+└── tasks.md
+```
+
+**Ejemplo:**
+
+```text
+You: /codexspec:quick Add a "remember me" checkbox to the login form
+
+AI:  Scope check: 1 component, 1 form field, no new dependencies. Quick is appropriate.
+
+     Confirmed requirements:
+     - NEED-1: "Remember me" checkbox on the login form (default unchecked)
+     - DEC-1: Persist a long-lived refresh token only when checked
+     OUT-1: SSO / social login (unchanged)
+
+     Confirm this summary to start the automated flow. [y/N]
+
+You: y
+
+AI:  Running generate-spec → spec-to-plan → plan-to-tasks → implement-tasks ...
+
+     ✓ Feature dir: .codexspec/specs/2026-0713-0915ab-remember-me/
+     ✓ All reviews PASS_WITH_WARNINGS or higher
+     ✓ Implementation verified
+     Open advisories: none
+```
+
+**Consejos:**
+
+- Reserva Quick para cambios genuinamente pequeños y de un único resultado; en caso contrario ejecuta `/codexspec:specify` y el flujo estándar
+- La confirmación sigue siendo obligatoria: Quick nunca infiere una decisión de producto para mantener la automatización en marcha
+- Si alguna revisión de generación devuelve `NEEDS_REVISION`/`BLOCKED`, Quick se detiene y te devuelve el control
+
+---
+
+### `/codexspec:pr`
+
+Genera una descripción estructurada de GitHub Pull Request / GitLab Merge Request a partir del git diff. Opcionalmente integra `spec.md` para contexto trazado por SDD.
+
+**Sintaxis:**
+
+```
+/codexspec:pr [--target-branch <rama>] [--sections <lista>] [--spec <id-o-ruta>] [--output <archivo>]
+```
+
+**Argumentos:**
+
+| Argumento | Requerido | Descripción |
+|----------|----------|-------------|
+| `--target-branch <rama>` | No | Rama contra la que comparar (predeterminada: `origin/main`) |
+| `--sections <lista>` | No | Subconjunto separado por comas de `summary, changes, testing, verify, checklist, notes` (predeterminado: `all`) |
+| `--spec <id-o-ruta>` | No | Integración opt-in de spec: un id de funcionalidad (p. ej., `2025-0321-1430k7-auth`) resuelto bajo `.codexspec/specs/`, o una ruta `path/to/spec.md` explícita. Omitir para generar solo desde git |
+| `--output <archivo>` | No | Guardar la descripción en un archivo en lugar de la terminal |
+
+**Lo que hace:**
+
+- Recopila el contexto de git (rama actual, URL del remoto, commits por delante, cambios de archivo, diff completo, mensajes de commit) contra la rama objetivo
+- Detecta automáticamente la plataforma desde la URL del remoto: GitHub → "Pull Request", GitLab → "Merge Request", otro/ninguno → por defecto terminología de GitHub con una advertencia
+- Carga `.codexspec/memory/constitution.md` cuando está presente y alinea la descripción con los estándares de documentación/revisión de código
+- Respeta `language.commit` (luego `language.output`, luego inglés) para el idioma de la descripción; los términos técnicos (API, JWT, PR, MR) permanecen en inglés cuando procede
+- Cuando se proporciona `--spec`, añade una sección de Contexto con historias de usuario y requisitos extraídos de spec.md; en caso contrario genera puramente desde el diff
+- Emite secciones según `--sections` (Resumen, Cambios, Pruebas, Pasos de verificación, Checklist pre-fusión, Notas / Cambios disruptivos)
+
+**Ejemplo:**
+
+```text
+You: /codexspec:pr --spec 2026-0613-1200ab-task-management
+
+AI:  Generating Pull Request description...
+
+     Platform: GitHub (github.com/example/taskman)
+     Branch:   feature/task-management  →  origin/main
+     Commits:  8 ahead
+
+     ## Pull Request: Task management for small dev teams
+
+     ### Context
+     - User stories and REQ-* pulled from spec.md
+
+     ### Summary
+     - Adds task CRUD, sub-tasks, and real-time updates
+
+     ### Changes
+     - src/taskman/models/task.py (new)
+     - src/taskman/api/tasks.py (new)
+     - ...
+
+     ### Verification Steps
+     1. `uv run pytest`
+     2. `uv run codexspec check`
+```
+
+**Consejos:**
+
+- Omite `--spec` para correcciones de errores pequeñas o cambios sin especificación formal
+- Combínalo con `/codexspec:commit-staged` para producir tanto un mensaje de commit como una descripción de PR a partir del mismo trabajo
+- Consulta el [caso de estudio del generador de descripciones de PR](../case-studies/case-study-pr-description-generator.md) para un ejemplo completo de extremo a extremo de este comando (incluyendo cómo se conecta el contexto de spec.md)
+
+---
+
+### `/codexspec:config`
+
+Gestiona la configuración del proyecto de forma interactiva (crear/ver/modificar/restablecer). Es la contrapartida en slash command de la CLI `codexspec config`, ideal para instalaciones del Plugin Marketplace.
+
+**Sintaxis:**
+
+```
+/codexspec:config [--view]
+```
+
+**Argumentos:**
+
+| Argumento | Requerido | Descripción |
+|----------|----------|-------------|
+| `--view` | No | Muestra la configuración actual sin modificarla. Sin argumentos, abre el menú interactivo de gestión |
+
+**Lo que hace:**
+
+- Afecta exclusivamente a `.codexspec/config.yml`
+- `--view` (o la opción de menú "View current config") imprime el archivo en un formato legible; reporta "Configuration Not Found" si está ausente
+- El modo interactivo, cuando existe una configuración, ofrece: Ver, Modificar, Restablecer a valores predeterminados, Cancelar
+- Si no existe configuración, ejecuta el flujo de creación que escribe una configuración mínima solo con `output` (interaction/document/commit se resuelven a `output`, luego `en`, así que un archivo solo con `output` es totalmente funcional)
+- Permite ajustar cada dimensión de idioma de forma independiente (output, interaction, document, commit) y activar opciones del flujo de trabajo como `auto_next`
+
+**Lo que crea/edita:**
+
+```
+.codexspec/config.yml
+```
+
+**Ejemplo:**
+
+```text
+You: /codexspec:config
+
+AI:  ## Configuration Manager
+
+     Configuration file found at .codexspec/config.yml.
+     What would you like to do?
+     - View current config
+     - Modify config
+     - Reset to defaults
+     - Cancel
+
+You: Modify config
+
+AI:  Select a dimension to change:
+     - Output language (base)
+     - Interaction language
+     - Document language
+     - Commit-message language
+     - workflow.auto_next
+
+You: Output language (base) → zh-CN
+
+AI:  ✓ Updated language.output: "zh-CN"
+     (interaction and document fall back to output, then en.)
+```
+
+**Consejos:**
+
+- Usa `/codexspec:config --view` para inspeccionar el estado actual antes de cambiar nada
+- Una configuración nueva o restablecida escribe solo `output`; ajusta `interaction`/`document` solo cuando deban diferir de `output`
+- Para cambios programados en una terminal, prefiere la CLI `codexspec config` (`--set-lang`, `--set-interaction-lang`, `--set-document-lang`, `--set-commit-lang`, `--auto-next`)
+
+---
+
+## Visión general del flujo de trabajo
+
+```text
+Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+                                                   │                         │                            │
+                                              Review spec               Review plan                  Review tasks
+```
+
+Cada revisión es un punto de control humano. Valida la fidelidad y la calidad intrínseca mediante hallazgos respaldados por evidencia. Las sugerencias de diseño consultivas permanecen separadas y nunca bloquean la progresión. Los defectos verificados pueden corregirse y volver a revisarse durante un máximo de dos rondas.
+
+---
+
+## Resolución de problemas
 
 ### "Feature directory not found"
 
-El comando no pudo localizar el directorio de funcionalidad.
+El comando no pudo localizar el directorio de la funcionalidad.
 
 **Soluciones:**
 
-- Ejecutar `codexspec init` primero para inicializar el proyecto
-- Verificar que el directorio `.codexspec/specs/` existe
-- Verificar que estas en el directorio de proyecto correcto
+- Ejecuta primero `codexspec init` para inicializar el proyecto
+- Comprueba que el directorio `.codexspec/specs/` exista
+- Verifica que estás en el directorio de proyecto correcto
+- Pasa una ruta explícita del directorio de funcionalidad o del artefacto cuando existan múltiples candidatos
 
 ### "No spec.md found"
 
-El archivo de especificacion aun no existe.
+El archivo de especificación todavía no existe.
 
 **Soluciones:**
 
-- Ejecutar `/codexspec:specify` para clarificar requisitos primero
-- Luego ejecutar `/codexspec:generate-spec` para crear spec.md
+- Ejecuta `/codexspec:specify` para aclarar primero los requisitos
+- Luego ejecuta `/codexspec:generate-spec` para crear spec.md
 
 ### "Constitution not found"
 
-No existe constitucion del proyecto.
+No existe constitución del proyecto.
 
 **Soluciones:**
 
-- Ejecutar `/codexspec:constitution` para crear una
-- La constitucion es opcional pero recomendada para decisiones consistentes
+- Ejecuta `/codexspec:constitution` para crear una
+- La constitución es opcional pero recomendable para decisiones consistentes
 
 ### "Tasks file not found"
 
@@ -1198,22 +1496,22 @@ El desglose de tareas no existe.
 
 **Soluciones:**
 
-- Asegurarse de haber ejecutado `/codexspec:spec-to-plan` primero
-- Luego ejecutar `/codexspec:plan-to-tasks` para crear tasks.md
+- Asegúrate de haber ejecutado primero `/codexspec:spec-to-plan`
+- Luego ejecuta `/codexspec:plan-to-tasks` para crear tasks.md
 
 ### "GitHub CLI not authenticated"
 
-El comando `/codexspec:tasks-to-issues` requiere autenticacion de GitHub.
+El comando `/codexspec:tasks-to-issues` requiere autenticación en GitHub.
 
 **Soluciones:**
 
-- Instalar GitHub CLI: `brew install gh` (macOS) o equivalente
-- Autenticarse: `gh auth login`
-- Verificar: `gh auth status`
+- Instala la GitHub CLI: `brew install gh` (macOS) o equivalente
+- Autentícate: `gh auth login`
+- Verifica: `gh auth status`
 
 ---
 
-## Proximos Pasos
+## Próximos pasos
 
-- [Flujo de Trabajo](workflow.md) - Patrones comunes y cuando usar cada comando
-- [CLI](../reference/cli.md) - Comandos de terminal para inicializacion de proyecto
+- [Flujo de trabajo](workflow.md) - Patrones comunes y cuándo usar cada comando
+- [CLI](../reference/cli.md) - Comandos de terminal para la inicialización del proyecto

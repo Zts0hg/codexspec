@@ -4,11 +4,11 @@
 
 ## 概述
 
-**目标功能**: 添加 `/codexspec:pr` 命令，用于生成结构化的 GitHub PR / GitLab MR 描述信息。
+**目标功能**：添加 `/codexspec:pr` 命令，用于生成结构化的 GitHub PR / GitLab MR 描述。（已发布命令的用户侧摘要见 [README 中的 `/codexspec:pr` 条目](https://github.com/Zts0hg/codexspec/blob/main/README.md)。）
 
-**开发流程**: `specify → generate-spec → review-spec → clarify → spec-to-plan`
+**开发流程**：`specify → generate-spec → review-spec → clarify → spec-to-plan`
 
-**关键特点**: 在开发过程中发现需求问题并通过 `clarify` 命令进行调整，展示了 SDD 的灵活性。
+**关键特点**：在开发过程中发现了一个需求问题，并通过 `clarify` 命令加以纠正，体现了 SDD 的灵活性。这是 CodexSpec **确认门（Confirmation Gate）** 的一个具体实例——在你显式确认之前，任何内容都不具约束力，先前的已接受决策也可以在 clarify 检查点重新打开并推翻。
 
 ---
 
@@ -154,6 +154,8 @@ The command shall determine output language in the following priority order:
 
 `.codexspec/specs/2026-0613-1200ab-pr-description-generator/review-spec.md`
 
+这是一次**基于证据的评审**：上面的每条警告与建议都对应规格中一个具体、可定位的缺口，而建议项（Nice to Have）既不影响验收，也不触发自动改动。
+
 ---
 
 ## 阶段 4: 需求澄清与调整 (`/codexspec:clarify`) ⚠️ 关键转折
@@ -162,6 +164,8 @@ The command shall determine output language in the following priority order:
 
 **用户反馈**:
 > 我意识到关于 spec.md 的使用有一个问题。比如用户事实上在进行一个很小的改动，所以没有使用 codexspec 的标准化流程 specify->plan->tasks->implement，而是直接进行对话修改或者是 claude code 内置的 plan mode，然后在修改完毕之后希望单独调用 codexspec 的命令来生成规范的 pr 信息。这种情况直接默认使用最近修改过的 spec.md 就可能使用了之前的与本次修改无关的 spec.md 内容。
+
+这正是**确认门**在起作用：早前的决策（"默认使用最近修改的 spec.md"）虽然已被记录，但并非不可逆——用户带着对一种真实使用方式的新理解，在 clarify 检查点重新打开它，先前接受的默认被推翻。
 
 ### 澄清问答过程
 
@@ -257,6 +261,8 @@ The command shall determine output language in the following priority order:
 原设计: --no-spec (跳过 spec)
 新设计: --spec (启用 spec，opt-in)
 ```
+
+这一反转是本案中最清晰的确认门示例：原本"绑定"的默认（`--no-spec`，即默认启用 spec）被重新打开、反转，并在用户抛出一个它本会破坏的真实工作流后，重新确认为 opt-in。
 
 ---
 

@@ -1,52 +1,56 @@
-# Referencia CLI
+# Referencia de la CLI
 
 ## Comandos
 
 ### `codexspec init`
 
-Inicializar un nuevo proyecto CodexSpec.
+Inicializa un nuevo proyecto CodexSpec.
 
 ```bash
-codexspec init [NOMBRE_PROYECTO] [OPCIONES]
+codexspec init [PROJECT_NAME] [OPTIONS]
 ```
 
 **Argumentos:**
 
-| Argumento | Descripcion |
+| Argumento | Descripción |
 |----------|-------------|
-| `NOMBRE_PROYECTO` | Nombre para tu nuevo directorio de proyecto (usa `.` o `--here` para el directorio actual) |
+| `PROJECT_NAME` | Nombre del directorio del nuevo proyecto (usa `.` o `--here` para el directorio actual) |
 
 **Opciones:**
 
-| Opcion | Corto | Descripcion |
+| Opción | Corta | Descripción |
 |--------|-------|-------------|
 | `--here` | `-h` | Inicializar en el directorio actual |
-| `--ai` | `-a` | Asistente AI a usar (predeterminado: claude) |
-| `--lang` | `-l` | Idioma base de salida; interaction/document/commit caen a el (ej., en, zh-CN, ja) |
-| `--interaction-lang` | | Idioma de interaccion (dialogo LLM + salida del CLI `codexspec`); sobrescribe `--lang` |
-| `--document-lang` | | Idioma de documentos (requirements/spec/plan/tasks generados); sobrescribe `--lang` |
-| `--commit-lang` | | Idioma de mensajes de commit; sobrescribe `--lang` |
-| `--force` | `-f` | Sobrescribir archivos existentes y autoconfirmar prompts; nunca regenera `config.yml` |
-| `--no-git` | | Saltar inicializacion de git |
-| `--debug` | `-d` | Habilitar salida de depuracion |
+| `--ai` | `-a` | Asistente de IA a usar: `claude`, `codex` o `both` (predeterminado: claude) |
+| `--lang` | `-l` | Idioma base de output; interaction/document/commit caen a él (ej.: en, zh-CN, ja) |
+| `--interaction-lang` | | Idioma de interacción (diálogo LLM + salida de la CLI `codexspec`); sobrescribe `--lang` |
+| `--document-lang` | | Idioma de los documentos (requirements/spec/plan/tasks generados); sobrescribe `--lang` |
+| `--commit-lang` | | Idioma de los mensajes de commit; sobrescribe `--lang` |
+| `--force` | `-f` | Sobrescribe archivos existentes y autoconfirma los prompts; nunca regenera `config.yml` |
+| `--no-git` | | Omitir la inicialización del repositorio git |
+| `--debug` | `-d` | Habilita la salida de depuración |
 
-`--lang` establece el idioma base de `output`; `--interaction-lang`, `--document-lang` y `--commit-lang` lo sobrescriben para su dimension (cada uno cae a `output`, luego a `en`). Consulta [Internacionalizacion](../user-guide/i18n.md) para el modelo completo.
+`--lang` establece el idioma base de `output`; `--interaction-lang`, `--document-lang` y `--commit-lang` lo sobrescriben para su dimensión (cada uno cae a `output`, luego a `en`). Consulta [Internacionalización](../user-guide/i18n.md) para el modelo completo.
 
-La primera inicializacion en una TTY sin `--lang` (y sin las tres flags de dimension) solicita un idioma base; en una no-TTY (CI/scripts) el valor predeterminado es `en` — **totalmente no interactiva**. Volver a ejecutar `init` preserva cualquier clave de idioma que no hayas especificado; `--force` nunca regenera `config.yml`.
+La primera inicialización en una TTY sin `--lang` (y sin las tres flags de dimensión) solicita un idioma base; en un entorno sin TTY (CI/scripts) el valor predeterminado es `en`, **totalmente no interactiva**. Volver a ejecutar `init` preserva cualquier clave de idioma que no hayas especificado; `--force` nunca regenera `config.yml`.
 
 **Ejemplos:**
 
 ```bash
-# Crear nuevo proyecto
+# Crear un proyecto nuevo
 codexspec init my-project
 
-# Inicializar en directorio actual
+# Inicializar en el directorio actual
 codexspec init . --ai claude
 
-# Totalmente no interactivo: base zh-CN, mensajes de commit en ingles
+# Uso puntual (sin instalación): inicializar para Codex CLI o ambos
+uvx codexspec init . --ai codex
+uvx codexspec init . --ai both
+
+# Totalmente no interactivo: base zh-CN, mensajes de commit en inglés
 codexspec init my-project --lang zh-CN --commit-lang en
 
-# Establecer cada dimension explicitamente (scriptable, sin prompts)
+# Establecer cada dimensión explícitamente (scriptable, sin prompts)
 codexspec init my-project \
   --interaction-lang zh-CN --document-lang en --commit-lang en
 ```
@@ -55,7 +59,7 @@ codexspec init my-project \
 
 ### `codexspec check`
 
-Verificar herramientas instaladas.
+Comprueba las herramientas instaladas.
 
 ```bash
 codexspec check
@@ -65,7 +69,7 @@ codexspec check
 
 ### `codexspec version`
 
-Mostrar informacion de version.
+Muestra información de versión.
 
 ```bash
 codexspec version
@@ -75,20 +79,21 @@ codexspec version
 
 ### `codexspec config`
 
-Ver o modificar la configuracion del proyecto.
+Ver o modificar la configuración del proyecto.
 
 ```bash
-codexspec config [OPCIONES]
+codexspec config [OPTIONS]
 ```
 
 **Opciones:**
 
-| Opcion | Corto | Descripcion |
+| Opción | Corta | Descripción |
 |--------|-------|-------------|
-| `--set-lang` | `-l` | Establecer el idioma base de salida |
-| `--set-interaction-lang` | | Establecer el idioma de interaccion (dialogo LLM + salida del CLI) |
-| `--set-document-lang` | | Establecer el idioma de documentos (spec/plan/tasks generados) |
-| `--set-commit-lang` | `-c` | Establecer el idioma de mensajes de commit |
-| `--list-langs` | | Listar todos los idiomas soportados |
+| `--set-lang` | `-l` | Establece el idioma base de output |
+| `--set-interaction-lang` | | Establece el idioma de interacción (diálogo LLM + salida de la CLI) |
+| `--set-document-lang` | | Establece el idioma de los documentos (spec/plan/tasks generados) |
+| `--set-commit-lang` | `-c` | Establece el idioma de los mensajes de commit |
+| `--list-langs` | | Lista todos los idiomas soportados |
+| `--auto-next` | | Conmuta/establece `workflow.auto_next` (la flag a secas conmuta; o pasa on/off) |
 
-Cada `--set-*-lang` actualiza una [dimension de idioma](../user-guide/i18n.md); cualquier dimension que no establezcas cae a `output`, luego a `en`.
+Cada `--set-*-lang` actualiza una [dimensión de idioma](../user-guide/i18n.md); cualquier dimensión que no establezcas cae a `output`, luego a `en`.

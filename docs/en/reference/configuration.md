@@ -14,11 +14,14 @@ language:
   interaction: "zh-CN"   # LLM dialogue + codexspec CLI output (optional → defaults to output)
   document: "en"         # Generated requirements/spec/plan/tasks (optional → defaults to output)
   commit: "en"           # Git commit messages (optional → defaults to output)
-  templates: "en"        # Template language (keep as "en")
+  templates: "en"        # Keep as "en"
 
 project:
-  ai: "claude"      # AI assistant
+  ai: "claude"
   created: "2025-02-15"
+
+workflow:
+  auto_next: false       # Auto-advance between workflow stages (opt-in)
 ```
 
 ## Language Settings
@@ -59,10 +62,37 @@ Template language. Should remain as `"en"` for compatibility.
 
 ### `project.ai`
 
-The AI assistant being used. Currently supports:
+The AI assistant being used. Controls which agent context files `codexspec init` lays down:
 
-- `claude` (default)
+- `claude` (default) — writes `CLAUDE.md` (and `.claude/commands/`).
+- `codex` — writes `AGENTS.md` and `.agents/skills/` instead.
+- `both` — writes all of the above so the project is ready for both Claude Code and Codex CLI.
+
+`CLAUDE.md` is always created (so the project stays usable from Claude Code); `AGENTS.md` and `.agents/skills/` are created only when `project.ai` is `codex` or `both`.
 
 ### `project.created`
 
 Date when the project was initialized.
+
+## Workflow Settings
+
+### `workflow.auto_next`
+
+Controls whether the Requirements-First SDD pipeline **auto-advances** to the next workflow stage once the current stage passes, instead of requiring you to manually trigger the next command.
+
+- **Default:** `false` (opt-in). Only the literal value `true` enables auto-advance.
+- **Toggle / set with:** `codexspec config --auto-next` (bare flag toggles the current value; pass `on`/`off` to set it explicitly).
+
+**Chain:**
+
+```
+specify → generate-spec → spec-to-plan → plan-to-tasks → implement-tasks
+```
+
+**Pass gate:**
+
+- `generate-spec`, `spec-to-plan`, `plan-to-tasks`: the command's built-in review loop must report an Overall Status of `PASS` or `PASS_WITH_WARNINGS`.
+- `specify`: there is no review loop, so the gate is your explicit confirmation that requirements discovery is complete (the **final** stage summary, not each intermediate one).
+- `implement-tasks`: terminal stage — nothing auto-fires after it.
+
+When the review loop reports `NEEDS_REVISION` or `BLOCKED`, the chain halts and control returns to you. Before each advance the agent emits one notice line (for example: `auto_next: review passed → invoking /codexspec:spec-to-plan`).

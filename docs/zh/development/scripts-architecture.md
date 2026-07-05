@@ -167,15 +167,23 @@ Run `{SCRIPT}` from repo root and parse JSON for:
 
 #### 功能
 
-- 自动生成递增的 feature ID（001, 002, ...）
-- 创建 feature 目录和初始 spec.md
+- 自动生成 `YYYY-MMDD-HHMMxx` 格式的 feature ID
+- 创建 feature 目录和初始 requirements.md
 - 创建对应的 Git 分支
+- 要求短名称清洗后至少包含一个 ASCII 字母或数字
 
 #### 使用示例
 
 ```bash
-./create-new-feature.sh -n "user authentication" -i 001
+./create-new-feature.sh -n "user authentication"
 ```
+
+#### Feature naming contract
+
+- 不支持顺序式 `NNN-name` 标识符。时间戳命名是唯一支持的 feature 命名格式。
+- 旧版兼容性只适用于工件：当 `requirements.md` 缺失时，可使用已有的 `spec.md`。但这并不会启用其他目录或分支命名格式。
+- 完整的 feature 名标识一个工作区：`YYYY-MMDD-HHMMxx-short-name`。短名不同时，独立创建的工作区可能共享同一时间戳 ID。
+- 短 ID 查找仅为本地便利。若多个目录都匹配，解析会报告歧义，而不是选择或覆盖某个工作区。
 
 ## 5. 使用 Scripts 的命令
 

@@ -1,123 +1,123 @@
-# Estudo de Caso CodexSpec: Adicionando Funcionalidade de Geração de Descrição de PR
+# Estudo de caso do CodexSpec: adicionar um gerador de descrições de PR ao projeto
 
-> Este documento registra o processo completo de usar o kit de ferramentas CodexSpec para adicionar uma nova funcionalidade ao próprio CodexSpec, demonstrando a aplicação prática do Spec-Driven Development (SDD).
+> Este documento registra o processo completo de usar o conjunto de ferramentas do CodexSpec para adicionar uma nova funcionalidade ao próprio CodexSpec, demonstrando o Spec-Driven Development (SDD) na prática.
 
-## Visão Geral
+## Visão geral
 
-**Funcionalidade Objetivo**: Adicionar comando `/codexspec:pr` para gerar descrições estruturadas de PR do GitHub / MR do GitLab.
+**Funcionalidade-alvo**: adicionar o comando `/codexspec:pr`, que gera descrições estruturadas de PR do GitHub / MR do GitLab. (Veja a [entrada `/codexspec:pr` no README](https://github.com/Zts0hg/codexspec/blob/main/README.md) para o resumo voltado ao usuário do comando entregue.)
 
-**Fluxo de Desenvolvimento**: `specify → generate-spec → review-spec → clarify → spec-to-plan`
+**Fluxo de desenvolvimento**: `specify → generate-spec → review-spec → clarify → spec-to-plan`
 
-**Característica Principal**: Durante o desenvolvimento, problemas de requisitos foram descobertos e ajustados através do comando `clarify`, demonstrando a flexibilidade do SDD.
+**Característica-chave**: um problema de requisito surgiu no meio do fluxo e foi corrigido pelo comando `clarify`, ilustrando a flexibilidade do SDD. Este é um exemplo concreto do **Confirmation Gate** do CodexSpec — nada se torna vinculante até você confirmar explicitamente, e uma decisão anteriormente aceita pode ser reaberta e revertida no ponto de verificação do clarify.
 
 ---
 
-## Fase 1: Esclarecimento de Requisitos Iniciais (`/codexspec:specify`)
+## Etapa 1: esclarecimento inicial dos requisitos (`/codexspec:specify`)
 
-### Entrada Inicial do Usuário
+### Entrada inicial do usuário
 
 ```
-Eu gostaria de adicionar uma funcionalidade ao projeto: fornecer um novo comando relacionado ao Git para gerar informações de PR do GitHub precisas, detalhadas e em conformidade (ou informações de MR, para GitLab). Aqui estão dois conteúdos de comando PR que usei em outros projetos, fornecidos para sua referência.
+I want to add a feature to the project: a new Git-related command that generates accurate, detailed, and standards-compliant GitHub PR descriptions (or MR descriptions, for GitLab). Below are two PR commands I have used in other projects, provided for reference.
 
-[Exemplo de Referência 1 - Descrição Estruturada]
-Agora, por favor, atue como mantenedor do projeto, com base em todo o nosso trabalho até agora, escreva uma descrição clara de Pull Request para este commit.
-A descrição do PR precisa ser voltada para outros revisores da equipe, incluindo as seguintes partes:
-1. Contexto (Context)
-2. Plano de Implementação (Implementation)
-3. Testes (Testing)
-4. Como Verificar Manualmente (How to Verify)
+[Reference Example 1 - Structured Description]
+Now, acting as a project maintainer, based on all the work we have done so far, write a clear Pull Request description for this submission.
+The PR description should be aimed at the other reviewers on the team and include the following sections:
+1. Context
+2. Implementation
+3. Testing
+4. How to Verify
 
-[Exemplo de Referência 2 - Descrição Simples]
-Por favor, com base na diferença de código entre a branch atual e a branch origin/main, organize um título e descrição de Merge Request em conformidade com as especificações Git usando formato Markdown. (Use descrição em chinês)
+[Reference Example 2 - Simple Description]
+Based on the code diff between the current branch and origin/main, use Markdown to produce a Merge Request title and description that comply with Git conventions. (Describe in Chinese.)
 ```
 
-### Processo de Esclarecimento
+### Processo de esclarecimento
 
-**Q1: Idioma de Saída**
+**Q1: Idioma de saída**
 
-- Opções: Seguir configuração do projeto / Chinês / Detecção automática
-- **Escolha do Usuário**: Seguir configuração do projeto (atual: en)
+- Opções: Seguir a configuração do projeto / Chinês / Detecção automática
+- **Escolha do usuário**: Seguir a configuração do projeto (atual: en)
 
-**Q2: Suporte de Plataforma**
+**Q2: Suporte a plataformas**
 
-- Opções: Suportar GitHub e GitLab simultaneamente / Apenas GitHub / Detectar plataforma automaticamente
-- **Escolha do Usuário**: Detectar plataforma automaticamente
+- Opções: Suportar GitHub e GitLab / Apenas GitHub / Detectar plataforma automaticamente
+- **Escolha do usuário**: Detectar plataforma automaticamente
 
-**Q3: Conteúdo da Descrição do PR**
+**Q3: Conteúdo da descrição do PR**
 
 - Opções: Descrição estruturada detalhada / Descrição concisa / Template personalizável
-- **Escolha do Usuário**: Descrição estruturada detalhada (recomendado)
+- **Escolha do usuário**: Descrição estruturada detalhada (recomendado)
 
-**Q4: Condição de Disparo**
+**Q4: Condição de disparo**
 
-- Opções: Branch atual vs origin/main / Commits não enviados / Possibilidade de especificar branch alvo
-- **Escolha do Usuário**: Possibilidade de especificar branch alvo
+- Opções: Branch atual vs. origin/main / Commits ainda não enviados / Branch alvo configurável
+- **Escolha do usuário**: Branch alvo configurável
 
-**Q5: Fonte do Spec**
+**Q5: Fonte da spec**
 
-- Opções: Priorizar uso de spec.md / Apenas informações git / Combinar todas as fontes
-- **Escolha do Usuário**: Combinar todas as fontes (recomendado)
+- Opções: Privilegiar spec.md / Apenas informações do git / Combinar todas as fontes
+- **Escolha do usuário**: Combinar todas as fontes (recomendado)
 
 **Q6: Nomenclatura**
 
 - Opções: codexspec.pr / codexspec.create-pr / codexspec.create-mr
-- **Escolha do Usuário**: codexspec.pr (recomendado)
+- **Escolha do usuário**: codexspec.pr (recomendado)
 
-**Q7: Tratamento Sem Spec**
+**Q7: Tratamento quando não há spec**
 
-- Opções: Continuar gerando, pular contexto / Avisar usuário para criar spec primeiro / Alertar e continuar
-- **Escolha do Usuário**: Continuar gerando, pular contexto
+- Opções: Continuar gerando, pular Context / Pedir ao usuário para criar a spec antes / Avisar e continuar
+- **Escolha do usuário**: Continuar gerando, pular Context
 
-**Q8: Modo de Saída**
+**Q8: Método de saída**
 
 - Opções: Saída no terminal / Salvar em arquivo / Terminal + arquivo opcional
-- **Escolha do Usuário**: Terminal + arquivo opcional (recomendado)
+- **Escolha do usuário**: Terminal + arquivo opcional (recomendado)
 
-**Q9: Seções Padrão**
+**Q9: Seções padrão**
 
-- Opções: Contexto, Plano de Implementação, Testes, Como Verificar (selecionar todos)
-- **Escolha do Usuário**: Todas as quatro seções
+- Opções: Context, Implementation, Testing, How to Verify (todas selecionadas)
+- **Escolha do usuário**: As quatro seções
 
-**Q10: Parâmetros do Comando**
+**Q10: Parâmetros do comando**
 
-- **Escolha do Usuário**: Todos os parâmetros são opcionais
-  - `--target-branch`: Padrão origin/main
-  - `--output`: Quando não especificado, padrão apenas saída no terminal
-  - `--sections`: Quando não especificado, seguir padrão
-  - `--no-spec`: Pular busca do arquivo spec.md
+- **Escolha do usuário**: Todos os parâmetros são opcionais
+  - `--target-branch`: padrão origin/main
+  - `--output`: quando omitido, o padrão é apenas saída no terminal
+  - `--sections`: quando omitido, segue os padrões
+  - `--no-spec`: pula a busca por spec.md
 
-### Correção da Configuração de Idioma
+### Correção da configuração de idioma
 
-**Feedback do Usuário**: O idioma deve seguir a mesma prioridade que o comando `/commit-staged`, primeiro conforme parâmetro `language.commit` em `config.yml`, se não houver configuração `language.commit`, então conforme `language.output`.
+**Feedback do usuário**: o comportamento de idioma deveria corresponder ao do comando `/commit-staged` — honrar primeiro `language.commit` do `config.yml` e só recair para `language.output` quando `language.commit` não estiver definido.
 
-**Resumo de Requisitos Atualizado**:
+**Resumo de requisitos atualizado**:
 
 ```
-Prioridade de Idioma: language.commit > language.output > English (padrão)
+Language priority: language.commit > language.output > English (default)
 ```
 
 ---
 
-## Fase 2: Gerar Documento de Especificação (`/codexspec:generate-spec`)
+## Etapa 2: gerar o documento de especificação (`/codexspec:generate-spec`)
 
-### Estrutura do Documento Gerado
+### Estrutura do documento gerado
 
-O `spec.md` gerado contém as seguintes partes:
+O `spec.md` gerado contém as seguintes seções:
 
-- **Visão Geral**: Resumo da funcionalidade
+- **Visão geral**: visão geral da funcionalidade
 - **Objetivos**: 4 objetivos
-- **Histórias de Usuário**: 4 histórias de usuário com critérios de aceitação
-- **Requisitos Funcionais**: 8 requisitos (REQ-001 a REQ-008)
-- **Parâmetros do Comando**: 4 definições de parâmetros
-- **Requisitos Não-Funcionais**: 3 requisitos (performance, compatibilidade, tratamento de erros)
-- **Critérios de Aceitação (Casos de Teste)**: 10 casos de teste
-- **Casos de Borda**: 6 casos de borda
-- **Exemplo de Formato de Saída**: Exemplos de PR GitHub e MR GitLab
-- **Fora do Escopo**: Funcionalidades explicitamente excluídas
-- **Dependências**: Itens dependentes
-- **Comandos Relacionados**: Comandos relacionados
+- **Histórias de usuário**: 4 histórias de usuário com critérios de aceitação
+- **Requisitos funcionais**: 8 requisitos (REQ-001 a REQ-008)
+- **Parâmetros do comando**: 4 definições de parâmetros
+- **Requisitos não funcionais**: 3 requisitos (desempenho, compatibilidade, tratamento de erros)
+- **Critérios de aceitação (casos de teste)**: 10 casos de teste
+- **Casos de borda**: 6 casos de borda
+- **Exemplo de formato de saída**: exemplos de PR do GitHub e MR do GitLab
+- **Fora de escopo**: funcionalidades explicitamente excluídas
+- **Dependências**: dependências
+- **Comandos relacionados**: comandos relacionados
 
-### Resumo de Requisitos Principais
+### Trecho de requisito-chave
 
 ```markdown
 ### REQ-003: Language Configuration
@@ -129,311 +129,317 @@ The command shall determine output language in the following priority order:
 
 ---
 
-## Fase 3: Revisão de Especificação (`/codexspec:review-spec`)
+## Etapa 3: revisão da especificação (`/codexspec:review-spec`)
 
-### Resultado da Revisão
+### Resultado da revisão
 
-- **Status Geral**: ✅ Passou
-- **Pontuação de Qualidade**: 92/100
-- **Status de Prontidão**: Ready for Planning
+- **Status geral**: ✅ Pass
+- **Pontuação de qualidade**: 92/100
+- **Prontidão**: Ready for Planning
 
-### Problemas Encontrados
+### Problemas encontrados
 
 **Avisos (Should Fix)**:
 
-1. **SPEC-001**: Lógica de descoberta de arquivos de teste não especificada
-2. **SPEC-002**: Seleção de "modificação mais recente" quando múltiplos spec.md pode ser impreciso
+1. **SPEC-001**: a lógica de descoberta de arquivos de teste não está especificada explicitamente
+2. **SPEC-002**: quando há vários spec.md, escolher "modificado mais recentemente" pode ser impreciso
 
 **Sugestões (Nice to Have)**:
 
-1. Considerar adicionar parâmetro `--title`
-2. Adicionar requisito de validação de formato de saída
-3. Considerar suporte a padrão de URL GitHub Enterprise
+1. Considere adicionar um parâmetro `--title`
+2. Adicione um requisito de validação do formato de saída
+3. Considere suportar padrões de URL do GitHub Enterprise
 
-### Local de Salvamento do Relatório de Revisão
+### Local do relatório de revisão
 
 `.codexspec/specs/2026-0613-1200ab-pr-description-generator/review-spec.md`
 
----
-
-## Fase 4: Esclarecimento e Ajuste de Requisitos (`/codexspec:clarify`) ⚠️ Ponto de Virada Crítico
-
-### Problemas Descobertos
-
-**Feedback do Usuário**:
-> Eu percebi que há um problema com o uso do spec.md. Por exemplo, o usuário está na verdade fazendo uma alteração muito pequena, então não usou o fluxo de trabalho padronizado do codexspec specify->plan->tasks->implement, mas sim modificação direta via diálogo ou plan mode embutido do claude code, e depois de completar as modificações quer chamar individualmente o comando do codexspec para gerar informações de pr padronizadas. Nesta situação, usar diretamente o spec.md modificado mais recentemente pode usar conteúdo de spec.md anterior não relacionado a esta modificação.
-
-### Processo de Perguntas e Respostas de Esclarecimento
-
-**Q1: Estratégia de Seleção de Spec**
-
-**Contexto**: EC-004 atual determina "múltiplos spec.md → usar o modificado mais recentemente". Mas quando o usuário faz pequenas alterações pode não ter usado o fluxo SDD, o spec.md mais recente pode não estar relacionado à modificação atual.
-
-| Opção | Descrição |
-|-------|-----------|
-| A | Não usar spec.md por padrão, a menos que o usuário especifique explicitamente o parâmetro `--spec` |
-| B | Matching baseado no nome da branch |
-| C | Solicitar seleção ao usuário |
-| D | Matching baseado em alterações de arquivo |
-
-**Escolha do Usuário**: Opção A
-**Razão**: Evitar referência incorreta, parâmetro `--spec` permite usuários que precisam de integração SDD especificar explicitamente.
+Esta é uma **revisão baseada em evidências**: cada aviso e sugestão acima está vinculado a uma lacuna concreta e identificável na spec, e os itens consultivos (Nice to Have) não afetam a aceitação nem disparam alterações automáticas.
 
 ---
 
-**Q2: Estratégia de Extração de Conteúdo do Spec**
+## Etapa 4: esclarecimento e ajuste de requisitos (`/codexspec:clarify`) — ponto de virada crítico
 
-**Contexto**: Quando o usuário usa `--spec`, se a estrutura do spec.md estiver incompleta, o que fazer?
+### Problema descoberto
+
+**Feedback do usuário**:
+> Percebi que há um problema com o uso do spec.md. Por exemplo, o usuário pode, na verdade, estar fazendo uma alteração muito pequena, então não seguiu o fluxo padronizado do CodexSpec de specify → plan → tasks → implement. Em vez disso, fez alterações diretamente por conversação ou pelo modo plan embutido do Claude Code e, ao terminar, quer invocar um comando do CodexSpec separadamente para gerar uma descrição de PR em conformidade com os padrões. Nesse caso, usar por padrão o spec.md modificado mais recentemente pode puxar conteúdo de um spec.md anterior que nada tem a ver com essa alteração.
+
+É o **Confirmation Gate** em ação: a decisão anterior ("usar por padrão o spec.md modificado mais recentemente") havia sido registrada, mas ainda não era vinculante no sentido de irreversível — o usuário a reabriu no ponto de verificação do clarify com novas informações sobre um padrão de uso real, e o padrão antes aceito foi revertido.
+
+### Processo de perguntas e respostas do esclarecimento
+
+**Q1: Estratégia de seleção da spec**
+
+**Contexto**: o atual EC-004 diz "vários spec.md → usar o modificado mais recentemente". Mas quando o usuário faz uma pequena alteração sem seguir o fluxo de SDD, o spec.md mais recente pode não ter relação com a alteração atual.
 
 | Opção | Descrição |
-|-------|-----------|
-| A | Melhor esforço de extração, pular partes ausentes |
-| B | Alertar e pular Context |
-| C | Exigir estrutura completa, senão erro |
+|--------|-------------|
+| A | Não usar spec.md por padrão, a menos que o usuário passe `--spec` explicitamente |
+| B | Casar pelo nome da branch |
+| C | Pedir ao usuário para escolher |
+| D | Casar pelas alterações de arquivos |
 
-**Escolha do Usuário**: Opção A
-**Razão**: Evitar bloqueio do fluxo de trabalho devido a problemas de formato spec.
+**Escolha do usuário**: Opção A
+**Motivo**: evita referências incorretas; o parâmetro `--spec` permite que usuários que querem integração com SDD optem explicitamente.
 
 ---
 
-**Q3: Descoberta de Arquivos de Teste**
+**Q2: Estratégia de extração de conteúdo da spec**
 
-**Contexto**: Como descobrir arquivos de teste para a seção Testing?
+**Contexto**: quando o usuário passa `--spec`, o que acontece se a estrutura do spec.md estiver incompleta?
 
 | Opção | Descrição |
-|-------|-----------|
-| A | Padrões de diretório comuns (tests/, test/) |
-| B | Heurística agnóstica de linguagem (diretório + padrão de nome de arquivo) |
-| C | Não descobrir ativamente, apenas inferir de mensagens de commit |
+|--------|-------------|
+| A | Extração por melhor esforço, pulando seções ausentes |
+| B | Avisar e pular Context |
+| C | Exigir estrutura completa; caso contrário, erro |
 
-**Escolha do Usuário**: Opção B
-**Razão**: Cobrir múltiplas estruturas de projeto de diferentes linguagens.
+**Escolha do usuário**: Opção A
+**Motivo**: evita que um problema de formato da spec bloqueie o fluxo de trabalho.
 
 ---
 
-**Q4: Geração de Título do PR**
+**Q3: Descoberta de arquivos de teste**
 
-**Contexto**: Como o título do PR deve ser gerado?
+**Contexto**: como a seção Testing deveria descobrir arquivos de teste?
 
 | Opção | Descrição |
-|-------|-----------|
-| A | Prioridade de análise do nome da branch |
-| B | Prioridade da primeira mensagem de commit |
-| C | Geração combinada (git diff + nome da branch + mensagem de commit) |
+|--------|-------------|
+| A | Padrões comuns de diretório (tests/, test/) |
+| B | Heurísticas independentes de linguagem (diretório + padrões de nome de arquivo) |
+| C | Sem descoberta ativa; inferir apenas das mensagens de commit |
 
-**Escolha do Usuário**: Opção C
-**Razão do Usuário**: O primeiro commit pode ser apenas uma pequena parte das alterações; nome da branch requer altos padrões de nomenclatura. Como há muita informação git e code changes para referenciar, análise combinada é mais precisa.
+**Escolha do usuário**: Opção B
+**Motivo**: cobre diversas estruturas de projeto em diferentes linguagens.
 
 ---
 
-**Q5: Geração de Comandos de Verificação**
+**Q4: Geração do título do PR**
 
-**Contexto**: Como gerar comandos de verificação para a seção "How to Verify"?
+**Contexto**: como o título do PR deveria ser gerado?
 
 | Opção | Descrição |
-|-------|-----------|
-| A | Template genérico |
+|--------|-------------|
+| A | Primeiro, parsing do nome da branch |
+| B | Primeiro, a mensagem de commit inicial |
+| C | Síntese (git diff + nome da branch + mensagens de commit) |
+
+**Escolha do usuário**: Opção C
+**Motivo do usuário**: o primeiro commit pode representar apenas uma fatia pequena da alteração, e nomes de branch pressupõem disciplina forte de nomenclatura. Tendo informação substantiva do git e alterações de código disponíveis para referência, uma análise sintetizada é mais precisa.
+
+---
+
+**Q5: Geração do comando de verificação**
+
+**Contexto**: como a seção "How to Verify" deveria gerar comandos de verificação?
+
+| Opção | Descrição |
+|--------|-------------|
+| A | Templates genéricos |
 | B | Detecção de projeto (pyproject.toml → pytest, package.json → npm test) |
-| C | Inferir de mensagens de commit |
+| C | Inferir das mensagens de commit |
 
-**Escolha do Usuário**: Opção B
-**Razão**: Detecção de projeto pode gerar comandos de verificação mais práticos.
-
----
-
-### Resumo da Sessão de Esclarecimento
-
-| Questão | Decisão | Impacto |
-|---------|---------|---------|
-| Estratégia de Seleção de Spec | Opt-in via `--spec` | REQ-007, EC-004, Tabela de Parâmetros |
-| Extração de Conteúdo de Spec | Melhor esforço de extração | REQ-005b, EC-004c |
-| Descoberta de Arquivos de Teste | Heurística agnóstica de linguagem | REQ-006b |
-| Geração de Título de PR | Análise combinada | REQ-008a |
-| Geração de Comandos de Verificação | Detecção de arquivos do projeto | REQ-010 |
-
-### Mudança Principal: Inversão de Lógica de Parâmetros
-
-```
-Design Original: --no-spec (pular spec)
-Novo Design: --spec (habilitar spec, opt-in)
-```
+**Escolha do usuário**: Opção B
+**Motivo**: a detecção de projeto produz comandos de verificação mais práticos.
 
 ---
 
-## Fase 5: Plano de Implementação Técnica (`/codexspec:spec-to-plan`)
+### Resumo da sessão de esclarecimento
 
-### Resumo do Plano
+| Pergunta | Decisão | Impacto |
+|----------|----------|--------|
+| Estratégia de seleção da spec | Opt-in via `--spec` | REQ-007, EC-004, tabela de parâmetros |
+| Extração de conteúdo da spec | Extração por melhor esforço | REQ-005b, EC-004c |
+| Descoberta de arquivos de teste | Heurísticas independentes de linguagem | REQ-006b |
+| Geração do título do PR | Análise sintetizada | REQ-008a |
+| Geração do comando de verificação | Detecção de arquivos do projeto | REQ-010 |
 
-**Método de Implementação**: Arquivo template Markdown (consistente com `/codexspec:commit-staged`)
+### Mudança-chave: inversão da lógica de parâmetros
 
-**Sem Novas Dependências** - Funcionalidade implementada via template de slash command, não requer código Python.
+```
+Original design: --no-spec (skip spec)
+New design:      --spec (enable spec, opt-in)
+```
 
-### Resumo de Decisões Técnicas
+Essa inversão é a ilustração mais clara do Confirmation Gate neste estudo de caso: um padrão originalmente "vinculante" (`--no-spec`, ou seja, spec ligada por padrão) foi reaberto, revertido e reconfirmado como opt-in assim que o usuário trouxe um fluxo de trabalho real que ele teria quebrado.
 
-| Decisão | Escolha | Razão |
-|---------|---------|-------|
-| Método de Implementação | Template Markdown | Consistente com comandos existentes, fácil de manter |
-| Prioridade de Idioma | commit > output > en | Consistente com comando `/commit-staged` |
-| Detecção de Plataforma | Parsing de Remote URL | Simples e confiável |
-| Integração com Spec | Opt-in (`--spec`) | Evitar referência incorreta |
-| Extração de Conteúdo | Melhor esforço | Não bloquear fluxo de trabalho |
-| Descoberta de Testes | Padrão de diretório + nome de arquivo | Agnóstico de linguagem |
-| Geração de Título | Análise combinada | Mais preciso |
-| Detecção de Comando | Detecção de arquivos do projeto | Mais prático |
-| Modo de Saída | Terminal primeiro, arquivo opcional | Flexível |
+---
 
-### Fases de Implementação
+## Etapa 5: plano técnico de implementação (`/codexspec:spec-to-plan`)
 
-1. **Fase 1**: Criação de template (YAML frontmatter, configuração de idioma, contexto Git)
-2. **Fase 2**: Funcionalidade principal (integração Spec, descoberta de testes, detecção de comando, geração de título)
-3. **Fase 3**: Tratamento de casos de borda
-4. **Fase 4**: Testes
-5. **Fase 5**: Atualização de documentação
+### Visão geral do plano
 
-### Lista de Arquivos
+**Abordagem de implementação**: arquivo de template Markdown (consistente com `/codexspec:commit-staged`)
 
-**Criar**:
+**Sem novas dependências** — a funcionalidade é entregue por meio de um template de slash command e não exige código Python.
+
+### Resumo das decisões técnicas
+
+| Decisão | Escolha | Motivo |
+|----------|--------|--------|
+| Abordagem de implementação | Template Markdown | Consistente com comandos existentes, fácil de manter |
+| Prioridade de idioma | commit > output > en | Consistente com `/commit-staged` |
+| Detecção de plataforma | Parsing da remote URL | Simples e confiável |
+| Integração com spec | Opt-in (`--spec`) | Evita referências incorretas |
+| Extração de conteúdo | Melhor esforço | Não bloqueia o fluxo de trabalho |
+| Descoberta de testes | Padrões de diretório + nome de arquivo | Independente de linguagem |
+| Geração do título | Análise sintetizada | Mais precisa |
+| Detecção de comandos | Detecção de arquivos do projeto | Mais prática |
+| Modo de saída | Terminal primeiro, arquivo opcional | Flexível |
+
+### Fases de implementação
+
+1. **Fase 1**: criação do template (YAML frontmatter, configuração de idioma, contexto Git)
+2. **Fase 2**: funcionalidade central (integração com spec, descoberta de testes, detecção de comandos, geração de título)
+3. **Fase 3**: tratamento de casos de borda
+4. **Fase 4**: testes
+5. **Fase 5**: atualizações de documentação
+
+### Lista de arquivos
+
+**Criados**:
 
 - `templates/commands/pr.md`
 
-**Modificar**:
+**Modificados**:
 
-- `CLAUDE.md` - Adicionar descrição do comando
-- `README.md` - Adicionar comando à lista
+- `CLAUDE.md` - Adicionar a descrição do comando
+- `README.md` - Adicionar o comando à lista
 
-**Testar**:
+**Testes**:
 
 - `tests/test_pr_template.py`
 
 ---
 
-## Diagrama de Fluxo Completo
+## Diagrama completo do fluxo
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                         Fluxo de Desenvolvimento SDD CodexSpec           │
+│                   Fluxo de desenvolvimento SDD do CodexSpec              │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:specify                                                      │
 │  ├─ Esclarecer requisitos via perguntas e respostas                      │
-│  ├─ Usuário forneceu exemplos de referência                              │
-│  └─ 10 questões, cobrindo idioma, plataforma, conteúdo, parâmetros etc   │
+│  ├─ Usuário fornece exemplos de referência                               │
+│  └─ 10 perguntas cobrindo idioma, plataforma, conteúdo, parâmetros etc. │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:generate-spec                                                │
-│  ├─ Gerar spec.md completo                                               │
+│  ├─ Gera um spec.md completo                                             │
 │  ├─ 4 histórias de usuário, 8 requisitos funcionais, 10 casos de teste   │
-│  └─ Salvar em .codexspec/specs/2026-0613-1200ab-pr-description-generator/spec.md      │
+│  └─ Salvo em .codexspec/specs/2026-0613-1200ab-pr-description-generator/spec.md │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:review-spec                                                  │
 │  ├─ Pontuação de qualidade: 92/100                                       │
-│  ├─ Encontrados 2 avisos (descoberta de arquivos teste, múltiplos spec)  │
-│  └─ Status: Passou, pode entrar na fase de planejamento                  │
+│  ├─ 2 avisos encontrados (descoberta de testes, múltiplas specs)         │
+│  └─ Status: Pass, pode prosseguir para o planejamento                    │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec:clarify  ⚠️ Ajuste Crítico                                   │
-│  ├─ Usuário descobriu problema de cenário de uso real                    │
-│  ├─ 5 questões de esclarecimento, todas respondidas                      │
-│  ├─ Mudança principal: --no-spec → --spec (opt-in)                       │
-│  └─ Novos 5 requisitos (REQ-005b, 006b, 008a, 010, atualização 007)      │
+│  /codexspec:clarify  (Ajuste crítico)                                    │
+│  ├─ Usuário traz um problema de uso real                                 │
+│  ├─ 5 perguntas de esclarecimento, todas respondidas                     │
+│  ├─ Mudança-chave: --no-spec → --spec (opt-in)                           │
+│  └─ 5 requisitos adicionados (REQ-005b, 006b, 008a, 010, atualização do 007) │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:spec-to-plan                                                 │
-│  ├─ Atualizar plano de implementação técnica                             │
-│  ├─ 9 decisões técnicas, incluindo 5 novas decisões                      │
+│  ├─ Atualiza o plano técnico de implementação                            │
+│  ├─ 9 decisões técnicas, incluindo 5 novas                               │
 │  ├─ 5 fases de implementação                                             │
-│  └─ Salvar em .codexspec/specs/2026-0613-1200ab-pr-description-generator/plan.md      │
+│  └─ Salvo em .codexspec/specs/2026-0613-1200ab-pr-description-generator/plan.md │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  Próximos Passos (não completados nesta sessão)                          │
-│  ├─ /codexspec:review-plan - Validar qualidade do plano                  │
+│  Etapas seguintes (não concluídas nesta sessão)                          │
+│  ├─ /codexspec:review-plan - Validar a qualidade do plano                │
 │  ├─ /codexspec:plan-to-tasks - Decompor em tarefas executáveis           │
-│  └─ /codexspec:implement-tasks - Executar implementação                  │
+│  └─ /codexspec:implement-tasks - Executar a implementação                │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Principais Pontos de Aprendizado
+## Principais aprendizados
 
-### 1. Valor da Fase de Esclarecimento
+### 1. O valor da etapa clarify
 
-Este caso demonstra o papel crítico do comando `clarify`:
+Este caso mostra o papel central do comando `clarify`:
 
-- **Usuário descobriu problemas reais durante o uso** - Risco de uso indevido de spec.md em cenários de pequenas alterações
-- **Resolveu falhas de design através de perguntas e respostas de esclarecimento** - Mudança de detecção automática para modo opt-in
-- **Mudanças de requisitos registradas sistematicamente** - Todas as mudanças salvas na seção Clarifications do spec.md
+- **O usuário descobre um problema real durante o uso** — o risco de usar spec.md indevidamente em cenários de alteração pequena
+- **Uma falha de design é resolvida por perguntas e respostas de esclarecimento** — passagem de detecção automática para opt-in
+- **Mudanças de requisito são registradas sistematicamente** — todas as mudanças ficam salvas na seção Clarifications do spec.md
 
-### 2. Flexibilidade do Fluxo SDD
+### 2. Flexibilidade do fluxo SDD
 
-- Não é um fluxo linear, pode retornar e ajustar em qualquer fase
-- `clarify` pode ser inserido após `review-spec`, antes de `spec-to-plan`
-- Documentos de especificação e plano técnico são atualizados para refletir mudanças
+- Não é um fluxo linear; é possível retornar e ajustar em qualquer etapa
+- `clarify` pode ser inserido após `review-spec` e antes de `spec-to-plan`
+- Tanto o documento de especificação quanto o plano técnico são atualizados para refletir a mudança
 
-### 3. Evolução do Design de Parâmetros
+### 3. Evolução do design de parâmetros
 
 ```
-Design Inicial:
-  --no-spec: Pular spec.md (usar por padrão)
+Initial design:
+  --no-spec: skip spec.md (used by default)
 
-Design Final:
-  --spec: Habilitar spec.md (não usar por padrão)
+Final design:
+  --spec: enable spec.md (not used by default)
 ```
 
-Esta mudança reflete a transição de design de "fluxo de trabalho SDD padrão" para "suporte a fluxo de trabalho não-SDD", tornando a ferramenta mais versátil.
+Essa mudança reflete uma transição de design de "fluxo SDD por padrão" para "também suportar fluxos não-SDD", tornando a ferramenta mais versátil.
 
-### 4. Produção de Documentos
+### 4. Documentos produzidos
 
-| Fase | Arquivo Produzido | Conteúdo |
-|------|-------------------|----------|
+| Etapa | Arquivo de saída | Conteúdo |
+|-------|-------------|---------|
 | generate-spec | spec.md | Documento de especificação completo |
 | review-spec | review-spec.md | Relatório de revisão de qualidade |
-| clarify | (atualiza spec.md) | Registro de esclarecimento + atualização de requisitos |
-| spec-to-plan | plan.md | Plano de implementação técnica |
+| clarify | (atualiza spec.md) | Registros de esclarecimento + atualizações de requisitos |
+| spec-to-plan | plan.md | Plano técnico de implementação |
 
 ---
 
-## Apêndice: Referência Rápida de Uso de Comandos
+## Apêndice: referência rápida de comandos
 
 ```bash
-# 1. Esclarecimento de requisitos iniciais
+# 1. Esclarecimento inicial dos requisitos
 /codexspec:specify
 
-# 2. Gerar documento de especificação
+# 2. Gerar o documento de especificação
 /codexspec:generate-spec
 
-# 3. Revisar qualidade da especificação
+# 3. Revisar a qualidade da especificação
 /codexspec:review-spec
 
-# 4. Esclarecer/ajustar requisitos (opcional, usar após descobrir problemas)
-/codexspec:clarify [descrição do problema]
+# 4. Esclarecer/ajustar requisitos (opcional; use quando um problema for encontrado)
+/codexspec:clarify [issue description]
 
-# 5. Gerar plano técnico
+# 5. Gerar o plano técnico
 /codexspec:spec-to-plan
 
-# 6. Revisar qualidade do plano (opcional)
+# 6. Revisar a qualidade do plano (opcional)
 /codexspec:review-plan
 
 # 7. Decompor em tarefas
 /codexspec:plan-to-tasks
 
-# 8. Executar implementação
+# 8. Executar a implementação
 /codexspec:implement-tasks
 ```
 
 ---
 
-*Este documento foi gerado automaticamente pelo fluxo de trabalho SDD CodexSpec, registrando o processo real de diálogo de desenvolvimento.*
+*Este documento foi gerado pelo fluxo de trabalho SDD do CodexSpec e registra uma conversa real de desenvolvimento.*

@@ -14,25 +14,25 @@ codexspec init [PROJECT_NAME] [OPTIONS]
 
 | 参数 | 描述 |
 |------|------|
-| `PROJECT_NAME` | 新项目目录的名称（使用 `.` 或 `--here` 指代当前目录） |
+| `PROJECT_NAME` | 新项目目录的名称（用 `.` 或 `--here` 指代当前目录） |
 
 **选项：**
 
 | 选项 | 简写 | 描述 |
 |------|------|------|
 | `--here` | `-h` | 在当前目录初始化 |
-| `--ai` | `-a` | 要使用的 AI 助手（默认：claude） |
-| `--lang` | `-l` | 输出（基础）语言；interaction/document/commit 在未设置时回退到该语言（如 en、zh-CN、ja） |
+| `--ai` | `-a` | 要使用的 AI 助手：`claude`、`codex` 或 `both`（默认：claude） |
+| `--lang` | `-l` | 输出（基础）语言；interaction/document/commit 在未设置时回退到它（如 en、zh-CN、ja） |
 | `--interaction-lang` | | 交互语言（LLM 对话 + `codexspec` CLI 输出）；覆盖 `--lang` |
 | `--document-lang` | | 文档语言（生成的 requirements/spec/plan/tasks）；覆盖 `--lang` |
 | `--commit-lang` | | 提交信息语言；覆盖 `--lang` |
-| `--force` | `-f` | 覆盖现有文件并自动确认提示；永不重新生成 `config.yml` |
-| `--no-git` | | 跳过 git 初始化 |
+| `--force` | `-f` | 覆盖现有文件并自动确认提示；绝不重新生成 `config.yml` |
+| `--no-git` | | 跳过 git 仓库初始化 |
 | `--debug` | `-d` | 启用调试输出 |
 
-`--lang` 设置 `output` 基础语言；`--interaction-lang`、`--document-lang` 和 `--commit-lang` 分别覆盖各自维度（各自回退到 `output`，再到 `en`）。完整模型请参见[国际化](../user-guide/i18n.md)。
+`--lang` 设置 `output` 基础语言；`--interaction-lang`、`--document-lang` 与 `--commit-lang` 分别覆盖各自的维度（各自回退到 `output`，再到 `en`）。完整模型见[国际化](../user-guide/i18n.md)。
 
-在 TTY 中首次运行 `init` 且未指定 `--lang`（也未同时指定全部三个维度标志）时会提示选择基础语言；在非 TTY 环境（CI/脚本）下默认为 `en` —— **完全非交互**。重新运行 `init` 会保留你未指定的任何语言键；`--force` 永不重新生成 `config.yml`。
+在 TTY 中首次运行 `init` 且未指定 `--lang`（也未同时指定全部三个维度标志）时会提示选择基础语言；在非 TTY 环境（CI/脚本）下默认为 `en`——**完全非交互**。重新运行 `init` 会保留你未显式指定的任何语言键；`--force` 绝不重新生成 `config.yml`。
 
 **示例：**
 
@@ -42,6 +42,10 @@ codexspec init my-project
 
 # 在当前目录初始化
 codexspec init . --ai claude
+
+# 一次性运行（无需安装）——为 Codex CLI 或 both 初始化
+uvx codexspec init . --ai codex
+uvx codexspec init . --ai both
 
 # 完全非交互：zh-CN 基础语言，英文提交信息
 codexspec init my-project --lang zh-CN --commit-lang en
@@ -90,5 +94,6 @@ codexspec config [OPTIONS]
 | `--set-document-lang` | | 设置文档语言（生成的 spec/plan/tasks） |
 | `--set-commit-lang` | `-c` | 设置提交信息语言 |
 | `--list-langs` | | 列出所有支持的语言 |
+| `--auto-next` | | 切换/设置 `workflow.auto_next`（裸标志切换；或传 on/off） |
 
 每个 `--set-*-lang` 更新一个[语言维度](../user-guide/i18n.md)；未设置的维度回退到 `output`，再到 `en`。

@@ -1,130 +1,143 @@
-# Flujo de Trabajo
+# Flujo de trabajo
 
-CodexSpec estructura el desarrollo en **puntos de control revisables** con validación humana en cada etapa.
+CodexSpec estructura el desarrollo en puntos de control revisables y, al mismo tiempo, preserva la intención confirmada del usuario entre sesiones. Se basa en **Requirements-First SDD**: primero los requisitos confirmados, y nada es vinculante hasta que tú lo confirmes de forma explícita. Defines y confirmas *qué* construir y *por qué* antes de decidir *cómo*.
 
-## Resumen del Flujo de Trabajo
+## Visión general del flujo de trabajo
 
-```
-┌──────────────────────────────────────────────────────────────────────────┐
-│                    Flujo de Trabajo de Colaboración Humano-AI CodexSpec  │
-├──────────────────────────────────────────────────────────────────────────┤
-│                                                                          │
-│  1. Constitution  ──►  Definir principios del proyecto                   │
-│         │                                                                │
-│         ▼                                                                │
-│  2. Specify  ───────►  Clarificar y guardar requirements.md              │
-│         │                                                                │
-│         ▼                                                                │
-│  3. Generate Spec  ─►  Crear documento spec.md                           │
-│         │               ✓ Revisión automática: genera review-spec.md     │
-│         ▼                                                                │
-│  4. Spec to Plan  ──►  Crear plan técnico                                │
-│         │               ✓ Revisión automática: genera review-plan.md     │
-│         ▼                                                                │
-│  5. Plan to Tasks  ─►  Generar tareas atómicas                           │
-│         │               ✓ Revisión automática: genera review-tasks.md    │
-│         ▼                                                                │
-│  6. Implement  ─────►  Ejecutar con flujo de trabajo TDD condicional     │
-│                                                                          │
-└──────────────────────────────────────────────────────────────────────────┘
+A nivel conceptual, Requirements-First SDD sustituye el bucle tradicional "Idea → Código → Depurar → Reescribir" por una cadena explícita de artefactos confirmados:
+
+```text
+Tradicional:   Idea → Código → Depurar → Reescribir
+SDD:           Idea → Requisitos Confirmados → Especificación → Plan → Tareas → Código
 ```
 
-## Por Qué Importa la Revisión
+En CodexSpec, esa cadena se convierte en una secuencia de puntos de control mediante slash commands, cada uno de los cuales produce un artefacto persistente con un marcador de revisión:
 
-| Sin Revisión | Con Revisión |
-|---------------|-------------|
-| AI hace suposiciones incorrectas | El humano detecta malas interpretaciones temprano |
-| Requisitos incompletos se propagan | Brechas identificadas antes de la implementación |
-| La arquitectura se desvía de la intención | Alineación verificada en cada etapa |
-| **Resultado: Retrabajo** | **Resultado: Correcto a la primera** |
-
-## Revisión Automática
-
-Cada comando de generación ahora **ejecuta automáticamente una revisión**:
-
-- `/codexspec:generate-spec` → invoca automáticamente `review-spec`
-- `/codexspec:spec-to-plan` → invoca automáticamente `review-plan`
-- `/codexspec:plan-to-tasks` → invoca automáticamente `review-tasks`
-
-Los informes de revisión se generan junto con los artefactos, permitiendo ver problemas inmediatamente.
-
-## Bucle de Calidad Iterativo
-
-Cuando se encuentran problemas en los informes de revisión, describe las correcciones en lenguaje natural y el sistema actualizará tanto el artefacto como el informe:
-
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│                    Bucle de Calidad Iterativo                         │
-├──────────────────────────────────────────────────────────────────────┤
-│                                                                       │
-│  Artefacto (spec/plan/tasks.md)                                       │
-│         │                                                             │
-│         ▼                                                             │
-│  Revisión automática  ───►  Informe de revisión (review-*.md)         │
-│         │                       │                                     │
-│         │                       ▼                                     │
-│         │                ¿Problemas encontrados?                       │
-│         │                       │                                     │
-│         │                 ┌─────┴─────┐                               │
-│         │                 │           │                               │
-│         │                Sí          No                               │
-│         │                 │           │                               │
-│         │                 ▼           ▼                               │
-│         │       Describir        Continuar al                         │
-│         │       corrección       siguiente paso                       │
-│         │       en conversación                                           │
-│         │                 │                                           │
-│         │                 ▼                                           │
-│         │       Actualizar simultáneamente:                            │
-│         │         • Artefacto (spec/plan/tasks.md)                     │
-│         │         • Informe de revisión (review-*.md)                  │
-│         │                 │                                           │
-│         └─────────────────┘                                           │
-│           (Repetir hasta estar satisfecho)                            │
-│                                                                       │
-│  Revisión manual: Ejecuta /codexspec:review-* en cualquier momento    │
-│  para obtener un análisis nuevo                                       │
-│                                                                       │
-└──────────────────────────────────────────────────────────────────────┘
+```text
+Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+                                                   │                         │                            │
+                                         Revisar especificación        Revisar plan                Revisar tareas
 ```
 
-**Cómo funciona**:
+`requirements.md` persiste el resultado de las discusiones de requisitos. Registra necesidades, restricciones, decisiones, exclusiones, preguntas abiertas, evidencia del usuario y un registro de confirmación.
 
-1. **Revisión automática**: Cada comando de generación ejecuta automáticamente la revisión correspondiente
-2. **Informe de revisión**: Genera archivos `review-*.md` que contienen los problemas encontrados
-3. **Corrección iterativa**: Describe qué necesita corrección en la conversación, el artefacto y el informe se actualizan juntos
-4. **Revisión manual**: Ejecuta `/codexspec:review-spec|plan|tasks` en cualquier momento para un análisis nuevo
+## Pasos del flujo de trabajo
 
-## Comandos Principales
+| Paso                              | Comando                      | Salida                       | Verificación humana |
+| --------------------------------- | ---------------------------- | ---------------------------- | ------------------- |
+| 1. Principios del proyecto        | `/codexspec:constitution`    | `constitution.md`            | Sí                  |
+| 2. Clarificación de requisitos    | `/codexspec:specify`         | `requirements.md`            | Sí                  |
+| 3. Generar especificación         | `/codexspec:generate-spec`   | `spec.md` + revisión auto    | Sí                  |
+| 4. Planificación técnica          | `/codexspec:spec-to-plan`    | `plan.md` + revisión auto    | Sí                  |
+| 5. Desglose de tareas             | `/codexspec:plan-to-tasks`   | `tasks.md` + revisión auto   | Sí                  |
+| 6. Análisis entre artefactos      | `/codexspec:analyze`         | Informe de análisis          | Sí                  |
+| 7. Implementación                 | `/codexspec:implement-tasks` | Código                       | -                   |
 
-| Etapa | Comando | Propósito |
-|-------|---------|---------|
-| 1 | `/codexspec:constitution` | Definir principios del proyecto |
-| 2 | `/codexspec:specify` | Clarificar, confirmar y guardar requirements.md |
-| 3 | `/codexspec:generate-spec` | Crear spec.md desde requirements.md confirmada (★ Revisión automática) |
-| - | `/codexspec:review-spec` | Invocado automáticamente, o revalidar manualmente |
-| 4 | `/codexspec:spec-to-plan` | Crear plan técnico (★ Revisión automática) |
-| - | `/codexspec:review-plan` | Invocado automáticamente, o revalidar manualmente |
-| 5 | `/codexspec:plan-to-tasks` | Desglosar en tareas (★ Revisión automática) |
-| - | `/codexspec:review-tasks` | Invocado automáticamente, o revalidar manualmente |
-| 6 | `/codexspec:implement-tasks` | Ejecutar implementación |
+Pasa un directorio de funcionalidad o una ruta de artefacto explícitos cuando exista más de una funcionalidad. Los comandos nunca eligen implícitamente el directorio más reciente.
 
-## Especificación en Dos Fases
+## Confirmation Gate
 
-### specify vs clarify
+**Los requisitos, especificaciones, planes y tareas se vuelven vinculantes únicamente tras una confirmación humana explícita.** CodexSpec nunca promueve en silencio un borrador a artefacto autoritativo: en cada punto de control se pide al usuario que confirme antes de que los comandos posteriores puedan tratarlo como fuente de verdad.
+
+### Autoridad y trazabilidad
+
+Cuando las fuentes entran en conflicto, los comandos usan este orden:
+
+1. Entradas confirmadas en `requirements.md`
+2. `spec.md`
+3. Reglas de constitución aplicables y hechos del repositorio
+4. `plan.md`
+5. `tasks.md`
+6. Buenas prácticas generales
+
+Los artefactos posteriores no pueden redefinir silenciosamente los anteriores. Los requisitos usan IDs estables, los ítems de especificación citan `Sources`, los planes y tareas citan `Covers`, y los conflictos no resueltos detienen la generación hasta que el usuario confirma. En otras palabras, **los requisitos confirmados son la autoridad de máxima prioridad**.
+
+Los directorios de funcionalidad heredados que solo contienen `spec.md` siguen siendo compatibles. Los comandos informan explícitamente de que la trazabilidad hacia la discusión original no está disponible.
+
+## Concepto clave: bucle iterativo de calidad
+
+Cada comando de generación incluye **revisión automática**. Los defectos verificados pueden corregirse y volverse a revisar como máximo dos rondas; las sugerencias consultivas se mantienen separadas y nunca disparan cambios automáticos.
+
+1. Revisa el informe.
+2. Describe en lenguaje natural los problemas a corregir.
+3. El sistema actualiza automáticamente especificaciones e informes de revisión.
+
+```mermaid
+%%{init: {
+  'theme': 'base',
+  'themeVariables': {
+    'lineColor': '#888888',
+    'primaryColor': '#2d2d2d',
+    'primaryTextColor': '#ffffff',
+    'primaryBorderColor': '#666666'
+  },
+  'flowchart': {
+    'curve': 'stepBefore',
+    'nodeSpacing': 50,
+    'rankSpacing': 40
+  }
+}}%%
+flowchart TB
+    classDef rectStyle fill:#2d2d2d,stroke:#666,stroke-width:1px,color:#fff,width:220px;
+    classDef diamondStyle fill:#3d3d3d,stroke:#888,stroke-width:2px,color:#fff;
+
+    A["Generar Spec/Plan/Tasks"]:::rectStyle --> B["Revisión automática"]:::rectStyle
+    B --> C{"¿Se encontraron problemas?"}:::diamondStyle
+
+    C -->|Defecto verificado| D["Corregir con evidencia"]:::rectStyle
+    D --> E["Actualizar artefacto + informe de revisión"]:::rectStyle
+
+    E --> B
+
+    C -->|No| F["Continuar al siguiente paso"]:::rectStyle
+
+    linkStyle 2,4 stroke:#aaa,stroke-width:1px;
+```
+
+## Modelo de revisión
+
+Las revisiones separan tres tipos de salida:
+
+- **Defectos de fidelidad**: conflicto con una fuente autoritativa u omisión de cobertura requerida.
+- **Defectos intrínsecos**: el artefacto es internamente contradictorio, no verificable o inviable.
+- **Advertencias de riesgo / oportunidades de diseño**: mejoras opcionales sin evidencia de un defecto actual.
+
+Cada defecto debe identificar su evidencia, ubicación, desajuste, impacto y remediación mínima. Los hallazgos con la misma causa raíz se fusionan. Las advertencias no afectan al estado, a la puntuación ni a las correcciones automáticas.
+
+El estado de revisión es:
+
+- `PASS`: no hay defectos críticos, advertencias ni menores.
+- `PASS_WITH_WARNINGS`: solo quedan defectos menores.
+- `NEEDS_REVISION`: queda una o más advertencias.
+- `BLOCKED`: un conflicto crítico impide continuar de forma fiable.
+
+La puntuación de compatibilidad se deriva de los mismos hallazgos clasificados, en lugar de deducciones fijas por sección de plantilla. El estado es autoritativo; la puntuación existe para integraciones que aún esperan un número.
+
+## Revisión automática acotada
+
+Los comandos de generación ejecutan automáticamente la revisión correspondiente. Esta es la disciplina de **revisión basada en evidencia** en acción: solo pueden reparar defectos respaldados por evidencia y volverse a revisar como máximo dos rondas. Se detienen antes si llega `PASS`, y se detienen para pedir entrada del usuario cuando:
+
+- una fuente autoritativa entra en conflicto con otra fuente;
+- una corrección cambiaría la intención confirmada;
+- el ítem restante es consultivo y no un defecto;
+- ya se han consumido dos rondas de reparación.
+
+Los comandos manuales `/codexspec:review-*` pueden ejecutarse en cualquier momento para obtener un informe nuevo.
+
+## specify frente a clarify
 
 | Aspecto | `/codexspec:specify` | `/codexspec:clarify` |
 |--------|----------------------|----------------------|
-| **Propósito** | Exploración inicial | Refinamiento iterativo |
-| **Cuándo** | No existe spec.md | spec.md existe, necesita llenar brechas |
-| **Entrada** | Tu idea inicial | spec.md existente |
-| **Salida** | Crea o actualiza requirements.md | Actualiza spec.md |
+| Propósito | Establecer y confirmar la intención inicial | Resolver huecos o ambigüedades |
+| Artefacto principal | `requirements.md` | `requirements.md` |
+| Gestión de la especificación | Se genera más tarde | Se sincroniza tras cambios confirmados |
+| Preguntas abiertas | Registradas sin promoción | Se actualizan solo tras confirmación del usuario |
 
-`requirements.md` es la fuente autoritativa para generar la especificación. Una ruta de funcionalidad explícita tiene prioridad; de lo contrario se usa la rama timestamp actual.
+## Conditional TDD
 
-## TDD Condicional
+CodexSpec usa **conditional TDD**: el orden test-first se aplica únicamente donde el plan, la constitución o el riesgo de implementación lo exigen. El trabajo de documentación y configuración puede implementarse directamente. Cada tarea debe producir un resultado verificable; no se exige que toque un único archivo.
 
-La implementación sigue TDD condicional:
+Para las tareas en las que aplica el orden test-first, la implementación sigue el bucle Red → Green → Verify → Refactor:
 
-- **Tareas de código**: Test-first (Red → Green → Verify → Refactor)
-- **Tareas no testeables** (docs, config): Implementación directa
+- **Tareas de código**: test-first: escribe una prueba que falle (Red), hazla pasar (Green), verifica el comportamiento (Verify) y luego refina la implementación sin cambiar el comportamiento (Refactor).
+- **Tareas no testeables** (docs, configuración): implementación directa, con el resultado verificado frente al resultado declarado de la tarea en lugar de mediante una prueba unitaria.
