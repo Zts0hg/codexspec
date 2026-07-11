@@ -53,7 +53,7 @@ Parse `$ARGUMENTS` to determine execution mode:
 
 ### Mode A: No Arguments - Present Options
 
-**IMPORTANT**: Use the `AskUserQuestion` tool to present structured choices.
+**IMPORTANT**: Use the host agent's structured-question tool (e.g., `AskUserQuestion` or `request_user_input`) to present structured choices.
 
 ```json
 {
@@ -77,6 +77,8 @@ Parse `$ARGUMENTS` to determine execution mode:
   }]
 }
 ```
+
+> **Note**: The field schema above follows the `AskUserQuestion` convention. Under `request_user_input`, each question additionally requires an `id` (snake_case) and accepts 2–3 options — follow the host tool's actual schema rather than copying this example verbatim.
 
 **After user responds:**
 

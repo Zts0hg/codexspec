@@ -67,7 +67,7 @@ To create a new configuration, run `/codexspec:config` without arguments.
 
 ### Step 3: Interactive Mode (Configuration Exists)
 
-If configuration exists and no `--view` flag, present the management menu using `AskUserQuestion`:
+If configuration exists and no `--view` flag, present the management menu using the host agent's structured-question tool (e.g., `AskUserQuestion` or `request_user_input`):
 
 ```json
 {
@@ -83,6 +83,8 @@ If configuration exists and no `--view` flag, present the management menu using 
   }]
 }
 ```
+
+> **Note**: The field schema above follows the `AskUserQuestion` convention. Under `request_user_input`, each question additionally requires an `id` (snake_case) and accepts 2–3 options — follow the host tool's actual schema rather than copying this example verbatim.
 
 Then handle each option:
 
