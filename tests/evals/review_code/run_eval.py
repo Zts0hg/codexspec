@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
@@ -90,6 +92,18 @@ def _write_files(root: Path, files: dict[str, str]) -> None:
         path = root / relative
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
+
+
+def _retry_remove_writable(function: Any, path: str, _exc: Any) -> None:
+    os.chmod(path, stat.S_IREAD | stat.S_IWRITE)
+    function(path)
+
+
+def _remove_tree(path: Path) -> None:
+    if sys.version_info >= (3, 12):
+        shutil.rmtree(path, onexc=_retry_remove_writable)
+    else:
+        shutil.rmtree(path, onerror=_retry_remove_writable)
 
 
 def _validate_case(data: dict[str, Any], source: Path) -> None:
@@ -219,7 +233,7 @@ def prepare_repository(case: Case, work_root: Path) -> tuple[Path, Path]:
 
     repo = work_root / case.case_id
     if repo.exists():
-        shutil.rmtree(repo)
+        _remove_tree(repo)
     work_root.mkdir(parents=True, exist_ok=True)
     _codexspec_init(repo)
     _git(repo, "init", "-b", "main")
