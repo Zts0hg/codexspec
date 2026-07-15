@@ -137,99 +137,145 @@ When encountering problems, create/update `issues.md` in the same directory as `
 
 After all tasks are implemented:
 
-- Run the full test suite.
-- Confirm the suite is green. This green state is the baseline for the Final
-  Code Review Loop; no auto-fix may regress it. If the suite is already red at
-  this point, stop and fix the implementation before reviewing.
+- Run targeted checks, every project-mandated check, and the full suite when
+  project instructions require it or shared-boundary impact demands it.
+- Run applicable deterministic checks for documentation and configuration.
+- Establish a green full-suite baseline before the Final Code Review Loop. No
+  repair may regress it. If required verification is red, incomplete, or unsafe
+  to execute, resolve that state before review or record the implementation as
+  blocked; do not ask the reviewer to turn an invalid baseline into success.
 
 ### 7. Final Code Review Loop
 
-After the baseline is green, review the implemented code and auto-fix verified
-defects. This mirrors the `review-spec` / `review-plan` / `review-tasks` loops
-the sibling generation commands run.
+After the baseline is green, use the strict defect gate to review and repair the
+complete implementation. Review output is untrusted until its machine envelope
+and evidence have been validated. The reviewer is review-only; this implementer
+owns verification and edits.
 
-#### 7.1 Determine the Review Target
+#### 7.1 Invoke the Complete Feature Gate
 
-Review only the analyzable code changed by this implementation, not the whole
-repository and not per task. Compute the candidate file set:
+Invoke exactly:
 
-```
-git diff --name-only $(git merge-base HEAD <main>)..HEAD
-git diff --name-only                       # uncommitted tracked changes
-git ls-files --others --exclude-standard   # untracked files
+```text
+/codexspec:review-code --feature <feature-dir>
 ```
 
-`<main>` is the project's default branch, resolved from `git.main_branches` in
-`.codexspec/config.yml` (default: `main`, `master`, `develop`).
+Replace `<feature-dir>` with the resolved workspace path. Do not pass `--audit`:
+an advisory scorecard is never a completion gate. Do not pass a narrowed
+selector (`--committed`, `--uncommitted`, or `--commit`) or paths. The default
+resolver target must be the complete feature target, including committed,
+staged, unstaged, and untracked non-ignored changes.
 
-Then filter the candidate set:
+Do not filter by extension or artifact class. Source, tests, documentation and
+configuration, schemas, scripts, workflows, dependency files, generated
+artifacts, renames, deletions, binaries, and CodexSpec artifacts all remain in
+scope. An empty Git target does not skip confirmed-obligation assessment.
 
-- Keep only analyzable source extensions: `.py .ts .tsx .js .jsx .go .rs .java
-  .kt .kts .rb .sh .bash .zsh .c .h .cpp .hpp .cc .cxx .cs .swift .php`.
-- Exclude `.codexspec/specs/` and generated/vendored paths (e.g. `dist/`,
-  lockfiles, `.venv/`).
+#### 7.2 Validate the Result Before Acting
 
-If the filtered set is empty (e.g. the implementation produced only docs,
-config, or assets), report "no code to review", skip this loop, and proceed to
-step 8.
+Locate exactly one `<review-code-result>` block and parse its body as one JSON
+object. Prose cannot override, repair, or supply missing machine data. Validate:
 
-Fallback: if git is unavailable or the current branch is not a feature branch
-(so the diff base cannot be determined), review the project's primary source
-directory as `/codexspec:review-code` would by default, and explicitly note the
-degraded fidelity (the review may include pre-existing code).
+- required fields `schema_version`, `mode`, `verdict`, `target`,
+  `requirements_coverage`, `verification`, `finding_counts`,
+  `coverage_gap_count`, `review_context`, and `reviewers` exist with known types
+  and enum values;
+- schema version `1` and `mode: defect` are exact;
+- target and feature context match this repository, invocation, and resolved
+  feature directory; the default selector represents the complete feature;
+- `review_context: isolated`, the primary reviewer is `complete`, and every
+  required specialist is present and `complete`;
+- human findings, counts, coverage gaps, verification commands, and envelope
+  values agree.
 
-#### 7.2 Invoke the Review
+Treat audit output, multiple or missing envelopes, malformed JSON, unsupported
+fields or enums, target mismatch, shared context, incomplete reviewer topology,
+or contradictory data as `INCONCLUSIVE`. Never infer success from an empty
+finding list or favorable prose.
 
-Invoke `/codexspec:review-code <filtered-paths>`.
+A successful envelope additionally requires `verdict: PASS`,
+`requirements_coverage.status: complete`, `verification.status: complete`, all
+P0-P3 counts are zero, and no blocking coverage gap. Any other state enters the
+repair, retry, or blocked path below.
 
-`/codexspec:review-code` is **review-only**; it produces findings and scores but
-does not edit code. Apply every fix **yourself**, under this command's tool
-scope (which includes `Edit`/`Write` and running the test suite via `Bash`).
+#### 7.3 Independently Verify Findings
 
-#### 7.3 Auto-Fix Scope
+For every reported P0-P3 finding, independently verify its trigger,
+selected-change attribution, impact, and binding obligation against raw code,
+artifacts, and deterministic evidence. Do not edit for an unverified finding,
+and do not accept or reject a finding because of reviewer confidence alone.
 
-- Auto-fix **CRITICAL, HIGH, and MEDIUM** findings only.
-- **LOW** (suggestion) findings are report-only; never auto-fix them.
-- A **MEDIUM** finding is auto-fixed only when it is grounded in
-  `.codexspec/memory/constitution.md` and the confirmed requirements/spec, and
-  it concerns **maintainability, readability, or testability**. Ungrounded or
-  purely stylistic MEDIUM findings are report-only.
-- Do not auto-fix advisories or design opportunities, and do not introduce any
-  new product decision.
+If evidence refutes a finding, record the finding identity and refutation. Do
+not edit. A fresh complete review may clear it; the current review remains
+non-PASS and cannot be declared successful by the implementer.
 
-#### 7.4 Test-Safe Fixes (never ship red)
+If verification requires a new product or architecture decision, stop and
+request that decision. Do not invent intent or weaken the requirement.
 
-Every fix must be test-safe. A fix that breaks tests is, by definition, an
-incorrect change — it is never shipped and never silently skipped.
+#### 7.4 Apply Test-Safe Repairs
 
-- **Functional defects** (logic, correctness, security): follow TDD — add a
-  failing test that reproduces the defect (red), apply the fix until that test
-  passes (green), then refactor while tests stay green.
-- **Non-functional fixes** (refactors for maintainability, readability,
-  testability): run the suite before and after the change. If the change turns
-  any test red, revert it, confirm the suite is green again, and re-attempt the
-  refactor.
-- If a fix cannot be made green after retry, treat it as **unresolved** and stop
-  (see 7.5).
+Apply only verified repairs:
 
-#### 7.5 Loop Bounds and Stop Conditions
+- For a functional defect, first add a reproducing regression test and observe
+  the expected failure. Then use red-green-refactor until the defect is fixed
+  while existing behavior remains green.
+- For documentation and non-code configuration defects, use the applicable
+  deterministic checks before and after the repair. Do not manufacture a code
+  test when the binding contract is non-code.
+- After each repair set, run the relevant targeted checks and all
+  project-mandated checks. Re-establish the green full-suite baseline before
+  another review.
+- If a repair regresses a check, undo only that repair, confirm the prior green
+  state, and retry from verified evidence. Never ship, hide, or defer a red
+  result.
 
-- Run at most **two** fix-and-review rounds. (The per-fix TDD retry in 7.4
-  happens within a round; the two-round limit bounds overall effort.)
-- Stop when a defect repeats, remains unresolved, or requires a user or
-  architecture decision.
-- After each green round, commit the fixes (see step 8).
+#### 7.5 Fresh Re-Review and Progress Guards
+
+After every green repair set, invoke the exact complete-feature command from
+7.1 with a fresh isolated reviewer. Do not provide previous findings,
+implementation reasoning, or repair conclusions to that reviewer. Revalidate
+the entire envelope and topology from scratch.
+
+Continue while substantive progress occurs: verified defects are repaired or a
+fresh review identifies new actionable defects that can be verified. Maintain
+stable finding identities and per-round records so these exact guards can be
+enforced:
+
+- stop without success when the same defect survives two verified fixes;
+- stop without success when two consecutive rounds make no substantive progress;
+- stop without success when a finding requires a new product or architecture decision;
+- stop without success when the same independently refuted false positive recurs.
+
+A transient `INCONCLUSIVE` cause such as a reviewer timeout or temporary tool
+failure may be retried without edits. Retry it up to two times. Reset the
+transient retry count only after a valid review result or a materially different
+cause. If the cause persists, is deterministic, or reflects missing evidence,
+remain `INCONCLUSIVE`; do not turn it into a finding or success.
+
+There is no fixed round count while substantive progress continues, but every
+guard above is mandatory. No finding may be deferred, waived, severity-filtered,
+or cleared by an audit score.
 
 #### 7.6 Terminal Status
 
-- If CRITICAL or HIGH defects remain unresolved after the maximum rounds, the
-  status is **"needs work"** — do not claim success.
-- Otherwise report the review outcome: scores, items fixed, items deferred, and
-  the final test status.
+Success requires a final valid `PASS` envelope from a fresh complete-feature
+review, with complete requirements and verification, isolated required reviewer
+topology, zero P0-P3 counts, no blocking coverage gaps, and a still-green
+baseline.
+
+Any `FAIL`, persistent `INCONCLUSIVE`, unresolved verified defect, repeated
+refuted finding, decision requirement, or no-progress guard is blocking. Preserve
+the report, envelope, reproduction/refutation evidence, attempted repairs, and
+test state. It must not be converted to success by prose, score, elapsed effort,
+or a commit.
 
 ### 8. Final Report and Commit
 
-- Commit any review-driven changes from step 7 that are not already committed.
-- Report the completion summary: files modified, review status (scores, items
-  fixed, items deferred, final test status), and the overall status (success or
-  "needs work").
+- Report completed tasks, files changed, verification commands and outcomes,
+  review rounds, verified repairs, refuted findings, unresolved evidence, and
+  the final envelope verdict.
+- Report success only under 7.6. Otherwise report `FAIL` or `INCONCLUSIVE` and
+  the exact blocking evidence.
+- Commits remain outside verdict logic. If the surrounding workflow calls for
+  a commit, create it only after the applicable checks are green; a commit must
+  never alter, replace, or imply the review verdict.
