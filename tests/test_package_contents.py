@@ -7,13 +7,11 @@ from pathlib import Path
 
 import pytest
 
-from codexspec import get_scripts_dir
-
 ROOT = Path(__file__).parent.parent
 
 
 def test_review_context_resolvers_exist_in_packaged_script_sources() -> None:
-    scripts = get_scripts_dir()
+    scripts = ROOT / "scripts"
 
     assert (scripts / "bash" / "review-context.sh").is_file()
     assert (scripts / "powershell" / "review-context.ps1").is_file()

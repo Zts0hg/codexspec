@@ -108,7 +108,6 @@ jobs:
       - name: Inspect package contents
         env:
           CODEXSPEC_DIST_DIR: dist
-          PYTHONPATH: src
         run: pytest tests/test_package_contents.py -q
 
       - name: Check package
