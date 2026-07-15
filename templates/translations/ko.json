@@ -141,8 +141,8 @@
     "description": "git diff와 선택적 spec.md 통합을 기반으로 구조화된 Pull Request (GitHub) 또는 Merge Request (GitLab) 설명 생성"
   },
   "review-code": {
-    "description": "모든 언어의 코드를 관용적 명확성, 정확성, 견고성, 아키텍처 및 헌법 정렬에 대해 검토",
-    "argument-hint": "검토할 소스 파일 또는 디렉토리 경로 (모든 언어)\n\n예시:\n- `src/` - 전체 소스 트리 검토\n- `src/components/Button.tsx` - 단일 파일 검토\n- `src/ tests/` - 여러 경로 검토"
+    "description": "선택한 변경을 엄격한 결함 게이트로 검토하거나 --audit로 경로 감사",
+    "argument-hint": "[--committed | --uncommitted | --commit <sha>] [--base <branch>] [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]... | --audit [paths...]"
   },
   "quick": {
     "description": "작은 변경을 위해 간결한 Requirements-First SDD 흐름을 실행합니다",

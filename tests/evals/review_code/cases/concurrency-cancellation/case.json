@@ -1,0 +1,32 @@
+{
+  "schema_version": "1",
+  "id": "concurrency-cancellation",
+  "description": "Worker ignores cancellation and can continue mutating shared state after shutdown.",
+  "risk_profiles": ["concurrency/lifecycle"],
+  "setup": {
+    "files": {
+      "src/worker.py": "class Worker:\n    def __init__(self):\n        self.running = True\n        self.items = []\n    def stop(self):\n        self.running = False\n    def handle(self, item):\n        self.items.append(item)\n",
+      "tests/test_worker.py": "from src.worker import Worker\n\ndef test_worker_records_items():\n    worker = Worker()\n    worker.handle('a')\n    assert worker.items == ['a']\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\nStopped workers must not process additional items.\n",
+      "spec.md": "# Spec\nCancellation state is checked before each mutation.\n",
+      "plan.md": "# Plan\nGuard lifecycle-sensitive handlers.\n",
+      "tasks.md": "# Tasks\n- [ ] Respect worker cancellation.\n"
+    }
+  },
+  "expect": {
+    "verdict": "FAIL",
+    "minimum_findings": [
+      {
+        "priority": "P2",
+        "contains": "after shutdown",
+        "aliases": ["stopped worker", "cancellation", "stop"]
+      }
+    ],
+    "forbidden_findings": ["style", "docstring"],
+    "profile_aliases": {
+      "concurrency/lifecycle": ["worker", "lifecycle", "cancellation", "stop", "shutdown"]
+    }
+  }
+}

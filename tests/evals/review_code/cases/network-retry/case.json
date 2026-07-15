@@ -1,0 +1,23 @@
+{
+  "schema_version": "1",
+  "id": "network-retry",
+  "description": "Network retry loop does not retry transient provider failures.",
+  "risk_profiles": ["network/provider behavior"],
+  "setup": {
+    "files": {
+      "src/client.py": "def fetch(provider):\n    return provider.request()\n",
+      "tests/test_client.py": "class Provider:\n    def request(self):\n        return 'ok'\n\ndef test_fetch_success():\n    from src.client import fetch\n    assert fetch(Provider()) == 'ok'\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\nTransient provider timeouts must be retried before surfacing failure.\n",
+      "spec.md": "# Spec\nRetry retryable network exceptions up to the configured limit.\n",
+      "plan.md": "# Plan\nAdd retry wrapper around provider calls.\n",
+      "tasks.md": "# Tasks\n- [ ] Implement provider retry behavior.\n"
+    }
+  },
+  "expect": {
+    "verdict": "FAIL",
+    "minimum_findings": [{"priority": "P2", "contains": "transient"}],
+    "forbidden_findings": ["unrelated coverage", "formatting-only"]
+  }
+}

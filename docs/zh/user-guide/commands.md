@@ -48,7 +48,7 @@
 
 | 命令 | 用途 |
 |---------|---------|
-| `/codexspec:review-code` | 评审任意语言代码（地道表达、正确性、健壮性、架构） |
+| `/codexspec:review-code` | 变更范围缺陷门禁；路径质量评分请使用 `--audit` |
 | `/codexspec:review-python-code` | 评审 Python 代码（PEP 8、类型安全、健壮性、宪法一致性） |
 | `/codexspec:review-react-code` | 评审 React/TypeScript 代码（组件架构、Hooks 规范、状态、性能） |
 
@@ -1071,12 +1071,44 @@ AI:  预览模式 - 不会执行提交
 
 ### `/codexspec:review-code`
 
-评审任意语言代码的地道表达、正确性、健壮性、架构，以及宪法对齐情况。
+将选定的 Git 变更作为合并前的严格缺陷门禁进行审查。默认目标包含完整特性差异；显式选择器可审查已提交、未提交或单个提交的证据，但不接受路径过滤。
+
+<!-- REVIEW-CODE-BREAKING: DEFAULT-GATE -->
+<!-- REVIEW-CODE-BREAKING: PATH-AUDIT -->
+
+**下一版本的破坏性变更：**
+
+- 默认命令现在是变更范围缺陷门禁，不再是宽泛的质量评分审计。
+- 不再接受位置路径参数。需要按路径执行建议性质的质量评分时，请显式使用 `--audit`。
+
+**缺陷门禁语法：**
+
+```text
+/codexspec:review-code
+/codexspec:review-code --committed [--base <branch>] [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code --uncommitted [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
+```
+
+门禁会清点目标中的全部工件，评估适用需求，并执行 Scope、Behavior、Risk 和 Verification 四个阶段。结果只能是 `PASS`、`FAIL` 或 `INCONCLUSIVE`。六个报告段落之后会附带一个机器可读的 `<review-code-result>` envelope。任何 P0-P3 缺陷都会得到 `FAIL`；缺少强制证据时得到 `INCONCLUSIVE`。
+
+```text
+你: /codexspec:review-code --feature .codexspec/specs/2026-0714-example
+
+AI:  ## Verdict
+     **PASS** — 必需的审查与验证全部完成，且没有发现缺陷。
+```
+
+<!-- REVIEW-CODE-AUDIT -->
+
+#### 路径质量审计
+
+显式 audit 分支按路径检查当前文件的完整内容，评估地道表达、正确性、健壮性、架构和宪法对齐情况。该评分仅供参考，不能作为 `implement-tasks` 的完成门禁。
 
 **语法：**
 
 ```
-/codexspec:review-code [path...]
+/codexspec:review-code --audit [paths...]
 ```
 
 **参数：**
@@ -1097,7 +1129,7 @@ AI:  预览模式 - 不会执行提交
 **示例：**
 
 ```text
-你: /codexspec:review-code src/
+你: /codexspec:review-code --audit src/
 
 AI:  # Code Review Report
 

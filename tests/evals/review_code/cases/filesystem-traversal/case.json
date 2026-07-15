@@ -1,0 +1,23 @@
+{
+  "schema_version": "1",
+  "id": "filesystem-traversal",
+  "description": "Download endpoint joins a user path without containing it to the allowed root.",
+  "risk_profiles": ["filesystem/path handling"],
+  "setup": {
+    "files": {
+      "src/downloads.py": "from pathlib import Path\nROOT = Path('/srv/files')\n\ndef open_download(name):\n    return (ROOT / name).read_text()\n",
+      "tests/test_downloads.py": "from src.downloads import ROOT\n\ndef test_root_is_configured():\n    assert str(ROOT).endswith('/files')\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\nDownloads must be restricted to the configured file root.\n",
+      "spec.md": "# Spec\nReject traversal and absolute path inputs.\n",
+      "plan.md": "# Plan\nValidate resolved paths against ROOT.\n",
+      "tasks.md": "# Tasks\n- [ ] Implement safe download path handling.\n"
+    }
+  },
+  "expect": {
+    "verdict": "FAIL",
+    "minimum_findings": [{"priority": "P1", "contains": "path traversal"}],
+    "forbidden_findings": ["missing docstring", "style"]
+  }
+}

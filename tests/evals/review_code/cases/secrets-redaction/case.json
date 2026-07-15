@@ -1,0 +1,23 @@
+{
+  "schema_version": "1",
+  "id": "secrets-redaction",
+  "description": "Error logger writes bearer tokens into persistent logs.",
+  "risk_profiles": ["secrets/injection"],
+  "setup": {
+    "files": {
+      "src/logging.py": "def format_error(headers, message):\n    return f\"{message} token={headers.get('Authorization')}\"\n",
+      "tests/test_logging.py": "from src.logging import format_error\n\ndef test_message_included():\n    assert 'boom' in format_error({}, 'boom')\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\nAuthorization secrets must never be written to logs.\n",
+      "spec.md": "# Spec\nRedact bearer tokens and credentials from error output.\n",
+      "plan.md": "# Plan\nAdd log redaction.\n",
+      "tasks.md": "# Tasks\n- [ ] Format provider errors safely.\n"
+    }
+  },
+  "expect": {
+    "verdict": "FAIL",
+    "minimum_findings": [{"priority": "P1", "contains": "token"}],
+    "forbidden_findings": ["missing type annotation", "style"]
+  }
+}

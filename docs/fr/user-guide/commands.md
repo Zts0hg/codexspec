@@ -48,7 +48,7 @@ Regroupées par catégorie, en miroir du catalogue du README. Au sein de chaque 
 
 | Commande | Objectif |
 |----------|----------|
-| `/codexspec:review-code` | Examiner du code dans n'importe quel langage (clarté idiomatique, correction, robustesse, architecture) |
+| `/codexspec:review-code` | Contrôle de défauts limité au changement ; score par chemin avec `--audit` |
 | `/codexspec:review-python-code` | Examiner du code Python (PEP 8, sécurité des types, robustesse, cohérence avec la constitution) |
 | `/codexspec:review-react-code` | Examiner du code React/TypeScript (architecture des composants, règles des Hooks, état, performance) |
 
@@ -1072,12 +1072,44 @@ AI:  Preview mode - no commit will be executed
 
 ### `/codexspec:review-code`
 
-Examine du code dans n'importe quel langage sous l'angle de la clarté idiomatique, de la correction, de la robustesse, de l'architecture et de l'alignement avec la constitution.
+Examine la modification Git sélectionnée comme un contrôle de défauts strict avant fusion. La cible par défaut comprend l'écart complet de la fonctionnalité ; les sélecteurs explicites choisissent les changements validés, non validés ou un commit unique, sans accepter de filtre de chemin.
+
+<!-- REVIEW-CODE-BREAKING: DEFAULT-GATE -->
+<!-- REVIEW-CODE-BREAKING: PATH-AUDIT -->
+
+**Changement incompatible dans la prochaine version :**
+
+- La commande par défaut devient un contrôle de défauts limité au changement, et non un score général de qualité.
+- Les chemins positionnels ne sont plus valides. Utilisez explicitement `--audit` pour le score consultatif de qualité par chemin.
+
+**Syntaxe du contrôle de défauts :**
+
+```text
+/codexspec:review-code
+/codexspec:review-code --committed [--base <branch>] [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code --uncommitted [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
+```
+
+Le contrôle inventorie tous les artefacts sélectionnés, évalue les exigences applicables et exécute les phases Scope, Behavior, Risk et Verification. Le verdict est `PASS`, `FAIL` ou `INCONCLUSIVE`. Les six sections du rapport sont suivies d'un unique envelope `<review-code-result>` lisible par machine. Tout défaut P0-P3 produit `FAIL` ; l'absence de preuve obligatoire produit `INCONCLUSIVE`.
+
+```text
+You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example
+
+AI:  ## Verdict
+     **PASS** — les revues et vérifications obligatoires sont terminées sans défaut.
+```
+
+<!-- REVIEW-CODE-AUDIT -->
+
+#### Audit de qualité par chemin
+
+La branche audit explicite examine le contenu actuel complet des fichiers pour la clarté idiomatique, la correction, la robustesse, l'architecture et l'alignement constitutionnel. Ce score est consultatif et ne peut pas terminer `implement-tasks`.
 
 **Syntaxe :**
 
 ```
-/codexspec:review-code [chemin...]
+/codexspec:review-code --audit [paths...]
 ```
 
 **Arguments :**
@@ -1098,7 +1130,7 @@ Examine du code dans n'importe quel langage sous l'angle de la clarté idiomatiq
 **Exemple :**
 
 ```text
-You: /codexspec:review-code src/
+You: /codexspec:review-code --audit src/
 
 AI:  # Code Review Report
 

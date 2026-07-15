@@ -1,0 +1,23 @@
+{
+  "schema_version": "1",
+  "id": "parsing-invalid-default",
+  "description": "Configuration parser silently treats invalid numeric input as unlimited retries.",
+  "risk_profiles": ["parsing/configuration"],
+  "setup": {
+    "files": {
+      "src/config.py": "def parse_retry(value):\n    try:\n        return int(value)\n    except ValueError:\n        return 999999\n",
+      "tests/test_config.py": "from src.config import parse_retry\n\ndef test_numeric_retry():\n    assert parse_retry('3') == 3\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\nInvalid retry configuration must be rejected with an actionable error.\n",
+      "spec.md": "# Spec\nThe parser must not substitute permissive defaults for invalid input.\n",
+      "plan.md": "# Plan\nAdd parser validation.\n",
+      "tasks.md": "# Tasks\n- [ ] Parse retry configuration safely.\n"
+    }
+  },
+  "expect": {
+    "verdict": "FAIL",
+    "minimum_findings": [{"priority": "P2", "contains": "invalid retry"}],
+    "forbidden_findings": ["pre-existing", "cosmetic"]
+  }
+}

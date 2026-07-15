@@ -345,9 +345,11 @@ class TestInitScripts:
         assert (scripts_dir / "common.sh").exists()
         assert (scripts_dir / "check-prerequisites.sh").exists()
         assert (scripts_dir / "create-new-feature.sh").exists()
+        assert (scripts_dir / "review-context.sh").exists()
 
         # Check PowerShell scripts are NOT copied
         assert not (scripts_dir / "common.ps1").exists()
+        assert not (scripts_dir / "review-context.ps1").exists()
 
     def test_init_copies_powershell_scripts_on_windows(
         self, isolated_runner: Path, runner: CliRunner, monkeypatch: pytest.MonkeyPatch
@@ -366,9 +368,11 @@ class TestInitScripts:
         assert (scripts_dir / "common.ps1").exists()
         assert (scripts_dir / "check-prerequisites.ps1").exists()
         assert (scripts_dir / "create-new-feature.ps1").exists()
+        assert (scripts_dir / "review-context.ps1").exists()
 
         # Check bash scripts are NOT copied
         assert not (scripts_dir / "common.sh").exists()
+        assert not (scripts_dir / "review-context.sh").exists()
 
     def test_init_scripts_content_preserved(self, isolated_runner: Path, runner: CliRunner) -> None:
         """init should preserve script content exactly."""
@@ -385,6 +389,32 @@ class TestInitScripts:
         if source_file.exists():
             dest_file = isolated_runner / "my-project" / ".codexspec" / "scripts" / source_file.name
             assert dest_file.read_text(encoding="utf-8") == source_file.read_text(encoding="utf-8")
+
+    @pytest.mark.parametrize(
+        ("platform", "source_relative", "installed_name"),
+        [
+            ("linux", Path("bash/review-context.sh"), "review-context.sh"),
+            ("win32", Path("powershell/review-context.ps1"), "review-context.ps1"),
+        ],
+    )
+    def test_init_preserves_review_context_resolver_content(
+        self,
+        isolated_runner: Path,
+        runner: CliRunner,
+        monkeypatch: pytest.MonkeyPatch,
+        platform: str,
+        source_relative: Path,
+        installed_name: str,
+    ) -> None:
+        """The project-local resolver must be byte-identical to its packaged source."""
+
+        monkeypatch.setattr(sys, "platform", platform)
+        result = runner.invoke(app, ["init", "my-project", "--no-git"])
+        assert result.exit_code == 0
+
+        source = get_scripts_dir() / source_relative
+        installed = isolated_runner / "my-project" / ".codexspec" / "scripts" / installed_name
+        assert installed.read_bytes() == source.read_bytes()
 
 
 class TestInitSubdirectoryStructure:

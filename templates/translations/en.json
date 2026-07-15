@@ -141,8 +141,8 @@
     "description": "Generate structured Pull Request (GitHub) or Merge Request (GitLab) descriptions based on git diff and optional spec.md integration"
   },
   "review-code": {
-    "description": "Review code in any language for idiomatic clarity, correctness, robustness, architecture, and constitution alignment",
-    "argument-hint": "Path to source file or directory to review (any language)\n\nExamples:\n- `src/` - Review entire source tree\n- `src/components/Button.tsx` - Review single file\n- `src/ tests/` - Review multiple paths"
+    "description": "Review a selected change as a strict defect gate, or audit paths with --audit",
+    "argument-hint": "[--committed | --uncommitted | --commit <sha>] [--base <branch>] [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]... | --audit [paths...]"
   },
   "quick": {
     "description": "Run a compact requirements-first SDD flow for a small change",

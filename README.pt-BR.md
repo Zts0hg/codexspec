@@ -555,7 +555,7 @@ A implementação segue o **fluxo de TDD condicional**:
 
 | Comando                  | Descrição                                                                                   |
 | ------------------------ | ------------------------------------------------------------------------------------------- |
-| `/codexspec:review-code` | Revisa código em qualquer linguagem (clareza idiomática, correção, robustez, arquitetura)   |
+| `/codexspec:review-code` | Gate de defeitos por alteração; pontuação por caminho com `--audit`                        |
 
 ---
 

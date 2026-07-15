@@ -48,7 +48,7 @@ Grouped by category, mirroring the README catalog. Within each group, commands a
 
 | Command | Purpose |
 |---------|---------|
-| `/codexspec:review-code` | Review code in any language (idiomatic clarity, correctness, robustness, architecture) |
+| `/codexspec:review-code` | Change-scoped defect gate; use `--audit` for a path quality scorecard |
 | `/codexspec:review-python-code` | Review Python code (PEP 8, type safety, robustness, constitution consistency) |
 | `/codexspec:review-react-code` | Review React/TypeScript code (component architecture, Hooks rules, state, performance) |
 
@@ -1072,12 +1072,44 @@ AI:  Preview mode - no commit will be executed
 
 ### `/codexspec:review-code`
 
-Review code in any language for idiomatic clarity, correctness, robustness, architecture, and constitution alignment.
+Review the selected Git change as a strict defect gate before merge. The default target includes the complete feature delta; explicit selectors can review committed, uncommitted, or one-commit evidence without accepting path filters.
+
+<!-- REVIEW-CODE-BREAKING: DEFAULT-GATE -->
+<!-- REVIEW-CODE-BREAKING: PATH-AUDIT -->
+
+**Breaking change in the next release:**
+
+- The default command is now a change-scoped defect gate, not a broad quality scorecard.
+- Positional paths are no longer valid. Use `--audit` when you intentionally want the advisory path scorecard.
+
+**Defect-gate syntax:**
+
+```text
+/codexspec:review-code
+/codexspec:review-code --committed [--base <branch>] [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code --uncommitted [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
+```
+
+The gate inventories every selected artifact, assesses applicable requirements, runs Scope, Behavior, Risk, and Verification passes, and returns exactly one verdict: `PASS`, `FAIL`, or `INCONCLUSIVE`. Its six report sections are followed by one machine-readable `<review-code-result>` envelope. Every P0-P3 finding produces `FAIL`; missing mandatory evidence produces `INCONCLUSIVE`.
+
+```text
+You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example
+
+AI:  ## Verdict
+     **PASS** — all required review and verification completed with no findings.
+```
+
+<!-- REVIEW-CODE-AUDIT -->
+
+#### Path quality audit
+
+Use the explicit audit branch to review complete current file contents for idiomatic clarity, correctness, robustness, architecture, and constitution alignment. This scorecard is advisory and cannot complete `implement-tasks`.
 
 **Syntax:**
 
 ```
-/codexspec:review-code [path...]
+/codexspec:review-code --audit [paths...]
 ```
 
 **Arguments:**
@@ -1098,7 +1130,7 @@ Review code in any language for idiomatic clarity, correctness, robustness, arch
 **Example:**
 
 ```text
-You: /codexspec:review-code src/
+You: /codexspec:review-code --audit src/
 
 AI:  # Code Review Report
 

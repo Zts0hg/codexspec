@@ -36,6 +36,21 @@ REQUIRED_ROOT_KEYS = [
 
 TRANSLATIONS_DIR = Path(__file__).parent.parent / "templates" / "translations"
 
+REVIEW_CODE_HINT = (
+    "[--committed | --uncommitted | --commit <sha>] [--base <branch>] "
+    "[--parent <n>] [--feature <feature-dir>] [--focus <instructions>]... | --audit [paths...]"
+)
+REVIEW_CODE_DESCRIPTIONS = {
+    "en": "Review a selected change as a strict defect gate, or audit paths with --audit",
+    "zh-CN": "将所选变更作为严格缺陷门禁进行审查，或使用 --audit 审计路径",
+    "ja": "選択した変更を厳格な欠陥ゲートとしてレビューするか、--audit でパスを監査",
+    "ko": "선택한 변경을 엄격한 결함 게이트로 검토하거나 --audit로 경로 감사",
+    "de": "Ausgewählte Änderungen als striktes Defekt-Gate prüfen oder Pfade mit --audit auditieren",
+    "es": "Revisar el cambio seleccionado como puerta de defectos estricta o auditar rutas con --audit",
+    "fr": "Examiner la modification sélectionnée comme contrôle strict des défauts ou auditer des chemins avec --audit",
+    "pt-BR": "Revisar a alteração selecionada como gate de defeitos estrito ou auditar caminhos com --audit",
+}
+
 
 class TestTranslationFilesValidJson:
     """Ensure all translation files are valid JSON."""
@@ -108,3 +123,27 @@ class TestTranslationFilesCompleteness:
                 if isinstance(en_cli[section], dict):
                     for key in en_cli[section]:
                         assert key in cli[section], f"{lang_file.name} missing cli.{section}.{key}"
+
+
+class TestReviewCodeTranslationContract:
+    """The breaking review syntax must update every cached command catalog."""
+
+    @pytest.mark.parametrize(("language", "description"), REVIEW_CODE_DESCRIPTIONS.items())
+    def test_review_code_uses_change_gate_metadata(self, language, description):
+        data = json.loads((TRANSLATIONS_DIR / f"{language}.json").read_text(encoding="utf-8"))
+        command = data["review-code"]
+
+        assert command["description"] == description
+        assert command["argument-hint"] == REVIEW_CODE_HINT
+        assert "--audit" in command["description"]
+        for token in [
+            "--committed",
+            "--uncommitted",
+            "--commit <sha>",
+            "--base <branch>",
+            "--parent <n>",
+            "--feature <feature-dir>",
+            "--focus <instructions>",
+            "--audit [paths...]",
+        ]:
+            assert token in command["argument-hint"]

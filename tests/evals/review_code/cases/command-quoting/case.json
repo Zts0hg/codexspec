@@ -1,0 +1,30 @@
+{
+  "schema_version": "1",
+  "id": "command-quoting",
+  "description": "Command execution concatenates untrusted input into a shell command.",
+  "risk_profiles": ["command/process execution"],
+  "setup": {
+    "files": {
+      "src/runner.py": "import os\n\ndef archive(path):\n    return os.system('tar -czf out.tgz ' + path)\n",
+      "tests/test_runner.py": "from src.runner import archive\n\ndef test_archive_returns_status():\n    assert isinstance(archive('data'), int)\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\nArchive paths are user supplied and must not be interpreted by a shell.\n",
+      "spec.md": "# Spec\nUse argument arrays or safe library APIs for archive execution.\n",
+      "plan.md": "# Plan\nReview process boundaries.\n",
+      "tasks.md": "# Tasks\n- [ ] Add archive command wrapper.\n"
+    }
+  },
+  "expect": {
+    "verdict": "FAIL",
+    "minimum_findings": [
+      {
+        "priority": "P1",
+        "priorities": ["P0", "P1", "P2"],
+        "contains": "command injection",
+        "aliases": ["shell", "os.system", "untrusted input"]
+      }
+    ],
+    "forbidden_findings": ["formatting", "rename variable"]
+  }
+}

@@ -555,7 +555,7 @@ Implementation follows **conditional TDD workflow**:
 
 | Command                         | Description                                                     |
 | ------------------------------- | --------------------------------------------------------------- |
-| `/codexspec:review-code` | Review code in any language (idiomatic clarity, correctness, robustness, architecture) |
+| `/codexspec:review-code` | Change-scoped defect gate; use `--audit` for the path quality scorecard |
 
 ---
 

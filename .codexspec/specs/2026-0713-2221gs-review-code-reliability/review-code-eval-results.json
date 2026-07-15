@@ -1,0 +1,243 @@
+{
+  "case_count": 13,
+  "cases": [
+    {
+      "activated_profiles": [],
+      "attempts": 1,
+      "case": "api-compatibility",
+      "coverage_gap_count": 4,
+      "expectation_failures": [],
+      "finding_counts": {
+        "P0": 0,
+        "P1": 1,
+        "P2": 1,
+        "P3": 2
+      },
+      "host": "claude",
+      "passed": true,
+      "schema_version": "1",
+      "started_at": "2026-07-15T12:46:20Z",
+      "verdict": "FAIL"
+    },
+    {
+      "activated_profiles": [],
+      "attempts": 1,
+      "case": "authorization-bypass",
+      "coverage_gap_count": 6,
+      "expectation_failures": [],
+      "finding_counts": {
+        "P0": 0,
+        "P1": 1,
+        "P2": 1,
+        "P3": 0
+      },
+      "host": "claude",
+      "passed": true,
+      "schema_version": "1",
+      "started_at": "2026-07-15T12:47:14Z",
+      "verdict": "FAIL"
+    },
+    {
+      "activated_profiles": [],
+      "attempts": 1,
+      "case": "build-manifest-drift",
+      "coverage_gap_count": 3,
+      "expectation_failures": [],
+      "finding_counts": {
+        "P0": 0,
+        "P1": 1,
+        "P2": 1,
+        "P3": 0
+      },
+      "host": "claude",
+      "passed": true,
+      "schema_version": "1",
+      "started_at": "2026-07-15T12:49:07Z",
+      "verdict": "FAIL"
+    },
+    {
+      "activated_profiles": [],
+      "attempts": 1,
+      "case": "clean-indirect-test",
+      "coverage_gap_count": 0,
+      "expectation_failures": [],
+      "finding_counts": {
+        "P0": 0,
+        "P1": 0,
+        "P2": 0,
+        "P3": 0
+      },
+      "host": "claude",
+      "passed": true,
+      "schema_version": "1",
+      "started_at": "2026-07-15T12:50:12Z",
+      "verdict": "PASS"
+    },
+    {
+      "activated_profiles": [],
+      "attempts": 1,
+      "case": "clean-refactor",
+      "coverage_gap_count": 0,
+      "expectation_failures": [],
+      "finding_counts": {
+        "P0": 0,
+        "P1": 0,
+        "P2": 0,
+        "P3": 0
+      },
+      "host": "claude",
+      "passed": true,
+      "schema_version": "1",
+      "started_at": "2026-07-15T12:51:05Z",
+      "verdict": "PASS"
+    },
+    {
+      "activated_profiles": [],
+      "attempts": 1,
+      "case": "command-quoting",
+      "coverage_gap_count": 3,
+      "expectation_failures": [],
+      "finding_counts": {
+        "P0": 0,
+        "P1": 1,
+        "P2": 2,
+        "P3": 0
+      },
+      "host": "claude",
+      "passed": true,
+      "schema_version": "1",
+      "started_at": "2026-07-15T12:51:55Z",
+      "verdict": "FAIL"
+    },
+    {
+      "activated_profiles": [],
+      "attempts": 1,
+      "case": "concurrency-cancellation",
+      "coverage_gap_count": 1,
+      "expectation_failures": [],
+      "finding_counts": {
+        "P0": 0,
+        "P1": 1,
+        "P2": 1,
+        "P3": 0
+      },
+      "host": "claude",
+      "passed": true,
+      "schema_version": "1",
+      "started_at": "2026-07-15T12:52:48Z",
+      "verdict": "FAIL"
+    },
+    {
+      "activated_profiles": [],
+      "attempts": 1,
+      "case": "filesystem-traversal",
+      "coverage_gap_count": 2,
+      "expectation_failures": [],
+      "finding_counts": {
+        "P0": 0,
+        "P1": 2,
+        "P2": 1,
+        "P3": 2
+      },
+      "host": "claude",
+      "passed": true,
+      "schema_version": "1",
+      "started_at": "2026-07-15T12:54:38Z",
+      "verdict": "FAIL"
+    },
+    {
+      "activated_profiles": [],
+      "attempts": 1,
+      "case": "network-retry",
+      "coverage_gap_count": 2,
+      "expectation_failures": [],
+      "finding_counts": {
+        "P0": 0,
+        "P1": 1,
+        "P2": 1,
+        "P3": 0
+      },
+      "host": "claude",
+      "passed": true,
+      "schema_version": "1",
+      "started_at": "2026-07-15T12:56:00Z",
+      "verdict": "FAIL"
+    },
+    {
+      "activated_profiles": [],
+      "attempts": 2,
+      "case": "parsing-invalid-default",
+      "coverage_gap_count": 1,
+      "expectation_failures": [],
+      "finding_counts": {
+        "P0": 0,
+        "P1": 1,
+        "P2": 1,
+        "P3": 0
+      },
+      "host": "claude",
+      "passed": true,
+      "schema_version": "1",
+      "started_at": "2026-07-15T12:56:55Z",
+      "verdict": "FAIL"
+    },
+    {
+      "activated_profiles": [],
+      "attempts": 1,
+      "case": "persistence-roundtrip",
+      "coverage_gap_count": 6,
+      "expectation_failures": [],
+      "finding_counts": {
+        "P0": 0,
+        "P1": 1,
+        "P2": 1,
+        "P3": 0
+      },
+      "host": "claude",
+      "passed": true,
+      "schema_version": "1",
+      "started_at": "2026-07-15T13:00:35Z",
+      "verdict": "FAIL"
+    },
+    {
+      "activated_profiles": [],
+      "attempts": 1,
+      "case": "secrets-redaction",
+      "coverage_gap_count": 1,
+      "expectation_failures": [],
+      "finding_counts": {
+        "P0": 1,
+        "P1": 1,
+        "P2": 0,
+        "P3": 0
+      },
+      "host": "claude",
+      "passed": true,
+      "schema_version": "1",
+      "started_at": "2026-07-15T13:01:43Z",
+      "verdict": "FAIL"
+    },
+    {
+      "activated_profiles": [],
+      "attempts": 1,
+      "case": "verification-mutation",
+      "coverage_gap_count": 2,
+      "expectation_failures": [],
+      "finding_counts": {
+        "P0": 0,
+        "P1": 1,
+        "P2": 1,
+        "P3": 0
+      },
+      "host": "claude",
+      "passed": true,
+      "schema_version": "1",
+      "started_at": "2026-07-15T13:03:12Z",
+      "verdict": "FAIL"
+    }
+  ],
+  "generated_at": "2026-07-15T13:04:53Z",
+  "host": "claude",
+  "passed": true,
+  "schema_version": "1"
+}

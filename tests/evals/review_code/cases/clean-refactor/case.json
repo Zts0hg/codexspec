@@ -1,0 +1,24 @@
+{
+  "schema_version": "1",
+  "id": "clean-refactor",
+  "description": "Behavior-preserving public helper refactor with existing direct coverage.",
+  "risk_profiles": ["public API/CLI compatibility"],
+  "setup": {
+    "files": {
+      "src/mathlib.py": "def normalize(value):\n    text = str(value).strip()\n    return text.lower()\n",
+      "tests/test_mathlib.py": "from src.mathlib import normalize\n\ndef test_normalize_contract():\n    assert normalize(' A ') == 'a'\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\nNormalization trims whitespace and lowercases values.\n",
+      "spec.md": "# Spec\nThe helper behavior is unchanged by refactoring.\n",
+      "plan.md": "# Plan\nKeep the public helper contract stable.\n",
+      "tasks.md": "# Tasks\n- [ ] Refactor normalization helper.\n"
+    }
+  },
+  "expect": {
+    "verdict": "PASS",
+    "minimum_findings": [],
+    "forbidden_findings": ["speculative", "missing redundant test", "style preference"],
+    "require_profiles": false
+  }
+}

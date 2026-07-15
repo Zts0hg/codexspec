@@ -1,0 +1,24 @@
+{
+  "schema_version": "1",
+  "id": "clean-indirect-test",
+  "description": "Parser behavior is covered through a public loader rather than a redundant unit test.",
+  "risk_profiles": ["parsing/configuration"],
+  "setup": {
+    "files": {
+      "src/settings.py": "def parse_bool(value):\n    normalized = str(value).strip().lower()\n    if normalized in {'1', 'true', 'yes'}:\n        return True\n    if normalized in {'0', 'false', 'no'}:\n        return False\n    raise ValueError(f'invalid boolean value: {value}')\n\ndef load(raw):\n    return {'enabled': parse_bool(raw['enabled'])}\n",
+      "tests/test_settings.py": "import pytest\n\nfrom src.settings import load\n\ndef test_loader_covers_enabled_bool_parser():\n    assert load({'enabled': 'yes'}) == {'enabled': True}\n    assert load({'enabled': 'no'}) == {'enabled': False}\n\ndef test_loader_rejects_invalid_bool_values():\n    with pytest.raises(ValueError):\n        load({'enabled': 'maybe'})\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\nThe settings loader accepts yes/true/1 as enabled values, no/false/0 as disabled values, and rejects any other boolean text.\n",
+      "spec.md": "# Spec\nParser behavior may be verified through the public loader contract; no separate private parse_bool test is required when loader tests cover true, false, and invalid inputs.\n",
+      "plan.md": "# Plan\nUse existing loader-level coverage.\n",
+      "tasks.md": "# Tasks\n- [ ] Add settings parser helper.\n"
+    }
+  },
+  "expect": {
+    "verdict": "PASS",
+    "minimum_findings": [],
+    "forbidden_findings": ["missing direct unit test", "speculative", "style preference"],
+    "require_profiles": false
+  }
+}

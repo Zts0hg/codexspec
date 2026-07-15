@@ -141,8 +141,8 @@
     "description": "Générer une description structurée de Pull Request (GitHub) ou Merge Request (GitLab) basée sur git diff et intégration optionnelle de spec.md"
   },
   "review-code": {
-    "description": "Réviser le code dans n'importe quel langage pour la clarté idiomatique, la correction, la robustesse, l'architecture et l'alignement avec la constitution",
-    "argument-hint": "Chemin vers le fichier source ou répertoire à réviser (tout langage)\n\nExemples:\n- `src/` - Réviser l'arbre source complet\n- `src/components/Button.tsx` - Réviser un seul fichier\n- `src/ tests/` - Réviser plusieurs chemins"
+    "description": "Examiner la modification sélectionnée comme contrôle strict des défauts ou auditer des chemins avec --audit",
+    "argument-hint": "[--committed | --uncommitted | --commit <sha>] [--base <branch>] [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]... | --audit [paths...]"
   },
   "quick": {
     "description": "Exécuter un flux SDD compact Requirements-First pour un petit changement",

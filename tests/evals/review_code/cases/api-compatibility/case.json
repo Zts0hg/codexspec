@@ -1,0 +1,27 @@
+{
+  "schema_version": "1",
+  "id": "api-compatibility",
+  "description": "Public function changes a documented return type without compatibility handling.",
+  "risk_profiles": ["public API/CLI compatibility"],
+  "setup": {
+    "files": {
+      "src/api.py": "def get_user(user_id):\n    return ('id', user_id)\n",
+      "docs/api.md": "# API\n`get_user(id)` returns a mapping with an `id` key.\n",
+      "tests/test_api.py": "from src.api import get_user\n\ndef test_get_user_returns_value():\n    assert get_user('u1')\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\nThe public API must remain compatible with documented mapping responses.\n",
+      "spec.md": "# Spec\nDo not change get_user response shape without a migration path.\n",
+      "plan.md": "# Plan\nKeep API compatibility tests.\n",
+      "tasks.md": "# Tasks\n- [ ] Add user lookup helper.\n"
+    }
+  },
+  "expect": {
+    "verdict": "FAIL",
+    "minimum_findings": [{"priority": "P2", "contains": "mapping"}],
+    "forbidden_findings": ["preferred naming", "cosmetic-only"],
+    "profile_aliases": {
+      "public API/CLI compatibility": ["API compatibility", "public API", "documented mapping", "API contract"]
+    }
+  }
+}

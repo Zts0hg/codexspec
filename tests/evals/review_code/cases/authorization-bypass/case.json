@@ -1,0 +1,29 @@
+{
+  "schema_version": "1",
+  "id": "authorization-bypass",
+  "description": "Route handler trusts a caller-supplied role flag instead of the authenticated principal.",
+  "risk_profiles": ["authorization/trust"],
+  "setup": {
+    "files": {
+      "src/app.py": "def can_delete(request):\n    return request.get('role') == 'admin'\n\ndef delete_record(request, record):\n    if can_delete(request):\n        record['deleted'] = True\n    return record\n",
+      "tests/test_app.py": "from src.app import delete_record\n\ndef test_owner_cannot_delete_without_admin_role():\n    assert delete_record({'user': 'owner'}, {'deleted': False})['deleted'] is False\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\nOnly authenticated administrators may delete records.\n",
+      "spec.md": "# Spec\nDeletion authorization comes from the authenticated principal, not request fields.\n",
+      "plan.md": "# Plan\nUpdate the delete boundary and tests.\n",
+      "tasks.md": "# Tasks\n- [ ] Protect delete_record authorization.\n"
+    }
+  },
+  "expect": {
+    "verdict": "FAIL",
+    "minimum_findings": [
+      {
+        "priority": "P1",
+        "contains": "caller-supplied role",
+        "aliases": ["authorization", "admin", "role"]
+      }
+    ],
+    "forbidden_findings": ["style preference", "missing tests only"]
+  }
+}

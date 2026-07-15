@@ -1,0 +1,27 @@
+{
+  "schema_version": "1",
+  "id": "build-manifest-drift",
+  "description": "Package manifest advertises a console script that no module provides.",
+  "risk_profiles": ["build/dependency behavior"],
+  "setup": {
+    "files": {
+      "pyproject.toml": "[project]\nname = 'drift'\nversion = '0.1.0'\n[project.scripts]\ndrift = 'missing.module:main'\n",
+      "src/drift/__init__.py": "__version__ = '0.1.0'\n",
+      "tests/test_package.py": "def test_import_package():\n    import src.drift\n    assert src.drift.__version__\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\nPublished console scripts must resolve to included modules.\n",
+      "spec.md": "# Spec\nManifest entry points are verified against package contents.\n",
+      "plan.md": "# Plan\nValidate package metadata.\n",
+      "tasks.md": "# Tasks\n- [ ] Add command entry point.\n"
+    }
+  },
+  "expect": {
+    "verdict": "FAIL",
+    "minimum_findings": [{"priority": "P2", "contains": "missing.module"}],
+    "forbidden_findings": ["dependency update suggestion", "formatting"],
+    "profile_aliases": {
+      "build/dependency behavior": ["package manifest", "entry point", "console script", "missing.module"]
+    }
+  }
+}

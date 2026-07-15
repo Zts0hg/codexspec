@@ -48,7 +48,7 @@ CodexSpec의 슬래시 명령어 레퍼런스입니다. 이 명령어들은 Clau
 
 | Command | Purpose |
 |---------|---------|
-| `/codexspec:review-code` | 모든 언어의 코드 리뷰 (관용적 표명, 정확성, 견고성, 아키텍처) |
+| `/codexspec:review-code` | 변경 범위 결함 게이트. 경로 품질 점수표에는 `--audit` 사용 |
 | `/codexspec:review-python-code` | Python 코드 리뷰 (PEP 8, 타입 안전성, 견고성, 헌법 일관성) |
 | `/codexspec:review-react-code` | React/TypeScript 코드 리뷰 (컴포넌트 아키텍처, Hooks 규칙, 상태, 성능) |
 
@@ -1072,12 +1072,44 @@ AI:  Preview mode - no commit will be executed
 
 ### `/codexspec:review-code`
 
-모든 언어의 코드를 관용적 표명, 정확성, 견고성, 아키텍처, 헌법 정합성 측면에서 리뷰합니다.
+선택한 Git 변경을 병합 전의 엄격한 결함 게이트로 검토합니다. 기본 대상은 기능의 전체 변경분이며, 명시적 선택기로 커밋됨, 커밋되지 않음 또는 단일 커밋 증거를 선택할 수 있지만 경로 필터는 허용하지 않습니다.
+
+<!-- REVIEW-CODE-BREAKING: DEFAULT-GATE -->
+<!-- REVIEW-CODE-BREAKING: PATH-AUDIT -->
+
+**다음 릴리스의 호환성 중단 변경:**
+
+- 기본 명령은 광범위한 품질 점수표가 아니라 변경 범위 결함 게이트입니다.
+- 위치 경로 인수는 더 이상 유효하지 않습니다. 권고용 경로 품질 감사에는 `--audit`를 명시하세요.
+
+**결함 게이트 구문:**
+
+```text
+/codexspec:review-code
+/codexspec:review-code --committed [--base <branch>] [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code --uncommitted [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
+```
+
+게이트는 대상의 모든 산출물을 인벤토리화하고 적용 가능한 요구사항을 평가하며 Scope, Behavior, Risk, Verification 단계를 실행합니다. 판정은 `PASS`, `FAIL`, `INCONCLUSIVE` 중 하나입니다. 여섯 개의 보고서 섹션 뒤에는 기계 판독 가능한 `<review-code-result>` envelope 하나가 옵니다. 모든 P0-P3 결함은 `FAIL`, 필수 증거 부족은 `INCONCLUSIVE`입니다.
+
+```text
+You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example
+
+AI:  ## Verdict
+     **PASS** — 필수 검토와 검증이 완료되었으며 발견 사항이 없습니다.
+```
+
+<!-- REVIEW-CODE-AUDIT -->
+
+#### 경로 품질 감사
+
+명시적 audit 분기는 현재 파일 전체 내용을 대상으로 관용적 명확성, 정확성, 견고성, 아키텍처 및 헌법 정렬을 평가합니다. 이 점수표는 권고용이며 `implement-tasks` 완료 게이트로 사용할 수 없습니다.
 
 **Syntax:**
 
 ```
-/codexspec:review-code [path...]
+/codexspec:review-code --audit [paths...]
 ```
 
 **Arguments:**
@@ -1098,7 +1130,7 @@ AI:  Preview mode - no commit will be executed
 **Example:**
 
 ```text
-You: /codexspec:review-code src/
+You: /codexspec:review-code --audit src/
 
 AI:  # Code Review Report
 
