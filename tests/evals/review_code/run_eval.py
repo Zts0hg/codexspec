@@ -74,12 +74,15 @@ def _git(repo: Path, *args: str) -> subprocess.CompletedProcess[str]:
 
 def _codexspec_init(repo: Path) -> None:
     command = shutil.which("codexspec") or "codexspec"
-    subprocess.run(
+    completed = subprocess.run(
         [command, "init", str(repo), "--ai", "both", "--no-git", "--lang", "en"],
         text=True,
         capture_output=True,
-        check=True,
     )
+    if completed.returncode != 0:
+        details = "\n".join(part for part in (completed.stdout.strip(), completed.stderr.strip()) if part)
+        suffix = f":\n{details}" if details else "."
+        raise RuntimeError(f"codexspec init failed with exit code {completed.returncode}{suffix}")
 
 
 def _write_files(root: Path, files: dict[str, str]) -> None:

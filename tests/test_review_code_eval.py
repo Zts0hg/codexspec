@@ -95,6 +95,10 @@ def _write_case(tmp_path: Path, *, case_id: str = "command-quoting") -> Path:
     return case_dir
 
 
+def _stub_codexspec_init(repo: Path) -> None:
+    repo.mkdir(parents=True, exist_ok=True)
+
+
 def test_parse_review_result_requires_exactly_one_valid_envelope() -> None:
     parsed = run_eval.parse_review_result(
         _envelope(
@@ -142,12 +146,15 @@ def test_case_expectations_match_profiles_findings_and_forbidden_text(tmp_path: 
     assert any("forbidden finding text" in failure for failure in failed.failures)
 
 
-def test_canned_adapter_runs_case_and_records_credential_free_result(tmp_path: Path) -> None:
+def test_canned_adapter_runs_case_and_records_credential_free_result(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
     case_dir = _write_case(tmp_path)
     output = _envelope(
         profiles=["command/process execution"],
         findings=[{"priority": "P1", "summary": "command injection through shell concatenation"}],
     )
+    monkeypatch.setattr(run_eval, "_codexspec_init", _stub_codexspec_init)
 
     record = run_eval.run_case(case_dir, host="canned", canned_output=output, work_root=tmp_path / "work")
 
@@ -161,8 +168,9 @@ def test_canned_adapter_runs_case_and_records_credential_free_result(tmp_path: P
     assert "credential" not in serialized.lower()
 
 
-def test_run_case_records_parse_failure_without_aborting(tmp_path: Path) -> None:
+def test_run_case_records_parse_failure_without_aborting(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     case_dir = _write_case(tmp_path)
+    monkeypatch.setattr(run_eval, "_codexspec_init", _stub_codexspec_init)
 
     record = run_eval.run_case(
         case_dir,

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -18,6 +19,11 @@ from tests.review_context_cases import (
     parse_manifest,
     repository_snapshot,
     write,
+)
+
+pytestmark = pytest.mark.skipif(
+    sys.platform == "win32",
+    reason="Bash resolver contracts run on POSIX hosts; PowerShell contracts cover Windows.",
 )
 
 
