@@ -163,7 +163,7 @@ def get_commands_metadata() -> list[CommandMetadata]:
         {
             "name": "review-code",
             "display_name": "/codexspec:review-code",
-            "description": "审查任意语言代码的地道表达、正确性、健壮性、架构与宪法一致性",
+            "description": "将所选变更作为严格缺陷门禁进行审查，或使用 --audit 审计路径",
             "category": "review",
             "file_name": "review-code.md",
         },

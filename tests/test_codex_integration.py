@@ -1,12 +1,17 @@
 """Tests for Codex integration support."""
 
+import sys
 from pathlib import Path
 
+import pytest
 from typer.testing import CliRunner
 
 from codexspec import app
 from codexspec.integrations import get_integrations
 from codexspec.integrations.codex import CodexIntegration
+
+ROOT = Path(__file__).parent.parent
+COMMANDS = ROOT / "templates" / "commands"
 
 
 def test_codex_integration_renders_skill_from_template(tmp_path: Path) -> None:
@@ -70,6 +75,88 @@ Run:
         'PowerShell: `.codexspec/scripts/create-new-feature.ps1 -ShortName "<feature-name>" "<description>"`' in content
     )
     assert ".sh -ShortName" not in content
+
+
+def test_codex_integration_renders_review_code_contract() -> None:
+    """Codex strips command frontmatter while preserving the review protocol."""
+    template = (COMMANDS / "review-code.md").read_text(encoding="utf-8")
+
+    content = CodexIntegration().render_skill("review-code", template)
+
+    assert "name: codexspec:review-code" in content
+    assert "description: Review a selected change as a strict defect gate" in content
+    assert "argument-hint:" not in content
+    assert "scripts:" not in content
+    assert "allowed-tools:" not in content
+    assert "$ARGUMENTS" not in content
+    assert "{SCRIPT}" not in content
+    assert "the text after the $codexspec:review-code skill mention" in content
+    assert ".codexspec/scripts/review-context.sh" in content
+    assert ".codexspec/scripts/review-context.ps1" in content
+    assert "$codexspec:review-code --audit {paths}" in content
+    assert "/codexspec:review-code" not in content
+    assert "missing resolver" in content
+    assert "unsupported schema" in content
+    assert "INCONCLUSIVE" in content
+
+
+@pytest.mark.parametrize(
+    ("ai", "expect_claude", "expect_codex"),
+    [
+        ("claude", True, False),
+        ("codex", False, True),
+        ("both", True, True),
+    ],
+)
+def test_review_code_contract_installs_for_each_integration(
+    tmp_path: Path,
+    ai: str,
+    expect_claude: bool,
+    expect_codex: bool,
+) -> None:
+    """Every supported install shape receives the same fail-closed contract."""
+    runner = CliRunner()
+
+    result = runner.invoke(
+        app,
+        ["init", str(tmp_path / f"proj-{ai}"), "--ai", ai, "--no-git", "--lang", "en"],
+    )
+
+    assert result.exit_code == 0, result.stdout
+    project = tmp_path / f"proj-{ai}"
+    claude_command = project / ".claude" / "commands" / "codexspec" / "review-code.md"
+    codex_skill = project / ".agents" / "skills" / "codexspec-review-code" / "SKILL.md"
+    assert claude_command.exists() is expect_claude
+    assert codex_skill.exists() is expect_codex
+
+    for artifact in [path for path in [claude_command, codex_skill] if path.exists()]:
+        content = artifact.read_text(encoding="utf-8")
+        assert ".codexspec/scripts/review-context.sh" in content
+        assert ".codexspec/scripts/review-context.ps1" in content
+        assert "missing resolver" in content
+        assert "unsupported schema" in content
+        assert "update or re-run `codexspec init`" in content
+        assert "MUST NOT reconstruct or guess Git scope" in content
+        assert "{SCRIPT}" not in content
+
+    if expect_claude:
+        claude_content = claude_command.read_text(encoding="utf-8")
+        assert "argument-hint:" in claude_content
+        assert "scripts:" in claude_content
+        assert "$ARGUMENTS" in claude_content
+        assert "/codexspec:review-code --audit {paths}" in claude_content
+
+    if expect_codex:
+        codex_content = codex_skill.read_text(encoding="utf-8")
+        assert "argument-hint:" not in codex_content
+        assert "scripts:" not in codex_content
+        assert "$ARGUMENTS" not in codex_content
+        assert "$codexspec:review-code --audit {paths}" in codex_content
+
+    local_script = "review-context.ps1" if sys.platform == "win32" else "review-context.sh"
+    opposite_script = "review-context.sh" if local_script.endswith(".ps1") else "review-context.ps1"
+    assert (project / ".codexspec" / "scripts" / local_script).exists()
+    assert not (project / ".codexspec" / "scripts" / opposite_script).exists()
 
 
 def test_codex_integration_upserts_agents_md_without_overwriting_user_content(tmp_path: Path) -> None:

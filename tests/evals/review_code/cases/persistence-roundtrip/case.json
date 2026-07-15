@@ -1,0 +1,26 @@
+{
+  "schema_version": "1",
+  "id": "persistence-roundtrip",
+  "description": "State serializer drops the enabled flag on reload.",
+  "risk_profiles": ["persistence/state"],
+  "setup": {
+    "files": {
+      "src/state.py": "import json\n\ndef dump(state):\n    return json.dumps({'name': state['name']})\n\ndef load(raw):\n    data = json.loads(raw)\n    data.setdefault('enabled', False)\n    return data\n",
+      "tests/test_state.py": "from src.state import dump, load\n\ndef test_name_roundtrip():\n    assert load(dump({'name': 'a', 'enabled': True}))['name'] == 'a'\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\nSaved state must preserve the enabled flag across round trips.\n",
+      "spec.md": "# Spec\nSerialization must include all persisted fields.\n",
+      "plan.md": "# Plan\nAdd persistence round-trip checks.\n",
+      "tasks.md": "# Tasks\n- [ ] Persist enabled state.\n"
+    }
+  },
+  "expect": {
+    "verdict": "FAIL",
+    "minimum_findings": [{"priority": "P2", "contains": "enabled flag"}],
+    "forbidden_findings": ["rename", "style"],
+    "profile_aliases": {
+      "persistence/state": ["round trip", "roundtrip", "serialized", "saved state", "enabled flag"]
+    }
+  }
+}

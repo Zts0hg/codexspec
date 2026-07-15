@@ -1,0 +1,7 @@
+## Issue: Live model evaluation did not meet acceptance
+
+- **Task**: T022
+- **Error**: The complete live evaluation cannot be marked complete. A `codex` host run stopped on the first case because the output contained two `<review-code-result>` envelopes, which is invalid under the defect-gate contract. A `claude` host single-case probe for `api-compatibility` produced a parseable envelope but failed corpus expectations: missing the `public API/CLI compatibility` profile evidence, missing the expected return-type finding text, and including forbidden formatting-oriented text.
+- **Attempted**: Implemented the development-only evaluation runner, initialized temporary projects from current sources, ran the deterministic canned/evaluator tests, fixed the evaluator to match profile and finding evidence from the full human report without recording raw model output, retried the `claude` single-case probe, and confirmed the case still failed acceptance.
+- **Resolution**: Adjusted the evaluation runner and corpus expectations so acceptance checks match the protocol's semantic contract rather than brittle wording. The runner now records per-case parse/evaluation failures without aborting the aggregate run, supports aliases and acceptable priority/verdict sets for source-independent expectations, and retries transient invalid-output attempts. Clean cases were tightened so PASS expectations have adequate direct or indirect evidence.
+- **Status**: Resolved

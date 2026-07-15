@@ -135,42 +135,115 @@ def test_adjacent_commands_preserve_requirements_authority():
     assert "latest feature" not in implement.lower()
 
 
-def test_implement_tasks_has_final_code_review_loop():
-    """implement-tasks chains to review-code with a test-safe auto-fix loop."""
+def test_implement_tasks_invokes_complete_feature_defect_gate():
+    """The completion gate reviews the complete feature, including non-code files."""
     content = read_command("implement-tasks")
+    compact = " ".join(content.split())
 
-    # The loop exists and invokes review-code once, at end of run (REQ-001).
     assert "Final Code Review Loop" in content
-    assert "/codexspec:review-code" in content
+    assert "/codexspec:review-code --feature <feature-dir>" in content
+    assert "complete feature target" in compact
+    assert "committed, staged, unstaged, and untracked" in compact
+    assert "documentation and configuration" in compact
+    assert "Do not pass `--audit`" in content
+    assert "Do not pass a narrowed selector" in compact
 
-    # Only analyzable code in this implementation's diff is reviewed; an
-    # all-non-code diff is a graceful skip (REQ-002 / CON-003).
-    assert "no code to review" in content
+    for legacy in [
+        "no code to review",
+        "analyzable source extensions",
+        "CRITICAL, HIGH, and MEDIUM",
+        "report-only",
+        "maintainability, readability, or testability",
+        "two-round limit",
+        "fix-and-review rounds",
+        "Quality Score",
+    ]:
+        assert legacy not in content
 
-    # Severity gate: CRITICAL+HIGH+MEDIUM auto-fixed, LOW report-only (REQ-003).
-    assert "CRITICAL, HIGH, and MEDIUM" in content
-    assert "report-only" in content
 
-    # MEDIUM must be grounded in constitution + requirements and focus on the
-    # three meta-qualities (REQ-004 / DEC-001).
-    assert "constitution.md" in content
-    assert "maintainability, readability, or testability" in content
+def test_implement_tasks_validates_result_envelope_and_review_topology():
+    """Prose, scorecards, malformed output, and shared reviews cannot complete work."""
+    content = read_command("implement-tasks")
+    compact = " ".join(content.split())
 
-    # Test-safe fixes: a refactor that breaks tests is reverted and retried;
-    # nothing red is ever shipped or silently skipped (REQ-006 / DEC-002).
-    assert "revert it, confirm the suite is green again" in content
-    assert "never silently skipped" in content
+    for field in [
+        "schema_version",
+        "mode",
+        "verdict",
+        "target",
+        "requirements_coverage",
+        "verification",
+        "finding_counts",
+        "coverage_gap_count",
+        "review_context",
+        "reviewers",
+    ]:
+        assert f"`{field}`" in content
 
-    # Two-round bound and "needs work" on residual high-severity (REQ-007/009).
-    assert "two-round limit" in content
-    assert "fix-and-review rounds" in content
-    assert "needs work" in content
+    assert "exactly one `<review-code-result>`" in content
+    assert "schema version `1`" in content
+    assert "`mode: defect`" in content
+    assert "target and feature context match" in compact
+    assert "`requirements_coverage.status: complete`" in content
+    assert "`verification.status: complete`" in content
+    assert "`review_context: isolated`" in content
+    assert "primary reviewer is `complete`" in compact
+    assert "required specialist" in content
+    assert "all P0-P3 counts are zero" in compact
+    assert "prose cannot override" in compact.lower()
+    assert "INCONCLUSIVE" in content
 
-    # Fixes are committed before reporting completion (REQ-008).
-    assert "commit the fixes" in content
 
-    # The existing per-task Review & Refactor step is preserved (REQ-010).
+def test_implement_tasks_verifies_findings_before_test_safe_repairs():
+    """Only reproduced findings are fixed, with verification appropriate to the artifact."""
+    content = read_command("implement-tasks")
+    compact = " ".join(content.split())
+
+    assert "independently verify" in content
+    assert "trigger, selected-change attribution, impact, and binding obligation" in compact
+    assert "Do not edit for an unverified finding" in content
+    assert "reproducing regression test" in content
+    assert "red-green-refactor" in content
+    assert "documentation and non-code configuration" in compact
+    assert "applicable deterministic checks" in content
+    assert "targeted checks and all project-mandated checks" in compact
+    assert "green full-suite baseline" in content
+    assert "fresh isolated reviewer" in content
+    assert "complete feature target" in content
+
+
+def test_implement_tasks_uses_progress_guards_and_only_pass_succeeds():
+    """The loop is progress-based and every non-PASS terminal state remains blocking."""
+    content = read_command("implement-tasks")
+    compact = " ".join(content.split())
+
+    for stop_guard in [
+        "same defect survives two verified fixes",
+        "two consecutive rounds make no substantive progress",
+        "new product or architecture decision",
+        "same independently refuted false positive recurs",
+    ]:
+        assert stop_guard in compact
+    assert "transient `INCONCLUSIVE` cause" in content
+    assert "retry it up to two times" in compact.lower()
+    assert "reset the transient retry count" in compact.lower()
+    assert "continue while substantive progress" in compact.lower()
+    assert "final valid `PASS` envelope" in content
+    assert "No finding may be deferred" in content
+    assert "FAIL" in content
+    assert "INCONCLUSIVE" in content
+    assert "must not be converted to success" in content
+
+
+def test_implement_tasks_preserves_per_task_tdd_and_issue_recording():
+    content = read_command("implement-tasks")
+    compact = " ".join(content.split())
+
+    assert "TDD Workflow (Per Task)" in content
     assert "Review & Refactor" in content
+    assert "Issue Recording" in content
+    assert "green full-suite baseline" in compact
+    assert "commits remain outside verdict logic" in compact.lower()
 
 
 @pytest.mark.parametrize("language", ["de", "es", "fr", "ja", "ko", "pt-BR"])

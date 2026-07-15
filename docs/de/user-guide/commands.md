@@ -48,7 +48,7 @@ Nach Kategorie gruppiert – analog zum Katalog im README. Innerhalb jeder Grupp
 
 | Befehl | Zweck |
 |---------|---------|
-| `/codexspec:review-code` | Code in jeder beliebigen Sprache prüfen (idiomatische Klarheit, Korrektheit, Robustheit, Architektur) |
+| `/codexspec:review-code` | Änderungsbezogenes Defekt-Gate; Pfad-Qualitätsscore mit `--audit` |
 | `/codexspec:review-python-code` | Python-Code prüfen (PEP 8, Typsicherheit, Robustheit, Verfassungskonsistenz) |
 | `/codexspec:review-react-code` | React-/TypeScript-Code prüfen (Komponentenarchitektur, Hooks-Regeln, State, Performance) |
 
@@ -1072,12 +1072,44 @@ AI:  Preview mode - no commit will be executed
 
 ### `/codexspec:review-code`
 
-Prüft Code in jeder beliebigen Sprache auf idiomatische Klarheit, Korrektheit, Robustheit, Architektur und Verfassungskonformität.
+Prüft die ausgewählte Git-Änderung vor dem Merge als striktes Defekt-Gate. Das Standardziel umfasst den vollständigen Feature-Unterschied; explizite Selektoren wählen committed, uncommitted oder einen einzelnen Commit, aber keine Pfadfilter.
+
+<!-- REVIEW-CODE-BREAKING: DEFAULT-GATE -->
+<!-- REVIEW-CODE-BREAKING: PATH-AUDIT -->
+
+**Inkompatible Änderung in der nächsten Version:**
+
+- Der Standardbefehl ist jetzt ein änderungsbezogenes Defekt-Gate und kein allgemeiner Qualitätsscore.
+- Positionspfade sind nicht mehr gültig. Verwenden Sie `--audit` ausdrücklich für den beratenden Pfad-Qualitätsscore.
+
+**Syntax des Defekt-Gates:**
+
+```text
+/codexspec:review-code
+/codexspec:review-code --committed [--base <branch>] [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code --uncommitted [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
+```
+
+Das Gate inventarisiert alle ausgewählten Artefakte, bewertet zutreffende Anforderungen und führt Scope-, Behavior-, Risk- und Verification-Pässe aus. Das Ergebnis ist genau `PASS`, `FAIL` oder `INCONCLUSIVE`. Auf sechs Berichtsabschnitte folgt ein maschinenlesbares `<review-code-result>` envelope. Jeder P0-P3-Befund führt zu `FAIL`; fehlende Pflichtnachweise führen zu `INCONCLUSIVE`.
+
+```text
+You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example
+
+AI:  ## Verdict
+     **PASS** — alle erforderlichen Prüfungen wurden ohne Befund abgeschlossen.
+```
+
+<!-- REVIEW-CODE-AUDIT -->
+
+#### Pfad-Qualitätsaudit
+
+Der explizite audit-Zweig prüft vollständige aktuelle Dateiinhalte auf idiomatische Klarheit, Korrektheit, Robustheit, Architektur und Verfassungskonformität. Der Score ist beratend und kann `implement-tasks` nicht abschließen.
 
 **Syntax:**
 
 ```
-/codexspec:review-code [path...]
+/codexspec:review-code --audit [paths...]
 ```
 
 **Argumente:**
@@ -1098,7 +1130,7 @@ Prüft Code in jeder beliebigen Sprache auf idiomatische Klarheit, Korrektheit, 
 **Beispiel:**
 
 ```text
-You: /codexspec:review-code src/
+You: /codexspec:review-code --audit src/
 
 AI:  # Code Review Report
 

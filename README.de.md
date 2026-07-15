@@ -555,7 +555,7 @@ Die Implementierung folgt einem **bedingten TDD-Workflow**:
 
 | Befehl                         | Beschreibung                                                     |
 | ------------------------------ | ---------------------------------------------------------------- |
-| `/codexspec:review-code` | Code in jeder Sprache prüfen (idiomatische Klarheit, Korrektheit, Robustheit, Architektur) |
+| `/codexspec:review-code` | Änderungsbezogenes Defekt-Gate; Pfad-Qualitätsscore mit `--audit` |
 
 ---
 

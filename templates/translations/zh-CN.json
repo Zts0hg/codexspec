@@ -141,8 +141,8 @@
     "description": "基于 git diff 和可选的 spec.md 集成生成结构化的 Pull Request (GitHub) 或 Merge Request (GitLab) 描述"
   },
   "review-code": {
-    "description": "审查任意语言代码的地道表达、正确性、健壮性、架构与宪法一致性",
-    "argument-hint": "要审查的源文件或目录路径（支持任意语言）\n\n示例：\n- `src/` - 审查整个源代码树\n- `src/components/Button.tsx` - 审查单个文件\n- `src/ tests/` - 审查多个路径"
+    "description": "将所选变更作为严格缺陷门禁进行审查，或使用 --audit 审计路径",
+    "argument-hint": "[--committed | --uncommitted | --commit <sha>] [--base <branch>] [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]... | --audit [paths...]"
   },
   "quick": {
     "description": "为小型变更运行精简的 Requirements-First SDD 流程",

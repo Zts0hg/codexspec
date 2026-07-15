@@ -48,7 +48,7 @@ Agrupados por categoria, espelhando o catálogo do README. Dentro de cada grupo,
 
 | Comando | Finalidade |
 |---------|---------|
-| `/codexspec:review-code` | Revisar código em qualquer linguagem (clareza idiomática, corretude, robustez, arquitetura) |
+| `/codexspec:review-code` | Gate de defeitos por alteração; pontuação por caminho com `--audit` |
 | `/codexspec:review-python-code` | Revisar código Python (PEP 8, segurança de tipos, robustez, consistência com a constituição) |
 | `/codexspec:review-react-code` | Revisar código React/TypeScript (arquitetura de componentes, regras de Hooks, estado, desempenho) |
 
@@ -1072,12 +1072,44 @@ AI:  Preview mode - no commit will be executed
 
 ### `/codexspec:review-code`
 
-Revise código em qualquer linguagem quanto a clareza idiomática, corretude, robustez, arquitetura e aderência à constituição.
+Revisa a alteração Git selecionada como um gate de defeitos rigoroso antes do merge. O alvo padrão inclui a diferença completa da funcionalidade; seletores explícitos escolhem mudanças commitadas, não commitadas ou um único commit, sem aceitar filtros de caminho.
+
+<!-- REVIEW-CODE-BREAKING: DEFAULT-GATE -->
+<!-- REVIEW-CODE-BREAKING: PATH-AUDIT -->
+
+**Mudança incompatível na próxima versão:**
+
+- O comando padrão agora é um gate de defeitos limitado à alteração, não uma pontuação geral de qualidade.
+- Caminhos posicionais não são mais válidos. Use `--audit` explicitamente para a pontuação consultiva de qualidade por caminho.
+
+**Sintaxe do gate de defeitos:**
+
+```text
+/codexspec:review-code
+/codexspec:review-code --committed [--base <branch>] [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code --uncommitted [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
+```
+
+O gate inventaria todos os artefatos selecionados, avalia requisitos aplicáveis e executa as fases Scope, Behavior, Risk e Verification. O veredito é `PASS`, `FAIL` ou `INCONCLUSIVE`. As seis seções do relatório são seguidas por um único envelope `<review-code-result>` legível por máquina. Todo defeito P0-P3 produz `FAIL`; evidência obrigatória ausente produz `INCONCLUSIVE`.
+
+```text
+You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example
+
+AI:  ## Verdict
+     **PASS** — revisão e verificação obrigatórias concluídas sem defeitos.
+```
+
+<!-- REVIEW-CODE-AUDIT -->
+
+#### Auditoria de qualidade por caminho
+
+O ramo audit explícito revisa o conteúdo atual completo dos arquivos quanto a clareza idiomática, corretude, robustez, arquitetura e alinhamento constitucional. A pontuação é consultiva e não pode concluir `implement-tasks`.
 
 **Sintaxe:**
 
 ```
-/codexspec:review-code [path...]
+/codexspec:review-code --audit [paths...]
 ```
 
 **Argumentos:**
@@ -1098,7 +1130,7 @@ Revise código em qualquer linguagem quanto a clareza idiomática, corretude, ro
 **Exemplo:**
 
 ```text
-You: /codexspec:review-code src/
+You: /codexspec:review-code --audit src/
 
 AI:  # Code Review Report
 

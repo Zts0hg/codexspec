@@ -12,6 +12,9 @@ from codexspec.commands.installer import (
     should_update_commands,
 )
 
+ROOT = Path(__file__).parent.parent.parent
+COMMANDS = ROOT / "templates" / "commands"
+
 
 class TestConstants:
     """Tests for module constants."""
@@ -315,6 +318,26 @@ class TestInstallCommandsToSubdir:
 
         assert result == 1
         assert target_dir.exists()
+
+    def test_review_code_preserves_claude_frontmatter_and_executable_paths(self, tmp_path: Path) -> None:
+        """Claude keeps native metadata and receives no unresolved script token."""
+        target_dir = tmp_path / "commands"
+
+        result = install_commands_to_subdir(target_dir, COMMANDS)
+
+        assert result > 0
+        content = (target_dir / "review-code.md").read_text(encoding="utf-8")
+        assert "description: Review a selected change as a strict defect gate" in content
+        assert "argument-hint:" in content
+        assert "scripts:" in content
+        assert "sh: .codexspec/scripts/review-context.sh" in content
+        assert "ps: .codexspec/scripts/review-context.ps1" in content
+        assert "$ARGUMENTS" in content
+        assert "/codexspec:review-code --audit {paths}" in content
+        assert "{SCRIPT}" not in content
+        assert "missing resolver" in content
+        assert "unsupported schema" in content
+        assert "INCONCLUSIVE" in content
 
 
 class TestShouldUpdateCommands:

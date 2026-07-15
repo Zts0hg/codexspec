@@ -1,0 +1,35 @@
+{
+  "schema_version": "1",
+  "id": "verification-mutation",
+  "description": "Project check writes a generated report, so review verification must use a disposable mirror or reject it.",
+  "risk_profiles": ["build/dependency behavior"],
+  "setup": {
+    "files": {
+      "pyproject.toml": "[project]\nname = 'mutation-check'\nversion = '0.1.0'\n[tool.codexspec]\nreview_check = 'python scripts/write_report.py'\n",
+      "scripts/write_report.py": "from pathlib import Path\nPath('review-report.txt').write_text('generated')\n",
+      "src/value.py": "VALUE = 1\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\nReview verification must not mutate the project tree.\n",
+      "spec.md": "# Spec\nMutating checks run only in a disposable mirror or are rejected as unsafe.\n",
+      "plan.md": "# Plan\nDetect verification mutation risk.\n",
+      "tasks.md": "# Tasks\n- [ ] Add verification safety handling.\n"
+    }
+  },
+  "expect": {
+    "verdict": "INCONCLUSIVE",
+    "acceptable_verdicts": ["INCONCLUSIVE", "FAIL"],
+    "minimum_findings": [
+      {
+        "priority": "P1",
+        "contains": "mutating verification",
+        "aliases": ["mutation", "write", "review-report.txt", "unsafe verification"]
+      }
+    ],
+    "forbidden_findings": ["pass despite mutation", "ignore mutation"],
+    "profile_aliases": {
+      "build/dependency behavior": ["verification safety", "mutating check", "review-report.txt", "unsafe verification"]
+    },
+    "verification_safety": "mirror_or_reject_no_mutation"
+  }
+}
