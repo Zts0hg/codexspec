@@ -33,7 +33,7 @@ Agrupados por categoría, reflejando el catálogo del README. Dentro de cada gru
 |---------|---------|
 | `/codexspec:config` | Gestionar la configuración del proyecto de forma interactiva (crear/ver/modificar/restablecer) |
 | `/codexspec:clarify` | Escanear una especificación existente en busca de ambigüedades (4 categorías, máximo 5 preguntas) |
-| `/codexspec:analyze` | Análisis de consistencia entre artefactos (solo lectura, basado en severidad) |
+| `/codexspec:analyze` | Análisis de consistencia entre artefactos (con corrección automática, basado en severidad) |
 | `/codexspec:checklist` | Generar checklists de calidad de requisitos |
 | `/codexspec:tasks-to-issues` | Convertir tareas en GitHub Issues |
 
@@ -783,7 +783,7 @@ AI:  Overall Status: NEEDS_REVISION
 
 ### `/codexspec:analyze`
 
-Realiza un análisis de consistencia no destructivo entre requirements.md, spec.md, plan.md y tasks.md. Identifica conflictos de autoridad, vacíos de trazabilidad, duplicación y cobertura faltante.
+Realiza un análisis de consistencia entre requirements.md, spec.md, plan.md y tasks.md y luego corrige automáticamente las inconsistencias deterministas alineando spec.md/plan.md/tasks.md con requirements.md (requirements.md nunca se modifica). Identifica conflictos de autoridad, vacíos de trazabilidad, duplicación y cobertura faltante.
 
 **Sintaxis:**
 

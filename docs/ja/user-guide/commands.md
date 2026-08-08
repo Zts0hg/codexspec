@@ -33,7 +33,7 @@ README のカタログと対応するよう、カテゴリ別にグループ化�
 |---------|---------|
 | `/codexspec:config` | プロジェクト設定を対話的に管理します（作成/参照/変更/リセット） |
 | `/codexspec:clarify` | 既存の仕様書をスキャンして曖昧さを検出します（4 カテゴリ、最大 5 問） |
-| `/codexspec:analyze` | アーティファクト間の整合性分析を行います（読み取り専用、重大度ベース） |
+| `/codexspec:analyze` | アーティファクト間の整合性分析を行います（自動修復、重大度ベース） |
 | `/codexspec:checklist` | 要件品質のチェックリストを生成します |
 | `/codexspec:tasks-to-issues` | タスクを GitHub Issues に変換します |
 
@@ -783,7 +783,7 @@ AI:  Overall Status: NEEDS_REVISION
 
 ### `/codexspec:analyze`
 
-requirements.md、spec.md、plan.md、tasks.md にまたがる、非破壊的な整合性分析を実行します。権威の衝突、トレーサビリティの抜け、重複、カバレッジの欠落を特定します。
+requirements.md、spec.md、plan.md、tasks.md にまたがる整合性分析を実行し、spec.md/plan.md/tasks.md を requirements.md に合わせて決定的な不整合を自動修復します（requirements.md は変更しません）。権威の衝突、トレーサビリティの抜け、重複、カバレッジの欠落を特定します。
 
 **Syntax:**
 

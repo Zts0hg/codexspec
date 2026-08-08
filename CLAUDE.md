@@ -248,7 +248,7 @@ git:
 - `generate-spec` / `spec-to-plan` / `plan-to-tasks`: the command's built-in review loop Overall Status is `PASS` or `PASS_WITH_WARNINGS`. (`NEEDS_REVISION` / `BLOCKED` stops the chain and returns control to the user.)
 - `specify`: has no review loop; the gate is the user's explicit confirmation that requirements discovery is complete (the **final** stage summary, not each intermediate one).
 
-Before each advance the agent emits one notice line (e.g. `auto_next: review passed → invoking /codexspec:spec-to-plan`). For `plan-to-tasks`, the existing `analyze` auto-invoke runs first and is informational (does not block `implement-tasks`); the jump into `implement-tasks` proceeds with no confirmation prompt.
+Before each advance the agent emits one notice line (e.g. `auto_next: review passed → invoking /codexspec:spec-to-plan`). For `plan-to-tasks`, the existing `analyze` auto-invoke runs first: it auto-remediates deterministic inconsistencies (conforming spec/plan/tasks to `requirements.md`, which it never modifies) and remains non-blocking (does not block `implement-tasks`); the jump into `implement-tasks` proceeds with no confirmation prompt.
 
 **Configuration** (`.codexspec/config.yml`):
 
@@ -343,7 +343,7 @@ workflow:
 | Command                      | Description                                 |
 | ---------------------------- | ------------------------------------------- |
 | `/codexspec:clarify`         | Ask clarification questions before planning |
-| `/codexspec:analyze`         | Cross-artifact consistency analysis         |
+| `/codexspec:analyze`         | Cross-artifact consistency analysis with auto-remediation |
 | `/codexspec:checklist`       | Generate requirements quality checklists    |
 | `/codexspec:tasks-to-issues` | Convert tasks to GitHub issues              |
 

@@ -60,6 +60,9 @@ Stop instead of guessing when:
 - Mark `[P]` only when tasks can actually run concurrently after their declared dependencies. Missing `[P]` is not inherently a defect.
 - Require test-first ordering only when mandated by the constitution, specification, plan, or established repository workflow.
 - Otherwise include the appropriate verification task without imposing TDD as a universal method.
+- For every **testable** task, enumerate an explicit, individually identifiable **Test Scenarios** list: the happy path plus the boundary and error conditions the behavior implies. Non-testable tasks (docs, config, assets, infrastructure) keep their deterministic verification and do not carry test scenarios.
+- Derive test scenarios from the specification's acceptance criteria and the covered requirement's behavior, expanding them into concrete cases; never invent scenarios with no upstream basis. If upstream behavior is too underspecified to enumerate meaningful scenarios, stop per the Stop Conditions rather than guessing.
+- Keep each scenario individually identifiable and traceable so implementation and the `implement-tasks` self-check can map each scenario to a test one-to-one. Do not pad: enumerate only scenarios the behavior actually implies.
 - Do not add polish, monitoring, abstraction, documentation, or hardening tasks unless they are required by the approved plan, repository policy, or a verified implementation need.
 
 ## Required Output
@@ -71,7 +74,8 @@ Include:
 - Task groups derived from the plan
 - Task IDs, outcomes, paths, dependencies, and traceability
 - Verification steps and checkpoints appropriate to the change
-- A coverage table mapping plan components and requirements to tasks
+- An explicit **Test Scenarios** list for every testable task (happy path plus behavior-implied boundary/error cases), each scenario individually identifiable
+- A coverage table mapping plan components and requirements to tasks, including scenario-to-task mapping for testable tasks
 - Unmapped tasks, if any, with explicit justification
 
 ## Pre-Save Validation
@@ -81,6 +85,7 @@ Include:
 3. Dependencies are acyclic and ordered before dependents.
 4. Verification is sufficient for the actual risk and project policy.
 5. No task expands product scope or silently changes the plan.
+6. Every testable task enumerates sufficient, individually traceable test scenarios (happy path plus behavior-implied boundary/error), all derived from upstream behavior with none invented.
 
 ## Automatic Review Loop
 
@@ -97,9 +102,9 @@ Invoke `/codexspec:review-tasks <feature-dir>/tasks.md`.
 When the review loop above concludes in a passing state — the final `/codexspec:review-tasks` Overall Status is `PASS` or `PASS_WITH_WARNINGS` — invoke `/codexspec:analyze <feature-dir>` exactly once.
 
 - Do not invoke analyze when the review loop stopped at `NEEDS_REVISION` or `BLOCKED`, or stopped early per the conditions above; in those cases end here, handing control back to the user as the review loop already does.
-- analyze runs once and is read-only. Present its output as-is; do not auto-fix its findings and do not run a fix-and-reanalyze loop.
-- If `requirements.md` is absent, analyze still runs and discloses its legacy limitation (it starts at `spec.md` and cannot verify fidelity to the original discussion) per its own behavior.
-- analyze's results are informational only. They do not change whether tasks are ready for implementation and do not add a gate before `/codexspec:implement-tasks`.
+- analyze runs once. It auto-remediates deterministic, authority-directed inconsistencies (conforming `spec.md`/`plan.md`/`tasks.md` to `requirements.md`; it never edits `requirements.md`) and reports the result. Do not run a fix-and-reanalyze loop.
+- If `requirements.md` is absent, analyze still runs in legacy mode, reports findings only (no auto-modification), and discloses its legacy limitation (it starts at `spec.md` and cannot verify fidelity to the original discussion) per its own behavior.
+- analyze's deterministic conforming fixes need no re-review; its remediations and any residual findings do not add a gate before `/codexspec:implement-tasks`.
 - Do not modify the Output Summary for analyze, and do not save an additional analyze report file; analyze's own output is the report.
 
 ## Auto-Next Chain Advance
@@ -111,7 +116,7 @@ When `workflow.auto_next` is `true` AND the review loop above concluded in a pas
 1. Emit exactly one notice line, in the interaction language, e.g. `auto_next: review passed → invoking /codexspec:implement-tasks <feature-dir>`.
 2. Invoke `/codexspec:implement-tasks <feature-dir>` exactly once, with no confirmation prompt, then end this command.
 
-analyze's findings are informational only and do NOT block this advance (see the Automatic Cross-Artifact Analysis section above). Do not auto-advance when `workflow.auto_next` is disabled, or the review loop stopped at `NEEDS_REVISION` or `BLOCKED`, or stopped early; hand control back to the user as the review loop already does. This advances the chain and does not modify the Output Summary.
+analyze's deterministic auto-fixes and any residual findings do NOT block this advance (see the Automatic Cross-Artifact Analysis section above). Do not auto-advance when `workflow.auto_next` is disabled, or the review loop stopped at `NEEDS_REVISION` or `BLOCKED`, or stopped early; hand control back to the user as the review loop already does. This advances the chain and does not modify the Output Summary.
 
 ## Output Summary
 
