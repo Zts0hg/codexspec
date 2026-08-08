@@ -33,7 +33,7 @@ CodexSpec의 슬래시 명령어 레퍼런스입니다. 이 명령어들은 Clau
 |---------|---------|
 | `/codexspec:config` | 프로젝트 설정을 대화형으로 관리 (생성/조회/수정/초기화) |
 | `/codexspec:clarify` | 기존 명세서에서 모호한 부분을 스캔 (4개 카테고리, 최대 5개 질문) |
-| `/codexspec:analyze` | 크로스 아티팩트 일관성 분석 (읽기 전용, 심각도 기반) |
+| `/codexspec:analyze` | 크로스 아티팩트 일관성 분석 (자동 교정, 심각도 기반) |
 | `/codexspec:checklist` | 요구사항 품질 체크리스트 생성 |
 | `/codexspec:tasks-to-issues` | 태스크를 GitHub 이슈로 변환 |
 
@@ -783,7 +783,7 @@ AI:  Overall Status: NEEDS_REVISION
 
 ### `/codexspec:analyze`
 
-requirements.md, spec.md, plan.md, tasks.md에 걸쳐 비파괴적 일관성 분석을 수행합니다. 권위 충돌, 추적 가능성 공백, 중복, 누락된 커버리지를 식별합니다.
+requirements.md, spec.md, plan.md, tasks.md에 걸쳐 일관성 분석을 수행하고, spec.md/plan.md/tasks.md를 requirements.md에 맞춰 결정적 불일치를 자동으로 교정합니다(requirements.md는 절대 수정하지 않습니다). 권위 충돌, 추적 가능성 공백, 중복, 누락된 커버리지를 식별합니다.
 
 **Syntax:**
 

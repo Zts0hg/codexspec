@@ -33,7 +33,7 @@ Regroupées par catégorie, en miroir du catalogue du README. Au sein de chaque 
 |----------|----------|
 | `/codexspec:config` | Gérer la configuration du projet de façon interactive (créer/consulter/modifier/réinitialiser) |
 | `/codexspec:clarify` | Scanner une spec existante pour détecter les ambiguïtés (4 catégories, 5 questions max) |
-| `/codexspec:analyze` | Analyse de cohérence inter-artifacts (en lecture seule, fondée sur la sévérité) |
+| `/codexspec:analyze` | Analyse de cohérence inter-artifacts (avec correction automatique, fondée sur la sévérité) |
 | `/codexspec:checklist` | Générer des checklists de qualité des exigences |
 | `/codexspec:tasks-to-issues` | Convertir les tâches en issues GitHub |
 
@@ -783,7 +783,7 @@ AI:  Overall Status: NEEDS_REVISION
 
 ### `/codexspec:analyze`
 
-Effectue une analyse de cohérence non destructrice entre requirements.md, spec.md, plan.md et tasks.md. Identifie les conflits d'autorité, les lacunes de traçabilité, les doublons et les couvertures manquantes.
+Effectue une analyse de cohérence entre requirements.md, spec.md, plan.md et tasks.md, puis corrige automatiquement les incohérences déterministes en alignant spec.md/plan.md/tasks.md sur requirements.md (requirements.md n'est jamais modifié). Identifie les conflits d'autorité, les lacunes de traçabilité, les doublons et les couvertures manquantes.
 
 **Syntaxe :**
 

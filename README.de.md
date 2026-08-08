@@ -540,7 +540,7 @@ Die Implementierung folgt einem **bedingten TDD-Workflow**:
 | --------------------------- | ---------------------------------------------------------------- |
 | `/codexspec:config`         | Projektkonfiguration verwalten (erstellen/anzeigen/ändern/zurücksetzen) |
 | `/codexspec:clarify`        | Spec auf Unklarheiten prüfen (4 Kategorien, max. 5 Fragen)       |
-| `/codexspec:analyze`        | Artefaktübergreifende Konsistenzanalyse (nur lesend, schweregradbasiert) |
+| `/codexspec:analyze`        | Artefaktübergreifende Konsistenzanalyse (automatische Behebung, schweregradbasiert) |
 | `/codexspec:checklist`      | Qualitätschecklisten für Anforderungen generieren                |
 | `/codexspec:tasks-to-issues`| Aufgaben in GitHub-Issues umwandeln                              |
 
@@ -572,7 +572,7 @@ CodexSpec ist von GitHubs spec-kit inspiriert, mit wesentlichen Unterschieden:
 | Zwei-Phasen-Spec     | Nein                    | Ja (Klären + Generieren)                      |
 | Review-Befehle       | Optional                | 3 dedizierte Review-Befehle + Bewertung       |
 | Clarify-Befehl       | Ja                      | 4 Fokuskategorien, Review-Integration         |
-| Analyze-Befehl       | Ja                      | Nur lesend, schweregradbasiert, verfassungsbewusst |
+| Analyze-Befehl       | Ja                      | Automatische Behebung, schweregradbasiert, verfassungsbewusst |
 | TDD in Aufgaben      | Optional                | Bedingt, abhängig von Anforderungen, Risiko und Policy |
 | Implementierung      | Standard                | Bedingtes TDD (Code vs. Docs/Config)          |
 | Erweiterungssystem   | Ja                      | Ja                                            |

@@ -540,7 +540,7 @@ L'implémentation suit le **flux de travail TDD conditionnel** :
 | ----------------------------- | --------------------------------------------------------------- |
 | `/codexspec:config`           | Gérer la configuration du projet (créer/afficher/modifier/réinitialiser) |
 | `/codexspec:clarify`          | Scanner la spec pour ambiguïtés (4 catégories, 5 questions max) |
-| `/codexspec:analyze`          | Analyse de cohérence inter-artefacts (lecture seule, basée sur la sévérité) |
+| `/codexspec:analyze`          | Analyse de cohérence inter-artefacts (correction automatique, basée sur la sévérité) |
 | `/codexspec:checklist`        | Générer une liste de contrôle de qualité des exigences                  |
 | `/codexspec:tasks-to-issues`  | Convertir les tâches en GitHub Issues                           |
 
@@ -572,7 +572,7 @@ CodexSpec s'inspire de GitHub spec-kit, avec des différences majeures :
 | Spec en deux phases     | Non                       | Oui (clarifier + générer)                                |
 | Commandes de revue      | Optionnelles              | 3 commandes dédiées + notation                            |
 | Commande `clarify`      | Oui                       | 4 catégories ciblées, intégration à la revue             |
-| Commande `analyze`      | Oui                       | Lecture seule, basée sur la sévérité, sensible à la constitution |
+| Commande `analyze`      | Oui                       | Correction automatique, basée sur la sévérité, sensible à la constitution |
 | TDD dans les tâches     | Optionnel                 | Conditionnel (exigences, risque et politique)            |
 | Implémentation          | Standard                  | TDD conditionnel (code vs docs/config)                   |
 | Système d'extensions    | Oui                       | Oui                                                      |

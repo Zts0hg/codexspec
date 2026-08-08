@@ -33,7 +33,7 @@
 |---------|---------|
 | `/codexspec:config` | 交互式管理项目配置（创建/查看/修改/重置） |
 | `/codexspec:clarify` | 扫描已有规格中的歧义（4 个类别，最多 5 个问题） |
-| `/codexspec:analyze` | 跨工件一致性分析（只读，按严重级别分类） |
+| `/codexspec:analyze` | 跨工件一致性分析（自动修复，按严重级别分类） |
 | `/codexspec:checklist` | 生成需求质量检查清单 |
 | `/codexspec:tasks-to-issues` | 把任务转换为 GitHub Issues |
 
@@ -782,7 +782,7 @@ AI:  Overall Status: NEEDS_REVISION
 
 ### `/codexspec:analyze`
 
-对 requirements.md、spec.md、plan.md 与 tasks.md 执行非破坏性的一致性分析，识别权威冲突、可追溯缺口、重复以及覆盖遗漏。
+对 requirements.md、spec.md、plan.md 与 tasks.md 执行一致性分析，并将 spec.md/plan.md/tasks.md 向 requirements.md 对齐以自动修复确定性不一致（绝不修改 requirements.md），识别权威冲突、可追溯缺口、重复以及覆盖遗漏。
 
 **语法：**
 

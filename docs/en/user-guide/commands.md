@@ -33,7 +33,7 @@ Grouped by category, mirroring the README catalog. Within each group, commands a
 |---------|---------|
 | `/codexspec:config` | Manage project configuration interactively (create/view/modify/reset) |
 | `/codexspec:clarify` | Scan existing spec for ambiguities (4 categories, max 5 questions) |
-| `/codexspec:analyze` | Cross-artifact consistency analysis (read-only, severity-based) |
+| `/codexspec:analyze` | Cross-artifact consistency analysis (auto-remediating, severity-based) |
 | `/codexspec:checklist` | Generate requirements quality checklists |
 | `/codexspec:tasks-to-issues` | Convert tasks to GitHub Issues |
 
@@ -783,7 +783,7 @@ AI:  Overall Status: NEEDS_REVISION
 
 ### `/codexspec:analyze`
 
-Perform a non-destructive consistency analysis across requirements.md, spec.md, plan.md, and tasks.md. Identifies authority conflicts, traceability gaps, duplication, and missing coverage.
+Perform a consistency analysis across requirements.md, spec.md, plan.md, and tasks.md, then auto-remediate deterministic inconsistencies by conforming spec.md/plan.md/tasks.md to requirements.md (requirements.md is never modified). Identifies authority conflicts, traceability gaps, duplication, and missing coverage.
 
 **Syntax:**
 

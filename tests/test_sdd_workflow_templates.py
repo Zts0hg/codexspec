@@ -456,3 +456,90 @@ def test_auto_next_section_synced_across_distribution_forms(command):
     assert "/codexspec:" in template
     assert "/codexspec:" in claude_copy
     assert "$codexspec:" in skill_copy
+
+
+# ---------------------------------------------------------------------------
+# Feature 2026-0808-21309w: analyze auto-remediation + test-scenario completeness
+# ---------------------------------------------------------------------------
+
+
+def test_analyze_auto_remediates_and_is_not_read_only():
+    """TS-1/TS-4: analyze auto-remediates; the read-only constraint is gone; markers kept."""
+    content = read_command("analyze")
+    lc = content.lower()
+
+    assert "auto-remediate" in lc  # REQ-001, REQ-003
+    assert "this command is read-only" not in lc  # REQ-001 (old constraint removed)
+    # Preserved detection markers (regression guard).
+    assert "requirements.md" in content  # REQ-006
+    assert "end-to-end traceability" in lc  # REQ-006
+
+
+def test_analyze_never_modifies_requirements_and_acts_on_conflicts_only():
+    """TS-2/TS-3: requirements is the untouched source of truth; conflict-only remediation."""
+    content = read_command("analyze")
+    lc = content.lower()
+
+    assert "never modifies `requirements.md`" in content  # REQ-002 / OUT-001
+    assert "completeness" in lc  # REQ-004
+    assert "consistency" in lc  # REQ-005
+    assert "only on conflicts" in lc  # REQ-005
+
+
+def test_analyze_stays_artifact_only_no_code_level_check():
+    """TS-12: analyze does not gain a tasks->code (code-level) check (REQ-006 / OUT-003)."""
+    analyze = read_command("analyze")
+    assert "tasks → code" not in analyze
+    assert "tasks->code" not in analyze
+
+
+def test_plan_to_tasks_mandates_test_scenarios_for_testable_tasks():
+    """TS-5/TS-6/TS-7: scenarios mandated (incl. boundary/error), testable-only, derive-not-invent."""
+    content = read_command("plan-to-tasks")
+    lc = content.lower()
+
+    assert "test scenarios" in lc  # REQ-007
+    assert "boundary" in lc and "error" in lc  # REQ-007 / DEC-004
+    assert "testable" in lc and "non-testable" in lc  # REQ-008 / CON-003
+    assert "never invent" in lc  # REQ-009 / DEC-005
+
+
+def test_plan_to_tasks_analyze_description_reflects_autofix_and_keeps_guards():
+    """TS-8: analyze description updated to auto-remediation; ordering + guarded phrases intact."""
+    content = read_command("plan-to-tasks")
+
+    assert "analyze runs once and is read-only" not in content  # PLD-3
+    assert "auto-remediate" in content.lower()  # REQ-003
+    assert content.index("Automatic Cross-Artifact Analysis") < content.index("Auto-Next Chain Advance")
+    # Existing test-guarded phrases must survive the edit.
+    assert "do NOT block this advance" in content
+    assert "no confirmation prompt" in content
+
+
+def test_implement_tasks_has_scenario_coverage_self_check():
+    """TS-9/TS-10: self-check inside the review loop; review-code untouched; still terminal."""
+    content = read_command("implement-tasks")
+    lc = content.lower()
+
+    assert "scenario coverage self-check" in lc  # REQ-011
+    assert "tasks.md" in content  # REQ-011
+    assert "/codexspec:review-code --feature" in content  # REQ-013 (gate invocation unchanged)
+    assert "does not modify `review-code`" in content  # REQ-013
+    assert "Auto-Next Chain Advance" not in content  # terminal stage preserved
+
+
+@pytest.mark.parametrize("command", ["analyze", "plan-to-tasks", "implement-tasks"])
+def test_new_behavior_synced_across_distribution_forms(command):
+    """TS-11: each edited command's new marker appears in all three distribution forms."""
+    marker = {
+        "analyze": "auto-remediate",
+        "plan-to-tasks": "test scenarios",
+        "implement-tasks": "scenario coverage self-check",
+    }[command]
+
+    template = read_command(command)
+    claude_copy = (ROOT / ".claude" / "commands" / "codexspec" / f"{command}.md").read_text(encoding="utf-8")
+    skill_copy = (ROOT / ".agents" / "skills" / f"codexspec-{command}" / "SKILL.md").read_text(encoding="utf-8")
+
+    for label, form in [("template", template), ("claude", claude_copy), ("skill", skill_copy)]:
+        assert marker in form.lower(), f"{command} {label} missing marker {marker!r}"

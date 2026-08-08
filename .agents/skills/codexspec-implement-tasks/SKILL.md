@@ -209,6 +209,19 @@ non-PASS and cannot be declared successful by the implementer.
 If verification requires a new product or architecture decision, stop and
 request that decision. Do not invent intent or weaken the requirement.
 
+#### 7.3a Scenario Coverage Self-Check
+
+Independently of the reviewer — do not extend or rely on `review-code` for this —
+verify that every test scenario enumerated in `tasks.md` maps to at least one
+implemented test that genuinely exercises and asserts it. A scenario with no
+covering test, or covered only by a hollow or non-asserting test (the test must
+assert the scenario's expected outcome), is a blocking scenario-coverage gap.
+
+Treat each gap as a verified obligation and repair it via 7.4 (red-green: add the
+covering test, observe it fail for the missing behavior, then make it pass), then
+re-verify and re-review per 7.5. This check is owned by this implementer; it adds
+no command and does not modify `review-code`.
+
 #### 7.4 Apply Test-Safe Repairs
 
 Apply only verified repairs:
@@ -257,8 +270,8 @@ or cleared by an audit score.
 
 Success requires a final valid `PASS` envelope from a fresh complete-feature
 review, with complete requirements and verification, isolated required reviewer
-topology, zero P0-P3 counts, no blocking coverage gaps, and a still-green
-baseline.
+topology, zero P0-P3 counts, no blocking coverage gaps, no uncovered enumerated
+test scenario from `tasks.md` (per 7.3a), and a still-green baseline.
 
 Any `FAIL`, persistent `INCONCLUSIVE`, unresolved verified defect, repeated
 refuted finding, decision requirement, or no-progress guard is blocking. Preserve
