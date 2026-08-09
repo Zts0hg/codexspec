@@ -13,6 +13,8 @@ Use these Codex skills when working on CodexSpec workflows:
 - `$codexspec:spec-to-plan` to produce `plan.md`.
 - `$codexspec:plan-to-tasks` to produce `tasks.md`.
 - `$codexspec:implement-tasks` to implement approved tasks.
+- `$codexspec:distill` to capture reusable cross-feature knowledge into `.codexspec/profile/`.
+- `$codexspec:evolve` to contribute vetted profile knowledge back upstream via a reviewed PR.
 
 Before making workflow decisions, read `.codexspec/memory/constitution.md`.
 <!-- CODEXSPEC END -->
