@@ -510,6 +510,7 @@ claude
 | `--set-commit-lang`, `-c`  | 设置提交信息语言                                  |
 | `--list-langs`             | 列出所有支持的语言                                |
 | `--auto-next`              | 切换或设置 `workflow.auto_next`（不带值即切换；或 on/off） |
+| `--auto-distill`           | 切换或设置 `workflow.auto_distill`（默认开启；不带值即切换；或 on/off） |
 
 </details>
 
@@ -543,6 +544,13 @@ claude
 | `/codexspec:analyze`          | 跨产物一致性分析（只读，按严重程度划分）                 |
 | `/codexspec:checklist`        | 生成需求质量检查清单                                     |
 | `/codexspec:tasks-to-issues`  | 将任务转换为 GitHub Issues                               |
+
+#### 自我进化命令
+
+| Command | Description |
+| --- | --- |
+| `/codexspec:distill` | 将可复用的跨特性知识萃取到 `.codexspec/profile/` |
+| `/codexspec:evolve` | 将 profile 沉淀编译为命令/技能，并通过评审 PR 贡献回上游 |
 
 #### Git 工作流命令
 

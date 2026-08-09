@@ -510,6 +510,7 @@ claude
 | `--set-commit-lang`, `-c`  | コミットメッセージの言語を設定                         |
 | `--list-langs`             | サポートされているすべての言語を一覧表示               |
 | `--auto-next`              | `workflow.auto_next` を切り替え/設定（値なしでトグル、または on/off） |
+| `--auto-distill`           | `workflow.auto_distill` を切り替え/設定（デフォルト有効、値なしでトグル、または on/off） |
 
 </details>
 
@@ -543,6 +544,13 @@ claude
 | `/codexspec:analyze`         | クロスアーティファクト整合性分析（読み取り専用・重要度ベース） |
 | `/codexspec:checklist`       | 要件の品質チェックリストを生成                             |
 | `/codexspec:tasks-to-issues` | タスクを GitHub Issues に変換                              |
+
+#### 自己進化コマンド
+
+| Command | Description |
+| --- | --- |
+| `/codexspec:distill` | 再利用可能な機能横断の知見を `.codexspec/profile/` に蒸留 |
+| `/codexspec:evolve` | profile の知見をコマンド/スキルにコンパイルし、レビュー付き PR で上流へ貢献 |
 
 #### Git ワークフローのコマンド
 
