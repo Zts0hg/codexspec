@@ -30,3 +30,9 @@ project:
 # is terminal; NEEDS_REVISION/BLOCKED halts the chain.
 workflow:
   auto_next: true
+  # Auto-distill: wrap-up commands (implement-tasks, commit-staged, pr) run
+  # /codexspec:distill on successful completion to capture reusable cross-feature
+  # knowledge into .codexspec/profile/. Default ON (opt-out); disabled only when set
+  # to the literal false. Non-blocking — never prompts and never gates or alters the
+  # host command.
+  auto_distill: true

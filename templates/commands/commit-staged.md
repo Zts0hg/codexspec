@@ -157,3 +157,13 @@ If `git commit` fails due to a pre-commit hook modifying files:
 - Report the error message to the user
 - DO NOT attempt to "fix" the situation
 - The user should investigate and resolve manually
+
+## Automatic Distillation
+
+Read `workflow.auto_distill` from `.codexspec/config.yml` (**default `true`** — enabled unless explicitly set to the literal `false`; absent or any non-`false` value means enabled).
+
+When `workflow.auto_distill` is enabled (not the literal `false`) AND a commit was created successfully, invoke `/codexspec:distill` exactly once on this session's interaction, then end.
+
+- distill is non-blocking and non-interactive: it never prompts and never alters the commit or its message; it early-exits when there is nothing reusable to capture.
+- distill only writes records to `.codexspec/profile/`; it never touches tracked project files or the git state.
+- Do not invoke distill when `auto_distill` is disabled or when no commit was created (for example, an ABORT above).
