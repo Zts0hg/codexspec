@@ -181,6 +181,11 @@ _AUTO_NEXT_FALSE = {"off", "false", "0", "no"}
 _AUTO_NEXT_SENTINEL = "__toggle__"
 _AUTO_NEXT_ACCEPTED = "on/off, true/false, 1/0, yes/no"
 
+# workflow.auto_distill toggle. Unlike auto_next, auto_distill defaults to ON
+# (opt-out): only the literal ``false`` disables it. Reuses the auto_next token
+# sets for parsing; a distinct sentinel keeps the bare-toggle rewrites separate.
+_AUTO_DISTILL_SENTINEL = "__toggle_distill__"
+
 
 @app.command()
 def config(
@@ -221,6 +226,13 @@ def config(
         "--auto-next",
         help="Toggle workflow.auto_next (bare), or set it (on/off|true/false|1/0|yes/no).",
     ),
+    # ``--auto-distill`` mirrors ``--auto-next``; the bare toggle is rewritten to
+    # ``--auto-distill=<sentinel>`` by ``_normalize_auto_distill_argv`` in ``main()``.
+    auto_distill: Optional[str] = typer.Option(
+        None,
+        "--auto-distill",
+        help="Toggle workflow.auto_distill (bare), or set it (on/off|true/false|1/0|yes/no).",
+    ),
 ) -> None:
     """
     View or modify CodexSpec project configuration.
@@ -233,6 +245,7 @@ def config(
         codexspec config --set-lang zh-CN      # Set language to Chinese
         codexspec config --set-commit-lang en  # Set commit messages to English
         codexspec config --auto-next           # Toggle workflow.auto_next
+        codexspec config --auto-distill off    # Disable workflow.auto_distill (default on)
         codexspec config --list-langs          # List supported languages
     """
     # Handle list languages
@@ -271,6 +284,25 @@ def config(
             console.print(f"[green]auto_next {state}[/green] (workflow.auto_next = {str(target).lower()})")
         else:
             console.print("[red]Failed to update workflow.auto_next[/red]")
+            raise typer.Exit(1)
+        return
+
+    # Handle auto-distill toggle/set
+    if auto_distill is not None:
+        if auto_distill == _AUTO_DISTILL_SENTINEL:
+            target = not _read_auto_distill(config_file)
+        else:
+            try:
+                target = parse_auto_distill_value(auto_distill)
+            except ValueError:
+                console.print(f"[red]Invalid --auto-distill value:[/red] {auto_distill!r}")
+                console.print(f"Accepted values: {_AUTO_NEXT_ACCEPTED} (or pass --auto-distill bare to toggle).")
+                raise typer.Exit(1)
+        if _write_auto_distill(config_file, target):
+            state = "enabled" if target else "disabled"
+            console.print(f"[green]auto_distill {state}[/green] (workflow.auto_distill = {str(target).lower()})")
+        else:
+            console.print("[red]Failed to update workflow.auto_distill[/red]")
             raise typer.Exit(1)
         return
 
@@ -1042,6 +1074,101 @@ def _dump_lines(path: Path, lines: list[str]) -> bool:
     return True
 
 
+# --- workflow.auto_distill toggle helpers ----------------------------------
+
+
+def parse_auto_distill_value(raw: str) -> bool:
+    """Parse an explicit ``--auto-distill`` value into a boolean.
+
+    Accepts the same tokens as ``--auto-next`` (``on/off``, ``true/false``,
+    ``1/0``, ``yes/no``; case-insensitive, surrounding whitespace ignored).
+    Raises ``ValueError`` for any other token.
+    """
+    token = (raw or "").strip().lower()
+    if token in _AUTO_NEXT_TRUE:
+        return True
+    if token in _AUTO_NEXT_FALSE:
+        return False
+    raise ValueError(f"invalid --auto-distill value: {raw!r}")
+
+
+def _read_auto_distill(config_file: Path) -> bool:
+    """Return True unless ``workflow.auto_distill`` is the literal ``false``.
+
+    ``auto_distill`` defaults to enabled (opt-out): an absent key/section, an
+    explicit ``true``, or any non-``false`` value enables it; only the literal
+    ``false`` disables it. A missing file also reads as enabled.
+    """
+    try:
+        content = config_file.read_text(encoding="utf-8")
+    except OSError:
+        return True
+    in_workflow = False
+    for line in content.splitlines():
+        if not line.strip():
+            continue
+        if not line[0].isspace():  # top-level key (or comment)
+            key = line.split("#", 1)[0].strip()
+            in_workflow = key == "workflow:"
+            continue
+        if in_workflow:
+            match = re.match(r"^\s*auto_distill:\s*(\S+?)\s*(?:#.*)?$", line)
+            if match:
+                return match.group(1) != "false"
+    return True
+
+
+def _write_auto_distill(config_file: Path, value: bool) -> bool:
+    """Set ``workflow.auto_distill`` to an unquoted boolean.
+
+    Mirrors ``_write_auto_next``: (1) update the value in place when the key
+    exists under ``workflow:``; (2) insert it as the section's first child when
+    the section exists but the key is absent; (3) append a ``workflow:`` section
+    when absent. Preserves all other lines/comments. Returns ``False`` on I/O
+    error.
+    """
+    try:
+        content = config_file.read_text(encoding="utf-8")
+    except OSError:
+        return False
+
+    token = "true" if value else "false"
+    lines = content.split("\n")
+
+    workflow_idx: Optional[int] = None
+    in_workflow = False
+    for i, line in enumerate(lines):
+        if not line.strip():
+            continue
+        if not line[0].isspace():
+            key = line.split("#", 1)[0].strip()
+            in_workflow = key == "workflow:"
+            if in_workflow:
+                workflow_idx = i
+            continue
+        if in_workflow and re.match(r"^\s*auto_distill:\s*\S+", line):
+            indent = line[: len(line) - len(line.lstrip())]
+            lines[i] = f"{indent}auto_distill: {token}"
+            return _dump_lines(config_file, lines)
+
+    if workflow_idx is not None:
+        lines.insert(workflow_idx + 1, f"  auto_distill: {token}")
+        return _dump_lines(config_file, lines)
+
+    section = f"workflow:\n  auto_distill: {token}"
+    if not content:
+        new_content = section + "\n"
+    elif content.endswith("\n"):
+        new_content = content + "\n" + section + "\n"
+    else:
+        new_content = content + "\n\n" + section + "\n"
+    try:
+        config_file.write_text(new_content, encoding="utf-8")
+    except OSError:
+        return False
+    return True
+
+
 def _next_step_start(integration_keys: set[str], language: str) -> str:
     """Return a target-aware start instruction."""
     if integration_keys == {"codex"}:
@@ -1439,24 +1566,23 @@ The following slash commands are available in this project:
 """
 
 
-def _normalize_auto_next_argv(argv: list[str]) -> list[str]:
-    """Rewrite a bare ``--auto-next`` into ``--auto-next=<sentinel>``.
+def _normalize_optional_value_argv(argv: list[str], flag: str, sentinel: str) -> list[str]:
+    """Rewrite a bare ``flag`` into ``flag=<sentinel>``.
 
     Click 8.3 no longer honors ``flag_value`` for a bare optional-value option
-    (it errors "requires an argument"). To preserve ``codexspec config
-    --auto-next`` (bare) as a toggle, a standalone ``--auto-next`` token — one
-    that is not already in ``--auto-next=...`` form and is not followed by a
-    value token — is rewritten to ``--auto-next=<sentinel>``, which the
-    ``config`` handler interprets as a toggle.
+    (it errors "requires an argument"). A standalone ``flag`` token — one that is
+    not already in ``flag=...`` form and is not followed by a value token — is
+    rewritten to ``flag=<sentinel>``, which the ``config`` handler reads as a
+    toggle.
     """
     out: list[str] = []
     i = 0
     while i < len(argv):
         tok = argv[i]
-        if tok == "--auto-next":
+        if tok == flag:
             nxt = argv[i + 1] if i + 1 < len(argv) else None
             if nxt is None or nxt.startswith("-"):
-                out.append(f"--auto-next={_AUTO_NEXT_SENTINEL}")
+                out.append(f"{flag}={sentinel}")
             else:
                 out.append(tok)
                 out.append(nxt)
@@ -1467,10 +1593,24 @@ def _normalize_auto_next_argv(argv: list[str]) -> list[str]:
     return out
 
 
+def _normalize_auto_next_argv(argv: list[str]) -> list[str]:
+    """Rewrite a bare ``--auto-next`` into ``--auto-next=<sentinel>`` (see
+    ``_normalize_optional_value_argv``)."""
+    return _normalize_optional_value_argv(argv, "--auto-next", _AUTO_NEXT_SENTINEL)
+
+
+def _normalize_auto_distill_argv(argv: list[str]) -> list[str]:
+    """Rewrite a bare ``--auto-distill`` into ``--auto-distill=<sentinel>`` (see
+    ``_normalize_optional_value_argv``)."""
+    return _normalize_optional_value_argv(argv, "--auto-distill", _AUTO_DISTILL_SENTINEL)
+
+
 def main() -> None:
     """Main entry point for the CLI."""
     if "--auto-next" in sys.argv:
         sys.argv = _normalize_auto_next_argv(sys.argv)
+    if "--auto-distill" in sys.argv:
+        sys.argv = _normalize_auto_distill_argv(sys.argv)
     app()
 
 
