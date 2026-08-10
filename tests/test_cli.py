@@ -205,6 +205,83 @@ class TestConfig:
             f"--auto-next={_AUTO_NEXT_SENTINEL}",
         ]
 
+    # --- config --auto-distill (workflow.auto_distill toggle, default ON) ---
+
+    def test_auto_distill_toggle_true_to_false(self, isolated_runner: Path, runner: CliRunner) -> None:
+        from codexspec import _AUTO_DISTILL_SENTINEL
+
+        cfg = self._write_config(isolated_runner, "workflow:\n  auto_distill: true\n")
+        result = runner.invoke(app, ["config", "--auto-distill", _AUTO_DISTILL_SENTINEL])
+        assert result.exit_code == 0
+        assert "auto_distill disabled" in result.stdout
+        assert "auto_distill: false" in cfg.read_text()
+
+    def test_auto_distill_toggle_absent_is_enabled(self, isolated_runner: Path, runner: CliRunner) -> None:
+        from codexspec import _AUTO_DISTILL_SENTINEL
+
+        # Default is ON, so toggling from an absent key disables it.
+        cfg = self._write_config(isolated_runner, "language:\n  output: en\n")
+        result = runner.invoke(app, ["config", "--auto-distill", _AUTO_DISTILL_SENTINEL])
+        assert result.exit_code == 0
+        assert "auto_distill disabled" in result.stdout
+        assert "auto_distill: false" in cfg.read_text()
+
+    def test_auto_distill_explicit_off(self, isolated_runner: Path, runner: CliRunner) -> None:
+        cfg = self._write_config(isolated_runner, "workflow:\n  auto_distill: true\n")
+        result = runner.invoke(app, ["config", "--auto-distill", "off"])
+        assert result.exit_code == 0
+        assert "auto_distill: false" in cfg.read_text()
+
+    @pytest.mark.parametrize("val", ["on", "true", "1", "yes"])
+    def test_auto_distill_explicit_truthy(self, isolated_runner: Path, runner: CliRunner, val: str) -> None:
+        cfg = self._write_config(isolated_runner, "workflow:\n  auto_distill: false\n")
+        result = runner.invoke(app, ["config", "--auto-distill", val])
+        assert result.exit_code == 0
+        assert "auto_distill: true" in cfg.read_text()
+
+    def test_auto_distill_invalid_value_exit1_and_unchanged(self, isolated_runner: Path, runner: CliRunner) -> None:
+        cfg = self._write_config(isolated_runner, "workflow:\n  auto_distill: false\n")
+        result = runner.invoke(app, ["config", "--auto-distill", "yep"])
+        assert result.exit_code == 1
+        assert "Invalid --auto-distill value" in result.stdout
+        assert "auto_distill: false" in cfg.read_text()
+
+    def test_auto_distill_creates_missing_section(self, isolated_runner: Path, runner: CliRunner) -> None:
+        cfg = self._write_config(isolated_runner, "language:\n  output: en\n")
+        result = runner.invoke(app, ["config", "--auto-distill", "off"])
+        assert result.exit_code == 0
+        text = cfg.read_text()
+        assert "workflow:" in text
+        assert "auto_distill: false" in text
+
+    def test_auto_distill_no_project(self, isolated_runner: Path, runner: CliRunner) -> None:
+        result = runner.invoke(app, ["config", "--auto-distill", "off"])
+        assert result.exit_code == 1
+        assert "No CodexSpec project found" in result.stdout
+
+    def test_auto_distill_bare_toggle_via_main(self, tmp_path: Path) -> None:
+        """The bare `--auto-distill` form is normalized in main()."""
+        cfg = tmp_path / ".codexspec" / "config.yml"
+        cfg.parent.mkdir(parents=True)
+        cfg.write_text("workflow:\n  auto_distill: true\n", encoding="utf-8")
+        code = "import sys; sys.argv=['codexspec','config','--auto-distill'];from codexspec import main; main()"
+        result = subprocess.run([sys.executable, "-c", code], cwd=tmp_path, capture_output=True, text=True)
+        assert result.returncode == 0
+        assert "auto_distill: false" in cfg.read_text()
+
+    def test_normalize_auto_distill_argv(self) -> None:
+        from codexspec import _AUTO_DISTILL_SENTINEL, _normalize_auto_distill_argv
+
+        def norm(*a: str) -> list[str]:
+            return _normalize_auto_distill_argv(list(a))
+
+        assert norm("config", "--auto-distill") == [
+            "config",
+            f"--auto-distill={_AUTO_DISTILL_SENTINEL}",
+        ]
+        assert norm("config", "--auto-distill", "off") == ["config", "--auto-distill", "off"]
+        assert norm("config", "--auto-distill=off") == ["config", "--auto-distill=off"]
+
 
 class TestInit:
     """Tests for init command."""
@@ -564,5 +641,5 @@ class TestListCommands:
         """list-commands should show total count."""
         result = runner.invoke(app, ["list-commands"])
         assert result.exit_code == 0
-        # Should show 18 commands (9 core + 4 enhanced + 2 git + 1 review + 2 utility)
-        assert "18" in result.stdout
+        # Should show 20 commands (9 core + 6 enhanced + 2 git + 1 review + 2 utility)
+        assert "20" in result.stdout

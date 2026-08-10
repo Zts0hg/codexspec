@@ -107,6 +107,7 @@ Display the configuration as in Step 2, then exit.
       {"label": "Output language (legacy)", "description": "Fallback language used when interaction/document are not set (currently: {current value})"},
       {"label": "Commit language", "description": "Language for commit messages (currently: {current value})"},
       {"label": "Auto-next chain", "description": "Auto-advance the SDD pipeline once a stage passes (workflow.auto_next) (currently: {current value})"},
+      {"label": "Auto-distill", "description": "Run /codexspec:distill on completion of wrap-up commands to capture reusable knowledge (workflow.auto_distill) (currently: {current value})"},
       {"label": "Back", "description": "Return to main menu"}
     ]
   }]
@@ -152,6 +153,29 @@ Display the configuration as in Step 2, then exit.
    `true`/`false` (update the value in place when the key exists; otherwise add
    a `workflow:` section with `auto_next: <bool>`), preserving every other
    line and comment.
+
+3b. For "Auto-distill", ask whether to enable or disable:
+
+```json
+{
+  "questions": [{
+    "question": "Set workflow.auto_distill:",
+    "header": "Auto-distill",
+    "options": [
+      {"label": "Enable", "description": "Run /codexspec:distill on completion of wrap-up commands"},
+      {"label": "Disable", "description": "Do not auto-distill; run /codexspec:distill manually"},
+      {"label": "Back", "description": "Return without changing"}
+    ]
+  }]
+}
+```
+
+   Then read `.codexspec/config.yml`. `auto_distill` is enabled by default; the
+   current value is disabled only when `workflow.auto_distill` is the literal
+   `false` (an absent key/section, `true`, or any other value is enabled). Write
+   `workflow.auto_distill` as an unquoted `true`/`false` (update the value in place
+   when the key exists; otherwise add `auto_distill: <bool>` under the `workflow:`
+   section, creating that section if absent), preserving every other line and comment.
 
 4. Update the configuration file with the new value
 5. Display the updated configuration

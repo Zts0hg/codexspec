@@ -510,6 +510,7 @@ claude
 | `--set-commit-lang`, `-c` | 커밋 메시지 언어를 설정                               |
 | `--list-langs`            | 지원되는 모든 언어를 나열                             |
 | `--auto-next`             | `workflow.auto_next`를 토글/설정(값 없으면 토글, 또는 on/off) |
+| `--auto-distill`          | `workflow.auto_distill`를 토글/설정(기본 활성화, 값 없으면 토글, 또는 on/off) |
 
 </details>
 
@@ -543,6 +544,13 @@ claude
 | `/codexspec:analyze`          | 교차 산출물 정합성 분석(자동 교정, 심각도 기반)            |
 | `/codexspec:checklist`        | 요구사항 품질 체크리스트 생성                              |
 | `/codexspec:tasks-to-issues`  | 태스크를 GitHub 이슈로 변환                                |
+
+#### 자기 진화 명령
+
+| Command | Description |
+| --- | --- |
+| `/codexspec:distill` | 재사용 가능한 기능 간 지식을 `.codexspec/profile/`에 증류 |
+| `/codexspec:evolve` | profile 지식을 명령/스킬로 컴파일하고 리뷰 PR로 업스트림에 기여 |
 
 #### Git 워크플로우 명령어
 

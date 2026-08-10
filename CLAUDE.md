@@ -259,6 +259,26 @@ workflow:
 
 **Implementation**: A conditional `## Auto-Next Chain Advance` section in the command templates, mirroring the `## Automatic Cross-Artifact Analysis` pattern in `plan-to-tasks`. Edit `templates/commands/`; the `.claude/commands/codexspec/` and `.agents/skills/codexspec-*/` forms are regenerated from templates (do not hand-edit the derived copies).
 
+### Self-Evolution: Distill & Evolve
+
+**Feature**: Capture reusable knowledge produced during work and (optionally) contribute it back to CodexSpec itself. Two distributed commands plus a project-level store:
+
+- `/codexspec:distill` — extract reusable, **cross-feature** knowledge (constraints, conventions, pitfalls, cross-feature/architectural decisions) from an interaction into `.codexspec/profile/` (four markdown files: `constraints.md` / `conventions.md` / `pitfalls.md` / `decisions.md`). Each record separates the `claim` from its `evidence`, and files are mutated only via add/replace/remove with git history as the audit ledger. Bounded by the requirements-as-truth test ("would a single feature's `requirements`/`spec`/`plan` record it?" → yes = leave it there); there is no feature-local tier.
+- `/codexspec:evolve` — compile **vetted** profile sediment into a SKILL.md / command-template draft and contribute it upstream via a **human-reviewed PR** (confirms before any push; edits only `templates/`, never the install artifact).
+
+**Auto-Distill** (`workflow.auto_distill`): when enabled, `distill` runs automatically at the end of the wrap-up commands (`implement-tasks`, `commit-staged`, `pr`) via an embedded `## Automatic Distillation` section — non-blocking, never mutates SDD artifacts, and early-exits when there is nothing to capture. **Unlike `auto_next`, `auto_distill` defaults to ON (opt-out)** — only the literal `false` disables it.
+
+**Configuration** (`.codexspec/config.yml`):
+
+```yaml
+workflow:
+  auto_distill: true   # Default ON (opt-out). Only literal `false` disables.
+```
+
+Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|off` (bare `--auto-distill` toggles).
+
+**Implementation**: Edit `templates/commands/distill.md` / `evolve.md` and the embedded `## Automatic Distillation` sections in the wrap-up templates; the `.claude/commands/codexspec/` and `.agents/skills/codexspec-*/` forms are regenerated from templates (do not hand-edit the derived copies).
+
 ### Plugin Marketplace Support
 
 **Feature**: CodexSpec is available as a Claude Code plugin via the plugin marketplace.
@@ -346,6 +366,13 @@ workflow:
 | `/codexspec:analyze`         | Cross-artifact consistency analysis with auto-remediation |
 | `/codexspec:checklist`       | Generate requirements quality checklists    |
 | `/codexspec:tasks-to-issues` | Convert tasks to GitHub issues              |
+
+### Self-Evolution Commands (2) - NEW
+
+| Command                | Description                                                              |
+| ---------------------- | ------------------------------------------------------------------------ |
+| `/codexspec:distill`   | Distill reusable cross-feature knowledge from an interaction into `.codexspec/profile/` |
+| `/codexspec:evolve`    | Compile vetted profile knowledge into a command/skill draft and contribute it upstream via a reviewed PR |
 
 ### Internal Maintenance Commands (NOT distributed to users)
 
@@ -447,6 +474,8 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec:analyze`         | ✅ Template | Template complete                                                             |
 | `/codexspec:checklist`       | ✅ Template | Template complete                                                             |
 | `/codexspec:tasks-to-issues` | ✅ Template | Template complete                                                             |
+| `/codexspec:distill`         | ✅ Template | Self-evolution: extract reusable cross-feature knowledge into `.codexspec/profile/` |
+| `/codexspec:evolve`          | ✅ Template | Self-evolution: compile vetted profile knowledge into a command/skill draft + reviewed PR |
 | `/codexspec:commit-staged`   | ✅ Template | Generate commit from staged changes strictly from the staged diff             |
 | `/codexspec:pr`              | ✅ Template | Generate PR/MR descriptions                                                   |
 | `/codexspec:review-code` | ✅ Template | Review code in any language for idiomatic clarity, correctness, robustness, architecture, and constitution alignment |

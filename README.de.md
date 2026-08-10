@@ -510,6 +510,7 @@ Die Implementierung folgt einem **bedingten TDD-Workflow**:
 | `--set-commit-lang`, `-c` | Sprache für Commit-Nachrichten festlegen                    |
 | `--list-langs`            | Alle unterstützten Sprachen auflisten                       |
 | `--auto-next`             | `workflow.auto_next` umschalten/setzen (ohne Wert = umschalten; oder on/off) |
+| `--auto-distill`          | `workflow.auto_distill` umschalten/setzen (standardmäßig an; ohne Wert = umschalten; oder on/off) |
 
 </details>
 
@@ -543,6 +544,13 @@ Die Implementierung folgt einem **bedingten TDD-Workflow**:
 | `/codexspec:analyze`        | Artefaktübergreifende Konsistenzanalyse (automatische Behebung, schweregradbasiert) |
 | `/codexspec:checklist`      | Qualitätschecklisten für Anforderungen generieren                |
 | `/codexspec:tasks-to-issues`| Aufgaben in GitHub-Issues umwandeln                              |
+
+#### Selbstevolutions-Befehle
+
+| Command | Description |
+| --- | --- |
+| `/codexspec:distill` | Wiederverwendbares, feature-übergreifendes Wissen in `.codexspec/profile/` destillieren |
+| `/codexspec:evolve` | Profil-Wissen zu einem Befehl/Skill kompilieren und per geprüftem PR upstream beitragen |
 
 #### Git-Workflow-Befehle
 

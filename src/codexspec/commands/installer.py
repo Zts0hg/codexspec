@@ -47,8 +47,8 @@ def get_commands_metadata() -> list[CommandMetadata]:
 
     Returns:
         List of CommandMetadata dictionaries sorted by category priority:
-        core (9) -> enhanced (4) -> git (2) -> review (2) -> utility (2)
-        Total: 19 commands
+        core (9) -> enhanced (6) -> git (2) -> review (1) -> utility (2)
+        Total: 20 commands
     """
     return [
         # Core Commands (9)
@@ -143,6 +143,20 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "description": "将任务转换为 GitHub Issues",
             "category": "enhanced",
             "file_name": "tasks-to-issues.md",
+        },
+        {
+            "name": "distill",
+            "display_name": "/codexspec:distill",
+            "description": "从交互中萃取可复用的跨特性知识到 .codexspec/profile/",
+            "category": "enhanced",
+            "file_name": "distill.md",
+        },
+        {
+            "name": "evolve",
+            "display_name": "/codexspec:evolve",
+            "description": "将 profile 沉淀编译为命令/技能并通过评审 PR 贡献回上游",
+            "category": "enhanced",
+            "file_name": "evolve.md",
         },
         # Git Workflow Commands (2)
         {
