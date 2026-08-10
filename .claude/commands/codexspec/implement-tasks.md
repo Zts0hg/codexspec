@@ -292,3 +292,13 @@ or a commit.
 - Commits remain outside verdict logic. If the surrounding workflow calls for
   a commit, create it only after the applicable checks are green; a commit must
   never alter, replace, or imply the review verdict.
+
+## Automatic Distillation
+
+Read `workflow.auto_distill` from `.codexspec/config.yml` (**default `true`** — enabled unless explicitly set to the literal `false`; absent or any non-`false` value means enabled).
+
+When `workflow.auto_distill` is enabled (not the literal `false`) AND this command reported success (§7.6), invoke `/codexspec:distill` exactly once on this session's interaction, then end.
+
+- distill is non-blocking and non-interactive: it never prompts, never changes this command's verdict or report, and early-exits when there is nothing reusable to capture.
+- distill only writes `candidate`/`vetted` records to `.codexspec/profile/`; it MUST NOT modify `requirements.md`, `spec.md`, `plan.md`, or `tasks.md`.
+- Do not invoke distill when `auto_distill` is disabled or when this command did not report success.

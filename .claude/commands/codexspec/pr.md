@@ -622,3 +622,13 @@ When saving to a file, output the raw markdown content directly (without code bl
 - Include enough detail for reviewers to understand the changes
 - Do not include any AI attribution in the PR description
 - Focus on clarity and usefulness for code reviewers
+
+## Automatic Distillation
+
+Read `workflow.auto_distill` from `.codexspec/config.yml` (**default `true`** — enabled unless explicitly set to the literal `false`; absent or any non-`false` value means enabled).
+
+When `workflow.auto_distill` is enabled (not the literal `false`) AND a PR/MR description was generated successfully, invoke `/codexspec:distill` exactly once on this session's interaction, then end.
+
+- distill is non-blocking and non-interactive: it never prompts and never alters the generated description; it early-exits when there is nothing reusable to capture.
+- distill only writes records to `.codexspec/profile/`.
+- Do not invoke distill when `auto_distill` is disabled or when no description was produced.
