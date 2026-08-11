@@ -1,0 +1,13 @@
+# Pitfalls
+
+Cross-feature traps and their workarounds. Current-effective only; git history is the ledger.
+
+## P-001: The implement-tasks review gate needs an isolated reviewer subagent
+
+- claim: The `review-code` defect gate invoked by `implement-tasks` requires an `isolated` reviewer topology. Run inline in a single agent context (no subagent spawned), it can only reach `review_context: "shared"` — a disclosed coverage gap that is NOT a clean §7.6 success, which in turn blocks `auto_distill` from firing. Spawn a dedicated isolated review subagent (fed only the evidence, not the implementer's reasoning) to reach a clean isolated PASS.
+- type: pitfall
+- scope/when: running `/codexspec:implement-tasks` (or `/codexspec:review-code --feature ...`) inline without delegating the review to a subagent
+- evidence.facts: "auto_distill 默认开，那为什么没有自动跑？"; "spawn 一个独立复审子 agent(补上 isolated,拿到 clean PASS,distill 自动跑)"
+- evidence.state: observed at feature 2026-0811-1418yq-debug-command, base commit 8e69f51. Confirmed by outcome — the inline review returned shared/INCONCLUSIVE and auto_distill did not fire; after spawning an isolated review subagent the envelope was a clean isolated PASS and auto_distill fired.
+- provenance: distill @implement-tasks, 2026-08-11, derivation: inferred
+- status: candidate

@@ -90,6 +90,7 @@ For **each task**, determine the workflow based on task type:
 3. **Verify - Run Tests**
    - Execute all relevant tests
    - Ensure new tests pass and no existing tests break
+   - If a test stays red across several green attempts, a fix reddens a previously-passing test, or you catch yourself guessing: stop patching and follow **Systematic Debugging Escalation** (below)
 
 4. **Review & Refactor**
    - Check for bugs, edge cases, security issues
@@ -231,7 +232,9 @@ Apply only verified repairs:
 
 - For a functional defect, first add a reproducing regression test and observe
   the expected failure. Then use red-green-refactor until the defect is fixed
-  while existing behavior remains green.
+  while existing behavior remains green. When such a repair is non-trivial — the
+  cause is not a mechanical local edit but must be traced across call chains,
+  state, or data flow — follow **Systematic Debugging Escalation** (below).
 - For documentation and non-code configuration defects, use the applicable
   deterministic checks before and after the repair. Do not manufacture a code
   test when the binding contract is non-code.
@@ -292,6 +295,25 @@ or a commit.
 - Commits remain outside verdict logic. If the surrounding workflow calls for
   a commit, create it only after the applicable checks are green; a commit must
   never alter, replace, or imply the review verdict.
+
+## Systematic Debugging Escalation
+
+When a fix is not converging, escalate into the systematic root-cause discipline instead of continuing to patch. This is a reference, not a duplicate: the discipline lives once in `/codexspec:debug`.
+
+**Trip conditions** (either one):
+
+- **(a) During the TDD Verify/green loop (§3)**: the same test stays red after several green attempts, a fix reddens a previously-passing test, or you notice guess-and-check behavior.
+- **(b) During a test-safe repair (§7.4)**: you are fixing a **functional/correctness (or robustness) defect** whose fix is **non-trivial** — it requires tracing across call chains, state, or data flow, not a mechanical local edit. This trip does NOT apply to idiomatic-clarity, architecture, constitution-alignment, style, or trivial mechanical fixes.
+
+**Escalation**:
+
+```text
+Invoke /codexspec:debug
+```
+
+Apply its root-cause discipline to the failing test (trip a) or the defect under repair (trip b). The escalation is **non-gating and low-ceremony**: it produces no PASS/FAIL, emits no mandatory notice line, and does not interrupt the user.
+
+**Resume**: once `debug` has reached the root cause and applied a verified fix, **return here and continue** the task or repair exactly where you left off — re-establish the green baseline and proceed. There is no runtime stack; resuming is your responsibility, not the engine's.
 
 ## Automatic Distillation
 

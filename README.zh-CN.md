@@ -544,6 +544,7 @@ claude
 | `/codexspec:analyze`          | 跨产物一致性分析（自动修复，按严重程度划分）                 |
 | `/codexspec:checklist`        | 生成需求质量检查清单                                     |
 | `/codexspec:tasks-to-issues`  | 将任务转换为 GitHub Issues                               |
+| `/codexspec:debug`            | 系统化根因排查（四阶段；可独立调用或由 implement-tasks 升级进入） |
 
 #### 自我进化命令
 
