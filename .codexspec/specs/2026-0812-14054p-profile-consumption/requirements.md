@@ -30,7 +30,7 @@ decisions and short evidence; do not copy the full conversation.
 ### NEED-002: A-layer — ambient injection at init
 
 - **Status**: confirmed
-- **Statement**: `codexspec init` injects a **managed block** into the context file of each configured AI integration. The block contains (1) the project's **constraints**, delivered per the channel-adaptive method in DEC-005, and (2) a **pointer index** to `conventions.md` / `pitfalls.md` / `decisions.md` — naming each file, a one-line description, and when to consult it — so their content is read **on demand** (token cost only in the turn a file is actually read; independent of profile size).
+- **Statement**: `codexspec init` injects a **managed block** into the context file of each configured AI integration. The block (identical on both channels, DEC-006) contains (1) a **strong mandatory pointer** to the `constraints/` directory, and (2) a **pointer index** to `conventions/` / `pitfalls/` / `decisions/` — naming each directory, a one-line description, and when to consult it — so their records are read **on demand** (token cost only in the turn a record is actually read; independent of profile size).
 - **Rationale**: Ambient context is loaded in every session (including plain chat), so the profile becomes discoverable everywhere, not only inside SDD commands.
 - **User Evidence**: "A 层·常驻指针（处处可发现，含普通聊天）"; "按需检索内容而不是全量注入"
 - **Confirmed At**: 2026-08-12
@@ -54,7 +54,7 @@ decisions and short evidence; do not copy the full conversation.
 ### NEED-005: Immediate effect — init sets up the reference unconditionally and ensures the profile scaffold
 
 - **Status**: confirmed
-- **Statement**: `codexspec init` **unconditionally and idempotently** (a) ensures the managed block exists in each configured context file, and (b) ensures the profile **scaffold** exists — the `.codexspec/profile/` directory plus any file an injected reference resolves against (at minimum `constraints.md` for the Claude `@import`). Consequently, knowledge distilled *after* init takes effect immediately (the reference already points at an existing, live file) with **no re-init required** and **no dangling reference**.
+- **Statement**: `codexspec init` **unconditionally and idempotently** (a) ensures the managed block exists in each configured context file, and (b) ensures the profile **scaffold** exists — the four category directories (`constraints/` / `conventions/` / `pitfalls/` / `decisions/`), each kept by a `.gitkeep`. Consequently, knowledge distilled *after* init takes effect immediately (the pointer already resolves to an existing directory) with **no re-init required** and **no dangling reference**.
 - **Rationale**: Gating injection on profile-existence would mean a first-time user's later-distilled knowledge stays inert until the next init run. Decoupling "wire the reference" (init, always) from "profile has content" (distill, later) removes that latency.
 - **User Evidence**: "为什么不是init的时候统一检查并注入CLAUDE.md/AGENTS.md，然后检查 profile目录是否存在，如果不存在可以先创建空目录来避免悬空引用？"
 - **Confirmed At**: 2026-08-12
@@ -95,10 +95,10 @@ decisions and short evidence; do not copy the full conversation.
 
 ### DEC-001: Constraints guaranteed-present; the other three via pointer
 
-- **Status**: confirmed
-- **Decision**: Deliver `constraints` so they are guaranteed/near-guaranteed present (highest-weight negative red-lines); deliver `conventions` / `pitfalls` / `decisions` via pointer + on-demand read.
-- **Alternatives Rejected**: All-pointer (hard red-lines then rely on the model choosing to read them); all-inline (token weight grows with the profile).
-- **Reason**: Missing a hard prohibition is the exact recurrence the feature prevents; the negative-constraint set is small, so guaranteeing its presence is cheap.
+- **Status**: superseded
+- **Replaced By**: DEC-006
+- **Historical Note**: Originally constraints were guaranteed-present (inline/@import) and only the other three were pointers. Reversed to a uniform pointer for all four (DEC-006) once the store moved to one-file-per-record (DEC-007), which makes `@import` of a constraints directory impossible; the user accepted losing constraints' guaranteed in-context presence in exchange for channel uniformity and conflict-free merges.
+- **Decision (historical)**: Deliver `constraints` guaranteed-present; `conventions` / `pitfalls` / `decisions` via pointer.
 - **User Evidence**: "采用(i) 内联 constraints + 指针其余三类"
 
 ### DEC-002: B-layer only in `specify`
@@ -120,18 +120,35 @@ decisions and short evidence; do not copy the full conversation.
 ### DEC-004: Unconditional injection + init-created scaffold
 
 - **Status**: confirmed
-- **Decision**: init injects the managed block unconditionally (not gated on whether the profile has content) and creates the profile scaffold if absent.
+- **Decision**: init injects the managed block unconditionally (not gated on whether the profile has content) and creates the profile scaffold if absent — the four category **directories** `constraints/` / `conventions/` / `pitfalls/` / `decisions/`, each kept by a `.gitkeep`.
 - **Alternatives Rejected**: Gate injection on profile-existence.
 - **Reason**: Gating causes later-distilled knowledge to stay inert until the next init and forces init to re-check content every run; unconditional wiring + a scaffold makes new knowledge live immediately.
 - **User Evidence**: "为什么不是init的时候统一检查并注入...如果不存在可以先创建空目录来避免悬空引用"
 
 ### DEC-005: Channel-adaptive constraints delivery
 
-- **Status**: confirmed
-- **Decision**: Deliver constraints per channel capability — **Claude/CLAUDE.md** via `@import .codexspec/profile/constraints.md` (guaranteed present + auto-fresh from the live file); **Codex/AGENTS.md** via a **strong mandatory pointer** ("before non-trivial work you MUST read constraints.md — highest-priority red-lines"), which is auto-fresh and depends on no `@import` support.
-- **Alternatives Rejected**: Codex literal-inline of constraints + a sync mechanism.
-- **Reason**: Literal inline goes stale when `constraints.md` changes; the only component that knows it changed is `distill`, but making distill rewrite context files breaks its contract ("only writes to `.codexspec/profile/`, never touches other tracked files"); re-syncing via init re-run reintroduces latency. Pointers read the live file, so there is no staleness anywhere and no dependency on unverified Codex `@import` behavior.
+- **Status**: superseded
+- **Replaced By**: DEC-006
+- **Historical Note**: Originally Claude used `@import` for constraints and Codex a pointer. Reversed to a uniform pointer on both channels (DEC-006, no `@import` anywhere) once the store became one-file-per-record (DEC-007) — `@import` cannot import a directory, and uniformity also removes the Codex `@import` open question entirely.
+- **Decision (historical)**: Claude `@import` constraints; Codex strong pointer.
 - **User Evidence**: "需要进一步解决 codex 中注入内容陈旧的问题？所以CODEX应该还是全部使用指针的方式吗"; "认可"
+
+### DEC-006: Uniform pointer block on both channels (no `@import`)
+
+- **Status**: confirmed
+- **Decision**: CLAUDE.md and AGENTS.md receive an **identical** pointer block. Constraints are a **strong mandatory pointer** to `.codexspec/profile/constraints/` ("before non-trivial work you MUST read every record there"); `conventions`/`pitfalls`/`decisions` are a pointer index read on demand. **No `@import` anywhere.**
+- **Alternatives Rejected**: Channel-adaptive delivery (superseded DEC-005); constraints inline/`@import` (superseded DEC-001).
+- **Reason**: One-file-per-record (DEC-007) makes constraints a directory, which `@import` cannot inline; a uniform pointer is channel-neutral, keeps the always-loaded footprint independent of profile size, and closes the Codex `@import` question.
+- **Accepted Trade-off**: constraints are no longer guaranteed in-context (a strong pointer, not `@import`); the user explicitly accepted this for uniformity + conflict-free merges.
+- **User Evidence**: "CLAUDE.md改为跟AGENTS.md一样全部使用指针的形式"; "接受\"constraints 放弃 @import 保证在场、改强制指针\""
+
+### DEC-007: One-file-per-record store (conflict-free parallel merges)
+
+- **Status**: confirmed
+- **Decision**: The profile store is one record per file (`<id>.md`, the id also being the filename) under a per-category directory (`constraints/` / `conventions/` / `pitfalls/` / `decisions/`). distill's add/replace/remove become create/edit/delete of a single file.
+- **Alternatives Rejected**: Single dense files with a `merge=union` `.gitattributes` (still a residual add/add conflict; and requires touching git config); per-feature subfolders (would break cross-feature dedup/replace).
+- **Reason**: Parallel feature branches add differently-named files, so git merges distilled knowledge with **zero conflict** — imposing any manual merge on the user is a UX defect the store layout must prevent structurally, not paper over.
+- **User Evidence**: "换成一记录一文件"; "琐碎是贬义词，近义词是麻烦，这也是我一直不想采用冲突再合并的方式，因为这样给用户带来了麻烦的操作，影响了用户体验"
 
 ## Out of Scope
 
@@ -155,11 +172,10 @@ decisions and short evidence; do not copy the full conversation.
 
 ## Open Questions
 
-### OPEN-001: Whether Codex AGENTS.md supports `@import` (non-blocking, downgraded)
+### OPEN-001: Whether Codex AGENTS.md supports `@import` — RESOLVED (moot)
 
-- **Status**: open (non-blocking)
-- **Why It Matters**: The confirmed design (DEC-005) deliberately does NOT depend on it — Codex uses a pointer regardless. If verification shows Codex expands `@import`, upgrading Codex constraints to `@import` is an optional enhancement, not a requirement.
-- **Owner**: Team (verify during spec/plan)
+- **Status**: resolved (moot)
+- **Resolution**: The uniform pointer design (DEC-006) uses **no `@import` on any channel**, so Codex `@import` support is irrelevant. This open item is closed.
 
 ### OPEN-003: Exact managed-block and pointer wording
 
@@ -182,3 +198,11 @@ Resolved during discovery:
 - **Entries Confirmed**: NEED-001..005, CON-001..005, DEC-001..005, OUT-001..003
 - **Open (non-blocking)**: OPEN-001, OPEN-003
 - **Notable rejected alternatives**: gating injection on profile-existence (DEC-004); Codex literal-inline + sync (DEC-005); requiring vetted for local consumption (DEC-003); reading profile at every SDD stage (DEC-002).
+
+### Session 2026-08-12 (Rework)
+
+- **Summary Presented**: To make parallel-branch distill merges **conflict-free for the user** (not merely easy to resolve), the store moved to **one record per file** under per-category directories (DEC-007), and constraints dropped `@import` in favor of a **uniform strong pointer on both channels** (DEC-006) — since `@import` cannot inline a directory. DEC-001 and DEC-005 were superseded accordingly; OPEN-001 became moot.
+- **User Confirmation**: "换成一记录一文件" ; "接受\"constraints 放弃 @import 保证在场、改强制指针\"" ; "走\"就地 rework profile-consumption(含更新其 SDD 工件)\"这个方式"
+- **Entries Added**: DEC-006, DEC-007
+- **Entries Superseded**: DEC-001 → DEC-006; DEC-005 → DEC-006
+- **Accepted Trade-off**: constraints lose guaranteed in-context presence (strong pointer, not `@import`).

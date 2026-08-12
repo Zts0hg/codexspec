@@ -91,9 +91,9 @@ class CodexIntegration:
 
         context_path.write_text(updated, encoding="utf-8")
 
-        # Inject the profile block (Codex uses a pointer, not @import) alongside
-        # the skills section, as its own bounded, idempotent managed block.
-        inject_profile_block(context_path, "codex")
+        # Inject the profile block (pointers only, no @import) alongside the
+        # skills section, as its own bounded, idempotent managed block.
+        inject_profile_block(context_path)
 
     def render_skill(self, command_name: str, content: str, fallback_description: str = "") -> str:
         """Render one command template into a Codex SKILL.md."""

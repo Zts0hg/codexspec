@@ -892,7 +892,7 @@ def init(
 
         # Inject the profile block AFTER creation/compliance so it never clobbers
         # the compliance @import or the user's body (bounded, idempotent).
-        inject_profile_block(claude_md, "claude")
+        inject_profile_block(claude_md)
 
     # Initialize git if requested
     if not no_git and not (target_dir / ".git").exists():

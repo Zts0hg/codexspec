@@ -7,6 +7,8 @@ Every task: Covers: REQ-xxx; Plan: <component/phase>. Derived from plan.md; no r
 
 **Feature Branch**: `2026-0812-14054p-profile-consumption`
 
+> ⚠️ **REWORKED 2026-08-12** — Tasks/scenarios below were authored for the original channel-adaptive + single-file design. The shipped implementation follows the reworked **uniform pointer + one-file-per-record** design (`requirements.md` DEC-006/DEC-007, `spec.md` REQ-006/REQ-008): `render_profile_block()` has no `channel` param and emits no `@import`; the scaffold creates the four category **directories** (each with `.gitkeep`); tests assert pointers-only and directory scaffold. Scenario text mentioning `@import`/`channel`/header-only files is retained for history and is partly stale.
+
 ## Group A — Shared profile module (Plan C1 / Phase 1)
 
 ### T-001 — Create `src/codexspec/profile.py` (testable: Python)

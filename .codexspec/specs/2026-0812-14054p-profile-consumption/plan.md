@@ -7,7 +7,9 @@ Authority: requirements.md (confirmed) > spec.md > constitution/repo facts > pla
 
 **Feature Branch**: `2026-0812-14054p-profile-consumption`
 **Created**: 2026-08-12
-**Status**: Draft
+**Status**: Reworked
+
+> ⚠️ **REWORKED 2026-08-12** — This plan was authored for the original design (channel-adaptive constraints: Claude `@import` + Codex pointer; single dense profile files; `render_profile_block(channel)`). It was superseded by a **uniform pointer block on both channels (no `@import`)** and a **one-file-per-record store** to make parallel-branch distill merges conflict-free. The authoritative current design is `requirements.md` (DEC-006, DEC-007; DEC-001/DEC-005 superseded) and `spec.md` (REQ-006, REQ-008). The shipped implementation, tests, and profile records follow the reworked design; the component/decision detail below is retained for history and is partly stale where it describes the channel-adaptive/single-file mechanics.
 
 ## Context, Goals, Non-Goals
 

@@ -23,7 +23,7 @@ Two complementary layers, one product feature shipped via `codexspec init` + com
 
 ### User Story 1 - Ambient profile injection at init (Priority: P1)
 
-A user runs `codexspec init` in a project configured for Claude and/or Codex. Init writes a managed profile block into each context file: the constraints (channel-adaptive) plus a pointer index to conventions/pitfalls/decisions. It also ensures the profile scaffold exists. From then on, every session in that project surfaces the constraints and can consult the pointed-to files on demand.
+A user runs `codexspec init` in a project configured for Claude and/or Codex. Init writes an identical managed profile block into each context file: a strong mandatory pointer to `constraints/` plus a pointer index to conventions/pitfalls/decisions (no `@import`). It also ensures the profile scaffold exists. From then on, every session in that project surfaces the constraints pointer and can consult the pointed-to directories on demand.
 
 **Why this priority**: This is the core ambient mechanism and the delivery vehicle; it is the MVP.
 
@@ -31,8 +31,8 @@ A user runs `codexspec init` in a project configured for Claude and/or Codex. In
 
 **Acceptance Scenarios**:
 
-1. **Given** `project.ai: claude`, **When** init runs, **Then** CLAUDE.md gains a bounded managed block that `@import`s `.codexspec/profile/constraints.md` and lists pointers to conventions/pitfalls/decisions, and the profile scaffold exists.
-2. **Given** `project.ai: codex`, **When** init runs, **Then** AGENTS.md gains a bounded managed block whose constraints are a strong mandatory pointer (no `@import` dependency) plus the pointer index.
+1. **Given** `project.ai: claude`, **When** init runs, **Then** CLAUDE.md gains a bounded managed block with a strong mandatory pointer to `.codexspec/profile/constraints/` plus a pointer index to conventions/pitfalls/decisions (no `@import`), and the profile scaffold exists.
+2. **Given** `project.ai: codex`, **When** init runs, **Then** AGENTS.md gains the identical bounded managed block (uniform pointer, no `@import`).
 3. **Given** `project.ai: both`, **When** init runs, **Then** both files receive their channel-appropriate block.
 4. **Given** init has already injected the block, **When** init runs again, **Then** the block is updated idempotently and no other user content in the file is altered.
 5. **Given** an existing context file with user content, **When** init injects, **Then** only the bounded managed block is added/updated; the user's other content is preserved.
@@ -49,8 +49,8 @@ A first-time user's project has no profile content yet. Init still wires the ref
 
 **Acceptance Scenarios**:
 
-1. **Given** a project with no prior profile, **When** init runs, **Then** the managed block and the profile scaffold (directory + at least `constraints.md` for the `@import`) are created; no reference dangles.
-2. **Given** init already ran and later `distill` appends to `pitfalls.md`, **When** the next session consults the pointer, **Then** it reads the live, updated file with no init re-run.
+1. **Given** a project with no prior profile, **When** init runs, **Then** the managed block and the profile scaffold (four category directories, each with a `.gitkeep`) are created; no reference dangles.
+2. **Given** init already ran and later `distill` adds a record file under `pitfalls/`, **When** the next session consults the pointer, **Then** it reads the live record with no init re-run.
 
 ---
 
@@ -74,7 +74,7 @@ While discovering requirements for a new feature, `specify` reads `.codexspec/pr
 
 - **Empty/absent profile** → init still wires + scaffolds (US2-1); specify and ambient reads degrade to "nothing to apply", no error.
 - **Re-run init** → idempotent block update, user content preserved (US1-4/5).
-- **Codex without `@import`** → constraints delivered as a strong mandatory pointer; no staleness, no `@import` dependency (DEC-005).
+- **Parallel feature branches both distill** → each adds differently-named `<id>.md` files under the category directories, so git merges them with no conflict (DEC-007).
 - **Large conventions/pitfalls/decisions files** → always-loaded footprint unchanged (content read on demand only) (NFR-002).
 - **Profile file grows after init** → reference reads live file; no re-sync, no staleness.
 
@@ -84,33 +84,35 @@ While discovering requirements for a new feature, `specify` reads `.codexspec/pr
 
 - **REQ-001**: `codexspec init` MUST inject a managed profile block into the context file of each configured AI integration (`project.ai`): CLAUDE.md for Claude, AGENTS.md for Codex, both when configured for both.
   - Sources: NEED-002, NEED-003
-- **REQ-002**: The managed block MUST contain (a) the project's constraints delivered per REQ-006, and (b) a pointer index to `conventions.md` / `pitfalls.md` / `decisions.md` — each named, with a one-line description and a "when to consult" note — whose content is read on demand rather than inlined.
-  - Sources: NEED-002, DEC-001
+- **REQ-002**: The managed block MUST contain (a) a strong mandatory pointer to the `constraints/` directory (per REQ-006), and (b) a pointer index to `conventions/` / `pitfalls/` / `decisions/` — each named, with a one-line description and a "when to consult" note — whose records are read on demand rather than inlined.
+  - Sources: NEED-002, DEC-006
 - **REQ-003**: init MUST inject **unconditionally and idempotently** (not gated on whether the profile has content), using recognizable boundary markers, updating in place on re-run, and MUST NOT clobber any other content in the context file.
   - Sources: NEED-005, DEC-004, CON-005
-- **REQ-004**: init MUST ensure the profile **scaffold** exists — the `.codexspec/profile/` directory plus at least the file(s) an injected reference resolves against. `constraints.md` MUST exist whenever constraints are injected on any channel (the Claude `@import` and the Codex constraints pointer both target it). This makes later-distilled content effective with no re-init and no dangling reference.
-  - Sources: NEED-005, DEC-004, DEC-005
-- **REQ-005**: `specify.md` MUST read `.codexspec/profile/` during requirements discovery so `requirements.md` incorporates the relevant constraints/pitfalls/conventions/decisions. No other SDD-stage template may read the profile.
+- **REQ-004**: init MUST ensure the profile **scaffold** exists — the four category directories `constraints/` / `conventions/` / `pitfalls/` / `decisions/`, each kept by a `.gitkeep` so an empty category is tracked and every pointer resolves. This makes later-distilled content effective with no re-init and no dangling reference.
+  - Sources: NEED-005, DEC-004, DEC-007
+- **REQ-005**: `specify.md` MUST read the `.codexspec/profile/` directories during requirements discovery so `requirements.md` incorporates the relevant constraints/pitfalls/conventions/decisions. No other SDD-stage template may read the profile.
   - Sources: NEED-004, DEC-002, CON-003
-- **REQ-006**: Constraints delivery MUST be channel-adaptive: Claude/CLAUDE.md via `@import .codexspec/profile/constraints.md` (guaranteed-present + auto-fresh); Codex/AGENTS.md via a strong mandatory pointer instructing the agent to read `constraints.md` before non-trivial work (auto-fresh; no `@import` dependency).
-  - Sources: DEC-001, DEC-005
+- **REQ-006**: Constraints delivery MUST be a **uniform strong mandatory pointer on both channels** — CLAUDE.md and AGENTS.md get the identical block instructing the agent to read every record under `.codexspec/profile/constraints/` before non-trivial work. **No `@import` on any channel.**
+  - Sources: DEC-006
 - **REQ-007**: Local consumption MUST NOT filter by `status`: both `candidate` and `vetted` records are surfaced; the full record (including `status`) is read on demand so the agent can weight `candidate` lower. `vetted` remains only the `evolve` gate.
   - Sources: DEC-003
+- **REQ-008**: The store MUST be one record per file (`<id>.md`, the id also being the filename) under a per-category directory, so parallel feature branches add differently-named files that git merges without conflict. distill's add/replace/remove are create/edit/delete of a single file.
+  - Sources: DEC-007
 
 ### Non-Functional Requirements
 
 - **NFR-001**: All changes MUST be confined to `templates/` and `src/codexspec/` (init logic + integrations). Derived artifacts sync via publish → `codexspec init`; CodexSpec's own repo obtains the capability by dogfooding init (self-bootstrap).
   - Sources: CON-001
-- **NFR-002**: The always-loaded context footprint MUST be independent of the size of `conventions.md` / `pitfalls.md` / `decisions.md`; only constraints (per REQ-006) plus the pointer index are always-present.
-  - Sources: CON-004, DEC-001
+- **NFR-002**: The always-loaded context footprint MUST be independent of the size of the profile; only the pointer block (constraints pointer + the pointer index) is always-present — record content is read on demand.
+  - Sources: CON-004, DEC-006
 - **NFR-003**: The feature MUST NOT modify the constitution or use it as an injection surface; it MUST NOT alter `evolve` or the upstream-contribution path.
   - Sources: CON-002, OUT-001, OUT-002
-- **NFR-004**: The design MUST NOT depend on Codex expanding `@import`; the Codex path MUST work using only "Codex reads AGENTS.md" + the agent's ability to read a file on demand.
-  - Sources: DEC-005
+- **NFR-004**: The design MUST NOT depend on Codex expanding `@import`; with the uniform pointer block (DEC-006) no channel uses `@import`, so this is satisfied by construction.
+  - Sources: DEC-006
 
 ### Open Questions (non-blocking)
 
-- **OPEN-001**: Whether Codex AGENTS.md expands `@import`. The confirmed design does not depend on it (REQ-006/NFR-004 use a pointer regardless); if verified true, upgrading Codex constraints to `@import` is an optional enhancement, not a requirement. Does not block downstream work.
+- **OPEN-001**: RESOLVED (moot). The uniform pointer block (REQ-006/DEC-006) uses no `@import` on any channel, so Codex `@import` support is irrelevant.
 - **OPEN-003**: Exact managed-block text, pointer-index entries, and the Codex constraints imperative — a drafting detail resolved during implementation.
 
 > Open items remain questions and MUST NOT be rewritten as confirmed requirements.
@@ -124,7 +126,7 @@ While discovering requirements for a new feature, `specify` reads `.codexspec/pr
 - **SC-003**: After init, the `.codexspec/profile/` scaffold exists such that every injected reference resolves (no dangling reference), with no re-init required for later-distilled content to be readable.
 - **SC-004**: `specify.md` reads the profile; no other SDD-stage template contains a profile read.
 - **SC-005**: The constitution file is unchanged by this feature, and no `evolve`/upstream logic is modified.
-- **SC-006**: No literal copy of `constraints.md` content exists in any context file (Claude uses `@import`; Codex uses a pointer) — i.e., no staleness surface.
+- **SC-006**: No `@import` appears in the profile block on any channel; both CLAUDE.md and AGENTS.md get the identical pointer block. The store is one-file-per-record directories, so parallel-branch distill merges are conflict-free.
 
 ## Out of Scope
 
@@ -160,11 +162,13 @@ While discovering requirements for a new feature, `specify` reads `.codexspec/pr
 | CON-003 | REQ-005 (last sentence); Out of Scope | Downstream doesn't read profile |
 | CON-004 | NFR-002 | Constant ambient footprint |
 | CON-005 | REQ-003 | Idempotent, non-destructive block |
-| DEC-001 | REQ-002, REQ-006, NFR-002 | Constraints guaranteed; three pointers |
+| DEC-001 | (superseded by DEC-006) | Constraints guaranteed — reversed |
+| DEC-006 | REQ-002, REQ-006, NFR-002 | Uniform pointer block, no @import |
+| DEC-007 | REQ-004, REQ-008, SC-006 | One-file-per-record store |
 | DEC-002 | REQ-005 | B-layer only in specify |
 | DEC-003 | REQ-007 | No vetted filter for local use |
 | DEC-004 | REQ-003, REQ-004; US2 | Unconditional inject + scaffold |
-| DEC-005 | REQ-006, NFR-004, SC-006 | Channel-adaptive constraints; no staleness/@import dependency |
+| DEC-005 | (superseded by DEC-006) | Channel-adaptive constraints — reversed to uniform pointer |
 | OUT-001 | OUT-001; NFR-003 | No constitution changes |
 | OUT-002 | OUT-002; NFR-003 | No evolve changes |
 | OUT-003 | OUT-003 | No metric optimization |

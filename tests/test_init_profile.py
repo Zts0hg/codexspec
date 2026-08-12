@@ -9,7 +9,7 @@ from pathlib import Path
 from typer.testing import CliRunner
 
 from codexspec import app
-from codexspec.profile import PROFILE_BLOCK_START, PROFILE_FILES
+from codexspec.profile import PROFILE_BLOCK_START, PROFILE_CATEGORIES
 
 runner = CliRunner()
 
@@ -20,23 +20,24 @@ def _init(target: Path, ai: str) -> None:
     assert result.exit_code == 0, result.stdout
 
 
-def test_init_claude_injects_import_profile_block(tmp_path: Path) -> None:
-    """Scenario 1: project.ai=claude → CLAUDE.md has one PROFILE block using @import."""
+def test_init_claude_injects_pointer_profile_block(tmp_path: Path) -> None:
+    """Scenario 1: project.ai=claude → CLAUDE.md has one PROFILE block, pointers only (no @import)."""
     _init(tmp_path, "claude")
     claude_md = (tmp_path / "CLAUDE.md").read_text(encoding="utf-8")
     assert claude_md.count(PROFILE_BLOCK_START) == 1
-    # constraints via @import within the block
     block = claude_md.split(PROFILE_BLOCK_START, 1)[1]
-    assert "@.codexspec/profile/constraints.md" in block
+    assert ".codexspec/profile/constraints/" in block
+    assert "@import" not in block
 
 
 def test_init_creates_profile_scaffold_unconditionally(tmp_path: Path) -> None:
-    """Scenario 2: scaffold (dir + four files) exists even on an empty project."""
+    """Scenario 2: scaffold (four category dirs + .gitkeep) exists even on an empty project."""
     _init(tmp_path, "claude")
     profile_dir = tmp_path / ".codexspec" / "profile"
     assert profile_dir.is_dir()
-    for name in PROFILE_FILES:
-        assert (profile_dir / name).exists()
+    for category in PROFILE_CATEGORIES:
+        assert (profile_dir / category).is_dir()
+        assert (profile_dir / category / ".gitkeep").exists()
 
 
 def test_init_profile_block_after_compliance_import(tmp_path: Path) -> None:

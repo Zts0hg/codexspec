@@ -53,10 +53,11 @@ def test_evolve_still_reads_vetted_profile() -> None:
     assert "vetted" in content
 
 
-def test_no_staleness_surface_codex_uses_pointer() -> None:
-    """Scenario 4 (SC-006): the Codex constraints delivery inlines nothing (no @import)."""
-    codex_block = render_profile_block("codex")
-    assert "@import" not in codex_block
-    assert "@.codexspec" not in codex_block
-    # Claude, by contrast, delivers constraints via @import (guaranteed + auto-fresh)
-    assert "@.codexspec/profile/constraints.md" in render_profile_block("claude")
+def test_no_import_anywhere_uniform_pointer() -> None:
+    """SC-006: pointers only — no @import in the profile block on either channel."""
+    block = render_profile_block()
+    assert "@import" not in block
+    assert "@.codexspec" not in block
+    # constraints are a strong mandatory pointer to their directory
+    assert ".codexspec/profile/constraints/" in block
+    assert "MUST read" in block
