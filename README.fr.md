@@ -544,6 +544,7 @@ L'implémentation suit le **flux de travail TDD conditionnel** :
 | `/codexspec:analyze`          | Analyse de cohérence inter-artefacts (correction automatique, basée sur la sévérité) |
 | `/codexspec:checklist`        | Générer une liste de contrôle de qualité des exigences                  |
 | `/codexspec:tasks-to-issues`  | Convertir les tâches en GitHub Issues                           |
+| `/codexspec:debug`            | Débogage systématique de cause racine (4 phases ; autonome ou escaladé depuis implement-tasks) |
 
 #### Commandes d'auto-évolution
 

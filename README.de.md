@@ -544,6 +544,7 @@ Die Implementierung folgt einem **bedingten TDD-Workflow**:
 | `/codexspec:analyze`        | Artefaktübergreifende Konsistenzanalyse (automatische Behebung, schweregradbasiert) |
 | `/codexspec:checklist`      | Qualitätschecklisten für Anforderungen generieren                |
 | `/codexspec:tasks-to-issues`| Aufgaben in GitHub-Issues umwandeln                              |
+| `/codexspec:debug`          | Systematisches Ursachen-Debugging (4 Phasen; eigenständig oder aus implement-tasks eskaliert) |
 
 #### Selbstevolutions-Befehle
 

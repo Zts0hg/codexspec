@@ -544,6 +544,7 @@ claude
 | `/codexspec:analyze`         | クロスアーティファクト整合性分析（自動修復・重要度ベース） |
 | `/codexspec:checklist`       | 要件の品質チェックリストを生成                             |
 | `/codexspec:tasks-to-issues` | タスクを GitHub Issues に変換                              |
+| `/codexspec:debug`           | 体系的な根本原因デバッグ（4 フェーズ；単独実行または implement-tasks からエスカレーション） |
 
 #### 自己進化コマンド
 

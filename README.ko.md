@@ -544,6 +544,7 @@ claude
 | `/codexspec:analyze`          | 교차 산출물 정합성 분석(자동 교정, 심각도 기반)            |
 | `/codexspec:checklist`        | 요구사항 품질 체크리스트 생성                              |
 | `/codexspec:tasks-to-issues`  | 태스크를 GitHub 이슈로 변환                                |
+| `/codexspec:debug`            | 체계적 근본 원인 디버깅(4단계; 독립 실행 또는 implement-tasks에서 에스컬레이션) |
 
 #### 자기 진화 명령
 
