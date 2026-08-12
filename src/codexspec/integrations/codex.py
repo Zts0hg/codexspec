@@ -10,6 +10,7 @@ from typing import Any
 import yaml
 
 from codexspec.commands.installer import get_commands_metadata
+from codexspec.profile import inject_profile_block
 from codexspec.translator import load_translation_cache, translate_template_frontmatter
 
 CODEXSPEC_CONTEXT_START = "<!-- CODEXSPEC START -->"
@@ -89,6 +90,10 @@ class CodexIntegration:
             updated = "# AGENTS.md\n\n" + section
 
         context_path.write_text(updated, encoding="utf-8")
+
+        # Inject the profile block (Codex uses a pointer, not @import) alongside
+        # the skills section, as its own bounded, idempotent managed block.
+        inject_profile_block(context_path, "codex")
 
     def render_skill(self, command_name: str, content: str, fallback_description: str = "") -> str:
         """Render one command template into a Codex SKILL.md."""

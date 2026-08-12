@@ -190,8 +190,11 @@ class TestForceFlagBehavior:
         assert has_compliance_section(claude_md) is True
         assert content.startswith("<!-- markdownlint-disable MD041 -->")
 
-    def test_force_leaves_compliant_file_unchanged(self, tmp_path):
-        """--force on a CLAUDE.md that already has @import: left byte-identical."""
+    def test_force_on_compliant_file_preserves_import_and_body(self, tmp_path):
+        """--force on a compliant CLAUDE.md preserves the @import and body, and adds
+        the (bounded, idempotent) profile block without clobbering anything else."""
+        from codexspec.profile import PROFILE_BLOCK_START
+
         proj = tmp_path / "proj"
         proj.mkdir()
         claude_md = proj / "CLAUDE.md"
@@ -205,8 +208,13 @@ class TestForceFlagBehavior:
         result = _runner.invoke(app, ["init", str(proj), "--no-git", "--force"])
         assert result.exit_code == 0, result.output
 
-        # Already compliant -- nothing is written.
-        assert claude_md.read_text(encoding="utf-8") == original
+        updated = claude_md.read_text(encoding="utf-8")
+        # The compliance import and the user body are preserved untouched (as a prefix);
+        # only the profile block is appended.
+        assert updated.startswith(original.rstrip("\n"))
+        assert "@.codexspec/memory/constitution.md" in updated
+        assert "Custom content." in updated
+        assert updated.count(PROFILE_BLOCK_START) == 1
 
     def test_force_creates_claude_md_when_absent(self, tmp_path):
         """--force still creates CLAUDE.md from the template when none exists."""

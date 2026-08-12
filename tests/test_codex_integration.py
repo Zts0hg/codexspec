@@ -184,6 +184,64 @@ def test_get_integrations_supports_both() -> None:
     assert [integration.key for integration in integrations] == ["claude", "codex"]
 
 
+# --- Profile block injection (T-003) ---
+
+
+def test_codex_agents_md_has_profile_block_with_pointer_not_import(tmp_path: Path) -> None:
+    """T-003 #1/#2: AGENTS.md gets the PROFILE block (strong pointer, no @import),
+    coexisting with the skills block."""
+    from codexspec.profile import PROFILE_BLOCK_END, PROFILE_BLOCK_START
+
+    target = tmp_path / "project"
+    target.mkdir()
+    CodexIntegration().ensure_context_file(target)
+
+    content = (target / "AGENTS.md").read_text(encoding="utf-8")
+    # both bounded blocks present and distinct
+    assert "<!-- CODEXSPEC START -->" in content
+    assert PROFILE_BLOCK_START in content and PROFILE_BLOCK_END in content
+    # profile block extracted
+    block = content.split(PROFILE_BLOCK_START, 1)[1].split(PROFILE_BLOCK_END, 1)[0]
+    assert "MUST read" in block and "constraints.md" in block
+    assert "@import" not in block
+    assert "@.codexspec" not in block
+
+
+def test_codex_agents_md_profile_block_idempotent_and_preserves_content(tmp_path: Path) -> None:
+    """T-003 #3: re-running preserves the skills block and user content; block stays single."""
+    from codexspec.profile import PROFILE_BLOCK_START
+
+    target = tmp_path / "project"
+    target.mkdir()
+    (target / "AGENTS.md").write_text("# Notes\n\nkeep me\n", encoding="utf-8")
+
+    CodexIntegration().ensure_context_file(target)
+    once = (target / "AGENTS.md").read_text(encoding="utf-8")
+    CodexIntegration().ensure_context_file(target)
+    twice = (target / "AGENTS.md").read_text(encoding="utf-8")
+
+    assert once == twice
+    assert twice.count(PROFILE_BLOCK_START) == 1
+    assert "keep me" in twice
+    assert "<!-- CODEXSPEC START -->" in twice
+
+
+def test_init_both_channels_get_correct_constraints_variant(tmp_path: Path) -> None:
+    """T-003 #4: project.ai=both → CLAUDE.md uses @import, AGENTS.md uses a pointer."""
+    from codexspec.profile import PROFILE_BLOCK_START
+
+    runner = CliRunner()
+    result = runner.invoke(app, ["init", str(tmp_path / "proj"), "--ai", "both", "--no-git", "--lang", "en"])
+    assert result.exit_code == 0, result.stdout
+    proj = tmp_path / "proj"
+
+    claude_block = (proj / "CLAUDE.md").read_text(encoding="utf-8").split(PROFILE_BLOCK_START, 1)[1]
+    agents_block = (proj / "AGENTS.md").read_text(encoding="utf-8").split(PROFILE_BLOCK_START, 1)[1]
+    assert "@.codexspec/profile/constraints.md" in claude_block
+    assert "@.codexspec/profile/constraints.md" not in agents_block
+    assert "MUST read" in agents_block
+
+
 def test_init_ai_codex_installs_codex_skills_only(tmp_path: Path) -> None:
     """--ai codex should install Codex skills and avoid Claude command files."""
     runner = CliRunner()

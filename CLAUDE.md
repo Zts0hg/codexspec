@@ -279,6 +279,18 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 
 **Implementation**: Edit `templates/commands/distill.md` / `evolve.md` and the embedded `## Automatic Distillation` sections in the wrap-up templates; the `.claude/commands/codexspec/` and `.agents/skills/codexspec-*/` forms are regenerated from templates (do not hand-edit the derived copies).
 
+### Profile Consumption
+
+**Feature**: Make a project's distilled `.codexspec/profile/` **take effect locally** — the read side that complements `distill` (which writes) and `evolve` (which contributes upstream). Without it the profile was write-only-then-upstream; this closes the loop so accumulated knowledge stops repeated pitfalls and re-litigated decisions **within the user's own project**.
+
+- **Two consumption layers**:
+  - **Ambient (A)** — `codexspec init` injects a bounded, idempotent managed block (`<!-- CODEXSPEC PROFILE START/END -->`) into each configured integration's context file (**CLAUDE.md and/or AGENTS.md** per `project.ai`), so the profile is discoverable in every session including plain chat.
+  - **Requirements-time (B)** — `specify` reads the profile during discovery (a `## Consult Project Profile` step), so `requirements.md` is a synthesis that already accounts for it. **Only `specify` reads the profile**; downstream stages keep `requirements.md` as authority (transitive), and `review-code`/`evolve`/the constitution are untouched.
+- **Channel-adaptive constraints (no staleness surface)**: constraints are delivered so they are always present and always fresh — Claude via `@import .codexspec/profile/constraints.md` (fully inlined by Claude Code); Codex via a strong mandatory pointer ("you MUST read constraints.md…") because Codex is **not** assumed to expand `@import`. The other three files (`conventions`/`pitfalls`/`decisions`) are a **pointer index** read on demand, so the always-loaded footprint is independent of profile size. Nothing is literally copied, so there is no copy to go stale.
+- **Immediate effect, no re-init**: init **unconditionally** injects the block and **ensures the profile scaffold** (`.codexspec/profile/` + four header-only files), so knowledge distilled later is live at once with no dangling reference. No `status` filter for local use — `candidate` records take effect locally (weighted with caution); `vetted` remains only the `evolve` gate.
+
+**Implementation**: `src/codexspec/profile.py` (`ensure_profile_scaffold` / `render_profile_block` / `inject_profile_block`), wired into `src/codexspec/__init__.py` (scaffold + CLAUDE.md injection, after the compliance import) and `src/codexspec/integrations/codex.py` (AGENTS.md injection); the B-layer read lives in `templates/commands/specify.md`. CodexSpec's own repo receives the ambient block by dogfooding `init` at release (not by hand-editing its CLAUDE.md/AGENTS.md); the `.claude/commands/` and `.agents/skills/` forms of `specify` regenerate from the template.
+
 ### Plugin Marketplace Support
 
 **Feature**: CodexSpec is available as a Claude Code plugin via the plugin marketplace.
