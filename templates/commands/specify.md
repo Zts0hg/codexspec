@@ -50,6 +50,15 @@ When the argument identifies an existing feature:
 4. Load the existing `requirements.md`.
 5. Legacy feature: if only `spec.md` exists, extract candidate entries from it, mark them `open`, and require user confirmation before they become authoritative.
 
+## Consult Project Profile
+
+Before discussing and finalizing requirements, read the project profile under `.codexspec/profile/` when it exists so the confirmed `requirements.md` is a synthesis that already accounts for accumulated project knowledge. Each category is a directory holding one record per file:
+
+- `constraints/` first — the project's hard prohibitions (highest weight); requirements MUST NOT contradict them.
+- `pitfalls/`, `conventions/`, `decisions/` — read the records relevant to this feature's area, to avoid re-hitting known traps, to follow established conventions, and to reuse past cross-feature/architectural decisions rather than re-litigating them.
+
+Each record carries a `status` (`candidate` or `vetted`); weight `candidate` entries with appropriate caution. Fold what is relevant into the discussion and the resulting entries; cite a profile record as evidence when it materially shapes a decision. This is the single point where the profile enters the SDD pipeline — downstream stages keep `requirements.md` as authority and do not re-read the profile. Degrade silently when the profile is absent or empty (nothing to apply); never block on it.
+
 ## Discussion Rules
 
 - Ask one material question at a time.

@@ -40,6 +40,7 @@ from .i18n import (
     update_language_field,
 )
 from .integrations import get_integrations
+from .profile import ensure_profile_scaffold, inject_profile_block
 from .translator import SUPPORTED_LANGUAGES, translate
 
 # Version info
@@ -706,6 +707,11 @@ def init(
     (codexspec_dir / "templates" / "docs").mkdir(exist_ok=True)
     (codexspec_dir / "scripts").mkdir(exist_ok=True)
 
+    # Ensure the profile scaffold unconditionally (independent of integrations),
+    # so knowledge distilled later is effective immediately with no re-init and
+    # no dangling reference. Non-destructive: existing profile files are kept.
+    ensure_profile_scaffold(target_dir)
+
     # Copy helper scripts based on platform
     scripts_source_dir = get_scripts_dir()
     if scripts_source_dir.exists():
@@ -883,6 +889,10 @@ def init(
                 if force or confirm_add_compliance(normalized_lang):
                     prepend_compliance_section(claude_md)
                     console.print(f"[green]{translate('cli.init.compliance_added', normalized_lang)}[/green]")
+
+        # Inject the profile block AFTER creation/compliance so it never clobbers
+        # the compliance @import or the user's body (bounded, idempotent).
+        inject_profile_block(claude_md)
 
     # Initialize git if requested
     if not no_git and not (target_dir / ".git").exists():
