@@ -42,17 +42,18 @@ Apply this boundary test to every candidate: **"Would a single feature's `requir
 
 ## The profile store: `.codexspec/profile/`
 
-Four markdown files, each holding **only current-effective** knowledge — dense, with no "retired" section (git history is the ledger). Create the directory and file on first write.
+Four **category directories**, each holding **one record per file** (`<id>.md`) with **only current-effective** knowledge — dense, with no "retired" section (git history is the ledger). One-file-per-record is deliberate: parallel feature branches each add differently-named files, so distilled knowledge merges without conflict. Create the directory and record file on first write.
 
-- `constraints.md` — negative constraints (`严禁 / 仅允许`). These carry the **highest** weight and MUST be honored first.
-- `conventions.md` — positive cross-feature conventions / steering.
-- `pitfalls.md` — cross-feature traps and their workarounds.
-- `decisions.md` — cross-feature / architectural decisions only (ADR-lite). **Never** single-feature requirement rationale.
+- `constraints/` — negative constraints (`严禁 / 仅允许`). These carry the **highest** weight and MUST be honored first.
+- `conventions/` — positive cross-feature conventions / steering.
+- `pitfalls/` — cross-feature traps and their workarounds.
+- `decisions/` — cross-feature / architectural decisions only (ADR-lite). **Never** single-feature requirement rationale.
 
 ### Record format — `claim` and `evidence` physically separated
 
 Every record MUST separate the distilled claim from the evidence it rests on:
 
+- `id` — **type letter + full source-feature id + local sequence**, e.g. `P-2026-0812-14054p-1` or `Con-2026-0812-14054p-1`. It is **both** the record's `### <id>: <title>` heading **and its filename** (`pitfalls/P-2026-0812-14054p-1.md`). The **source-feature id** is the distilling feature's full spec-dir id `{YYYY-MMDD-HHMM}{rr}` (e.g. `2026-0812-14054p`); it is globally unique by the timestamp+random scheme spec directories use, so records distilled on parallel feature branches never collide on id **or filename** (they merge with no conflict). Keep the **full** id (not a short tail) so the record is self-describing: the date supports recency/staleness reading, and the feature id ties the record to its originating change for decision context and scope. When distilling with no feature context, generate a fresh `{YYYY-MMDD-HHMM}{rr}` id now (same convention as create-new-feature). **Never** use a bare sequential id such as `P-001` — those collide across parallel branches.
 - `claim` — one-sentence reusable statement.
 - `type` — `convention` | `constraint` | `pitfall` | `decision` (`constraint` = highest priority).
 - `scope/when` — natural-language applicability condition (e.g. "when editing Python code"); omit for global. **No formal syntax.**
@@ -63,10 +64,10 @@ Every record MUST separate the distilled claim from the evidence it rests on:
 
 This separation is what makes a later error locatable as **misread** (facts wrong) vs **overreach** (claim over-generalized) vs **stale** (state no longer holds).
 
-Example entry:
+Example entry — file `conventions/Con-2026-0809-2219gg-1.md`:
 
 ```markdown
-### C-003: Prefer absolute imports
+### Con-2026-0809-2219gg-1: Prefer absolute imports
 - claim: Always use absolute imports in `src/`.
 - type: convention
 - scope/when: Python modules under `src/`
@@ -80,7 +81,7 @@ Example entry:
 
 Read the interaction segment and extract, per the dimensions above, only **verified** knowledge — prefer facts confirmed by outcomes over speculation; speculation MUST NOT become `vetted`.
 
-Before writing, **read the current profile** and skip anything already covered; update anything changed via `replace`. **This is how deduplication is done — by judgment, not an algorithm.**
+Before writing, **read the current profile** (the record files under each category directory) and skip anything already covered; update anything changed via `replace`. **This is how deduplication is done — by judgment, not an algorithm.**
 
 ## Conflict adjudication
 
@@ -93,13 +94,13 @@ When a new item conflicts with an existing rule, resolve in this order:
 
 ## Mutation discipline
 
-Change the profile **only** through three conceptual operations (you edit the markdown directly — these are a discipline, **not** a tool API or matching algorithm):
+Change the profile **only** through three conceptual operations (you edit the files directly — these are a discipline, **not** a tool API or matching algorithm):
 
-- `add` — append a new verified item.
-- `replace` — supersede an outdated/wrong item in place (keeps files dense).
-- `remove` — delete an item invalidated by a changed environment.
+- `add` — create a new record file `<category>/<id>.md` for a verified item.
+- `replace` — supersede an outdated/wrong item **in its own file** (keeps records dense).
+- `remove` — delete the record's file when a changed environment invalidates it.
 
-git history is the audit ledger. Do **NOT** keep a retired section inside the files.
+git history is the audit ledger. Do **NOT** keep a retired file or a retired section.
 
 ## Vetting candidates (manual, interactive)
 
