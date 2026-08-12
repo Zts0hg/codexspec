@@ -279,6 +279,16 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 
 **Implementation**: Edit `templates/commands/distill.md` / `evolve.md` and the embedded `## Automatic Distillation` sections in the wrap-up templates; the `.claude/commands/codexspec/` and `.agents/skills/codexspec-*/` forms are regenerated from templates (do not hand-edit the derived copies).
 
+### Systematic Debugging: debug
+
+**Feature**: A root-cause-first debugging discipline, delivered from one definition two ways — as a standalone `/codexspec:debug` command and as a low-ceremony escalation that `implement-tasks` enters when a fix is not converging.
+
+- **One discipline, two reach paths (DRY)**: the four-phase discipline (root-cause investigation hard gate → pattern analysis → single-hypothesis verification → failing-test-first fix; **≥3 failed fixes → stop and question the architecture**) lives once in `debug.md`. The standalone command *is* that file; the `implement-tasks` hook references it via `Invoke /codexspec:debug` and never duplicates the text.
+- **Single hook, two trip conditions**: `implement-tasks` carries one `## Systematic Debugging Escalation` section that trips on (a) a stuck TDD green loop, or (b) repairing a **non-trivial** functional/correctness defect surfaced by its `review-code` call. The escalation is conditional, non-gating, low-ceremony, and ends by explicitly resuming the task. `review-code` stays review-only and is **not** modified.
+- **No config key, no artifact**: there is no `workflow.auto_debug` (systematic debugging when stuck is strictly-better default behavior, like conditional TDD); `debug` produces no persistent artifact — reusable root causes flow through the existing `distill` → `.codexspec/profile/pitfalls.md` channel.
+
+**Implementation**: Edit `templates/commands/debug.md` and the `## Systematic Debugging Escalation` section in `implement-tasks.md`; the `.claude/commands/codexspec/` and `.agents/skills/codexspec-*/` forms are regenerated from templates (do not hand-edit the derived copies).
+
 ### Plugin Marketplace Support
 
 **Feature**: CodexSpec is available as a Claude Code plugin via the plugin marketplace.
@@ -358,7 +368,7 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 | `/codexspec:review-tasks`    | Review task breakdown                    |
 | `/codexspec:implement-tasks` | Execute implementation                   |
 
-### Enhanced Commands (4) - NEW
+### Enhanced Commands (5) - NEW
 
 | Command                      | Description                                 |
 | ---------------------------- | ------------------------------------------- |
@@ -366,6 +376,7 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 | `/codexspec:analyze`         | Cross-artifact consistency analysis with auto-remediation |
 | `/codexspec:checklist`       | Generate requirements quality checklists    |
 | `/codexspec:tasks-to-issues` | Convert tasks to GitHub issues              |
+| `/codexspec:debug`           | Systematic root-cause debugging (standalone + implement-tasks escalation) |
 
 ### Self-Evolution Commands (2) - NEW
 
@@ -476,6 +487,7 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec:tasks-to-issues` | ✅ Template | Template complete                                                             |
 | `/codexspec:distill`         | ✅ Template | Self-evolution: extract reusable cross-feature knowledge into `.codexspec/profile/` |
 | `/codexspec:evolve`          | ✅ Template | Self-evolution: compile vetted profile knowledge into a command/skill draft + reviewed PR |
+| `/codexspec:debug`           | ✅ Template | Systematic root-cause debugging: one four-phase discipline; standalone command + implement-tasks reference-style escalation |
 | `/codexspec:commit-staged`   | ✅ Template | Generate commit from staged changes strictly from the staged diff             |
 | `/codexspec:pr`              | ✅ Template | Generate PR/MR descriptions                                                   |
 | `/codexspec:review-code` | ✅ Template | Review code in any language for idiomatic clarity, correctness, robustness, architecture, and constitution alignment |

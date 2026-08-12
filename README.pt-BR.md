@@ -544,6 +544,7 @@ A implementação segue o **fluxo de TDD condicional**:
 | `/codexspec:analyze`          | Análise de consistência cross-artefato (com correção automática, por severidade) |
 | `/codexspec:checklist`        | Gera checklist de qualidade dos requisitos                         |
 | `/codexspec:tasks-to-issues`  | Converte tarefas em GitHub Issues                                  |
+| `/codexspec:debug`            | Depuração sistemática de causa raiz (4 fases; independente ou escalada a partir de implement-tasks) |
 
 #### Comandos de autoevolução
 

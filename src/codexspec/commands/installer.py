@@ -47,8 +47,8 @@ def get_commands_metadata() -> list[CommandMetadata]:
 
     Returns:
         List of CommandMetadata dictionaries sorted by category priority:
-        core (9) -> enhanced (6) -> git (2) -> review (1) -> utility (2)
-        Total: 20 commands
+        core (9) -> enhanced (7) -> git (2) -> review (1) -> utility (2)
+        Total: 21 commands
     """
     return [
         # Core Commands (9)
@@ -115,7 +115,7 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "category": "core",
             "file_name": "implement-tasks.md",
         },
-        # Enhanced Commands (4)
+        # Enhanced Commands (7)
         {
             "name": "clarify",
             "display_name": "/codexspec:clarify",
@@ -157,6 +157,13 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "description": "将 profile 沉淀编译为命令/技能并通过评审 PR 贡献回上游",
             "category": "enhanced",
             "file_name": "evolve.md",
+        },
+        {
+            "name": "debug",
+            "display_name": "/codexspec:debug",
+            "description": "系统化根因排查（四阶段：复现→定位根因→单一修复），可独立调用或由 implement-tasks 升级进入",
+            "category": "enhanced",
+            "file_name": "debug.md",
         },
         # Git Workflow Commands (2)
         {

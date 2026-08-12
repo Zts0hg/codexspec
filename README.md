@@ -544,6 +544,7 @@ Implementation follows **conditional TDD workflow**:
 | `/codexspec:analyze`         | Cross-artifact consistency analysis (auto-remediating, severity-based) |
 | `/codexspec:checklist`       | Generate requirements quality checklist                         |
 | `/codexspec:tasks-to-issues` | Convert tasks to GitHub Issues                                  |
+| `/codexspec:debug`           | Systematic root-cause debugging (4 phases; standalone or escalated from implement-tasks) |
 
 #### Self-Evolution Commands
 
