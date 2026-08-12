@@ -25,25 +25,27 @@ Converse in the interaction language and author artifacts in the document langua
 
 Resolve by explicit path, then current branch; never silently select the latest feature.
 
-Read `requirements.md`, `spec.md`, `plan.md`, the constitution, and only the repository files necessary to verify plan claims.
+Read `requirements.md`, `spec.md`, `design.md`, `plan.md`, the constitution, and only the repository files necessary to verify plan claims.
 
-If `requirements.md` is absent, use legacy spec-only mode and disclose that original-discussion fidelity cannot be verified.
+If `requirements.md` is absent, use legacy spec-only mode and disclose that original-discussion fidelity cannot be verified. A legacy feature may also have no `design.md`; when it is absent, review the plan against the spec directly.
 
 Authority order:
 
 1. Confirmed requirements
 2. Specification
 3. Constitution and verified repository facts
-4. Plan-level technical decisions
-5. Applicable best practices
+4. `design.md`
+5. Plan-level technical decisions
+6. Applicable best practices
 
 ## Review Passes
 
 ### 1. Fidelity and Coverage
 
 - Verify every `REQ`/`NFR` has plan coverage.
-- Verify each component or phase has `Covers:`.
-- Detect omitted behavior, semantic changes, scope expansion, and plan decisions that override confirmed trade-offs.
+- Verify the plan covers the confirmed `design.md` components (which cover the requirements) and does not restate or re-architect the design — architecture/interface/data-model decisions belong to `design.md`, not the plan.
+- Verify each plan component or phase carries `Covers: REQ-xxx; Design: <design component>` (or `Covers: REQ-xxx` for a legacy feature with no `design.md`).
+- Detect omitted behavior, semantic changes, scope expansion, and plan decisions that override confirmed trade-offs or the confirmed design.
 - Verify plan-level assumptions remain labeled and do not become product requirements.
 
 ### 2. Feasibility and Internal Quality

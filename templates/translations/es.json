@@ -103,8 +103,8 @@
     "argument-hint": "[requirements.md o directorio de característica]"
   },
   "spec-to-plan": {
-    "description": "Convertir una especificación confirmada en un plan técnico trazable",
-    "argument-hint": "[spec.md o directorio de característica]"
+    "description": "Convertir un diseño confirmado en un plan de implementación trazable",
+    "argument-hint": "[design.md, spec.md o directorio de la funcionalidad]"
   },
   "plan-to-tasks": {
     "description": "Expandir un plan aprobado en tareas trazables y ejecutables",

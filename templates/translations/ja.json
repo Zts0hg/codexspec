@@ -103,8 +103,8 @@
     "argument-hint": "[requirements.md または 機能ディレクトリ]"
   },
   "spec-to-plan": {
-    "description": "確認済み仕様をトレーサブルな技術計画に変換",
-    "argument-hint": "[spec.md または 機能ディレクトリ]"
+    "description": "確認済みの設計をトレース可能な実装計画に変換",
+    "argument-hint": "[design.md、spec.md、または機能ディレクトリ]"
   },
   "plan-to-tasks": {
     "description": "承認済み計画をトレーサブルで実行可能なタスクに展開",

@@ -523,6 +523,7 @@ L'implémentation suit le **flux de travail TDD conditionnel** :
 | `/codexspec:constitution`     | Créer/mettre à jour la constitution du projet avec validation inter-artefacts |
 | `/codexspec:specify`          | Clarifier, confirmer et consigner les exigences dans `requirements.md`   |
 | `/codexspec:generate-spec`    | Générer le document `spec.md` ★ Auto-revue                               |
+| `/codexspec:spec-to-design`   | Générer `design.md` (architecture/composants/décisions) ★ Auto-revue     |
 | `/codexspec:spec-to-plan`     | Convertir la spec en plan technique ★ Auto-revue                         |
 | `/codexspec:plan-to-tasks`    | Décomposer le plan en tâches traçables et vérifiables ★ Auto-revue       |
 | `/codexspec:implement-tasks`  | Exécuter les tâches (TDD conditionnel)                                   |
@@ -532,6 +533,7 @@ L'implémentation suit le **flux de travail TDD conditionnel** :
 | Commande                 | Description                              |
 | ------------------------ | ---------------------------------------- |
 | `/codexspec:review-spec`  | Réviser la spécification (auto ou manuel) |
+| `/codexspec:review-design` | Réviser la conception (auto ou manuel) |
 | `/codexspec:review-plan`  | Réviser le plan technique (auto ou manuel) |
 | `/codexspec:review-tasks` | Réviser la décomposition des tâches (auto ou manuel) |
 

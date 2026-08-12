@@ -37,6 +37,7 @@ Read:
 
 - `requirements.md`
 - `spec.md`
+- `design.md`
 - `plan.md`
 - `tasks.md`
 - `.codexspec/memory/constitution.md` when present
@@ -46,8 +47,11 @@ Authority order:
 1. Confirmed entries in `requirements.md`
 2. `spec.md`
 3. Constitution and verified repository facts
-4. Approved `plan.md`
-5. `tasks.md`
+4. `design.md`
+5. Approved `plan.md`
+6. `tasks.md`
+
+A legacy feature may have no `design.md`; when it is absent, proceed with `plan.md` as the design-and-plan authority.
 
 When `requirements.md` is absent, use legacy spec-only mode. Treat `spec.md` as
 the temporary highest feature authority and state that fidelity to the original

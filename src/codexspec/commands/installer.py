@@ -47,11 +47,11 @@ def get_commands_metadata() -> list[CommandMetadata]:
 
     Returns:
         List of CommandMetadata dictionaries sorted by category priority:
-        core (9) -> enhanced (7) -> git (2) -> review (1) -> utility (2)
-        Total: 21 commands
+        core (11) -> enhanced (7) -> git (2) -> review (1) -> utility (2)
+        Total: 23 commands
     """
     return [
-        # Core Commands (9)
+        # Core Commands (11)
         {
             "name": "constitution",
             "display_name": "/codexspec:constitution",
@@ -74,9 +74,16 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "file_name": "generate-spec.md",
         },
         {
+            "name": "spec-to-design",
+            "display_name": "/codexspec:spec-to-design",
+            "description": "将已确认的规格转换为可追溯的设计文档（架构/组件/关键设计决策）",
+            "category": "core",
+            "file_name": "spec-to-design.md",
+        },
+        {
             "name": "spec-to-plan",
             "display_name": "/codexspec:spec-to-plan",
-            "description": "将已确认的规格转换为可追溯的技术计划",
+            "description": "将已确认的设计转换为可追溯的实现计划",
             "category": "core",
             "file_name": "spec-to-plan.md",
         },
@@ -93,6 +100,13 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "description": "审查规格的忠实度、内部质量与计划就绪度",
             "category": "core",
             "file_name": "review-spec.md",
+        },
+        {
+            "name": "review-design",
+            "display_name": "/codexspec:review-design",
+            "description": "审查设计的忠实度、可行性与规划就绪度",
+            "category": "core",
+            "file_name": "review-design.md",
         },
         {
             "name": "review-plan",

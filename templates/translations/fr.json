@@ -103,8 +103,8 @@
     "argument-hint": "[requirements.md ou répertoire de fonctionnalité]"
   },
   "spec-to-plan": {
-    "description": "Convertir une spécification confirmée en un plan technique traçable",
-    "argument-hint": "[spec.md ou répertoire de fonctionnalité]"
+    "description": "Convertir une conception confirmée en un plan d'implémentation traçable",
+    "argument-hint": "[design.md, spec.md ou répertoire de fonctionnalité]"
   },
   "plan-to-tasks": {
     "description": "Développer un plan approuvé en tâches traçables et exécutables",

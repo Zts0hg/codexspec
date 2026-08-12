@@ -239,13 +239,13 @@ git:
 
 **Feature**: When `workflow.auto_next` is enabled, the SDD pipeline advances to the next command automatically once the current stage passes, instead of requiring manual triggering between stages.
 
-**Affected Commands**: `/codexspec:specify`, `/codexspec:generate-spec`, `/codexspec:spec-to-plan`, `/codexspec:plan-to-tasks` each gain an `## Auto-Next Chain Advance` section. `/codexspec:implement-tasks` is the terminal stage (nothing auto-fires after it).
+**Affected Commands**: `/codexspec:specify`, `/codexspec:generate-spec`, `/codexspec:spec-to-design`, `/codexspec:spec-to-plan`, `/codexspec:plan-to-tasks` each gain an `## Auto-Next Chain Advance` section. `/codexspec:implement-tasks` is the terminal stage (nothing auto-fires after it).
 
-**Chain**: `specify → generate-spec → spec-to-plan → plan-to-tasks → implement-tasks`.
+**Chain**: `specify → generate-spec → spec-to-design → spec-to-plan → plan-to-tasks → implement-tasks`.
 
 **Pass gate**:
 
-- `generate-spec` / `spec-to-plan` / `plan-to-tasks`: the command's built-in review loop Overall Status is `PASS` or `PASS_WITH_WARNINGS`. (`NEEDS_REVISION` / `BLOCKED` stops the chain and returns control to the user.)
+- `generate-spec` / `spec-to-design` / `spec-to-plan` / `plan-to-tasks`: the command's built-in review loop Overall Status is `PASS` or `PASS_WITH_WARNINGS`. (`NEEDS_REVISION` / `BLOCKED` stops the chain and returns control to the user.)
 - `specify`: has no review loop; the gate is the user's explicit confirmation that requirements discovery is complete (the **final** stage summary, not each intermediate one).
 
 Before each advance the agent emits one notice line (e.g. `auto_next: review passed → invoking /codexspec:spec-to-plan`). For `plan-to-tasks`, the existing `analyze` auto-invoke runs first: it auto-remediates deterministic inconsistencies (conforming spec/plan/tasks to `requirements.md`, which it never modifies) and remains non-blocking (does not block `implement-tasks`); the jump into `implement-tasks` proceeds with no confirmation prompt.
@@ -258,6 +258,18 @@ workflow:
 ```
 
 **Implementation**: A conditional `## Auto-Next Chain Advance` section in the command templates, mirroring the `## Automatic Cross-Artifact Analysis` pattern in `plan-to-tasks`. Edit `templates/commands/`; the `.claude/commands/codexspec/` and `.agents/skills/codexspec-*/` forms are regenerated from templates (do not hand-edit the derived copies).
+
+### First-Class Design Stage: spec-to-design
+
+**Feature**: A dedicated **design** stage inserted between `spec` and `plan`, so the authoritative chain is `requirements → spec → design → plan → tasks`. It closes the "front-half design layer" gap where `spec-to-plan` used to conflate *what the system is* (architecture, components, interfaces, design decisions) with *how to build it* (phases, ordering, verification).
+
+- **`/codexspec:spec-to-design`** (new) reads `requirements.md` + `spec.md`, produces `design.md` as a first-class traceable artifact (every component/interface/data change/decision carries `Covers: REQ-xxx`), and embeds its own review loop (`review-design`) + `auto_next` (→ `spec-to-plan`). It acts as a **constrained system designer** and stops rather than change confirmed product intent.
+- **`/codexspec:review-design`** (new) is symmetric with `review-spec`/`review-plan`/`review-tasks` (same Severity/Status/**Compatibility Score** formula), saving `review-design.md`.
+- **`design.md`** uses a single `templates/docs/design-template.md` — a fixed core (Architecture & Components, ADR-lite Key Design Decisions, Requirements Coverage) plus **on-demand** optional sections (data models, API/interface contracts, sequence/data flow, cross-cutting design, risks). Output scales with complexity; no simple/detailed two-tier split.
+- **`spec-to-plan` narrowed** to an implementation planner that consumes `design.md`; plan components carry `Covers: REQ-xxx; Design: <design component>` (ultimate REQ anchor + immediate upstream pointer, extending the existing `tasks` notation). The plan templates were slimmed — the design-only sections (Architecture / Component Structure / Data Models / API Contracts / ADR-style Decisions) moved to `design.md`.
+- **Authority order** across the affected commands is `requirements > spec > design > plan > tasks` (design ranked below the constitution/verified-facts authority, above the plan). `generate-spec` auto_next now targets `spec-to-design`; `plan-to-tasks` / `implement-tasks` read `design.md`; `analyze` deepened its chain to `confirmed → REQ → design → plan → task`; `review-plan` / `review-tasks` gained `design` in their authority order. `review-code` and both constitutions are untouched.
+
+**Implementation**: Edit `templates/commands/spec-to-design.md` / `review-design.md`, `templates/docs/design-template.md`, and the design-aware edits to `generate-spec` / `spec-to-plan` / `plan-to-tasks` / `analyze` / `implement-tasks` / `review-plan` / `review-tasks` and the slimmed `plan-template-{simple,detailed}.md`; register both commands in `installer.py` (core). The `.claude/commands/codexspec/` and `.agents/skills/codexspec-*/` forms are regenerated from templates (do not hand-edit the derived copies).
 
 ### Self-Evolution: Distill & Evolve
 
@@ -367,16 +379,18 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 
 ## Available Slash Commands
 
-### Core Commands (9)
+### Core Commands (11)
 
 | Command                      | Description                              |
 | ---------------------------- | ---------------------------------------- |
 | `/codexspec:constitution`    | Create/update project constitution       |
 | `/codexspec:specify`         | Create feature specification             |
 | `/codexspec:generate-spec`   | Generate detailed spec from requirements |
-| `/codexspec:spec-to-plan`    | Convert spec to technical plan           |
+| `/codexspec:spec-to-design`  | Produce design.md (architecture/components/ADR-lite) from spec |
+| `/codexspec:spec-to-plan`    | Convert design to implementation plan    |
 | `/codexspec:plan-to-tasks`   | Break down plan into tasks               |
 | `/codexspec:review-spec`     | Review specification                     |
+| `/codexspec:review-design`   | Review design                            |
 | `/codexspec:review-plan`     | Review technical plan                    |
 | `/codexspec:review-tasks`    | Review task breakdown                    |
 | `/codexspec:implement-tasks` | Execute implementation                   |
@@ -488,9 +502,11 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec:constitution`    | ✅ Template | Template complete, CLAUDE.md Compliance check on first-time creation          |
 | `/codexspec:specify`         | ✅ Template | Template complete, includes Configuration Check                               |
 | `/codexspec:generate-spec`   | ✅ Template | Template complete                                                             |
-| `/codexspec:spec-to-plan`    | ✅ Template | Template complete                                                             |
+| `/codexspec:spec-to-design`  | ✅ Template | Template complete — first-class design stage between spec and plan            |
+| `/codexspec:spec-to-plan`    | ✅ Template | Template complete — narrowed to implementation planning, consumes design.md   |
 | `/codexspec:plan-to-tasks`   | ✅ Template | Template complete                                                             |
 | `/codexspec:review-spec`     | ✅ Template | Template complete                                                             |
+| `/codexspec:review-design`   | ✅ Template | Template complete — reviews design.md, symmetric with the other review gates  |
 | `/codexspec:review-plan`     | ✅ Template | Template complete                                                             |
 | `/codexspec:review-tasks`    | ✅ Template | Template complete                                                             |
 | `/codexspec:implement-tasks` | ✅ Template | Template complete                                                             |

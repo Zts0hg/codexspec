@@ -523,6 +523,7 @@ claude
 | `/codexspec:constitution`     | 교차 산출물 검증과 함께 프로젝트 헌법을 생성/갱신            |
 | `/codexspec:specify`          | 요구사항을 명확화하고 확인해 `requirements.md`에 영속화       |
 | `/codexspec:generate-spec`    | `spec.md` 문서를 생성 ★ 자동 리뷰                             |
+| `/codexspec:spec-to-design`   | `design.md` 생성 (아키텍처/구성요소/결정) ★ 자동 리뷰         |
 | `/codexspec:spec-to-plan`     | 스펙을 기술 계획으로 변환 ★ 자동 리뷰                         |
 | `/codexspec:plan-to-tasks`    | 계획을 추적 가능하고 검증 가능한 태스크로 분해 ★ 자동 리뷰    |
 | `/codexspec:implement-tasks`  | 태스크를 실행(조건부 TDD)                                     |
@@ -532,6 +533,7 @@ claude
 | 명령어                   | 설명                              |
 | ------------------------ | --------------------------------- |
 | `/codexspec:review-spec` | 명세서 리뷰(자동 또는 수동)       |
+| `/codexspec:review-design` | 설계 리뷰(자동 또는 수동)       |
 | `/codexspec:review-plan` | 기술 계획 리뷰(자동 또는 수동)    |
 | `/codexspec:review-tasks`| 태스크 분해 리뷰(자동 또는 수동)  |
 

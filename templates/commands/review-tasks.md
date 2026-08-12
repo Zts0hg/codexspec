@@ -25,18 +25,19 @@ Converse in the interaction language and author artifacts in the document langua
 
 Resolve by explicit path, then current branch; never silently select the latest feature.
 
-Read `requirements.md`, `spec.md`, `plan.md`, `tasks.md`, the constitution, and relevant repository paths.
+Read `requirements.md`, `spec.md`, `design.md`, `plan.md`, `tasks.md`, the constitution, and relevant repository paths.
 
-If `requirements.md` is absent, use legacy spec-only mode and disclose that original-discussion fidelity cannot be verified.
+If `requirements.md` is absent, use legacy spec-only mode and disclose that original-discussion fidelity cannot be verified. A legacy feature may also have no `design.md`; when it is absent, proceed without the design link.
 
 Authority order:
 
 1. Confirmed requirements
 2. Specification
 3. Constitution and verified repository facts
-4. Approved plan
-5. Task list
-6. Applicable best practices
+4. `design.md`
+5. Approved plan
+6. Task list
+7. Applicable best practices
 
 ## Review Passes
 

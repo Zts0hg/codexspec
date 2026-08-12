@@ -523,6 +523,7 @@ claude
 | `/codexspec:constitution`    | クロスアーティファクト検証付きでプロジェクト憲法を作成・更新     |
 | `/codexspec:specify`         | 要件を明確化・確認し、`requirements.md` に永続化                  |
 | `/codexspec:generate-spec`   | `spec.md` ドキュメントを生成 ★ 自動レビュー                       |
+| `/codexspec:spec-to-design`  | `design.md` を生成（アーキテクチャ/コンポーネント/決定）★ 自動レビュー |
 | `/codexspec:spec-to-plan`    | スペックを技術計画に変換 ★ 自動レビュー                           |
 | `/codexspec:plan-to-tasks`   | 計画をトレーサブルで検証可能なタスクに分解 ★ 自動レビュー         |
 | `/codexspec:implement-tasks` | タスクを実行（条件付き TDD）                                      |
@@ -532,6 +533,7 @@ claude
 | コマンド                | 説明                              |
 | ----------------------- | --------------------------------- |
 | `/codexspec:review-spec`  | スペックをレビュー（自動または手動） |
+| `/codexspec:review-design` | 設計をレビュー（自動または手動） |
 | `/codexspec:review-plan`  | 技術計画をレビュー（自動または手動） |
 | `/codexspec:review-tasks` | タスク分解をレビュー（自動または手動） |
 

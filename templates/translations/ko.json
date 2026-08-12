@@ -103,8 +103,8 @@
     "argument-hint": "[requirements.md 또는 기능 디렉터리]"
   },
   "spec-to-plan": {
-    "description": "확인된 사양을 추적 가능한 기술 계획으로 변환합니다",
-    "argument-hint": "[spec.md 또는 기능 디렉터리]"
+    "description": "확정된 설계를 추적 가능한 구현 계획으로 변환",
+    "argument-hint": "[design.md, spec.md 또는 기능 디렉터리]"
   },
   "plan-to-tasks": {
     "description": "승인된 계획을 추적 가능하고 실행 가능한 작업으로 전개합니다",

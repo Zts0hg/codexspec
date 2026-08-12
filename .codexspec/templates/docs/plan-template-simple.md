@@ -1,44 +1,44 @@
-# Design Document: [FEATURE NAME]
+# Implementation Plan: [FEATURE NAME]
 
 <!--
 Language: Generate this document in the language specified in .codexspec/config.yml
 If not configured, use English.
+
+This is the implementation-planning stage AFTER design.md. It describes HOW to build the
+confirmed design — NOT what the system is. Architecture, components, interfaces, and design
+decisions live in design.md; reference them here, do not restate them.
 -->
 
 ## Context
 
-<!-- Background and current state -->
+<!-- Background and current state; which design this plan delivers. -->
 
 ## Goals / Non-Goals
 
 **Goals:**
 
-- <!-- What this design aims to achieve -->
+- <!-- What this implementation aims to achieve -->
 
 **Non-Goals:**
 
 - <!-- What is explicitly out of scope -->
 
-## Decisions
+## Plan-Level Decisions
 
-<!-- Key design decisions and rationale -->
+<!-- Implementation-level choices only (build ordering, tooling, sequencing). Architecture and
+design decisions belong to design.md. -->
 
 ### Decision 1: [Title]
 
-**Context**: <!-- Why this decision was needed -->
+**Context**: <!-- Why this implementation decision was needed -->
 **Decision**: <!-- The chosen option -->
 **Rationale**: <!-- Why this option was chosen -->
 
-## Architecture
+## Implementation Notes / Phases
 
-<!-- High-level architecture description -->
-<!-- Covers: REQ-xxx -->
+<!-- Ordered implementation steps, each tracing to design. -->
 
-```
-┌─────────────────────────────────────────┐
-│           Architecture Diagram           │
-└─────────────────────────────────────────┘
-```
+- [ ] [Step] — **Covers**: REQ-xxx; Design: [component]
 
 ## Risks / Trade-offs
 
@@ -46,12 +46,8 @@ If not configured, use English.
 |------|--------|------------|
 | <!-- risk --> | <!-- impact --> | <!-- mitigation --> |
 
-## Implementation Notes
-
-<!-- Additional implementation considerations -->
-
 ## Requirements Coverage
 
-| Spec Requirement | Plan Coverage |
-|------------------|---------------|
-| REQ-xxx | Decision/phase reference |
+| Spec Requirement | Design Component | Plan Coverage |
+|------------------|------------------|---------------|
+| REQ-xxx | [design component] | Decision/phase reference |

@@ -22,7 +22,7 @@ Converse in the interaction language and author artifacts in the document langua
 
 This command detects cross-artifact inconsistencies **and auto-remediates them**. It is not read-only.
 
-- `requirements.md` is the single source of truth. analyze **never modifies `requirements.md`**. Every fix conforms the downstream artifacts (`spec.md`, `plan.md`, `tasks.md`) to `requirements.md`; the fix direction is uniquely determined by the authority hierarchy (requirements > spec > plan > tasks) and never requires inventing intent.
+- `requirements.md` is the single source of truth. analyze **never modifies `requirements.md`**. Every fix conforms the downstream artifacts (`spec.md`, `design.md`, `plan.md`, `tasks.md`) to `requirements.md`; the fix direction is uniquely determined by the authority hierarchy (requirements > spec > design > plan > tasks) and never requires inventing intent.
 - Auto-apply deterministic, authority-directed fixes **by default** — both when invoked manually and when invoked inside the `auto_next` chain — with no confirmation prompt and no human-escalation path.
 
 Resolve the feature by explicit path, then current branch. Ask the user if it is ambiguous; never select the latest feature silently.
@@ -33,9 +33,12 @@ Load:
 
 - `requirements.md`
 - `spec.md`
+- `design.md`
 - `plan.md`
 - `tasks.md`
 - Constitution
+
+A legacy feature may have no `design.md`; when it is absent, analyze the chain without the design link and proceed.
 
 Legacy compatibility: if `requirements.md` is missing, state that the analysis starts at `spec.md` and cannot validate fidelity to the original discussion. In legacy mode there is no source of truth to conform to, so do not auto-modify artifacts; report findings only.
 
@@ -46,7 +49,8 @@ Build the chain:
 ```text
 confirmed NEED/CON/DEC/OUT
   -> REQ/NFR Sources
-  -> plan Covers
+  -> design Covers
+  -> plan Covers (Covers: REQ; Design: <component>)
   -> task Covers + Plan reference
 ```
 
@@ -54,7 +58,8 @@ Detect:
 
 - Confirmed requirements with no spec coverage
 - Spec requirements with missing or invalid sources
-- Spec requirements with no plan coverage
+- Spec requirements with no design coverage
+- Design components with no plan coverage
 - Plan deliverables with no task coverage
 - Tasks with no upstream authority or implementation-support justification
 - Semantic drift, scope expansion, contradictions, and use of superseded/open entries
@@ -89,7 +94,7 @@ Produce:
 
 - Authority mode
 - End-to-end coverage table
-- Applied remediations: the exact downstream edits made to `spec.md`/`plan.md`/`tasks.md` and why, or "none"
+- Applied remediations: the exact downstream edits made to `spec.md`/`design.md`/`plan.md`/`tasks.md` and why, or "none"
 - Verified defects by severity that were not auto-remediable (for example, a reported-only tie-break conflict)
 - Unmapped or unauthorized items
 - Risk Advisories
