@@ -53,6 +53,7 @@ Four markdown files, each holding **only current-effective** knowledge — dense
 
 Every record MUST separate the distilled claim from the evidence it rests on:
 
+- `id` (the `### <id>: <title>` heading) — **type letter + full source-feature id + local sequence**, e.g. `P-2026-0812-14054p-1` or `Con-2026-0812-14054p-1`. The **source-feature id** is the distilling feature's full spec-dir id `{YYYY-MMDD-HHMM}{rr}` (e.g. `2026-0812-14054p`); it is globally unique by the timestamp+random scheme spec directories use, so records distilled on parallel feature branches never collide on id. Keep the **full** id (not a short tail) so the record is self-describing: the date supports recency/staleness reading, and the feature id ties the record to its originating change for decision context and scope. When distilling with no feature context, generate a fresh `{YYYY-MMDD-HHMM}{rr}` id now (same convention as create-new-feature). **Never** use a bare sequential id such as `P-001` — those collide across parallel branches.
 - `claim` — one-sentence reusable statement.
 - `type` — `convention` | `constraint` | `pitfall` | `decision` (`constraint` = highest priority).
 - `scope/when` — natural-language applicability condition (e.g. "when editing Python code"); omit for global. **No formal syntax.**
@@ -66,7 +67,7 @@ This separation is what makes a later error locatable as **misread** (facts wron
 Example entry:
 
 ```markdown
-### C-003: Prefer absolute imports
+### Con-2026-0809-2219gg-1: Prefer absolute imports
 - claim: Always use absolute imports in `src/`.
 - type: convention
 - scope/when: Python modules under `src/`
