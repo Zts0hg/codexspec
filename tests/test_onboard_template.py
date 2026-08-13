@@ -163,6 +163,7 @@ def test_onboard_read_only_code_write_only_profile() -> None:
     content = read_command("onboard")
     assert "read-only on the codebase" in content
     assert "write-only to `.codexspec/profile/`" in content
+    assert "never modifies source, tests, git state, or the constitution" in content
 
 
 # --- S1.15 standalone, no auto-next, no auto-distill ---
@@ -172,6 +173,7 @@ def test_onboard_is_standalone_no_autonext_no_autodistill() -> None:
     """S1.15 (REQ-013)."""
     content = read_command("onboard")
     assert "no auto-next" in content
+    assert "no automatic hook" in content
     assert "no Automatic Distillation" in content
 
 
