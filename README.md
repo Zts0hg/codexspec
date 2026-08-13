@@ -121,9 +121,12 @@ CodexSpec is built on the belief that **effective AI-assisted development requir
 CodexSpec structures development into **reviewable checkpoints**:
 
 ```
-Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
-                                                   │                         │                            │
-                                              Review spec               Review plan                  Review tasks
+Idea → /specify           → requirements.md
+     → /generate-spec      → spec.md      → review-spec
+     → /spec-to-design     → design.md    → review-design
+     → /spec-to-plan       → plan.md      → review-plan
+     → /plan-to-tasks      → tasks.md     → review-tasks
+     → /implement-tasks    → code
 ```
 
 Confirmed requirements are the highest-priority feature authority. Derived artifacts carry explicit source links so conflicts can be traced back instead of silently propagated.
@@ -131,6 +134,7 @@ Confirmed requirements are the highest-priority feature authority. Derived artif
 **Every generated artifact has a corresponding review command:**
 
 - `spec.md` → `/codexspec:review-spec`
+- `design.md` → `/codexspec:review-design`
 - `plan.md` → `/codexspec:review-plan`
 - `tasks.md` → `/codexspec:review-tasks`
 - All artifacts → `/codexspec:analyze`
@@ -162,6 +166,7 @@ claude
 > /codexspec:constitution Create principles focused on code quality and testing
 > /codexspec:specify I want to build a todo application
 > /codexspec:generate-spec
+> /codexspec:spec-to-design
 > /codexspec:spec-to-plan
 > /codexspec:plan-to-tasks
 > /codexspec:implement-tasks
@@ -310,9 +315,12 @@ The config command will guide you through:
 CodexSpec breaks development into **reviewable checkpoints**:
 
 ```
-Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
-                                                   │                         │                            │
-                                              Review spec               Review plan                  Review tasks
+Idea → /specify           → requirements.md
+     → /generate-spec      → spec.md      → review-spec
+     → /spec-to-design     → design.md    → review-design
+     → /spec-to-plan       → plan.md      → review-plan
+     → /plan-to-tasks      → tasks.md     → review-tasks
+     → /implement-tasks    → code
 ```
 
 ### Workflow Steps
@@ -322,10 +330,11 @@ Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-t
 | 1. Project Principles        | `/codexspec:constitution`    | `constitution.md`           | ✅           |
 | 2. Requirement Clarification | `/codexspec:specify`         | `requirements.md`           | ✅           |
 | 3. Generate Spec             | `/codexspec:generate-spec`   | `spec.md` + auto-review     | ✅           |
-| 4. Technical Planning        | `/codexspec:spec-to-plan`    | `plan.md` + auto-review     | ✅           |
-| 5. Task Breakdown            | `/codexspec:plan-to-tasks`   | `tasks.md` + auto-review    | ✅           |
-| 6. Cross-Artifact Analysis   | `/codexspec:analyze`         | Analysis report             | ✅           |
-| 7. Implementation            | `/codexspec:implement-tasks` | Code                        | -           |
+| 4. System Design             | `/codexspec:spec-to-design`  | `design.md` + auto-review   | ✅           |
+| 5. Technical Planning        | `/codexspec:spec-to-plan`    | `plan.md` + auto-review     | ✅           |
+| 6. Task Breakdown            | `/codexspec:plan-to-tasks`   | `tasks.md` + auto-review    | ✅           |
+| 7. Cross-Artifact Analysis   | `/codexspec:analyze`         | Analysis report             | ✅           |
+| 8. Implementation            | `/codexspec:implement-tasks` | Code                        | -           |
 
 ### specify vs clarify: When to Use Which?
 
@@ -523,7 +532,8 @@ Implementation follows **conditional TDD workflow**:
 | `/codexspec:constitution`    | Create/update project constitution with cross-artifact validation |
 | `/codexspec:specify`         | Clarify, confirm, and persist requirements in `requirements.md`    |
 | `/codexspec:generate-spec`   | Generate `spec.md` document ★ Auto-review                         |
-| `/codexspec:spec-to-plan`    | Convert spec to technical plan ★ Auto-review                      |
+| `/codexspec:spec-to-design`  | Produce `design.md` (architecture/components/decisions) ★ Auto-review |
+| `/codexspec:spec-to-plan`    | Convert design to implementation plan ★ Auto-review              |
 | `/codexspec:plan-to-tasks`   | Break down plan into traceable, verifiable tasks ★ Auto-review    |
 | `/codexspec:implement-tasks` | Execute tasks (conditional TDD)                                   |
 
@@ -532,6 +542,7 @@ Implementation follows **conditional TDD workflow**:
 | Command                   | Description                            |
 | ------------------------- | -------------------------------------- |
 | `/codexspec:review-spec`  | Review specification (auto or manual)  |
+| `/codexspec:review-design` | Review design (auto or manual)        |
 | `/codexspec:review-plan`  | Review technical plan (auto or manual) |
 | `/codexspec:review-tasks` | Review task breakdown (auto or manual) |
 

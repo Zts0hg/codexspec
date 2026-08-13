@@ -1,9 +1,9 @@
 ---
-description: Convert a confirmed specification into a traceable technical plan
-argument-hint: "[spec.md or feature directory]"
+description: Convert a confirmed design into a traceable implementation plan
+argument-hint: "[design.md, spec.md, or feature directory]"
 handoffs:
   - agent: claude
-    step: Generate a technical plan constrained by confirmed requirements
+    step: Generate an implementation plan constrained by the confirmed design and requirements
 ---
 
 # Specification to Plan Converter
@@ -23,7 +23,7 @@ Converse in the interaction language and author artifacts in the document langua
 
 ## Role
 
-Act as a **constrained technical designer**. Define how to implement the specification while preserving confirmed user intent.
+Act as an **implementation planner**. Define how to build the confirmed design in phases while preserving confirmed user intent. The design (`design.md`) already defines *what* the system is — architecture, components, interfaces, and key design decisions. Do not redo that design here: consume it and plan *how* to implement it (phases, ordering, verification).
 
 ## Feature Resolution
 
@@ -33,8 +33,11 @@ Read:
 
 - `requirements.md`
 - `spec.md`
+- `design.md`
 - `.codexspec/memory/constitution.md` when present
 - Relevant repository files needed to verify existing patterns and constraints
+
+Design-stage compatibility: if `design.md` is absent (a legacy feature created before the design stage), plan directly from `spec.md` and state that no separate design artifact was available.
 
 Legacy compatibility: if `requirements.md` is absent, treat `spec.md` as the temporary highest authority and disclose that original-discussion fidelity cannot be checked.
 
@@ -45,10 +48,11 @@ Authority order:
 1. Confirmed `requirements.md`
 2. `spec.md`
 3. Constitution and verified repository facts
-4. Plan-level technical decisions
-5. General best practices
+4. `design.md`
+5. Plan-level technical decisions
+6. General best practices
 
-Before designing, verify that `spec.md` covers the confirmed requirements. Stop if it omits, contradicts, or silently expands them.
+Before planning, verify that `spec.md` covers the confirmed requirements and that `design.md` covers the spec. Stop if either omits, contradicts, or silently expands them.
 
 Stop and request a user decision when:
 
@@ -59,13 +63,13 @@ Stop and request a user decision when:
 
 ## Planning Rules
 
-- Every component, interface, data change, and implementation phase must include `Covers: REQ-xxx`.
-- Record new technical choices as **Plan-Level Decisions** with evidence, rationale, alternatives considered when material, and accepted trade-offs.
-- Plan-level decisions may refine implementation but cannot redefine product intent.
+- Consume `design.md`: the plan implements the confirmed design; it does not re-architect or introduce new components/interfaces beyond it. If the design is insufficient to plan against, stop and hand back to the design stage rather than designing here.
+- Every implementation phase and plan component must include `Covers: REQ-xxx; Design: <design component>` — trace both to the ultimate requirement and to the design component it builds. (When planning a legacy feature with no `design.md`, fall back to `Covers: REQ-xxx`.)
+- Record new implementation-level choices (build ordering, tooling, sequencing) as **Plan-Level Decisions** with evidence, rationale, alternatives considered when material, and accepted trade-offs. Architecture / interface / data-model decisions belong to `design.md`, not here.
+- Plan-level decisions may refine implementation but cannot redefine product intent or the confirmed design.
 - Reuse repository patterns before introducing new abstractions or dependencies.
-- Include architecture diagrams, dependency graphs, API contracts, schemas, version constraints, security, performance, deployment, or observability only when they materially help implement or verify this feature.
 - Explicitly identify assumptions. Do not convert assumptions into requirements.
-- Prefer the smallest architecture that satisfies the confirmed requirements.
+- Prefer the smallest plan that delivers the confirmed design.
 
 ## Required Output
 
@@ -73,22 +77,21 @@ Save `<feature-dir>/plan.md` using the appropriate simple or detailed template.
 
 Include:
 
-- Context, goals, and non-goals inherited from the specification
+- Context, goals, and non-goals inherited from the specification and design
 - Relevant existing repository constraints
-- Technical approach and plan-level decisions
-- Components/interfaces with `Covers:`
-- Implementation phases derived from the actual design
+- Implementation approach and plan-level decisions (build ordering, tooling, sequencing)
+- Implementation phases and units, each with `Covers: REQ-xxx; Design: <design component>`
 - Verification strategy
 - Risks and trade-offs that affect delivery
-- Requirements coverage table mapping every `REQ`/`NFR` to plan references
+- Requirements coverage table mapping every `REQ`/`NFR` to plan references and the design component realized
 
-Do not force a standard five-phase structure when the design calls for a different sequence.
+Do not force a standard five-phase structure when the design calls for a different sequence. Do not restate the architecture/component design — reference `design.md`.
 
 ## Pre-Save Validation
 
-1. Every binding spec requirement has plan coverage.
-2. Every plan component maps to a requirement or is identified as necessary implementation support.
-3. No plan decision changes confirmed behavior.
+1. Every binding spec requirement and every design component has plan coverage.
+2. Every plan unit maps to a requirement/design component or is identified as necessary implementation support.
+3. No plan decision changes confirmed behavior or the confirmed design.
 4. File paths and repository assumptions are verified where practical.
 5. Unresolved conflicts cause the command to stop rather than guess.
 

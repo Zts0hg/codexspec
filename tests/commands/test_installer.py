@@ -37,15 +37,32 @@ class TestGetCommandsMetadata:
         assert isinstance(result, list)
 
     def test_returns_correct_count(self) -> None:
-        """Should return 21 commands (9 core + 7 enhanced + 2 git + 1 review + 2 utility)."""
+        """Should return 23 commands (11 core + 7 enhanced + 2 git + 1 review + 2 utility)."""
         result = get_commands_metadata()
-        assert len(result) == 21
+        assert len(result) == 23
 
     def test_core_commands_count(self) -> None:
-        """Should have 9 core commands."""
+        """Should have 11 core commands."""
         result = get_commands_metadata()
         core_commands = [c for c in result if c["category"] == "core"]
-        assert len(core_commands) == 9
+        assert len(core_commands) == 11
+
+    def test_spec_to_design_and_review_design_registered(self) -> None:
+        """S3.1.1: both new design-stage commands are registered as core."""
+        by_name = {c["name"]: c for c in get_commands_metadata()}
+        for name, file_name in (
+            ("spec-to-design", "spec-to-design.md"),
+            ("review-design", "review-design.md"),
+        ):
+            assert name in by_name
+            assert by_name[name]["category"] == "core"
+            assert by_name[name]["file_name"] == file_name
+
+    def test_design_commands_placed_in_chain_order(self) -> None:
+        """S3.1.2: design commands sit in chain order within core."""
+        names = [c["name"] for c in get_commands_metadata()]
+        assert names.index("generate-spec") < names.index("spec-to-design") < names.index("spec-to-plan")
+        assert names.index("review-spec") < names.index("review-design") < names.index("review-plan")
 
     def test_enhanced_commands_count(self) -> None:
         """Should have 7 enhanced commands."""

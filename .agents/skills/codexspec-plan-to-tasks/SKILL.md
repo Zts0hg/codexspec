@@ -30,8 +30,11 @@ Read:
 
 - `requirements.md`
 - `spec.md`
+- `design.md`
 - `plan.md`
 - Constitution and relevant repository conventions
+
+`design.md` (the confirmed design) sits between `spec.md` and `plan.md` in authority; read it as context so tasks trace to the design the plan implements. A legacy feature may have no `design.md`; proceed from `plan.md` in that case.
 
 Legacy compatibility: when `requirements.md` is absent, use `spec.md` as the temporary highest authority and state the limitation.
 

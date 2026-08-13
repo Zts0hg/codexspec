@@ -103,8 +103,8 @@
     "argument-hint": "[requirements.md oder Feature-Verzeichnis]"
   },
   "spec-to-plan": {
-    "description": "Eine bestätigte Spezifikation in einen nachverfolgbaren technischen Plan umwandeln",
-    "argument-hint": "[spec.md oder Feature-Verzeichnis]"
+    "description": "Ein bestätigtes Design in einen nachvollziehbaren Implementierungsplan umwandeln",
+    "argument-hint": "[design.md, spec.md oder Feature-Verzeichnis]"
   },
   "plan-to-tasks": {
     "description": "Einen genehmigten Plan in nachverfolgbare, ausführbare Aufgaben ausweiten",

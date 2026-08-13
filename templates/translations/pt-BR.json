@@ -103,8 +103,8 @@
     "argument-hint": "[requirements.md ou diretório de funcionalidade]"
   },
   "spec-to-plan": {
-    "description": "Converter uma especificação confirmada em um plano técnico rastreável",
-    "argument-hint": "[spec.md ou diretório de funcionalidade]"
+    "description": "Converter um design confirmado em um plano de implementação rastreável",
+    "argument-hint": "[design.md, spec.md ou diretório da funcionalidade]"
   },
   "plan-to-tasks": {
     "description": "Expandir um plano aprovado em tarefas rastreáveis e executáveis",

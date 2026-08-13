@@ -523,6 +523,7 @@ claude
 | `/codexspec:constitution`     | 创建或更新项目宪法，并支持跨产物校验                       |
 | `/codexspec:specify`          | 澄清、确认并把需求固化到 `requirements.md`                 |
 | `/codexspec:generate-spec`    | 生成 `spec.md` 文档 ★ 自动审查                             |
+| `/codexspec:spec-to-design`  | 生成 `design.md`（架构/组件/决策）★ 自动审查                |
 | `/codexspec:spec-to-plan`     | 把规格转换成技术计划 ★ 自动审查                            |
 | `/codexspec:plan-to-tasks`    | 把计划拆解成可追溯、可验证的任务 ★ 自动审查                |
 | `/codexspec:implement-tasks`  | 执行任务（条件式 TDD）                                     |
@@ -532,6 +533,7 @@ claude
 | 命令                  | 说明                          |
 | --------------------- | ----------------------------- |
 | `/codexspec:review-spec`  | 审查规格（自动或手动）    |
+| `/codexspec:review-design` | 审查设计（自动或手动）    |
 | `/codexspec:review-plan`  | 审查技术计划（自动或手动）|
 | `/codexspec:review-tasks` | 审查任务分解（自动或手动）|
 

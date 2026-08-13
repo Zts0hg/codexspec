@@ -103,8 +103,8 @@
     "argument-hint": "[requirements.md 或 功能目录]"
   },
   "spec-to-plan": {
-    "description": "将已确认的规格转换为可追溯的技术计划",
-    "argument-hint": "[spec.md 或 功能目录]"
+    "description": "将已确认的设计转换为可追溯的实现计划",
+    "argument-hint": "[design.md、spec.md 或 功能目录]"
   },
   "plan-to-tasks": {
     "description": "将已批准的计划展开为可追溯、可执行的任务",

@@ -101,8 +101,8 @@ Read `workflow.auto_next` from `.codexspec/config.yml` (default `false`; only th
 
 When `workflow.auto_next` is `true` AND the Automatic Review Loop above concluded in a passing state — the final Overall Status is `PASS` or `PASS_WITH_WARNINGS` — advance the chain automatically:
 
-1. Emit exactly one notice line, in the interaction language, e.g. `auto_next: review passed → invoking /codexspec:spec-to-plan <feature-dir>`.
-2. Invoke `/codexspec:spec-to-plan <feature-dir>` exactly once, then end this command.
+1. Emit exactly one notice line, in the interaction language, e.g. `auto_next: review passed → invoking /codexspec:spec-to-design <feature-dir>`.
+2. Invoke `/codexspec:spec-to-design <feature-dir>` exactly once, then end this command.
 
 Do not auto-advance when `workflow.auto_next` is disabled, or the review loop stopped at `NEEDS_REVISION` or `BLOCKED`, or stopped early per the conditions above; in those cases hand control back to the user exactly as the review loop already does. This advances the chain and does not modify the Output Summary.
 
