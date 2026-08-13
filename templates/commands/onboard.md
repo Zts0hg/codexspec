@@ -57,7 +57,7 @@ onboard **never** extracts `decisions` or `pitfalls`. A documented decision or p
 onboard **reuses `distill`'s profile store and record format verbatim** — one record per file under a category directory (`conventions/<id>.md`, `constraints/<id>.md`), ids namespaced by the source-feature id, and `claim` physically separated from `evidence`. See `distill.md` for the canonical format. onboard writes with these **deltas**:
 
 - `provenance` marks the **onboard scan** as the source (distinct from `distill`), with `derivation: inferred` — always, because the knowledge is inferred from code, never quoted from the user.
-- Because `derivation` is always `inferred`, an onboard record's `status` is always **`candidate`** — onboard **never** writes `vetted`. (`vetted` requires an explicit source verified by an outcome, and remains the `evolve` gate; promotion still goes through the normal `/distill review` path.)
+- An onboard record's `status` is always **`candidate`** at write time — onboard **never** writes `vetted` itself. Its `inferred` origin is **not** a permanent barrier: such a record can later be promoted to `vetted` via `/distill review` once it is outcome-verified and the user approves it (the `evolve` gate remains `vetted`). See the `status` rule in `distill.md`.
 - `evidence.facts` holds the **concrete code observation** — the file path plus the relevant snippet or config anchor — instead of a user quote.
 
 ## Integration with the Existing Profile
