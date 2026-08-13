@@ -44,7 +44,7 @@ from .profile import ensure_profile_scaffold, inject_profile_block
 from .translator import SUPPORTED_LANGUAGES, translate
 
 # Version info
-__version__ = "0.7.10"
+__version__ = "0.7.11"
 __author__ = "CodexSpec Team"
 
 # Constitution file path constants
