@@ -301,6 +301,17 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 
 **Implementation**: Edit `templates/commands/debug.md` and the `## Systematic Debugging Escalation` section in `implement-tasks.md`; the `.claude/commands/codexspec/` and `.agents/skills/codexspec-*/` forms are regenerated from templates (do not hand-edit the derived copies).
 
+### Codebase Onboarding: onboard
+
+**Feature**: The **cold-start / bulk counterpart to `distill`** — a standalone `/codexspec:onboard [path]` command that scans an existing codebase once and batch-writes reusable knowledge into the shared `.codexspec/profile/` store, so a brownfield project's profile is grounded immediately instead of only after enough work has flowed through `distill`.
+
+- **Reuses distill's store/format (DRY)**: onboard writes the same one-file-per-record, namespaced-id store; `distill.md` remains the canonical record-format doc (onboard adds only a cross-note there). onboard's deltas: `derivation` is always `inferred` → `status` is always `candidate` (never `vetted`), and `evidence.facts` holds a code observation (path + snippet) instead of a user quote.
+- **Extracts only `conventions` + narrow `constraints`**; **never `decisions`/`pitfalls`** — a documented one is redundant to copy, an undocumented one is unreliable to infer (pitfalls are experiential; decision rationale would be fabricated); those two stay `distill`'s channels. Extraction is flexible agent judgment over what the code shows, not a fixed marker/file checklist; constraints come only from config-level explicit prohibitions with a precise evidence anchor (no signal → no constraint).
+- **Tiered safety gate**: `conventions` are written immediately as `candidate` (take local effect, async-reviewable via `/distill review`); `constraints` (the one honored-first, highest-weight category) are held for a quick **persist / don't-persist** in-session review before writing — this gate is not `/distill review` and never promotes to `vetted`. The scan is high-signal-first, whole-repo, streaming/resumable, `.gitignore`-respecting (sensible fallback when no git), with optional `[path]` narrowing.
+- **Standalone, additive, read-only on code**: not an SDD pipeline stage (no auto-next, no auto-hook, no Automatic Distillation section); read-only on the codebase, write-only to the profile; never clobbers existing `vetted`/human/`distill` records (append new files), so re-runs are idempotent.
+
+**Implementation**: Edit `templates/commands/onboard.md` and the one-line onboard cross-note in `templates/commands/distill.md`; register `onboard` in `installer.py` under the `enhanced` category (adjacent to distill/evolve). The `.claude/commands/codexspec/` and `.agents/skills/codexspec-*/` forms are regenerated from templates (do not hand-edit the derived copies).
+
 ### Profile Consumption
 
 **Feature**: Make a project's distilled `.codexspec/profile/` **take effect locally** — the read side that complements `distill` (which writes) and `evolve` (which contributes upstream). Without it the profile was write-only-then-upstream; this closes the loop so accumulated knowledge stops repeated pitfalls and re-litigated decisions **within the user's own project**.
@@ -349,7 +360,7 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 
 **Key Design Decisions**:
 
-1. **Single Plugin Package**: All 19 commands bundled as one plugin (not separate plugins per command)
+1. **Single Plugin Package**: All CodexSpec commands bundled as one plugin (not separate plugins per command)
 2. **`strict: false`**: Plugin doesn't require `plugin.json` - commands work directly from markdown templates
 3. **Version Sync**: `ref` and `version` in `marketplace.json` are automatically updated by `publish.sh`
 4. **Multi-language Support**: Reuses existing LLM dynamic translation via `.codexspec/config.yml`
@@ -405,12 +416,13 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 | `/codexspec:tasks-to-issues` | Convert tasks to GitHub issues              |
 | `/codexspec:debug`           | Systematic root-cause debugging (standalone + implement-tasks escalation) |
 
-### Self-Evolution Commands (2) - NEW
+### Self-Evolution Commands (3) - NEW
 
 | Command                | Description                                                              |
 | ---------------------- | ------------------------------------------------------------------------ |
 | `/codexspec:distill`   | Distill reusable cross-feature knowledge from an interaction into `.codexspec/profile/` |
 | `/codexspec:evolve`    | Compile vetted profile knowledge into a command/skill draft and contribute it upstream via a reviewed PR |
+| `/codexspec:onboard`   | Cold-start the project profile from an existing codebase (distill's bulk counterpart): scan → conventions + narrow constraints, never decisions/pitfalls |
 
 ### Internal Maintenance Commands (NOT distributed to users)
 
@@ -516,6 +528,7 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec:tasks-to-issues` | ✅ Template | Template complete                                                             |
 | `/codexspec:distill`         | ✅ Template | Self-evolution: extract reusable cross-feature knowledge into `.codexspec/profile/` |
 | `/codexspec:evolve`          | ✅ Template | Self-evolution: compile vetted profile knowledge into a command/skill draft + reviewed PR |
+| `/codexspec:onboard`         | ✅ Template | Cold-start the profile from an existing codebase (distill's bulk counterpart): conventions + narrow constraints, tiered safety gate, never decisions/pitfalls |
 | `/codexspec:debug`           | ✅ Template | Systematic root-cause debugging: one four-phase discipline; standalone command + implement-tasks reference-style escalation |
 | `/codexspec:commit-staged`   | ✅ Template | Generate commit from staged changes strictly from the staged diff             |
 | `/codexspec:pr`              | ✅ Template | Generate PR/MR descriptions                                                   |

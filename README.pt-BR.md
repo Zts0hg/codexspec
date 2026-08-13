@@ -554,6 +554,7 @@ A implementação segue o **fluxo de TDD condicional**:
 | --- | --- |
 | `/codexspec:distill` | Destilar conhecimento reutilizável entre funcionalidades em `.codexspec/profile/` |
 | `/codexspec:evolve` | Compilar o conhecimento do profile em um comando/skill e contribuí-lo upstream via PR revisado |
+| `/codexspec:onboard` | Varre o código existente para dar cold-start ao perfil do projeto (conventions + constraints) |
 
 #### Comandos do fluxo de trabalho Git
 

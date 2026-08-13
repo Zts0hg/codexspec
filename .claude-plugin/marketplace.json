@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "codexspec",
-      "description": "Complete Requirements-First SDD toolkit with constitution, requirements, specification, planning, and implementation commands. Includes 20 slash commands for requirements clarification and confirmation, spec generation, technical planning, task breakdown, code review, configuration management, and more.",
+      "description": "Complete Requirements-First SDD toolkit with constitution, requirements, specification, planning, and implementation commands. Includes a full suite of slash commands for requirements clarification and confirmation, spec generation, technical planning, task breakdown, code review, configuration management, and more.",
       "source": {
         "source": "github",
         "repo": "Zts0hg/codexspec",

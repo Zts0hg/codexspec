@@ -554,6 +554,7 @@ claude
 | --- | --- |
 | `/codexspec:distill` | 再利用可能な機能横断の知見を `.codexspec/profile/` に蒸留 |
 | `/codexspec:evolve` | profile の知見をコマンド/スキルにコンパイルし、レビュー付き PR で上流へ貢献 |
+| `/codexspec:onboard` | 既存コードベースをスキャンしてプロジェクト profile をコールドスタート（conventions + constraints） |
 
 #### Git ワークフローのコマンド
 

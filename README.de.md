@@ -554,6 +554,7 @@ Die Implementierung folgt einem **bedingten TDD-Workflow**:
 | --- | --- |
 | `/codexspec:distill` | Wiederverwendbares, feature-übergreifendes Wissen in `.codexspec/profile/` destillieren |
 | `/codexspec:evolve` | Profil-Wissen zu einem Befehl/Skill kompilieren und per geprüftem PR upstream beitragen |
+| `/codexspec:onboard` | Projekt-Profil per Scan der bestehenden Codebasis kaltstarten (conventions + constraints) |
 
 #### Git-Workflow-Befehle
 

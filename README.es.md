@@ -554,6 +554,7 @@ La implementación sigue un **flujo de trabajo TDD condicional**:
 | --- | --- |
 | `/codexspec:distill` | Destilar conocimiento reutilizable entre funcionalidades en `.codexspec/profile/` |
 | `/codexspec:evolve` | Compilar el conocimiento del profile en un comando/skill y contribuirlo upstream mediante un PR revisado |
+| `/codexspec:onboard` | Arranque en frío del perfil del proyecto escaneando el código existente (conventions + constraints) |
 
 #### Comandos del flujo de trabajo Git
 
