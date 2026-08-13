@@ -360,7 +360,10 @@ def test_command_templates_split_interaction_and_document_language():
     """Non-commit templates use the unified Language Preference block distinguishing
     interaction vs document language; commit-affected templates keep the commit-priority
     block unchanged."""
-    commit_templates = {"commit-staged", "pr"}
+    # release-notes is a git-family delivery command whose generated content follows the
+    # language.commit priority (per pr.md); it keeps the commit-language block, not the
+    # interaction/document split.
+    commit_templates = {"commit-staged", "pr", "release-notes"}
 
     for command_file in COMMANDS.glob("*.md"):
         command = command_file.stem

@@ -561,6 +561,7 @@ Die Implementierung folgt einem **bedingten TDD-Workflow**:
 | ------------------------- | -------------------------------------------------- |
 | `/codexspec:commit-staged`| Commit-Nachricht aus gestagten Änderungen erzeugen |
 | `/codexspec:pr`           | PR-/MR-Beschreibung generieren (Plattform automatisch erkannt) |
+| `/codexspec:release-notes`| Release Notes aus der Git-Historie generieren (CHANGELOG.md pflegen + Release-Text)|
 
 #### Code-Review-Befehle
 

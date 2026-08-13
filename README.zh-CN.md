@@ -561,6 +561,7 @@ claude
 | ----------------------- | ------------------------------------------ |
 | `/codexspec:commit-staged` | 基于暂存的 diff 生成提交信息                |
 | `/codexspec:pr`           | 生成 PR/MR 描述（自动识别平台）          |
+| `/codexspec:release-notes`| 从 git 历史生成发布说明（维护 CHANGELOG.md + 发布正文）|
 
 #### 代码审查命令
 

@@ -37,9 +37,9 @@ class TestGetCommandsMetadata:
         assert isinstance(result, list)
 
     def test_returns_correct_count(self) -> None:
-        """Should return 23 commands (11 core + 7 enhanced + 2 git + 1 review + 2 utility)."""
+        """Should return 24 commands (11 core + 7 enhanced + 3 git + 1 review + 2 utility)."""
         result = get_commands_metadata()
-        assert len(result) == 23
+        assert len(result) == 24
 
     def test_core_commands_count(self) -> None:
         """Should have 11 core commands."""
@@ -71,10 +71,22 @@ class TestGetCommandsMetadata:
         assert len(enhanced_commands) == 7
 
     def test_git_commands_count(self) -> None:
-        """Should have 2 git commands."""
+        """Should have 3 git commands."""
         result = get_commands_metadata()
         git_commands = [c for c in result if c["category"] == "git"]
-        assert len(git_commands) == 2
+        assert len(git_commands) == 3
+
+    def test_release_notes_registered(self) -> None:
+        """release-notes is registered as a git-family command."""
+        by_name = {c["name"]: c for c in get_commands_metadata()}
+        assert "release-notes" in by_name
+        assert by_name["release-notes"]["category"] == "git"
+        assert by_name["release-notes"]["file_name"] == "release-notes.md"
+
+    def test_release_notes_placed_after_pr(self) -> None:
+        """release-notes sits after pr within the git group."""
+        names = [c["name"] for c in get_commands_metadata()]
+        assert names.index("pr") < names.index("release-notes")
 
     def test_review_commands_count(self) -> None:
         """Should have 1 review command."""
