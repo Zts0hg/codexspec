@@ -360,7 +360,7 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 
 **Key Design Decisions**:
 
-1. **Single Plugin Package**: All 19 commands bundled as one plugin (not separate plugins per command)
+1. **Single Plugin Package**: All CodexSpec commands bundled as one plugin (not separate plugins per command)
 2. **`strict: false`**: Plugin doesn't require `plugin.json` - commands work directly from markdown templates
 3. **Version Sync**: `ref` and `version` in `marketplace.json` are automatically updated by `publish.sh`
 4. **Multi-language Support**: Reuses existing LLM dynamic translation via `.codexspec/config.yml`
