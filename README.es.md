@@ -561,6 +561,7 @@ La implementación sigue un **flujo de trabajo TDD condicional**:
 | -------------------------- | ------------------------------------------------- |
 | `/codexspec:commit-staged` | Generar un mensaje de commit a partir de los cambios preparados |
 | `/codexspec:pr`            | Generar la descripción de PR/MR (autodetección de plataforma) |
+| `/codexspec:release-notes` | Generar notas de versión desde el historial de git (mantener CHANGELOG.md + cuerpo)|
 
 #### Comandos de revisión de código
 

@@ -570,6 +570,7 @@ Implementation follows **conditional TDD workflow**:
 | -------------------------- | ------------------------------------------------- |
 | `/codexspec:commit-staged` | Generate commit message from staged changes       |
 | `/codexspec:pr`            | Generate PR/MR description (auto-detect platform) |
+| `/codexspec:release-notes` | Generate release notes from git history (maintain CHANGELOG.md + release body)|
 
 #### Code Review Commands
 

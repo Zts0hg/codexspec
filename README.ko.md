@@ -561,6 +561,7 @@ claude
 | ------------------------- | --------------------------------------------- |
 | `/codexspec:commit-staged`| 스테이징된 변경사항으로 커밋 메시지 생성      |
 | `/codexspec:pr`           | PR/MR 설명 생성(플랫폼 자동 감지)             |
+| `/codexspec:release-notes`| git 기록에서 릴리스 노트 생성(CHANGELOG.md 유지 + 릴리스 본문)|
 
 #### 코드 리뷰 명령어
 

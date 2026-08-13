@@ -47,8 +47,8 @@ def get_commands_metadata() -> list[CommandMetadata]:
 
     Returns:
         List of CommandMetadata dictionaries sorted by category priority:
-        core (11) -> enhanced (7) -> git (2) -> review (1) -> utility (2)
-        Total: 23 commands
+        core (11) -> enhanced (7) -> git (3) -> review (1) -> utility (2)
+        Total: 24 commands
     """
     return [
         # Core Commands (11)
@@ -179,7 +179,7 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "category": "enhanced",
             "file_name": "debug.md",
         },
-        # Git Workflow Commands (2)
+        # Git Workflow Commands (3)
         {
             "name": "commit-staged",
             "display_name": "/codexspec:commit-staged",
@@ -193,6 +193,13 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "description": "生成 PR/MR 描述",
             "category": "git",
             "file_name": "pr.md",
+        },
+        {
+            "name": "release-notes",
+            "display_name": "/codexspec:release-notes",
+            "description": "从 git 历史生成发布说明：更新 CHANGELOG.md + 用户向发布正文（不决定版本）",
+            "category": "git",
+            "file_name": "release-notes.md",
         },
         # Code Review Commands (1)
         {
