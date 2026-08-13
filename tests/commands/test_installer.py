@@ -37,9 +37,9 @@ class TestGetCommandsMetadata:
         assert isinstance(result, list)
 
     def test_returns_correct_count(self) -> None:
-        """Should return 24 commands (11 core + 7 enhanced + 3 git + 1 review + 2 utility)."""
+        """Should return 25 commands (11 core + 8 enhanced + 3 git + 1 review + 2 utility)."""
         result = get_commands_metadata()
-        assert len(result) == 24
+        assert len(result) == 25
 
     def test_core_commands_count(self) -> None:
         """Should have 11 core commands."""
@@ -65,10 +65,25 @@ class TestGetCommandsMetadata:
         assert names.index("review-spec") < names.index("review-design") < names.index("review-plan")
 
     def test_enhanced_commands_count(self) -> None:
-        """Should have 7 enhanced commands."""
+        """Should have 8 enhanced commands."""
         result = get_commands_metadata()
         enhanced_commands = [c for c in result if c["category"] == "enhanced"]
-        assert len(enhanced_commands) == 7
+        assert len(enhanced_commands) == 8
+
+    def test_onboard_registered(self) -> None:
+        """S2.1: onboard is registered as an enhanced-family command."""
+        by_name = {c["name"]: c for c in get_commands_metadata()}
+        assert "onboard" in by_name
+        assert by_name["onboard"]["category"] == "enhanced"
+        assert by_name["onboard"]["file_name"] == "onboard.md"
+        assert by_name["onboard"]["display_name"] == "/codexspec:onboard"
+
+    def test_onboard_in_enhanced_group_after_evolve(self) -> None:
+        """S2.3: onboard sits within the enhanced group, adjacent to the distill/evolve family."""
+        result = get_commands_metadata()
+        names = [c["name"] for c in result]
+        assert result[names.index("onboard")]["category"] == "enhanced"
+        assert names.index("evolve") < names.index("onboard")
 
     def test_git_commands_count(self) -> None:
         """Should have 3 git commands."""

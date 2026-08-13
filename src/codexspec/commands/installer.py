@@ -47,8 +47,8 @@ def get_commands_metadata() -> list[CommandMetadata]:
 
     Returns:
         List of CommandMetadata dictionaries sorted by category priority:
-        core (11) -> enhanced (7) -> git (3) -> review (1) -> utility (2)
-        Total: 24 commands
+        core (11) -> enhanced (8) -> git (3) -> review (1) -> utility (2)
+        Total: 25 commands
     """
     return [
         # Core Commands (11)
@@ -129,7 +129,7 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "category": "core",
             "file_name": "implement-tasks.md",
         },
-        # Enhanced Commands (7)
+        # Enhanced Commands (8)
         {
             "name": "clarify",
             "display_name": "/codexspec:clarify",
@@ -171,6 +171,13 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "description": "将 profile 沉淀编译为命令/技能并通过评审 PR 贡献回上游",
             "category": "enhanced",
             "file_name": "evolve.md",
+        },
+        {
+            "name": "onboard",
+            "display_name": "/codexspec:onboard",
+            "description": "扫描现有代码库冷启动项目 profile（提取 conventions 与 constraints）",
+            "category": "enhanced",
+            "file_name": "onboard.md",
         },
         {
             "name": "debug",

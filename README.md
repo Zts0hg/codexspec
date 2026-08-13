@@ -563,6 +563,7 @@ Implementation follows **conditional TDD workflow**:
 | --- | --- |
 | `/codexspec:distill` | Distill reusable cross-feature knowledge into `.codexspec/profile/` |
 | `/codexspec:evolve` | Compile profile knowledge into a command/skill and contribute upstream via a reviewed PR |
+| `/codexspec:onboard` | Cold-start the project profile by scanning an existing codebase (conventions + constraints) |
 
 #### Git Workflow Commands
 

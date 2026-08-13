@@ -62,6 +62,8 @@ Every record MUST separate the distilled claim from the evidence it rests on:
 - `provenance` — source feature/session, trigger, timestamp, `derivation = explicit | inferred`.
 - `status` — `vetted` **only** when `derivation = explicit` (the user's own words) AND the item was verified by an outcome (a test passed, a workaround worked); every `inferred` item stays `candidate`. Only `vetted` records are eligible for `evolve`.
 
+> **onboard variant**: `$codexspec:onboard` writes to this same store and format, with one difference — its records are inferred from code, so `evidence.facts` holds a verbatim **code observation** (path + snippet) instead of a user quote, `provenance` marks the onboard scan, `derivation` is always `inferred`, and `status` is therefore always `candidate` (onboard never writes `vetted`).
+
 This separation is what makes a later error locatable as **misread** (facts wrong) vs **overreach** (claim over-generalized) vs **stale** (state no longer holds).
 
 Example entry — file `conventions/Con-2026-0809-2219gg-1.md`:

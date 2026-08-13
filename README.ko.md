@@ -554,6 +554,7 @@ claude
 | --- | --- |
 | `/codexspec:distill` | 재사용 가능한 기능 간 지식을 `.codexspec/profile/`에 증류 |
 | `/codexspec:evolve` | profile 지식을 명령/스킬로 컴파일하고 리뷰 PR로 업스트림에 기여 |
+| `/codexspec:onboard` | 기존 코드베이스를 스캔해 프로젝트 profile을 콜드스타트 (conventions + constraints) |
 
 #### Git 워크플로우 명령어
 

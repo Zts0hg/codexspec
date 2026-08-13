@@ -554,6 +554,7 @@ claude
 | --- | --- |
 | `/codexspec:distill` | 将可复用的跨特性知识萃取到 `.codexspec/profile/` |
 | `/codexspec:evolve` | 将 profile 沉淀编译为命令/技能，并通过评审 PR 贡献回上游 |
+| `/codexspec:onboard` | 扫描现有代码库冷启动项目 profile（conventions + constraints） |
 
 #### Git 工作流命令
 
