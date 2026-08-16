@@ -31,13 +31,21 @@ def test_init_claude_injects_pointer_profile_block(tmp_path: Path) -> None:
 
 
 def test_init_creates_profile_scaffold_unconditionally(tmp_path: Path) -> None:
-    """Scenario 2: scaffold (four category dirs + .gitkeep) exists even on an empty project."""
+    """Scenario 2: scaffold (six category dirs + .gitkeep) exists even on an empty project."""
     _init(tmp_path, "claude")
     profile_dir = tmp_path / ".codexspec" / "profile"
     assert profile_dir.is_dir()
     for category in PROFILE_CATEGORIES:
         assert (profile_dir / category).is_dir()
         assert (profile_dir / category / ".gitkeep").exists()
+
+
+def test_init_never_injects_block_into_constitution(tmp_path: Path) -> None:
+    """T1.2-S6 (DEC-006): the managed profile block is never written into constitution.md."""
+    _init(tmp_path, "both")
+    constitution = tmp_path / ".codexspec" / "memory" / "constitution.md"
+    assert constitution.exists(), "init should still generate the constitution"
+    assert PROFILE_BLOCK_START not in constitution.read_text(encoding="utf-8")
 
 
 def test_init_profile_block_after_compliance_import(tmp_path: Path) -> None:

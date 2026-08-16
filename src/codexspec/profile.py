@@ -4,13 +4,13 @@ Wires a user project's ``.codexspec/profile/`` into the AI context files so that
 knowledge distilled by ``/codexspec:distill`` is consulted in later work.
 
 Store layout: **one record per file** under a per-category directory
-(``constraints/`` ``conventions/`` ``pitfalls/`` ``decisions/``). Because parallel
-feature branches each add differently-named record files, their distilled
-knowledge merges without conflict.
+(``constraints/`` ``conventions/`` ``pitfalls/`` ``decisions/`` ``strategies/``
+``runbooks/``). Because parallel feature branches each add differently-named
+record files, their distilled knowledge merges without conflict.
 
 Two concerns live here:
 
-- ``ensure_profile_scaffold`` — create the four category directories (each kept
+- ``ensure_profile_scaffold`` — create the six category directories (each kept
   by a ``.gitkeep``) so every injected reference resolves, independent of whether
   any knowledge has been distilled yet.
 - ``render_profile_block`` / ``inject_profile_block`` — render a bounded,
@@ -27,7 +27,14 @@ from pathlib import Path
 
 # Ordered: constraints first (highest weight, honored first). Each is a directory
 # holding one record per file.
-PROFILE_CATEGORIES = ("constraints", "conventions", "pitfalls", "decisions")
+PROFILE_CATEGORIES = (
+    "constraints",
+    "conventions",
+    "pitfalls",
+    "decisions",
+    "strategies",
+    "runbooks",
+)
 
 PROFILE_BLOCK_START = "<!-- CODEXSPEC PROFILE START -->"
 PROFILE_BLOCK_END = "<!-- CODEXSPEC PROFILE END -->"
@@ -43,24 +50,33 @@ _PROFILE_BLOCK = "".join(
         "**Project constraints (highest priority — read these FIRST):** before any non-trivial work you MUST ",
         "read every record under `.codexspec/profile/constraints/` — the project's hard prohibitions ",
         "(严禁 / 仅允许). Honor them before anything else.\n\n",
-        "**Project profile — consult on demand when relevant to the task** ",
+        "**Actively recall relevant knowledge before non-trivial work.** Do not wait to stumble on it: ",
+        "scan the record headings and their `scope/when` (and, for strategies, `trigger`) lines across the ",
+        "categories below, and read every record whose condition matches the task you are about to start ",
         "(each directory holds one record per file):\n\n",
         "- `.codexspec/profile/conventions/` — cross-feature conventions / steering; ",
         "read before adopting a pattern, structure, or naming choice.\n",
         "- `.codexspec/profile/pitfalls/` — known traps and their workarounds; ",
         "read before implementing or debugging in an area that may have bitten before.\n",
         "- `.codexspec/profile/decisions/` — past cross-feature / architectural decisions; ",
-        "read before deciding in the same area, to reuse prior rationale rather than re-litigate it.\n\n",
+        "read before deciding in the same area, to reuse prior rationale rather than re-litigate it.\n",
+        "- `.codexspec/profile/strategies/` — metacognitive trigger→action rules (and `scope: self` notes on ",
+        "the agent's own recurring slips); read before choosing an approach or when a fix is not converging.\n",
+        "- `.codexspec/profile/runbooks/` — ordered multi-step procedures with failure recovery; ",
+        "read before carrying out a known multi-step task.\n\n",
         "Read the full record — each carries a `status` of `candidate` or `vetted`; ",
         "weight `candidate` items with appropriate caution. A directory may be empty ",
-        "until `/codexspec:distill` has captured knowledge.\n",
+        "until `/codexspec:distill` has captured knowledge.\n\n",
+        "**Capture knowledge as you go.** When this session produces reusable cross-feature knowledge — even ",
+        "in plain chat or a non-SDD fix — run `/codexspec:distill` near that moment rather than only at ",
+        "wrap-up. It is non-blocking and early-exits when there is nothing new.\n",
         f"{PROFILE_BLOCK_END}\n",
     ]
 )
 
 
 def ensure_profile_scaffold(target_dir: Path) -> Path:
-    """Create ``.codexspec/profile/`` and its four category directories if absent.
+    """Create ``.codexspec/profile/`` and its six category directories if absent.
 
     Each category is a directory of one-record-per-file entries; a ``.gitkeep``
     keeps an empty category tracked so every pointer resolves. Idempotent and
@@ -79,10 +95,13 @@ def ensure_profile_scaffold(target_dir: Path) -> Path:
 def render_profile_block() -> str:
     """Render the bounded managed profile block.
 
-    Identical for CLAUDE.md and AGENTS.md: constraints and the three on-demand
+    Identical for CLAUDE.md and AGENTS.md: constraints and the five on-demand
     categories are all delivered as pointers to their directories — no ``@import``
     anywhere — so the block is channel-neutral and the store can be
-    one-file-per-record directories that merge without conflict.
+    one-file-per-record directories that merge without conflict. The block also
+    directs active recall (scan record ``scope/when``/``trigger`` and read matches
+    before non-trivial work) and near-moment ``distill`` capture; it is a fixed
+    directive whose size is independent of how many records the profile holds.
     """
     return _PROFILE_BLOCK
 

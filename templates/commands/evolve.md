@@ -31,6 +31,8 @@ Promote only records that are **both**:
 
 Project-specific knowledge **stays** in the profile. Only generally-useful capability is promoted upstream. When nothing qualifies, stop and report — do not force a promotion.
 
+This selection spans **all six** profile categories. `strategies/` (metacognitive `trigger → action` rules) and `runbooks/` (ordered multi-step procedures) are often the **most** promotable material — a vetted, general strategy or runbook compiles cleanly into a reusable skill/command — but they clear the **same** `vetted` gate as every other category; the gate is unchanged.
+
 ## Compiling the draft
 
 Compile the selected sediment into a SKILL.md / command-template draft that conforms to both:
