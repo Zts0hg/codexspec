@@ -29,7 +29,7 @@ Converse in the interaction language and author artifacts in the document langua
 Before scanning:
 
 - If `.codexspec/` is **absent**, the project is not codexspec-initialized. **Stop** and direct the user to run `codexspec init`. Do not scaffold a whole project.
-- If `.codexspec/` is present but the profile store is missing, **ensure the canonical scaffold** — the four category directories `.codexspec/profile/{constraints,conventions,pitfalls,decisions}/` (matching what `codexspec init` produces) — before writing.
+- If `.codexspec/` is present but the profile store is missing, **ensure the canonical scaffold** — the six category directories `.codexspec/profile/{constraints,conventions,pitfalls,decisions,strategies,runbooks}/` (matching what `codexspec init` produces) — before writing.
 - git is **not required**. onboard runs on a plain directory.
 
 ## Codebase Scan
@@ -44,12 +44,12 @@ Scan strategy is **high-signal-first over the whole repository in a single pass*
 
 ## What onboard Extracts — and What It Must NOT
 
-Extraction uses your **flexible judgment over what the code actually shows** — not a fixed checklist of filenames or markers. onboard actively extracts **only two** of the four profile categories:
+Extraction uses your **flexible judgment over what the code actually shows** — not a fixed checklist of filenames or markers. onboard actively extracts **only two** of the six profile categories:
 
 - **`conventions`** (the primary yield) — the code's observable regularities: directory/module structure, naming schemes, import style, the tech stack and toolchain (read from manifests), lint/format/type configuration, test framework and layout, and patterns repeated across the codebase. **Observable architecture / tech-stack facts** are captured here as fact-plus-steering, not as ADR-style decisions.
 - **`constraints`** (narrow, high-risk) — **only** config-level **explicit hard prohibitions**: lint/type rules set to *error* that ban imports or APIs, `do not edit` / generated-file / managed-block markers, and CODEOWNERS / protected-path conventions. Every constraint candidate carries a **precise evidence anchor** (`file:line` or a config snippet). **Absent an explicit prohibition signal, propose no constraint** — silence, never a guess.
 
-onboard **never** extracts `decisions` or `pitfalls`. A documented decision or pitfall is already readable in the repo (redundant to copy); an undocumented one is unreliable to infer from a cold scan (pitfalls are experiential; decision rationale would be fabricated). Those two categories remain `distill`'s channels, where the rationale and lived experience are available.
+onboard **never** extracts `decisions`, `pitfalls`, `strategies`, or `runbooks`. A documented decision or pitfall is already readable in the repo (redundant to copy); an undocumented one is unreliable to infer from a cold scan (pitfalls are experiential; decision rationale would be fabricated). `strategies` (metacognitive trigger→action rules) and `runbooks` (lived multi-step procedures) are likewise experiential — a cold scan cannot reliably infer either. All four remain `distill`'s channels, where the rationale and lived experience are available.
 
 ## Record Format
 
@@ -84,5 +84,5 @@ Report concisely in the interaction language: the records added / updated per ca
 
 - Read-only on code; write-only to `.codexspec/profile/`; no source / test / git / constitution mutation.
 - Standalone: no auto-next, no automatic hook, and **no Automatic Distillation step** (onboard is not a wrap-up command).
-- Writes only `conventions` and `constraints`; never `decisions` or `pitfalls`.
+- Writes only `conventions` and `constraints`; never `decisions`, `pitfalls`, `strategies`, or `runbooks`.
 - Produces no persistent document beyond profile records.

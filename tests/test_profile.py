@@ -14,15 +14,40 @@ from codexspec.profile import (
 # --- ensure_profile_scaffold ---
 
 
-def test_scaffold_creates_four_category_dirs_with_gitkeep(tmp_path: Path) -> None:
+def test_scaffold_creates_six_category_dirs_with_gitkeep(tmp_path: Path) -> None:
+    """T1.1-S1/S2: the store is the six categories, each scaffolded with a .gitkeep."""
     ensure_profile_scaffold(tmp_path)
     profile_dir = tmp_path / ".codexspec" / "profile"
     assert profile_dir.is_dir()
-    assert set(PROFILE_CATEGORIES) == {"constraints", "conventions", "pitfalls", "decisions"}
+    assert set(PROFILE_CATEGORIES) == {
+        "constraints",
+        "conventions",
+        "pitfalls",
+        "decisions",
+        "strategies",
+        "runbooks",
+    }
     for category in PROFILE_CATEGORIES:
         cat_dir = profile_dir / category
         assert cat_dir.is_dir()
         assert (cat_dir / ".gitkeep").exists()
+
+
+def test_constraints_is_first_category(tmp_path: Path) -> None:
+    """T1.1-S5: constraints stays the first element (highest weight, honored first)."""
+    assert PROFILE_CATEGORIES[0] == "constraints"
+
+
+def test_scaffold_migrates_existing_four_dir_store(tmp_path: Path) -> None:
+    """T1.1-S4: a legacy four-directory profile gains strategies/ and runbooks/ on re-scaffold."""
+    profile_dir = tmp_path / ".codexspec" / "profile"
+    for legacy in ("constraints", "conventions", "pitfalls", "decisions"):
+        (profile_dir / legacy).mkdir(parents=True)
+    ensure_profile_scaffold(tmp_path)
+    assert (profile_dir / "strategies").is_dir()
+    assert (profile_dir / "strategies" / ".gitkeep").exists()
+    assert (profile_dir / "runbooks").is_dir()
+    assert (profile_dir / "runbooks" / ".gitkeep").exists()
 
 
 def test_scaffold_is_idempotent_and_non_destructive(tmp_path: Path) -> None:
@@ -56,6 +81,41 @@ def test_render_is_status_aware() -> None:
     block = render_profile_block()
     assert "status" in block.lower()
     assert "candidate" in block and "vetted" in block
+
+
+def test_render_points_at_strategies_and_runbooks() -> None:
+    """T1.2-S1: the two new categories appear as pointers."""
+    block = render_profile_block()
+    assert ".codexspec/profile/strategies/" in block
+    assert ".codexspec/profile/runbooks/" in block
+
+
+def test_render_directs_active_recall() -> None:
+    """T1.2-S2: the block instructs an active scan-and-match, not passive on-demand reading."""
+    block = render_profile_block()
+    # emphasis-free spans (pitfall P-2026-0813-1606fz-1)
+    assert "scan the record headings and their" in block
+    assert "read every record whose condition matches" in block
+
+
+def test_render_carries_near_moment_distill_trigger() -> None:
+    """T1.2-S3: the write-side near-moment distill trigger rule is present."""
+    block = render_profile_block()
+    assert "/codexspec:distill" in block
+    assert "near that moment" in block
+    assert "non-blocking and early-exits when there is nothing new" in block
+
+
+def test_render_block_is_bounded_and_inlines_no_records() -> None:
+    """T1.2-S4: the block is a fixed small directive (constraints first) that inlines no records."""
+    block = render_profile_block()
+    # constraints pointer precedes the on-demand pointers
+    assert block.index("constraints/") < block.index("conventions/")
+    # footprint is a fixed directive, independent of profile size
+    assert len(block) < 2600
+    # no distilled record content is inlined (record ids look like P-2026-…, Con-2026-…)
+    assert "P-2026" not in block
+    assert "Con-2026" not in block
 
 
 # --- inject_profile_block (no channel param) ---

@@ -70,11 +70,38 @@ def test_onboard_supports_path_narrowing() -> None:
 
 
 def test_onboard_extracts_only_conventions_and_constraints() -> None:
-    """S1.6 (REQ-003, OUT-001)."""
+    """S1.6 (REQ-003, OUT-001); T3.1-S1: exclusion extended to strategies/runbooks."""
     content = read_command("onboard")
-    assert "onboard **never** extracts `decisions` or `pitfalls`" in content
+    assert "onboard **never** extracts `decisions`, `pitfalls`, `strategies`, or `runbooks`" in content
     assert "`conventions`" in content
     assert "`constraints`" in content
+
+
+def test_onboard_exclusion_extended_at_both_sites() -> None:
+    """T3.1-S2: both the extraction-scope paragraph and the Boundaries bullet exclude the four.
+
+    Neither site may still name only the old two-category exclusion.
+    """
+    content = read_command("onboard")
+    # both occurrences carry strategies + runbooks
+    assert content.count("`strategies`, or `runbooks`") == 2
+    # no site still stops at the old "decisions or pitfalls" phrasing
+    assert "never `decisions` or `pitfalls`" not in content
+    assert "extracts `decisions` or `pitfalls`" not in content
+
+
+def test_onboard_still_writes_only_conventions_and_constraints() -> None:
+    """T3.1-S3: onboard still writes only conventions + constraints."""
+    content = read_command("onboard")
+    assert "Writes only `conventions` and `constraints`" in content
+
+
+def test_onboard_category_count_is_six_everywhere() -> None:
+    """T3.1: no stale four-category total survives (extracts two of the SIX)."""
+    content = read_command("onboard")
+    assert "two** of the six profile categories" in content
+    # no reference frames the store as four total categories
+    assert "of the four profile categories" not in content
 
 
 # --- S1.7 constraints only from explicit config-level prohibitions ---
@@ -149,10 +176,13 @@ def test_onboard_integrates_dedups_idempotent() -> None:
 
 
 def test_onboard_prerequisite_and_scaffold() -> None:
-    """S1.13 (REQ-015)."""
+    """S1.13 (REQ-015); scaffold matches init's six categories, not the stale four."""
     content = read_command("onboard")
     assert "codexspec init" in content
-    assert "four category directories" in content
+    assert "six category directories" in content
+    # the scaffold-prerequisite line must name the two new categories so its
+    # rebuild matches init and leaves no dangling pointer-block reference
+    assert "strategies,runbooks" in content
 
 
 # --- S1.14 read-only code / write-only profile ---
