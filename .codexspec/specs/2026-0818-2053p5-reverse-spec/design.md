@@ -50,8 +50,9 @@ Runs first and produces exactly one mode. Order of evaluation:
 4. `[path]` given → resolve the slice, then search `.codexspec/specs/*/` for a
    workspace whose recorded slice (C3) matches. A workspace containing
    `slices.md` is an overview workspace and is skipped — identified by that
-   positive marker, not by a missing `spec.md`, since a generate run interrupted
-   before writing `spec.md` must not be mistaken for one.
+   positive marker, not by a missing `spec.md`. Both markers are written at
+   workspace creation (Decision 7), so an interrupted run of either mode is still
+   found by the lookup and still classified as the mode that created it.
 5. Zero matches → **generate**, after checking the slice contains analyzable
    code; if it does not, report and stop without creating anything. That check is
    generate-only: in reconcile mode an emptied slice is the maximal
@@ -63,7 +64,11 @@ Runs first and produces exactly one mode. Order of evaluation:
    what makes REQ-016/NFR-004 resumability reachable: an interrupted generate
    leaves an open workspace, and refusing to write would strand it permanently
    while pushing the user to confirm a half-finished draft as a baseline. Never
-   create a second workspace for a slice that already has one.
+   create a second workspace for a slice that already has one. Resume **completes
+   only what is missing** (Decision 7): it appends the parts never written and
+   leaves every part already present untouched, so a complete-but-unconfirmed
+   draft causes no write at all and the behavior degenerates exactly to
+   `spec.md` User Story 3.
 
 **Covers**: REQ-002, REQ-008, REQ-015
 
@@ -79,6 +84,14 @@ the slice's final path segment (`overview` for a bare run). The directory is
 created directly; `create-new-feature.sh` is deliberately **not** invoked, because
 it unconditionally runs `git checkout -b` when git is present, which C10 forbids
 (CON-007 supersedes the earlier mandate to call it).
+
+Creating a workspace is one indivisible act (Decision 7): the directory is created
+and the artifact that identifies it is written immediately — `spec.md` carrying the
+`Slice:` header in generate mode, `slices.md` in overview mode — before any
+scanning and before any derived content. There is therefore no window in which a
+created workspace is invisible to C2's lookup, which is what would otherwise let an
+interruption strand the first workspace and have the next run create a second one
+for the same slice.
 
 **Covers**: REQ-004, REQ-014, REQ-002, REQ-017
 
@@ -98,7 +111,10 @@ Performs a high-signal architectural survey and writes an `<id>-overview`
 workspace containing a thin architecture-level `design.md` (components,
 responsibilities, relationships) and `slices.md` (per candidate slice: path,
 one-line description, rough size or priority). It writes no `spec.md` and no
-`reconcile.md`.
+`reconcile.md`. `slices.md` is written as the workspace's creating act (C3,
+Decision 7), so the C2 marker that keeps an overview workspace out of the baseline
+lookup exists even when a survey is interrupted before the map is finished; a
+re-run continues that workspace under the same completion-only resume rule.
 
 **Covers**: REQ-015, NFR-005
 
@@ -154,9 +170,19 @@ references `/codexspec:debug`.
 
 One boundary statement governs all three modes: read-only on the codebase; writes
 confined to the resolved or created feature workspace; never writes
-`.codexspec/profile/` (that store belongs to `onboard`); never modifies source,
-tests, git state, or the constitution; and never edits a pre-existing artifact,
-including the baseline it reconciles against.
+`.codexspec/profile/` (that store belongs to `onboard`); and never modifies source,
+tests, git state, the constitution, or the baseline it reconciles against.
+
+The clause on the workspace's own artifacts is stated as a rule rather than as a
+closed list of exceptions, so that adding a legitimate write does not require
+contradicting it (Decision 7). The rule: the command rewrites only what it wrote
+during the current run, and never without notice. Whatever a workspace already held
+when the run began is treated as the maintainer's — the command cannot distinguish
+its own interrupted output from corrections the maintainer made to it, and
+`spec.md` User Story 1 makes correcting the draft the expected flow — so a resumed
+draft is appended to, never overwritten, and content that looks wrong is reported
+rather than fixed. The single wholesale regeneration is this command's own
+`reconcile.md` (C8), behind the notice REQ-010 requires.
 
 This boundary is enforced by written discipline, not mechanically. The
 `allowed-tools` frontmatter in C1 follows the `onboard` precedent and still grants
@@ -296,6 +322,45 @@ governance) nor the `_get_default_constitution()` string shipped to user project
   command is fully decoupled from the pipeline.
 - **Covers**: REQ-011, REQ-018
 
+### Decision 7: A workspace declares itself at creation, and a resume completes rather than rewrites
+
+- **Context**: Three separate review findings — a resume silently overwriting a
+  hand-corrected draft, an interrupted overview run losing its `slices.md` marker,
+  and a workspace being invisible to lookup between directory creation and the
+  `Slice:` header — turned out to be one defect. The command inferred a workspace's
+  identity and state from **content artifacts that are themselves written
+  incrementally during the run**. Any artifact used as a state marker is also a work
+  product being streamed, so mid-run the marker set is partial and a partial state is
+  indistinguishable from a different state. Provenance is likewise unknowable: the
+  command cannot tell its own interrupted output from the maintainer's corrections.
+  Repairing the three symptoms separately produced two consecutive rounds in which
+  the previous round's repair introduced the next round's worst finding.
+- **Decision**: Two rules, applied together.
+  1. **Identity is written before content.** Creating a workspace is one indivisible
+     act: the directory plus its identifying artifact (`spec.md` with the `Slice:`
+     header in generate mode, `slices.md` in overview mode), before any scanning.
+     No interruption window exists in which a workspace is unfindable or readable as
+     the other mode.
+  2. **Resume completes; it never rewrites.** Content present when a run begins is
+     treated as the maintainer's. A resumed draft is appended to; a discrepancy in
+     existing content is reported, not corrected; a complete draft causes no write.
+- **Why this is not new product intent**: rule 2 is strictly more conservative than
+  the confirmed text and follows from REQ-017 ("MUST NOT automatically modify code
+  or any pre-existing artifact") read together with `spec.md`'s confirmed boundary
+  row for a re-run ("Continue the existing workspace"). It also removes the apparent
+  tension between User Story 3 (refuse and report) and NFR-004 (resumability): when
+  nothing is missing, completion-only *is* report-only.
+- **Alternatives**: (a) prompt for consent before each overwrite — rejected, it
+  introduces a confirmation mechanism REQ-006 deliberately avoids and still destroys
+  work when the user answers hastily; (b) a dedicated workspace state file — rejected
+  as a third mechanism where the artifacts already carry the two markers needed;
+  (c) keep the closed exception list in C10 and add resume as a third exception —
+  rejected, it is the shape that produced the contradiction.
+- **Trade-off**: a resumed run cannot improve a section it already wrote, even when
+  a wider scan would now write it better. Accepted: the alternative is destroying
+  maintainer corrections, and the discrepancy is still surfaced in the report.
+- **Covers**: REQ-002, REQ-004, REQ-008, REQ-015, REQ-016, REQ-017, NFR-004
+
 ## Key Entities
 
 | Entity | Where it lives | Fields |
@@ -345,9 +410,11 @@ invoke reverse-spec [path]
                         │                            (reads requirements only to
                         │                             reason about direction)
                         │
-                        ├── one, still open ───────► REFUSE
+                        ├── one, still open ───────► RESUME GENERATE
                         │                            report unconfirmed baseline;
-                        │                            write nothing
+                        │                            append only what is missing,
+                        │                            never rewrite what is present
+                        │                            (complete draft → write nothing)
                         │
                         └── several ───────────────► ASK the user to choose
 ```
@@ -368,22 +435,22 @@ invoke reverse-spec [path]
 | Requirement | Design Coverage |
 |---|---|
 | REQ-001 standalone command surface | C1, Decision 1, Interface Contract |
-| REQ-002 mode auto-detection | C2, C3, Decision 2, Decision 3, Sequence |
+| REQ-002 mode auto-detection | C2, C3, Decision 2, Decision 3, Decision 7, Sequence |
 | REQ-003 generate output boundary | C4, Sequence |
-| REQ-004 workspace records its slice | C3, Decision 2, Key Entities |
+| REQ-004 workspace records its slice | C3, Decision 2, Decision 7, Key Entities |
 | REQ-005 derived content marked inferred/open | C6, Key Entities |
 | REQ-006 confirmation reuses existing convention | C6, Key Entities |
 | REQ-007 baseline is confirmed spec/design only | C7, Sequence |
-| REQ-008 unconfirmed baseline blocks reconcile | C2, Sequence |
+| REQ-008 unconfirmed baseline blocks reconcile | C2, Decision 7, Sequence |
 | REQ-009 three drift kinds | C7, Decision 5 |
 | REQ-010 persistent report plus briefing | C8, Key Entities, Sequence |
 | REQ-011 severity by impact; gates nothing | C7, C8, Decision 6 |
 | REQ-012 report only, never repair | C7, C8, C10 |
 | REQ-013 direction reasoning appeals to requirements | C7, Decision 5 |
 | REQ-014 slice unit and workspace creation | C3 |
-| REQ-015 bare run yields a map | C2, C5, Decision 3, Sequence |
-| REQ-016 scan discipline reused | C9, Decision 4 |
-| REQ-017 read-only, workspace-confined writes | C10 |
+| REQ-015 bare run yields a map | C2, C5, Decision 3, Decision 7, Sequence |
+| REQ-016 scan discipline reused | C9, Decision 4, Decision 7 |
+| REQ-017 read-only, workspace-confined writes | C10, Decision 7 |
 | REQ-018 no pipeline coupling | C1, Decision 6 |
 | REQ-019 path-based slice input only | Interface Contract |
 | REQ-020 registration and lockstep | C11 |
@@ -391,7 +458,7 @@ invoke reverse-spec [path]
 | NFR-001 English template with Language Preference | C1 |
 | NFR-002 self-bootstrap discipline | C1, Decision 1 |
 | NFR-003 two constitutions separate | C11 (bounded change set) |
-| NFR-004 scales without blocking | C9 |
+| NFR-004 scales without blocking | C9, Decision 7 |
 | NFR-005 independently readable output | C5, and the per-slice workspace model in C3 |
 | NFR-006 no fabricated intent | C4, Decision 5 |
 

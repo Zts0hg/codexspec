@@ -65,11 +65,12 @@ Resolve the mode first, in this order. Do not write anything until the mode is s
 3. **The path does not exist.** Report the invalid path and stop. Create no
    workspace.
 4. **The path exists.** Resolve it to a slice and search `.codexspec/specs/*/`
-   for a workspace whose recorded `Slice:` value matches that path. A workspace
-   containing `slices.md` is an overview workspace, never a baseline: skip it
-   during this search. Identify it by that positive marker, not by the absence of
-   a `spec.md` — a slice workspace left incomplete by an interrupted run may not
-   have written its `spec.md` yet, and must not be mistaken for an overview.
+   for a workspace whose recorded `Slice:` value matches that path. Every
+   workspace writes its identifying artifact as the act that creates it, so both
+   the lookup key and the mode marker are present even in a workspace an
+   interrupted run left half-written. A workspace containing `slices.md` is an
+   overview workspace, never a baseline: skip it during this search. Identify it
+   by that positive marker, not by the absence of a `spec.md`.
 5. **No matching workspace.** Enter generate mode — but first check that the slice
    contains analyzable code. If it does not, report that there is nothing to
    reverse-derive and stop, creating no workspace and no artifacts. This check
@@ -81,12 +82,16 @@ Resolve the mode first, in this order. Do not write anything until the mode is s
 7. **One matching workspace whose artifacts are confirmed.** Enter reconcile mode.
 8. **One matching workspace whose artifacts are still open.** Do not reconcile:
    comparing code against a draft derived from that same code would compare the
-   code with itself and report no drift by construction. Instead **resume generate
-   mode into that existing workspace**, continuing an interrupted or incomplete
-   draft rather than starting over. Never create a second workspace for a slice
-   that already has one. Report that you are continuing the draft rather than
-   reconciling, and state the exact confirmation action from the section below so
-   the user knows how to promote it once it is complete.
+   code with itself and report no drift by construction. Instead resume generate
+   mode into that existing workspace. Never create a second workspace for a slice
+   that already has one. Resuming means completing only what is missing: read what
+   the workspace already holds, append the parts that were never written, and
+   leave everything already written exactly as it stands. If the draft is already
+   complete, write nothing at all and simply report the unconfirmed baseline.
+   Report that you are continuing the draft rather than reconciling, say which
+   parts you added and which you left untouched, and state the exact confirmation
+   action from the section below so the user knows how to promote it once it is
+   complete.
 
 Report the resolved mode before proceeding, so the user can stop you if it is not
 the mode they wanted.
@@ -112,20 +117,34 @@ prerequisite and stop rather than scaffolding an SDD workspace root yourself.
 Create the directory only. Do not run `.codexspec/scripts/create-new-feature.sh`
 or its PowerShell counterpart: those scripts create and switch a git branch, which
 this command must never do. Creating a workspace changes no git state, so the
-command is safe to run on whatever branch the user is already working on.
+command is safe to run on whatever branch the user is already working on. That
+restriction is about git side effects, not about writing: what the new directory
+must contain from its first moment is set out below.
 
 Every generated `spec.md` and `design.md` carries a `Slice:` header holding the
 repo-relative path its content describes. This field is the whole baseline-lookup
 mechanism: there is no index file and the directory name does not encode the path.
 State the recorded value in the closing summary so a later mismatch is diagnosable.
 
+Creating a workspace is one indivisible act: create the directory and immediately
+write the artifact that identifies it — in generate mode a `spec.md` carrying the
+`Slice:` header, in overview mode a `slices.md` — before scanning anything and
+before writing any derived content. The lookup key and the mode marker therefore
+exist from the workspace's first moment. Do not create the directory and defer
+the header until the scan has something to say: that ordering opens a window in
+which the workspace is invisible to the lookup above, so an interruption inside it
+would leave the next run creating a second workspace for the same slice and
+orphaning the first.
+
 ## Generate Mode
 
 Scan the slice per the scan discipline below, writing as you go rather than
 holding everything until the scan completes. Create the workspace as soon as the
-slice is confirmed to have analyzable code, and append to the artifacts
+slice is confirmed to have analyzable code, writing its `spec.md` with the `Slice:`
+header as the creating act described above, then append to the artifacts
 incrementally so an interrupted run leaves usable partial output that a re-run can
-continue from. Three artifacts are produced:
+continue from. Append; never rewrite. Content already in an artifact stays as it
+is, and the run continues after it. Three artifacts are produced:
 
 - `spec.md` — the behavior and contracts the code exhibits: public surface,
   inputs and outputs, observable behavior, error and boundary handling.
@@ -143,13 +162,20 @@ story.
 ## Overview Mode
 
 Survey the repository high-signal-first, writing incrementally as the survey
-proceeds so an interrupted run leaves usable partial output. Produce an
-`<id>-overview` workspace containing exactly two artifacts:
+proceeds so an interrupted run leaves usable partial output. Create the
+`<id>-overview` workspace by writing its `slices.md` as the creating act described
+above, so the workspace is identifiable as an overview from its first moment and
+an interrupted survey can never be mistaken for a slice workspace. The workspace
+contains exactly two artifacts:
 
 - `design.md` — a thin architecture-level map: components, their responsibilities,
   and how they relate. Marked as inferred, scaled to complexity.
 - `slices.md` — the candidate slice list. One row per slice: path, a one-line
   description, and a rough size or priority.
+
+When the `<id>-overview` workspace already exists from an interrupted survey,
+continue it under the resume rule mode resolution states: complete only what is
+missing, and leave what is already written untouched.
 
 Overview mode writes no `spec.md` and no `reconcile.md`. It is a map and a
 deepening plan, not a specification. A single repository-wide detailed
@@ -234,9 +260,10 @@ short briefing in the conversation.
 ## Notes
 ```
 
-`reconcile.md` is this command's own output, not a pre-existing artifact in the
-sense of the boundary below, so a later reconcile of the same slice regenerates
-it. Regeneration replaces the previous report: any adjudication the user recorded
+`reconcile.md` is this command's own output and the one artifact the boundary
+below allows it to rewrite wholesale, so a later reconcile of the same slice
+regenerates it rather than appending to it. Regeneration replaces the previous
+report: any adjudication the user recorded
 by editing item statuses in it is not carried over. Say so before overwriting, so
 the user can resolve or copy out an earlier report's open items first.
 
@@ -273,9 +300,16 @@ subject to these overrides:
 - Writes are confined to the feature workspace it creates or resolves.
 - Never writes to `.codexspec/profile/`. That store belongs to `$codexspec:distill`
   and `$codexspec:onboard`.
-- Never edits an artifact it did not produce — source, tests, and above all the
-  baseline it reconciles against. Regenerating its own `reconcile.md` on a repeat
-  run is the one exception, and is covered by the notice rule above.
+- Never edits source, tests, or the baseline it reconciles against.
+- Rewrites only what it wrote during the current run, and never without notice.
+  Whatever a workspace already held when the run began belongs to the maintainer,
+  whether it came from an interrupted earlier run or from corrections they made to
+  that run's draft — you cannot tell the two apart, so treat both as theirs. A
+  resumed draft is therefore appended to, never overwritten. Where existing content
+  looks wrong or contradicts what the code now shows, report the discrepancy and
+  leave the decision to the user rather than correcting it yourself. The one
+  artifact this command regenerates wholesale is its own `reconcile.md`, and only
+  behind the notice the report section above requires.
 - Never applies a drift resolution, in either direction.
 
 ## Output Summary

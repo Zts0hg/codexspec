@@ -40,8 +40,9 @@ Required content, by design component:
 | `## Inference Marking and Confirmation` — file-level `Status: inferred/open`, `[inferred]` markers, promotion by `Status: confirmed` + Confirmation Log; no new command | C6 |
 | `## Reconcile Mode` — baseline is confirmed spec (+ design when present); three drift kinds; severity by impact; both-side evidence; direction suggested never applied; `needs-your-judgment` when intent does not decide | C7 |
 | `## Reconcile Report` — the `reconcile.md` structure and per-item fields | C8 |
-| `## Scan Discipline` — reference to `/codexspec:onboard`, restating only the `[path]` difference | C9 |
-| `## Boundaries` — read-only on code, writes confined to the workspace, never `.codexspec/profile/`, never source/tests/git/constitution, never edits a pre-existing artifact | C10 |
+| `## Scan Discipline` — reference to `/codexspec:onboard`, stating **both** overrides on the referenced text: (a) `onboard`'s "stream findings to the store / write each convention as confirmed" directive does **not** carry over — this command writes nothing to `.codexspec/profile/` and streams into its own workspace artifacts instead (OUT-002, REQ-017); (b) `[path]` is the slice boundary here, not a scan narrower | C9 |
+| `## Boundaries` — read-only on code, writes confined to the workspace, never `.codexspec/profile/`, never source/tests/git/constitution/baseline; rewrites only what the current run wrote, so a resumed draft is appended to and never overwritten, with `reconcile.md` the single announced regeneration | C10 |
+| `## Mode Resolution` / `## Slice and Workspace` / `## Overview Mode` — workspace creation writes its identifying artifact (`spec.md` with the `Slice:` header, or `slices.md`) as the creating act, and a resume completes only what is missing | C2, C3, C5, Decision 7 |
 
 - **Must NOT contain**: an `## Auto-Next Chain Advance` section, an
   `## Automatic Distillation` section, or any reference to `language.commit`.
