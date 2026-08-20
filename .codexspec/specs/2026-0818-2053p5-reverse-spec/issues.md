@@ -1,214 +1,178 @@
-# Open Issues: reverse-spec
+# Review Record: reverse-spec
 
 **Feature**: `2026-0818-2053p5-reverse-spec`
-**Branch**: `2026-0818-2053p5-reverse-spec` · **Commit**: `bf0129b` (only commit ahead of `origin/main` = `ea61c31`)
-**Working tree**: clean · **Baseline**: 1231 passed / 50 skipped · `ruff check src/ tests/` clean
-**implement-tasks §7.6 terminal status**: **NOT SUCCESS** — the last complete-feature review returned `FAIL`; its findings are unrepaired.
+
+This file is the defect history and the lessons drawn from it. It records what was
+found and repaired, **not** outstanding work: nothing below is a pending action
+except the single product question in the last section, which is flagged for the
+maintainer and is not a defect.
+
+It deliberately does **not** track the feature's gate status. A status document
+living inside the diff cannot describe the review of the diff that contains it —
+that self-reference is exactly what produced the round-5 finding below. The
+authoritative terminal verdict is the `implement-tasks` §7.6 gate result, which
+lives in the session and the branch history, not here.
 
 ---
 
-## Where things stand
+## Review history
 
-All seven tasks in `tasks.md` are implemented and committed. Four rounds of
-isolated `review-code` have run. Rounds 1–3 produced 16 verified defects, all
-repaired. Round 4 produced 6 more, listed below, **none of which is repaired**.
+Rounds of **isolated** `review-code` ran against the complete-feature target. Each
+round's admitted findings were repaired before the next round started, and each
+round ran in a genuinely fresh context that inherited no prior conclusions.
 
-| Round | Verdict | Findings | Status |
+| Round | Verdict | Findings | Outcome |
 |---|---|---|---|
 | 1 | FAIL | P2×1, P3×1 | repaired (one required a user decision → CON-007) |
 | 2 | FAIL | P2×3, P3×8 | repaired |
 | 3 | FAIL | P2×1, P3×2 | repaired |
-| 4 | FAIL | P2×1, P3×5 | **open — this document** |
+| 4 | FAIL | P2×1, P3×5 | repaired (see "The convergence signal" below) |
+| 5 | FAIL | P3×1 | repaired — a stale copy of this file, falsified by the commit that had just fixed round 4 |
 
-Governance passed in every round: self-bootstrap (derived artifacts verified as
-faithful regenerations, never hand-edited), the two-constitutions separation, the
-packaging boundary, and every command-count / enumeration site.
+Governance passed in every round: self-bootstrap (both derived artifacts verified
+as faithful regenerations, never hand-edited), the two-constitutions separation,
+the packaging boundary, and every command-count / enumeration lockstep site.
 
-## The convergence signal — read this before fixing anything
+## The convergence signal — why rounds 3–5 are worth remembering
 
 **The worst finding in each of rounds 3 and 4 was introduced by the previous
 round's repair, both times in the same area: mode resolution and write
 boundaries.**
 
-- Round 2's repair made generation write incrementally (to satisfy REQ-016 /
-  NFR-004 resumability). → Round 3 found that an interrupted run now leaves a
-  `Status: open` workspace which step 8 refused outright, making resumability
-  unreachable.
+- Round 2's repair made generation write incrementally (REQ-016 / NFR-004
+  resumability). → Round 3 found that an interrupted run now left a `Status: open`
+  workspace which step 8 refused outright, making resumability unreachable.
 - Round 3's repair added "resume generate into the existing workspace". → Round 4
-  found that this silently overwrites a draft the maintainer has already
-  hand-corrected, and creates a second exception to a boundary clause that
-  declares its exception set closed.
+  found that this silently overwrote a draft the maintainer had already
+  hand-corrected, and created a second exception to a boundary clause that
+  declared its exception set closed.
 
-Under §7.5 the progress guards have **not** tripped — each round's defects were
-new, none survived two fixes, and no refuted finding recurred, so the loop is
-formally allowed to continue. But the pattern says the remaining problem is not
-"one more patch away". **I-1, I-2 and I-3 below are three faces of one unsettled
-design question — how a partially-written or partially-corrected workspace is
-recognized and resumed. Settle that question once, then apply all three.** Fixing
-them independently is what produced this pattern twice.
+Round 4's three worst findings were then diagnosed as **one defect with three
+faces**, and fixed together rather than individually:
 
----
+> The command inferred a workspace's identity and state from **artifacts that are
+> themselves written incrementally during the run**. Any artifact used as a state
+> marker is also a work product being streamed, so mid-run the marker set is
+> partial and a partial state is indistinguishable from a different state.
+> Provenance is likewise unknowable: the command cannot tell its own interrupted
+> output from the maintainer's corrections.
 
-## Open findings
+The settlement is recorded as **`design.md` Decision 7**, two rules applied
+together: *identity is written before content* (creating a workspace is one
+indivisible act — directory plus its identifying artifact, before any scanning),
+and *resume completes; it never rewrites* (content present when a run begins is
+treated as the maintainer's). The Boundaries clause became a stated rule instead
+of a closed exception set, which was the shape that produced the contradiction
+twice.
 
-### I-1 [P2] `resume generate` can silently overwrite a hand-corrected draft
+**Lesson**: when consecutive review rounds keep finding defects in one area and
+each round's fix creates the next round's defect, the remaining problem is not one
+more patch away. Stop patching symptoms and find the shared cause first.
 
-- **Location**: `templates/commands/reverse-spec.md` — Mode Resolution step 8
-  (resume clause) vs. the `## Boundaries` clause beginning "Never edits an
-  artifact it did not produce".
-- **Defect (two parts)**:
-  1. The Boundaries clause states that regenerating its own `reconcile.md` is
-     **the one exception**. Step 8's resume is a second exception, so the two
-     instructions cannot both be followed: an agent honoring Boundaries refuses to
-     write and strands the workspace; an agent honoring step 8 breaches a boundary
-     the template just declared exhaustive.
-  2. Unlike the `reconcile.md` path — which requires "Say so before overwriting" —
-     resume has **no pre-overwrite notice and no consent**.
-- **User harm**: `spec.md` User Story 1 confirms the flow "the maintainer reviews
-  the draft, **corrects what the code got wrong**, and confirms it". A maintainer
-  who has corrected the draft but not yet flipped `Status` to `confirmed` and then
-  re-runs the command lands in step 8; the agent re-derives from code and
-  overwrites those corrections without asking. This contradicts confirmed CON-004
-  / REQ-017 ("MUST NOT automatically modify code or any pre-existing artifact").
-- **Suggested direction** (not applied — see the convergence note): do not add a
-  third exception. Reopen the Boundaries clause from a closed set to a stated rule
-  ("it rewrites only artifacts it produced in this workspace, and never without
-  notice"), and give resume the same pre-overwrite notice the `reconcile.md` path
-  already has. Decide alongside I-2 and I-3.
+## What each round's repairs touched
 
-### I-2 [P3] The overview positive marker fails for an interrupted overview run
+- **I-1 / I-2 / I-3** (round 4, the one defect above) —
+  `templates/commands/reverse-spec.md`: mode resolution steps 4 and 8,
+  `## Slice and Workspace`, `## Generate Mode`, `## Overview Mode`,
+  `## Boundaries`.
+- **I-4** — `design.md`: the sequence diagram's `one, still open` branch and C10
+  contradicted C2 and the template; C2/C3/C5/C10 and the coverage table now match,
+  and Decision 7 records the rationale.
+- **I-5** — `tasks.md`: the T1.1 `## Scan Discipline` row named only the `[path]`
+  override, so implementing it literally would have re-imported `onboard`'s
+  forbidden profile write. It now names both overrides.
+- **I-6** — `tests/test_reverse_spec_template.py`:
+  `test_three_drift_kinds_are_named` asserted only that the three kind literals
+  appeared somewhere in the file; they also appear in the report block and in mode
+  resolution, so the assertion stayed green with the entire REQ-009 classification
+  instruction deleted. It now asserts the classification sentence and each kind's
+  defining clause.
+- **Round 5's P3** — this file.
 
-- **Location**: `templates/commands/reverse-spec.md` — Mode Resolution step 4
-  (`slices.md` as the positive marker) vs. `## Overview Mode` (writes
-  incrementally).
-- **Defect**: an overview run interrupted after `design.md` but before
-  `slices.md` has no marker. A later `reverse-spec .` therefore treats that
-  overview workspace as a slice workspace: if open → step 8 resumes generate and
-  writes a `spec.md` into it, violating REQ-015 / OUT-005 ("the bare run produces
-  no `spec.md`"); if confirmed → step 7 reconciles against a design-only baseline,
-  the exact state `design.md` Decision 3 calls undefined.
-- **Note**: the interruption hole closed for slice workspaces was left open on the
-  overview side. Same root question as I-1 and I-3.
+## Coverage closed in the final rounds
 
-### I-3 [P3] "Never create a second workspace for a slice" is unreachable in one window
+A section-deletion sweep in a disposable mirror now fails for every guarded rule.
+Previously-hollow areas that were closed:
 
-- **Location**: `templates/commands/reverse-spec.md` — step 8's prohibition vs.
-  `## Slice and Workspace` ("the `Slice:` header is the whole baseline-lookup
-  mechanism; there is no index file") vs. `## Generate Mode` ("create the
-  workspace as soon as the slice is confirmed to have analyzable code").
-- **Defect**: between directory creation and writing the `Slice:` header, the
-  workspace is invisible to the step-4 lookup. An interruption inside that window
-  makes the next run create a second workspace and orphan the first — directly
-  against the confirmed boundary row in `spec.md` ("Continue the existing
-  workspace rather than creating a second one for the same slice").
-- **Suggested direction**: write the `Slice:` header as the first act of creating
-  the workspace, so the lookup key exists before any interruption is possible.
+- `## Overview Mode` had **zero** contract coverage (REQ-015 / OUT-005 and User
+  Story 4's acceptance scenarios). Deleting the whole section left the suite green.
+- The `Slice:` header (REQ-004) — the entire baseline-lookup mechanism — had no
+  assertion; nothing failed if it disappeared.
+- `## User Input` / `$ARGUMENTS` had no coverage, though the command cannot
+  receive `[path]` without it.
+- The cross-command reference to `/codexspec:onboard` had no guard; the scan
+  section could be renamed and the two overrides would silently describe text that
+  no longer exists. (Guard shape follows `tests/test_distill_template.py`.)
+- Assertions spanning markdown emphasis or backticks (brittle, against plan
+  Decision 3 / pitfall `P-2026-0813-1606fz-1`) were removed: every assertion now
+  runs against emphasis-stripped prose via the `prose()` helper.
 
-### I-4 [P3] `design.md` sequence diagram contradicts its own C2
+## Declared, accepted coverage gaps
 
-- **Location**: `.codexspec/specs/2026-0818-2053p5-reverse-spec/design.md` —
-  `## Sequence & Data Flow`, the `one, still open` branch still reads
-  `REFUSE / write nothing`; C10 likewise still says "never edits a pre-existing
-  artifact" with no mention of resume or report regeneration.
-- **Defect**: C2 item 8 in the same document says resume, and the template
-  implements resume. `design.md` is the direct upstream authority for plan and
-  tasks, so someone implementing or reviewing from it reaches the behavior this
-  work deliberately removed.
-- **Fix**: mechanical propagation — update the diagram branch and C10 to match C2.
+Not defects — recorded trade-offs, carried forward knowingly:
 
-### I-5 [P3] `tasks.md` T1.1 would reinstate a forbidden write
-
-- **Location**: `.codexspec/specs/2026-0818-2053p5-reverse-spec/tasks.md` — the
-  T1.1 content table row for `## Scan Discipline` still reads "restating only the
-  `[path]` difference".
-- **Defect**: the template now carries **two** overrides on the delegated
-  `onboard` scan text; the first is "this command writes nothing to
-  `.codexspec/profile/`". `onboard.md` instructs "Stream findings to the store as
-  you go — write each convention as soon as it is confirmed", so implementing
-  T1.1 literally re-imports that write and violates OUT-002 / CON-004.
-- **Fix**: mechanical — the row must name both overrides. (`plan.md` is already
-  neutral and needs no change.)
-
-### I-6 [P3] `test_three_drift_kinds_are_named` is a hollow assertion
-
-- **Location**: `tests/test_reverse_spec_template.py`.
-- **Defect**: it asserts only that the three kind literals appear somewhere in the
-  file. They also appear in the `## Reconcile Report` code block and in Mode
-  Resolution step 5, independently of the classification instruction.
-- **Proof**: in a disposable mirror, deleting the entire REQ-009 classification
-  instruction from the template left all 30 tests green.
-- **Fix**: assert the classification sentence itself, e.g. the span beginning
-  "Re-read the slice's current code and classify each finding as exactly one of".
-  The file already documents this discipline in two other comments; this
-  assertion is the one that violates it.
-
----
-
-## Declared coverage gaps (not defects — decide whether to close any)
-
-Measured by section-deletion sweeps in a disposable mirror:
-
-- **`## Overview Mode` has zero contract coverage.** Deleting the whole section
-  leaves all 30 tests green. REQ-015 / OUT-005 and User Story 4's three acceptance
-  scenarios have no automated evidence. This is the largest gap and the cheapest
-  to close.
-- **REQ-003, REQ-004, REQ-006, REQ-014 have no contract test.** `tasks.md` maps
-  them to T1.1's manual deterministic check only — a declared trade-off, not an
-  omission. The sharpest instance is REQ-004: the `Slice:` header is the entire
-  baseline-lookup mechanism and nothing fails if it disappears. I-3 makes this
-  more pressing.
-- **`## User Input` / `$ARGUMENTS` has no coverage**; deleting it leaves 30 tests
-  green even though the command could not receive `[path]` without it.
-- **Some assertions span markdown emphasis or backticks**, against plan Decision 3
-  / T2.1's own rule (pitfall `P-2026-0813-1606fz-1`). Currently green; brittle.
-- **The cross-command reference to `/codexspec:onboard` has no test.** Nothing
-  asserts that `onboard.md` still has a `## Codebase Scan` section or that its
-  overridden directives are still where the override expects them. The repository
-  has precedent for such a guard in `tests/test_distill_template.py`.
+- **REQ-003, REQ-006, REQ-014 have no contract test.** `tasks.md` maps them to
+  T1.1's manual deterministic check — a declared trade-off. (REQ-004, previously
+  the sharpest instance, is now covered.)
 - **Prose deliverable, no runtime assertions** — accepted in `design.md`
-  Decision 1.
-- **`allowed-tools` is far wider than the Boundaries** (`Bash(git:*)`, `Edit`,
-  `Write`), and the Codex render strips `allowed-tools` entirely. Recorded and
-  accepted as residual risk in `design.md` C10; not a defect introduced here.
+  Decision 1; the contract tests are the strongest available guard.
+- **`allowed-tools` is wider than the Boundaries** (`Bash(git:*)`, `Edit`,
+  `Write`), and the Codex render strips `allowed-tools` entirely from every skill.
+  Byte-identical to the shipped `onboard.md` and pre-existing for all 26 commands;
+  recorded and accepted as residual risk in `design.md` C10.
 - **Partial confirmation is unmodeled** (`spec.md` confirmed, `design.md` open) —
   explicitly assumed away in `design.md` A-2.
+- **A path whose final segment is empty** (`.`, `/`, a trailing slash) yields a
+  workspace directory named `<id>-`. Writes remain provably confined to
+  `.codexspec/specs/`, and baseline lookup uses the in-artifact `Slice:` header
+  rather than the directory name, so the effect is cosmetic.
+- **Absolute or out-of-repo paths**: the `Slice:` header is specified as a
+  repo-relative path with no stated rule when no relative form exists. Affects
+  diagnosability of lookup only; writes do not escape.
+- **`plan.md:5`** still reads `design.md (C1–C11, Decisions 1–6)`; Decision 7 was
+  added afterwards. Verified to introduce no substantive conflict with `plan.md`'s
+  body — a stale count in a header line, below the finding threshold.
 - **`docs/*/user-guide/commands.md` omits `reverse-spec`** — it also omits
-  `onboard`, `debug`, `distill`, `evolve`, `release-notes`; pre-existing drift, not
-  attributable to this change.
+  `onboard`, `debug`, `distill`, `evolve`, and `release-notes`. Pre-existing drift,
+  not attributable to this change and not among REQ-020's lockstep sites.
 
----
+## Open product question for the maintainer
 
-## Definition of done
+**Not a defect, and it does not block the gate** — the round-5 reviewer and its
+independent specialist both raised it and both declined to admit it, because
+confirmed intent genuinely supports two readings. It needs a product decision, not
+an implementation choice.
 
-`implement-tasks` §7.6 requires a final valid `PASS` envelope from a **fresh
-isolated** complete-feature review, with complete requirements coverage, complete
-verification, zero P0–P3 findings, no blocking coverage gap, no uncovered
-enumerated test scenario from `tasks.md`, and a still-green baseline.
+**`reverse-spec .` — an explicit path that happens to be the repository root —
+enters generate mode and would draft one whole-repository detailed `spec.md`.**
+Step 1 short-circuits only the *bare* run, and step 4 skips the overview
+workspace, so an explicit root path finds zero matches and falls through to
+generate.
 
-Concretely, before that review can be run:
+- Reading A (current behavior is correct): DEC-011, OUT-005, and REQ-015 all
+  anchor the monolithic-spec prohibition specifically to the **bare run / no
+  `[path]`** case, and REQ-014 defines a slice as "a directory, module, or package
+  path" — the repository root is one.
+- Reading B (current behavior is a gap): NFR-005's second sentence is
+  unconditional — "No output aggregates the whole repository into a single
+  detailed specification."
 
-1. Settle the resume/recognition question once, then apply I-1, I-2, I-3 together.
-2. Apply I-4, I-5, I-6 (mechanical).
-3. Optionally close the `## Overview Mode` coverage gap and add a `Slice:` header
-   assertion.
-4. Re-run: `uv run ruff check src/ tests/`; `uv run pytest -q` (must stay ≥ 1231
-   passed / 50 skipped, no regression).
-5. Regenerate derived artifacts with `uv run codexspec init . --force --ai both`
-   — the `--ai both` flag is mandatory or `project.ai` is rewritten — and confirm
-   `git status` shows no `.codexspec/config.yml` change.
-6. Commit (Conventional Commits, English, **no AI attribution of any kind**), then
-   run a fresh isolated review round.
+If Reading B is intended, the fix is small — treat a slice that resolves to the
+repository root as the bare run, or refuse it and point at the bare run — but it
+changes confirmed scope and so was not applied.
 
-## Environment notes for whoever picks this up
+## Environment notes
 
-- `pre-commit` will hang for minutes building the `shellcheck_py` environment
-  (its build downloads a binary and there is no network in the sandbox), and
+- `pre-commit` hangs for minutes building the `shellcheck_py` environment (its
+  build downloads a binary and there is no network in the sandbox), and
   `pip-audit` needs network too. This change adds no shell code, so
   `SKIP=shellcheck,pip-audit git commit …` is safe; check the hook output shows
   the rest ran.
 - `ruff-format` may reformat a staged Python file and abort the commit. Re-stage
   only the file the hook modified and retry — that is the single permitted
   `git add` during a commit.
+- Regenerate derived artifacts with `uv run codexspec init . --force --ai both`.
+  The `--ai both` flag is mandatory, or `project.ai` is rewritten to `claude`.
 - Reviews must run in a genuinely isolated context. An inline self-review shares
   context and cannot produce a clean PASS (profile pitfall
   `P-2026-0811-1418yq-1`).
