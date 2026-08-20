@@ -312,6 +312,18 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 
 **Implementation**: Edit `templates/commands/onboard.md` and the one-line onboard cross-note in `templates/commands/distill.md`; register `onboard` in `installer.py` under the `enhanced` category (adjacent to distill/evolve). The `.claude/commands/codexspec/` and `.agents/skills/codexspec-*/` forms are regenerated from templates (do not hand-edit the derived copies).
 
+### Brownfield Reverse Specification: reverse-spec
+
+**Feature**: The brownfield entry point and the anti-drift check — `/codexspec:reverse-spec [path]` reads existing code and either drafts SDD artifacts for it or reports how the code has diverged from its confirmed design.
+
+- **Three modes, resolved before any output**: **overview** (no path — architectural survey producing a thin `design.md` plus `slices.md`, never a `spec.md` or `reconcile.md`), **generate** (path with no confirmed baseline — drafts `spec.md` + `design.md` scaled to complexity + a thin all-`open` `requirements.md` stub), **reconcile** (path with a confirmed baseline — writes `reconcile.md`). The lifecycle is generate → human confirmation → reconcile, repeatedly.
+- **Two axes** (the load-bearing distinction): the **authority axis** (requirements > spec > design > plan > tasks) decides which artifact wins a conflict; the **reconcilability axis** (design ≳ spec ≫ requirements) decides what can be compared to code. Reconciliation therefore compares against **confirmed spec/design** and adjudicates direction with **requirements** — code is never mechanically compared to `requirements.md`, which deliberately withholds verifiable contracts.
+- **Report, never repair** (opposite of `analyze`): when code and a confirmed spec disagree, the code may carry a defect or the spec may be stale, so the direction is surfaced (`fix-code` / `update-spec` / `needs-your-judgment`) but never applied. `analyze` may auto-remediate only because its fix direction is uniquely fixed by the authority hierarchy; here it is not. Three drift kinds (`undocumented-behavior`, `unimplemented-spec`, `semantic-mismatch`), severity assigned by **impact rather than by kind**, and `semantic-mismatch` requires evidence quoted from **both** sides.
+- **Inference is never authority**: everything derived is marked `Status: inferred/open` and becomes a baseline only when the user flips it to `confirmed` and appends a Confirmation Log entry — reusing the `requirements.md` convention, adding no new command. An unconfirmed draft is refused as a baseline, since comparing code against a mirror of itself yields zero drift by construction.
+- **Slice-sized and read-only**: the unit is a directory/module path; each generate run seeds `.codexspec/specs/<id>-<slice>/` whose `Slice:` header is the entire baseline-lookup mechanism (no index file). Workspace creation **reuses the id/directory convention but never creates a git branch** — `create-new-feature.sh` is deliberately not invoked because it runs `git checkout -b`. Standalone: no `auto_next`, no automatic hook, no Automatic Distillation section; never writes `.codexspec/profile/` (that store belongs to `distill`/`onboard`).
+
+**Implementation**: Edit `templates/commands/reverse-spec.md`; register under the `enhanced` category in `installer.py`. The `.claude/commands/codexspec/` and `.agents/skills/codexspec-*/` forms are regenerated from templates (do not hand-edit the derived copies).
+
 ### Profile Consumption
 
 **Feature**: Make a project's distilled `.codexspec/profile/` **take effect locally** — the read side that complements `distill` (which writes) and `evolve` (which contributes upstream). Without it the profile was write-only-then-upstream; this closes the loop so accumulated knowledge stops repeated pitfalls and re-litigated decisions **within the user's own project**.
@@ -406,7 +418,7 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 | `/codexspec:review-tasks`    | Review task breakdown                    |
 | `/codexspec:implement-tasks` | Execute implementation                   |
 
-### Enhanced Commands (5) - NEW
+### Enhanced Commands (6) - NEW
 
 | Command                      | Description                                 |
 | ---------------------------- | ------------------------------------------- |
@@ -415,6 +427,7 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 | `/codexspec:checklist`       | Generate requirements quality checklists    |
 | `/codexspec:tasks-to-issues` | Convert tasks to GitHub issues              |
 | `/codexspec:debug`           | Systematic root-cause debugging (standalone + implement-tasks escalation) |
+| `/codexspec:reverse-spec`    | Brownfield: reverse-derive spec/design from code, then reconcile code against the confirmed baseline |
 
 ### Self-Evolution Commands (3) - NEW
 
@@ -530,6 +543,7 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec:evolve`          | ✅ Template | Self-evolution: compile vetted profile knowledge into a command/skill draft + reviewed PR |
 | `/codexspec:onboard`         | ✅ Template | Cold-start the profile from an existing codebase (distill's bulk counterpart): conventions + narrow constraints, tiered safety gate, never decisions/pitfalls |
 | `/codexspec:debug`           | ✅ Template | Systematic root-cause debugging: one four-phase discipline; standalone command + implement-tasks reference-style escalation |
+| `/codexspec:reverse-spec`    | ✅ Template | Brownfield entry + anti-drift: three modes (overview / generate / reconcile); report-only reconciliation, direction adjudicated by the user |
 | `/codexspec:commit-staged`   | ✅ Template | Generate commit from staged changes strictly from the staged diff             |
 | `/codexspec:pr`              | ✅ Template | Generate PR/MR descriptions                                                   |
 | `/codexspec:review-code` | ✅ Template | Review code in any language for idiomatic clarity, correctness, robustness, architecture, and constitution alignment |

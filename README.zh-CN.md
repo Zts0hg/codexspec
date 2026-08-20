@@ -547,6 +547,7 @@ claude
 | `/codexspec:checklist`        | 生成需求质量检查清单                                     |
 | `/codexspec:tasks-to-issues`  | 将任务转换为 GitHub Issues                               |
 | `/codexspec:debug`            | 系统化根因排查（四阶段；可独立调用或由 implement-tasks 升级进入） |
+| `/codexspec:reverse-spec`     | 存量代码反向生成 spec/design，并与已确认基线对账（只报漂移，不自动修改） |
 
 #### 自我进化命令
 

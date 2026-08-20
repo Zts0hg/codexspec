@@ -547,6 +547,7 @@ claude
 | `/codexspec:checklist`        | 요구사항 품질 체크리스트 생성                              |
 | `/codexspec:tasks-to-issues`  | 태스크를 GitHub 이슈로 변환                                |
 | `/codexspec:debug`            | 체계적 근본 원인 디버깅(4단계; 독립 실행 또는 implement-tasks에서 에스컬레이션) |
+| `/codexspec:reverse-spec`     | 기존 코드에서 spec/design을 역생성하고 확정된 기준선과 코드를 대조(드리프트 보고만, 자동 수정 없음) |
 
 #### 자기 진화 명령
 
