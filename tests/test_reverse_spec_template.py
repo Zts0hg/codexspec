@@ -174,10 +174,62 @@ def test_slice_path_is_normalized_before_any_comparison() -> None:
     content = prose("reverse-spec")
     assert "Normalize it before comparing anything" in content
     assert "make it repo-relative, resolve ., .., and absolute forms, and drop any trailing slash" in content
-    assert "are one slice rather than four" in content
+    assert "are one slice rather than five" in content
     # Normalization must apply on the way in, not only on the way out.
     assert "Record every Slice: header in exactly this normalized form and compare in it too" in content
     assert "an unnormalized comparison silently misses the workspace a slice already has" in content
+
+
+def test_normalization_resolves_symlinks_and_is_not_a_closed_list() -> None:
+    """DEC-013 (REQ-002, REQ-004): normalization stated as a closed lexical list left
+    symlinks out, reopening the exact harm DEC-013 closed. `a/link` -> `src/auth`
+    does not equal a stored `src/auth`, so it silently creates a second workspace for
+    the same physical directory and skips the drift check."""
+    content = prose("reverse-spec")
+    assert "resolve symbolic links to the real directory" in content
+    assert "a symlink pointing at it are one slice rather than five" in content
+    # The rule must be stated as a rule, so an unlisted alias does not slip through.
+    assert "one directory reached by any spelling is one slice" in content
+    assert "treat the list as that rule's examples, not its limit" in content
+
+
+def test_inside_repository_check_uses_the_resolved_path() -> None:
+    """REQ-002 / NFR-005: an in-repo symlink pointing out of the tree looks internal
+    by spelling. Deciding containment lexically lets the scan follow it and specify
+    code from outside the repository."""
+    content = prose("reverse-spec")
+    assert "Decide this on the path with symbolic links already resolved, not on how it was spelled" in content
+    assert "looks internal and is not" in content
+
+
+def test_covering_branch_cannot_reconcile_an_unconfirmed_workspace() -> None:
+    """REQ-008 / DEC-005: the covering branch offered reconcile with no confirmed
+    precondition, so choosing it against a still-open workspace compared code with
+    itself and wrote a reconcile.md for an unconfirmed baseline -- exactly the MUST
+    NOT in REQ-008. It now re-enters the shared status gate instead of duplicating one."""
+    content = prose("reverse-spec")
+    assert "Choosing the wider workspace does not choose a mode." in content
+    assert "Continue from step 10 as though that workspace's own recorded slice had been the path" in content
+    assert "This branch never reconciles against a workspace that is still open" in content
+
+
+def test_only_an_explicit_confirmed_status_counts_as_confirmed() -> None:
+    """DEC-012 / REQ-008: a workspace an interrupted run left half-written has no
+    Status line, so it matched neither the confirmed nor the open branch literally.
+    Absence must read as not-confirmed, never as confirmation."""
+    content = prose("reverse-spec")
+    assert "Only a file-level Status: confirmed counts." in content
+    assert "If the status line is missing, unreadable, or says anything else" in content
+    assert "reading confirmation into that silence would reconcile against a draft" in content
+
+
+def test_survey_workspace_carries_no_slice_header() -> None:
+    """REQ-004 / DEC-014: the survey's design.md describes the whole repository, which
+    DEC-014 makes not-a-slice, so it cannot carry the repo-relative Slice: header the
+    slice artifacts require. Its identity is the slices.md marker."""
+    content = prose("reverse-spec")
+    assert "generated for a slice carries a Slice: header" in content
+    assert "it carries no Slice: header at all and is identified by its slices.md instead" in content
 
 
 def test_only_an_exact_match_selects_a_mode() -> None:
@@ -200,7 +252,7 @@ def test_covering_match_asks_instead_of_guessing() -> None:
     content = prose("reverse-spec")
     assert "No exact match, but one or more workspaces cover the slice." in content
     assert "Never pick one silently and never quietly start a nested workspace." in content
-    assert "reconcile or continue that workspace at its own wider boundary, or create a new workspace" in content
+    assert "work on that workspace at its own wider boundary, or create a new workspace" in content
     assert "Proceed only on their answer." in content
     # A workspace nested inside the given slice is disclosed but does not block.
     assert "records a slice nested inside the one you were given, say so before proceeding" in content

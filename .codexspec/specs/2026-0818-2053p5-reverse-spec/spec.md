@@ -175,18 +175,27 @@ Resolve the target slice, locate any existing feature workspace covering that
 slice, and select the mode: a **confirmed** baseline present → reconcile mode;
 otherwise → generate mode.
 
-Normalize the slice path before any comparison — repo-relative, `.` / `..` /
-absolute forms resolved, trailing slash dropped — and record the `Slice:` header in
-that same normalized form, so one directory spelled several ways is one slice.
+Normalize the slice path before any comparison — **symbolic links resolved to the
+real directory**, repo-relative, `.` / `..` / absolute forms resolved, trailing
+slash dropped — and record the `Slice:` header in that same normalized form. The
+governing rule is that **one directory reached by any spelling is one slice**; the
+listed forms are that rule's examples, not its limit.
 
 Only an **exact** match (normalized slice equal) selects a mode on its own. When
 more than one workspace matches exactly, ask the user to select one; never silently
 pick the most recent. When no workspace matches exactly but one or more **cover**
 the slice (a recorded slice that is a proper ancestor of the given path), report
 each and ask whether to use that wider workspace at its own boundary or create one
-for the narrower path; never pick silently and never quietly nest. A workspace
-recording a slice *inside* the given one is disclosed as an overlap but does not
-block.
+for the narrower path; never pick silently and never quietly nest. Choosing the
+wider workspace selects a **workspace, not a mode**: its own `Status:` then decides
+between reconciling and resuming its draft, so this path can never reconcile
+against an unconfirmed baseline (REQ-008). A workspace recording a slice *inside*
+the given one is disclosed as an overlap but does not block.
+
+Only a file-level `Status: confirmed` counts as confirmed. A missing, unreadable,
+or other status reads as **not confirmed** — a workspace an interrupted run left
+half-written has no status line yet, and reading confirmation into that silence
+would reconcile against a draft.
 
 A slice must lie **inside** the repository. A `[path]` that exists but resolves
 outside it (`..`, `../sibling`, `/`) is reported and refused; it could not be
@@ -216,11 +225,14 @@ not reverse-derive requirement intent.
 
 ### REQ-004 — Generated workspace records the slice it covers
 
-The generated workspace records the slice path its artifacts describe, in the
-normalized form REQ-002 defines, so a later run can locate the baseline for that
-slice and satisfy REQ-002 even when the user spells the path differently.
+A workspace generated **for a slice** records the slice path its artifacts
+describe, in the normalized form REQ-002 defines, so a later run can locate the
+baseline for that slice and satisfy REQ-002 even when the user spells the path
+differently. The survey workspace (REQ-015) is the exception: it describes the
+whole repository, which is not a slice, so it records no slice path and is
+identified by its `slices.md` instead.
 
-**Sources**: DEC-005, DEC-006, DEC-013
+**Sources**: DEC-005, DEC-006, DEC-013, DEC-014
 
 ### REQ-005 — All derived content is marked inferred and open
 
@@ -463,6 +475,10 @@ stub is never presented as confident authority.
 |---|---|
 | `[path]` does not exist | Report the invalid path and stop; create no workspace. |
 | `[path]` exists but resolves outside the repository (`..`, `../sibling`, `/`) | Report that a slice must be inside the repository and stop; create no workspace (REQ-002, REQ-004, NFR-005). |
+| `[path]` is an in-repo symlink pointing outside the tree (`packages/shared` → `../../shared`) | Containment is decided on the resolved real path, so it is refused like any other outside path; the scan never follows it out (REQ-002, NFR-005). |
+| `[path]` is a symlink to a directory that already has a workspace | Resolves to the same slice, finds the existing workspace, and creates no duplicate (REQ-002, REQ-004). |
+| A covering workspace is chosen but its artifacts are still `Status: open` | Resume its draft; never reconcile and never write `reconcile.md` (REQ-008). |
+| A workspace has a `Slice:` header but no readable `Status:` line | Treated as not confirmed; resume the draft rather than reconciling (REQ-008, DEC-012). |
 | A slice whose final path segment is `overview` | Produces the same directory name as the survey workspace; identity comes from the `slices.md` marker, never the directory name, so neither workspace shadows the other (REQ-002, REQ-004). |
 | `[path]` exists but contains no analyzable code | Report that there is nothing to reverse-derive; create no workspace or artifacts. |
 | Target is not a git repository | Continue scanning with a sensible ignore fallback (REQ-016); do not fail. |

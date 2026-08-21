@@ -55,15 +55,20 @@ Runs first and produces exactly one mode. Order of evaluation:
    misreported as a merely invalid path.
 3. `[path]` does not exist → report and stop; create no workspace.
 4. `[path]` exists but resolves **outside the repository** (`..`, `../sibling`,
-   `/`) → report and stop; create no workspace. A slice is a subtree of the
-   repository: an outside path cannot be expressed in the repo-relative `Slice:`
-   form C3 requires, and scanning a tree that strictly contains the repository
-   would yield the monolithic specification step 1 exists to prevent — the same
+   `/`, or an in-repo symlink pointing out of the tree) → report and stop; create no
+   workspace. Containment is decided on the **resolved real path**, never on the
+   spelling: `packages/shared` → `../../shared` looks internal and is not.
+   A slice is a subtree of the repository: an outside path cannot be expressed in
+   the repo-relative `Slice:` form C3 requires, and scanning a tree that strictly
+   contains the repository would yield the monolithic specification step 1 exists
+   to prevent — the same
    failure Decision 8 closed for the root path, reachable one level further out.
-5. `[path]` given, inside the repository → **normalize it** (repo-relative, `.`/`..`/absolute resolved,
-   trailing slash dropped), then search `.codexspec/specs/*/` for a workspace whose
-   recorded slice (C3) matches. Normalization is applied on both the write and the
-   read side, so one directory spelled four ways is one slice (Decision 8). A
+5. `[path]` given, inside the repository → **normalize it** (symlinks resolved to
+   the real directory, repo-relative, `.`/`..`/absolute resolved, trailing slash
+   dropped; the rule is one-directory-one-slice, the list is examples not a limit),
+   then search `.codexspec/specs/*/` for a workspace whose recorded slice (C3)
+   matches. Normalization is applied on both the write and the read side, so one
+   directory reached by any spelling is one slice (Decision 8). A
    workspace containing `slices.md` is an overview workspace and is skipped —
    identified by that positive marker, not by a missing `spec.md`. Both markers are
    written at workspace creation (Decision 7), so an interrupted run of either mode
@@ -78,8 +83,14 @@ Runs first and produces exactly one mode. Order of evaluation:
 8. Multiple exact matches → ask the user to choose; never pick the newest silently.
 9. No exact match but one or more covering matches → report each and ask whether to
    use that wider workspace at its own boundary or create one for the narrower path;
-   never pick silently and never quietly nest (Decision 8).
-10. One exact match, artifacts `Status: confirmed` → **reconcile**.
+   never pick silently and never quietly nest (Decision 8). Choosing the wider
+   workspace selects a **workspace, not a mode**: re-enter at step 10 with that
+   workspace's own recorded slice, so its status gates reconcile exactly as for a
+   direct hit and this branch can never reconcile an unconfirmed baseline (REQ-008).
+10. One exact match, artifacts `Status: confirmed` → **reconcile**. Only an explicit
+    file-level `Status: confirmed` qualifies; missing, unreadable, or any other value
+    falls to step 11, so a half-written workspace with no status line is never read
+    as confirmed.
 11. One exact match, artifacts still `Status: open` → do not reconcile, but **resume
     generate** into that existing workspace rather than refusing outright. This is
     what makes REQ-016/NFR-004 resumability reachable: an interrupted generate
@@ -102,9 +113,13 @@ the user holding a narrower confirmed baseline for it.
 
 ### C3 — Slice identity and workspace binding
 
-Generated `spec.md` and `design.md` carry a `Slice:` header field holding the
-repo-relative path the artifacts describe, recorded in the normalized form C2
-step 5 defines (Decision 8). This field is what C2 matches on, and it is the whole
+`spec.md` and `design.md` generated **for a slice** carry a `Slice:` header field
+holding the repo-relative path the artifacts describe, recorded in the normalized
+form C2 step 5 defines (Decision 8). The survey workspace carries **no** `Slice:`
+header — it describes the whole repository, which Decision 8 makes not-a-slice and
+which therefore has no such path — and is identified by its `slices.md` instead.
+
+The `Slice:` field is what C2 matches on, and it is the whole
 baseline-lookup mechanism — there is no index file and no directory-name encoding,
 which is why the normalization must be applied when the header is written and not
 only when it is read. A workspace is the directory
@@ -412,9 +427,12 @@ governance) nor the `_get_default_constitution()` string shipped to user project
     adjudications, and report everything else under `src/auth` as
     `unimplemented-spec`.
 - **Decision**: two parts.
-  1. **Normalize on both sides.** Repo-relative, `.`/`..`/absolute resolved,
-     trailing slash dropped — applied when the `Slice:` header is written and when
-     it is compared. One directory spelled four ways is one slice.
+  1. **Normalize on both sides.** Symlinks resolved to the real directory,
+     repo-relative, `.`/`..`/absolute resolved, trailing slash dropped — applied
+     when the `Slice:` header is written and when it is compared. The rule is that
+     **one directory reached by any spelling is one slice**; the listed forms are
+     examples, not a closed list, since an alias the list omits reopens exactly the
+     duplicate-workspace harm this decision closes.
   2. **Only an exact match selects a mode.** A covering (proper-ancestor) match is
      reported and the user chooses: use that wider workspace at its own boundary, or
      create one for the narrower path. A workspace nested *inside* the given slice

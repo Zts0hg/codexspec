@@ -76,17 +76,25 @@ Resolve the mode first, in this order. Do not write anything until the mode is s
 3. **The path does not exist.** Report the invalid path and stop. Create no
    workspace.
 4. **The path exists but lies outside the repository.** A path such as `..`,
-   `../sibling`, or `/` exists and still resolves outside. Report that a slice must
+   `../sibling`, or `/` exists and still resolves outside. Decide this on the path
+   with symbolic links already resolved, not on how it was spelled: an in-repo
+   symlink pointing out of the tree (`packages/shared` → `../../shared`) looks
+   internal and is not, and following it would scan and specify code from outside
+   the repository. Report that a slice must
    be inside the repository and stop, creating no workspace. A slice is a subtree of
    the repository this command runs in: its `Slice:` header is defined as a
    repo-relative path carrying no `..` segment and never absolute, so an outside
    path could not be recorded in that form at all, and scanning a tree that strictly
    contains the repository would produce exactly the repository-wide specification
    step 1 exists to prevent.
-5. **The path exists inside the repository.** Normalize it before comparing anything: make it
-   repo-relative, resolve `.`, `..`, and absolute forms, and drop any trailing
-   slash, so `src/auth`, `./src/auth`, `src/auth/`, and an absolute path to that
-   same directory are one slice rather than four. Record every `Slice:` header in
+5. **The path exists inside the repository.** Normalize it before comparing anything: resolve
+   symbolic links to the real directory, then make it repo-relative, resolve `.`,
+   `..`, and absolute forms, and drop any trailing slash, so `src/auth`,
+   `./src/auth`, `src/auth/`, an absolute path to that same directory, and a
+   symlink pointing at it are one slice rather than five. The goal is that one
+   directory reached by any spelling is one slice; treat the list as that rule's
+   examples, not its limit, and resolve any other alias the platform offers the
+   same way. Record every `Slice:` header in
    exactly this normalized form and compare in it too — an unnormalized comparison
    silently misses the workspace a slice already has and creates a duplicate.
    Then search `.codexspec/specs/*/` for workspaces whose recorded `Slice:` value
@@ -114,10 +122,20 @@ Resolve the mode first, in this order. Do not write anything until the mode is s
    pick the most recent workspace.
 9. **No exact match, but one or more workspaces cover the slice.** Never pick one
    silently and never quietly start a nested workspace. Report each covering
-   workspace with the slice it records, and ask the user which they want: reconcile
-   or continue that workspace at its own wider boundary, or create a new workspace
-   for the narrower path you were given. Proceed only on their answer.
-10. **One exact match whose artifacts are confirmed.** Enter reconcile mode.
+   workspace with the slice it records, and ask the user which they want: work on
+   that workspace at its own wider boundary, or create a new workspace for the
+   narrower path you were given. Proceed only on their answer. Choosing the wider
+   workspace does not choose a mode. Continue from step 10 as though that
+   workspace's own recorded slice had been the path you were given, so its status
+   decides between reconciling and resuming the draft exactly as it would for a
+   direct hit. This branch never reconciles against a workspace that is still open:
+   that is the same comparison of code against itself step 11 refuses, and it would
+   write a `reconcile.md` for a baseline nobody has confirmed.
+10. **One exact match whose artifacts are confirmed.** Enter reconcile mode. Only a
+    file-level `Status: confirmed` counts. If the status line is missing,
+    unreadable, or says anything else, the workspace is not confirmed — use step 11.
+    A workspace an interrupted run left half-written has no status line yet, and
+    reading confirmation into that silence would reconcile against a draft.
 11. **One exact match whose artifacts are still open.** Do not reconcile:
     comparing code against a draft derived from that same code would compare the
     code with itself and report no drift by construction. Instead resume generate
@@ -174,9 +192,12 @@ command is safe to run on whatever branch the user is already working on. That
 restriction is about git side effects, not about writing: what the new directory
 must contain from its first moment is set out below.
 
-Every generated `spec.md` and `design.md` carries a `Slice:` header holding the
-repo-relative path its content describes, written in the normalized form mode
-resolution defines — no trailing slash, no `.` or `..` segment, never absolute.
+Every `spec.md` and `design.md` generated **for a slice** carries a `Slice:` header
+holding the repo-relative path its content describes, written in the normalized form
+mode resolution defines — no trailing slash, no `.` or `..` segment, never absolute,
+symlinks already resolved. The survey workspace is the exception: its `design.md`
+describes the whole repository, which is not a slice and has no such path, so it
+carries no `Slice:` header at all and is identified by its `slices.md` instead.
 This field is the whole baseline-lookup mechanism: there is no index file and the
 directory name does not encode the path. Writing it unnormalized breaks the lookup
 for a path the user spells differently next time, so normalize on the way in as
