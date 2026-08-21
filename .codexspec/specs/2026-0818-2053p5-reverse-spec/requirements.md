@@ -3,7 +3,7 @@
 Feature ID: `2026-0818-2053p5`
 Feature directory: `.codexspec/specs/2026-0818-2053p5-reverse-spec/`
 Status: Discovery complete — all entries confirmed
-Last Confirmed: 2026-08-20
+Last Confirmed: 2026-08-21
 
 ## Authority Rules
 

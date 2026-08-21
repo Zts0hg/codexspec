@@ -42,8 +42,11 @@ Runs first and produces exactly one mode. Order of evaluation:
 
 1. No `[path]`, **or a path that resolves to the repository root** → **overview**.
    Baseline lookup is not performed at all, so a confirmed overview workspace can
-   never divert a bare run into reconcile. An existing `<id>-overview` workspace is
-   continued rather than duplicated. `reverse-spec .` is the bare run (Decision 8):
+   never divert a bare run into reconcile. An earlier survey to continue is found by
+   the **`slices.md` marker, never by the directory name** — a slice ending in
+   `overview` produces the same directory name, and name-based identification would
+   let a bare run overwrite that slice's draft and then permanently hide its
+   baseline from step 5's lookup. `reverse-spec .` is the bare run (Decision 8):
    the repository root is not a slice, which is what makes NFR-005's unconditional
    "no output aggregates the whole repository into a single detailed specification"
    true for every input rather than only for the bare form.
@@ -51,7 +54,13 @@ Runs first and produces exactly one mode. Order of evaluation:
    stop. Evaluated **before** path existence, so such an argument is never
    misreported as a merely invalid path.
 3. `[path]` does not exist → report and stop; create no workspace.
-4. `[path]` given → **normalize it** (repo-relative, `.`/`..`/absolute resolved,
+4. `[path]` exists but resolves **outside the repository** (`..`, `../sibling`,
+   `/`) → report and stop; create no workspace. A slice is a subtree of the
+   repository: an outside path cannot be expressed in the repo-relative `Slice:`
+   form C3 requires, and scanning a tree that strictly contains the repository
+   would yield the monolithic specification step 1 exists to prevent — the same
+   failure Decision 8 closed for the root path, reachable one level further out.
+5. `[path]` given, inside the repository → **normalize it** (repo-relative, `.`/`..`/absolute resolved,
    trailing slash dropped), then search `.codexspec/specs/*/` for a workspace whose
    recorded slice (C3) matches. Normalization is applied on both the write and the
    read side, so one directory spelled four ways is one slice (Decision 8). A
@@ -59,20 +68,19 @@ Runs first and produces exactly one mode. Order of evaluation:
    identified by that positive marker, not by a missing `spec.md`. Both markers are
    written at workspace creation (Decision 7), so an interrupted run of either mode
    is still found by the lookup and still classified as the mode that created it.
-5. Matches are sorted into **exact** (normalized slice equal) and **covering**
+6. Matches are sorted into **exact** (normalized slice equal) and **covering**
    (recorded slice is a proper ancestor). Only an exact match selects a mode on its
    own; a covering match never does (Decision 8).
-6. Zero matches of either kind → **generate**, after checking the slice contains
+7. Zero matches of either kind → **generate**, after checking the slice contains
    analyzable code; if it does not, report and stop without creating anything. That
    check is generate-only: in reconcile mode an emptied slice is the maximal
-   `unimplemented-spec` case and must be reported as drift. A workspace recording a
-   slice *inside* the given one is disclosed as an overlap but does not block.
-7. Multiple exact matches → ask the user to choose; never pick the newest silently.
-8. No exact match but one or more covering matches → report each and ask whether to
+   `unimplemented-spec` case and must be reported as drift.
+8. Multiple exact matches → ask the user to choose; never pick the newest silently.
+9. No exact match but one or more covering matches → report each and ask whether to
    use that wider workspace at its own boundary or create one for the narrower path;
    never pick silently and never quietly nest (Decision 8).
-9. One exact match, artifacts `Status: confirmed` → **reconcile**.
-10. One exact match, artifacts still `Status: open` → do not reconcile, but **resume
+10. One exact match, artifacts `Status: confirmed` → **reconcile**.
+11. One exact match, artifacts still `Status: open` → do not reconcile, but **resume
     generate** into that existing workspace rather than refusing outright. This is
     what makes REQ-016/NFR-004 resumability reachable: an interrupted generate
     leaves an open workspace, and refusing to write would strand it permanently
@@ -83,20 +91,30 @@ Runs first and produces exactly one mode. Order of evaluation:
     draft causes no write at all and the behavior degenerates exactly to
     `spec.md` User Story 3.
 
+Independent of the resolved mode: a workspace recording a slice **nested inside**
+the given one is disclosed as an overlap and does not block. `spec.md` REQ-002
+states this without qualification, so it is not confined to the generate branch —
+it matters most in reconcile, where a `src/auth` baseline compared against code
+including `src/auth/tokens` reports that subtree as `undocumented-behavior` despite
+the user holding a narrower confirmed baseline for it.
+
 **Covers**: REQ-002, REQ-008, REQ-015
 
 ### C3 — Slice identity and workspace binding
 
 Generated `spec.md` and `design.md` carry a `Slice:` header field holding the
 repo-relative path the artifacts describe, recorded in the normalized form C2
-step 4 defines (Decision 8). This field is what C2 matches on, and it is the whole
+step 5 defines (Decision 8). This field is what C2 matches on, and it is the whole
 baseline-lookup mechanism — there is no index file and no directory-name encoding,
 which is why the normalization must be applied when the header is written and not
 only when it is read. A workspace is the directory
 `.codexspec/specs/<id>-<slice>/`, whose id reuses the project's
 `{YYYY-MMDD-HHMM}{rr}` convention unchanged and whose slice segment derives from
-the slice's final path segment (`overview` for a bare run). The directory is
-created directly; `create-new-feature.sh` is deliberately **not** invoked, because
+the slice's final path segment (`overview` for a bare run). The directory name is
+a human convenience and **never** an identifier: a slice ending in `overview`
+collides with the survey workspace's name, so identity always comes from the
+artifacts inside — `slices.md` for a survey, the `Slice:` header for a slice. The
+directory is created directly; `create-new-feature.sh` is deliberately **not** invoked, because
 it unconditionally runs `git checkout -b` when git is present, which C10 forbids
 (CON-007 supersedes the earlier mandate to call it).
 

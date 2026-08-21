@@ -188,11 +188,21 @@ for the narrower path; never pick silently and never quietly nest. A workspace
 recording a slice *inside* the given one is disclosed as an overlap but does not
 block.
 
+A slice must lie **inside** the repository. A `[path]` that exists but resolves
+outside it (`..`, `../sibling`, `/`) is reported and refused; it could not be
+recorded in the repo-relative `Slice:` form at all, and scanning a tree that
+strictly contains the repository would produce the monolithic specification
+NFR-005 forbids.
+
 Baseline-driven mode detection applies **only when a `[path]` slice is supplied**.
 A bare whole-repository run (no `[path]`), **or a `[path]` that resolves to the
 repository root**, always performs the architectural survey of REQ-015 and never
 reconciles, regardless of whether the overview workspace's artifacts have since
-been confirmed.
+been confirmed. The survey workspace is identified by the `slices.md` marker its
+artifacts carry, **never by its directory name** — a slice whose final path segment
+is `overview` yields the same directory name, and going by name would let a bare
+run overwrite that slice's draft and then hide its baseline from every later
+lookup.
 
 **Sources**: NEED-003, DEC-005, DEC-006, DEC-011, DEC-013, DEC-014
 
@@ -452,6 +462,8 @@ stub is never presented as confident authority.
 | Condition | Expected behavior |
 |---|---|
 | `[path]` does not exist | Report the invalid path and stop; create no workspace. |
+| `[path]` exists but resolves outside the repository (`..`, `../sibling`, `/`) | Report that a slice must be inside the repository and stop; create no workspace (REQ-002, REQ-004, NFR-005). |
+| A slice whose final path segment is `overview` | Produces the same directory name as the survey workspace; identity comes from the `slices.md` marker, never the directory name, so neither workspace shadows the other (REQ-002, REQ-004). |
 | `[path]` exists but contains no analyzable code | Report that there is nothing to reverse-derive; create no workspace or artifacts. |
 | Target is not a git repository | Continue scanning with a sensible ignore fallback (REQ-016); do not fail. |
 | Scan is interrupted mid-run | Partial progress is preserved and the scan is resumable (REQ-016, NFR-004). |

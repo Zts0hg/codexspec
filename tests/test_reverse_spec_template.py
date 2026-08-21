@@ -109,6 +109,44 @@ def test_repository_root_path_is_the_bare_run() -> None:
     assert "The repository root is not a slice" in content
 
 
+def test_path_outside_the_repository_is_refused() -> None:
+    """REQ-002 / REQ-004 / NFR-005: `..`, `../sibling`, and `/` exist yet resolve
+    outside. Without this branch they reach generate mode and draft one detailed spec
+    for a tree strictly containing the repository -- the monolith NFR-005 forbids
+    unconditionally -- and their Slice: header could not be written at all, since it
+    is defined as repo-relative with no `..` segment and never absolute."""
+    content = prose("reverse-spec")
+    assert "The path exists but lies outside the repository." in content
+    assert "Report that a slice must be inside the repository and stop, creating no workspace." in content
+    assert "scanning a tree that strictly contains the repository would produce" in content
+
+
+def test_survey_workspace_is_identified_by_marker_not_directory_name() -> None:
+    """REQ-002 / REQ-004: the bare run performs no baseline lookup, so the directory
+    name was its only stated way to find an earlier survey. A slice whose final path
+    segment is `overview` produces the same directory name, so a bare run would write
+    the repository map over that slice's draft -- and once slices.md is in it, the
+    step-5 skip hides that slice's baseline from every later lookup, permanently."""
+    content = prose("reverse-spec")
+    assert "look for a workspace holding slices.md" in content
+    assert "never go by the directory name" in content
+    assert "whose final path segment is overview produces an identically named directory" in content
+    # The naming rule itself must say the directory name is not an identifier.
+    assert "The directory name is a convenience for humans" in content
+    assert "never how a workspace is identified" in content
+
+
+def test_nested_overlap_is_disclosed_in_every_mode() -> None:
+    """REQ-002 states the overlap disclosure without qualification. Confining it to
+    the generate branch leaves reconcile silent: a src/auth baseline compared against
+    code including src/auth/tokens reports that subtree as undocumented-behavior with
+    nothing in the report explaining where those items came from."""
+    content = prose("reverse-spec")
+    assert "Whichever mode you resolved, if any existing workspace records a slice nested inside" in content
+    assert "This disclosure is not confined to generate mode." in content
+    assert "It matters most in reconcile" in content
+
+
 def test_invalid_or_empty_path_creates_no_workspace() -> None:
     """Regression for the review's P3 finding: spec.md's two input-validation
     boundary rows (REQ-001, REQ-019) must be realized in the template."""
@@ -352,6 +390,28 @@ def test_workspace_records_the_slice_it_covers() -> None:
     assert "This field is the whole baseline-lookup mechanism: there is no index file" in content
     assert "for workspaces whose recorded Slice: value matches the normalized path" in content
     assert "search .codexspec/specs/*/" in content
+
+
+def test_generate_output_boundary_is_three_artifacts() -> None:
+    """REQ-003 / OUT-003 / NFR-006. Previously uncovered: a mirror with the whole
+    three-artifact boundary deleted from `## Generate Mode` left the suite green."""
+    content = prose("reverse-spec")
+    assert "spec.md — the behavior and contracts the code exhibits" in content
+    assert "design.md — the structure the code has" in content
+    assert "requirements.md — a thin stub whose entries are all open" in content
+    # Design scales to the slice; intent is never reverse-derived.
+    assert "Scale it to the slice's real complexity" in content
+    assert "do not reverse-derive why a feature exists" in content
+
+
+def test_confirmation_action_is_stated_at_the_end_of_generate() -> None:
+    """REQ-006: confirmation is manual, so a generate run that does not state the
+    exact action leaves the user with a draft that never becomes a baseline -- and
+    the drift checking the feature exists for never activates."""
+    content = prose("reverse-spec")
+    assert "End generate mode by stating the exact confirmation action" in content
+    assert "including the file paths and the status line to change" in content
+    assert "adds no separate confirmation command, no flag, and no state file" in content
 
 
 def test_overview_mode_produces_a_map_and_a_slice_list() -> None:

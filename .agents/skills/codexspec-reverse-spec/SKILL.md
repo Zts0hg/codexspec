@@ -58,16 +58,31 @@ Resolve the mode first, in this order. Do not write anything until the mode is s
    repository as a whole is never a slice, because no output of this command may
    aggregate the whole repository into a single detailed specification. The command
    performs the architectural survey and never reconciles, whatever the state of
-   any existing workspace. Do not perform a baseline lookup at all in this case. If
-   an `<id>-overview` workspace already exists, continue it rather than creating a
-   second one, so an interrupted survey resumes instead of leaving orphans.
+   any existing workspace. Do not perform a baseline lookup at all in this case. To
+   find an earlier survey to continue, look for a workspace holding `slices.md` —
+   the same positive marker step 5 uses — and never go by the directory name. A
+   generate run on a slice whose final path segment is `overview` produces an
+   identically named directory, so identifying the survey workspace by name would
+   let a bare run write the repository map over that slice's draft and then, once
+   `slices.md` is in it, hide that slice's baseline from every later lookup. If
+   exactly one workspace holds `slices.md`, continue it rather than creating a
+   second one, so an interrupted survey resumes instead of leaving orphans. If
+   several do, ask which to continue.
 2. **The argument is not a path.** If it is a diff or pull-request range such as
    `main..feature`, `HEAD~3..HEAD`, or `#42`, report the path-only contract from
    the next section and stop. Test this before testing path existence, so such an
    argument is never misreported as a merely invalid path.
 3. **The path does not exist.** Report the invalid path and stop. Create no
    workspace.
-4. **The path exists.** Normalize it before comparing anything: make it
+4. **The path exists but lies outside the repository.** A path such as `..`,
+   `../sibling`, or `/` exists and still resolves outside. Report that a slice must
+   be inside the repository and stop, creating no workspace. A slice is a subtree of
+   the repository this command runs in: its `Slice:` header is defined as a
+   repo-relative path carrying no `..` segment and never absolute, so an outside
+   path could not be recorded in that form at all, and scanning a tree that strictly
+   contains the repository would produce exactly the repository-wide specification
+   step 1 exists to prevent.
+5. **The path exists inside the repository.** Normalize it before comparing anything: make it
    repo-relative, resolve `.`, `..`, and absolute forms, and drop any trailing
    slash, so `src/auth`, `./src/auth`, `src/auth/`, and an absolute path to that
    same directory are one slice rather than four. Record every `Slice:` header in
@@ -79,7 +94,7 @@ Resolve the mode first, in this order. Do not write anything until the mode is s
    even in a workspace an interrupted run left half-written. A workspace containing
    `slices.md` is an overview workspace, never a baseline: skip it during this
    search. Identify it by that positive marker, not by the absence of a `spec.md`.
-5. **Sort what the search found into exact and covering matches.** A workspace
+6. **Sort what the search found into exact and covering matches.** A workspace
    matches **exactly** when its normalized `Slice:` equals the normalized path. It
    **covers** the path when its `Slice:` is a proper ancestor of it — a workspace
    recorded as `src/auth` covers `src/auth/tokens` without being it. Only an exact
@@ -87,24 +102,22 @@ Resolve the mode first, in this order. Do not write anything until the mode is s
    baseline describes a wider boundary than the slice you were given: reconciling
    against it would report everything else under that boundary as
    `unimplemented-spec`, and its `reconcile.md` belongs to that wider slice.
-6. **No workspace matches, exactly or by covering.** Enter generate mode — but
+7. **No workspace matches, exactly or by covering.** Enter generate mode — but
    first check that the slice contains analyzable code. If it does not, report
    that there is nothing to
    reverse-derive and stop, creating no workspace and no artifacts. This check
    belongs to generate mode alone. Never apply it in reconcile mode: a slice whose
    implementation has been emptied is the maximal `unimplemented-spec` case, and
-   reporting it as drift is exactly what this command exists to do. If any existing
-   workspace records a slice nested inside the one you were given, say so before
-   proceeding — the two will overlap — but do not stop for it.
-7. **Several workspaces match exactly.** Ask the user to select one. Never silently
+   reporting it as drift is exactly what this command exists to do.
+8. **Several workspaces match exactly.** Ask the user to select one. Never silently
    pick the most recent workspace.
-8. **No exact match, but one or more workspaces cover the slice.** Never pick one
+9. **No exact match, but one or more workspaces cover the slice.** Never pick one
    silently and never quietly start a nested workspace. Report each covering
    workspace with the slice it records, and ask the user which they want: reconcile
    or continue that workspace at its own wider boundary, or create a new workspace
    for the narrower path you were given. Proceed only on their answer.
-9. **One exact match whose artifacts are confirmed.** Enter reconcile mode.
-10. **One exact match whose artifacts are still open.** Do not reconcile:
+10. **One exact match whose artifacts are confirmed.** Enter reconcile mode.
+11. **One exact match whose artifacts are still open.** Do not reconcile:
     comparing code against a draft derived from that same code would compare the
     code with itself and report no drift by construction. Instead resume generate
     mode into that existing workspace. Never create a second workspace for a slice
@@ -116,6 +129,14 @@ Resolve the mode first, in this order. Do not write anything until the mode is s
     parts you added and which you left untouched, and state the exact confirmation
     action from the section below so the user knows how to promote it once it is
     complete.
+
+Whichever mode you resolved, if any existing workspace records a slice nested
+inside the one you were given, say so before proceeding — the two overlap — but do
+not stop for it. This disclosure is not confined to generate mode. It matters most
+in reconcile: a baseline for `src/auth` compared against code that includes
+`src/auth/tokens` reports that subtree's behavior as `undocumented-behavior` even
+though the user holds a narrower confirmed baseline for it, and without the
+disclosure the report gives no clue where those items came from.
 
 Report the resolved mode before proceeding, so the user can stop you if it is not
 the mode they wanted.
@@ -138,7 +159,11 @@ existing `{YYYY-MMDD-HHMM}{rr}` identifier convention exactly — a timestamp pl
 two random lowercase alphanumeric characters — and derive the slice segment from
 the slice's final path segment, normalized to kebab-case (`overview` for a bare
 run). Never implement a separate identifier generator and never fall back to
-sequential numbering. If `.codexspec/specs/` does not exist, report the missing
+sequential numbering. The directory name is a convenience for humans reading
+`.codexspec/specs/`, never how a workspace is identified: a slice can legitimately
+end in `overview` and produce the same name as the survey workspace, so identity
+always comes from the artifacts inside — `slices.md` for a survey, the `Slice:`
+header for a slice. If `.codexspec/specs/` does not exist, report the missing
 prerequisite and stop rather than scaffolding an SDD workspace root yourself.
 
 Create the directory only. Do not run `.codexspec/scripts/create-new-feature.sh`
