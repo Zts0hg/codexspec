@@ -31,10 +31,10 @@ Required content, by design component:
 | Section | Realizes |
 |---|---|
 | Frontmatter: `description`, `argument-hint: "[path]"`, `allowed-tools` modeled on `onboard.md` | C1 |
-| `## Language Preference` referencing `language.interaction` and `language.document`, never `language.commit` | C1, NFR-001 |
+| `## Language Preference` referencing `language.interaction` and `language.document`, never `language.commit`, **plus the verbatim-evidence exception** — `reconcile.md`'s `location`/`evidence` quote code and baseline verbatim and MUST NOT be translated (the convention `onboard.md` and `distill.md` already carry) | C1, NFR-001, REQ-010 |
 | `## Role and Operating Model` — three mutually exclusive modes | C1 |
-| `## Mode Resolution` — bare run short-circuits **before** any baseline lookup; multiple matches ask the user; unconfirmed baseline refuses | C2 |
-| `## Slice and Workspace` — `Slice:` header field; workspace directory `.codexspec/specs/<id>-<slice>/` reusing the existing id convention, created without any git branch | C3 |
+| `## Mode Resolution` — bare run short-circuits **before** any baseline lookup; a `[path]` resolving to the repository root is that same bare run; the slice path is normalized on both the write and read side; only an **exact** match selects a mode, several exact matches ask, a **covering** (proper-ancestor) match asks rather than reconciling; unconfirmed baseline refuses | C2, Decision 8 |
+| `## Slice and Workspace` — `Slice:` header field recorded in normalized form; the repository root is not a slice; workspace directory `.codexspec/specs/<id>-<slice>/` reusing the existing id convention, created without any git branch | C3, Decision 8 |
 | `## Generate Mode` — `spec.md` + `design.md` (scaled) + thin all-`open` `requirements.md` stub | C4 |
 | `## Overview Mode` — `<id>-overview` workspace with thin architecture `design.md` + `slices.md`; no `spec.md`, no `reconcile.md` | C5 |
 | `## Inference Marking and Confirmation` — file-level `Status: inferred/open`, `[inferred]` markers, promotion by `Status: confirmed` + Confirmation Log; no new command | C6 |

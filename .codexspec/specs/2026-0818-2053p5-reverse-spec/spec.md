@@ -3,7 +3,7 @@
 **Feature Branch**: `2026-0818-2053p5-reverse-spec`
 **Created**: 2026-08-20
 **Status**: Draft
-**Input**: Confirmed `requirements.md` (NEED-001..005, DEC-001..012, CON-001..005 and CON-007, OUT-001..007; CON-006 superseded by CON-007)
+**Input**: Confirmed `requirements.md` (NEED-001..005, DEC-001..014, CON-001..005 and CON-007, OUT-001..007; CON-006 superseded by CON-007)
 
 ## Context & Goals
 
@@ -173,15 +173,28 @@ optional path argument. It is invoked directly by the user, like `onboard` and
 
 Resolve the target slice, locate any existing feature workspace covering that
 slice, and select the mode: a **confirmed** baseline present → reconcile mode;
-otherwise → generate mode. When more than one workspace could cover the slice,
-ask the user to select one; never silently pick the most recent.
+otherwise → generate mode.
+
+Normalize the slice path before any comparison — repo-relative, `.` / `..` /
+absolute forms resolved, trailing slash dropped — and record the `Slice:` header in
+that same normalized form, so one directory spelled several ways is one slice.
+
+Only an **exact** match (normalized slice equal) selects a mode on its own. When
+more than one workspace matches exactly, ask the user to select one; never silently
+pick the most recent. When no workspace matches exactly but one or more **cover**
+the slice (a recorded slice that is a proper ancestor of the given path), report
+each and ask whether to use that wider workspace at its own boundary or create one
+for the narrower path; never pick silently and never quietly nest. A workspace
+recording a slice *inside* the given one is disclosed as an overlap but does not
+block.
 
 Baseline-driven mode detection applies **only when a `[path]` slice is supplied**.
-A bare whole-repository run (no `[path]`) always performs the architectural survey
-of REQ-015 and never reconciles, regardless of whether the overview workspace's
-artifacts have since been confirmed.
+A bare whole-repository run (no `[path]`), **or a `[path]` that resolves to the
+repository root**, always performs the architectural survey of REQ-015 and never
+reconciles, regardless of whether the overview workspace's artifacts have since
+been confirmed.
 
-**Sources**: NEED-003, DEC-005, DEC-006, DEC-011
+**Sources**: NEED-003, DEC-005, DEC-006, DEC-011, DEC-013, DEC-014
 
 ### REQ-003 — Generate mode output boundary
 
@@ -193,10 +206,11 @@ not reverse-derive requirement intent.
 
 ### REQ-004 — Generated workspace records the slice it covers
 
-The generated workspace records the slice path its artifacts describe, so a later
-run can locate the baseline for that slice and satisfy REQ-002.
+The generated workspace records the slice path its artifacts describe, in the
+normalized form REQ-002 defines, so a later run can locate the baseline for that
+slice and satisfy REQ-002 even when the user spells the path differently.
 
-**Sources**: DEC-005, DEC-006
+**Sources**: DEC-005, DEC-006, DEC-013
 
 ### REQ-005 — All derived content is marked inferred and open
 
@@ -304,25 +318,27 @@ When no confirmed intent covers the item, mark the direction
 ### REQ-014 — Slice unit and workspace creation
 
 The unit of work is a slice identified by `[path]` — a directory, module, or
-package path (or a file set within one). Each generate run produces its own
+package path (or a file set within one). **The repository root is not a slice**: a
+path resolving to it is the bare run of REQ-015. Each generate run produces its own
 feature workspace directory `.codexspec/specs/<id>-<slice>/`, whose id reuses the
 project's `{YYYY-MMDD-HHMM}{rr}` timestamp-plus-random convention. Creating a
 workspace MUST NOT create or switch a git branch. Do not implement a separate ID
 generator and do not introduce sequential numbering. Perform no "intelligent
 auto-partitioning" of the codebase.
 
-**Sources**: NEED-004, DEC-006, DEC-011, CON-007
+**Sources**: NEED-004, DEC-006, DEC-011, CON-007, DEC-014
 
 ### REQ-015 — Bare whole-repository run yields a map, not a specification
 
-With no `[path]` argument, perform a high-signal architectural survey and write an
+With no `[path]` argument, or with a `[path]` that resolves to the repository root,
+perform a high-signal architectural survey and write an
 overview workspace containing (a) a thin architecture-level `design.md`
 (components, responsibilities, relationships; marked `inferred/open`, scaled to
 complexity) and (b) `slices.md`, a candidate slice list with path, one-line
 description, and rough size or priority. The bare run produces **no `spec.md` and
 no `reconcile.md`**.
 
-**Sources**: DEC-011, NEED-004, OUT-005
+**Sources**: DEC-011, NEED-004, OUT-005, DEC-014
 
 ### REQ-016 — Scanning discipline reused from onboard
 
@@ -443,7 +459,11 @@ stub is never presented as confident authority.
 | Generate or survey interrupted, then re-run | Continue the existing workspace rather than creating a second one for the same slice (REQ-016, NFR-004). |
 | Reconciling a slice that already has a `reconcile.md` | Regenerate the report, announcing that prior adjudications are not carried over (REQ-010). |
 | Confirmed baseline has `spec.md` but no `design.md` | Reconcile against the spec alone (REQ-007). |
-| Multiple workspaces could cover the slice | Ask the user to select; never silently pick the latest (REQ-002). |
+| Multiple workspaces match the slice exactly | Ask the user to select; never silently pick the latest (REQ-002). |
+| The same directory given in another spelling (`src/auth/`, `./src/auth`, absolute) | Normalizes to the same slice and finds the existing workspace; no duplicate is created (REQ-002, REQ-004). |
+| No exact match, but a workspace covers the slice (e.g. `src/auth` given `src/auth/tokens`) | Report the covering workspace and ask whether to use it at its own wider boundary or create one for the narrower path; never reconcile against it silently (REQ-002). |
+| A workspace records a slice nested inside the given one | Disclose the overlap and proceed; it does not block (REQ-002). |
+| `[path]` resolves to the repository root | Treated as the bare run: perform the architectural survey; never produce a repository-wide detailed spec (REQ-014, REQ-015, NFR-005). |
 | Bare run repeated after the overview design was confirmed | Perform the architectural survey again; never reconcile (REQ-002, REQ-015). |
 | Code matches the baseline exactly | Report `IN_SYNC` with zero drift items — a valid, non-error outcome (REQ-010). |
 | A drift item has no confirmed intent to adjudicate it | Mark direction `needs-your-judgment`; do not guess (REQ-013). |
@@ -509,6 +529,8 @@ stub is never presented as confident authority.
 | DEC-010 report structure and severity | REQ-009, REQ-010, REQ-011 |
 | DEC-011 slice definition, whole-repo map | REQ-002, REQ-014, REQ-015, User Story 4 |
 | DEC-012 confirmed baseline mechanism | REQ-005, REQ-006 |
+| DEC-013 path normalization; exact match selects, covering asks | REQ-002, REQ-004 |
+| DEC-014 repository root is not a slice | REQ-014, REQ-015, NFR-005 |
 | CON-001 template governance | REQ-001, NFR-002 |
 | CON-002 distribution lockstep, language family | REQ-020, REQ-021 |
 | CON-003 English template, Language Preference | REQ-001, REQ-021, NFR-001 |

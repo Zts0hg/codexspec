@@ -2,7 +2,7 @@
 
 **Feature Branch**: `2026-0818-2053p5-reverse-spec`
 **Created**: 2026-08-20
-**Input**: `requirements.md` (30 confirmed) · `spec.md` (REQ-001..021, NFR-001..006) · `design.md` (C1–C11, Decisions 1–6)
+**Input**: `requirements.md` (32 confirmed) · `spec.md` (REQ-001..021, NFR-001..006) · `design.md` (C1–C11, Decisions 1–8)
 
 ## Context
 

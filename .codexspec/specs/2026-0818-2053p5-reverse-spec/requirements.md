@@ -296,6 +296,62 @@ artifacts to each other and never inspects the implementation.
     (paired with the degradation in DEC-005).
 - Status: confirmed
 
+### DEC-013 — Slice paths are normalized, and only an exact match selects a mode
+
+- Decision:
+  - The slice path is **normalized** before anything is compared — repo-relative,
+    `.` / `..` / absolute forms resolved, trailing slash dropped — and the `Slice:`
+    header is **written** in that same normalized form. One directory spelled
+    several ways is one slice.
+  - Only an **exact** match (normalized slice equal) selects a mode on its own. A
+    **covering** match (the recorded slice is a proper ancestor of the given path)
+    is reported, and the user chooses: use that wider workspace at its own
+    boundary, or create a new workspace for the narrower path. A workspace nested
+    *inside* the given slice is disclosed as an overlap but does not block.
+- Reason: the lookup predicate was undefined in both directions, and both were
+  reachable. Unnormalized comparison **misses** the workspace a slice already has
+  (`src/auth/` from shell completion, `./src/auth`, an absolute path), silently
+  creating a second workspace and skipping the drift check the feature exists for.
+  Treating a covering match as automatic **false-matches**: with a confirmed
+  workspace at `src/auth`, `reverse-spec src/auth/tokens` produces exactly one
+  covering match, so the multiple-match branch never fires — reconciliation would
+  then overwrite the wider slice's `reconcile.md` along with the adjudications the
+  user recorded in it, and report the rest of `src/auth` as `unimplemented-spec`.
+  Asking is the same never-guess discipline REQ-002 already mandates for multiple
+  matches and DEC-004 mandates for drift direction.
+- Alternatives Rejected: (a) reconcile against the covering workspace — the literal
+  reading of "covering" in DEC-005/REQ-002, rejected because of the spurious drift
+  and the destruction of another slice's recorded adjudications; (b) exact equality
+  only, letting a nested path silently generate its own workspace — rejected because
+  it makes the "could cover" wording and the multiple-match branch near-dead
+  letters and lets overlapping workspaces proliferate with no defined authority
+  between them.
+- User Evidence: "精确匹配自动，覆盖匹配询问"
+- Status: confirmed
+
+### DEC-014 — The repository root is not a slice; an explicit root path is the bare run
+
+- Decision: A `[path]` that resolves to the repository root takes the same
+  architectural survey as a bare run. `reverse-spec .` and `reverse-spec` are one
+  behavior.
+- Reason: DEC-011, OUT-005, and REQ-015 anchor the no-monolith prohibition to the
+  bare run, while NFR-005's second sentence states it unconditionally ("No output
+  aggregates the whole repository into a single detailed specification"). Because
+  the root is also "a directory path" under DEC-011's own slice definition, an
+  explicit root path fell through to generate mode and would have produced exactly
+  the repository-wide detailed specification the feature was built to avoid. Making
+  the root not-a-slice closes the gap at its source and makes the invariant hold for
+  every input rather than only for the bare form.
+- Alternatives Rejected: (a) keep generate behavior — defensible under the
+  authority hierarchy, since requirements outrank spec and DEC-011 anchors the
+  prohibition to the bare run, but it contradicts the unconditional invariant and
+  surprises a user who cannot reasonably expect `reverse-spec .` and
+  `reverse-spec` to differ; (b) refuse the root path with an error pointing at the
+  bare run — safe, but adds a round trip and is out of keeping with the command's
+  otherwise inference-first style.
+- User Evidence: "等同裸跑，做勘察"
+- Status: confirmed
+
 ---
 
 ## Constraints (CON)
@@ -508,3 +564,19 @@ direction, and are recorded as DEC-010, DEC-011, and DEC-012 respectively.
 - User Confirmation: "不建分支,收窄 CON-006"
 - Entries Confirmed: CON-007, replacing CON-006 (now superseded). CON-004 and the
   read-only intent it protects stand unchanged.
+
+### Session 2026-08-21 — slice/path scope resolution adjudicated during implementation
+
+- Summary Presented: an isolated code review found the baseline-lookup predicate
+  undefined — neither normalization nor exact-vs-covering semantics were pinned —
+  and, separately, that an explicit repository-root path fell through to generate
+  mode. Both had two defensible readings of confirmed intent with materially
+  different behavior (REQ-002's "covering" wording against the harm that
+  covering-match reconciliation causes; REQ-014's "a directory path" against
+  NFR-005's unconditional no-monolith sentence), so both required a user decision
+  rather than an implementation choice. Each option was presented with its concrete
+  consequence.
+- User Confirmation: "精确匹配自动，覆盖匹配询问" and "等同裸跑，做勘察"
+- Entries Confirmed: DEC-013, DEC-014. No existing entry is superseded: DEC-005,
+  DEC-011, and REQ-002 stand, with DEC-013 pinning the match predicate they left
+  open and DEC-014 resolving the root-path case against NFR-005's invariant.

@@ -70,6 +70,21 @@ def test_reverse_spec_language_preference_interaction_and_document_not_commit() 
     assert "language.commit" not in content
 
 
+def test_verbatim_evidence_is_exempt_from_translation() -> None:
+    """REQ-010 / design Decision 5 under the REQ-021 language regime: the reconcile
+    report is authored in `language.document`, and translating a quote by meaning
+    would destroy the both-side evidence rule's whole purpose — a translated quote
+    cannot be checked against its source. Same carve-out onboard.md and distill.md
+    carry for their own verbatim evidence."""
+    content = prose("reverse-spec")
+    assert "MUST NOT be translated" in content
+    assert "quote the code and the baseline verbatim" in content
+    # The sibling commands that established this convention must still carry it,
+    # or the precedent this guard rests on has silently moved.
+    for sibling in ("onboard", "distill"):
+        assert "MUST NOT be translated" in prose(sibling)
+
+
 # --- S3..S6 mode resolution ---
 
 
@@ -78,6 +93,20 @@ def test_bare_run_surveys_and_never_reconciles() -> None:
     content = prose("reverse-spec")
     assert "performs the architectural survey and never reconciles" in content
     assert "Do not perform a baseline lookup at all in this case." in content
+
+
+def test_repository_root_path_is_the_bare_run() -> None:
+    """DEC-014 / REQ-014 / REQ-015 / NFR-005: an explicit path resolving to the
+    repository root takes the survey, not generate mode. Without this, `reverse-spec .`
+    falls through the step-1 short-circuit and the overview skip into generate and
+    drafts one whole-repository detailed spec.md, which NFR-005 forbids
+    unconditionally."""
+    content = prose("reverse-spec")
+    assert "No path supplied, or a path that resolves to the repository root." in content
+    assert "A bare reverse-spec and reverse-spec . are the same run" in content
+    assert "the repository as a whole is never a slice" in content
+    # And the slice definition itself excludes the root, not only mode resolution.
+    assert "The repository root is not a slice" in content
 
 
 def test_invalid_or_empty_path_creates_no_workspace() -> None:
@@ -97,6 +126,46 @@ def test_ambiguous_match_asks_the_user() -> None:
     """S5 (REQ-002): never silently pick the newest workspace."""
     content = prose("reverse-spec")
     assert "Ask the user to select one. Never silently pick the most recent workspace." in content
+
+
+def test_slice_path_is_normalized_before_any_comparison() -> None:
+    """DEC-013 (REQ-002, REQ-004): the write side was pinned to a repo-relative path
+    but the read side defined no normalization, so `src/auth/`, `./src/auth`, or an
+    absolute path missed the workspace the slice already had and silently created a
+    second one."""
+    content = prose("reverse-spec")
+    assert "Normalize it before comparing anything" in content
+    assert "make it repo-relative, resolve ., .., and absolute forms, and drop any trailing slash" in content
+    assert "are one slice rather than four" in content
+    # Normalization must apply on the way in, not only on the way out.
+    assert "Record every Slice: header in exactly this normalized form and compare in it too" in content
+    assert "an unnormalized comparison silently misses the workspace a slice already has" in content
+
+
+def test_only_an_exact_match_selects_a_mode() -> None:
+    """DEC-013 (REQ-002): a covering (proper-ancestor) workspace must not drive mode
+    selection. Otherwise `reverse-spec src/auth/tokens` against a confirmed `src/auth`
+    workspace yields exactly one match, never reaches the multiple-match branch, and
+    reconciles into the wider slice's workspace -- overwriting a reconcile.md that
+    holds the user's recorded adjudications."""
+    content = prose("reverse-spec")
+    assert "matches exactly when its normalized Slice: equals the normalized path" in content
+    assert "covers the path when its Slice: is a proper ancestor of it" in content
+    assert "Only an exact match selects a mode on its own." in content
+    assert "A covering match never does" in content
+    assert "its reconcile.md belongs to that wider slice" in content
+
+
+def test_covering_match_asks_instead_of_guessing() -> None:
+    """DEC-013 (REQ-002): the same never-guess discipline REQ-002 already mandates for
+    multiple matches -- report the covering workspace and let the user choose."""
+    content = prose("reverse-spec")
+    assert "No exact match, but one or more workspaces cover the slice." in content
+    assert "Never pick one silently and never quietly start a nested workspace." in content
+    assert "reconcile or continue that workspace at its own wider boundary, or create a new workspace" in content
+    assert "Proceed only on their answer." in content
+    # A workspace nested inside the given slice is disclosed but does not block.
+    assert "records a slice nested inside the one you were given, say so before proceeding" in content
 
 
 def test_unconfirmed_baseline_refuses_to_reconcile() -> None:
@@ -281,7 +350,8 @@ def test_workspace_records_the_slice_it_covers() -> None:
     content = prose("reverse-spec")
     assert "carries a Slice: header holding the repo-relative path its content describes" in content
     assert "This field is the whole baseline-lookup mechanism: there is no index file" in content
-    assert "search .codexspec/specs/*/ for a workspace whose recorded Slice: value matches that path" in content
+    assert "for workspaces whose recorded Slice: value matches the normalized path" in content
+    assert "search .codexspec/specs/*/" in content
 
 
 def test_overview_mode_produces_a_map_and_a_slice_list() -> None:

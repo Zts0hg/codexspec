@@ -13,7 +13,7 @@ Read `.codexspec/config.yml`. Two independent language controls apply (each fall
 - **Interaction language** (`language.interaction`): language for all conversation with the user — questions, explanations, status messages, and `codexspec` CLI terminal output.
 - **Document language** (`language.document`): language for generated artifact files (the reverse-derived spec/design and the reconcile report).
 
-Converse in the interaction language and author artifacts in the document language. Apply the project's translation standard to both: translate by meaning (not word-for-word), keep English for terms with no good native equivalent, and write as if originally in that language.
+Converse in the interaction language and author artifacts in the document language. Apply the project's translation standard to both: translate by meaning (not word-for-word), keep English for terms with no good native equivalent, and write as if originally in that language. **Exception**: in `reconcile.md`, `location` and `evidence` quote the code and the baseline verbatim — path, line, and the quoted spans on both sides — and MUST NOT be translated. A translated quote can no longer be checked against its source, which is exactly what the both-side evidence rule exists to make possible.
 
 ## User Input
 
@@ -54,10 +54,13 @@ Two principles govern everything below:
 
 Resolve the mode first, in this order. Do not write anything until the mode is settled.
 
-1. **No path supplied.** Enter overview mode. The command performs the
-   architectural survey and never reconciles, whatever the state of any existing
-   workspace. Do not perform a baseline lookup at all in this case. If an
-   `<id>-overview` workspace already exists, continue it rather than creating a
+1. **No path supplied, or a path that resolves to the repository root.** Enter
+   overview mode. A bare `reverse-spec` and `reverse-spec .` are the same run: the
+   repository as a whole is never a slice, because no output of this command may
+   aggregate the whole repository into a single detailed specification. The command
+   performs the architectural survey and never reconciles, whatever the state of
+   any existing workspace. Do not perform a baseline lookup at all in this case. If
+   an `<id>-overview` workspace already exists, continue it rather than creating a
    second one, so an interrupted survey resumes instead of leaving orphans.
 2. **The argument is not a path.** If it is a diff or pull-request range such as
    `main..feature`, `HEAD~3..HEAD`, or `#42`, report the path-only contract from
@@ -65,34 +68,55 @@ Resolve the mode first, in this order. Do not write anything until the mode is s
    argument is never misreported as a merely invalid path.
 3. **The path does not exist.** Report the invalid path and stop. Create no
    workspace.
-4. **The path exists.** Resolve it to a slice and search `.codexspec/specs/*/`
-   for a workspace whose recorded `Slice:` value matches that path. Every
-   workspace writes its identifying artifact as the act that creates it, so both
-   the lookup key and the mode marker are present even in a workspace an
-   interrupted run left half-written. A workspace containing `slices.md` is an
-   overview workspace, never a baseline: skip it during this search. Identify it
-   by that positive marker, not by the absence of a `spec.md`.
-5. **No matching workspace.** Enter generate mode — but first check that the slice
-   contains analyzable code. If it does not, report that there is nothing to
+4. **The path exists.** Normalize it before comparing anything: make it
+   repo-relative, resolve `.`, `..`, and absolute forms, and drop any trailing
+   slash, so `src/auth`, `./src/auth`, `src/auth/`, and an absolute path to that
+   same directory are one slice rather than four. Record every `Slice:` header in
+   exactly this normalized form and compare in it too — an unnormalized comparison
+   silently misses the workspace a slice already has and creates a duplicate.
+   Then search `.codexspec/specs/*/` for workspaces whose recorded `Slice:` value
+   matches the normalized path. Every workspace writes its identifying artifact as
+   the act that creates it, so both the lookup key and the mode marker are present
+   even in a workspace an interrupted run left half-written. A workspace containing
+   `slices.md` is an overview workspace, never a baseline: skip it during this
+   search. Identify it by that positive marker, not by the absence of a `spec.md`.
+5. **Sort what the search found into exact and covering matches.** A workspace
+   matches **exactly** when its normalized `Slice:` equals the normalized path. It
+   **covers** the path when its `Slice:` is a proper ancestor of it — a workspace
+   recorded as `src/auth` covers `src/auth/tokens` without being it. Only an exact
+   match selects a mode on its own. A covering match never does, because its
+   baseline describes a wider boundary than the slice you were given: reconciling
+   against it would report everything else under that boundary as
+   `unimplemented-spec`, and its `reconcile.md` belongs to that wider slice.
+6. **No workspace matches, exactly or by covering.** Enter generate mode — but
+   first check that the slice contains analyzable code. If it does not, report
+   that there is nothing to
    reverse-derive and stop, creating no workspace and no artifacts. This check
    belongs to generate mode alone. Never apply it in reconcile mode: a slice whose
    implementation has been emptied is the maximal `unimplemented-spec` case, and
-   reporting it as drift is exactly what this command exists to do.
-6. **Several matching workspaces.** Ask the user to select one. Never silently
+   reporting it as drift is exactly what this command exists to do. If any existing
+   workspace records a slice nested inside the one you were given, say so before
+   proceeding — the two will overlap — but do not stop for it.
+7. **Several workspaces match exactly.** Ask the user to select one. Never silently
    pick the most recent workspace.
-7. **One matching workspace whose artifacts are confirmed.** Enter reconcile mode.
-8. **One matching workspace whose artifacts are still open.** Do not reconcile:
-   comparing code against a draft derived from that same code would compare the
-   code with itself and report no drift by construction. Instead resume generate
-   mode into that existing workspace. Never create a second workspace for a slice
-   that already has one. Resuming means completing only what is missing: read what
-   the workspace already holds, append the parts that were never written, and
-   leave everything already written exactly as it stands. If the draft is already
-   complete, write nothing at all and simply report the unconfirmed baseline.
-   Report that you are continuing the draft rather than reconciling, say which
-   parts you added and which you left untouched, and state the exact confirmation
-   action from the section below so the user knows how to promote it once it is
-   complete.
+8. **No exact match, but one or more workspaces cover the slice.** Never pick one
+   silently and never quietly start a nested workspace. Report each covering
+   workspace with the slice it records, and ask the user which they want: reconcile
+   or continue that workspace at its own wider boundary, or create a new workspace
+   for the narrower path you were given. Proceed only on their answer.
+9. **One exact match whose artifacts are confirmed.** Enter reconcile mode.
+10. **One exact match whose artifacts are still open.** Do not reconcile:
+    comparing code against a draft derived from that same code would compare the
+    code with itself and report no drift by construction. Instead resume generate
+    mode into that existing workspace. Never create a second workspace for a slice
+    that already has one. Resuming means completing only what is missing: read what
+    the workspace already holds, append the parts that were never written, and
+    leave everything already written exactly as it stands. If the draft is already
+    complete, write nothing at all and simply report the unconfirmed baseline.
+    Report that you are continuing the draft rather than reconciling, say which
+    parts you added and which you left untouched, and state the exact confirmation
+    action from the section below so the user knows how to promote it once it is
+    complete.
 
 Report the resolved mode before proceeding, so the user can stop you if it is not
 the mode they wanted.
@@ -101,7 +125,10 @@ the mode they wanted.
 
 A slice is a directory, module, or package path, or a file set within one. The
 `[path]` argument is the slice boundary. Do not attempt to partition the codebase
-automatically, and do not merge several unrelated directories into one slice.
+automatically, and do not merge several unrelated directories into one slice. The
+repository root is not a slice: a path that resolves to it is the bare run and gets
+the architectural survey, so no run of this command ever produces one detailed
+specification covering the whole repository.
 
 A diff or pull-request range is not a slice source. If the user supplies one,
 report the path-only contract and stop; reverse-deriving a specification for a
@@ -123,9 +150,13 @@ restriction is about git side effects, not about writing: what the new directory
 must contain from its first moment is set out below.
 
 Every generated `spec.md` and `design.md` carries a `Slice:` header holding the
-repo-relative path its content describes. This field is the whole baseline-lookup
-mechanism: there is no index file and the directory name does not encode the path.
-State the recorded value in the closing summary so a later mismatch is diagnosable.
+repo-relative path its content describes, written in the normalized form mode
+resolution defines — no trailing slash, no `.` or `..` segment, never absolute.
+This field is the whole baseline-lookup mechanism: there is no index file and the
+directory name does not encode the path. Writing it unnormalized breaks the lookup
+for a path the user spells differently next time, so normalize on the way in as
+well as on the way out. State the recorded value in the closing summary so a later
+mismatch is diagnosable.
 
 Creating a workspace is one indivisible act: create the directory and immediately
 write the artifact that identifies it — in generate mode a `spec.md` carrying the

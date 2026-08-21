@@ -3,7 +3,7 @@
 **Feature Branch**: `2026-0818-2053p5-reverse-spec`
 **Created**: 2026-08-20
 **Status**: Draft
-**Input**: `requirements.md` (30 confirmed entries) and `spec.md` (REQ-001..021, NFR-001..006)
+**Input**: `requirements.md` (32 confirmed entries) and `spec.md` (REQ-001..021, NFR-001..006)
 
 ## Context
 
@@ -40,44 +40,59 @@ never hand-edited.
 
 Runs first and produces exactly one mode. Order of evaluation:
 
-1. No `[path]` → **overview**. Baseline lookup is not performed at all, so a
-   confirmed overview workspace can never divert a bare run into reconcile. An
-   existing `<id>-overview` workspace is continued rather than duplicated.
+1. No `[path]`, **or a path that resolves to the repository root** → **overview**.
+   Baseline lookup is not performed at all, so a confirmed overview workspace can
+   never divert a bare run into reconcile. An existing `<id>-overview` workspace is
+   continued rather than duplicated. `reverse-spec .` is the bare run (Decision 8):
+   the repository root is not a slice, which is what makes NFR-005's unconditional
+   "no output aggregates the whole repository into a single detailed specification"
+   true for every input rather than only for the bare form.
 2. Argument is a diff or pull-request range → report the path-only contract and
    stop. Evaluated **before** path existence, so such an argument is never
    misreported as a merely invalid path.
 3. `[path]` does not exist → report and stop; create no workspace.
-4. `[path]` given → resolve the slice, then search `.codexspec/specs/*/` for a
-   workspace whose recorded slice (C3) matches. A workspace containing
-   `slices.md` is an overview workspace and is skipped — identified by that
-   positive marker, not by a missing `spec.md`. Both markers are written at
-   workspace creation (Decision 7), so an interrupted run of either mode is still
-   found by the lookup and still classified as the mode that created it.
-5. Zero matches → **generate**, after checking the slice contains analyzable
-   code; if it does not, report and stop without creating anything. That check is
-   generate-only: in reconcile mode an emptied slice is the maximal
-   `unimplemented-spec` case and must be reported as drift.
-6. Multiple matches → ask the user to choose; never pick the newest silently.
-7. One match, artifacts `Status: confirmed` → **reconcile**.
-8. One match, artifacts still `Status: open` → do not reconcile, but **resume
-   generate** into that existing workspace rather than refusing outright. This is
-   what makes REQ-016/NFR-004 resumability reachable: an interrupted generate
-   leaves an open workspace, and refusing to write would strand it permanently
-   while pushing the user to confirm a half-finished draft as a baseline. Never
-   create a second workspace for a slice that already has one. Resume **completes
-   only what is missing** (Decision 7): it appends the parts never written and
-   leaves every part already present untouched, so a complete-but-unconfirmed
-   draft causes no write at all and the behavior degenerates exactly to
-   `spec.md` User Story 3.
+4. `[path]` given → **normalize it** (repo-relative, `.`/`..`/absolute resolved,
+   trailing slash dropped), then search `.codexspec/specs/*/` for a workspace whose
+   recorded slice (C3) matches. Normalization is applied on both the write and the
+   read side, so one directory spelled four ways is one slice (Decision 8). A
+   workspace containing `slices.md` is an overview workspace and is skipped —
+   identified by that positive marker, not by a missing `spec.md`. Both markers are
+   written at workspace creation (Decision 7), so an interrupted run of either mode
+   is still found by the lookup and still classified as the mode that created it.
+5. Matches are sorted into **exact** (normalized slice equal) and **covering**
+   (recorded slice is a proper ancestor). Only an exact match selects a mode on its
+   own; a covering match never does (Decision 8).
+6. Zero matches of either kind → **generate**, after checking the slice contains
+   analyzable code; if it does not, report and stop without creating anything. That
+   check is generate-only: in reconcile mode an emptied slice is the maximal
+   `unimplemented-spec` case and must be reported as drift. A workspace recording a
+   slice *inside* the given one is disclosed as an overlap but does not block.
+7. Multiple exact matches → ask the user to choose; never pick the newest silently.
+8. No exact match but one or more covering matches → report each and ask whether to
+   use that wider workspace at its own boundary or create one for the narrower path;
+   never pick silently and never quietly nest (Decision 8).
+9. One exact match, artifacts `Status: confirmed` → **reconcile**.
+10. One exact match, artifacts still `Status: open` → do not reconcile, but **resume
+    generate** into that existing workspace rather than refusing outright. This is
+    what makes REQ-016/NFR-004 resumability reachable: an interrupted generate
+    leaves an open workspace, and refusing to write would strand it permanently
+    while pushing the user to confirm a half-finished draft as a baseline. Never
+    create a second workspace for a slice that already has one. Resume **completes
+    only what is missing** (Decision 7): it appends the parts never written and
+    leaves every part already present untouched, so a complete-but-unconfirmed
+    draft causes no write at all and the behavior degenerates exactly to
+    `spec.md` User Story 3.
 
 **Covers**: REQ-002, REQ-008, REQ-015
 
 ### C3 — Slice identity and workspace binding
 
 Generated `spec.md` and `design.md` carry a `Slice:` header field holding the
-repo-relative path the artifacts describe. This field is what C2 matches on, and
-it is the whole baseline-lookup mechanism — there is no index file and no
-directory-name encoding. A workspace is the directory
+repo-relative path the artifacts describe, recorded in the normalized form C2
+step 4 defines (Decision 8). This field is what C2 matches on, and it is the whole
+baseline-lookup mechanism — there is no index file and no directory-name encoding,
+which is why the normalization must be applied when the header is written and not
+only when it is read. A workspace is the directory
 `.codexspec/specs/<id>-<slice>/`, whose id reuses the project's
 `{YYYY-MMDD-HHMM}{rr}` convention unchanged and whose slice segment derives from
 the slice's final path segment (`overview` for a bare run). The directory is
@@ -361,6 +376,53 @@ governance) nor the `_get_default_constitution()` string shipped to user project
   maintainer corrections, and the discrepancy is still surfaced in the report.
 - **Covers**: REQ-002, REQ-004, REQ-008, REQ-015, REQ-016, REQ-017, NFR-004
 
+### Decision 8: Normalize the slice path, and let only an exact match choose a mode
+
+- **Context**: C2 step 4 said only that the lookup finds a workspace whose `Slice:`
+  value "matches" the path. The write side was pinned to a repo-relative path; the
+  read side defined neither normalization nor the match predicate. REQ-002 speaks of
+  a workspace **covering** the slice and of several workspaces that **could cover**
+  it, so the ambiguity was load-bearing in two directions, both reachable:
+  - **Miss** — `src/auth/` (shell tab-completion), `./src/auth`, or an absolute path
+    compared against a stored `src/auth` finds nothing, silently creating a *second*
+    workspace for a slice that already has one and skipping the drift check that is
+    the feature's confirmed purpose.
+  - **False match** — with a confirmed workspace at `src/auth`, running
+    `reverse-spec src/auth/tokens` yields exactly one covering match, so the
+    multiple-match branch never fires. Reconcile would then write into that wider
+    slice's workspace, overwriting a `reconcile.md` that holds the user's recorded
+    adjudications, and report everything else under `src/auth` as
+    `unimplemented-spec`.
+- **Decision**: two parts.
+  1. **Normalize on both sides.** Repo-relative, `.`/`..`/absolute resolved,
+     trailing slash dropped — applied when the `Slice:` header is written and when
+     it is compared. One directory spelled four ways is one slice.
+  2. **Only an exact match selects a mode.** A covering (proper-ancestor) match is
+     reported and the user chooses: use that wider workspace at its own boundary, or
+     create one for the narrower path. A workspace nested *inside* the given slice
+     is disclosed as an overlap but does not block.
+- **Also settled here**: a path resolving to the **repository root** is the bare run
+  and takes the architectural survey. This makes NFR-005's unconditional "no output
+  aggregates the whole repository into a single detailed specification" hold for
+  every input, and makes `reverse-spec .` and `reverse-spec` the same run — which is
+  what a user would expect of them.
+- **Provenance**: both parts were adjudicated by the user during implementation.
+  Confirmed intent genuinely supported two readings in each case — REQ-002's
+  "covering" wording against the harm covering-match reconciliation causes, and
+  REQ-014's "a directory path" (the root is one) against NFR-005's unconditional
+  sentence — so neither was an implementation choice to make unilaterally. Recorded
+  in `requirements.md` as a Confirmation Log entry.
+- **Alternatives**: (a) reconcile against the covering workspace — rejected by the
+  user; it produces spurious `unimplemented-spec` for the rest of the wider slice and
+  destroys another slice's recorded adjudications; (b) exact-equality only, nested
+  path silently generates its own workspace — rejected; it makes REQ-002's "covering"
+  and "could cover" wording and the multiple-match branch near-dead letters, and lets
+  overlapping workspaces proliferate with no defined authority between them.
+- **Trade-off**: one extra interaction in the covering case. Accepted: it is the same
+  never-guess discipline REQ-002 already mandates for multiple matches and REQ-013
+  mandates for drift direction.
+- **Covers**: REQ-002, REQ-004, REQ-014, REQ-015, NFR-005
+
 ## Key Entities
 
 | Entity | Where it lives | Fields |
@@ -389,13 +451,16 @@ governance) nor the `_get_default_constitution()` string shipped to user project
 ```text
 invoke reverse-spec [path]
         │
-        ├── no [path] ─────────────────────────────► OVERVIEW
+        ├── no [path], or [path] = repo root ──────► OVERVIEW
         │                                             survey → <id>-overview/
         │                                             design.md (thin) + slices.md
         │                                             (never reconciles)
         │
-        └── [path] given
+        └── [path] given (normalized: repo-relative,
+                          no ./ ../ , no trailing slash)
                 └── find workspace whose Slice: matches
+                        │   exact = equal · covering = proper ancestor
+                        │
                         ├── none ──────────────────► GENERATE
                         │                            scan → new workspace:
                         │                            spec.md + design.md + requirements stub
