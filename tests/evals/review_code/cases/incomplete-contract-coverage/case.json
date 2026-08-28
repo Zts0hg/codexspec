@@ -1,0 +1,28 @@
+{
+  "schema_version": "1",
+  "id": "incomplete-contract-coverage",
+  "description": "A required generated binary consumer has no inspectable source or provenance",
+  "risk_profiles": ["public API/CLI compatibility"],
+  "setup": {
+    "files": {
+      "generated/client.bin": "\u0000\u0001\u0002\u0003\u0000\u0004",
+      "schema/public.txt": "version=2\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\nThe schema and every generated consumer must agree; the selected binary consumer must be verified from its generator or provenance.\n",
+      "spec.md": "# Spec\nGenerated consumers expose schema version 2. A consumer whose generator and provenance are unavailable cannot be treated as verified.\n",
+      "plan.md": "# Plan\nRegenerate and verify all consumers from inspectable source or provenance.\n",
+      "tasks.md": "# Tasks\n- [x] Regenerate consumers.\n"
+    }
+  },
+  "expect": {
+    "verdict": "INCONCLUSIVE",
+    "acceptable_verdicts": ["INCONCLUSIVE"],
+    "minimum_findings": [],
+    "forbidden_findings": ["binary is a defect", "missing docstring"],
+    "blocking_coverage_gap": true,
+    "profile_aliases": {
+      "public API/CLI compatibility": ["generated consumer", "schema compatibility"]
+    }
+  }
+}

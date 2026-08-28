@@ -1,0 +1,35 @@
+{
+  "schema_version": "1",
+  "id": "contract-multi-surface",
+  "description": "One resolved option must be preserved across two entry adapters",
+  "risk_profiles": ["parsing/configuration"],
+  "setup": {
+    "files": {
+      "src/options.py": "def resolve(raw):\n    return raw or 'safe'\n",
+      "src/entries.py": "from .options import resolve\n\ndef primary(raw, consume):\n    return consume(resolve(raw))\n\ndef secondary(raw, consume):\n    resolve(raw)\n    return consume('legacy')\n",
+      "tests/test_entries.py": "from src.entries import primary\n\ndef test_primary_preserves_option():\n    assert primary('strict', lambda value: value) == 'strict'\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\nBoth entries preserve the resolved option.\n",
+      "spec.md": "# Spec\nThe primary and secondary entries pass the resolved option to the consumer.\n",
+      "plan.md": "# Plan\nUpdate both entry adapters.\n",
+      "tasks.md": "# Tasks\n- [x] Update both entry adapters.\n"
+    }
+  },
+  "expect": {
+    "verdict": "FAIL",
+    "acceptable_verdicts": ["FAIL", "INCONCLUSIVE"],
+    "minimum_findings": [
+      {
+        "priority": "P2",
+        "contains": "secondary",
+        "aliases": ["legacy", "resolved option"]
+      }
+    ],
+    "forbidden_findings": ["missing docstring", "style"],
+    "minimum_contract_surfaces": 2,
+    "profile_aliases": {
+      "parsing/configuration": ["resolved option", "configuration"]
+    }
+  }
+}

@@ -1091,7 +1091,11 @@ AI:  Preview mode - no commit will be executed
 /codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
 ```
 
-게이트는 대상의 모든 산출물을 인벤토리화하고 적용 가능한 요구사항을 평가하며 Scope, Behavior, Risk, Verification 단계를 실행합니다. 판정은 `PASS`, `FAIL`, `INCONCLUSIVE` 중 하나입니다. 여섯 개의 보고서 섹션 뒤에는 기계 판독 가능한 `<review-code-result>` envelope 하나가 옵니다. 모든 P0-P3 결함은 `FAIL`, 필수 증거 부족은 `INCONCLUSIVE`입니다.
+<!-- REVIEW-CODE-SYSTEM-CONTRACT -->
+<!-- REVIEW-CODE-VARIANT-SEARCH -->
+<!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
+
+게이트는 대상의 모든 산출물을 인벤토리화하고 적용 가능한 요구사항을 평가한 뒤 Scope, System Contract, Behavior, Risk, Verification의 다섯 단계를 순서대로 실행합니다. 근거가 있는 모듈 간 계약과 의미 단위 검토 파티션을 기록하며, 검증된 반복 가능 근본 원인마다 라운드가 끝나기 전에 범위가 제한된 관련 발생 위치 검색을 수행합니다. 여섯 개의 보고서 섹션 뒤에는 `schema_version: "2"`를 사용하는 기계 판독 가능한 `<review-code-result>` envelope 하나가 옵니다. 이 envelope는 대상 식별자, 커버리지, 수정 후 다시 확인할 객관적 의무를 전달합니다. 호출자는 이 중립적 의무를 새로운 전체 검토에 제공하지만 수정 이유나 이전의 정확성 결론은 제공하지 않습니다. 판정은 `PASS`, `FAIL`, `INCONCLUSIVE` 중 하나입니다. 모든 P0-P3 결함은 `FAIL`, 필수 증거나 커버리지 부족은 `INCONCLUSIVE`입니다.
 
 ```text
 You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example

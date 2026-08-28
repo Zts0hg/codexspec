@@ -1091,7 +1091,11 @@ Review the selected Git change as a strict defect gate before merge. The default
 /codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
 ```
 
-The gate inventories every selected artifact, assesses applicable requirements, runs Scope, Behavior, Risk, and Verification passes, and returns exactly one verdict: `PASS`, `FAIL`, or `INCONCLUSIVE`. Its six report sections are followed by one machine-readable `<review-code-result>` envelope. Every P0-P3 finding produces `FAIL`; missing mandatory evidence produces `INCONCLUSIVE`.
+<!-- REVIEW-CODE-SYSTEM-CONTRACT -->
+<!-- REVIEW-CODE-VARIANT-SEARCH -->
+<!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
+
+The gate inventories every selected artifact, assesses applicable requirements, and runs five passes in order: Scope, System Contract, Behavior, Risk, and Verification. It records source-backed cross-module contracts and semantic review partitions, and every validated repeatable root cause triggers a bounded search for related occurrences before the round finishes. The six report sections are followed by one machine-readable `<review-code-result>` envelope using `schema_version: "2"`. The envelope carries target identity, coverage, and objective post-repair obligations; the caller retains those neutral obligations for a fresh complete review without passing repair reasoning or prior correctness conclusions. The verdict is exactly `PASS`, `FAIL`, or `INCONCLUSIVE`: every P0-P3 finding produces `FAIL`, while missing mandatory evidence or incomplete coverage produces `INCONCLUSIVE`.
 
 ```text
 You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example

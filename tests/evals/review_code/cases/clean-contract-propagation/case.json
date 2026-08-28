@@ -1,0 +1,29 @@
+{
+  "schema_version": "1",
+  "id": "clean-contract-propagation",
+  "description": "All entries preserve one resolved option across adapters",
+  "risk_profiles": ["parsing/configuration"],
+  "setup": {
+    "files": {
+      "src/options.py": "def resolve(raw):\n    return raw or 'safe'\n",
+      "src/entries.py": "from .options import resolve\n\ndef primary(raw, consume):\n    return consume(resolve(raw))\n\ndef secondary(raw, consume):\n    return consume(resolve(raw))\n",
+      "tests/test_entries.py": "from src.entries import primary, secondary\n\ndef test_entries_preserve_option():\n    for entry in (primary, secondary):\n        assert entry('strict', lambda value: value) == 'strict'\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\nBoth entries preserve the resolved option.\n",
+      "spec.md": "# Spec\nThe primary and secondary entries pass the resolved option to the consumer.\n",
+      "plan.md": "# Plan\nUse one resolver across both adapters.\n",
+      "tasks.md": "# Tasks\n- [x] Route both entries through the resolver.\n"
+    }
+  },
+  "expect": {
+    "verdict": "PASS",
+    "acceptable_verdicts": ["PASS"],
+    "minimum_findings": [],
+    "forbidden_findings": ["missing docstring", "style", "missing tests"],
+    "minimum_contract_surfaces": 2,
+    "profile_aliases": {
+      "parsing/configuration": ["resolved option", "configuration"]
+    }
+  }
+}

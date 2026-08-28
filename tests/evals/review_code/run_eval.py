@@ -13,6 +13,7 @@ import sys
 import tempfile
 import time
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -24,13 +25,24 @@ REQUIRED_RESULT_KEYS = {
     "target",
     "requirements_coverage",
     "verification",
+    "findings",
     "finding_counts",
+    "review_coverage",
+    "follow_up",
+    "coverage_gaps",
     "coverage_gap_count",
     "review_context",
     "reviewers",
 }
 VALID_VERDICTS = {"PASS", "FAIL", "INCONCLUSIVE"}
 VALID_PRIORITIES = {"P0", "P1", "P2", "P3"}
+VALID_SELECTORS = {"default", "committed", "uncommitted", "commit"}
+VALID_REQUIREMENTS_STATUSES = {"complete", "partial", "not_evaluated"}
+VALID_VERIFICATION_STATUSES = {"complete", "incomplete"}
+VALID_CONTRACT_STATUSES = {"complete", "incomplete", "not_applicable"}
+VALID_PARTITION_STATUSES = {"complete", "incomplete", "failed", "uninspectable"}
+VALID_VARIANT_STATUSES = {"complete", "incomplete", "not_applicable"}
+VALID_REVIEWER_STATES = {"complete", "incomplete", "failed", "not_required", "not_run"}
 
 
 class ResultParseError(ValueError):
@@ -57,7 +69,24 @@ class Case:
         return str(self.data["id"])
 
 
+@lru_cache(maxsize=1)
+def _git_local_env_vars() -> tuple[str, ...]:
+    """Return environment variables that Git scopes to one repository."""
+
+    completed = subprocess.run(
+        ["git", "rev-parse", "--local-env-vars"],
+        text=True,
+        capture_output=True,
+        check=True,
+    )
+    return tuple(completed.stdout.splitlines())
+
+
 def _git(repo: Path, *args: str) -> subprocess.CompletedProcess[str]:
+    environment = os.environ.copy()
+    for name in _git_local_env_vars():
+        environment.pop(name, None)
+
     return subprocess.run(
         [
             "git",
@@ -68,6 +97,7 @@ def _git(repo: Path, *args: str) -> subprocess.CompletedProcess[str]:
             *args,
         ],
         cwd=repo,
+        env=environment,
         text=True,
         capture_output=True,
         check=True,
@@ -118,6 +148,8 @@ def _validate_case(data: dict[str, Any], source: Path) -> None:
     setup = data["setup"]
     if not isinstance(setup, dict) or not isinstance(setup.get("files"), dict):
         raise ValueError(f"{source}: setup.files must be an object")
+    if "baseline_files" in setup and not isinstance(setup["baseline_files"], dict):
+        raise ValueError(f"{source}: setup.baseline_files must be an object when present")
     expect = data["expect"]
     verdicts = expect.get("acceptable_verdicts", [expect.get("verdict")])
     if not isinstance(verdicts, list) or not verdicts or any(verdict not in VALID_VERDICTS for verdict in verdicts):
@@ -134,6 +166,15 @@ def _validate_case(data: dict[str, Any], source: Path) -> None:
     aliases = expect.get("profile_aliases", {})
     if not isinstance(aliases, dict):
         raise ValueError(f"{source}: expect.profile_aliases must be an object when present")
+    minimum_surfaces = expect.get("minimum_contract_surfaces")
+    if minimum_surfaces is not None and (
+        isinstance(minimum_surfaces, bool) or not isinstance(minimum_surfaces, int) or minimum_surfaces < 1
+    ):
+        raise ValueError(f"{source}: expect.minimum_contract_surfaces must be a positive integer")
+    if "all_partitions_terminal" in expect and not isinstance(expect["all_partitions_terminal"], bool):
+        raise ValueError(f"{source}: expect.all_partitions_terminal must be a boolean")
+    if "blocking_coverage_gap" in expect and not isinstance(expect["blocking_coverage_gap"], bool):
+        raise ValueError(f"{source}: expect.blocking_coverage_gap must be a boolean")
 
 
 def load_case(case_dir: Path) -> Case:
@@ -153,6 +194,320 @@ def iter_cases(cases_root: Path) -> list[Path]:
     return sorted(path for path in cases_root.iterdir() if (path / "case.json").is_file())
 
 
+def _object(value: Any, name: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ResultParseError(f"{name} must be an object")
+    return value
+
+
+def _array(value: Any, name: str) -> list[Any]:
+    if not isinstance(value, list):
+        raise ResultParseError(f"{name} must be an array")
+    return value
+
+
+def _string(value: Any, name: str, *, nullable: bool = False) -> str | None:
+    if nullable and value is None:
+        return None
+    if not isinstance(value, str) or not value.strip():
+        raise ResultParseError(f"{name} must be a non-empty string")
+    return value
+
+
+def _strings(value: Any, name: str, *, non_empty: bool = False) -> list[str]:
+    items = _array(value, name)
+    if any(not isinstance(item, str) or not item.strip() for item in items):
+        raise ResultParseError(f"{name} must contain only non-empty strings")
+    if non_empty and not items:
+        raise ResultParseError(f"{name} must not be empty")
+    return items
+
+
+def _non_negative_integer(value: Any, name: str) -> int:
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        raise ResultParseError(f"{name} must be a non-negative integer")
+    return value
+
+
+def _required_fields(record: dict[str, Any], required: set[str], name: str) -> None:
+    missing = sorted(required - set(record))
+    if missing:
+        raise ResultParseError(f"{name} missing required keys: {', '.join(missing)}")
+
+
+def _known_fields(record: dict[str, Any], allowed: set[str], name: str) -> None:
+    unknown = sorted(set(record) - allowed)
+    if unknown:
+        raise ResultParseError(f"{name} contains unknown keys: {', '.join(unknown)}")
+
+
+def _unique_ids(records: list[dict[str, Any]], name: str, *, field: str = "id") -> set[str]:
+    identifiers = [_string(record.get(field), f"{name}.{field}") for record in records]
+    if len(identifiers) != len(set(identifiers)):
+        raise ResultParseError(f"{name} {field} values must be unique")
+    return {identifier for identifier in identifiers if identifier is not None}
+
+
+def _validate_coverage(result: dict[str, Any]) -> None:
+    coverage = _object(result["review_coverage"], "review_coverage")
+    _required_fields(coverage, {"contracts", "partitions", "variant_searches"}, "review_coverage")
+    _known_fields(coverage, {"contracts", "partitions", "variant_searches"}, "review_coverage")
+
+    contracts = [_object(item, "contract") for item in _array(coverage["contracts"], "contracts")]
+    contract_ids = _unique_ids(contracts, "contract")
+    for contract in contracts:
+        _required_fields(
+            contract,
+            {
+                "id",
+                "statement",
+                "sources",
+                "producers",
+                "propagation",
+                "consumers",
+                "entry_surfaces",
+                "scenarios",
+                "evidence",
+                "status",
+            },
+            "contract",
+        )
+        _known_fields(
+            contract,
+            {
+                "id",
+                "statement",
+                "sources",
+                "producers",
+                "propagation",
+                "consumers",
+                "entry_surfaces",
+                "scenarios",
+                "evidence",
+                "status",
+            },
+            "contract",
+        )
+        _string(contract["statement"], "contract.statement")
+        _strings(contract["sources"], "contract.sources", non_empty=True)
+        for field in ["producers", "propagation", "consumers", "entry_surfaces", "scenarios"]:
+            _strings(contract[field], f"contract.{field}")
+        evidence = _strings(contract["evidence"], "contract.evidence")
+        if contract["status"] not in VALID_CONTRACT_STATUSES:
+            raise ResultParseError(f"unsupported contract status {contract['status']!r}")
+        if contract["status"] == "complete" and not evidence:
+            raise ResultParseError("completed contract must include evidence")
+
+    partitions = [_object(item, "partition") for item in _array(coverage["partitions"], "partitions")]
+    _unique_ids(partitions, "partition")
+    for partition in partitions:
+        _required_fields(partition, {"id", "scope", "owner", "contract_ids", "evidence", "status"}, "partition")
+        _known_fields(partition, {"id", "scope", "owner", "contract_ids", "evidence", "status"}, "partition")
+        _string(partition["scope"], "partition.scope")
+        owner = _string(partition["owner"], "partition.owner")
+        if owner != "primary" and not owner.startswith("specialist:"):
+            raise ResultParseError(f"unsupported partition owner {owner!r}")
+        references = _strings(partition["contract_ids"], "partition.contract_ids")
+        if not set(references).issubset(contract_ids):
+            raise ResultParseError("partition contains an unknown contract reference")
+        evidence = _strings(partition["evidence"], "partition.evidence")
+        if partition["status"] not in VALID_PARTITION_STATUSES:
+            raise ResultParseError(f"unsupported partition status {partition['status']!r}")
+        if partition["status"] == "complete" and not evidence:
+            raise ResultParseError("completed partition must include evidence")
+
+    findings = [_object(item, "finding") for item in _array(result["findings"], "findings")]
+    finding_ids = _unique_ids(findings, "finding")
+    for finding in findings:
+        _required_fields(
+            finding,
+            {"id", "priority", "location", "summary", "trigger", "impact", "root_cause_id"},
+            "finding",
+        )
+        _known_fields(
+            finding,
+            {"id", "priority", "location", "summary", "trigger", "impact", "root_cause_id"},
+            "finding",
+        )
+        if finding["priority"] not in VALID_PRIORITIES:
+            raise ResultParseError(f"unsupported finding priority {finding['priority']!r}")
+        for field in ["location", "summary", "trigger", "impact"]:
+            _string(finding[field], f"finding.{field}")
+        _string(finding["root_cause_id"], "finding.root_cause_id", nullable=True)
+
+    searches = [_object(item, "variant search") for item in _array(coverage["variant_searches"], "variant_searches")]
+    root_cause_ids = _unique_ids(searches, "variant search", field="root_cause_id")
+    for search in searches:
+        _required_fields(
+            search,
+            {
+                "root_cause_id",
+                "finding_ids",
+                "cause",
+                "scope",
+                "methods",
+                "checked_locations",
+                "evidence",
+                "reason",
+                "status",
+            },
+            "variant search",
+        )
+        _known_fields(
+            search,
+            {
+                "root_cause_id",
+                "finding_ids",
+                "cause",
+                "scope",
+                "methods",
+                "checked_locations",
+                "evidence",
+                "reason",
+                "status",
+            },
+            "variant search",
+        )
+        _string(search["cause"], "variant_search.cause")
+        references = _strings(search["finding_ids"], "variant_search.finding_ids", non_empty=True)
+        if not set(references).issubset(finding_ids):
+            raise ResultParseError("variant search contains an unknown finding reference")
+        for field in ["scope", "methods", "checked_locations"]:
+            _strings(search[field], f"variant_search.{field}")
+        evidence = _strings(search["evidence"], "variant_search.evidence")
+        status = search["status"]
+        if status not in VALID_VARIANT_STATUSES:
+            raise ResultParseError(f"unsupported variant search status {status!r}")
+        reason = _string(search["reason"], "variant_search.reason", nullable=True)
+        if status == "complete" and not evidence:
+            raise ResultParseError("completed variant search must include evidence")
+        if status in {"incomplete", "not_applicable"} and reason is None:
+            raise ResultParseError(f"{status} variant search must include a reason")
+
+    for finding in findings:
+        root_cause_id = finding["root_cause_id"]
+        if root_cause_id is not None and root_cause_id not in root_cause_ids:
+            raise ResultParseError("finding contains an unknown root-cause reference")
+    for search in searches:
+        expected_findings = {
+            finding["id"] for finding in findings if finding["root_cause_id"] == search["root_cause_id"]
+        }
+        if set(search["finding_ids"]) != expected_findings:
+            raise ResultParseError("root-cause search must reference exactly its linked findings")
+
+
+def _validate_follow_up(result: dict[str, Any]) -> None:
+    follow_up = _object(result["follow_up"], "follow_up")
+    _required_fields(follow_up, {"received", "required"}, "follow_up")
+    _known_fields(follow_up, {"received", "required"}, "follow_up")
+    received = [_object(item, "received follow-up") for item in _array(follow_up["received"], "follow_up.received")]
+    required = [_object(item, "required follow-up") for item in _array(follow_up["required"], "follow_up.required")]
+    all_records = [*received, *required]
+    _unique_ids(all_records, "follow-up")
+    source_ids = {
+        item["id"] for collection in (result["findings"], result["review_coverage"]["contracts"]) for item in collection
+    }
+    for direction, records, statuses in [
+        ("received", received, {"verified", "unresolved", "superseded"}),
+        ("required", required, {"open"}),
+    ]:
+        for record in records:
+            _required_fields(
+                record,
+                {"id", "origin_fingerprint", "source_ids", "statement", "status", "evidence"},
+                f"{direction} follow-up",
+            )
+            _known_fields(
+                record,
+                {"id", "origin_fingerprint", "source_ids", "statement", "status", "evidence"},
+                f"{direction} follow-up",
+            )
+            origin_fingerprint = _string(
+                record["origin_fingerprint"],
+                f"{direction} follow-up.origin_fingerprint",
+                nullable=direction == "required" and result["target"]["fingerprint"] is None,
+            )
+            references = _strings(record["source_ids"], f"{direction} follow-up.source_ids", non_empty=True)
+            if direction == "required" and not set(references).issubset(source_ids):
+                raise ResultParseError("required follow-up contains an unknown source reference")
+            _string(record["statement"], f"{direction} follow-up.statement")
+            if record["status"] not in statuses:
+                raise ResultParseError(f"unsupported {direction} follow-up status {record['status']!r}")
+            evidence = _strings(record["evidence"], f"{direction} follow-up.evidence")
+            if direction == "received" and record["status"] in {"verified", "superseded"} and not evidence:
+                raise ResultParseError(f"{record['status']} follow-up must include evidence")
+            if direction == "required" and origin_fingerprint != result["target"]["fingerprint"]:
+                raise ResultParseError("required follow-up origin_fingerprint must match the current target")
+
+    required_source_ids = {source_id for record in required for source_id in record["source_ids"]}
+    finding_ids = {finding["id"] for finding in result["findings"]}
+    if not finding_ids.issubset(required_source_ids):
+        raise ResultParseError("every finding must have a required follow-up obligation")
+
+
+def _validate_gaps_and_reviewers(result: dict[str, Any]) -> None:
+    gaps = [_object(item, "coverage gap") for item in _array(result["coverage_gaps"], "coverage_gaps")]
+    _unique_ids(gaps, "coverage gap")
+    for gap in gaps:
+        _required_fields(gap, {"id", "scope", "impact", "blocking"}, "coverage gap")
+        _known_fields(gap, {"id", "scope", "impact", "blocking"}, "coverage gap")
+        _string(gap["scope"], "coverage_gap.scope")
+        _string(gap["impact"], "coverage_gap.impact")
+        if not isinstance(gap["blocking"], bool):
+            raise ResultParseError("coverage_gap.blocking must be a boolean")
+    if _non_negative_integer(result["coverage_gap_count"], "coverage_gap_count") != len(gaps):
+        raise ResultParseError("coverage gap count matches neither coverage_gaps nor the human report")
+
+    reviewers = _object(result["reviewers"], "reviewers")
+    _required_fields(reviewers, {"primary", "specialists"}, "reviewers")
+    _known_fields(reviewers, {"primary", "specialists"}, "reviewers")
+    if reviewers["primary"] not in VALID_REVIEWER_STATES:
+        raise ResultParseError(f"unsupported primary reviewer state {reviewers['primary']!r}")
+    for specialist in _array(reviewers["specialists"], "reviewers.specialists"):
+        record = _object(specialist, "specialist")
+        _required_fields(record, {"profile", "state"}, "specialist")
+        _known_fields(record, {"profile", "state", "reason"}, "specialist")
+        _string(record["profile"], "specialist.profile")
+        if record["state"] not in VALID_REVIEWER_STATES:
+            raise ResultParseError(f"unsupported specialist state {record['state']!r}")
+        if "reason" in record:
+            _string(record["reason"], "specialist.reason", nullable=True)
+
+
+def _validate_verdict_consistency(result: dict[str, Any]) -> None:
+    verdict = result["verdict"]
+    blocking_gaps = [gap for gap in result["coverage_gaps"] if gap["blocking"]]
+    if verdict == "FAIL":
+        if not result["findings"]:
+            raise ResultParseError("FAIL requires at least one admitted finding")
+        return
+    if verdict == "INCONCLUSIVE":
+        if not blocking_gaps:
+            raise ResultParseError("INCONCLUSIVE requires a blocking coverage gap")
+        return
+    if result["verification"]["status"] != "complete":
+        raise ResultParseError("PASS requires complete verification")
+    if any(result["finding_counts"].values()):
+        raise ResultParseError("PASS requires zero findings")
+    coverage = result["review_coverage"]
+    if any(record["status"] != "complete" for record in coverage["contracts"]):
+        raise ResultParseError("PASS requires complete contract coverage")
+    if any(record["status"] != "complete" for record in coverage["partitions"]):
+        raise ResultParseError("PASS requires complete partition coverage")
+    if any(record["status"] != "complete" for record in coverage["variant_searches"]):
+        raise ResultParseError("PASS requires complete variant searches")
+    if any(record["status"] not in {"verified", "superseded"} for record in result["follow_up"]["received"]):
+        raise ResultParseError("PASS cannot contain unresolved follow-up obligations")
+    if result["follow_up"]["required"]:
+        raise ResultParseError("PASS cannot contain open follow-up obligations")
+    if blocking_gaps:
+        raise ResultParseError("PASS cannot contain a blocking coverage gap")
+    if result["reviewers"]["primary"] != "complete" or any(
+        specialist["state"] not in {"complete", "not_required"} for specialist in result["reviewers"]["specialists"]
+    ):
+        raise ResultParseError("PASS requires complete reviewer topology")
+
+
 def parse_review_result(output: str) -> dict[str, Any]:
     """Parse the strict review-code result envelope."""
 
@@ -164,18 +519,109 @@ def parse_review_result(output: str) -> dict[str, Any]:
     except json.JSONDecodeError as exc:
         raise ResultParseError(f"invalid JSON in review-code-result envelope: {exc}") from exc
 
+    result = _object(result, "result envelope")
     missing = sorted(REQUIRED_RESULT_KEYS - set(result))
     if missing:
         raise ResultParseError(f"result envelope missing required keys: {', '.join(missing)}")
-    if result["schema_version"] != "1":
+    _known_fields(result, REQUIRED_RESULT_KEYS | {"activated_profiles"}, "result envelope")
+    if result["schema_version"] != "2":
         raise ResultParseError(f"unsupported result schema {result['schema_version']!r}")
     if result["mode"] != "defect":
         raise ResultParseError(f"unsupported mode {result['mode']!r}")
     if result["verdict"] not in VALID_VERDICTS:
         raise ResultParseError(f"unsupported verdict {result['verdict']!r}")
-    counts = result["finding_counts"]
-    if set(counts) != VALID_PRIORITIES or not all(isinstance(counts[key], int) for key in VALID_PRIORITIES):
+    target = _object(result["target"], "target")
+    _required_fields(
+        target,
+        {
+            "selector",
+            "fingerprint",
+            "complete_feature",
+            "empty",
+            "base_ref",
+            "merge_base_sha",
+            "commit_sha",
+            "parent_sha",
+            "inventory_count",
+        },
+        "target",
+    )
+    _known_fields(
+        target,
+        {
+            "selector",
+            "fingerprint",
+            "complete_feature",
+            "empty",
+            "base_ref",
+            "merge_base_sha",
+            "commit_sha",
+            "parent_sha",
+            "inventory_count",
+        },
+        "target",
+    )
+    if target["selector"] not in VALID_SELECTORS:
+        raise ResultParseError(f"unsupported target selector {target['selector']!r}")
+    fingerprint = _string(target["fingerprint"], "target fingerprint", nullable=True)
+    if not isinstance(target["complete_feature"], bool):
+        raise ResultParseError("target.complete_feature must be a boolean")
+    if not isinstance(target["empty"], bool):
+        raise ResultParseError("target.empty must be a boolean")
+    for field in ["base_ref", "merge_base_sha", "commit_sha", "parent_sha"]:
+        _string(target[field], f"target.{field}", nullable=True)
+    inventory_count = _non_negative_integer(target["inventory_count"], "target.inventory_count")
+    if target["empty"] != (inventory_count == 0):
+        raise ResultParseError("target.empty must agree with target.inventory_count")
+    if fingerprint is None:
+        if result["verdict"] == "PASS":
+            raise ResultParseError("PASS requires a target fingerprint")
+        gaps = _array(result["coverage_gaps"], "coverage_gaps")
+        if not any(isinstance(gap, dict) and gap.get("blocking") is True for gap in gaps):
+            raise ResultParseError("a missing target fingerprint requires a blocking coverage gap")
+
+    requirements = _object(result["requirements_coverage"], "requirements_coverage")
+    _required_fields(requirements, {"status", "feature"}, "requirements_coverage")
+    _known_fields(requirements, {"status", "feature"}, "requirements_coverage")
+    if requirements["status"] not in VALID_REQUIREMENTS_STATUSES:
+        raise ResultParseError(f"unsupported requirements status {requirements['status']!r}")
+    _string(requirements["feature"], "requirements_coverage.feature", nullable=True)
+
+    verification = _object(result["verification"], "verification")
+    _required_fields(verification, {"status", "commands"}, "verification")
+    _known_fields(verification, {"status", "commands"}, "verification")
+    if verification["status"] not in VALID_VERIFICATION_STATUSES:
+        raise ResultParseError(f"unsupported verification status {verification['status']!r}")
+    _array(verification["commands"], "verification.commands")
+
+    counts = _object(result["finding_counts"], "finding_counts")
+    if set(counts) != VALID_PRIORITIES or not all(
+        not isinstance(counts[key], bool) and isinstance(counts[key], int) and counts[key] >= 0
+        for key in VALID_PRIORITIES
+    ):
         raise ResultParseError("finding_counts must contain integer P0, P1, P2, and P3 fields")
+    findings = _array(result["findings"], "findings")
+    actual_counts = {priority: 0 for priority in VALID_PRIORITIES}
+    for finding in findings:
+        record = _object(finding, "finding")
+        if record.get("priority") in actual_counts:
+            actual_counts[record["priority"]] += 1
+    if counts != actual_counts:
+        raise ResultParseError("finding counts match neither findings nor the human report")
+
+    if result["review_context"] not in {"isolated", "shared"}:
+        raise ResultParseError(f"unsupported review context {result['review_context']!r}")
+    if "activated_profiles" in result:
+        _strings(result["activated_profiles"], "activated_profiles")
+    _validate_coverage(result)
+    if not target["empty"]:
+        if not result["review_coverage"]["contracts"]:
+            raise ResultParseError("a non-empty target requires contract coverage")
+        if not result["review_coverage"]["partitions"]:
+            raise ResultParseError("a non-empty target requires review partitions")
+    _validate_follow_up(result)
+    _validate_gaps_and_reviewers(result)
+    _validate_verdict_consistency(result)
     result["_output_text"] = output
     return result
 
@@ -225,6 +671,27 @@ def evaluate_result(case: Case, result: dict[str, Any]) -> Evaluation:
         if any(needle in text for text in finding_texts):
             failures.append(f"forbidden finding text present: {needle!r}")
 
+    coverage = result["review_coverage"]
+    minimum_surfaces = expected.get("minimum_contract_surfaces")
+    if minimum_surfaces is not None:
+        surfaces = {surface for contract in coverage["contracts"] for surface in contract["entry_surfaces"]}
+        if len(surfaces) < minimum_surfaces:
+            failures.append(f"expected at least {minimum_surfaces} contract entry surfaces, got {len(surfaces)}")
+
+    if expected.get("root_cause_group") and not any(
+        len(search["finding_ids"]) >= 2 for search in coverage["variant_searches"]
+    ):
+        failures.append("expected at least two findings in one root-cause variant search")
+
+    if expected.get("all_partitions_terminal"):
+        partitions = coverage["partitions"]
+        terminal = VALID_PARTITION_STATUSES
+        if not partitions or any(partition["status"] not in terminal for partition in partitions):
+            failures.append("expected every review partition to have a terminal state")
+
+    if expected.get("blocking_coverage_gap") and not any(gap["blocking"] for gap in result["coverage_gaps"]):
+        failures.append("expected a blocking coverage gap")
+
     return Evaluation(passed=not failures, failures=failures)
 
 
@@ -237,7 +704,7 @@ def prepare_repository(case: Case, work_root: Path) -> tuple[Path, Path]:
     work_root.mkdir(parents=True, exist_ok=True)
     _codexspec_init(repo)
     _git(repo, "init", "-b", "main")
-    _write_files(repo, {"README.md": "# Eval fixture\n"})
+    _write_files(repo, {"README.md": "# Eval fixture\n", **case.data["setup"].get("baseline_files", {})})
     _git(repo, "add", ".")
     _git(repo, "commit", "-m", "baseline")
     _git(repo, "switch", "-c", case.case_id)
