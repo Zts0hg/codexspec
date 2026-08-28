@@ -159,3 +159,85 @@ None remaining. Both round 1 Minor defects are documented above and resolved.
 - Minor root causes: 0 (2 found in round 1, both resolved before this final review)
 - Formula: no defects → `100`
 - Advisories (2) and Design Opportunities (1) do not affect status or score.
+
+## Follow-up Review — 2026-08-24
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: Phase 5 coverage-gap closure
+- **Coverage**: Phase 5 traces REQ-002/007/008/014/015/017/022 to
+  C1/C2/C3/C9/C10 and Decision 9, with regression tests before each template
+  repair and derived regeneration after it.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-24 (final security repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: Phase 5 final gate repairs.
+- **Coverage**: Phase 5 now includes path-entry containment, coherent workspace
+  identity, sensitive-evidence redaction, and the design-only interrupted state;
+  each maps to C1/C2/C3/C7/C8/C10 and a focused red-before-green contract.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-27 (trust/parser/compatibility repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: Phase 5 final gate repairs.
+- **Coverage**: the phase includes global output redaction, hardlink rejection,
+  unique status parsing, existing-path precedence, authority metadata correction,
+  and the required regenerate/targeted/cross/full/freeze checks.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-27 (workspace identity/read repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: Phase 5 final workspace-boundary repairs.
+- **Coverage**: safe baseline reads, exclusive collision retry, portable identity,
+  Unicode suffix fallback, regenerate, complete verification, and freeze checks.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-27 (Unicode identity/atomic publication repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: Phase 5 final publication repairs.
+- **Coverage**: two red-before-green contracts preserve distinct Unicode path
+  identities and require marker-before-publication ordering, followed by source/SDD
+  synchronization, regeneration, complete verification, and a frozen review gate.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-27 (input/publication/replacement repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: Phase 5 final trust and persistence repairs.
+- **Coverage**: four reviewer reproductions plus one sibling-sweep contract cover
+  literal input, identity serialization, control-safe output, native publication,
+  and confirmed report replacement, followed by regeneration, full validation,
+  freeze, and fresh isolated review.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-27 (identity/handle/resume/preflight repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: Phase 5 final identity, access, persistence, and ordering repairs.
+- **Coverage**: four red-before-green contracts cover secret-bearing identity,
+  opened-handle workspace access, confirmation-gated resume, and empty-code
+  preflight ordering, followed by SDD synchronization, regeneration, complete
+  validation, freeze, and a fresh isolated review.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-28 (sibling trust/control-source repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: Phase 5 final authority and serialization repair.
+- **Coverage**: two red-before-green contracts cover repository-local sibling
+  prompt isolation and untrusted-data-only control escaping, followed by SDD
+  synchronization, regeneration, complete validation, freeze, and a fresh
+  isolated review.
+- **Verified Defects**: none.

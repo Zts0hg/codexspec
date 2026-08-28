@@ -147,3 +147,87 @@ None remaining. Both round 1 Minor defects are documented above and resolved.
 - Minor root causes: 0 (2 found in round 1, both resolved before this final review)
 - Formula: no defects → `100`
 - Advisories (2) and Design Opportunities (1) do not affect status or score.
+
+## Follow-up Review — 2026-08-24
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: T5.1–T5.4
+- **Coverage**: S21–S23 map one-to-one to the requested gap tests; S24–S27 map
+  one-to-one to the complete-feature trust/path/marker repairs. T5.2 implements
+  the authoritative template and gap-register changes; T5.3/T5.4 own regeneration
+  and full verification. Dependencies are acyclic
+  (`T5.1 → T5.2 → T5.3 → T5.4`).
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-24 (final security repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: T5.5 / S28–S31.
+- **Coverage**: four independent failing contracts map one-to-one to the final
+  gate findings; T5.5 follows T5.4 and becomes the final checkpoint without
+  changing earlier task history.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-27 (trust/parser/compatibility repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: T5.6 / S32–S35.
+- **Coverage**: four independent red-before-green contracts map one-to-one to the
+  behavioral findings; the `Last Confirmed` correction is a deterministic
+  non-testable metadata repair. T5.6 follows T5.5 and is the final checkpoint.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-27 (workspace identity/read repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: T5.7 / S36–S38.
+- **Coverage**: three independent red-before-green contracts map one-to-one to the
+  then-current frozen-gate findings; T5.7 follows T5.6. T5.8 supersedes it as the
+  final checkpoint.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-27 (Unicode identity/atomic publication repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: T5.8 / S39–S40.
+- **Coverage**: two independent red-before-green contracts map one-to-one to the
+  Unicode identity and atomic publication findings; T5.8 follows T5.7. T5.9
+  supersedes it as the final checkpoint.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-27 (input/publication/replacement repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: T5.9 / S41–S45.
+- **Coverage**: four independent reviewer reproductions plus one sibling trust
+  contract map one-to-one to the repaired input, serialization, publication,
+  replacement, and output-control behaviors; T5.9 follows T5.8 and T5.10
+  supersedes it as the final checkpoint.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-27 (identity/handle/resume/preflight repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: T5.10 / S46–S49.
+- **Coverage**: four independent red-before-green contracts map one-to-one to
+  secret-bearing identity refusal, descriptor/handle-anchored artifact access,
+  confirmation-gated resume, and pre-publication empty-code refusal. T5.10
+  follows T5.9 and T5.11 supersedes it as the final checkpoint.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-28 (sibling trust/control-source repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: T5.11 / S50–S51.
+- **Coverage**: two independent red-before-green contracts map one-to-one to
+  repository-local sibling prompt isolation and untrusted-data-only control
+  escaping. T5.11 follows T5.10 and is the final checkpoint.
+- **Verified Defects**: none.

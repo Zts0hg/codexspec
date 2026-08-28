@@ -3,6 +3,11 @@
 **Describes commit**: `888fece` (the state a fresh isolated `review-code` passed).
 **Recorded**: 2026-08-21.
 
+**Resolution update**: 2026-08-24. G-3, G-4, and G-5 remain below as the
+historical findings against `888fece`, but are resolved by the follow-up change
+that also adds direct regression contracts. Re-run each entry's command before
+relying on either the original or resolution claim.
+
 ## What this file is
 
 A register of what the review gates **could not verify**, plus one product question
@@ -40,6 +45,7 @@ above as the scope of every claim below.
 | **Needs a decision** | Confirmed intent genuinely does not settle it. Requires a product call, not an implementation choice. |
 | **Candidate** | Real, small, and closable without new intent. Not closed because any edit invalidates the PASS envelope pinned to `888fece`. |
 | **Intentional** | Working as designed; listed so it is not mistaken for an oversight. |
+| **Resolved** | The gap existed at `888fece` and has since been closed with direct verification. |
 
 ---
 
@@ -71,27 +77,36 @@ see, which is narrower than the confirmed requirement.
 
 ## G-2 — `allowed-tools` is far wider than the stated Boundaries
 
-**Disposition**: Accepted (`design.md` C10)
+**Disposition**: Accepted with additional written mitigation (`design.md` C10)
 
-The frontmatter grants `Bash(git:*)`, `Edit`, and `Write`, while `## Boundaries`
-forbids modifying git state and confines writes to the feature workspace. More
-completely: `src/codexspec/integrations/codex.py` strips `allowed-tools` entirely
-when rendering the Codex skill form, so **0 of 26 `SKILL.md` files carry any tool
-restriction at all**. REQ-017's boundary is enforced by written discipline only,
-with no mechanical backstop on either channel.
+The final frontmatter grants general `Bash`, `Edit`, and `Write`, while
+`## Boundaries` forbids modifying git state and confines writes to the feature
+workspace. General Bash became necessary in T5.9 because Linux, macOS, and Windows
+expose atomic no-replace directory publication through different native
+primitives; the earlier onboard-identical grant could not execute the requirement.
+More completely: `src/codexspec/integrations/codex.py` strips `allowed-tools`
+entirely when rendering the Codex skill form, so **0 of 26 `SKILL.md` files carry
+any tool restriction at all**. REQ-017's boundary remains written discipline, not
+a mechanical sandbox common to both channels.
 
-**Why this is not a defect of this change**: the `allowed-tools` line is
-**byte-identical** to `templates/commands/onboard.md`, and the condition is
-pre-existing for all 26 commands. This change widened nothing.
+**Mitigation**: T5.9 makes the argument one separately quoted literal path, forbids
+executing repository-provided commands, and permits native publication only as a
+single named state transition with stop-on-unavailable behavior. T5.11 also makes
+`/codexspec:onboard` a provenance reference rather than a runtime include, so a
+repository-local sibling prompt cannot bypass the evidence-only rule. These rules
+close the concrete input/publication/instruction-source failures without
+pretending the tool grant itself is a sandbox.
 
-**Why not closed**: narrowing below the `onboard` precedent is a separate decision
-affecting every command, explicitly declined in `design.md` C10.
+**Why not closed**: a mechanically narrow cross-platform publication capability
+does not exist in the current command-tool model, and Codex rendering removes the
+field regardless. Closing the architectural gap requires a purpose-built helper or
+tool-policy redesign across integrations, outside this feature's accepted written-
+discipline delivery model.
 
 **Re-verify**:
 
 ```bash
-diff <(grep '^allowed-tools:' templates/commands/reverse-spec.md) \
-     <(grep '^allowed-tools:' templates/commands/onboard.md)   # expect: identical
+grep '^allowed-tools:' templates/commands/reverse-spec.md      # expect: general Bash
 grep -l 'allowed-tools' .agents/skills/*/SKILL.md | wc -l      # expect: 0
 ```
 
@@ -99,7 +114,12 @@ grep -l 'allowed-tools' .agents/skills/*/SKILL.md | wc -l      # expect: 0
 
 ## G-3 — Mode-resolution step 1 does not restate symlink resolution
 
-**Disposition**: Candidate
+**Disposition**: Resolved
+
+**Resolution**: mode-resolution step 1 now instructs the agent to resolve symbolic
+links before the repository-root comparison and explicitly routes a symlink whose
+real path is the root to overview mode. A dedicated contract test guards both
+clauses.
 
 Steps 4 and 5 both state explicitly that the path is judged **after** symbolic
 links are resolved. Step 1 says only "a path that resolves to the repository root",
@@ -131,16 +151,19 @@ findings in rounds 3–8.
 **Re-verify**:
 
 ```bash
-tr -s '[:space:]' ' ' < templates/commands/reverse-spec.md \
-  | grep -o 'No path supplied, or a path that resolves to the repository root[^.]*\.'
-# Gap is open while this sentence does not mention resolved / symbolic links.
+uv run pytest \
+  tests/test_reverse_spec_template.py::test_repository_root_comparison_resolves_symlinks_first -q
 ```
 
 ---
 
 ## G-4 — REQ-014's identifier convention has no contract assertion
 
-**Disposition**: Candidate
+**Disposition**: Resolved
+
+**Resolution**: `test_workspace_identifier_convention_is_guarded` directly
+asserts the timestamp-plus-random convention, the separate-generator prohibition,
+and the sequential-numbering prohibition.
 
 The template requires reusing the `{YYYY-MMDD-HHMM}{rr}` convention and forbids
 both a separate identifier generator and sequential numbering. Deleting that clause
@@ -156,17 +179,24 @@ bounded, which is why it does not block PASS.
 
 **Cost to close**: one assertion.
 
-**Re-verify**: delete the clause beginning "Reuse the project's existing
-`{YYYY-MMDD-HHMM}{rr}` identifier convention" through "never fall back to
-sequential numbering." **in a disposable copy**, run the suite, and see whether
-anything fails. Restore unconditionally — use `try/finally`, never a bare sequence
-of edits.
+**Re-verify**:
+
+```bash
+uv run pytest \
+  tests/test_reverse_spec_template.py::test_workspace_identifier_convention_is_guarded -q
+```
 
 ---
 
 ## G-5 — Partial confirmation is unmodeled — **this one needs a product decision**
 
-**Disposition**: Needs a decision
+**Disposition**: Resolved
+
+**Resolution**: the user selected the conservative policy: reconcile requires a
+confirmed `spec.md` and every present `design.md` to be confirmed. A present open,
+missing-status, or unreadable design keeps the workspace unconfirmed; only a
+genuinely absent design uses the existing spec-only fallback. The decision is
+recorded as DEC-015 and protected by a dedicated contract test.
 
 Mode resolution step 10 reads "One exact match whose artifacts are confirmed" —
 plural, and silent on which file adjudicates when they disagree. The unmodeled
@@ -197,7 +227,8 @@ the current template's literal behavior via step 10's "Only a file-level
 **Re-verify**:
 
 ```bash
-grep -A 3 '\*\*A-2\*\*' .codexspec/specs/2026-0818-2053p5-reverse-spec/design.md
+uv run pytest \
+  tests/test_reverse_spec_template.py::test_every_present_baseline_artifact_must_be_confirmed -q
 ```
 
 ---
@@ -209,9 +240,9 @@ grep -A 3 '\*\*A-2\*\*' .codexspec/specs/2026-0818-2053p5-reverse-spec/design.md
 `tests/test_reverse_spec_template.py` reads `onboard.md` and `distill.md`:
 
 - `test_onboard_still_carries_the_delegated_scan_section` — `reverse-spec`
-  delegates its scan discipline to `/codexspec:onboard` and declares two overrides
+  delegates its scan discipline to `/codexspec:onboard` and declares three overrides
   on that text. If onboard's `## Codebase Scan` section is renamed or its
-  overridden directives removed, the delegation dangles and both overrides describe
+  overridden directives removed, the delegation dangles and those overrides describe
   text that no longer exists.
 - `test_verbatim_evidence_is_exempt_from_translation` — the verbatim-evidence
   carve-out follows a convention established by those two templates; the assertion
@@ -234,9 +265,10 @@ grep -n 'def test_onboard_still_carries\|def test_verbatim_evidence' \
 
 ---
 
-## If any of these is closed
+## Closed follow-up
 
-G-3 and G-4 are the two closable without new intent. Both are small.
+G-3, G-4, and G-5 were closed together on 2026-08-24. G-5 used the product
+decision recorded in DEC-015; G-3 and G-4 required no new product intent.
 
 Note that the PASS envelope is pinned to `888fece`. Any template or test edit means
 that envelope no longer describes HEAD, so closing a gap needs a fresh isolated

@@ -2,7 +2,8 @@
 
 **Feature Branch**: `2026-0818-2053p5-reverse-spec`
 **Created**: 2026-08-20
-**Input**: `requirements.md` (32 confirmed) · `spec.md` (REQ-001..021, NFR-001..006) · `design.md` (C1–C11, Decisions 1–8)
+**Input**: `requirements.md` (36 confirmed) · `spec.md` (REQ-001..022,
+NFR-001..006) · `design.md` (C1–C11, Decisions 1–9)
 
 ## Context
 
@@ -130,14 +131,16 @@ No new dependency.
 | `codexspec init --force` without `--ai both` rewrites `project.ai` | Unrelated config churn staged into the commit | Decision 4 pins the flag and diffs `git status` |
 | `markdownlint` reformats the new template or artifacts at commit time | Commit fails once | Re-stage only the hook-modified files and retry — the one permitted `git add` during `commit-staged` |
 | `pre-commit` stalls building the `shellcheck_py` environment (needs network) | Commit appears to hang | Diagnose with `pre-commit run --verbose` before retrying; this feature adds no shell code |
-| The template grows long enough to be skimmed rather than followed | Weakens the discipline it encodes | Keep C9 a reference to `/codexspec:onboard` rather than a restatement (design Decision 4) |
+| The template grows long enough to be skimmed rather than followed | Weakens the discipline it encodes | Keep C9's pinned shared invariants compact and name `/codexspec:onboard` only as provenance (design Decision 4) |
+| A customized repository-local sibling prompt becomes runtime instruction | Bypasses the closed trust boundary | Never load sibling prompts; pin the complete applicable scan contract in C9 |
+| Output-control escaping consumes the renderer's own Markdown newlines | Destroys required artifact structure | Escape only controls originating in untrusted interpolated data |
 
 ## Implementation Phases
 
 ### Phase 1: Command template (core deliverable)
 
 Author `templates/commands/reverse-spec.md` with frontmatter (`description`,
-`argument-hint: "[path]"`, `allowed-tools` modeled on `onboard.md`) and body
+`argument-hint: "[path]"`, and the read/workspace-write tools C1 defines) and body
 sections realizing the design: Language Preference (interaction + document, never
 commit); Role and Operating Model; Mode Resolution (C2, bare run short-circuits
 before any baseline lookup); Slice & Workspace (C3); Generate Mode (C4); Overview
@@ -202,6 +205,88 @@ verification suite below.
 - **Covers**: NFR-002
 - **Design**: C1, C11
 
+### Phase 5: Close G-3, G-4, and G-5
+
+Add three regression contracts to `tests/test_reverse_spec_template.py` first:
+the root short-circuit explicitly follows symbolic-link resolution; the workspace
+identifier convention and both prohibitions are present; and a confirmed spec plus
+a present open design stays out of reconcile mode. Run the targeted module and
+observe those new assertions fail against the old template.
+
+Then update `templates/commands/reverse-spec.md` so mode step 1 names symlink
+resolution before the repository-root comparison, steps 10–11 require every
+present baseline artifact to be confirmed while retaining the absent-design
+fallback, and the closing summary states that confirmation is required for every
+present spec/design artifact. Update `coverage-gaps.md` to record G-3/G-4/G-5 as
+resolved without changing its historical `888fece` scope. Regenerate both derived
+distribution forms and run targeted plus full verification.
+
+If the complete-feature review surfaces a deterministic violation of the existing
+read-only or never-guess boundaries, add a reproducing contract first, then repair
+the template minimally. For this follow-up that includes: repository content is
+evidence-only; specs/workspace/write targets cannot escape through symlinks;
+descendant symlinks cannot escape the slice; and conflicting workspace identity
+markers stop resolution. The final security pass additionally requires every
+specs/workspace path entry and its repository containment to validate, all
+spec/design `Slice:` values in one workspace to agree, a missing spec to reach
+resume-generate deterministically, and sensitive evidence to be redacted from
+both the persistent report and briefing. Refresh the SDD metadata changed by
+Phase 5 in the same repair set.
+
+The next complete-feature gate extends the same existing boundaries without a new
+product decision: sensitive-value redaction covers every mode and output; existing
+write targets with multiple hard links are rejected; duplicate/conflicting
+file-level status lines stop mode selection; and an existing path takes precedence
+over changeset-shaped spelling. Correct authority metadata in the same batch.
+
+The frozen follow-up gate closes the remaining path-identity siblings: validate
+every workspace artifact before reading it; create new workspace directories
+exclusively and redraw random collisions; persist `Slice:` with `/` while
+preserving exact Unicode code points; and use a stable ASCII `slice` suffix
+fallback for Unicode-only basenames. These keep existing workspace and ID
+conventions while making them safe and cross-platform without collapsing distinct
+canonically equivalent directory names.
+
+The final publication follow-up repairs the two remaining siblings before review:
+never NFC/NFD-normalize or case-fold persisted slice identity, and never expose an
+official workspace directory before its marker exists. Prepare and validate the
+marker under a temporary non-workspace name, then atomically publish to an absent
+final path without replacement. Add both reproducing contracts before changing the
+template, regenerate only after source and SDD agree, and freeze the complete test,
+lint, distribution, and scenario evidence before starting isolated review.
+
+The post-freeze safety follow-up closes the independently verified input,
+serialization, publication, and replacement-state findings. Treat the complete
+argument payload as one literal quoted path; refuse control-bearing paths that
+cannot fit the single-line identity field and escape controls from all other
+untrusted output; make publication executable by requiring a same-device temporary
+sibling plus one host-native atomic no-replace directory rename, with no weaker
+fallback; and pause for explicit confirmation before replacing an existing
+`reconcile.md`. Add the four reviewer reproductions plus the evidence-control
+sibling contract before the template repair, then repeat source/SDD sync,
+regeneration, complete validation, fingerprint freeze, and fresh isolated review.
+
+The next frozen-gate follow-up closes four remaining authority/lifecycle siblings:
+refuse secret-bearing slice identity without echo; bind workspace artifact access
+to verified opened directory/file handles rather than check-then-path use; require
+explicit confirmation before appending to any artifact present at run start; and
+make the read-only analyzable-code preflight the sole scan before generate
+publication. Add four failing contracts first, sweep the same handle/secret/resume
+classes, then repeat SDD sync, regeneration, the full verification matrix, and the
+freeze-before-review gate.
+
+The following frozen-gate repair closes the two independently verified trust and
+serialization defects: treat `/codexspec:onboard` only as design provenance and
+never dynamically load a repository-local sibling prompt; and restrict
+control-character escaping to characters originating in untrusted interpolated
+data so renderer-authored Markdown structure remains intact. Add two failing
+contracts first, synchronize source and SDD, regenerate, re-run the complete
+verification matrix, freeze, and request a fresh isolated review.
+
+- **Covers**: REQ-002, REQ-007, REQ-008, REQ-010, REQ-014, REQ-015, REQ-016,
+  REQ-017, REQ-022
+- **Design**: C1, C2, C3, C7, C8, C9, C10, Decision 4, Decision 9
+
 ## Verification Strategy
 
 | Level | Command / check | Expectation |
@@ -218,26 +303,27 @@ verification suite below.
 | Requirement | Plan Reference | Design Component |
 |---|---|---|
 | REQ-001 standalone command surface | Phase 1, Decision 1 | C1 |
-| REQ-002 mode auto-detection | Phase 1, Phase 2 | C2, C3 |
+| REQ-002 mode auto-detection | Phase 1, Phase 2, Phase 5 | C2, C3 |
 | REQ-003 generate output boundary | Phase 1 | C4 |
 | REQ-004 workspace records its slice | Phase 1 | C3 |
 | REQ-005 derived content marked inferred/open | Phase 1, Phase 2 | C6 |
 | REQ-006 confirmation reuses existing convention | Phase 1 | C6 |
 | REQ-007 baseline is confirmed spec/design only | Phase 1, Phase 2 | C7 |
-| REQ-008 unconfirmed baseline blocks reconcile | Phase 1, Phase 2 | C2 |
+| REQ-008 unconfirmed baseline blocks reconcile | Phase 1, Phase 2, Phase 5 | C2, C7, Decision 9 |
 | REQ-009 three drift kinds | Phase 1, Phase 2 | C7 |
-| REQ-010 persistent report plus briefing | Phase 1, Phase 2 | C8 |
+| REQ-010 persistent report plus briefing | Phase 1, Phase 2, Phase 5 | C8, C10 |
 | REQ-011 severity by impact; gates nothing | Phase 1, Phase 2 | C7, C8 |
 | REQ-012 report only, never repair | Phase 1, Phase 2 | C7, C8, C10 |
 | REQ-013 direction appeals to requirements | Phase 1, Phase 2 | C7 |
-| REQ-014 slice unit and workspace creation | Phase 1 | C3 |
+| REQ-014 slice unit and workspace creation | Phase 1, Phase 5 | C3 |
 | REQ-015 bare run yields a map | Phase 1, Phase 2 | C2, C5 |
 | REQ-016 scan discipline reused | Phase 1, Phase 2 | C9 |
-| REQ-017 read-only, workspace-confined writes | Phase 1, Phase 2 | C10 |
+| REQ-017 read-only, workspace-confined writes | Phase 1, Phase 2, Phase 5 | C3, C9, C10 |
 | REQ-018 no pipeline coupling | Phase 1, Phase 2 | C1 |
-| REQ-019 path-based slice input only | Phase 1, Phase 2 | C1 |
+| REQ-019 path-based slice input only | Phase 1, Phase 2, Phase 5 | C1, C2, Interface Contract |
 | REQ-020 registration and lockstep | Phase 3, Decisions 2 and 5 | C11 |
 | REQ-021 language regime | Phase 1, Phase 2, Phase 3 | C1, C11 |
+| REQ-022 regression contracts | Phase 5 | C1, C2, C3, C7, C8, C10, Decision 9 |
 | NFR-001 English template with Language Preference | Phase 1, Phase 2, Decision 3 | C1 |
 | NFR-002 self-bootstrap discipline | Phase 4, Decision 4 | C1 |
 | NFR-003 two constitutions separate | Non-Goals (explicit exclusion), Phase 3 (bounded change set) | C11 |

@@ -129,3 +129,97 @@ None.
 - Minor root causes: 0
 - Formula: no defects → `100`
 - Advisories (2) and Design Opportunities (1) do not affect status or score.
+
+## Follow-up Review — 2026-08-24
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: G-3/G-4/G-5 closure
+- **Traceability**: NEED-006 → REQ-002/007/008/015/022; DEC-015 →
+  REQ-007/008/022; CON-008 → REQ-022; OUT-008 → Out of Scope.
+- **Verified Defects**: none. The specification distinguishes a genuinely absent
+  design from a present unconfirmed design and requires symlink resolution before
+  the repository-root short-circuit. The complete-feature repair also makes
+  trust, workspace/write-target containment, descendant symlinks, and conflicting
+  identity markers explicit consequences of REQ-002/REQ-017.
+
+## Follow-up Review — 2026-08-24 (final security repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: REQ-002/004/008/010/017/022 clarification after the isolated gate.
+- **Traceability**: existing confirmed DEC-015 and CON-004 now explicitly cover a
+  missing spec, coherent cross-artifact `Slice:` identity, every path-entry
+  containment check, and sensitive-evidence redaction.
+- **Verified Defects**: none. All four cases are deterministic consequences of the
+  existing mode, never-guess, workspace confinement, and sensitive-data rules;
+  no new product choice was introduced.
+
+## Follow-up Review — 2026-08-27 (trust/parser/compatibility repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: REQ-001/002/008/010/017/019/022 clarification.
+- **Traceability**: confirmed DEC-012, CON-004, and OUT-007 now explicitly cover
+  unique status metadata, hardlink-safe writes, global sensitive-value redaction,
+  and existing-path precedence over changeset-shaped spelling.
+- **Verified Defects**: none. The repair narrows no product behavior and introduces
+  no new mechanism; it closes deterministic consequences of existing authority.
+
+## Follow-up Review — 2026-08-27 (workspace identity/read repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: REQ-002/004/014/017/022 clarification.
+- **Traceability**: DEC-013, CON-004, and CON-007 now cover portable persisted
+  identity, validated workspace reads, and exclusive random-collision retry.
+- **Verified Defects**: none; the ASCII `slice` suffix remains a human fallback,
+  while the portable in-artifact value remains authoritative identity.
+
+## Follow-up Review — 2026-08-27 (Unicode identity/atomic publication repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: REQ-002/004/014/016/017/022 and NFR-004 clarification.
+- **Traceability**: DEC-013 preserves exact filesystem code points; CON-004's
+  workspace boundary requires identity to validate before an official workspace
+  becomes visible.
+- **Verified Defects**: none. Separator portability no longer collapses distinct
+  canonically equivalent directories, and interrupted creation exposes no
+  unidentifiable official workspace.
+
+## Follow-up Review — 2026-08-27 (input/publication/replacement repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: REQ-001/002/004/010/014/016/017/019/022 and NFR-004.
+- **Traceability**: DEC-008, DEC-013, CON-004, and CON-007 now pin literal argument
+  data flow, control-safe identity/output, executable native publication, and
+  explicit confirmation before report replacement.
+- **Verified Defects**: none; each repair is a deterministic safety or persistence
+  consequence of confirmed boundaries rather than new product intent.
+
+## Follow-up Review — 2026-08-27 (identity/handle/resume/preflight repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: REQ-002/004/008/014/016/017/022 and NFR-004.
+- **Traceability**: DEC-015, CON-004, and CON-007 now refuse secret-bearing slice
+  identity, bind workspace access to verified opened objects, require explicit
+  confirmation before appending to pre-existing artifacts, and put the empty-code
+  preflight before workspace preparation.
+- **Verified Defects**: none. These changes resolve contradictions or race windows
+  inside already-confirmed safety and persistence boundaries; they add no product
+  mode or authority source.
+
+## Follow-up Review — 2026-08-28 (sibling trust/control-source repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: REQ-010/016/017/022 and NFR-004.
+- **Traceability**: DEC-007 and CON-004 now distinguish behavioral reuse from
+  runtime prompt inclusion and preserve the existing untrusted-input source
+  qualifier for control escaping.
+- **Verified Defects**: none. The scan behavior is unchanged; authority is closed
+  over repository-local sibling prompts, and command-authored Markdown structure
+  remains outside data escaping.

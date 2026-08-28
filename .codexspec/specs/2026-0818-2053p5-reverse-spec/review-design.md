@@ -147,3 +147,89 @@ None remaining. Both round 1 Minor defects are documented above and resolved.
 - Minor root causes: 0 (2 found in round 1, both resolved before this final review)
 - Formula: no defects → `100`
 - Advisories (2) and Design Opportunities (1) do not affect status or score.
+
+## Follow-up Review — 2026-08-24
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: REQ-022 and partial-confirmation design
+- **Coverage**: C1/C2/C3 and Decision 9 cover REQ-022; C2/C7/Decision 9 cover
+  REQ-007 and REQ-008 without changing the absent-design fallback.
+- **Verified Defects**: none. The former A-2 exclusion was replaced by an
+  explicit, implementable decision. C3/C9/C10 now realize the existing REQ-017
+  trust and realpath boundaries without changing the accepted written-discipline
+  delivery model.
+
+## Follow-up Review — 2026-08-24 (final security repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: C1/C2/C3/C7/C8/C10 and Decision 9.
+- **Coverage**: the resolver is exhaustive when spec is absent; C3 validates
+  coherent slice identity plus every path entry; C8 redacts sensitive evidence in
+  both outputs; C1 pins all four behaviors with contract tests.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-27 (trust/parser/compatibility repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: C1/C2/C3/C8/C10 and Interface Contract.
+- **Coverage**: C2 resolves existing changeset-shaped paths first and rejects
+  ambiguous status metadata; C3 rejects multiply-linked targets; C10 applies
+  redaction to every mode/output; C1 pins all four behaviors.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-27 (workspace identity/read repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: C1/C2/C3/C10.
+- **Coverage**: C2 owns portable `/` identity; C3 validates every read artifact and
+  exclusively retries random collisions; C1 pins S36–S38. T5.8 supersedes the
+  former lossy Unicode-normalization interpretation.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-27 (Unicode identity/atomic publication repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: C1/C2/C3/C5 and Decision 7.
+- **Coverage**: C2 preserves exact code points; C3 prepares a validated identity
+  under a temporary non-workspace name and atomically publishes without
+  replacement; C5 applies the same rule to overview mode; C1 pins S39–S40.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-27 (input/publication/replacement repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: C1/C2/C3/C8/C10 and Decision 7.
+- **Coverage**: C2 owns literal path flow and header-safe identity; C3 names the
+  same-device native no-replace transition and failure branches; C8 preserves an
+  existing report without explicit confirmation; C10 escapes untrusted controls;
+  C1 pins S41–S45.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-27 (identity/handle/resume/preflight repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: C1/C2/C3/C5/C10 and Decision 7.
+- **Coverage**: C2 refuses secret-bearing identity without echo; C3 binds access
+  to retained directory/artifact handles and orders the minimal empty-code
+  preflight before preparation; C5 applies the publication order to overview;
+  Decision 7 gates append-to-existing behind explicit confirmation; C1 pins
+  S46–S49.
+- **Verified Defects**: none.
+
+## Follow-up Review — 2026-08-28 (sibling trust/control-source repair)
+
+- **Overall Status**: PASS
+- **Compatibility Score**: 100/100
+- **Scope**: C1/C8/C9/C10 and Decision 4.
+- **Coverage**: C9 pins the applicable scan contract and treats `onboard` only as
+  provenance; C10 keeps every repository-local prompt evidence-only; C8 scopes
+  escaping to controls originating in untrusted interpolated data; C1 pins
+  S50–S51.
+- **Verified Defects**: none.
