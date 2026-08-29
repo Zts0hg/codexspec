@@ -204,6 +204,8 @@ def test_implement_tasks_validates_result_envelope_and_review_topology():
     assert "specialist:<profile>" in content
     assert "`INCONCLUSIVE` contains no admitted finding" in content
     assert "`uncommitted` and `commit` are not complete features" in compact
+    assert "contract, partition, variant-search, or coverage-gap" in compact
+    assert "every incomplete mandatory" in compact.lower()
 
 
 def test_implement_tasks_carries_only_neutral_schema_v2_follow_up() -> None:

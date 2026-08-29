@@ -192,7 +192,7 @@ marked nullable. Empty arrays are valid only when the corresponding work is not 
 | Finding | `summary` | string | Concrete defect title | REQ-012, NFR-005 |
 | Finding | `trigger` | string | Reproducible condition that reaches the defect | REQ-012 |
 | Finding | `impact` | string | Concrete correctness, security, reliability, performance, or compatibility effect | REQ-012 |
-| Finding | `root_cause_id` | string or null | Links repeatable findings to one variant search | REQ-008, REQ-012 |
+| Finding | `root_cause_id` | string | Links every finding to one variant-search disposition | REQ-008, REQ-012 |
 | Contract | `id` | string | Unique within result and handoff | REQ-003 |
 | Contract | `statement` | string | Plain-language consistency rule | REQ-003, NFR-005 |
 | Contract | `sources` | array[string] | Authority or evidence references; non-empty | REQ-003, REQ-004 |
@@ -220,7 +220,7 @@ marked nullable. Empty arrays are valid only when the corresponding work is not 
 | VariantSearch | `status` | enum | `complete`, `incomplete`, `not_applicable` | REQ-008 through REQ-010 |
 | FollowUp | `id` | string | Stable within the direct repair handoff | REQ-013 |
 | FollowUp | `origin_fingerprint` | string | Fingerprint of the result that created it | REQ-013, REQ-014 |
-| FollowUp | `source_ids` | array[string] | Finding or contract IDs | REQ-013 |
+| FollowUp | `source_ids` | array[string] | Finding, contract, partition, variant-search, or coverage-gap IDs | REQ-013 |
 | FollowUp | `statement` | string | Objective behavior or evidence to re-establish | REQ-013, NFR-005 |
 | FollowUp | `status` | enum | Incoming: `verified`, `unresolved`, `superseded`; outgoing: `open` | REQ-013 through REQ-016 |
 | FollowUp | `evidence` | array[string] | Required for `verified` or `superseded` | REQ-013, REQ-014 |
@@ -317,12 +317,16 @@ The top-level schema keeps the existing `target`, `requirements_coverage`, `veri
 ```
 
 Schema validation requires unique IDs within each entity type and valid cross-references. Outgoing
-`follow_up.required.source_ids` resolve in the current result; incoming
+`follow_up.required.source_ids` resolve to current finding, contract, partition, variant-search, or
+coverage-gap records; incoming
 `follow_up.received.source_ids` resolve in the retained originating schema-v2 result identified by
 `origin_fingerprint`, because a repaired finding is not repeated in the current `findings` array.
 The caller performs that originating-result validation before passing only the neutral obligation
-to a fresh reviewer. Root-cause searches reference exactly the findings linked to that cause;
-outgoing obligations cover every current finding and use the current target fingerprint. Target
+to a fresh reviewer. Root-cause searches reference exactly the findings linked to that cause, and
+every finding has a non-null root-cause identifier; a non-repeatable finding uses a
+`not_applicable` search with a concrete reason. Outgoing obligations cover every current finding,
+incomplete mandatory contract, partition or variant search, and blocking coverage gap and use the
+current target fingerprint. Target
 members retain their schema-v1 types plus the v2 fingerprint, target emptiness agrees with inventory
 count, and a successfully identified target uses the selector matrix: `default` and `committed`
 carry base and merge-base identity, `uncommitted` carries no base or commit identity, and `commit`
@@ -331,17 +335,19 @@ result with null fingerprint and an exact blocking `target identity` gap preserv
 established ref/SHA facts, cannot claim a complete feature, and does not apply the successful-target
 matrix.
 `uncommitted` and `commit` selectors cannot claim a complete feature. Complete or partial
-requirements coverage requires a feature, and complete coverage additionally requires a complete
-feature target. A non-empty target has contract and partition coverage. The top-level object is
+requirements coverage requires a feature, `not_evaluated` requires no feature, complete coverage
+requires a complete feature target, and a complete feature target requires complete coverage. A
+non-empty target has contract and partition coverage. The top-level object is
 closed to undeclared extensions; activated profiles remain human Scope data. Each partition owner
 resolves to a declared reviewer that is not `not_required`, every completed partition has a complete
 owner, optional specialist reasons are non-null strings, and shared context carries an exact
 `reviewer isolation` coverage gap. Finding counts equal the
 `findings` array, `coverage_gap_count` equals the `coverage_gaps` array,
 evidence for every completed coverage record, a reason for every incomplete or not-applicable
-variant search, and verdict consistency with all completion rules. `PASS` requires complete
-requirements coverage and permits no open or unresolved follow-up obligation or blocking coverage
-gap. `FAIL` requires at least one admitted finding; an attributable deterministic check failure is
+variant search, and verdict consistency with all completion rules. `PASS` requires requirements
+coverage consistent with the selected target and permits no open or unresolved follow-up
+obligation or blocking coverage gap; `partial` or `not_evaluated` is only a code-level verdict and
+never a whole-feature-readiness claim. `FAIL` requires at least one admitted finding; an attributable deterministic check failure is
 represented as a finding. `INCONCLUSIVE`
 requires a blocking coverage gap and contains no admitted finding, because any admitted defect
 selects `FAIL`. A null target fingerprint is valid only for a non-PASS result with a blocking gap

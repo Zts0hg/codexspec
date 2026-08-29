@@ -138,10 +138,11 @@ where the result-envelope version and required fields intentionally change.
   all selected contract, behavior, risk, specialist, and verification partitions MUST reach a
   terminal state before the round emits its final result.
   - Sources: NEED-004, CON-004
-- **REQ-008**: For every admitted finding with a potentially repeatable cause, the reviewer MUST
-  record a root-cause identifier, describe the cause, derive a reasonably bounded sibling search
-  scope, inspect equivalent callers, implementations, adapters, entry surfaces, and symmetric
-  paths as applicable, and record all qualifying occurrences.
+- **REQ-008**: For every admitted finding, the reviewer MUST record a root-cause identifier and one
+  linked variant-search disposition. For a potentially repeatable cause, it MUST describe the
+  cause, derive a reasonably bounded sibling search scope, inspect equivalent callers,
+  implementations, adapters, entry surfaces, and symmetric paths as applicable, and record all
+  qualifying occurrences.
   - Sources: NEED-003, NEED-005
 - **REQ-009**: When a finding has no meaningful sibling search scope, the reviewer MUST record why
   and MUST NOT expand the defect gate into an unrelated whole-repository audit.
@@ -157,8 +158,8 @@ where the result-envelope version and required fields intentionally change.
   identifier for the reviewed target evidence.
   - Sources: NEED-005, NEED-006, DEC-001, DEC-002
 - **REQ-013**: Each post-repair verification obligation MUST state the objective behavior or
-  evidence to re-establish, its source contract or finding, and its completion state, without
-  asserting that a repair is correct.
+  evidence to re-establish, its source finding or incomplete contract, partition, variant search,
+  or coverage gap, and its completion state, without asserting that a repair is correct.
   - Sources: NEED-006, CON-002
 - **REQ-014**: The next fresh reviewer in a repair loop MUST receive applicable neutral coverage and
   follow-up obligations, MUST associate them with their original target identifier, and MUST
@@ -174,7 +175,8 @@ where the result-envelope version and required fields intentionally change.
 - **REQ-017**: `PASS` MUST require complete inventory accounting, complete mandatory contract and
   partition coverage, complete required root-cause variant searches, complete verification,
   complete reviewer topology, no blocking follow-up obligation, no blocking coverage gap, and zero
-  admitted P0-P3 findings.
+  admitted P0-P3 findings. Requirements coverage MUST be consistent with the selected target;
+  `partial` or `not_evaluated` may support only a code-level `PASS`, never whole-feature readiness.
   - Sources: NEED-004, NEED-005, NEED-007, CON-004
 - **REQ-018**: Missing or incomplete mandatory contract coverage, partition coverage, root-cause
   search, follow-up verification, reviewer output, or target identity MUST produce `INCONCLUSIVE`

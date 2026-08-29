@@ -380,7 +380,7 @@ def _validate_coverage(result: dict[str, Any]) -> None:
             raise ResultParseError(f"unsupported finding priority {finding['priority']!r}")
         for field in ["location", "summary", "trigger", "impact"]:
             _string(finding[field], f"finding.{field}")
-        _string(finding["root_cause_id"], "finding.root_cause_id", nullable=True)
+        _string(finding["root_cause_id"], "finding.root_cause_id")
 
     searches = [_object(item, "variant search") for item in _array(coverage["variant_searches"], "variant_searches")]
     root_cause_ids = _unique_ids(searches, "variant search", field="root_cause_id")
@@ -439,7 +439,7 @@ def _validate_coverage(result: dict[str, Any]) -> None:
 
     for finding in findings:
         root_cause_id = finding["root_cause_id"]
-        if root_cause_id is not None and root_cause_id not in root_cause_ids:
+        if root_cause_id not in root_cause_ids:
             raise ResultParseError("finding contains an unknown root-cause reference")
     for search in searches:
         expected_findings = {
@@ -457,9 +457,18 @@ def _validate_follow_up(result: dict[str, Any]) -> None:
     required = [_object(item, "required follow-up") for item in _array(follow_up["required"], "follow_up.required")]
     all_records = [*received, *required]
     _unique_ids(all_records, "follow-up")
+    coverage = result["review_coverage"]
     source_ids = {
-        item["id"] for collection in (result["findings"], result["review_coverage"]["contracts"]) for item in collection
+        item["id"]
+        for collection in (
+            result["findings"],
+            coverage["contracts"],
+            coverage["partitions"],
+            result["coverage_gaps"],
+        )
+        for item in collection
     }
+    source_ids.update(search["root_cause_id"] for search in coverage["variant_searches"])
     for direction, records, statuses in [
         ("received", received, {"verified", "unresolved", "superseded"}),
         ("required", required, {"open"}),
@@ -496,6 +505,24 @@ def _validate_follow_up(result: dict[str, Any]) -> None:
     finding_ids = {finding["id"] for finding in result["findings"]}
     if not finding_ids.issubset(required_source_ids):
         raise ResultParseError("every finding must have a required follow-up obligation")
+    incomplete_contract_ids = {
+        contract["id"] for contract in coverage["contracts"] if contract["status"] == "incomplete"
+    }
+    if not incomplete_contract_ids.issubset(required_source_ids):
+        raise ResultParseError("every incomplete contract must have a required follow-up obligation")
+    incomplete_partition_ids = {
+        partition["id"] for partition in coverage["partitions"] if partition["status"] != "complete"
+    }
+    if not incomplete_partition_ids.issubset(required_source_ids):
+        raise ResultParseError("every incomplete partition must have a required follow-up obligation")
+    incomplete_search_ids = {
+        search["root_cause_id"] for search in coverage["variant_searches"] if search["status"] == "incomplete"
+    }
+    if not incomplete_search_ids.issubset(required_source_ids):
+        raise ResultParseError("every incomplete variant search must have a required follow-up obligation")
+    blocking_gap_ids = {gap["id"] for gap in result["coverage_gaps"] if gap["blocking"] is True}
+    if not blocking_gap_ids.issubset(required_source_ids):
+        raise ResultParseError("every blocking coverage gap must have a required follow-up obligation")
 
 
 def _validate_gaps_and_reviewers(result: dict[str, Any]) -> None:
@@ -551,6 +578,20 @@ def _validate_gaps_and_reviewers(result: dict[str, Any]) -> None:
     if result["review_context"] == "shared" and not any(gap["scope"] == "reviewer isolation" for gap in gaps):
         raise ResultParseError("shared review context requires a reviewer isolation coverage gap")
 
+    incomplete_coverage = any(
+        contract["status"] == "incomplete" for contract in result["review_coverage"]["contracts"]
+    ) or any(partition["status"] != "complete" for partition in result["review_coverage"]["partitions"])
+    incomplete_coverage = incomplete_coverage or any(
+        search["status"] == "incomplete" for search in result["review_coverage"]["variant_searches"]
+    )
+    incomplete_reviewers = reviewers["primary"] in {"incomplete", "failed", "not_run"} or any(
+        specialist["state"] in {"incomplete", "failed", "not_run"} for specialist in specialists
+    )
+    if (incomplete_coverage or result["verification"]["status"] == "incomplete" or incomplete_reviewers) and not any(
+        gap["blocking"] for gap in gaps
+    ):
+        raise ResultParseError("incomplete mandatory work requires a blocking coverage gap")
+
 
 def _validate_verdict_consistency(result: dict[str, Any]) -> None:
     verdict = result["verdict"]
@@ -567,8 +608,6 @@ def _validate_verdict_consistency(result: dict[str, Any]) -> None:
         return
     if result["verification"]["status"] != "complete":
         raise ResultParseError("PASS requires complete verification")
-    if result["requirements_coverage"]["status"] != "complete":
-        raise ResultParseError("PASS requires complete requirements coverage")
     if any(result["finding_counts"].values()):
         raise ResultParseError("PASS requires zero findings")
     coverage = result["review_coverage"]
@@ -702,8 +741,12 @@ def parse_review_result(output: str) -> dict[str, Any]:
     feature = _string(requirements["feature"], "requirements_coverage.feature", nullable=True)
     if requirements["status"] == "complete" and not target["complete_feature"]:
         raise ResultParseError("complete requirements coverage requires a complete feature target")
+    if target["complete_feature"] and requirements["status"] != "complete":
+        raise ResultParseError("complete feature target requires complete requirements coverage")
     if requirements["status"] in {"complete", "partial"} and feature is None:
         raise ResultParseError(f"{requirements['status']} requirements coverage requires a feature")
+    if requirements["status"] == "not_evaluated" and feature is not None:
+        raise ResultParseError("not_evaluated requirements coverage cannot name a feature")
 
     verification = _object(result["verification"], "verification")
     _required_fields(verification, {"status", "commands"}, "verification")
@@ -842,13 +885,16 @@ def evaluate_result(case: Case, result: dict[str, Any]) -> Evaluation:
         for search in coverage["variant_searches"]
         if _has_distinct_candidates(finding_candidate_sets, set(search["finding_ids"]))
     ]
-    if expected.get("root_cause_group") and not grouped_searches:
-        failures.append("expected at least two findings in one root-cause variant search")
+    completed_grouped_searches = [
+        search for search in grouped_searches if search["status"] == "complete" and search["evidence"]
+    ]
+    if expected.get("root_cause_group") and not completed_grouped_searches:
+        failures.append("expected at least two findings in one completed root-cause variant search")
 
     required_variant_trace = expected.get("required_variant_search_trace")
     if required_variant_trace and not any(
         all(_matches_term_groups("\n".join(search[field]), groups) for field, groups in required_variant_trace.items())
-        for search in grouped_searches
+        for search in completed_grouped_searches
     ):
         failures.append("expected grouped findings with the required bounded variant search trace")
 

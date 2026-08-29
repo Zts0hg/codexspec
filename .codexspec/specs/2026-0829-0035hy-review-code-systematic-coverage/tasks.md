@@ -149,12 +149,14 @@ the specification.
   a terminal state.
 - **T005-S4**: A repeatable finding produces one root-cause record covering every qualifying
   occurrence in its bounded equivalent scope.
-- **T005-S5**: A non-repeatable finding records why variant search is not applicable without
-  expanding to an unrestricted audit.
+- **T005-S5**: A non-repeatable finding retains a root-cause identifier and a `not_applicable`
+  search that records why no sibling scope exists, without expanding to an unrestricted audit.
 - **T005-S6**: Missing fingerprint or incomplete contract, partition, search, follow-up, reviewer,
-  or verification evidence yields INCONCLUSIVE unless a validated defect requires FAIL.
+  or verification evidence yields INCONCLUSIVE unless a validated defect requires FAIL, and each
+  incomplete mandatory item produces a neutral outgoing obligation.
 - **T005-S7**: A clean, fully evidenced review emits exactly one valid schema-v2 PASS result and six
-  human report sections.
+  human report sections; a direct or narrowed target may report only code-level readiness when
+  requirements coverage is `partial` or `not_evaluated`.
 - **T005-S8**: `--audit` continues to emit its scorecard without a defect result envelope.
 
 ### T006 [P] [US3] Implement the schema-v2 repair-loop consumer
@@ -173,8 +175,9 @@ the specification.
 - **T006-S1**: A valid v2 FAIL result is independently reproduced before repair.
 - **T006-S2**: Schema v1 and malformed or contradictory v2 results cannot be treated as a passed
   gate.
-- **T006-S3**: Required objective obligations survive repair and preserve the old target
-  fingerprint and source IDs.
+- **T006-S3**: Required objective obligations for findings and incomplete contracts, partitions,
+  variant searches, and coverage gaps survive repair and preserve the old target fingerprint and
+  source IDs.
 - **T006-S4**: The next reviewer receives no repair narrative or old correctness conclusion.
 - **T006-S5**: The next reviewer re-establishes incoming obligations against a new fingerprint and
   completes all five passes.

@@ -206,7 +206,10 @@ object. Prose cannot override, repair, or supply missing machine data. Validate:
   required specialist is present and `complete`;
 - finding, contract, partition, root-cause, follow-up, and coverage-gap IDs are
   unique within their entity types; every current-result cross-reference and
-  outgoing follow-up source resolves in the current result; every incoming
+  outgoing follow-up source resolves to a current finding, contract, partition,
+  variant-search, or coverage-gap record; every admitted finding and every
+  incomplete mandatory contract, partition, variant search, or blocking gap is
+  named by an outgoing obligation; every incoming
   follow-up source resolves in the retained originating schema-v2 result
   identified by its fingerprint; and every completed coverage record has
   evidence;

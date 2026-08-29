@@ -215,6 +215,11 @@ def test_review_continues_after_findings_and_searches_root_cause_variants() -> N
     assert "newly discovered candidates" in verification
     assert "not_applicable" in verification and "reason" in verification
     assert "incomplete" in verification and "INCONCLUSIVE" in verification
+    assert "every admitted finding" in verification and "root-cause identifier" in verification
+    assert "incomplete contract" in verification
+    assert "incomplete partition" in verification
+    assert "incomplete variant search" in verification
+    assert "blocking coverage gap" in verification
     assert "follow_up.received" in verification
     assert "follow_up.required" in verification
     assert "never a repair approach or correctness conclusion" in verification
@@ -424,6 +429,10 @@ def test_defect_report_has_exactly_six_human_sections_and_one_envelope() -> None
     assert "specialist profiles are unique" in output
     assert "INCONCLUSIVE` contains no admitted finding" in output
     assert "uncommitted` and `commit` cannot claim `complete_feature`" in output
+    assert "Every admitted finding has a non-null `root_cause_id`" in output
+    assert "complete feature target requires complete requirements coverage" in output
+    assert "code-level `PASS`" in output
+    assert "contract, partition, variant-search, or coverage-gap" in output
 
     for forbidden in ["Quality Score", "Strengths", "Recommendations"]:
         assert forbidden not in rendered

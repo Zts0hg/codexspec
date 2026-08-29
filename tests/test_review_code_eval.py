@@ -147,6 +147,20 @@ def _envelope(
     )
 
 
+def _add_blocking_gap_obligations(result: dict[str, Any]) -> None:
+    for index, gap in enumerate((gap for gap in result["coverage_gaps"] if gap["blocking"]), start=1):
+        result["follow_up"]["required"].append(
+            {
+                "id": f"FU-G-{index:03d}",
+                "origin_fingerprint": result["target"]["fingerprint"],
+                "source_ids": [gap["id"]],
+                "statement": f"Re-establish coverage for {gap['scope']}",
+                "status": "open",
+                "evidence": [],
+            }
+        )
+
+
 def _write_case(tmp_path: Path, *, case_id: str = "command-quoting") -> Path:
     case_dir = tmp_path / case_id
     case_dir.mkdir()
@@ -287,6 +301,7 @@ def test_parse_review_result_rejects_schema_v1_and_cross_field_contradictions() 
         }
     ]
     inconclusive_with_finding["coverage_gap_count"] = 1
+    _add_blocking_gap_obligations(inconclusive_with_finding)
     invalid_results.append(("INCONCLUSIVE cannot contain", inconclusive_with_finding))
 
     unmatched_specialist = json.loads(json.dumps(valid))
@@ -342,14 +357,27 @@ def test_parse_review_result_rejects_schema_v1_and_cross_field_contradictions() 
     invalid_results.append(("complete requirements coverage requires a feature", complete_requirements_without_feature))
 
     partial_requirements_without_feature = json.loads(json.dumps(valid))
+    partial_requirements_without_feature["target"]["complete_feature"] = False
     partial_requirements_without_feature["requirements_coverage"]["status"] = "partial"
     partial_requirements_without_feature["requirements_coverage"]["feature"] = None
     invalid_results.append(("partial requirements coverage requires a feature", partial_requirements_without_feature))
 
-    pass_with_partial_requirements = json.loads(run_eval.RESULT_RE.search(_envelope(verdict="PASS")).group(1))
-    pass_with_partial_requirements["target"]["complete_feature"] = False
-    pass_with_partial_requirements["requirements_coverage"]["status"] = "partial"
-    invalid_results.append(("PASS requires complete requirements coverage", pass_with_partial_requirements))
+    complete_feature_with_partial_requirements = json.loads(json.dumps(valid))
+    complete_feature_with_partial_requirements["requirements_coverage"]["status"] = "partial"
+    invalid_results.append(
+        ("complete feature target requires complete requirements coverage", complete_feature_with_partial_requirements)
+    )
+
+    complete_feature_without_requirements = json.loads(json.dumps(valid))
+    complete_feature_without_requirements["requirements_coverage"] = {"status": "not_evaluated", "feature": None}
+    invalid_results.append(
+        ("complete feature target requires complete requirements coverage", complete_feature_without_requirements)
+    )
+
+    not_evaluated_with_feature = json.loads(json.dumps(valid))
+    not_evaluated_with_feature["target"]["complete_feature"] = False
+    not_evaluated_with_feature["requirements_coverage"]["status"] = "not_evaluated"
+    invalid_results.append(("not_evaluated requirements coverage cannot name a feature", not_evaluated_with_feature))
 
     owned_not_required_specialist = json.loads(json.dumps(valid))
     owned_not_required_specialist["review_coverage"]["partitions"][0]["owner"] = "specialist:parsing/configuration"
@@ -408,6 +436,11 @@ def test_parse_review_result_rejects_schema_v1_and_cross_field_contradictions() 
     complete_search_without_trace["review_coverage"]["variant_searches"][0]["scope"] = []
     invalid_results.append(("completed variant search requires", complete_search_without_trace))
 
+    finding_without_root_cause = json.loads(json.dumps(valid))
+    finding_without_root_cause["findings"][0]["root_cause_id"] = None
+    finding_without_root_cause["review_coverage"]["variant_searches"] = []
+    invalid_results.append(("finding.root_cause_id", finding_without_root_cause))
+
     non_string_verification_command = json.loads(json.dumps(valid))
     non_string_verification_command["verification"]["commands"] = [{"command": "pytest"}]
     invalid_results.append(("verification.commands", non_string_verification_command))
@@ -435,6 +468,145 @@ def test_parse_review_result_rejects_schema_v1_and_cross_field_contradictions() 
         output = "<review-code-result>\n" + json.dumps(result) + "\n</review-code-result>"
         with pytest.raises(run_eval.ResultParseError, match=message):
             run_eval.parse_review_result(output)
+
+
+@pytest.mark.parametrize(
+    ("selector", "base_ref", "merge_base_sha", "commit_sha", "parent_sha", "requirements_status", "feature"),
+    [
+        ("default", "main", "0123456789abcdef", None, None, "not_evaluated", None),
+        ("committed", "main", "0123456789abcdef", None, None, "partial", ".codexspec/specs/example"),
+        ("uncommitted", None, None, None, None, "partial", ".codexspec/specs/example"),
+        ("commit", None, None, "fedcba9876543210", "0123456789abcdef", "partial", ".codexspec/specs/example"),
+    ],
+)
+def test_parse_review_result_accepts_code_level_pass_for_incomplete_feature_targets(
+    selector: str,
+    base_ref: str | None,
+    merge_base_sha: str | None,
+    commit_sha: str | None,
+    parent_sha: str | None,
+    requirements_status: str,
+    feature: str | None,
+) -> None:
+    result = json.loads(run_eval.RESULT_RE.search(_envelope(verdict="PASS")).group(1))
+    result["target"].update(
+        {
+            "selector": selector,
+            "complete_feature": False,
+            "base_ref": base_ref,
+            "merge_base_sha": merge_base_sha,
+            "commit_sha": commit_sha,
+            "parent_sha": parent_sha,
+        }
+    )
+    result["requirements_coverage"] = {"status": requirements_status, "feature": feature}
+    output = "<review-code-result>\n" + json.dumps(result) + "\n</review-code-result>"
+
+    assert run_eval.parse_review_result(output)["verdict"] == "PASS"
+
+
+def test_parse_review_result_requires_handoff_for_every_incomplete_mandatory_source() -> None:
+    def failing_result() -> dict[str, Any]:
+        return json.loads(
+            run_eval.RESULT_RE.search(
+                _envelope(findings=[{"priority": "P2", "summary": "adapter drops resolved value"}])
+            ).group(1)
+        )
+
+    cases: list[tuple[str, dict[str, Any]]] = []
+
+    incomplete_contract = failing_result()
+    incomplete_contract["review_coverage"]["contracts"][0]["status"] = "incomplete"
+    incomplete_contract["follow_up"]["required"][0]["source_ids"] = ["F-001"]
+    cases.append(("incomplete contract", incomplete_contract))
+
+    incomplete_partition = failing_result()
+    incomplete_partition["review_coverage"]["partitions"][0]["status"] = "incomplete"
+    cases.append(("incomplete partition", incomplete_partition))
+
+    incomplete_search = failing_result()
+    search = incomplete_search["review_coverage"]["variant_searches"][0]
+    search.update(status="incomplete", reason="one equivalent path is unavailable")
+    cases.append(("incomplete variant search", incomplete_search))
+
+    incomplete_verification = failing_result()
+    incomplete_verification["verification"]["status"] = "incomplete"
+    incomplete_verification["coverage_gaps"] = [
+        {"id": "G-001", "scope": "verification", "impact": "one required command did not run", "blocking": True}
+    ]
+    incomplete_verification["coverage_gap_count"] = 1
+    cases.append(("blocking coverage gap", incomplete_verification))
+
+    incomplete_reviewer = failing_result()
+    incomplete_reviewer["review_coverage"]["partitions"][0]["status"] = "incomplete"
+    incomplete_reviewer["follow_up"]["required"][0]["source_ids"].append("P-001")
+    incomplete_reviewer["reviewers"]["primary"] = "incomplete"
+    incomplete_reviewer["coverage_gaps"] = [
+        {"id": "G-001", "scope": "reviewer", "impact": "mandatory review work is incomplete", "blocking": True}
+    ]
+    incomplete_reviewer["coverage_gap_count"] = 1
+    cases.append(("blocking coverage gap", incomplete_reviewer))
+
+    for message, result in cases:
+        output = "<review-code-result>\n" + json.dumps(result) + "\n</review-code-result>"
+        with pytest.raises(run_eval.ResultParseError, match=message):
+            run_eval.parse_review_result(output)
+
+
+def test_parse_review_result_accepts_complete_handoff_for_incomplete_mandatory_work() -> None:
+    result = json.loads(
+        run_eval.RESULT_RE.search(
+            _envelope(findings=[{"priority": "P2", "summary": "adapter drops resolved value"}])
+        ).group(1)
+    )
+    result["review_coverage"]["contracts"][0]["status"] = "incomplete"
+    result["review_coverage"]["partitions"][0]["status"] = "incomplete"
+    result["review_coverage"]["variant_searches"][0].update(
+        status="incomplete", reason="one equivalent path is unavailable"
+    )
+    result["verification"]["status"] = "incomplete"
+    result["reviewers"]["primary"] = "incomplete"
+    result["coverage_gaps"] = [
+        {"id": "G-001", "scope": "mandatory review", "impact": "required evidence is incomplete", "blocking": True}
+    ]
+    result["coverage_gap_count"] = 1
+    result["follow_up"]["required"] = [
+        {
+            "id": "FU-001",
+            "origin_fingerprint": "sha256:fixture-target",
+            "source_ids": ["F-001", "C-001"],
+            "statement": "Re-establish the finding and incomplete contract evidence",
+            "status": "open",
+            "evidence": [],
+        },
+        {
+            "id": "FU-002",
+            "origin_fingerprint": "sha256:fixture-target",
+            "source_ids": ["P-001"],
+            "statement": "Complete the unresolved behavior partition",
+            "status": "open",
+            "evidence": [],
+        },
+        {
+            "id": "FU-003",
+            "origin_fingerprint": "sha256:fixture-target",
+            "source_ids": ["RC-001"],
+            "statement": "Complete the bounded sibling search",
+            "status": "open",
+            "evidence": [],
+        },
+        {
+            "id": "FU-004",
+            "origin_fingerprint": "sha256:fixture-target",
+            "source_ids": ["G-001"],
+            "statement": "Re-establish the missing review and verification evidence",
+            "status": "open",
+            "evidence": [],
+        },
+    ]
+    output = "<review-code-result>\n" + json.dumps(result) + "\n</review-code-result>"
+
+    assert run_eval.parse_review_result(output)["verdict"] == "FAIL"
 
 
 @pytest.mark.parametrize(
@@ -491,6 +663,7 @@ def test_parse_review_result_allows_null_fingerprint_only_for_blocked_non_pass()
         }
     ]
     result["coverage_gap_count"] = 1
+    _add_blocking_gap_obligations(result)
     output = "<review-code-result>\n" + json.dumps(result) + "\n</review-code-result>"
 
     assert run_eval.parse_review_result(output)["verdict"] == "INCONCLUSIVE"
@@ -532,6 +705,7 @@ def test_parse_review_result_represents_unresolved_target_identity(selector: str
     ]
     result["coverage_gap_count"] = 1
     result["reviewers"]["primary"] = "not_run"
+    _add_blocking_gap_obligations(result)
     output = "<review-code-result>\n" + json.dumps(result) + "\n</review-code-result>"
 
     assert run_eval.parse_review_result(output)["target"]["fingerprint"] is None
@@ -576,6 +750,7 @@ def test_parse_review_result_preserves_partial_resolver_identity_facts(
         }
     ]
     result["coverage_gap_count"] = 1
+    _add_blocking_gap_obligations(result)
     output = "<review-code-result>\n" + json.dumps(result) + "\n</review-code-result>"
 
     assert run_eval.parse_review_result(output)["target"]["selector"] == selector
@@ -731,6 +906,7 @@ def test_systematic_coverage_expectations_reject_hollow_or_unrelated_evidence() 
         }
     ]
     incomplete_data["coverage_gap_count"] = 1
+    _add_blocking_gap_obligations(incomplete_data)
     incomplete_output = (
         "Human report\nActivated profiles: public API/CLI compatibility\n<review-code-result>\n"
         + json.dumps(incomplete_data)
@@ -763,6 +939,16 @@ def test_systematic_coverage_expectations_reject_hollow_or_unrelated_evidence() 
     assert related_evaluation.passed is False
     assert any("variant search trace" in failure for failure in related_evaluation.failures)
 
+    related_search["scope"] = ["web, worker, and CLI adapters"]
+    related_search["methods"] = ["search equivalent adapter entry paths"]
+    related_search["checked_locations"] = ["src/adapters.py web, worker, and CLI implementations"]
+    related_search["evidence"] = []
+    related_search["reason"] = "one sibling was not fully inspected"
+    related_search["status"] = "incomplete"
+    incomplete_search_evaluation = run_eval.evaluate_result(related, related_result)
+    assert incomplete_search_evaluation.passed is False
+    assert any("completed root-cause" in failure for failure in incomplete_search_evaluation.failures)
+
 
 def test_systematic_coverage_expectations_accept_bound_semantic_evidence() -> None:
     cases_root = Path("tests/evals/review_code/cases")
@@ -790,7 +976,7 @@ def test_systematic_coverage_expectations_accept_bound_semantic_evidence() -> No
     related_search = related_result["review_coverage"]["variant_searches"][0]
     related_search["scope"] = ["web, worker, and CLI adapters"]
     related_search["methods"] = ["search equivalent adapter entry paths"]
-    related_search["checked_locations"] = ["src/adapters.py web and worker implementations"]
+    related_search["checked_locations"] = ["src/adapters.py web, worker, and CLI implementations"]
     assert run_eval.evaluate_result(related, related_result).passed is True
 
     early = run_eval.load_case(cases_root / "early-finding-complete-coverage")
@@ -833,6 +1019,7 @@ def test_systematic_coverage_expectations_accept_bound_semantic_evidence() -> No
         }
     ]
     incomplete_data["coverage_gap_count"] = 1
+    _add_blocking_gap_obligations(incomplete_data)
     incomplete_output = (
         "Human report\nActivated profiles: public API/CLI compatibility\n<review-code-result>\n"
         + json.dumps(incomplete_data)
@@ -859,6 +1046,13 @@ def test_systematic_coverage_fixtures_encode_their_review_premises(
     numstat = run_eval._git(incomplete_repo, "diff", "--numstat", "main...HEAD", "--", "generated/client.bin").stdout
     assert numstat.startswith("-\t-\tgenerated/client.bin")
     assert not (incomplete_repo / "src/generator.py").exists()
+
+    related = run_eval.load_case(cases_root / "related-propagation-defects")
+    related_repo, _ = run_eval.prepare_repository(related, tmp_path / "related")
+    adapters = (related_repo / "src/adapters.py").read_text(encoding="utf-8")
+    assert "def web" in adapters and "consume('legacy')" in adapters
+    assert "def worker" in adapters and adapters.count("consume('legacy')") == 2
+    assert "def cli" in adapters and "consume(resolve(raw))" in adapters
 
 
 def test_prepare_repository_does_not_inherit_callers_git_index(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:

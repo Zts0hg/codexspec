@@ -36,7 +36,7 @@
     "required_variant_search_trace": {
       "scope": [["adapter"]],
       "methods": [["search", "trace", "inspect"], ["adapter", "entry"]],
-      "checked_locations": [["adapters.py"], ["web"], ["worker"]]
+      "checked_locations": [["adapters.py"], ["web"], ["worker"], ["cli"]]
     },
     "profile_aliases": {
       "parsing/configuration": ["resolved policy", "configuration"]

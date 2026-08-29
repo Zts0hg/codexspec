@@ -205,11 +205,13 @@ the confirmed design
   distinct from the file inventory and continues after findings are admitted. — **Covers**:
   REQ-005 through REQ-007, REQ-017, REQ-018; Design: Review Partition Coordinator
 - [ ] Add finding identifiers and the bounded root-cause variant-analysis loop inside Verification,
-  including justified `not_applicable` handling and fail-closed incomplete searches. — **Covers**:
+  including a linked disposition for every finding, justified `not_applicable` handling, and
+  fail-closed incomplete searches. — **Covers**:
   REQ-007 through REQ-010, REQ-017, REQ-018; NFR-003, NFR-005; Design: Root-Cause Variant Analyzer
 - [ ] Replace the defect result example and validation protocol with the exact schema-v2 entities,
   target fingerprint semantics, cross-reference and count checks, neutral follow-up records,
-  coverage-gap records, and verdict consistency rules from `design.md`. Preserve the existing six
+  coverage-gap records, scope-consistent requirements status, complete incomplete-work handoff,
+  and verdict consistency rules from `design.md`. Preserve the existing six
   human report sections. — **Covers**: REQ-011 through REQ-018, REQ-019, REQ-021; NFR-001,
   NFR-004, NFR-005; Design: Distributed Review Command, Schema-v2 Result and Handoff
 - [ ] Confirm that the audit branch, target selectors, resolver manifest schema, risk profiles,
@@ -223,7 +225,8 @@ the confirmed design
   **Covers**: REQ-011, REQ-016 through REQ-018, REQ-021; NFR-004; Design: Repair-Loop Consumer
 - [ ] Retain only objective contract coverage and neutral follow-up obligations, associate them with
   the originating target fingerprint, and pass them to a fresh isolated reviewer without repair
-  reasoning, previous conclusions, or an assertion of correctness. — **Covers**: REQ-013 through
+  reasoning, previous conclusions, or an assertion of correctness. Include every outgoing
+  obligation for findings and incomplete mandatory coverage. — **Covers**: REQ-013 through
   REQ-016; NFR-001, NFR-005; Design: Schema-v2 Result and Handoff, Repair-Loop Consumer
 - [ ] Require each fresh review to verify incoming obligations against the updated fingerprint and
   still complete all five general passes; treat unresolved or unvalidated obligations as
