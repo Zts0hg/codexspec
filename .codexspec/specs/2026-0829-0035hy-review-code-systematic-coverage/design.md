@@ -149,12 +149,13 @@ No persistent review state or project-specific behavior is introduced.
 
 - **Context**: Review state must survive repair rounds without mutating the reviewed repository or
   biasing the next reviewer.
-- **Decision**: The result carries outgoing objective obligations. The caller retains only those
-  neutral obligation records and supplies them as incoming obligations to the next review; it does
-  not transmit completed prior coverage or variant-search records. The fresh reviewer sees the
-  behavior or evidence to re-establish, original target fingerprint, and source IDs, but not
-  implementation reasoning, prior evidence/status fields, root-cause conclusions, or a prior
-  correctness conclusion.
+- **Decision**: The result carries outgoing objective obligations and the disposition of incoming
+  obligations. The caller retains applicable outgoing records plus incoming records that remain
+  unresolved, and supplies that neutral union as incoming obligations to the next review. It drops
+  verified or superseded incoming records and does not transmit completed prior coverage or
+  variant-search records. The fresh reviewer sees the behavior or evidence to re-establish,
+  original target fingerprint, and source IDs, but not implementation reasoning, prior evidence
+  beyond the unresolved status, root-cause conclusions, or a prior correctness conclusion.
 - **Alternatives**: Repository-local review files; no handoff; sending the entire prior report and
   repair narrative to the next reviewer.
 - **Trade-offs**: Cross-session persistence remains the caller's responsibility, but review-code
@@ -323,16 +324,20 @@ The caller performs that originating-result validation before passing only the n
 to a fresh reviewer. Root-cause searches reference exactly the findings linked to that cause;
 outgoing obligations cover every current finding and use the current target fingerprint. Target
 members retain their schema-v1 types plus the v2 fingerprint, target emptiness agrees with inventory
-count, `uncommitted` and `commit` selectors cannot claim a complete feature, only the `commit`
-selector carries commit/parent SHA fields, and complete requirements coverage requires a complete
+count, `default` and `committed` carry base and merge-base identity, `uncommitted` carries no base or
+commit identity, and `commit` carries commit and parent identity but no base identity.
+`uncommitted` and `commit` selectors cannot claim a complete feature. Complete or partial
+requirements coverage requires a feature, and complete coverage additionally requires a complete
 feature target. A non-empty target has contract and partition coverage. The top-level object is
 closed to undeclared extensions; activated profiles remain human Scope data. Each specialist-owned
-partition resolves to one uniquely declared specialist reviewer with the exact profile. Finding counts equal the
+partition resolves to one uniquely declared specialist reviewer with the exact profile, and a
+specialist marked `not_required` owns no partition. Finding counts equal the
 `findings` array, `coverage_gap_count` equals the `coverage_gaps` array,
 evidence for every completed coverage record, a reason for every incomplete or not-applicable
-variant search, and verdict consistency with all completion rules. `PASS` permits no open or
-unresolved follow-up obligation and no blocking coverage gap. `FAIL` requires at least one admitted
-finding; an attributable deterministic check failure is represented as a finding. `INCONCLUSIVE`
+variant search, and verdict consistency with all completion rules. `PASS` requires complete
+requirements coverage and permits no open or unresolved follow-up obligation or blocking coverage
+gap. `FAIL` requires at least one admitted finding; an attributable deterministic check failure is
+represented as a finding. `INCONCLUSIVE`
 requires a blocking coverage gap and contains no admitted finding, because any admitted defect
 selects `FAIL`. A null target fingerprint is valid only for a non-PASS result with a blocking gap
 whose `scope` is exactly `target identity`.
@@ -367,8 +372,9 @@ a coverage gap and prevents PASS.
 ### Repair and Re-Review
 
 1. The caller validates schema v2 and independently reproduces each admitted finding.
-2. It retains only objective outgoing `follow_up.required` records—not completed coverage or
-   variant-search records—and performs only verified repairs.
+2. It retains applicable objective `follow_up.required` records together with applicable
+   `follow_up.received` records still marked `unresolved`—not verified/superseded incoming records,
+   completed coverage, or variant-search records—and performs only verified repairs.
 3. After restoring a green baseline, it resolves the updated complete target.
 4. It starts a fresh isolated review and supplies the prior objective obligations as incoming work,
    excluding repair reasoning and prior correctness conclusions.

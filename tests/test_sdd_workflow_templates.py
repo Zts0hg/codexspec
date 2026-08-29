@@ -229,6 +229,9 @@ def test_implement_tasks_carries_only_neutral_schema_v2_follow_up() -> None:
         "#### 7.3a Scenario Coverage Self-Check", 1
     )[0]
     assert "follow_up.required" in handoff
+    assert "follow_up.received" in handoff
+    assert "status: unresolved" in handoff
+    assert "verified" in handoff and "superseded" in handoff
     assert "root-cause variant searches" not in handoff
     assert "completed contract coverage" not in handoff
 

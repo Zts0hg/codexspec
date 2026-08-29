@@ -68,13 +68,15 @@ the specification.
 - **T002-S1**: A valid schema-v2 FAIL result can enter finding reproduction and repair.
 - **T002-S2**: Schema v1, a missing envelope, multiple envelopes, malformed references, and
   contradictory counts are rejected as unsupported or inconclusive.
-- **T002-S3**: Objective outgoing obligations and applicable coverage are retained with their
-  original fingerprint.
+- **T002-S3**: Applicable objective outgoing obligations and unresolved incoming obligations are
+  retained with their original fingerprint; verified or superseded incoming obligations are
+  retired.
 - **T002-S4**: Repair reasoning, old conclusions, and claims that the repair is correct are not
   sent to the fresh reviewer.
 - **T002-S5**: A fresh reviewer verifies incoming obligations against the changed target and still
   executes all five general passes.
-- **T002-S6**: Unresolved, unvalidated, or unassociated required obligations prevent completion.
+- **T002-S6**: Unresolved, unvalidated, or unassociated obligations prevent completion and remain
+  caller-owned across subsequent rounds.
 
 ### T003 [P] [US2] Define strict schema-v2 evaluation parsing and corpus expectations
 

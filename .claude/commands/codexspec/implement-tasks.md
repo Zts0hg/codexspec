@@ -193,9 +193,12 @@ object. Prose cannot override, repair, or supply missing machine data. Validate:
   reviewed target evidence;
 - all target members (`selector`, `fingerprint`, `complete_feature`, `empty`,
   refs/SHAs, and `inventory_count`) exist with known types, and target emptiness
-  agrees with the inventory count; `uncommitted` and `commit` are not complete
-  features, only `commit` carries commit/parent SHA fields, and complete
-  requirements coverage requires a complete-feature target;
+  agrees with the inventory count; `default` and `committed` require base and
+  merge-base identity, `uncommitted` carries no base or commit identity, and
+  `commit` carries commit and parent identity but no base identity;
+  `uncommitted` and `commit` are not complete features, complete or partial
+  requirements coverage requires a feature, and complete requirements coverage
+  additionally requires a complete-feature target;
 - `review_context: isolated`, the primary reviewer is `complete`, and every
   required specialist is present and `complete`;
 - finding, contract, partition, root-cause, follow-up, and coverage-gap IDs are
@@ -206,7 +209,8 @@ object. Prose cannot override, repair, or supply missing machine data. Validate:
   evidence;
 - the top-level object and every nested record contain no undeclared fields;
   every `specialist:<profile>` partition owner resolves to one uniquely declared
-  specialist reviewer with that exact profile;
+  specialist reviewer with that exact profile, and a specialist marked
+  `not_required` owns no partition;
 - finding counts match the `findings` array, coverage-gap count matches the
   `coverage_gaps` array, incomplete/not-applicable searches include reasons,
   follow-up states are valid for their received or required direction, a null
@@ -244,13 +248,16 @@ request that decision. Do not invent intent or weaken the requirement.
 
 #### 7.3b Retain Neutral Cross-Round Obligations
 
-For every valid non-PASS schema-v2 result, retain only the neutral follow-up
-obligations from `follow_up.required` that remain applicable after repair.
-Those obligations may have been derived from findings, contracts, partitions,
-or incomplete searches, but do not transmit the completed coverage records or
+For every valid non-PASS schema-v2 result, retain the union of neutral
+obligations from `follow_up.required` that remain applicable after repair and
+incoming records from `follow_up.received` whose `status: unresolved` remains
+applicable. Do not retain incoming records marked `verified` or `superseded`.
+The obligations may have been derived from findings, contracts, partitions, or
+incomplete searches, but do not transmit the completed coverage records or
 variant-search records themselves. Preserve each obligation's stable ID,
 source IDs, objective statement, and originating target fingerprint in the
-caller's execution context. Do not create repository-local review-state files.
+caller's execution context. Reject conflicting records with the same ID rather
+than choosing one. Do not create repository-local review-state files.
 
 The retained handoff states only the behavior or evidence to re-establish. It
 must exclude implementation reasoning, prior correctness conclusions, previous

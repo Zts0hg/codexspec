@@ -421,6 +421,8 @@ def _validate_coverage(result: dict[str, Any]) -> None:
         reason = _string(search["reason"], "variant_search.reason", nullable=True)
         if status == "complete" and not evidence:
             raise ResultParseError("completed variant search must include evidence")
+        if status == "complete" and reason is not None:
+            raise ResultParseError("completed variant search reason must be null")
         if status in {"incomplete", "not_applicable"} and reason is None:
             raise ResultParseError(f"{status} variant search must include a reason")
 
@@ -505,6 +507,7 @@ def _validate_gaps_and_reviewers(result: dict[str, Any]) -> None:
         raise ResultParseError(f"unsupported primary reviewer state {reviewers['primary']!r}")
     specialists = [_object(item, "specialist") for item in _array(reviewers["specialists"], "reviewers.specialists")]
     specialist_profiles: set[str] = set()
+    specialist_states: dict[str, str] = {}
     for record in specialists:
         _required_fields(record, {"profile", "state"}, "specialist")
         _known_fields(record, {"profile", "state", "reason"}, "specialist")
@@ -514,13 +517,18 @@ def _validate_gaps_and_reviewers(result: dict[str, Any]) -> None:
         specialist_profiles.add(profile)
         if record["state"] not in VALID_REVIEWER_STATES:
             raise ResultParseError(f"unsupported specialist state {record['state']!r}")
+        specialist_states[profile] = record["state"]
         if "reason" in record:
             _string(record["reason"], "specialist.reason", nullable=True)
 
     for partition in result["review_coverage"]["partitions"]:
         owner = partition["owner"]
-        if owner.startswith("specialist:") and owner.removeprefix("specialist:") not in specialist_profiles:
-            raise ResultParseError("specialist partition owner must reference a declared specialist reviewer")
+        if owner.startswith("specialist:"):
+            profile = owner.removeprefix("specialist:")
+            if profile not in specialist_profiles:
+                raise ResultParseError("specialist partition owner must reference a declared specialist reviewer")
+            if specialist_states[profile] == "not_required":
+                raise ResultParseError("owned specialist reviewer cannot be not_required")
 
 
 def _validate_verdict_consistency(result: dict[str, Any]) -> None:
@@ -538,6 +546,8 @@ def _validate_verdict_consistency(result: dict[str, Any]) -> None:
         return
     if result["verification"]["status"] != "complete":
         raise ResultParseError("PASS requires complete verification")
+    if result["requirements_coverage"]["status"] != "complete":
+        raise ResultParseError("PASS requires complete requirements coverage")
     if any(result["finding_counts"].values()):
         raise ResultParseError("PASS requires zero findings")
     coverage = result["review_coverage"]
@@ -624,13 +634,24 @@ def parse_review_result(output: str) -> dict[str, Any]:
     inventory_count = _non_negative_integer(target["inventory_count"], "target.inventory_count")
     if target["empty"] != (inventory_count == 0):
         raise ResultParseError("target.empty must agree with target.inventory_count")
-    if target["selector"] in {"uncommitted", "commit"} and target["complete_feature"]:
-        raise ResultParseError(f"{target['selector']} target cannot be a complete feature")
-    if target["selector"] == "commit":
+    selector = target["selector"]
+    if selector in {"uncommitted", "commit"} and target["complete_feature"]:
+        raise ResultParseError(f"{selector} target cannot be a complete feature")
+    if selector in {"default", "committed"}:
+        if target["base_ref"] is None or target["merge_base_sha"] is None:
+            raise ResultParseError(f"{selector} selector requires base_ref and merge_base_sha")
+        if target["commit_sha"] is not None or target["parent_sha"] is not None:
+            raise ResultParseError("commit_sha and parent_sha are only valid with the commit selector")
+    elif selector == "uncommitted":
+        if any(target[field] is not None for field in ["base_ref", "merge_base_sha", "commit_sha", "parent_sha"]):
+            raise ResultParseError("uncommitted selector cannot include base or commit identity")
+    else:
+        if target["base_ref"] is not None or target["merge_base_sha"] is not None:
+            raise ResultParseError("commit selector cannot include base_ref or merge_base_sha")
         if target["commit_sha"] is None:
             raise ResultParseError("commit selector requires commit_sha")
-    elif target["commit_sha"] is not None or target["parent_sha"] is not None:
-        raise ResultParseError("commit_sha and parent_sha are only valid with the commit selector")
+        if target["parent_sha"] is None:
+            raise ResultParseError("commit selector requires parent_sha")
     if fingerprint is None:
         if result["verdict"] == "PASS":
             raise ResultParseError("PASS requires a target fingerprint")
@@ -646,16 +667,18 @@ def parse_review_result(output: str) -> dict[str, Any]:
     _known_fields(requirements, {"status", "feature"}, "requirements_coverage")
     if requirements["status"] not in VALID_REQUIREMENTS_STATUSES:
         raise ResultParseError(f"unsupported requirements status {requirements['status']!r}")
-    _string(requirements["feature"], "requirements_coverage.feature", nullable=True)
+    feature = _string(requirements["feature"], "requirements_coverage.feature", nullable=True)
     if requirements["status"] == "complete" and not target["complete_feature"]:
         raise ResultParseError("complete requirements coverage requires a complete feature target")
+    if requirements["status"] in {"complete", "partial"} and feature is None:
+        raise ResultParseError(f"{requirements['status']} requirements coverage requires a feature")
 
     verification = _object(result["verification"], "verification")
     _required_fields(verification, {"status", "commands"}, "verification")
     _known_fields(verification, {"status", "commands"}, "verification")
     if verification["status"] not in VALID_VERIFICATION_STATUSES:
         raise ResultParseError(f"unsupported verification status {verification['status']!r}")
-    _array(verification["commands"], "verification.commands")
+    _strings(verification["commands"], "verification.commands")
 
     counts = _object(result["finding_counts"], "finding_counts")
     if set(counts) != VALID_PRIORITIES or not all(

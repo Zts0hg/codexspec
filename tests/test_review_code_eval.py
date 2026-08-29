@@ -304,11 +304,67 @@ def test_parse_review_result_rejects_schema_v1_and_cross_field_contradictions() 
     impossible_uncommitted["target"]["selector"] = "uncommitted"
     invalid_results.append(("uncommitted target cannot be a complete feature", impossible_uncommitted))
 
+    default_without_base = json.loads(json.dumps(valid))
+    default_without_base["target"]["base_ref"] = None
+    invalid_results.append(("default selector requires base_ref and merge_base_sha", default_without_base))
+
+    default_without_merge_base = json.loads(json.dumps(valid))
+    default_without_merge_base["target"]["merge_base_sha"] = None
+    invalid_results.append(("default selector requires base_ref and merge_base_sha", default_without_merge_base))
+
+    uncommitted_with_base_identity = json.loads(json.dumps(valid))
+    uncommitted_with_base_identity["target"]["selector"] = "uncommitted"
+    uncommitted_with_base_identity["target"]["complete_feature"] = False
+    uncommitted_with_base_identity["requirements_coverage"]["status"] = "partial"
+    invalid_results.append(
+        ("uncommitted selector cannot include base or commit identity", uncommitted_with_base_identity)
+    )
+
     missing_commit_identity = json.loads(json.dumps(valid))
     missing_commit_identity["target"]["selector"] = "commit"
     missing_commit_identity["target"]["complete_feature"] = False
+    missing_commit_identity["target"]["base_ref"] = None
+    missing_commit_identity["target"]["merge_base_sha"] = None
     missing_commit_identity["requirements_coverage"]["status"] = "partial"
     invalid_results.append(("commit selector requires commit_sha", missing_commit_identity))
+
+    missing_commit_parent = json.loads(json.dumps(missing_commit_identity))
+    missing_commit_parent["target"]["commit_sha"] = "fedcba9876543210"
+    invalid_results.append(("commit selector requires parent_sha", missing_commit_parent))
+
+    commit_with_base_identity = json.loads(json.dumps(missing_commit_parent))
+    commit_with_base_identity["target"]["parent_sha"] = "0123456789abcdef"
+    commit_with_base_identity["target"]["base_ref"] = "main"
+    invalid_results.append(("commit selector cannot include base_ref or merge_base_sha", commit_with_base_identity))
+
+    complete_requirements_without_feature = json.loads(json.dumps(valid))
+    complete_requirements_without_feature["requirements_coverage"]["feature"] = None
+    invalid_results.append(("complete requirements coverage requires a feature", complete_requirements_without_feature))
+
+    partial_requirements_without_feature = json.loads(json.dumps(valid))
+    partial_requirements_without_feature["requirements_coverage"]["status"] = "partial"
+    partial_requirements_without_feature["requirements_coverage"]["feature"] = None
+    invalid_results.append(("partial requirements coverage requires a feature", partial_requirements_without_feature))
+
+    pass_with_partial_requirements = json.loads(run_eval.RESULT_RE.search(_envelope(verdict="PASS")).group(1))
+    pass_with_partial_requirements["target"]["complete_feature"] = False
+    pass_with_partial_requirements["requirements_coverage"]["status"] = "partial"
+    invalid_results.append(("PASS requires complete requirements coverage", pass_with_partial_requirements))
+
+    owned_not_required_specialist = json.loads(json.dumps(valid))
+    owned_not_required_specialist["review_coverage"]["partitions"][0]["owner"] = "specialist:parsing/configuration"
+    owned_not_required_specialist["reviewers"]["specialists"] = [
+        {"profile": "parsing/configuration", "state": "not_required"}
+    ]
+    invalid_results.append(("owned specialist reviewer cannot be not_required", owned_not_required_specialist))
+
+    complete_search_with_reason = json.loads(json.dumps(valid))
+    complete_search_with_reason["review_coverage"]["variant_searches"][0]["reason"] = "already complete"
+    invalid_results.append(("completed variant search reason must be null", complete_search_with_reason))
+
+    non_string_verification_command = json.loads(json.dumps(valid))
+    non_string_verification_command["verification"]["commands"] = [{"command": "pytest"}]
+    invalid_results.append(("verification.commands", non_string_verification_command))
 
     mismatched_follow_up_fingerprint = json.loads(json.dumps(valid))
     mismatched_follow_up_fingerprint["follow_up"]["required"][0]["origin_fingerprint"] = "sha256:different-target"
@@ -333,6 +389,45 @@ def test_parse_review_result_rejects_schema_v1_and_cross_field_contradictions() 
         output = "<review-code-result>\n" + json.dumps(result) + "\n</review-code-result>"
         with pytest.raises(run_eval.ResultParseError, match=message):
             run_eval.parse_review_result(output)
+
+
+@pytest.mark.parametrize(
+    ("selector", "complete_feature", "base_ref", "merge_base_sha", "commit_sha", "parent_sha"),
+    [
+        ("default", True, "main", "0123456789abcdef", None, None),
+        ("committed", True, "main", "0123456789abcdef", None, None),
+        ("uncommitted", False, None, None, None, None),
+        ("commit", False, None, None, "fedcba9876543210", "0123456789abcdef"),
+    ],
+)
+def test_parse_review_result_accepts_consistent_selector_identity_matrix(
+    selector: str,
+    complete_feature: bool,
+    base_ref: str | None,
+    merge_base_sha: str | None,
+    commit_sha: str | None,
+    parent_sha: str | None,
+) -> None:
+    result = json.loads(
+        run_eval.RESULT_RE.search(
+            _envelope(findings=[{"priority": "P2", "summary": "adapter drops resolved value"}])
+        ).group(1)
+    )
+    result["target"].update(
+        {
+            "selector": selector,
+            "complete_feature": complete_feature,
+            "base_ref": base_ref,
+            "merge_base_sha": merge_base_sha,
+            "commit_sha": commit_sha,
+            "parent_sha": parent_sha,
+        }
+    )
+    result["requirements_coverage"]["status"] = "complete" if complete_feature else "partial"
+
+    output = "<review-code-result>\n" + json.dumps(result) + "\n</review-code-result>"
+
+    assert run_eval.parse_review_result(output)["target"]["selector"] == selector
 
 
 def test_parse_review_result_allows_null_fingerprint_only_for_blocked_non_pass() -> None:
