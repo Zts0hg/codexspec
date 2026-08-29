@@ -193,9 +193,12 @@ object. Prose cannot override, repair, or supply missing machine data. Validate:
   reviewed target evidence;
 - all target members (`selector`, `fingerprint`, `complete_feature`, `empty`,
   refs/SHAs, and `inventory_count`) exist with known types, and target emptiness
-  agrees with the inventory count; `default` and `committed` require base and
-  merge-base identity, `uncommitted` carries no base or commit identity, and
-  `commit` carries commit and parent identity but no base identity;
+  agrees with the inventory count; with a non-null fingerprint, `default` and
+  `committed` require base and merge-base identity, `uncommitted` carries no
+  base or commit identity, and `commit` carries commit and parent identity but
+  no base identity; with a null fingerprint, the result is blocked non-PASS,
+  `complete_feature` is false, a gap has scope exactly `target identity`, and
+  only resolver-established ref/SHA facts are present;
   `uncommitted` and `commit` are not complete features, complete or partial
   requirements coverage requires a feature, and complete requirements coverage
   additionally requires a complete-feature target;
@@ -210,7 +213,10 @@ object. Prose cannot override, repair, or supply missing machine data. Validate:
 - the top-level object and every nested record contain no undeclared fields;
   every `specialist:<profile>` partition owner resolves to one uniquely declared
   specialist reviewer with that exact profile, and a specialist marked
-  `not_required` owns no partition;
+  `not_required` owns no partition; primary ownership likewise forbids
+  `primary: not_required`, every completed partition has a complete owner,
+  optional specialist reasons are non-null strings, and shared review context
+  has an exact `reviewer isolation` coverage gap;
 - finding counts match the `findings` array, coverage-gap count matches the
   `coverage_gaps` array, incomplete/not-applicable searches include reasons,
   follow-up states are valid for their received or required direction, a null
@@ -248,10 +254,13 @@ request that decision. Do not invent intent or weaken the requirement.
 
 #### 7.3b Retain Neutral Cross-Round Obligations
 
-For every valid non-PASS schema-v2 result, retain the union of neutral
-obligations from `follow_up.required` that remain applicable after repair and
-incoming records from `follow_up.received` whose `status: unresolved` remains
-applicable. Do not retain incoming records marked `verified` or `superseded`.
+For every valid non-PASS schema-v2 result, retain the union of every neutral
+obligation from `follow_up.required` and every incoming record from
+`follow_up.received` whose `status: unresolved`. Only a fresh reviewer may
+retire an incoming obligation by recording it as `verified` or `superseded`
+with current evidence; the caller must not filter unresolved records by making
+its own applicability judgment. Do not retain incoming records that the fresh
+reviewer marked `verified` or `superseded`.
 The obligations may have been derived from findings, contracts, partitions, or
 incomplete searches, but do not transmit the completed coverage records or
 variant-search records themselves. Preserve each obligation's stable ID,

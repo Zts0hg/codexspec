@@ -358,9 +358,55 @@ def test_parse_review_result_rejects_schema_v1_and_cross_field_contradictions() 
     ]
     invalid_results.append(("owned specialist reviewer cannot be not_required", owned_not_required_specialist))
 
+    owned_not_required_primary = json.loads(json.dumps(valid))
+    owned_not_required_primary["reviewers"]["primary"] = "not_required"
+    invalid_results.append(("primary partition owner cannot be not_required", owned_not_required_primary))
+
+    completed_partition_with_incomplete_owner = json.loads(json.dumps(valid))
+    completed_partition_with_incomplete_owner["reviewers"]["primary"] = "incomplete"
+    invalid_results.append(("completed partition requires a complete owner", completed_partition_with_incomplete_owner))
+
+    null_specialist_reason = json.loads(json.dumps(valid))
+    null_specialist_reason["reviewers"]["specialists"] = [
+        {"profile": "parsing/configuration", "state": "complete", "reason": None}
+    ]
+    invalid_results.append(("specialist.reason", null_specialist_reason))
+
+    shared_without_isolation_gap = json.loads(json.dumps(valid))
+    shared_without_isolation_gap["review_context"] = "shared"
+    invalid_results.append(("shared review context requires", shared_without_isolation_gap))
+
+    unresolved_default_with_commit_identity = json.loads(json.dumps(valid))
+    unresolved_default_with_commit_identity["verdict"] = "INCONCLUSIVE"
+    unresolved_default_with_commit_identity["target"]["fingerprint"] = None
+    unresolved_default_with_commit_identity["target"]["complete_feature"] = False
+    unresolved_default_with_commit_identity["target"]["commit_sha"] = "fedcba9876543210"
+    unresolved_default_with_commit_identity["requirements_coverage"] = {
+        "status": "not_evaluated",
+        "feature": None,
+    }
+    unresolved_default_with_commit_identity["findings"] = []
+    unresolved_default_with_commit_identity["finding_counts"]["P2"] = 0
+    unresolved_default_with_commit_identity["review_coverage"]["variant_searches"] = []
+    unresolved_default_with_commit_identity["follow_up"]["required"] = []
+    unresolved_default_with_commit_identity["coverage_gaps"] = [
+        {
+            "id": "G-001",
+            "scope": "target identity",
+            "impact": "target identity is unresolved",
+            "blocking": True,
+        }
+    ]
+    unresolved_default_with_commit_identity["coverage_gap_count"] = 1
+    invalid_results.append(("unavailable default or committed identity", unresolved_default_with_commit_identity))
+
     complete_search_with_reason = json.loads(json.dumps(valid))
     complete_search_with_reason["review_coverage"]["variant_searches"][0]["reason"] = "already complete"
     invalid_results.append(("completed variant search reason must be null", complete_search_with_reason))
+
+    complete_search_without_trace = json.loads(json.dumps(valid))
+    complete_search_without_trace["review_coverage"]["variant_searches"][0]["scope"] = []
+    invalid_results.append(("completed variant search requires", complete_search_without_trace))
 
     non_string_verification_command = json.loads(json.dumps(valid))
     non_string_verification_command["verification"]["commands"] = [{"command": "pytest"}]
@@ -434,6 +480,8 @@ def test_parse_review_result_allows_null_fingerprint_only_for_blocked_non_pass()
     result = json.loads(run_eval.RESULT_RE.search(_envelope(verdict="PASS")).group(1))
     result["verdict"] = "INCONCLUSIVE"
     result["target"]["fingerprint"] = None
+    result["target"]["complete_feature"] = False
+    result["requirements_coverage"] = {"status": "not_evaluated", "feature": None}
     result["coverage_gaps"] = [
         {
             "id": "G-001",
@@ -452,6 +500,102 @@ def test_parse_review_result_allows_null_fingerprint_only_for_blocked_non_pass()
     unrelated_output = "<review-code-result>\n" + json.dumps(unrelated) + "\n</review-code-result>"
     with pytest.raises(run_eval.ResultParseError, match="target identity"):
         run_eval.parse_review_result(unrelated_output)
+
+
+@pytest.mark.parametrize("selector", ["default", "committed", "commit"])
+def test_parse_review_result_represents_unresolved_target_identity(selector: str) -> None:
+    result = json.loads(run_eval.RESULT_RE.search(_envelope(verdict="PASS")).group(1))
+    result["verdict"] = "INCONCLUSIVE"
+    result["target"].update(
+        {
+            "selector": selector,
+            "fingerprint": None,
+            "complete_feature": False,
+            "empty": True,
+            "base_ref": None,
+            "merge_base_sha": None,
+            "commit_sha": None,
+            "parent_sha": None,
+            "inventory_count": 0,
+        }
+    )
+    result["requirements_coverage"] = {"status": "not_evaluated", "feature": None}
+    result["verification"]["status"] = "incomplete"
+    result["review_coverage"] = {"contracts": [], "partitions": [], "variant_searches": []}
+    result["coverage_gaps"] = [
+        {
+            "id": "G-001",
+            "scope": "target identity",
+            "impact": "the resolver could not establish exact target identity",
+            "blocking": True,
+        }
+    ]
+    result["coverage_gap_count"] = 1
+    result["reviewers"]["primary"] = "not_run"
+    output = "<review-code-result>\n" + json.dumps(result) + "\n</review-code-result>"
+
+    assert run_eval.parse_review_result(output)["target"]["fingerprint"] is None
+
+
+@pytest.mark.parametrize(
+    ("selector", "base_ref", "merge_base_sha", "commit_sha", "parent_sha"),
+    [
+        ("default", "main", None, None, None),
+        ("committed", "main", "0123456789abcdef", None, None),
+        ("commit", None, None, "fedcba9876543210", None),
+    ],
+)
+def test_parse_review_result_preserves_partial_resolver_identity_facts(
+    selector: str,
+    base_ref: str | None,
+    merge_base_sha: str | None,
+    commit_sha: str | None,
+    parent_sha: str | None,
+) -> None:
+    result = json.loads(run_eval.RESULT_RE.search(_envelope(verdict="PASS")).group(1))
+    result["verdict"] = "INCONCLUSIVE"
+    result["target"].update(
+        {
+            "selector": selector,
+            "fingerprint": None,
+            "complete_feature": False,
+            "base_ref": base_ref,
+            "merge_base_sha": merge_base_sha,
+            "commit_sha": commit_sha,
+            "parent_sha": parent_sha,
+        }
+    )
+    result["requirements_coverage"] = {"status": "not_evaluated", "feature": None}
+    result["verification"]["status"] = "incomplete"
+    result["coverage_gaps"] = [
+        {
+            "id": "G-001",
+            "scope": "target identity",
+            "impact": "the resolver established only part of the target identity",
+            "blocking": True,
+        }
+    ]
+    result["coverage_gap_count"] = 1
+    output = "<review-code-result>\n" + json.dumps(result) + "\n</review-code-result>"
+
+    assert run_eval.parse_review_result(output)["target"]["selector"] == selector
+
+
+def test_parse_review_result_accepts_shared_fallback_with_isolation_gap() -> None:
+    result = json.loads(run_eval.RESULT_RE.search(_envelope(verdict="PASS")).group(1))
+    result["review_context"] = "shared"
+    result["coverage_gaps"] = [
+        {
+            "id": "G-001",
+            "scope": "reviewer isolation",
+            "impact": "delegation was unavailable for an ordinary direct review without a high-risk profile",
+            "blocking": False,
+        }
+    ]
+    result["coverage_gap_count"] = 1
+    output = "<review-code-result>\n" + json.dumps(result) + "\n</review-code-result>"
+
+    assert run_eval.parse_review_result(output)["review_context"] == "shared"
 
 
 def test_case_expectations_match_profiles_findings_and_forbidden_text(tmp_path: Path) -> None:
@@ -597,6 +741,28 @@ def test_systematic_coverage_expectations_reject_hollow_or_unrelated_evidence() 
     assert incomplete_evaluation.passed is False
     assert any("blocking coverage gap" in failure for failure in incomplete_evaluation.failures)
 
+    related = run_eval.load_case(cases_root / "related-propagation-defects")
+    related_result = run_eval.parse_review_result(
+        _envelope(
+            profiles=related.data["risk_profiles"],
+            findings=[
+                {"priority": "P2", "summary": "web adapter replaces resolved policy", "root_cause_id": "RC-001"},
+                {
+                    "priority": "P2",
+                    "summary": "worker adapter replaces resolved policy",
+                    "root_cause_id": "RC-001",
+                },
+            ],
+        )
+    )
+    related_search = related_result["review_coverage"]["variant_searches"][0]
+    related_search["scope"] = ["unrelated helpers"]
+    related_search["methods"] = ["count records"]
+    related_search["checked_locations"] = ["src/unrelated.py"]
+    related_evaluation = run_eval.evaluate_result(related, related_result)
+    assert related_evaluation.passed is False
+    assert any("variant search trace" in failure for failure in related_evaluation.failures)
+
 
 def test_systematic_coverage_expectations_accept_bound_semantic_evidence() -> None:
     cases_root = Path("tests/evals/review_code/cases")
@@ -621,6 +787,10 @@ def test_systematic_coverage_expectations_accept_bound_semantic_evidence() -> No
             ],
         )
     )
+    related_search = related_result["review_coverage"]["variant_searches"][0]
+    related_search["scope"] = ["web, worker, and CLI adapters"]
+    related_search["methods"] = ["search equivalent adapter entry paths"]
+    related_search["checked_locations"] = ["src/adapters.py web and worker implementations"]
     assert run_eval.evaluate_result(related, related_result).passed is True
 
     early = run_eval.load_case(cases_root / "early-finding-complete-coverage")
@@ -739,6 +909,7 @@ def test_review_code_eval_corpus_declares_required_cases_and_expectations() -> N
         if case.case_id == "related-propagation-defects":
             assert len(case.data["expect"]["minimum_findings"]) >= 2
             assert case.data["expect"]["root_cause_group"]
+            assert case.data["expect"]["required_variant_search_trace"]
         if case.case_id == "early-finding-complete-coverage":
             assert case.data["expect"]["all_partitions_terminal"] is True
             assert "return 'stable'" in case.data["setup"]["baseline_files"]["src/api.py"]

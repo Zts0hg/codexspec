@@ -201,6 +201,13 @@ def _validate_case(data: dict[str, Any], source: Path) -> None:
         _validate_term_groups(expect["required_partition_scopes"], f"{source}: expect.required_partition_scopes")
     if "required_blocking_gap_terms" in expect:
         _validate_term_groups(expect["required_blocking_gap_terms"], f"{source}: expect.required_blocking_gap_terms")
+    variant_trace = expect.get("required_variant_search_trace")
+    if variant_trace is not None:
+        allowed_fields = {"scope", "methods", "checked_locations"}
+        if not isinstance(variant_trace, dict) or set(variant_trace) != allowed_fields:
+            raise ValueError(f"{source}: expect.required_variant_search_trace must define {sorted(allowed_fields)}")
+        for field, groups in variant_trace.items():
+            _validate_term_groups(groups, f"{source}: expect.required_variant_search_trace.{field}")
 
 
 def _validate_term_groups(value: Any, name: str) -> None:
@@ -412,8 +419,10 @@ def _validate_coverage(result: dict[str, Any]) -> None:
         references = _strings(search["finding_ids"], "variant_search.finding_ids", non_empty=True)
         if not set(references).issubset(finding_ids):
             raise ResultParseError("variant search contains an unknown finding reference")
-        for field in ["scope", "methods", "checked_locations"]:
-            _strings(search[field], f"variant_search.{field}")
+        search_details = {
+            field: _strings(search[field], f"variant_search.{field}")
+            for field in ["scope", "methods", "checked_locations"]
+        }
         evidence = _strings(search["evidence"], "variant_search.evidence")
         status = search["status"]
         if status not in VALID_VARIANT_STATUSES:
@@ -421,6 +430,8 @@ def _validate_coverage(result: dict[str, Any]) -> None:
         reason = _string(search["reason"], "variant_search.reason", nullable=True)
         if status == "complete" and not evidence:
             raise ResultParseError("completed variant search must include evidence")
+        if status == "complete" and any(not values for values in search_details.values()):
+            raise ResultParseError("completed variant search requires scope, methods, and checked_locations")
         if status == "complete" and reason is not None:
             raise ResultParseError("completed variant search reason must be null")
         if status in {"incomplete", "not_applicable"} and reason is None:
@@ -519,16 +530,26 @@ def _validate_gaps_and_reviewers(result: dict[str, Any]) -> None:
             raise ResultParseError(f"unsupported specialist state {record['state']!r}")
         specialist_states[profile] = record["state"]
         if "reason" in record:
-            _string(record["reason"], "specialist.reason", nullable=True)
+            _string(record["reason"], "specialist.reason")
 
     for partition in result["review_coverage"]["partitions"]:
         owner = partition["owner"]
-        if owner.startswith("specialist:"):
+        if owner == "primary":
+            owner_state = reviewers["primary"]
+            if owner_state == "not_required":
+                raise ResultParseError("primary partition owner cannot be not_required")
+        else:
             profile = owner.removeprefix("specialist:")
             if profile not in specialist_profiles:
                 raise ResultParseError("specialist partition owner must reference a declared specialist reviewer")
-            if specialist_states[profile] == "not_required":
+            owner_state = specialist_states[profile]
+            if owner_state == "not_required":
                 raise ResultParseError("owned specialist reviewer cannot be not_required")
+        if partition["status"] == "complete" and owner_state != "complete":
+            raise ResultParseError("completed partition requires a complete owner")
+
+    if result["review_context"] == "shared" and not any(gap["scope"] == "reviewer isolation" for gap in gaps):
+        raise ResultParseError("shared review context requires a reviewer isolation coverage gap")
 
 
 def _validate_verdict_consistency(result: dict[str, Any]) -> None:
@@ -635,23 +656,6 @@ def parse_review_result(output: str) -> dict[str, Any]:
     if target["empty"] != (inventory_count == 0):
         raise ResultParseError("target.empty must agree with target.inventory_count")
     selector = target["selector"]
-    if selector in {"uncommitted", "commit"} and target["complete_feature"]:
-        raise ResultParseError(f"{selector} target cannot be a complete feature")
-    if selector in {"default", "committed"}:
-        if target["base_ref"] is None or target["merge_base_sha"] is None:
-            raise ResultParseError(f"{selector} selector requires base_ref and merge_base_sha")
-        if target["commit_sha"] is not None or target["parent_sha"] is not None:
-            raise ResultParseError("commit_sha and parent_sha are only valid with the commit selector")
-    elif selector == "uncommitted":
-        if any(target[field] is not None for field in ["base_ref", "merge_base_sha", "commit_sha", "parent_sha"]):
-            raise ResultParseError("uncommitted selector cannot include base or commit identity")
-    else:
-        if target["base_ref"] is not None or target["merge_base_sha"] is not None:
-            raise ResultParseError("commit selector cannot include base_ref or merge_base_sha")
-        if target["commit_sha"] is None:
-            raise ResultParseError("commit selector requires commit_sha")
-        if target["parent_sha"] is None:
-            raise ResultParseError("commit selector requires parent_sha")
     if fingerprint is None:
         if result["verdict"] == "PASS":
             raise ResultParseError("PASS requires a target fingerprint")
@@ -661,6 +665,34 @@ def parse_review_result(output: str) -> dict[str, Any]:
             for gap in gaps
         ):
             raise ResultParseError("a missing target fingerprint requires a blocking target identity coverage gap")
+        if target["complete_feature"]:
+            raise ResultParseError("a target with unavailable identity cannot be a complete feature")
+        if selector in {"default", "committed"}:
+            if target["commit_sha"] is not None or target["parent_sha"] is not None:
+                raise ResultParseError("unavailable default or committed identity cannot include commit-only SHAs")
+        elif selector == "uncommitted":
+            if any(target[field] is not None for field in ["base_ref", "merge_base_sha", "commit_sha", "parent_sha"]):
+                raise ResultParseError("uncommitted selector cannot include base or commit identity")
+        elif target["base_ref"] is not None or target["merge_base_sha"] is not None:
+            raise ResultParseError("unavailable commit identity cannot include base_ref or merge_base_sha")
+    else:
+        if selector in {"uncommitted", "commit"} and target["complete_feature"]:
+            raise ResultParseError(f"{selector} target cannot be a complete feature")
+        if selector in {"default", "committed"}:
+            if target["base_ref"] is None or target["merge_base_sha"] is None:
+                raise ResultParseError(f"{selector} selector requires base_ref and merge_base_sha")
+            if target["commit_sha"] is not None or target["parent_sha"] is not None:
+                raise ResultParseError("commit_sha and parent_sha are only valid with the commit selector")
+        elif selector == "uncommitted":
+            if any(target[field] is not None for field in ["base_ref", "merge_base_sha", "commit_sha", "parent_sha"]):
+                raise ResultParseError("uncommitted selector cannot include base or commit identity")
+        else:
+            if target["base_ref"] is not None or target["merge_base_sha"] is not None:
+                raise ResultParseError("commit selector cannot include base_ref or merge_base_sha")
+            if target["commit_sha"] is None:
+                raise ResultParseError("commit selector requires commit_sha")
+            if target["parent_sha"] is None:
+                raise ResultParseError("commit selector requires parent_sha")
 
     requirements = _object(result["requirements_coverage"], "requirements_coverage")
     _required_fields(requirements, {"status", "feature"}, "requirements_coverage")
@@ -805,11 +837,20 @@ def evaluate_result(case: Case, result: dict[str, Any]) -> Evaluation:
     ):
         failures.append("expected one contract trace with all required producer-to-consumer roles and scenarios")
 
-    if expected.get("root_cause_group") and not any(
-        _has_distinct_candidates(finding_candidate_sets, set(search["finding_ids"]))
+    grouped_searches = [
+        search
         for search in coverage["variant_searches"]
-    ):
+        if _has_distinct_candidates(finding_candidate_sets, set(search["finding_ids"]))
+    ]
+    if expected.get("root_cause_group") and not grouped_searches:
         failures.append("expected at least two findings in one root-cause variant search")
+
+    required_variant_trace = expected.get("required_variant_search_trace")
+    if required_variant_trace and not any(
+        all(_matches_term_groups("\n".join(search[field]), groups) for field, groups in required_variant_trace.items())
+        for search in grouped_searches
+    ):
+        failures.append("expected grouped findings with the required bounded variant search trace")
 
     minimum_partitions = expected.get("minimum_partitions")
     if minimum_partitions is not None and len(coverage["partitions"]) < minimum_partitions:

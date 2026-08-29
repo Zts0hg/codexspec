@@ -232,6 +232,8 @@ def test_implement_tasks_carries_only_neutral_schema_v2_follow_up() -> None:
     assert "follow_up.received" in handoff
     assert "status: unresolved" in handoff
     assert "verified" in handoff and "superseded" in handoff
+    assert "remain applicable" not in handoff
+    assert "remains applicable" not in handoff
     assert "root-cause variant searches" not in handoff
     assert "completed contract coverage" not in handoff
 

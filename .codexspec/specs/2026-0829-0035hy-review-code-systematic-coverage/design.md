@@ -324,14 +324,19 @@ The caller performs that originating-result validation before passing only the n
 to a fresh reviewer. Root-cause searches reference exactly the findings linked to that cause;
 outgoing obligations cover every current finding and use the current target fingerprint. Target
 members retain their schema-v1 types plus the v2 fingerprint, target emptiness agrees with inventory
-count, `default` and `committed` carry base and merge-base identity, `uncommitted` carries no base or
-commit identity, and `commit` carries commit and parent identity but no base identity.
+count, and a successfully identified target uses the selector matrix: `default` and `committed`
+carry base and merge-base identity, `uncommitted` carries no base or commit identity, and `commit`
+carries commit and parent identity but no base identity. When identity resolution fails, a non-PASS
+result with null fingerprint and an exact blocking `target identity` gap preserves only resolver-
+established ref/SHA facts, cannot claim a complete feature, and does not apply the successful-target
+matrix.
 `uncommitted` and `commit` selectors cannot claim a complete feature. Complete or partial
 requirements coverage requires a feature, and complete coverage additionally requires a complete
 feature target. A non-empty target has contract and partition coverage. The top-level object is
-closed to undeclared extensions; activated profiles remain human Scope data. Each specialist-owned
-partition resolves to one uniquely declared specialist reviewer with the exact profile, and a
-specialist marked `not_required` owns no partition. Finding counts equal the
+closed to undeclared extensions; activated profiles remain human Scope data. Each partition owner
+resolves to a declared reviewer that is not `not_required`, every completed partition has a complete
+owner, optional specialist reasons are non-null strings, and shared context carries an exact
+`reviewer isolation` coverage gap. Finding counts equal the
 `findings` array, `coverage_gap_count` equals the `coverage_gaps` array,
 evidence for every completed coverage record, a reason for every incomplete or not-applicable
 variant search, and verdict consistency with all completion rules. `PASS` requires complete
@@ -372,9 +377,10 @@ a coverage gap and prevents PASS.
 ### Repair and Re-Review
 
 1. The caller validates schema v2 and independently reproduces each admitted finding.
-2. It retains applicable objective `follow_up.required` records together with applicable
-   `follow_up.received` records still marked `unresolved`—not verified/superseded incoming records,
-   completed coverage, or variant-search records—and performs only verified repairs.
+2. It retains every objective `follow_up.required` record together with every
+   `follow_up.received` record still marked `unresolved`—not incoming records a fresh reviewer has
+   verified/superseded, completed coverage, or variant-search records—and performs only verified
+   repairs. The caller cannot retire an unresolved record through its own applicability judgment.
 3. After restoring a green baseline, it resolves the updated complete target.
 4. It starts a fresh isolated review and supplies the prior objective obligations as incoming work,
    excluding repair reasoning and prior correctness conclusions.

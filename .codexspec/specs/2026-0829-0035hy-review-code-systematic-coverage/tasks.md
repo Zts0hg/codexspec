@@ -198,8 +198,9 @@ the specification.
 **Test Scenarios**:
 
 - **T007-S1**: A complete v2 PASS result parses and evaluates against case expectations.
-- **T007-S2**: v1, missing-field, invalid-enum, duplicate-ID, dangling-reference, and count-mismatch
-  envelopes raise deterministic parse errors.
+- **T007-S2**: v1, missing-field, invalid-enum, duplicate-ID, dangling-reference, count-mismatch,
+  invalid reviewer topology, and undeclared-null envelopes raise deterministic parse errors, while
+  unavailable target identity remains representable as a blocked non-PASS result.
 - **T007-S3**: Completed records without evidence and incomplete/not-applicable searches without a
   reason raise deterministic parse errors.
 - **T007-S4**: PASS with unresolved obligations, blocking gaps, incomplete coverage, or admitted
@@ -226,7 +227,8 @@ the specification.
 - **T008-S1**: One generic value crosses a producer, multiple propagation boundaries, consumers,
   and entry surfaces, and all applicable contract fields are expected.
 - **T008-S2**: Two or more qualifying defects caused by one propagation or duplicated-default
-  mistake are expected in the same result and linked to one root-cause search.
+  mistake are expected in the same result and linked to one root-cause search whose bounded scope,
+  methods, and checked locations correspond to the fixture.
 - **T008-S3**: A defect encountered early still leaves every mandatory partition in a terminal
   state.
 - **T008-S4**: An uninspectable mandatory surface expects INCONCLUSIVE with a blocking gap.

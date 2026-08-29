@@ -33,6 +33,11 @@
     ],
     "forbidden_findings": ["missing docstring", "style"],
     "root_cause_group": "adapter-replaces-resolved-policy",
+    "required_variant_search_trace": {
+      "scope": [["adapter"]],
+      "methods": [["search", "trace", "inspect"], ["adapter", "entry"]],
+      "checked_locations": [["adapters.py"], ["web"], ["worker"]]
+    },
     "profile_aliases": {
       "parsing/configuration": ["resolved policy", "configuration"]
     }
