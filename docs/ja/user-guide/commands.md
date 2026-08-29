@@ -1091,7 +1091,11 @@ AI:  Preview mode - no commit will be executed
 /codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
 ```
 
-ゲートは対象内の全成果物を棚卸しし、適用要件を評価して Scope、Behavior、Risk、Verification の各パスを実行します。判定は `PASS`、`FAIL`、`INCONCLUSIVE` のいずれかです。6 つのレポートセクションの後に、機械可読な `<review-code-result>` envelope が 1 つ続きます。P0-P3 の指摘はすべて `FAIL`、必須証拠の不足は `INCONCLUSIVE` です。
+<!-- REVIEW-CODE-SYSTEM-CONTRACT -->
+<!-- REVIEW-CODE-VARIANT-SEARCH -->
+<!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
+
+ゲートは対象内の全成果物を棚卸しし、適用要件を評価して Scope、System Contract、Behavior、Risk、Verification の 5 パスをこの順で実行します。根拠のあるモジュール間契約と意味単位のレビューパーティションを記録し、検証済みで反復可能な根本原因ごとに、ラウンド終了前に境界を限定した関連箇所の検索を行います。6 つのレポートセクションの後に、`schema_version: "2"` を使用する機械可読な `<review-code-result>` envelope が 1 つ続きます。この envelope には対象識別子、カバレッジ、修正後に再確認する客観的な義務が含まれます。呼び出し側はこの中立な義務を新しい完全レビューに渡しますが、修正理由や以前の正しさの結論は渡しません。判定は `PASS`、`FAIL`、`INCONCLUSIVE` のいずれかです。P0-P3 の指摘はすべて `FAIL`、必須証拠またはカバレッジの不足は `INCONCLUSIVE` です。
 
 ```text
 You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example

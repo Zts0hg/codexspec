@@ -113,12 +113,16 @@ def test_resolver_is_mandatory_and_schema_validated() -> None:
     assert "update or re-run `codexspec init`" in resolver
 
 
-def test_four_stages_and_complete_inventory_are_required() -> None:
+def test_five_stages_and_complete_inventory_are_required() -> None:
     _, body = split_template()
     protocol = section(body, "## Defect-Gate Review Protocol", "### Requirements Coverage")
 
-    stages = re.findall(r"^### Stage \d: (Scope|Behavior|Risk|Verification) Pass$", protocol, re.MULTILINE)
-    assert stages == ["Scope", "Behavior", "Risk", "Verification"]
+    stages = re.findall(
+        r"^### Stage \d: (Scope|System Contract|Behavior|Risk|Verification) Pass$",
+        protocol,
+        re.MULTILINE,
+    )
+    assert stages == ["Scope", "System Contract", "Behavior", "Risk", "Verification"]
 
     for artifact in [
         "code",
@@ -155,6 +159,79 @@ def test_four_stages_and_complete_inventory_are_required() -> None:
     assert "without source-extension filtering" in protocol
     assert "one complete inventory" in protocol
     assert "Unclassified" in protocol and "prevent `PASS`" in protocol
+
+
+def test_system_contracts_and_semantic_partitions_are_mandatory() -> None:
+    _, body = split_template()
+    protocol = section(body, "## Defect-Gate Review Protocol", "### Requirements Coverage")
+    contract_pass = section(protocol, "### Stage 2: System Contract Pass", "### Stage 3: Behavior Pass")
+
+    for source in [
+        "confirmed requirements",
+        "project instructions",
+        "semantic change evidence",
+        "dependency relationships",
+        "public behavior",
+    ]:
+        assert source in contract_pass
+    for field in [
+        "sources",
+        "producers",
+        "propagation boundaries",
+        "consumers",
+        "entry surfaces",
+        "scenarios",
+        "evidence",
+        "status",
+    ]:
+        assert field in contract_pass
+    assert "must not invent product requirements" in contract_pass.lower()
+    assert "feature artifacts" in contract_pass and "not required" in contract_pass
+    assert "origin_fingerprint" in contract_pass
+    assert "never treat the prior record as current proof" in contract_pass
+    assert "semantic scope" in protocol
+    assert "file inventory" in protocol and "does not establish" in protocol
+    assert "terminal state" in protocol
+
+
+def test_review_continues_after_findings_and_searches_root_cause_variants() -> None:
+    _, body = split_template()
+    protocol = section(body, "## Defect-Gate Review Protocol", "### Requirements Coverage")
+    verification = section(protocol, "### Stage 5: Verification Pass")
+
+    assert "must not terminate" in protocol.lower()
+    for partition in ["contract", "behavior", "risk", "specialist", "verification"]:
+        assert partition in protocol
+    for concept in [
+        "root-cause identifier",
+        "bounded sibling search scope",
+        "equivalent callers",
+        "implementations",
+        "adapters",
+        "entry surfaces",
+        "symmetric paths",
+    ]:
+        assert concept in verification
+    assert "newly discovered candidates" in verification
+    assert "not_applicable" in verification and "reason" in verification
+    assert "incomplete" in verification and "INCONCLUSIVE" in verification
+    assert "every admitted finding" in verification and "root-cause identifier" in verification
+    assert "incomplete contract" in verification
+    assert "incomplete partition" in verification
+    assert "incomplete variant search" in verification
+    assert "blocking coverage gap" in verification
+    assert "follow_up.received" in verification
+    assert "follow_up.required" in verification
+    assert "never a repair approach or correctness conclusion" in verification
+
+
+def test_cross_round_handoff_transmits_only_neutral_obligations() -> None:
+    _, body = split_template()
+    isolation = section(body, "### Reviewer Isolation", "### Instruction and Evidence Trust")
+
+    assert "neutral incoming follow-up obligations" in isolation
+    assert "Do not send completed prior coverage records, root-cause variant searches" in isolation
+    assert "applicable neutral incoming coverage/follow-up obligations" not in isolation
 
 
 def test_requirements_coverage_tracks_target_completeness() -> None:
@@ -310,7 +387,16 @@ def test_defect_report_has_exactly_six_human_sections_and_one_envelope() -> None
         '"target"',
         '"requirements_coverage"',
         '"verification"',
+        '"findings"',
         '"finding_counts"',
+        '"review_coverage"',
+        '"contracts"',
+        '"partitions"',
+        '"variant_searches"',
+        '"follow_up"',
+        '"received"',
+        '"required"',
+        '"coverage_gaps"',
         '"coverage_gap_count"',
         '"review_context"',
         '"reviewers"',
@@ -318,6 +404,8 @@ def test_defect_report_has_exactly_six_human_sections_and_one_envelope() -> None
         '"specialists"',
     ]:
         assert field in rendered
+    assert '"schema_version": "2"' in rendered
+    assert '"fingerprint"' in rendered
     for priority in ["P0", "P1", "P2", "P3"]:
         assert f'"{priority}"' in rendered
 
@@ -327,9 +415,52 @@ def test_defect_report_has_exactly_six_human_sections_and_one_envelope() -> None
     assert "Missing, malformed, contradictory, unsupported, or unknown" in output
     assert "empty finding list alone" in output
     assert "all four finding counts are zero" in output
+    assert "all five stages complete" in output
+    assert "unique" in output and "cross-reference" in output
+    assert "originating schema-v2 result" in output
+    assert "finding counts match" in output.lower()
+    assert "coverage gap count matches" in output.lower()
+    assert "completed coverage record" in output and "evidence" in output
+    assert "open or unresolved follow-up" in output
+    assert "blocking coverage gap" in output
+    assert "permits no additional members" in output
+    assert "do not add an `activated_profiles`" in output
+    assert "scope` is exactly `target identity`" in output
+    assert "specialist profiles are unique" in output
+    assert "INCONCLUSIVE` contains no admitted finding" in output
+    assert "uncommitted` and `commit` cannot claim `complete_feature`" in output
+    assert "Every admitted finding has a non-null `root_cause_id`" in output
+    assert "complete feature target requires complete requirements coverage" in output
+    assert "code-level `PASS`" in output
+    assert "contract, partition, variant-search, or coverage-gap" in output
 
     for forbidden in ["Quality Score", "Strengths", "Recommendations"]:
         assert forbidden not in rendered
+
+
+def test_target_fingerprint_is_deterministic_complete_and_read_only() -> None:
+    _, body = split_template()
+    protocol = section(body, "## Defect-Gate Review Protocol", "## Audit Mode")
+
+    assert "exact validated resolver manifest" in protocol
+    assert "exact raw selected evidence" in protocol
+    assert "deterministic" in protocol and "byte-preserving" in protocol
+    for evidence in [
+        "committed",
+        "staged",
+        "unstaged",
+        "untracked",
+        "rename",
+        "deletion",
+        "binary",
+        "submodule",
+        "symlink",
+    ]:
+        assert evidence in protocol
+    assert "must change the fingerprint" in protocol
+    assert "without modifying the repository" in protocol
+    assert "cannot be computed or reproduced" in protocol
+    assert "INCONCLUSIVE" in protocol
 
 
 def test_audit_is_a_self_contained_advisory_scorecard_without_envelope() -> None:

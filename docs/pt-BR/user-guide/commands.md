@@ -1091,7 +1091,11 @@ Revisa a alteração Git selecionada como um gate de defeitos rigoroso antes do 
 /codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
 ```
 
-O gate inventaria todos os artefatos selecionados, avalia requisitos aplicáveis e executa as fases Scope, Behavior, Risk e Verification. O veredito é `PASS`, `FAIL` ou `INCONCLUSIVE`. As seis seções do relatório são seguidas por um único envelope `<review-code-result>` legível por máquina. Todo defeito P0-P3 produz `FAIL`; evidência obrigatória ausente produz `INCONCLUSIVE`.
+<!-- REVIEW-CODE-SYSTEM-CONTRACT -->
+<!-- REVIEW-CODE-VARIANT-SEARCH -->
+<!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
+
+O gate inventaria todos os artefatos selecionados, avalia requisitos aplicáveis e executa cinco fases nesta ordem: Scope, System Contract, Behavior, Risk e Verification. Ele registra contratos entre módulos sustentados por evidências e partições semânticas de revisão; cada causa raiz repetível e validada aciona, antes do fim da rodada, uma busca delimitada por ocorrências relacionadas. As seis seções do relatório são seguidas por um único envelope `<review-code-result>` legível por máquina com `schema_version: "2"`. O envelope transporta a identidade do alvo, a cobertura e obrigações objetivas a serem verificadas novamente após o reparo. O chamador preserva essas obrigações neutras para uma nova revisão completa, sem transmitir o raciocínio do reparo nem conclusões anteriores de correção. O veredito é `PASS`, `FAIL` ou `INCONCLUSIVE`: todo defeito P0-P3 produz `FAIL`; evidência obrigatória ausente ou cobertura incompleta produz `INCONCLUSIVE`.
 
 ```text
 You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example

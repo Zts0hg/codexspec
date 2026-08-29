@@ -1090,7 +1090,11 @@ AI:  预览模式 - 不会执行提交
 /codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
 ```
 
-门禁会清点目标中的全部工件，评估适用需求，并执行 Scope、Behavior、Risk 和 Verification 四个阶段。结果只能是 `PASS`、`FAIL` 或 `INCONCLUSIVE`。六个报告段落之后会附带一个机器可读的 `<review-code-result>` envelope。任何 P0-P3 缺陷都会得到 `FAIL`；缺少强制证据时得到 `INCONCLUSIVE`。
+<!-- REVIEW-CODE-SYSTEM-CONTRACT -->
+<!-- REVIEW-CODE-VARIANT-SEARCH -->
+<!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
+
+门禁会清点目标中的全部工件、评估适用需求，并依次执行五个阶段：Scope、System Contract、Behavior、Risk 和 Verification。它会记录有来源依据的跨模块契约和按行为划分的审查分区；每个已确认且可重复出现的根因都会在本轮结束前触发一次有明确边界的同类问题搜索。六个报告段落之后会附带一个使用 `schema_version: "2"` 的机器可读 `<review-code-result>` envelope。该 envelope 包含目标标识、覆盖记录和修复后需要重新核实的客观事项；调用方保留这些中立事项并交给新的完整审查，但不会传递修复思路或之前的正确性结论。结果只能是 `PASS`、`FAIL` 或 `INCONCLUSIVE`：任何 P0-P3 缺陷都会得到 `FAIL`，缺少强制证据或覆盖不完整时得到 `INCONCLUSIVE`。
 
 ```text
 你: /codexspec:review-code --feature .codexspec/specs/2026-0714-example

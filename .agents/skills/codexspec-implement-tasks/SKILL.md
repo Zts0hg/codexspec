@@ -179,14 +179,49 @@ Locate exactly one `<review-code-result>` block and parse its body as one JSON
 object. Prose cannot override, repair, or supply missing machine data. Validate:
 
 - required fields `schema_version`, `mode`, `verdict`, `target`,
-  `requirements_coverage`, `verification`, `finding_counts`,
-  `coverage_gap_count`, `review_context`, and `reviewers` exist with known types
-  and enum values;
-- schema version `1` and `mode: defect` are exact;
+  `requirements_coverage`, `verification`, `findings`, `finding_counts`,
+  `review_coverage`, `follow_up`, `coverage_gaps`, `coverage_gap_count`,
+  `review_context`, and `reviewers` exist with known types and enum values;
+- schema version `2` and `mode: defect` are exact; reject schema version `1`
+  explicitly as unsupported instead of migrating or inferring missing coverage;
 - target and feature context match this repository, invocation, and resolved
-  feature directory; the default selector represents the complete feature;
+  feature directory; the default selector represents the complete feature, and
+  the target fingerprint is a non-empty deterministic identifier for the exact
+  reviewed target evidence;
+- all target members (`selector`, `fingerprint`, `complete_feature`, `empty`,
+  refs/SHAs, and `inventory_count`) exist with known types, and target emptiness
+  agrees with the inventory count; with a non-null fingerprint, `default` and
+  `committed` require base and merge-base identity, `uncommitted` carries no
+  base or commit identity, and `commit` carries commit and parent identity but
+  no base identity; with a null fingerprint, the result is blocked non-PASS,
+  `complete_feature` is false, a gap has scope exactly `target identity`, and
+  only resolver-established ref/SHA facts are present;
+  `uncommitted` and `commit` are not complete features, complete or partial
+  requirements coverage requires a feature, and complete requirements coverage
+  additionally requires a complete-feature target;
 - `review_context: isolated`, the primary reviewer is `complete`, and every
   required specialist is present and `complete`;
+- finding, contract, partition, root-cause, follow-up, and coverage-gap IDs are
+  unique within their entity types; every current-result cross-reference and
+  outgoing follow-up source resolves to a current finding, contract, partition,
+  variant-search, or coverage-gap record; every admitted finding and every
+  incomplete mandatory contract, partition, variant search, or blocking gap is
+  named by an outgoing obligation; every incoming
+  follow-up source resolves in the retained originating schema-v2 result
+  identified by its fingerprint; and every completed coverage record has
+  evidence;
+- the top-level object and every nested record contain no undeclared fields;
+  every `specialist:<profile>` partition owner resolves to one uniquely declared
+  specialist reviewer with that exact profile, and a specialist marked
+  `not_required` owns no partition; primary ownership likewise forbids
+  `primary: not_required`, every completed partition has a complete owner,
+  optional specialist reasons are non-null strings, and shared review context
+  has an exact `reviewer isolation` coverage gap;
+- finding counts match the `findings` array, coverage-gap count matches the
+  `coverage_gaps` array, incomplete/not-applicable searches include reasons,
+  follow-up states are valid for their received or required direction, a null
+  fingerprint has a blocking gap whose scope is exactly `target identity`, and
+  `INCONCLUSIVE` contains no admitted finding;
 - human findings, counts, coverage gaps, verification commands, and envelope
   values agree.
 
@@ -197,8 +232,11 @@ finding list or favorable prose.
 
 A successful envelope additionally requires `verdict: PASS`,
 `requirements_coverage.status: complete`, `verification.status: complete`, all
-P0-P3 counts are zero, and no blocking coverage gap. Any other state enters the
-repair, retry, or blocked path below.
+P0-P3 counts are zero, mandatory contract coverage and all review partitions are
+complete, every required root-cause variant search is complete, every received
+follow-up obligation is verified or validly superseded with evidence, there is
+no open or unresolved follow-up obligation, and no blocking coverage gap. Any
+other state enters the repair, retry, or blocked path below.
 
 #### 7.3 Independently Verify Findings
 
@@ -213,6 +251,29 @@ non-PASS and cannot be declared successful by the implementer.
 
 If verification requires a new product or architecture decision, stop and
 request that decision. Do not invent intent or weaken the requirement.
+
+#### 7.3b Retain Neutral Cross-Round Obligations
+
+For every valid non-PASS schema-v2 result, retain the union of every neutral
+obligation from `follow_up.required` and every incoming record from
+`follow_up.received` whose `status: unresolved`. Only a fresh reviewer may
+retire an incoming obligation by recording it as `verified` or `superseded`
+with current evidence; the caller must not filter unresolved records by making
+its own applicability judgment. Do not retain incoming records that the fresh
+reviewer marked `verified` or `superseded`.
+The obligations may have been derived from findings, contracts, partitions, or
+incomplete searches, but do not transmit the completed coverage records or
+variant-search records themselves. Preserve each obligation's stable ID,
+source IDs, objective statement, and originating target fingerprint in the
+caller's execution context. Reject conflicting records with the same ID rather
+than choosing one. Do not create repository-local review-state files.
+
+The retained handoff states only the behavior or evidence to re-establish. It
+must exclude implementation reasoning, prior correctness conclusions, previous
+finding prose beyond stable source identities, and assertions that a repair
+succeeded. If a required obligation cannot be associated with its originating
+target or represented without such a conclusion, keep it unresolved and treat
+the next result as `INCONCLUSIVE`.
 
 #### 7.3a Scenario Coverage Self-Check
 
@@ -249,9 +310,20 @@ Apply only verified repairs:
 #### 7.5 Fresh Re-Review and Progress Guards
 
 After every green repair set, invoke the exact complete-feature command from
-7.1 with a fresh isolated reviewer. Do not provide previous findings,
-implementation reasoning, or repair conclusions to that reviewer. Revalidate
-the entire envelope and topology from scratch.
+7.1 with a fresh isolated reviewer. Supply only the retained neutral follow-up
+obligations from 7.3b as incoming work, including each originating target
+fingerprint, source IDs, and objective statement. Do not provide completed
+prior coverage or variant-search records, previous finding prose,
+implementation reasoning, prior correctness conclusions, or assertions that a
+repair succeeded.
+
+The fresh isolated reviewer must associate incoming obligations with the
+originating target, verify each obligation independently against the updated
+target and its new fingerprint, and still execute all five general passes:
+Scope, System Contract, Behavior, Risk, and Verification. Incoming obligations
+supplement rather than replace this complete review. Revalidate the entire
+schema-v2 envelope and reviewer topology from scratch; any unresolved,
+unvalidated, or unassociated required obligation is `INCONCLUSIVE`.
 
 Continue while substantive progress occurs: verified defects are repaired or a
 fresh review identifies new actionable defects that can be verified. Maintain
@@ -276,9 +348,11 @@ or cleared by an audit score.
 #### 7.6 Terminal Status
 
 Success requires a final valid `PASS` envelope from a fresh complete-feature
-review, with complete requirements and verification, isolated required reviewer
-topology, zero P0-P3 counts, no blocking coverage gaps, no uncovered enumerated
-test scenario from `tasks.md` (per 7.3a), and a still-green baseline.
+review, with complete requirements, contract and partition coverage, variant
+searches, received follow-up verification, and deterministic verification;
+isolated required reviewer topology; zero P0-P3 counts; no open or unresolved
+follow-up; no blocking coverage gaps; no uncovered enumerated test scenario
+from `tasks.md` (per 7.3a); and a still-green baseline.
 
 Any `FAIL`, persistent `INCONCLUSIVE`, unresolved verified defect, repeated
 refuted finding, decision requirement, or no-progress guard is blocking. Preserve
@@ -289,8 +363,8 @@ or a commit.
 ### 8. Final Report and Commit
 
 - Report completed tasks, files changed, verification commands and outcomes,
-  review rounds, verified repairs, refuted findings, unresolved evidence, and
-  the final envelope verdict.
+  review rounds, verified repairs, refuted findings, retained and resolved
+  follow-up obligations, unresolved evidence, and the final envelope verdict.
 - Report success only under 7.6. Otherwise report `FAIL` or `INCONCLUSIVE` and
   the exact blocking evidence.
 - Commits remain outside verdict logic. If the surrounding workflow calls for
