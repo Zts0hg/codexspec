@@ -136,11 +136,15 @@ def _envelope(
         "coverage_gap_count": 0,
         "review_context": "isolated",
         "reviewers": {"primary": "complete", "specialists": []},
-        "activated_profiles": profiles or [],
     }
     for finding in result["findings"]:
         result["finding_counts"][finding["priority"]] += 1
-    return "Human report\n<review-code-result>\n" + json.dumps(result) + "\n</review-code-result>\n"
+    profile_report = ", ".join(profiles or []) or "none"
+    return (
+        f"Human report\nActivated profiles: {profile_report}\n<review-code-result>\n"
+        + json.dumps(result)
+        + "\n</review-code-result>\n"
+    )
 
 
 def _write_case(tmp_path: Path, *, case_id: str = "command-quoting") -> Path:
@@ -236,6 +240,10 @@ def test_parse_review_result_rejects_schema_v1_and_cross_field_contradictions() 
     unknown_field["legacy_success"] = True
     invalid_results.append(("unknown keys", unknown_field))
 
+    undeclared_profiles = json.loads(json.dumps(valid))
+    undeclared_profiles["activated_profiles"] = ["parsing/configuration"]
+    invalid_results.append(("unknown keys", undeclared_profiles))
+
     bad_count = json.loads(json.dumps(valid))
     bad_count["finding_counts"]["P2"] = 0
     invalid_results.append(("finding counts", bad_count))
@@ -267,6 +275,40 @@ def test_parse_review_result_rejects_schema_v1_and_cross_field_contradictions() 
     unsupported_inconclusive = json.loads(json.dumps(unsupported_fail))
     unsupported_inconclusive["verdict"] = "INCONCLUSIVE"
     invalid_results.append(("INCONCLUSIVE", unsupported_inconclusive))
+
+    inconclusive_with_finding = json.loads(json.dumps(valid))
+    inconclusive_with_finding["verdict"] = "INCONCLUSIVE"
+    inconclusive_with_finding["coverage_gaps"] = [
+        {
+            "id": "G-001",
+            "scope": "verification",
+            "impact": "the mandatory check could not run",
+            "blocking": True,
+        }
+    ]
+    inconclusive_with_finding["coverage_gap_count"] = 1
+    invalid_results.append(("INCONCLUSIVE cannot contain", inconclusive_with_finding))
+
+    unmatched_specialist = json.loads(json.dumps(valid))
+    unmatched_specialist["review_coverage"]["partitions"][0]["owner"] = "specialist:parsing/configuration"
+    invalid_results.append(("specialist partition owner", unmatched_specialist))
+
+    duplicate_specialist = json.loads(json.dumps(valid))
+    duplicate_specialist["reviewers"]["specialists"] = [
+        {"profile": "parsing/configuration", "state": "complete"},
+        {"profile": "parsing/configuration", "state": "complete"},
+    ]
+    invalid_results.append(("specialist profiles must be unique", duplicate_specialist))
+
+    impossible_uncommitted = json.loads(json.dumps(valid))
+    impossible_uncommitted["target"]["selector"] = "uncommitted"
+    invalid_results.append(("uncommitted target cannot be a complete feature", impossible_uncommitted))
+
+    missing_commit_identity = json.loads(json.dumps(valid))
+    missing_commit_identity["target"]["selector"] = "commit"
+    missing_commit_identity["target"]["complete_feature"] = False
+    missing_commit_identity["requirements_coverage"]["status"] = "partial"
+    invalid_results.append(("commit selector requires commit_sha", missing_commit_identity))
 
     mismatched_follow_up_fingerprint = json.loads(json.dumps(valid))
     mismatched_follow_up_fingerprint["follow_up"]["required"][0]["origin_fingerprint"] = "sha256:different-target"
@@ -309,6 +351,12 @@ def test_parse_review_result_allows_null_fingerprint_only_for_blocked_non_pass()
     output = "<review-code-result>\n" + json.dumps(result) + "\n</review-code-result>"
 
     assert run_eval.parse_review_result(output)["verdict"] == "INCONCLUSIVE"
+
+    unrelated = json.loads(json.dumps(result))
+    unrelated["coverage_gaps"][0]["scope"] = "package build"
+    unrelated_output = "<review-code-result>\n" + json.dumps(unrelated) + "\n</review-code-result>"
+    with pytest.raises(run_eval.ResultParseError, match="target identity"):
+        run_eval.parse_review_result(unrelated_output)
 
 
 def test_case_expectations_match_profiles_findings_and_forbidden_text(tmp_path: Path) -> None:
@@ -386,6 +434,11 @@ def test_live_host_adapters_use_subprocess_argument_arrays(monkeypatch: pytest.M
         calls.append({"args": args, **kwargs})
         return subprocess.CompletedProcess(args, 0, stdout=_envelope(verdict="PASS"), stderr="")
 
+    local_git_vars = ("GIT_DIR", "GIT_INDEX_FILE", "GIT_WORK_TREE")
+    for name in local_git_vars:
+        monkeypatch.setenv(name, f"caller-{name.lower()}")
+    monkeypatch.setenv("CODEXSPEC_EVAL_SENTINEL", "preserved")
+    monkeypatch.setattr(run_eval, "_git_local_env_vars", lambda: local_git_vars)
     monkeypatch.setattr(run_eval.subprocess, "run", fake_run)
     repo = tmp_path / "repo"
     repo.mkdir()
@@ -398,6 +451,130 @@ def test_live_host_adapters_use_subprocess_argument_arrays(monkeypatch: pytest.M
     assert all(call.get("shell") is not True for call in calls)
     assert calls[0]["args"][:2] == ["codex", "exec"]
     assert calls[1]["args"][:2] == ["claude", "-p"]
+    assert all(call["env"]["CODEXSPEC_EVAL_SENTINEL"] == "preserved" for call in calls)
+    assert all(all(name not in call["env"] for name in local_git_vars) for call in calls)
+
+
+def test_systematic_coverage_expectations_reject_hollow_or_unrelated_evidence() -> None:
+    cases_root = Path("tests/evals/review_code/cases")
+
+    clean = run_eval.load_case(cases_root / "clean-contract-propagation")
+    clean_result = run_eval.parse_review_result(_envelope(verdict="PASS", profiles=clean.data["risk_profiles"]))
+    clean_contract = clean_result["review_coverage"]["contracts"][0]
+    clean_contract["entry_surfaces"] = ["primary", "secondary"]
+    for field in ["producers", "propagation", "consumers", "scenarios"]:
+        clean_contract[field] = []
+    clean_evaluation = run_eval.evaluate_result(clean, clean_result)
+    assert clean_evaluation.passed is False
+    assert any("contract trace" in failure for failure in clean_evaluation.failures)
+
+    early = run_eval.load_case(cases_root / "early-finding-complete-coverage")
+    early_result = run_eval.parse_review_result(
+        _envelope(
+            profiles=early.data["risk_profiles"],
+            findings=[{"priority": "P2", "summary": "public_name returns renamed"}],
+        )
+    )
+    early_evaluation = run_eval.evaluate_result(early, early_result)
+    assert early_evaluation.passed is False
+    assert any("partition" in failure for failure in early_evaluation.failures)
+
+    incomplete = run_eval.load_case(cases_root / "incomplete-contract-coverage")
+    incomplete_data = json.loads(run_eval.RESULT_RE.search(_envelope(verdict="PASS")).group(1))
+    incomplete_data["verdict"] = "INCONCLUSIVE"
+    incomplete_data["verification"]["status"] = "incomplete"
+    incomplete_data["coverage_gaps"] = [
+        {
+            "id": "G-001",
+            "scope": "package build",
+            "impact": "the optional wheel build was unavailable",
+            "blocking": True,
+        }
+    ]
+    incomplete_data["coverage_gap_count"] = 1
+    incomplete_output = (
+        "Human report\nActivated profiles: public API/CLI compatibility\n<review-code-result>\n"
+        + json.dumps(incomplete_data)
+        + "\n</review-code-result>"
+    )
+    incomplete_result = run_eval.parse_review_result(incomplete_output)
+    incomplete_evaluation = run_eval.evaluate_result(incomplete, incomplete_result)
+    assert incomplete_evaluation.passed is False
+    assert any("blocking coverage gap" in failure for failure in incomplete_evaluation.failures)
+
+
+def test_systematic_coverage_expectations_accept_bound_semantic_evidence() -> None:
+    cases_root = Path("tests/evals/review_code/cases")
+
+    clean = run_eval.load_case(cases_root / "clean-contract-propagation")
+    clean_result = run_eval.parse_review_result(_envelope(verdict="PASS", profiles=clean.data["risk_profiles"]))
+    clean_contract = clean_result["review_coverage"]["contracts"][0]
+    clean_contract["entry_surfaces"] = ["primary entry", "secondary entry"]
+    assert run_eval.evaluate_result(clean, clean_result).passed is True
+
+    related = run_eval.load_case(cases_root / "related-propagation-defects")
+    related_result = run_eval.parse_review_result(
+        _envelope(
+            profiles=related.data["risk_profiles"],
+            findings=[
+                {"priority": "P2", "summary": "web adapter replaces resolved policy", "root_cause_id": "RC-001"},
+                {
+                    "priority": "P2",
+                    "summary": "worker adapter replaces resolved policy",
+                    "root_cause_id": "RC-001",
+                },
+            ],
+        )
+    )
+    assert run_eval.evaluate_result(related, related_result).passed is True
+
+    early = run_eval.load_case(cases_root / "early-finding-complete-coverage")
+    early_result = run_eval.parse_review_result(
+        _envelope(
+            profiles=early.data["risk_profiles"],
+            findings=[{"priority": "P2", "summary": "public_name returns renamed"}],
+        )
+    )
+    early_result["review_coverage"]["partitions"] = [
+        {
+            "id": "P-001",
+            "scope": "public_name compatibility",
+            "owner": "primary",
+            "contract_ids": ["C-001"],
+            "evidence": ["baseline and changed value compared"],
+            "status": "complete",
+        },
+        {
+            "id": "P-002",
+            "scope": "invalid limit parsing",
+            "owner": "primary",
+            "contract_ids": ["C-001"],
+            "evidence": ["invalid path inspected after the finding"],
+            "status": "complete",
+        },
+    ]
+    assert run_eval.evaluate_result(early, early_result).passed is True
+
+    incomplete = run_eval.load_case(cases_root / "incomplete-contract-coverage")
+    incomplete_data = json.loads(run_eval.RESULT_RE.search(_envelope(verdict="PASS")).group(1))
+    incomplete_data["verdict"] = "INCONCLUSIVE"
+    incomplete_data["verification"]["status"] = "incomplete"
+    incomplete_data["coverage_gaps"] = [
+        {
+            "id": "G-001",
+            "scope": "generated binary consumer",
+            "impact": "its generator source and provenance are unavailable",
+            "blocking": True,
+        }
+    ]
+    incomplete_data["coverage_gap_count"] = 1
+    incomplete_output = (
+        "Human report\nActivated profiles: public API/CLI compatibility\n<review-code-result>\n"
+        + json.dumps(incomplete_data)
+        + "\n</review-code-result>"
+    )
+    incomplete_result = run_eval.parse_review_result(incomplete_output)
+    assert run_eval.evaluate_result(incomplete, incomplete_result).passed is True
 
 
 def test_systematic_coverage_fixtures_encode_their_review_premises(

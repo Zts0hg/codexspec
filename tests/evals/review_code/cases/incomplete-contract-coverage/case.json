@@ -21,6 +21,10 @@
     "minimum_findings": [],
     "forbidden_findings": ["binary is a defect", "missing docstring"],
     "blocking_coverage_gap": true,
+    "required_blocking_gap_terms": [
+      ["generated consumer", "binary", "client.bin"],
+      ["generator", "provenance", "source"]
+    ],
     "profile_aliases": {
       "public API/CLI compatibility": ["generated consumer", "schema compatibility"]
     }

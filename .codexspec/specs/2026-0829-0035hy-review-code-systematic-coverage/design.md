@@ -323,14 +323,19 @@ The caller performs that originating-result validation before passing only the n
 to a fresh reviewer. Root-cause searches reference exactly the findings linked to that cause;
 outgoing obligations cover every current finding and use the current target fingerprint. Target
 members retain their schema-v1 types plus the v2 fingerprint, target emptiness agrees with inventory
-count, and a non-empty target has contract and partition coverage. Finding counts equal the
+count, `uncommitted` and `commit` selectors cannot claim a complete feature, only the `commit`
+selector carries commit/parent SHA fields, and complete requirements coverage requires a complete
+feature target. A non-empty target has contract and partition coverage. The top-level object is
+closed to undeclared extensions; activated profiles remain human Scope data. Each specialist-owned
+partition resolves to one uniquely declared specialist reviewer with the exact profile. Finding counts equal the
 `findings` array, `coverage_gap_count` equals the `coverage_gaps` array,
 evidence for every completed coverage record, a reason for every incomplete or not-applicable
 variant search, and verdict consistency with all completion rules. `PASS` permits no open or
 unresolved follow-up obligation and no blocking coverage gap. `FAIL` requires at least one admitted
 finding; an attributable deterministic check failure is represented as a finding. `INCONCLUSIVE`
-requires a blocking coverage gap. A null target fingerprint is valid only for a non-PASS result
-with a blocking target-identity gap.
+requires a blocking coverage gap and contains no admitted finding, because any admitted defect
+selects `FAIL`. A null target fingerprint is valid only for a non-PASS result with a blocking gap
+whose `scope` is exactly `target identity`.
 
 ### Target Fingerprint
 

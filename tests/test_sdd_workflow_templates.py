@@ -199,6 +199,11 @@ def test_implement_tasks_validates_result_envelope_and_review_topology():
     assert "all P0-P3 counts are zero" in compact
     assert "prose cannot override" in compact.lower()
     assert "INCONCLUSIVE" in content
+    assert "no undeclared fields" in compact.lower()
+    assert "scope is exactly `target identity`" in compact.lower()
+    assert "specialist:<profile>" in content
+    assert "`INCONCLUSIVE` contains no admitted finding" in content
+    assert "`uncommitted` and `commit` are not complete features" in compact
 
 
 def test_implement_tasks_carries_only_neutral_schema_v2_follow_up() -> None:

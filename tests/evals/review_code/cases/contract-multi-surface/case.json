@@ -28,6 +28,13 @@
     ],
     "forbidden_findings": ["missing docstring", "style"],
     "minimum_contract_surfaces": 2,
+    "required_contract_trace": {
+      "producers": [["resolve", "resolver"]],
+      "propagation": [["adapter", "entry"]],
+      "consumers": [["consume", "consumer"]],
+      "entry_surfaces": [["primary"], ["secondary"]],
+      "scenarios": [["normal"], ["invalid", "default", "empty"]]
+    },
     "profile_aliases": {
       "parsing/configuration": ["resolved option", "configuration"]
     }

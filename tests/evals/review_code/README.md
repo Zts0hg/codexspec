@@ -22,3 +22,10 @@ continued partition completion after an early finding, blocking incomplete
 coverage, and clean multi-surface behavior. Case schema versioning, aggregate
 record versioning, and the reviewed command's result schema are independent
 protocols.
+
+Systematic-coverage cases bind their expectations to semantic evidence rather
+than counts alone: contract traces name required producer, propagation,
+consumer, entry-surface, and scenario terms; early-finding cases name distinct
+partition scopes; related findings must occur in one root-cause search; and an
+incomplete case requires a blocking gap tied to its declared uninspectable
+surface.

@@ -190,7 +190,9 @@ object. Prose cannot override, repair, or supply missing machine data. Validate:
   reviewed target evidence;
 - all target members (`selector`, `fingerprint`, `complete_feature`, `empty`,
   refs/SHAs, and `inventory_count`) exist with known types, and target emptiness
-  agrees with the inventory count;
+  agrees with the inventory count; `uncommitted` and `commit` are not complete
+  features, only `commit` carries commit/parent SHA fields, and complete
+  requirements coverage requires a complete-feature target;
 - `review_context: isolated`, the primary reviewer is `complete`, and every
   required specialist is present and `complete`;
 - finding, contract, partition, root-cause, follow-up, and coverage-gap IDs are
@@ -199,9 +201,14 @@ object. Prose cannot override, repair, or supply missing machine data. Validate:
   follow-up source resolves in the retained originating schema-v2 result
   identified by its fingerprint; and every completed coverage record has
   evidence;
+- the top-level object and every nested record contain no undeclared fields;
+  every `specialist:<profile>` partition owner resolves to one uniquely declared
+  specialist reviewer with that exact profile;
 - finding counts match the `findings` array, coverage-gap count matches the
   `coverage_gaps` array, incomplete/not-applicable searches include reasons,
-  and follow-up states are valid for their received or required direction;
+  follow-up states are valid for their received or required direction, a null
+  fingerprint has a blocking gap whose scope is exactly `target identity`, and
+  `INCONCLUSIVE` contains no admitted finding;
 - human findings, counts, coverage gaps, verification commands, and envelope
   values agree.
 

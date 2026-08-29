@@ -30,6 +30,11 @@
     ],
     "forbidden_findings": ["missing docstring", "style"],
     "all_partitions_terminal": true,
+    "minimum_partitions": 2,
+    "required_partition_scopes": [
+      ["public_name", "public name", "compatibility"],
+      ["parse_limit", "limit parsing", "invalid limit"]
+    ],
     "profile_aliases": {
       "public API/CLI compatibility": ["public name", "compatibility"]
     }

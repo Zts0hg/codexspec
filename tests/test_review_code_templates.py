@@ -418,6 +418,12 @@ def test_defect_report_has_exactly_six_human_sections_and_one_envelope() -> None
     assert "completed coverage record" in output and "evidence" in output
     assert "open or unresolved follow-up" in output
     assert "blocking coverage gap" in output
+    assert "permits no additional members" in output
+    assert "do not add an `activated_profiles`" in output
+    assert "scope` is exactly `target identity`" in output
+    assert "specialist profiles are unique" in output
+    assert "INCONCLUSIVE` contains no admitted finding" in output
+    assert "uncommitted` and `commit` cannot claim `complete_feature`" in output
 
     for forbidden in ["Quality Score", "Strengths", "Recommendations"]:
         assert forbidden not in rendered

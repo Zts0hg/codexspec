@@ -82,11 +82,16 @@ def _git_local_env_vars() -> tuple[str, ...]:
     return tuple(completed.stdout.splitlines())
 
 
-def _git(repo: Path, *args: str) -> subprocess.CompletedProcess[str]:
+def _foreign_repo_environment() -> dict[str, str]:
+    """Return an environment detached from the caller's Git repository."""
+
     environment = os.environ.copy()
     for name in _git_local_env_vars():
         environment.pop(name, None)
+    return environment
 
+
+def _git(repo: Path, *args: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [
             "git",
@@ -97,7 +102,7 @@ def _git(repo: Path, *args: str) -> subprocess.CompletedProcess[str]:
             *args,
         ],
         cwd=repo,
-        env=environment,
+        env=_foreign_repo_environment(),
         text=True,
         capture_output=True,
         check=True,
@@ -108,6 +113,7 @@ def _codexspec_init(repo: Path) -> None:
     command = shutil.which("codexspec") or "codexspec"
     completed = subprocess.run(
         [command, "init", str(repo), "--ai", "both", "--no-git", "--lang", "en"],
+        env=_foreign_repo_environment(),
         text=True,
         capture_output=True,
     )
@@ -175,6 +181,40 @@ def _validate_case(data: dict[str, Any], source: Path) -> None:
         raise ValueError(f"{source}: expect.all_partitions_terminal must be a boolean")
     if "blocking_coverage_gap" in expect and not isinstance(expect["blocking_coverage_gap"], bool):
         raise ValueError(f"{source}: expect.blocking_coverage_gap must be a boolean")
+    contract_trace = expect.get("required_contract_trace")
+    if contract_trace is not None:
+        allowed_fields = {"producers", "propagation", "consumers", "entry_surfaces", "scenarios"}
+        if (
+            not isinstance(contract_trace, dict)
+            or not contract_trace
+            or not set(contract_trace).issubset(allowed_fields)
+        ):
+            raise ValueError(f"{source}: expect.required_contract_trace has invalid fields")
+        for field, groups in contract_trace.items():
+            _validate_term_groups(groups, f"{source}: expect.required_contract_trace.{field}")
+    minimum_partitions = expect.get("minimum_partitions")
+    if minimum_partitions is not None and (
+        isinstance(minimum_partitions, bool) or not isinstance(minimum_partitions, int) or minimum_partitions < 1
+    ):
+        raise ValueError(f"{source}: expect.minimum_partitions must be a positive integer")
+    if "required_partition_scopes" in expect:
+        _validate_term_groups(expect["required_partition_scopes"], f"{source}: expect.required_partition_scopes")
+    if "required_blocking_gap_terms" in expect:
+        _validate_term_groups(expect["required_blocking_gap_terms"], f"{source}: expect.required_blocking_gap_terms")
+
+
+def _validate_term_groups(value: Any, name: str) -> None:
+    if (
+        not isinstance(value, list)
+        or not value
+        or any(
+            not isinstance(group, list)
+            or not group
+            or any(not isinstance(term, str) or not term.strip() for term in group)
+            for group in value
+        )
+    ):
+        raise ValueError(f"{name} must be a non-empty array of non-empty term arrays")
 
 
 def load_case(case_dir: Path) -> Case:
@@ -305,7 +345,7 @@ def _validate_coverage(result: dict[str, Any]) -> None:
         _known_fields(partition, {"id", "scope", "owner", "contract_ids", "evidence", "status"}, "partition")
         _string(partition["scope"], "partition.scope")
         owner = _string(partition["owner"], "partition.owner")
-        if owner != "primary" and not owner.startswith("specialist:"):
+        if owner != "primary" and (not owner.startswith("specialist:") or not owner.removeprefix("specialist:")):
             raise ResultParseError(f"unsupported partition owner {owner!r}")
         references = _strings(partition["contract_ids"], "partition.contract_ids")
         if not set(references).issubset(contract_ids):
@@ -463,15 +503,24 @@ def _validate_gaps_and_reviewers(result: dict[str, Any]) -> None:
     _known_fields(reviewers, {"primary", "specialists"}, "reviewers")
     if reviewers["primary"] not in VALID_REVIEWER_STATES:
         raise ResultParseError(f"unsupported primary reviewer state {reviewers['primary']!r}")
-    for specialist in _array(reviewers["specialists"], "reviewers.specialists"):
-        record = _object(specialist, "specialist")
+    specialists = [_object(item, "specialist") for item in _array(reviewers["specialists"], "reviewers.specialists")]
+    specialist_profiles: set[str] = set()
+    for record in specialists:
         _required_fields(record, {"profile", "state"}, "specialist")
         _known_fields(record, {"profile", "state", "reason"}, "specialist")
-        _string(record["profile"], "specialist.profile")
+        profile = _string(record["profile"], "specialist.profile")
+        if profile in specialist_profiles:
+            raise ResultParseError("specialist profiles must be unique")
+        specialist_profiles.add(profile)
         if record["state"] not in VALID_REVIEWER_STATES:
             raise ResultParseError(f"unsupported specialist state {record['state']!r}")
         if "reason" in record:
             _string(record["reason"], "specialist.reason", nullable=True)
+
+    for partition in result["review_coverage"]["partitions"]:
+        owner = partition["owner"]
+        if owner.startswith("specialist:") and owner.removeprefix("specialist:") not in specialist_profiles:
+            raise ResultParseError("specialist partition owner must reference a declared specialist reviewer")
 
 
 def _validate_verdict_consistency(result: dict[str, Any]) -> None:
@@ -484,6 +533,8 @@ def _validate_verdict_consistency(result: dict[str, Any]) -> None:
     if verdict == "INCONCLUSIVE":
         if not blocking_gaps:
             raise ResultParseError("INCONCLUSIVE requires a blocking coverage gap")
+        if result["findings"]:
+            raise ResultParseError("INCONCLUSIVE cannot contain admitted findings; use FAIL")
         return
     if result["verification"]["status"] != "complete":
         raise ResultParseError("PASS requires complete verification")
@@ -523,7 +574,7 @@ def parse_review_result(output: str) -> dict[str, Any]:
     missing = sorted(REQUIRED_RESULT_KEYS - set(result))
     if missing:
         raise ResultParseError(f"result envelope missing required keys: {', '.join(missing)}")
-    _known_fields(result, REQUIRED_RESULT_KEYS | {"activated_profiles"}, "result envelope")
+    _known_fields(result, REQUIRED_RESULT_KEYS, "result envelope")
     if result["schema_version"] != "2":
         raise ResultParseError(f"unsupported result schema {result['schema_version']!r}")
     if result["mode"] != "defect":
@@ -573,12 +624,22 @@ def parse_review_result(output: str) -> dict[str, Any]:
     inventory_count = _non_negative_integer(target["inventory_count"], "target.inventory_count")
     if target["empty"] != (inventory_count == 0):
         raise ResultParseError("target.empty must agree with target.inventory_count")
+    if target["selector"] in {"uncommitted", "commit"} and target["complete_feature"]:
+        raise ResultParseError(f"{target['selector']} target cannot be a complete feature")
+    if target["selector"] == "commit":
+        if target["commit_sha"] is None:
+            raise ResultParseError("commit selector requires commit_sha")
+    elif target["commit_sha"] is not None or target["parent_sha"] is not None:
+        raise ResultParseError("commit_sha and parent_sha are only valid with the commit selector")
     if fingerprint is None:
         if result["verdict"] == "PASS":
             raise ResultParseError("PASS requires a target fingerprint")
         gaps = _array(result["coverage_gaps"], "coverage_gaps")
-        if not any(isinstance(gap, dict) and gap.get("blocking") is True for gap in gaps):
-            raise ResultParseError("a missing target fingerprint requires a blocking coverage gap")
+        if not any(
+            isinstance(gap, dict) and gap.get("blocking") is True and gap.get("scope") == "target identity"
+            for gap in gaps
+        ):
+            raise ResultParseError("a missing target fingerprint requires a blocking target identity coverage gap")
 
     requirements = _object(result["requirements_coverage"], "requirements_coverage")
     _required_fields(requirements, {"status", "feature"}, "requirements_coverage")
@@ -586,6 +647,8 @@ def parse_review_result(output: str) -> dict[str, Any]:
     if requirements["status"] not in VALID_REQUIREMENTS_STATUSES:
         raise ResultParseError(f"unsupported requirements status {requirements['status']!r}")
     _string(requirements["feature"], "requirements_coverage.feature", nullable=True)
+    if requirements["status"] == "complete" and not target["complete_feature"]:
+        raise ResultParseError("complete requirements coverage requires a complete feature target")
 
     verification = _object(result["verification"], "verification")
     _required_fields(verification, {"status", "commands"}, "verification")
@@ -611,8 +674,6 @@ def parse_review_result(output: str) -> dict[str, Any]:
 
     if result["review_context"] not in {"isolated", "shared"}:
         raise ResultParseError(f"unsupported review context {result['review_context']!r}")
-    if "activated_profiles" in result:
-        _strings(result["activated_profiles"], "activated_profiles")
     _validate_coverage(result)
     if not target["empty"]:
         if not result["review_coverage"]["contracts"]:
@@ -636,6 +697,38 @@ def _finding_texts(result: dict[str, Any]) -> list[str]:
     return texts
 
 
+def _matches_term_groups(text: str, groups: list[list[str]]) -> bool:
+    normalized = text.lower()
+    return all(any(term.lower() in normalized for term in group) for group in groups)
+
+
+def _has_distinct_candidates(candidate_sets: list[set[str]], allowed: set[str] | None = None) -> bool:
+    def assign(index: int, used: set[str]) -> bool:
+        if index == len(candidate_sets):
+            return True
+        candidates = candidate_sets[index] if allowed is None else candidate_sets[index] & allowed
+        return any(assign(index + 1, used | {candidate}) for candidate in candidates - used)
+
+    return assign(0, set())
+
+
+def _finding_matches_expectation(finding: dict[str, Any], expected: dict[str, Any]) -> bool:
+    priorities = set(expected.get("priorities") or [expected["priority"]])
+    terms = [expected["contains"], *expected.get("aliases", [])]
+    text = json.dumps(finding, sort_keys=True).lower()
+    return finding.get("priority") in priorities and any(term.lower() in text for term in terms)
+
+
+def _observed_profiles(case: Case, result: dict[str, Any]) -> list[str]:
+    output_text = str(result.get("_output_text", "")).lower()
+    observed: list[str] = []
+    for profile in case.data["risk_profiles"]:
+        aliases = case.data["expect"].get("profile_aliases", {}).get(profile, [])
+        if any(term.lower() in output_text for term in [profile, *aliases]):
+            observed.append(profile)
+    return observed
+
+
 def evaluate_result(case: Case, result: dict[str, Any]) -> Evaluation:
     """Compare one parsed result with case expectations."""
 
@@ -645,27 +738,28 @@ def evaluate_result(case: Case, result: dict[str, Any]) -> Evaluation:
     if result["verdict"] not in acceptable_verdicts:
         failures.append(f"expected verdict {' or '.join(acceptable_verdicts)}, got {result['verdict']}")
 
-    activated = set(result.get("activated_profiles", []))
-    output_text = str(result.get("_output_text", "")).lower()
+    activated = set(_observed_profiles(case, result))
     require_profiles = expected.get("require_profiles", True)
     for profile in case.data["risk_profiles"] if require_profiles else []:
-        aliases = case.data["expect"].get("profile_aliases", {}).get(profile, [])
-        profile_terms = [profile, *aliases]
-        if profile not in activated and not any(term.lower() in output_text for term in profile_terms):
+        if profile not in activated:
             failures.append(f"missing risk profile: {profile}")
 
-    finding_texts = _finding_texts(result)
-    for expected_finding in expected.get("minimum_findings", []):
-        expected_priorities = expected_finding.get("priorities", [expected_finding["priority"]])
-        priorities = [priority.lower() for priority in expected_priorities]
-        needles = [expected_finding["contains"], *expected_finding.get("aliases", [])]
-        normalized_needles = [needle.lower() for needle in needles]
-        if not any(
-            any(priority in text for priority in priorities) and any(needle in text for needle in normalized_needles)
-            for text in finding_texts
-        ):
-            failures.append(f"missing minimum finding: {priorities!r} containing one of {normalized_needles!r}")
+    structured_findings = [finding for finding in result["findings"] if isinstance(finding, dict)]
+    expected_findings = expected.get("minimum_findings", [])
+    finding_candidate_sets: list[set[str]] = []
+    for expected_finding in expected_findings:
+        candidates = {
+            finding["id"] for finding in structured_findings if _finding_matches_expectation(finding, expected_finding)
+        }
+        finding_candidate_sets.append(candidates)
+        if not candidates:
+            priorities = expected_finding.get("priorities", [expected_finding["priority"]])
+            needles = [expected_finding["contains"], *expected_finding.get("aliases", [])]
+            failures.append(f"missing minimum finding: {priorities!r} containing one of {needles!r}")
+    if finding_candidate_sets and not _has_distinct_candidates(finding_candidate_sets):
+        failures.append("minimum finding expectations must match distinct structured findings")
 
+    finding_texts = _finding_texts(result)
     for forbidden in expected.get("forbidden_findings", []):
         needle = str(forbidden).lower()
         if any(needle in text for text in finding_texts):
@@ -678,10 +772,38 @@ def evaluate_result(case: Case, result: dict[str, Any]) -> Evaluation:
         if len(surfaces) < minimum_surfaces:
             failures.append(f"expected at least {minimum_surfaces} contract entry surfaces, got {len(surfaces)}")
 
+    required_contract_trace = expected.get("required_contract_trace")
+    if required_contract_trace and not any(
+        all(
+            _matches_term_groups("\n".join(contract[field]), groups)
+            for field, groups in required_contract_trace.items()
+        )
+        for contract in coverage["contracts"]
+    ):
+        failures.append("expected one contract trace with all required producer-to-consumer roles and scenarios")
+
     if expected.get("root_cause_group") and not any(
-        len(search["finding_ids"]) >= 2 for search in coverage["variant_searches"]
+        _has_distinct_candidates(finding_candidate_sets, set(search["finding_ids"]))
+        for search in coverage["variant_searches"]
     ):
         failures.append("expected at least two findings in one root-cause variant search")
+
+    minimum_partitions = expected.get("minimum_partitions")
+    if minimum_partitions is not None and len(coverage["partitions"]) < minimum_partitions:
+        failures.append(f"expected at least {minimum_partitions} review partitions")
+
+    required_partition_scopes = expected.get("required_partition_scopes")
+    if required_partition_scopes:
+        partition_candidates = [
+            {
+                partition["id"]
+                for partition in coverage["partitions"]
+                if _matches_term_groups(partition["scope"], [terms])
+            }
+            for terms in required_partition_scopes
+        ]
+        if not _has_distinct_candidates(partition_candidates):
+            failures.append("expected distinct review partitions for every required semantic scope")
 
     if expected.get("all_partitions_terminal"):
         partitions = coverage["partitions"]
@@ -691,6 +813,13 @@ def evaluate_result(case: Case, result: dict[str, Any]) -> Evaluation:
 
     if expected.get("blocking_coverage_gap") and not any(gap["blocking"] for gap in result["coverage_gaps"]):
         failures.append("expected a blocking coverage gap")
+
+    required_gap_terms = expected.get("required_blocking_gap_terms")
+    if required_gap_terms and not any(
+        gap["blocking"] and _matches_term_groups(f"{gap['scope']}\n{gap['impact']}", required_gap_terms)
+        for gap in result["coverage_gaps"]
+    ):
+        failures.append("expected a blocking coverage gap tied to the declared fixture premise")
 
     return Evaluation(passed=not failures, failures=failures)
 
@@ -757,6 +886,7 @@ class CodexHost(HostAdapter):
         completed = subprocess.run(
             ["codex", "exec", prompt],
             cwd=repo,
+            env=_foreign_repo_environment(),
             text=True,
             capture_output=True,
             timeout=900,
@@ -775,6 +905,7 @@ class ClaudeHost(HostAdapter):
         completed = subprocess.run(
             ["claude", "-p", prompt],
             cwd=repo,
+            env=_foreign_repo_environment(),
             text=True,
             capture_output=True,
             timeout=900,
@@ -821,7 +952,7 @@ def run_case(
                 "started_at": started,
                 "attempts": attempt,
                 "verdict": result["verdict"],
-                "activated_profiles": result.get("activated_profiles", []),
+                "activated_profiles": _observed_profiles(case, result),
                 "finding_counts": result["finding_counts"],
                 "coverage_gap_count": result["coverage_gap_count"],
                 "passed": evaluation.passed,
