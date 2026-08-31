@@ -2,6 +2,19 @@
 
 ## Commandes
 
+### `codexspec show-blueprint`
+
+Affiche le fichier `.codexspec/blueprint.md` complet de la branche fixe `codexspec/auto-dev` et de
+`worktree-for-codexspec-auto-dev` directement sur la sortie standard. Les prérequis absents sont
+signalés sur la sortie d'erreur avec un état non nul. La commande est en lecture seule et
+n'effectue aucun fetch, merge, verrouillage ou écriture.
+
+```bash
+codexspec show-blueprint
+```
+
+---
+
 ### `codexspec init`
 
 Initialise un nouveau projet CodexSpec.

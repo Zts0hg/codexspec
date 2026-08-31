@@ -14,10 +14,12 @@ Nach Kategorie gruppiert – analog zum Katalog im README. Innerhalb jeder Grupp
 |---------|---------|
 | `/codexspec:constitution` | Projektverfassung erstellen oder aktualisieren, inklusive bereichsübergreifender Validierung |
 | `/codexspec:specify` | Anforderungen klären, bestätigen und in `requirements.md` festhalten |
+| `/codexspec:blueprint` | Bestätigte Anforderungen im gemeinsamen Blueprint besprechen und pflegen |
 | `/codexspec:generate-spec` | `spec.md` aus den geklärten Anforderungen erzeugen (★ Auto-Review) |
 | `/codexspec:spec-to-plan` | Spezifikation in einen technischen Umsetzungsplan überführen (★ Auto-Review) |
 | `/codexspec:plan-to-tasks` | Plan in nachverfolgbare, prüfbare Aufgaben herunterbrechen (★ Auto-Review) |
 | `/codexspec:implement-tasks` | Aufgaben mit bedingtem TDD-Workflow ausführen |
+| `/codexspec:auto-dev` | Alle ausstehenden Blueprint-Anforderungen in Dokumentreihenfolge autonom entwickeln |
 
 ### Review Commands (Quality Gates)
 

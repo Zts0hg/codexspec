@@ -325,6 +325,20 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 
 **Implementation**: `src/codexspec/profile.py` (`ensure_profile_scaffold` / `render_profile_block` / `inject_profile_block`), wired into `src/codexspec/__init__.py` (scaffold + CLAUDE.md injection, after the compliance import) and `src/codexspec/integrations/codex.py` (AGENTS.md injection); the store layout + B-layer read live in `templates/commands/distill.md` and `templates/commands/specify.md`. CodexSpec's own repo receives the ambient block by dogfooding `init` at release (not by hand-editing its CLAUDE.md/AGENTS.md); the `.claude/commands/` and `.agents/skills/` forms of `specify` regenerate from the template.
 
+### Shared Blueprint and Autonomous Development: blueprint / auto-dev
+
+**Feature**: A shared product blueprint plus an autonomous development loop over it. `/codexspec:blueprint` discusses and maintains confirmed requirements in a single shared document; `/codexspec:auto-dev` takes ownership of a dedicated workspace and develops every pending requirement in that blueprint end-to-end through the existing SDD chain.
+
+- **Shared blueprint document**: `.codexspec/blueprint.md` in a dedicated Git worktree on a fixed branch (`codexspec/auto-dev`, worktree `<repo>-worktrees/worktree-for-codexspec-auto-dev`), so multiple feature branches share one confirmed-requirements source.
+- **Strict mutation protocol**: the blueprint changes only through a versioned JSON request/response protocol (`append_requirement`, `replace_pending_requirement`, `delete_pending_requirement`, `move_pending_requirement`, `update_status`) classified strictly as `invalid_request → conflict → rejected → applied`, with exact-byte SHA-256 optimistic concurrency (`expected_blueprint_hash`).
+- **Managed metadata**: each block carries an exact three-line managed prefix (Feature ID / Development Status / Feature Directory); pending blocks are freely editable, in-progress/completed blocks are view-only, and only `auto-dev` may transition status (with a valid ownership token).
+- **Atomic persistence**: every applied operation is one atomic file replacement plus one blueprint-only commit, journaled with a recovery record so every interrupt window recovers deterministically or fails closed.
+- **Renewable ownership**: `auto-dev` holds a random fencing token with heartbeat renewal; stale runs are reclaimed automatically and the old token fails closed (`lost_ownership`). Synchronization merges are fenced by a merge-owner record and can only end as verified-merged or aborted at the pre-merge HEAD.
+- **Run-local delegation**: under auto-dev, each SDD stage skips only its Auto-Next section (keyed on an invocation-context marker) and returns its result to the run; direct invocations keep existing `workflow.auto_next` behavior.
+- **Public CLI**: `codexspec show-blueprint` prints the blueprint byte-for-byte (translated diagnostics on failure, read-only); `_blueprint-helper` and `_auto-dev-helper` are hidden machine surfaces, not documented commands.
+
+**Implementation**: `src/codexspec/blueprint.py` (pure document model + protocol), `src/codexspec/automation.py` (Git runner, worktree/branch substrate, blueprint store, ownership, sync/commits), CLI wiring in `src/codexspec/__init__.py`, registration in `src/codexspec/commands/installer.py`, templates `templates/commands/blueprint.md` / `auto-dev.md` plus delegation sections in the five stage templates. The `.claude/commands/codexspec/` and `.agents/skills/codexspec-*/` forms are regenerated from templates (do not hand-edit the derived copies).
+
 ### Plugin Marketplace Support
 
 **Feature**: CodexSpec is available as a Claude Code plugin via the plugin marketplace.
@@ -390,12 +404,13 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 
 ## Available Slash Commands
 
-### Core Commands (11)
+### Core Commands (13)
 
 | Command                      | Description                              |
 | ---------------------------- | ---------------------------------------- |
 | `/codexspec:constitution`    | Create/update project constitution       |
 | `/codexspec:specify`         | Create feature specification             |
+| `/codexspec:blueprint`       | Discuss and maintain confirmed requirements in the shared product blueprint |
 | `/codexspec:generate-spec`   | Generate detailed spec from requirements |
 | `/codexspec:spec-to-design`  | Produce design.md (architecture/components/ADR-lite) from spec |
 | `/codexspec:spec-to-plan`    | Convert design to implementation plan    |
@@ -405,6 +420,7 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 | `/codexspec:review-plan`     | Review technical plan                    |
 | `/codexspec:review-tasks`    | Review task breakdown                    |
 | `/codexspec:implement-tasks` | Execute implementation                   |
+| `/codexspec:auto-dev`        | Autonomously develop every pending requirement in the shared blueprint |
 
 ### Enhanced Commands (5) - NEW
 
@@ -513,6 +529,7 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec:config`          | ✅ Template | Interactive configuration management for Plugin users                          |
 | `/codexspec:constitution`    | ✅ Template | Template complete, CLAUDE.md Compliance check on first-time creation          |
 | `/codexspec:specify`         | ✅ Template | Template complete, includes Configuration Check                               |
+| `/codexspec:blueprint`       | ✅ Template | Template complete — discuss/maintain confirmed requirements in the shared blueprint via the strict helper protocol |
 | `/codexspec:generate-spec`   | ✅ Template | Template complete                                                             |
 | `/codexspec:spec-to-design`  | ✅ Template | Template complete — first-class design stage between spec and plan            |
 | `/codexspec:spec-to-plan`    | ✅ Template | Template complete — narrowed to implementation planning, consumes design.md   |
@@ -522,6 +539,7 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec:review-plan`     | ✅ Template | Template complete                                                             |
 | `/codexspec:review-tasks`    | ✅ Template | Template complete                                                             |
 | `/codexspec:implement-tasks` | ✅ Template | Template complete                                                             |
+| `/codexspec:auto-dev`        | ✅ Template | Template complete — autonomous run over pending blueprint requirements under renewable ownership |
 | `/codexspec:clarify`         | ✅ Template | Template complete                                                             |
 | `/codexspec:analyze`         | ✅ Template | Template complete                                                             |
 | `/codexspec:checklist`       | ✅ Template | Template complete                                                             |

@@ -14,10 +14,12 @@ CodexSpec의 슬래시 명령어 레퍼런스입니다. 이 명령어들은 Clau
 |---------|---------|
 | `/codexspec:constitution` | 크로스 아티팩트 검증과 함께 프로젝트 헌법을 생성하거나 갱신 |
 | `/codexspec:specify` | 대화를 통해 요구사항을 명확화·확정하고 `requirements.md`에 저장 |
+| `/codexspec:blueprint` | 공유 blueprint의 확정된 요구사항을 논의하고 관리 |
 | `/codexspec:generate-spec` | 명확화된 요구사항으로부터 `spec.md` 생성 (★ 자동 리뷰) |
 | `/codexspec:spec-to-plan` | 명세서를 기술 구현 계획으로 변환 (★ 자동 리뷰) |
 | `/codexspec:plan-to-tasks` | 계획을 추적 가능하고 검증 가능한 태스크로 분해 (★ 자동 리뷰) |
 | `/codexspec:implement-tasks` | 조건부 TDD 워크플로우로 태스크 실행 |
+| `/codexspec:auto-dev` | blueprint의 대기 요구사항을 문서 순서대로 자율 개발 |
 
 ### Review Commands (Quality Gates)
 

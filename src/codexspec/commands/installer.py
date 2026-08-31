@@ -47,11 +47,11 @@ def get_commands_metadata() -> list[CommandMetadata]:
 
     Returns:
         List of CommandMetadata dictionaries sorted by category priority:
-        core (11) -> enhanced (8) -> git (3) -> review (1) -> utility (2)
-        Total: 25 commands
+        core (13) -> enhanced (8) -> git (3) -> review (1) -> utility (2)
+        Total: 27 commands
     """
     return [
-        # Core Commands (11)
+        # Core Commands (13)
         {
             "name": "constitution",
             "display_name": "/codexspec:constitution",
@@ -65,6 +65,13 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "description": "讨论、确认并固化权威的需求记录",
             "category": "core",
             "file_name": "specify.md",
+        },
+        {
+            "name": "blueprint",
+            "display_name": "/codexspec:blueprint",
+            "description": "讨论并维护共享产品蓝图中的已确认需求",
+            "category": "core",
+            "file_name": "blueprint.md",
         },
         {
             "name": "generate-spec",
@@ -128,6 +135,13 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "display_name": "/codexspec:implement-tasks",
             "category": "core",
             "file_name": "implement-tasks.md",
+        },
+        {
+            "name": "auto-dev",
+            "display_name": "/codexspec:auto-dev",
+            "description": "按顺序自主开发共享蓝图中的所有待实现需求",
+            "category": "core",
+            "file_name": "auto-dev.md",
         },
         # Enhanced Commands (8)
         {

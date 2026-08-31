@@ -2,6 +2,18 @@
 
 ## 命令
 
+### `codexspec show-blueprint`
+
+从固定分支 `codexspec/auto-dev` 和 `worktree-for-codexspec-auto-dev` 输出完整的
+`.codexspec/blueprint.md`。文件原文写入标准输出；仓库、分支、worktree 或文件不存在时，
+错误写入标准错误并返回非零状态。该命令为只读操作，不执行 fetch、merge、写入或加锁。
+
+```bash
+codexspec show-blueprint
+```
+
+---
+
 ### `codexspec init`
 
 初始化一个新的 CodexSpec 项目。

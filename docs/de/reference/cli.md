@@ -2,6 +2,19 @@
 
 ## Befehle
 
+### `codexspec show-blueprint`
+
+Gibt die vollständige `.codexspec/blueprint.md` aus dem festen Branch `codexspec/auto-dev` und
+`worktree-for-codexspec-auto-dev` unverändert auf der Standardausgabe aus. Fehlende Voraussetzungen
+werden auf der Standardfehlerausgabe mit einem Status ungleich null gemeldet. Der Befehl ist
+schreibgeschützt und führt weder Fetch, Merge, Schreibzugriffe noch Sperren aus.
+
+```bash
+codexspec show-blueprint
+```
+
+---
+
 ### `codexspec init`
 
 Ein neues CodexSpec-Projekt initialisieren.

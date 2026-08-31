@@ -14,10 +14,12 @@
 |---------|---------|
 | `/codexspec:constitution` | 创建或更新项目宪法，带跨工件校验 |
 | `/codexspec:specify` | 澄清、确认需求并持久化到 `requirements.md` |
+| `/codexspec:blueprint` | 讨论并维护共享 blueprint 中已确认的需求 |
 | `/codexspec:generate-spec` | 从已澄清的需求生成 `spec.md` 文档（★ 自动评审） |
 | `/codexspec:spec-to-plan` | 将规格转换为技术实现计划（★ 自动评审） |
 | `/codexspec:plan-to-tasks` | 将计划拆解为可追溯、可验证的任务（★ 自动评审） |
 | `/codexspec:implement-tasks` | 使用条件 TDD 工作流执行任务 |
+| `/codexspec:auto-dev` | 按文档顺序自主开发 blueprint 中所有待实现需求 |
 
 ### 评审命令（质量关卡）
 
