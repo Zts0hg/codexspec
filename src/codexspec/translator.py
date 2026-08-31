@@ -124,6 +124,16 @@ _CLI_MESSAGES_EN = {
         ),
         "commit_lang_set": "Commit message language set to: {lang}",
     },
+    "show_blueprint": {
+        "not_git_repository": "The current directory is not inside a Git repository.",
+        "missing_fixed_branch": "The fixed codexspec/auto-dev branch does not exist.",
+        "missing_fixed_worktree": "The fixed auto-dev worktree does not exist.",
+        "worktree_path_mismatch": "The fixed branch is registered at an unexpected worktree path.",
+        "worktree_branch_mismatch": "The fixed worktree is registered on a different branch.",
+        "missing_blueprint": "The dedicated worktree does not contain .codexspec/blueprint.md.",
+        "blueprint_read_failed": "The blueprint could not be read.",
+        "unknown": "Unable to show the blueprint: {error}",
+    },
 }
 
 

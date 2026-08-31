@@ -174,7 +174,11 @@ def test_implement_tasks_validates_result_envelope_and_review_topology():
         "target",
         "requirements_coverage",
         "verification",
+        "findings",
         "finding_counts",
+        "review_coverage",
+        "follow_up",
+        "coverage_gaps",
         "coverage_gap_count",
         "review_context",
         "reviewers",
@@ -182,9 +186,11 @@ def test_implement_tasks_validates_result_envelope_and_review_topology():
         assert f"`{field}`" in content
 
     assert "exactly one `<review-code-result>`" in content
-    assert "schema version `1`" in content
+    assert "schema version `2`" in content
+    assert "schema version `1`" in content and "reject" in compact.lower()
     assert "`mode: defect`" in content
     assert "target and feature context match" in compact
+    assert "retained originating schema-v2 result" in compact
     assert "`requirements_coverage.status: complete`" in content
     assert "`verification.status: complete`" in content
     assert "`review_context: isolated`" in content
@@ -193,6 +199,45 @@ def test_implement_tasks_validates_result_envelope_and_review_topology():
     assert "all P0-P3 counts are zero" in compact
     assert "prose cannot override" in compact.lower()
     assert "INCONCLUSIVE" in content
+    assert "no undeclared fields" in compact.lower()
+    assert "scope is exactly `target identity`" in compact.lower()
+    assert "specialist:<profile>" in content
+    assert "`INCONCLUSIVE` contains no admitted finding" in content
+    assert "`uncommitted` and `commit` are not complete features" in compact
+    assert "contract, partition, variant-search, or coverage-gap" in compact
+    assert "every incomplete mandatory" in compact.lower()
+
+
+def test_implement_tasks_carries_only_neutral_schema_v2_follow_up() -> None:
+    content = read_command("implement-tasks")
+    compact = " ".join(content.split())
+
+    for concept in [
+        "target fingerprint",
+        "follow-up obligations",
+        "originating target",
+    ]:
+        assert concept in compact.lower()
+    assert "retain" in compact.lower()
+    assert "objective" in compact.lower()
+    assert "fresh isolated reviewer" in compact.lower()
+    assert "all five" in compact.lower() and "passes" in compact.lower()
+    assert "updated target" in compact.lower()
+    assert "implementation reasoning" in compact.lower()
+    assert "prior correctness conclusions" in compact.lower()
+    assert "assertions that a repair succeeded" in compact.lower()
+    assert "unresolved" in compact.lower() and "INCONCLUSIVE" in content
+    handoff = content.split("#### 7.3b Retain Neutral Cross-Round Obligations", 1)[1].split(
+        "#### 7.3a Scenario Coverage Self-Check", 1
+    )[0]
+    assert "follow_up.required" in handoff
+    assert "follow_up.received" in handoff
+    assert "status: unresolved" in handoff
+    assert "verified" in handoff and "superseded" in handoff
+    assert "remain applicable" not in handoff
+    assert "remains applicable" not in handoff
+    assert "root-cause variant searches" not in handoff
+    assert "completed contract coverage" not in handoff
 
 
 def test_implement_tasks_verifies_findings_before_test_safe_repairs():

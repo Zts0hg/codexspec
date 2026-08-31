@@ -77,6 +77,16 @@
       "language_warning": "Avertissement: '{lang}' n'est pas dans la liste des langues couramment supportées.",
       "language_warning_hint": "Il peut encore fonctionner si Claude le supporte. Exécutez codexspec config --list-langs pour voir les langues supportées.",
       "commit_lang_set": "Langue des messages de commit définie sur: {lang}"
+    },
+    "show_blueprint": {
+      "not_git_repository": "Le répertoire actuel ne se trouve pas dans un dépôt Git.",
+      "missing_fixed_branch": "La branche fixe codexspec/auto-dev n'existe pas.",
+      "missing_fixed_worktree": "Le worktree auto-dev fixe n'existe pas.",
+      "worktree_path_mismatch": "La branche fixe est enregistrée dans un chemin de worktree inattendu.",
+      "worktree_branch_mismatch": "Le worktree fixe est enregistré sur une autre branche.",
+      "missing_blueprint": "Le worktree dédié ne contient pas .codexspec/blueprint.md.",
+      "blueprint_read_failed": "Le blueprint n'a pas pu être lu.",
+      "unknown": "Impossible d'afficher le blueprint : {error}"
     }
   },
   "constitution": {

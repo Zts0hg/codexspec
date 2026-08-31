@@ -14,10 +14,12 @@ README のカタログと対応するよう、カテゴリ別にグループ化�
 |---------|---------|
 | `/codexspec:constitution` | プロジェクト憲法を作成・更新し、アーティファクト間の整合性を検証します |
 | `/codexspec:specify` | 対話を通じて要件を明確化・確認し、`requirements.md` に保存します |
+| `/codexspec:blueprint` | 共有 blueprint の確認済み要件を議論・管理します |
 | `/codexspec:generate-spec` | 明確化された要件から `spec.md` を生成します（★ 自動レビュー付き） |
 | `/codexspec:spec-to-plan` | 仕様書を技術的な実装計画に変換します（★ 自動レビュー付き） |
 | `/codexspec:plan-to-tasks` | 計画を追跡可能で検証可能なタスクに分割します（★ 自動レビュー付き） |
 | `/codexspec:implement-tasks` | タスクを条件付き TDD ワークフローで実行します |
+| `/codexspec:auto-dev` | blueprint の保留中要件を文書順に自律開発します |
 
 ### Review Commands (Quality Gates)
 
@@ -1091,7 +1093,11 @@ AI:  Preview mode - no commit will be executed
 /codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
 ```
 
-ゲートは対象内の全成果物を棚卸しし、適用要件を評価して Scope、Behavior、Risk、Verification の各パスを実行します。判定は `PASS`、`FAIL`、`INCONCLUSIVE` のいずれかです。6 つのレポートセクションの後に、機械可読な `<review-code-result>` envelope が 1 つ続きます。P0-P3 の指摘はすべて `FAIL`、必須証拠の不足は `INCONCLUSIVE` です。
+<!-- REVIEW-CODE-SYSTEM-CONTRACT -->
+<!-- REVIEW-CODE-VARIANT-SEARCH -->
+<!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
+
+ゲートは対象内の全成果物を棚卸しし、適用要件を評価して Scope、System Contract、Behavior、Risk、Verification の 5 パスをこの順で実行します。根拠のあるモジュール間契約と意味単位のレビューパーティションを記録し、検証済みで反復可能な根本原因ごとに、ラウンド終了前に境界を限定した関連箇所の検索を行います。6 つのレポートセクションの後に、`schema_version: "2"` を使用する機械可読な `<review-code-result>` envelope が 1 つ続きます。この envelope には対象識別子、カバレッジ、修正後に再確認する客観的な義務が含まれます。呼び出し側はこの中立な義務を新しい完全レビューに渡しますが、修正理由や以前の正しさの結論は渡しません。判定は `PASS`、`FAIL`、`INCONCLUSIVE` のいずれかです。P0-P3 の指摘はすべて `FAIL`、必須証拠またはカバレッジの不足は `INCONCLUSIVE` です。
 
 ```text
 You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example

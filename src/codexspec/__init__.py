@@ -6,6 +6,7 @@ This toolkit provides a structured approach to software development using
 executable specifications that guide AI-assisted implementation.
 """
 
+import json
 import re
 import subprocess
 import sys
@@ -19,6 +20,19 @@ from rich.panel import Panel
 from rich.prompt import Confirm, Prompt
 from rich.table import Table
 
+from .automation import (
+    AUTO_DEV_HEARTBEAT_INTERVAL_SECONDS,
+    AutoDevGit,
+    AutoDevOwnership,
+    AutomationError,
+    BlueprintStore,
+    OwnershipError,
+    WorkspaceContext,
+    ensure_dedicated_workspace,
+    locate_dedicated_workspace,
+    locate_repository,
+)
+from .blueprint import PROTOCOL_VERSION
 from .commands.installer import (
     COMMANDS_SUBDIR,
     detect_old_structure,
@@ -44,7 +58,7 @@ from .profile import ensure_profile_scaffold, inject_profile_block
 from .translator import SUPPORTED_LANGUAGES, translate
 
 # Version info
-__version__ = "0.7.12"
+__version__ = "0.7.13"
 __author__ = "CodexSpec Team"
 
 # Constitution file path constants
@@ -172,6 +186,166 @@ def check() -> None:
         table.add_row(f"{cmd} ({desc})", status, path)
 
     console.print(table)
+
+
+def _machine_json(value: object) -> None:
+    sys.stdout.write(json.dumps(value, sort_keys=True, separators=(",", ":")) + "\n")
+
+
+def _stdin_json() -> dict:
+    try:
+        value = json.loads(sys.stdin.read() or "{}")
+    except json.JSONDecodeError as exc:
+        raise AutomationError("invalid_json", str(exc)) from exc
+    if not isinstance(value, dict):
+        raise AutomationError("invalid_json_object")
+    return value
+
+
+def _automation_failure(exc: Exception) -> None:
+    typer.echo(str(exc), err=True)
+    raise typer.Exit(1)
+
+
+@app.command("_blueprint-helper", hidden=True)
+def blueprint_helper(
+    action: str = typer.Argument(..., help="Internal helper action"),
+    ensure: bool = typer.Option(False, "--ensure", help="Create the dedicated workspace when missing"),
+    auto_dev_token: str | None = typer.Option(None, "--auto-dev-token", help="Fence an auto-dev status update"),
+) -> None:
+    """Internal machine interface for blueprint inspection and mutation."""
+    try:
+        context = locate_repository(Path.cwd())
+        workspace = ensure_dedicated_workspace(context) if ensure else locate_dedicated_workspace(context)
+        store = BlueprintStore(workspace)
+        if action == "inspect":
+            if auto_dev_token is not None:
+                raise AutomationError("unexpected_auto_dev_token")
+            content, current_hash = store.inspect()
+            _machine_json(
+                {
+                    "protocol_version": PROTOCOL_VERSION,
+                    "repository_root": str(context.repository_root),
+                    "worktree_path": str(workspace.path),
+                    "blueprint_exists": workspace.blueprint_path.exists(),
+                    "blueprint_hash": current_hash,
+                    "content": content.decode("utf-8"),
+                }
+            )
+            return
+        if action == "apply":
+            response = store.apply_and_commit(sys.stdin.buffer.read(), owner_token=auto_dev_token)
+            _machine_json(response)
+            return
+        raise AutomationError("unsupported_blueprint_helper_action", action)
+    except (AutomationError, OwnershipError, OSError, UnicodeError, ValueError) as exc:
+        _automation_failure(exc)
+
+
+@app.command("_auto-dev-helper", hidden=True)
+def auto_dev_helper(action: str = typer.Argument(..., help="Internal helper action")) -> None:
+    """Internal machine interface for auto-dev ownership and Git writes."""
+    try:
+        body = _stdin_json()
+        context = locate_repository(Path.cwd())
+        ownership = AutoDevOwnership(context)
+        workspace: WorkspaceContext | None = None
+        service: AutoDevGit | None = None
+        if action != "acquire":
+            # Every non-acquire action legitimately waits behind the active run.
+            workspace = ensure_dedicated_workspace(context)
+            service = AutoDevGit(workspace, ownership)
+        if action == "acquire":
+            if body:
+                raise AutomationError("unexpected_fields")
+            token = ownership.acquire()
+            workspace = ensure_dedicated_workspace(context)
+            service = AutoDevGit(workspace, ownership)
+            try:
+                merge_recovery = service.recover_merge_ownership(token)
+                if merge_recovery["state"] == "none":
+                    BlueprintStore(workspace).recover_pending_transaction(owner_token=token)
+                elif BlueprintStore(workspace).recovery_path.exists():
+                    raise AutomationError("concurrent_recovery_records")
+            except Exception:
+                ownership.release(token)
+                raise
+            _machine_json(
+                {
+                    "state": "acquired",
+                    "token": token,
+                    "worktree_path": str(workspace.path),
+                    "heartbeat_interval_seconds": AUTO_DEV_HEARTBEAT_INTERVAL_SECONDS,
+                    "merge_recovery": merge_recovery,
+                }
+            )
+            return
+        if set(body) < {"token"} or not isinstance(body.get("token"), str):
+            raise AutomationError("missing_token")
+        token = body["token"]
+        if action in {"renew", "assert-owner", "release", "sync-default", "abort-sync"} and set(body) != {"token"}:
+            raise AutomationError("unexpected_fields")
+        if action == "renew":
+            ownership.renew(token)
+            result = {"state": "renewed"}
+        elif action == "assert-owner":
+            ownership.assert_owner(token)
+            result = {"state": "owner"}
+        elif action == "release":
+            ownership.release(token)
+            result = {"state": "released"}
+        elif action == "sync-default":
+            result = service.sync_default(token)
+        elif action == "prepare-sync-verification":
+            if set(body) != {"token", "resolved_paths"} or not isinstance(body["resolved_paths"], list):
+                raise AutomationError("invalid_prepare_sync_request")
+            if not body["resolved_paths"] or not all(isinstance(path, str) for path in body["resolved_paths"]):
+                raise AutomationError("invalid_prepare_sync_request")
+            result = service.prepare_sync_verification(token, body["resolved_paths"])
+        elif action == "abort-sync":
+            result = service.abort_sync(token)
+        elif action == "continue-sync":
+            if set(body) != {"token", "checks_passed"} or not isinstance(body["checks_passed"], bool):
+                raise AutomationError("invalid_continue_sync_request")
+            result = service.continue_sync(token, checks_passed=body["checks_passed"])
+        elif action == "commit-feature":
+            if set(body) != {"token", "feature_id", "commit_type", "description", "paths"}:
+                raise AutomationError("invalid_commit_feature_request")
+            if not all(isinstance(body[key], str) for key in ("feature_id", "commit_type", "description")):
+                raise AutomationError("invalid_commit_feature_request")
+            if not isinstance(body["paths"], list) or not all(isinstance(item, str) for item in body["paths"]):
+                raise AutomationError("invalid_commit_feature_request")
+            result = service.commit_feature(
+                token, body["feature_id"], body["commit_type"], body["description"], body["paths"]
+            )
+        else:
+            raise AutomationError("unsupported_auto_dev_helper_action", action)
+        _machine_json(result)
+    except (AutomationError, OwnershipError, OSError, ValueError) as exc:
+        _automation_failure(exc)
+
+
+@app.command("show-blueprint")
+def show_blueprint() -> None:
+    """Print the dedicated worktree's current blueprint without changing it."""
+    context = None
+    try:
+        context = locate_repository(Path.cwd())
+        workspace = locate_dedicated_workspace(context)
+        if not workspace.blueprint_path.is_file():
+            raise AutomationError("missing_blueprint")
+        content = workspace.blueprint_path.read_bytes()
+        sys.stdout.buffer.write(content)
+        sys.stdout.buffer.flush()
+    except (AutomationError, OSError) as exc:
+        code = exc.code if isinstance(exc, AutomationError) else "blueprint_read_failed"
+        config_file = context.repository_root / ".codexspec/config.yml" if context else None
+        language = get_interaction_language(config_file) if config_file else "en"
+        message = translate(f"cli.show_blueprint.{code}", language)
+        if message.startswith("cli.show_blueprint."):
+            message = translate("cli.show_blueprint.unknown", language, error=str(exc))
+        typer.echo(message, err=True)
+        raise typer.Exit(1)
 
 
 # workflow.auto_next toggle (used by the ``config --auto-next`` option).
@@ -1479,6 +1653,7 @@ The following slash commands are available in this project:
 |---------|-------------|
 | `/codexspec:constitution` | Create or update project governing principles |
 | `/codexspec:specify` | Define what you want to build (requirements and user stories) |
+| `/codexspec:blueprint` | Discuss and maintain confirmed requirements in the shared blueprint |
 | `/codexspec:generate-spec` | Generate detailed specification from high-level requirements |
 | `/codexspec:spec-to-plan` | Convert specification to technical implementation plan |
 | `/codexspec:plan-to-tasks` | Break down plan into actionable tasks |
@@ -1486,6 +1661,7 @@ The following slash commands are available in this project:
 | `/codexspec:review-plan` | Review technical plan for feasibility |
 | `/codexspec:review-tasks` | Review task breakdown for completeness |
 | `/codexspec:implement-tasks` | Execute tasks according to the breakdown |
+| `/codexspec:auto-dev` | Autonomously develop pending blueprint requirements in document order |
 
 ### Enhanced Commands
 
@@ -1531,6 +1707,9 @@ The following slash commands are available in this project:
 
 > **Shortcut**: For small, self-contained requirements, run `/codexspec:quick` to
 > auto-run spec → plan → tasks → implementation in one shot.
+>
+> **Continuous development**: Use `/codexspec:blueprint` to prepare confirmed requirements and
+> `/codexspec:auto-dev` to develop them in document order.
 
 ## Directory Structure
 

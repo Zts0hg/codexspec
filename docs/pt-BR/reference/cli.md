@@ -2,6 +2,19 @@
 
 ## Comandos
 
+### `codexspec show-blueprint`
+
+Imprime o `.codexspec/blueprint.md` completo da branch fixa `codexspec/auto-dev` e de
+`worktree-for-codexspec-auto-dev` como conteúdo bruto na saída padrão. Pré-requisitos ausentes são
+informados no erro padrão com status diferente de zero. O comando é somente leitura e não executa
+fetch, merge, escrita ou bloqueio.
+
+```bash
+codexspec show-blueprint
+```
+
+---
+
 ### `codexspec init`
 
 Inicializa um novo projeto CodexSpec.

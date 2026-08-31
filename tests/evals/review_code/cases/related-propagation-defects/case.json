@@ -1,0 +1,45 @@
+{
+  "schema_version": "1",
+  "id": "related-propagation-defects",
+  "description": "Two adapters independently replace the same resolved value",
+  "risk_profiles": ["parsing/configuration"],
+  "setup": {
+    "files": {
+      "src/policy.py": "def resolve(raw):\n    return raw or 'safe'\n",
+      "src/adapters.py": "from .policy import resolve\n\ndef web(raw, consume):\n    resolve(raw)\n    return consume('legacy')\n\ndef worker(raw, consume):\n    resolve(raw)\n    return consume('legacy')\n\ndef cli(raw, consume):\n    return consume(resolve(raw))\n",
+      "tests/test_adapters.py": "from src.adapters import cli\n\ndef test_cli_preserves_policy():\n    assert cli('strict', lambda value: value) == 'strict'\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\nEvery adapter preserves the resolved policy.\n",
+      "spec.md": "# Spec\nWeb, worker, and CLI adapters pass the same resolved policy to consumers.\n",
+      "plan.md": "# Plan\nUse the shared resolver from every adapter.\n",
+      "tasks.md": "# Tasks\n- [x] Route every adapter through policy resolution.\n"
+    }
+  },
+  "expect": {
+    "verdict": "FAIL",
+    "acceptable_verdicts": ["FAIL", "INCONCLUSIVE"],
+    "minimum_findings": [
+      {
+        "priorities": ["P2", "P3"],
+        "contains": "web",
+        "aliases": ["web adapter"]
+      },
+      {
+        "priorities": ["P2", "P3"],
+        "contains": "worker",
+        "aliases": ["worker adapter"]
+      }
+    ],
+    "forbidden_findings": ["missing docstring", "style"],
+    "root_cause_group": "adapter-replaces-resolved-policy",
+    "required_variant_search_trace": {
+      "scope": [["adapter"]],
+      "methods": [["search", "trace", "inspect"], ["adapter", "entry"]],
+      "checked_locations": [["adapters.py"], ["web"], ["worker"], ["cli"]]
+    },
+    "profile_aliases": {
+      "parsing/configuration": ["resolved policy", "configuration"]
+    }
+  }
+}

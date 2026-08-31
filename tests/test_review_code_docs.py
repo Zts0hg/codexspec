@@ -54,6 +54,15 @@ def test_localized_guide_documents_defect_gate_and_audit_migration(
     for verdict in ["PASS", "FAIL", "INCONCLUSIVE"]:
         assert verdict in default_gate
     assert "<review-code-result>" in default_gate
+    assert 'schema_version: "2"' in default_gate
+    assert "<!-- REVIEW-CODE-SYSTEM-CONTRACT -->" in default_gate
+    assert "<!-- REVIEW-CODE-VARIANT-SEARCH -->" in default_gate
+    assert "<!-- REVIEW-CODE-NEUTRAL-HANDOFF -->" in default_gate
+    assert "Scope" in default_gate
+    assert "System Contract" in default_gate
+    assert "Behavior" in default_gate
+    assert "Risk" in default_gate
+    assert "Verification" in default_gate
     assert "Quality Score" not in default_gate
 
     assert "/codexspec:review-code --audit [paths...]" in audit

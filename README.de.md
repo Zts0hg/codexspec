@@ -522,11 +522,13 @@ Die Implementierung folgt einem **bedingten TDD-Workflow**:
 | --------------------------- | ------------------------------------------------------------------ |
 | `/codexspec:constitution`   | Projekt-Verfassung erstellen/aktualisieren mit artefaktübergreifender Validierung |
 | `/codexspec:specify`        | Anforderungen klären, bestätigen und in `requirements.md` festhalten |
+| `/codexspec:blueprint`      | Bestätigte Anforderungen im gemeinsamen Blueprint pflegen          |
 | `/codexspec:generate-spec`  | `spec.md`-Dokument generieren ★ Auto-Review                        |
 | `/codexspec:spec-to-design` | `design.md` erzeugen (Architektur/Komponenten/Entscheidungen) ★ Auto-Review |
 | `/codexspec:spec-to-plan`   | Spec in technischen Plan umwandeln ★ Auto-Review                   |
 | `/codexspec:plan-to-tasks`  | Plan in nachvollziehbare, überprüfbare Aufgaben aufteilen ★ Auto-Review |
 | `/codexspec:implement-tasks`| Aufgaben ausführen (bedingtes TDD)                                 |
+| `/codexspec:auto-dev`       | Alle ausstehenden Blueprint-Anforderungen der Reihe nach entwickeln |
 
 #### Review-Befehle (Qualitätstore)
 

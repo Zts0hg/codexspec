@@ -14,10 +14,12 @@ Agrupados por categoría, reflejando el catálogo del README. Dentro de cada gru
 |---------|---------|
 | `/codexspec:constitution` | Crear o actualizar la constitución del proyecto con validación entre artefactos |
 | `/codexspec:specify` | Aclarar, confirmar y persistir requisitos en `requirements.md` |
+| `/codexspec:blueprint` | Debatir y mantener requisitos confirmados en el blueprint compartido |
 | `/codexspec:generate-spec` | Generar el documento `spec.md` a partir de los requisitos aclarados (★ Auto-revisión) |
 | `/codexspec:spec-to-plan` | Convertir la especificación en un plan de implementación técnica (★ Auto-revisión) |
 | `/codexspec:plan-to-tasks` | Desglosar el plan en tareas trazables y verificables (★ Auto-revisión) |
 | `/codexspec:implement-tasks` | Ejecutar tareas con flujo de trabajo TDD condicional |
+| `/codexspec:auto-dev` | Desarrollar autónomamente los requisitos pendientes en orden documental |
 
 ### Comandos de revisión (puertas de calidad)
 
@@ -1091,7 +1093,11 @@ Revisa el cambio Git seleccionado como una puerta de defectos estricta antes de 
 /codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
 ```
 
-La puerta inventaría todos los artefactos seleccionados, evalúa los requisitos aplicables y ejecuta las fases Scope, Behavior, Risk y Verification. El resultado es `PASS`, `FAIL` o `INCONCLUSIVE`. Tras seis secciones del informe aparece un único envelope `<review-code-result>` legible por máquinas. Cualquier hallazgo P0-P3 produce `FAIL`; la falta de evidencia obligatoria produce `INCONCLUSIVE`.
+<!-- REVIEW-CODE-SYSTEM-CONTRACT -->
+<!-- REVIEW-CODE-VARIANT-SEARCH -->
+<!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
+
+La puerta inventaría todos los artefactos seleccionados, evalúa los requisitos aplicables y ejecuta cinco fases en este orden: Scope, System Contract, Behavior, Risk y Verification. Registra contratos entre módulos respaldados por evidencia y particiones de revisión semánticas; cada causa raíz repetible y validada activa, antes de terminar la ronda, una búsqueda acotada de casos relacionados. Tras seis secciones del informe aparece un único envelope `<review-code-result>` legible por máquinas con `schema_version: "2"`. El envelope transporta la identidad del objetivo, la cobertura y obligaciones objetivas que deben volver a verificarse tras la reparación. El llamador conserva esas obligaciones neutrales para una revisión completa nueva, sin transmitir el razonamiento de la reparación ni conclusiones previas de corrección. El resultado es `PASS`, `FAIL` o `INCONCLUSIVE`: cualquier hallazgo P0-P3 produce `FAIL`; la falta de evidencia obligatoria o la cobertura incompleta producen `INCONCLUSIVE`.
 
 ```text
 You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example

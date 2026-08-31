@@ -1,3 +1,26 @@
+<!--
+SYNC IMPACT REPORT
+==================
+Version: unversioned -> 1.0.0
+Bump Rationale: INITIAL VERSIONING with a material communication principle added
+
+Changes:
+- Modified: Core Principles
+- Added: Clear and Standard Terminology; explicit version and amendment metadata
+- Removed: None
+
+Template Consistency Check:
+- .codexspec/templates/docs/plan-template-*.md: aligned
+- .codexspec/templates/docs/spec-template-*.md: aligned
+- .codexspec/templates/docs/tasks-template-*.md: aligned
+- .claude/commands/*.md: aligned
+- README.md: aligned
+- CLAUDE.md: aligned
+
+Deferred TODOs:
+- None
+-->
+
 > ⚠️ **SUPREME AUTHORITY**: This constitution defines the governing principles for this project. All code changes and decisions must comply with these principles.
 
 > 🎯 **SCOPE — READ THIS FIRST**: This file governs the **CodexSpec project itself** — i.e. the repository you are working in right now. It is **NOT** a template, default, or reference document for downstream users of CodexSpec.
@@ -14,6 +37,10 @@
 # Project Constitution
 
 This document defines the governing principles and development guidelines for this project.
+
+- **Version**: 1.0.0
+- **Ratified**: 2026-04-10
+- **Last Amended**: 2026-08-29
 
 ## Core Principles
 
@@ -38,21 +65,36 @@ This document defines the governing principles and development guidelines for th
 - Use clear and concise language
 - Include examples where appropriate
 
-### 4. Architecture
+### 4. Clear and Standard Terminology
+
+- Requirements, questions, documentation, and user-facing communication MUST use established
+  terms that software developers commonly understand when suitable terms exist.
+- Authors and agents MUST NOT invent abbreviations, compressed labels, or compound jargon merely
+  to shorten or categorize a concept.
+- Explanations MUST state the concrete behavior, problem, or decision before introducing a label.
+- A necessary project-specific term MUST be defined in plain language on first use and then used
+  consistently.
+- Stable identifiers required for traceability MAY be used, but they MUST accompany a clear,
+  descriptive statement and MUST NOT replace the explanation.
+
+**Rationale**: Concise wording is useful only when it preserves shared understanding. Familiar,
+precise language reduces ambiguity and prevents terminology from obstructing requirements work.
+
+### 5. Architecture
 
 - Follow separation of concerns
 - Design for extensibility and maintainability
 - Use established architectural patterns
 - Keep dependencies minimal and well-managed
 
-### 5. Performance
+### 6. Performance
 
 - Consider performance implications of design decisions
 - Profile and optimize critical paths
 - Avoid premature optimization
 - Use appropriate data structures and algorithms
 
-### 6. Security
+### 7. Security
 
 - Follow security best practices
 - Validate all inputs

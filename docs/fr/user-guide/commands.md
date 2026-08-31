@@ -14,10 +14,12 @@ Regroupées par catégorie, en miroir du catalogue du README. Au sein de chaque 
 |----------|----------|
 | `/codexspec:constitution` | Créer ou mettre à jour la constitution du projet avec validation inter-artifacts |
 | `/codexspec:specify` | Clarifier, confirmer et persister les exigences dans `requirements.md` |
+| `/codexspec:blueprint` | Discuter et gérer les exigences confirmées du blueprint partagé |
 | `/codexspec:generate-spec` | Générer le document `spec.md` à partir des exigences clarifiées (★ Auto-review) |
 | `/codexspec:spec-to-plan` | Convertir la spécification en plan technique d'implémentation (★ Auto-review) |
 | `/codexspec:plan-to-tasks` | Découper le plan en tâches traçables et vérifiables (★ Auto-review) |
 | `/codexspec:implement-tasks` | Exécuter les tâches avec un flux de travail TDD conditionnel |
+| `/codexspec:auto-dev` | Développer automatiquement les exigences en attente dans l'ordre du document |
 
 ### Commandes de revue (portes qualité)
 
@@ -1091,7 +1093,11 @@ Examine la modification Git sélectionnée comme un contrôle de défauts strict
 /codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
 ```
 
-Le contrôle inventorie tous les artefacts sélectionnés, évalue les exigences applicables et exécute les phases Scope, Behavior, Risk et Verification. Le verdict est `PASS`, `FAIL` ou `INCONCLUSIVE`. Les six sections du rapport sont suivies d'un unique envelope `<review-code-result>` lisible par machine. Tout défaut P0-P3 produit `FAIL` ; l'absence de preuve obligatoire produit `INCONCLUSIVE`.
+<!-- REVIEW-CODE-SYSTEM-CONTRACT -->
+<!-- REVIEW-CODE-VARIANT-SEARCH -->
+<!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
+
+Le contrôle inventorie tous les artefacts sélectionnés, évalue les exigences applicables et exécute cinq phases dans cet ordre : Scope, System Contract, Behavior, Risk et Verification. Il consigne les contrats intermodules étayés par des preuves et les partitions de revue sémantiques ; chaque cause racine répétable et validée déclenche, avant la fin du passage, une recherche bornée des occurrences apparentées. Les six sections du rapport sont suivies d'un unique envelope `<review-code-result>` lisible par machine avec `schema_version: "2"`. L'envelope transmet l'identité de la cible, la couverture et les obligations objectives à revérifier après réparation. L'appelant conserve ces obligations neutres pour une nouvelle revue complète, sans transmettre le raisonnement de réparation ni les conclusions précédentes sur la correction. Le verdict est `PASS`, `FAIL` ou `INCONCLUSIVE` : tout défaut P0-P3 produit `FAIL` ; l'absence de preuve obligatoire ou une couverture incomplète produit `INCONCLUSIVE`.
 
 ```text
 You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example

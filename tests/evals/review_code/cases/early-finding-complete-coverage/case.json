@@ -1,0 +1,42 @@
+{
+  "schema_version": "1",
+  "id": "early-finding-complete-coverage",
+  "description": "An early API compatibility defect must not stop review of another behavior partition",
+  "risk_profiles": ["public API/CLI compatibility"],
+  "setup": {
+    "baseline_files": {
+      "src/api.py": "def parse_limit(value):\n    return int(value)\n\ndef public_name():\n    return 'stable'\n"
+    },
+    "files": {
+      "src/api.py": "def parse_limit(value):\n    return int(value)\n\ndef public_name():\n    return 'renamed'\n",
+      "tests/test_api.py": "from src.api import parse_limit\n\ndef test_limit():\n    assert parse_limit('2') == 2\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\nKeep public_name output stable and reject invalid limits with ValueError.\n",
+      "spec.md": "# Spec\nThe public name remains stable; limit parsing is validated.\n",
+      "plan.md": "# Plan\nUpdate both API behaviors.\n",
+      "tasks.md": "# Tasks\n- [x] Update public name.\n- [x] Validate limits.\n"
+    }
+  },
+  "expect": {
+    "verdict": "FAIL",
+    "acceptable_verdicts": ["FAIL", "INCONCLUSIVE"],
+    "minimum_findings": [
+      {
+        "priority": "P2",
+        "contains": "public_name",
+        "aliases": ["public name", "renamed"]
+      }
+    ],
+    "forbidden_findings": ["missing docstring", "style"],
+    "all_partitions_terminal": true,
+    "minimum_partitions": 2,
+    "required_partition_scopes": [
+      ["public_name", "public name", "compatibility"],
+      ["parse_limit", "limit parsing", "invalid limit"]
+    ],
+    "profile_aliases": {
+      "public API/CLI compatibility": ["public name", "compatibility"]
+    }
+  }
+}

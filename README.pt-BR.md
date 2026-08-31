@@ -522,11 +522,13 @@ A implementação segue o **fluxo de TDD condicional**:
 | ----------------------------- | ------------------------------------------------------------------ |
 | `/codexspec:constitution`     | Cria/atualiza a constituição do projeto com validação cross-artefato |
 | `/codexspec:specify`          | Esclarece, confirma e persiste requisitos em `requirements.md`     |
+| `/codexspec:blueprint`        | Discute e mantém requisitos confirmados no blueprint compartilhado |
 | `/codexspec:generate-spec`    | Gera o documento `spec.md` ★ Auto-revisão                          |
 | `/codexspec:spec-to-design`   | Gera `design.md` (arquitetura/componentes/decisões) ★ Auto-revisão |
 | `/codexspec:spec-to-plan`     | Converte o spec em plano técnico ★ Auto-revisão                    |
 | `/codexspec:plan-to-tasks`    | Decompõe o plano em tarefas rastreáveis e verificáveis ★ Auto-revisão |
 | `/codexspec:implement-tasks`  | Executa as tarefas (TDD condicional)                               |
+| `/codexspec:auto-dev`         | Desenvolve em ordem todos os requisitos pendentes do blueprint     |
 
 #### Comandos de revisão (portões de qualidade)
 

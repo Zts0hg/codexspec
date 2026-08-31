@@ -14,10 +14,12 @@ Nach Kategorie gruppiert – analog zum Katalog im README. Innerhalb jeder Grupp
 |---------|---------|
 | `/codexspec:constitution` | Projektverfassung erstellen oder aktualisieren, inklusive bereichsübergreifender Validierung |
 | `/codexspec:specify` | Anforderungen klären, bestätigen und in `requirements.md` festhalten |
+| `/codexspec:blueprint` | Bestätigte Anforderungen im gemeinsamen Blueprint besprechen und pflegen |
 | `/codexspec:generate-spec` | `spec.md` aus den geklärten Anforderungen erzeugen (★ Auto-Review) |
 | `/codexspec:spec-to-plan` | Spezifikation in einen technischen Umsetzungsplan überführen (★ Auto-Review) |
 | `/codexspec:plan-to-tasks` | Plan in nachverfolgbare, prüfbare Aufgaben herunterbrechen (★ Auto-Review) |
 | `/codexspec:implement-tasks` | Aufgaben mit bedingtem TDD-Workflow ausführen |
+| `/codexspec:auto-dev` | Alle ausstehenden Blueprint-Anforderungen in Dokumentreihenfolge autonom entwickeln |
 
 ### Review Commands (Quality Gates)
 
@@ -1091,7 +1093,11 @@ Prüft die ausgewählte Git-Änderung vor dem Merge als striktes Defekt-Gate. Da
 /codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
 ```
 
-Das Gate inventarisiert alle ausgewählten Artefakte, bewertet zutreffende Anforderungen und führt Scope-, Behavior-, Risk- und Verification-Pässe aus. Das Ergebnis ist genau `PASS`, `FAIL` oder `INCONCLUSIVE`. Auf sechs Berichtsabschnitte folgt ein maschinenlesbares `<review-code-result>` envelope. Jeder P0-P3-Befund führt zu `FAIL`; fehlende Pflichtnachweise führen zu `INCONCLUSIVE`.
+<!-- REVIEW-CODE-SYSTEM-CONTRACT -->
+<!-- REVIEW-CODE-VARIANT-SEARCH -->
+<!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
+
+Das Gate inventarisiert alle ausgewählten Artefakte, bewertet zutreffende Anforderungen und führt fünf Pässe in dieser Reihenfolge aus: Scope, System Contract, Behavior, Risk und Verification. Es erfasst belegte modulübergreifende Verträge und semantische Review-Partitionen; jede bestätigte wiederholbare Ursache löst vor Abschluss der Runde eine begrenzte Suche nach verwandten Vorkommen aus. Auf sechs Berichtsabschnitte folgt ein maschinenlesbares `<review-code-result>` envelope mit `schema_version: "2"`. Das Envelope enthält Zielidentität, Abdeckung und objektive Prüfpflichten nach der Reparatur. Der Aufrufer bewahrt diese neutralen Pflichten für eine neue vollständige Prüfung auf, ohne Reparaturbegründungen oder frühere Korrektheitsschlüsse weiterzugeben. Das Ergebnis ist genau `PASS`, `FAIL` oder `INCONCLUSIVE`: Jeder P0-P3-Befund führt zu `FAIL`; fehlende Pflichtnachweise oder unvollständige Abdeckung führen zu `INCONCLUSIVE`.
 
 ```text
 You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example

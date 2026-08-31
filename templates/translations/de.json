@@ -77,6 +77,16 @@
       "language_warning": "Warnung: '{lang}' ist nicht in der Liste der häufig unterstützten Sprachen.",
       "language_warning_hint": "Es funktioniert möglicherweise noch, wenn Claude es unterstützt. Führen Sie codexspec config --list-langs aus, um unterstützte Sprachen zu sehen.",
       "commit_lang_set": "Commit-Nachrichtensprache eingestellt auf: {lang}"
+    },
+    "show_blueprint": {
+      "not_git_repository": "Das aktuelle Verzeichnis befindet sich nicht in einem Git-Repository.",
+      "missing_fixed_branch": "Der feste Branch codexspec/auto-dev ist nicht vorhanden.",
+      "missing_fixed_worktree": "Der feste auto-dev-Worktree ist nicht vorhanden.",
+      "worktree_path_mismatch": "Der feste Branch ist unter einem unerwarteten Worktree-Pfad registriert.",
+      "worktree_branch_mismatch": "Der feste Worktree ist einem anderen Branch zugeordnet.",
+      "missing_blueprint": "Der dedizierte Worktree enthält keine .codexspec/blueprint.md.",
+      "blueprint_read_failed": "Der Blueprint konnte nicht gelesen werden.",
+      "unknown": "Blueprint kann nicht angezeigt werden: {error}"
     }
   },
   "constitution": {

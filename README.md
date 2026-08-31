@@ -531,11 +531,13 @@ Implementation follows **conditional TDD workflow**:
 | ---------------------------- | ----------------------------------------------------------------- |
 | `/codexspec:constitution`    | Create/update project constitution with cross-artifact validation |
 | `/codexspec:specify`         | Clarify, confirm, and persist requirements in `requirements.md`    |
+| `/codexspec:blueprint`       | Discuss and maintain confirmed requirements in the shared blueprint |
 | `/codexspec:generate-spec`   | Generate `spec.md` document ★ Auto-review                         |
 | `/codexspec:spec-to-design`  | Produce `design.md` (architecture/components/decisions) ★ Auto-review |
 | `/codexspec:spec-to-plan`    | Convert design to implementation plan ★ Auto-review              |
 | `/codexspec:plan-to-tasks`   | Break down plan into traceable, verifiable tasks ★ Auto-review    |
 | `/codexspec:implement-tasks` | Execute tasks (conditional TDD)                                   |
+| `/codexspec:auto-dev`        | Autonomously develop all pending blueprint requirements in order  |
 
 #### Review Commands (Quality Gates)
 

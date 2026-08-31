@@ -14,10 +14,12 @@
 |---------|---------|
 | `/codexspec:constitution` | 创建或更新项目宪法，带跨工件校验 |
 | `/codexspec:specify` | 澄清、确认需求并持久化到 `requirements.md` |
+| `/codexspec:blueprint` | 讨论并维护共享 blueprint 中已确认的需求 |
 | `/codexspec:generate-spec` | 从已澄清的需求生成 `spec.md` 文档（★ 自动评审） |
 | `/codexspec:spec-to-plan` | 将规格转换为技术实现计划（★ 自动评审） |
 | `/codexspec:plan-to-tasks` | 将计划拆解为可追溯、可验证的任务（★ 自动评审） |
 | `/codexspec:implement-tasks` | 使用条件 TDD 工作流执行任务 |
+| `/codexspec:auto-dev` | 按文档顺序自主开发 blueprint 中所有待实现需求 |
 
 ### 评审命令（质量关卡）
 
@@ -1090,7 +1092,11 @@ AI:  预览模式 - 不会执行提交
 /codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
 ```
 
-门禁会清点目标中的全部工件，评估适用需求，并执行 Scope、Behavior、Risk 和 Verification 四个阶段。结果只能是 `PASS`、`FAIL` 或 `INCONCLUSIVE`。六个报告段落之后会附带一个机器可读的 `<review-code-result>` envelope。任何 P0-P3 缺陷都会得到 `FAIL`；缺少强制证据时得到 `INCONCLUSIVE`。
+<!-- REVIEW-CODE-SYSTEM-CONTRACT -->
+<!-- REVIEW-CODE-VARIANT-SEARCH -->
+<!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
+
+门禁会清点目标中的全部工件、评估适用需求，并依次执行五个阶段：Scope、System Contract、Behavior、Risk 和 Verification。它会记录有来源依据的跨模块契约和按行为划分的审查分区；每个已确认且可重复出现的根因都会在本轮结束前触发一次有明确边界的同类问题搜索。六个报告段落之后会附带一个使用 `schema_version: "2"` 的机器可读 `<review-code-result>` envelope。该 envelope 包含目标标识、覆盖记录和修复后需要重新核实的客观事项；调用方保留这些中立事项并交给新的完整审查，但不会传递修复思路或之前的正确性结论。结果只能是 `PASS`、`FAIL` 或 `INCONCLUSIVE`：任何 P0-P3 缺陷都会得到 `FAIL`，缺少强制证据或覆盖不完整时得到 `INCONCLUSIVE`。
 
 ```text
 你: /codexspec:review-code --feature .codexspec/specs/2026-0714-example

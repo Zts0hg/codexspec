@@ -77,6 +77,16 @@
       "language_warning": "警告: '{lang}' 不在常用支持语言列表中。",
       "language_warning_hint": "如果 Claude 支持，它可能仍然可以工作。运行 codexspec config --list-langs 查看支持的语言。",
       "commit_lang_set": "提交消息语言已设置为: {lang}"
+    },
+    "show_blueprint": {
+      "not_git_repository": "当前目录不在 Git 仓库中。",
+      "missing_fixed_branch": "固定分支 codexspec/auto-dev 不存在。",
+      "missing_fixed_worktree": "固定的 auto-dev worktree 不存在。",
+      "worktree_path_mismatch": "固定分支注册在非预期的 worktree 路径。",
+      "worktree_branch_mismatch": "固定 worktree 注册在其他分支。",
+      "missing_blueprint": "专用 worktree 中不存在 .codexspec/blueprint.md。",
+      "blueprint_read_failed": "无法读取 blueprint。",
+      "unknown": "无法显示 blueprint：{error}"
     }
   },
   "constitution": {
