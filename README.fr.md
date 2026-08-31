@@ -549,6 +549,7 @@ L'implémentation suit le **flux de travail TDD conditionnel** :
 | `/codexspec:checklist`        | Générer une liste de contrôle de qualité des exigences                  |
 | `/codexspec:tasks-to-issues`  | Convertir les tâches en GitHub Issues                           |
 | `/codexspec:debug`            | Débogage systématique de cause racine (4 phases ; autonome ou escaladé depuis implement-tasks) |
+| `/codexspec:reverse-spec`     | Dériver spec/design à partir du code existant, puis rapprocher le code de la référence confirmée (signalement seul, sans modification) |
 
 #### Commandes d'auto-évolution
 

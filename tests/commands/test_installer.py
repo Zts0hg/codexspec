@@ -37,9 +37,9 @@ class TestGetCommandsMetadata:
         assert isinstance(result, list)
 
     def test_returns_correct_count(self) -> None:
-        """Should return 27 commands (13 core + 8 enhanced + 3 git + 1 review + 2 utility)."""
+        """Should return 28 commands (13 core + 9 enhanced + 3 git + 1 review + 2 utility)."""
         result = get_commands_metadata()
-        assert len(result) == 27
+        assert len(result) == 28
 
     def test_core_commands_count(self) -> None:
         """Should have 13 core commands."""
@@ -71,10 +71,10 @@ class TestGetCommandsMetadata:
         assert names.index("review-spec") < names.index("review-design") < names.index("review-plan")
 
     def test_enhanced_commands_count(self) -> None:
-        """Should have 8 enhanced commands."""
+        """Should have 9 enhanced commands."""
         result = get_commands_metadata()
         enhanced_commands = [c for c in result if c["category"] == "enhanced"]
-        assert len(enhanced_commands) == 8
+        assert len(enhanced_commands) == 9
 
     def test_onboard_registered(self) -> None:
         """S2.1: onboard is registered as an enhanced-family command."""
@@ -90,6 +90,21 @@ class TestGetCommandsMetadata:
         names = [c["name"] for c in result]
         assert result[names.index("onboard")]["category"] == "enhanced"
         assert names.index("evolve") < names.index("onboard")
+
+    def test_reverse_spec_registered(self) -> None:
+        """T3.1-S3: reverse-spec is registered as an enhanced-family command."""
+        by_name = {c["name"]: c for c in get_commands_metadata()}
+        assert "reverse-spec" in by_name
+        assert by_name["reverse-spec"]["category"] == "enhanced"
+        assert by_name["reverse-spec"]["file_name"] == "reverse-spec.md"
+        assert by_name["reverse-spec"]["display_name"] == "/codexspec:reverse-spec"
+
+    def test_reverse_spec_in_enhanced_group_adjacent_to_onboard(self) -> None:
+        """T3.1-S3: reverse-spec sits within the enhanced group, next to onboard."""
+        result = get_commands_metadata()
+        names = [c["name"] for c in result]
+        assert result[names.index("reverse-spec")]["category"] == "enhanced"
+        assert abs(names.index("reverse-spec") - names.index("onboard")) == 1
 
     def test_git_commands_count(self) -> None:
         """Should have 3 git commands."""

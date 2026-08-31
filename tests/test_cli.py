@@ -641,5 +641,5 @@ class TestListCommands:
         """list-commands should show total count."""
         result = runner.invoke(app, ["list-commands"])
         assert result.exit_code == 0
-        # Should show 27 commands (13 core + 8 enhanced + 3 git + 1 review + 2 utility)
-        assert "27" in result.stdout
+        # Should show 28 commands (13 core + 9 enhanced + 3 git + 1 review + 2 utility)
+        assert "28" in result.stdout

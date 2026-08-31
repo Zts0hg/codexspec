@@ -558,6 +558,7 @@ Implementation follows **conditional TDD workflow**:
 | `/codexspec:checklist`       | Generate requirements quality checklist                         |
 | `/codexspec:tasks-to-issues` | Convert tasks to GitHub Issues                                  |
 | `/codexspec:debug`           | Systematic root-cause debugging (4 phases; standalone or escalated from implement-tasks) |
+| `/codexspec:reverse-spec`    | Reverse-derive spec/design from existing code, then reconcile code against the confirmed baseline |
 
 #### Self-Evolution Commands
 

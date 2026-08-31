@@ -549,6 +549,7 @@ claude
 | `/codexspec:checklist`       | 要件の品質チェックリストを生成                             |
 | `/codexspec:tasks-to-issues` | タスクを GitHub Issues に変換                              |
 | `/codexspec:debug`           | 体系的な根本原因デバッグ（4 フェーズ；単独実行または implement-tasks からエスカレーション） |
+| `/codexspec:reverse-spec`    | 既存コードから spec/design を逆生成し、確定済みベースラインとコードを突き合わせる（差分の報告のみ、自動修正なし） |
 
 #### 自己進化コマンド
 
