@@ -2,6 +2,19 @@
 
 ## Comandos
 
+### `codexspec show-blueprint`
+
+Imprime el `.codexspec/blueprint.md` completo de la rama fija `codexspec/auto-dev` y
+`worktree-for-codexspec-auto-dev` como contenido sin formato en la salida estándar. Los requisitos
+ausentes se informan en el error estándar con un estado distinto de cero. El comando es de solo
+lectura y no realiza fetch, merge, escrituras ni bloqueos.
+
+```bash
+codexspec show-blueprint
+```
+
+---
+
 ### `codexspec init`
 
 Inicializa un nuevo proyecto CodexSpec.

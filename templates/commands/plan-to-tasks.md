@@ -110,6 +110,13 @@ When the review loop above concludes in a passing state — the final `/codexspe
 - analyze's deterministic conforming fixes need no re-review; its remediations and any residual findings do not add a gate before `/codexspec:implement-tasks`.
 - Do not modify the Output Summary for analyze, and do not save an additional analyze report file; analyze's own output is the report.
 
+## Auto-Dev Delegation
+
+When the invocation context explicitly contains `CODEXSPEC_AUTO_DEV_DELEGATION`, execute this
+command, its task review, and cross-artifact analysis normally; return the resulting pass or stop
+state to `auto-dev`, and skip the entire **Auto-Next Chain Advance** section below. Do not read
+`workflow.auto_next` in that delegated invocation. Direct invocations are unchanged.
+
 ## Auto-Next Chain Advance
 
 Read `workflow.auto_next` from `.codexspec/config.yml` (default `false`; only the literal value `true` enables it).

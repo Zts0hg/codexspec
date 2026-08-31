@@ -2,6 +2,19 @@
 
 ## Commands
 
+### `codexspec show-blueprint`
+
+Print the complete `.codexspec/blueprint.md` from the fixed `codexspec/auto-dev` branch and
+`worktree-for-codexspec-auto-dev`. Output is raw file content on standard output. Missing repository,
+branch, worktree, or file prerequisites are reported on standard error with a non-zero status. The
+command is read-only and performs no fetch, merge, write, or lock operation.
+
+```bash
+codexspec show-blueprint
+```
+
+---
+
 ### `codexspec init`
 
 Initialize a new CodexSpec project.

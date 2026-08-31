@@ -14,10 +14,12 @@ Grouped by category, mirroring the README catalog. Within each group, commands a
 |---------|---------|
 | `/codexspec:constitution` | Create or update project constitution with cross-artifact validation |
 | `/codexspec:specify` | Clarify, confirm, and persist requirements in `requirements.md` |
+| `/codexspec:blueprint` | Discuss and maintain confirmed requirements in the shared blueprint |
 | `/codexspec:generate-spec` | Generate `spec.md` document from clarified requirements (★ Auto-review) |
 | `/codexspec:spec-to-plan` | Convert specification to technical implementation plan (★ Auto-review) |
 | `/codexspec:plan-to-tasks` | Break down plan into traceable, verifiable tasks (★ Auto-review) |
 | `/codexspec:implement-tasks` | Execute tasks with conditional TDD workflow |
+| `/codexspec:auto-dev` | Autonomously develop all pending blueprint requirements in document order |
 
 ### Review Commands (Quality Gates)
 

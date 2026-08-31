@@ -92,6 +92,13 @@ Invoke `$codexspec:review-spec <feature-dir>/spec.md` after saving.
 - Run a maximum of two automatic fix-and-review rounds.
 - If defects remain, the same defect repeats, or remediation requires a user decision, stop and report the evidence.
 
+## Auto-Dev Delegation
+
+When the invocation context explicitly contains `CODEXSPEC_AUTO_DEV_DELEGATION`, execute this
+command and its review gate normally, return the resulting pass or stop state to `auto-dev`, and
+skip the entire **Auto-Next Chain Advance** section below. Do not read `workflow.auto_next` in that
+delegated invocation. Direct invocations are unchanged.
+
 ## Auto-Next Chain Advance
 
 Read `workflow.auto_next` from `.codexspec/config.yml` (default `false`; only the literal value `true` enables it — absent, `false`, or any other value means disabled).

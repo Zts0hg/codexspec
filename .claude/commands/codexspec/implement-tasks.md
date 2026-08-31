@@ -363,7 +363,14 @@ the report, envelope, reproduction/refutation evidence, attempted repairs, and
 test state. It must not be converted to success by prose, score, elapsed effort,
 or a commit.
 
-### 8. Final Report and Commit
+### 8. Auto-Dev Delegation
+
+When the invocation context explicitly contains `CODEXSPEC_AUTO_DEV_DELEGATION`, execute the full
+implementation, verification, scenario self-check, and final code-review gate normally. Return the
+terminal PASS/FAIL/INCONCLUSIVE result and evidence to `auto-dev` exactly once. Auto-dev owns any
+later stage or blueprint transition; do not inspect or invoke `workflow.auto_next`. Direct invocations are unchanged.
+
+### 9. Final Report and Commit
 
 - Report completed tasks, files changed, verification commands and outcomes,
   review rounds, verified repairs, refuted findings, retained and resolved

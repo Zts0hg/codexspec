@@ -14,10 +14,12 @@ Agrupados por categoria, espelhando o catálogo do README. Dentro de cada grupo,
 |---------|---------|
 | `/codexspec:constitution` | Criar ou atualizar a constituição do projeto com validação entre artefatos |
 | `/codexspec:specify` | Esclarecer, confirmar e persistir requisitos em `requirements.md` |
+| `/codexspec:blueprint` | Discutir e manter requisitos confirmados no blueprint compartilhado |
 | `/codexspec:generate-spec` | Gerar o documento `spec.md` a partir dos requisitos esclarecidos (★ Revisão automática) |
 | `/codexspec:spec-to-plan` | Converter a especificação em plano técnico de implementação (★ Revisão automática) |
 | `/codexspec:plan-to-tasks` | Decompor o plano em tarefas rastreáveis e verificáveis (★ Revisão automática) |
 | `/codexspec:implement-tasks` | Executar tarefas com fluxo de trabalho TDD condicional |
+| `/codexspec:auto-dev` | Desenvolver autonomamente os requisitos pendentes na ordem do documento |
 
 ### Comandos de revisão (portões de qualidade)
 

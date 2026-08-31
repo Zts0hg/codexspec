@@ -2,6 +2,19 @@
 
 ## 명령어
 
+### `codexspec show-blueprint`
+
+고정 브랜치 `codexspec/auto-dev`와 `worktree-for-codexspec-auto-dev`의 전체
+`.codexspec/blueprint.md`를 표준 출력에 원문 그대로 표시합니다. 저장소, 브랜치, worktree 또는
+파일이 없으면 표준 오류에 진단을 출력하고 0이 아닌 상태로 종료합니다. 읽기 전용이며 fetch,
+merge, 쓰기 또는 잠금을 수행하지 않습니다.
+
+```bash
+codexspec show-blueprint
+```
+
+---
+
 ### `codexspec init`
 
 새 CodexSpec 프로젝트를 초기화합니다.

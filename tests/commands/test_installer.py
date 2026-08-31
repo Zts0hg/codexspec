@@ -37,15 +37,21 @@ class TestGetCommandsMetadata:
         assert isinstance(result, list)
 
     def test_returns_correct_count(self) -> None:
-        """Should return 25 commands (11 core + 8 enhanced + 3 git + 1 review + 2 utility)."""
+        """Should return 27 commands (13 core + 8 enhanced + 3 git + 1 review + 2 utility)."""
         result = get_commands_metadata()
-        assert len(result) == 25
+        assert len(result) == 27
 
     def test_core_commands_count(self) -> None:
-        """Should have 11 core commands."""
+        """Should have 13 core commands."""
         result = get_commands_metadata()
         core_commands = [c for c in result if c["category"] == "core"]
-        assert len(core_commands) == 11
+        assert len(core_commands) == 13
+
+    def test_blueprint_and_auto_dev_registered_as_core(self) -> None:
+        by_name = {command["name"]: command for command in get_commands_metadata()}
+        for name in ("blueprint", "auto-dev"):
+            assert by_name[name]["category"] == "core"
+            assert by_name[name]["file_name"] == f"{name}.md"
 
     def test_spec_to_design_and_review_design_registered(self) -> None:
         """S3.1.1: both new design-stage commands are registered as core."""
@@ -401,3 +407,49 @@ class TestShouldUpdateCommands:
 
         result = should_update_commands(tmp_path)
         assert result is True
+
+
+class TestDerivedCopySyncInvariant:
+    """Self-bootstrap drift invariant: every distributed command's derived
+    Claude copy must stay byte-identical to its template body.
+
+    The .claude/commands/codexspec/ directory is an install artifact
+    regenerated from templates/commands/; any hand-edit there never reaches
+    users and is silently overwritten on reinstall (see the project
+    constitution's Slash Command Template Modification Rules).
+    """
+
+    @staticmethod
+    def _body(path: Path) -> str:
+        text = path.read_text()
+        if text.startswith("---"):
+            _, separator, remainder = text.partition("\n---\n")
+            if separator and not remainder.startswith("---"):
+                return remainder
+        return text
+
+    def test_claude_copies_match_template_bodies(self) -> None:
+        repo_root = Path(__file__).parent.parent.parent
+        templates_dir = repo_root / "templates" / "commands"
+        derived_dir = repo_root / ".claude" / "commands" / "codexspec"
+        drifted: dict[str, str] = {}
+        for command in get_commands_metadata():
+            template = templates_dir / command["file_name"]
+            derived = derived_dir / command["file_name"]
+            assert derived.exists(), f"Missing derived copy for {command['name']}: {derived}"
+            if self._body(template) != self._body(derived):
+                drifted[command["name"]] = command["file_name"]
+        assert not drifted, (
+            "Derived .claude copies drifted from templates; regenerate via codexspec init "
+            f"instead of hand-editing: {drifted}"
+        )
+
+    def test_codex_skill_copies_exist_for_every_command(self) -> None:
+        repo_root = Path(__file__).parent.parent.parent
+        skills_dir = repo_root / ".agents" / "skills"
+        missing = [
+            command["name"]
+            for command in get_commands_metadata()
+            if not (skills_dir / f"codexspec-{command['name']}" / "SKILL.md").exists()
+        ]
+        assert not missing, f"Missing Codex skill copies for: {missing}"

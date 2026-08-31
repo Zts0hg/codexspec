@@ -77,6 +77,16 @@
       "language_warning": "警告: '{lang}' は一般的なサポート言語リストにありません。",
       "language_warning_hint": "Claudeがサポートしていれば動作する可能性があります。codexspec config --list-langs を実行してサポートされている言語を確認してください。",
       "commit_lang_set": "コミットメッセージ言語を設定しました: {lang}"
+    },
+    "show_blueprint": {
+      "not_git_repository": "現在のディレクトリは Git リポジトリ内にありません。",
+      "missing_fixed_branch": "固定ブランチ codexspec/auto-dev が存在しません。",
+      "missing_fixed_worktree": "固定 auto-dev worktree が存在しません。",
+      "worktree_path_mismatch": "固定ブランチが想定外の worktree パスに登録されています。",
+      "worktree_branch_mismatch": "固定 worktree が別のブランチに登録されています。",
+      "missing_blueprint": "専用 worktree に .codexspec/blueprint.md がありません。",
+      "blueprint_read_failed": "blueprint を読み取れませんでした。",
+      "unknown": "blueprint を表示できません: {error}"
     }
   },
   "constitution": {

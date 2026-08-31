@@ -2,6 +2,19 @@
 
 ## コマンド
 
+### `codexspec show-blueprint`
+
+固定ブランチ `codexspec/auto-dev` と `worktree-for-codexspec-auto-dev` にある完全な
+`.codexspec/blueprint.md` を標準出力へそのまま表示します。リポジトリ、ブランチ、worktree、
+またはファイルがない場合は標準エラーへ診断を出力し、ゼロ以外で終了します。読み取り専用で、
+fetch、merge、書き込み、ロックは実行しません。
+
+```bash
+codexspec show-blueprint
+```
+
+---
+
 ### `codexspec init`
 
 新しい CodexSpec プロジェクトを初期化します。

@@ -77,6 +77,16 @@
       "language_warning": "경고: '{lang}'이(가) 일반적으로 지원되는 언어 목록에 없습니다.",
       "language_warning_hint": "Claude가 지원한다면 여전히 작동할 수 있습니다. codexspec config --list-langs를 실행하여 지원되는 언어를 확인하세요.",
       "commit_lang_set": "커밋 메시지 언어가 설정됨: {lang}"
+    },
+    "show_blueprint": {
+      "not_git_repository": "현재 디렉터리가 Git 저장소 안에 있지 않습니다.",
+      "missing_fixed_branch": "고정 브랜치 codexspec/auto-dev가 없습니다.",
+      "missing_fixed_worktree": "고정 auto-dev worktree가 없습니다.",
+      "worktree_path_mismatch": "고정 브랜치가 예상하지 않은 worktree 경로에 등록되어 있습니다.",
+      "worktree_branch_mismatch": "고정 worktree가 다른 브랜치에 등록되어 있습니다.",
+      "missing_blueprint": "전용 worktree에 .codexspec/blueprint.md가 없습니다.",
+      "blueprint_read_failed": "blueprint를 읽을 수 없습니다.",
+      "unknown": "blueprint를 표시할 수 없습니다: {error}"
     }
   },
   "constitution": {

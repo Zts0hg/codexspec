@@ -14,10 +14,12 @@ README のカタログと対応するよう、カテゴリ別にグループ化�
 |---------|---------|
 | `/codexspec:constitution` | プロジェクト憲法を作成・更新し、アーティファクト間の整合性を検証します |
 | `/codexspec:specify` | 対話を通じて要件を明確化・確認し、`requirements.md` に保存します |
+| `/codexspec:blueprint` | 共有 blueprint の確認済み要件を議論・管理します |
 | `/codexspec:generate-spec` | 明確化された要件から `spec.md` を生成します（★ 自動レビュー付き） |
 | `/codexspec:spec-to-plan` | 仕様書を技術的な実装計画に変換します（★ 自動レビュー付き） |
 | `/codexspec:plan-to-tasks` | 計画を追跡可能で検証可能なタスクに分割します（★ 自動レビュー付き） |
 | `/codexspec:implement-tasks` | タスクを条件付き TDD ワークフローで実行します |
+| `/codexspec:auto-dev` | blueprint の保留中要件を文書順に自律開発します |
 
 ### Review Commands (Quality Gates)
 
