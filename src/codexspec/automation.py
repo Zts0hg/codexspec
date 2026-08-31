@@ -145,9 +145,9 @@ def _run_git_with_timeout(
         return subprocess.run(
             command,
             capture_output=True,
-            text=True,
             check=False,
             timeout=GIT_TIMEOUT_SECONDS,
+            encoding="utf-8",
             input=input,
             env=env,
         )

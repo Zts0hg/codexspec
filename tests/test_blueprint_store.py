@@ -2,6 +2,7 @@
 
 import base64
 import json
+import os
 from pathlib import Path
 
 import pytest
@@ -211,6 +212,7 @@ def test_auto_dev_recovers_blueprint_file_written_before_commit(tmp_path: Path) 
     owner.release(token)
 
 
+@pytest.mark.skipif(os.name == "nt", reason="Windows synthesizes POSIX permission bits (0o666/0o444 only)")
 def test_atomic_replacement_preserves_and_chooses_sane_file_modes(tmp_path: Path) -> None:
     repo = make_repo(tmp_path / "project")
     context = locate_repository(repo)

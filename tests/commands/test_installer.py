@@ -421,7 +421,7 @@ class TestDerivedCopySyncInvariant:
 
     @staticmethod
     def _body(path: Path) -> str:
-        text = path.read_text()
+        text = path.read_text(encoding="utf-8")
         if text.startswith("---"):
             _, separator, remainder = text.partition("\n---\n")
             if separator and not remainder.startswith("---"):

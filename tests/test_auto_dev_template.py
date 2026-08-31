@@ -3,7 +3,7 @@
 from pathlib import Path
 
 ROOT = Path(__file__).parents[1]
-TEMPLATE = (ROOT / "templates/commands/auto-dev.md").read_text()
+TEMPLATE = (ROOT / "templates/commands/auto-dev.md").read_text(encoding="utf-8")
 STAGES = (
     "generate-spec.md",
     "spec-to-design.md",
@@ -55,7 +55,7 @@ def test_auto_dev_has_completion_fresh_read_and_stop_preservation() -> None:
 
 def test_every_stage_has_uniform_delegation_and_direct_compatibility() -> None:
     for filename in STAGES:
-        content = (ROOT / "templates/commands" / filename).read_text()
+        content = (ROOT / "templates/commands" / filename).read_text(encoding="utf-8")
         assert "CODEXSPEC_AUTO_DEV_DELEGATION" in content
         assert "Direct invocations are unchanged" in content
         assert "workflow.auto_next" in content

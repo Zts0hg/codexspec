@@ -3,7 +3,7 @@
 import re
 from pathlib import Path
 
-TEMPLATE = (Path(__file__).parents[1] / "templates/commands/blueprint.md").read_text()
+TEMPLATE = (Path(__file__).parents[1] / "templates/commands/blueprint.md").read_text(encoding="utf-8")
 
 
 def test_blueprint_uses_language_profile_and_product_context() -> None:
