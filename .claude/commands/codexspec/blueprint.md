@@ -1,6 +1,6 @@
 ---
-description: Discuss and maintain confirmed requirements in the shared product blueprint
-argument-hint: "Describe a new requirement, or identify a pending requirement to replace, delete, or move"
+description: 讨论并维护共享产品蓝图中的已确认需求
+argument-hint: "描述新需求，或指定要替换、删除、移动的待定需求"
 ---
 
 # Blueprint Requirements Discovery

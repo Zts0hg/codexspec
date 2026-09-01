@@ -1,5 +1,5 @@
 ---
-description: Generate release notes from git history — maintain a Keep a Changelog CHANGELOG.md entry and emit a user-facing release body, without deciding versions or mutating git state
+description: 从 git 历史生成发布说明——维护 Keep a Changelog 风格的 CHANGELOG.md 条目并产出面向用户的发布正文，不决定版本号、不改动 git 状态
 allowed-tools: Bash(git branch:*), Bash(git tag:*), Bash(git describe:*), Bash(git log:*), Bash(git diff:*), Bash(git rev-parse:*), Bash(git remote:*), Bash(ls:*), Bash(cat:*), Read, Edit, Write
 ---
 

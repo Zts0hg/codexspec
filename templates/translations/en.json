@@ -157,5 +157,48 @@
   "quick": {
     "description": "Run a compact requirements-first SDD flow for a small change",
     "argument-hint": "Describe a small requirement"
+  },
+  "auto-dev": {
+    "description": "Autonomously develop every pending requirement in the shared blueprint",
+    "argument-hint": "\"\""
+  },
+  "blueprint": {
+    "description": "Discuss and maintain confirmed requirements in the shared product blueprint",
+    "argument-hint": "Describe a new requirement, or identify a pending requirement to replace, delete, or move"
+  },
+  "config": {
+    "description": "Manage CodexSpec project configuration interactively",
+    "argument-hint": "[--view] View current configuration without modification"
+  },
+  "debug": {
+    "description": "Debug a failure to its root cause before proposing any fix",
+    "argument-hint": "[error text | failing test | file:line | plain-language symptom]"
+  },
+  "distill": {
+    "description": "Distill reusable, cross-feature knowledge from an interaction into the project profile",
+    "argument-hint": "[interaction segment or context to distill]"
+  },
+  "evolve": {
+    "description": "Compile vetted project-profile knowledge into a reusable command/skill and contribute it upstream via a reviewed PR",
+    "argument-hint": "[what to evolve, or a profile area]"
+  },
+  "onboard": {
+    "description": "Cold-start the project profile by scanning an existing codebase for conventions and constraints",
+    "argument-hint": "[path]"
+  },
+  "release-notes": {
+    "description": "Generate release notes from git history — maintain a Keep a Changelog CHANGELOG.md entry and emit a user-facing release body, without deciding versions or mutating git state"
+  },
+  "reverse-spec": {
+    "description": "Reverse-derive spec/design from existing code, then reconcile code against the confirmed baseline",
+    "argument-hint": "[path]"
+  },
+  "review-design": {
+    "description": "Review design fidelity, feasibility, and planning readiness",
+    "argument-hint": "[design.md or feature directory]"
+  },
+  "spec-to-design": {
+    "description": "Convert a confirmed specification into a traceable design document",
+    "argument-hint": "[spec.md or feature directory]"
   }
 }

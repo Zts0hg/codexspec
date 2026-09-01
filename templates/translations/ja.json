@@ -152,10 +152,53 @@
   },
   "review-code": {
     "description": "選択した変更を厳格な欠陥ゲートとしてレビューするか、--audit でパスを監査",
-    "argument-hint": "[欠陥ゲート選択子 | --audit [paths...]]（すべての引数は省略可能）\n\nこのコマンドは、相互に排他的な 2 つのモードのいずれかでコードをレビューします。\n\nモード 1 - 欠陥ゲート（デフォルト）：Git 変更に対するマージ阻止判定。\n  1. 引数なし → フィーチャーブランチ全体の差分：merge-base → ワークツリー（ベースブランチ上では：未コミットの変更のみ）\n  2. --committed → merge-base → HEAD のみ。ステージ済み・未ステージ・未追跡の変更は除外\n  3. --uncommitted → ステージ済み + 未ステージ + 未追跡の変更のみ\n  4. --commit <sha> → そのコミットのみ。--parent <n> を追加するとマージ親を 1 つ選択\n  修飾子はそれ自体では対象を選択しません：\n  - --base <branch> → ベース解決を上書き。引数なしまたは --committed とのみ組み合わせ可能\n  - --feature <feature-dir> → カバレッジ確認のため要件コンテキストを添付。Git スコープは変更しない\n  - --focus <instructions> → リスクパスの義務を追加。繰り返し可能、スコープは狭めない\n\nモード 2 - 監査（advisory）：現在のファイル内容に対するアドバイザリ品質スコアカード（ゲート判定なし、envelope なし）。\n  1. --audit → メインのソースディレクトリをレビュー（デフォルト：src/）\n  2. --audit <path> [<path>...] → 指定したパスのみをレビュー（スペース区切り）\n\nsrc/ のような裸のパスは欠陥ゲートの対象として無効です：--audit src/ に移行してください。\n\n例：\n  /codexspec:review-code\n  /codexspec:review-code --uncommitted\n  /codexspec:review-code --commit <sha> --parent 1\n  /codexspec:review-code --committed --base origin/main\n  /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus \"リトライ処理の確認\"\n  /codexspec:review-code --audit src/api"
+    "argument-hint": "[欠陥ゲート選択子 | --audit [paths...]]（すべての引数は省略可能）\n\nこのコマンドには、互いに排他な 2 つのレビューモードがあります。\n\nモード 1 - 欠陥ゲート（デフォルト）：Git 変更をレビューし、マージ可否を判定します。\n  1. 引数なし → フィーチャーブランチ全体の差分：merge-base → ワークツリー（ベースブランチ上では：未コミットの変更のみ）\n  2. --committed → merge-base → HEAD のみ。ステージ済み・未ステージ・未追跡の変更は除外\n  3. --uncommitted → ステージ済み + 未ステージ + 未追跡の変更のみ\n  4. --commit <sha> → そのコミットのみ。--parent <n> を追加するとマージ親を 1 つ選択\n  修飾子は単独ではレビュー対象を切り替えません：\n  - --base <branch> → ベース解決を上書き。引数なしまたは --committed とのみ組み合わせ可能\n  - --feature <feature-dir> → カバレッジ確認のため要件コンテキストを添付。Git スコープは変更しない\n  - --focus <instructions> → リスクパスの義務を追加。繰り返し可能、スコープは狭めない\n\nモード 2 - 監査（advisory）：現在のファイル内容について参考となる品質スコアを提示（ゲート判定なし、envelope なし）。\n  1. --audit → メインのソースディレクトリをレビュー（デフォルト：src/）\n  2. --audit <path> [<path>...] → 指定したパスのみをレビュー（スペース区切り）\n\nsrc/ のようなパスだけの指定は欠陥ゲートの対象にできません。--audit src/ を使用してください。\n\n例：\n  /codexspec:review-code\n  /codexspec:review-code --uncommitted\n  /codexspec:review-code --commit <sha> --parent 1\n  /codexspec:review-code --committed --base origin/main\n  /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus \"リトライ処理の確認\"\n  /codexspec:review-code --audit src/api"
   },
   "quick": {
     "description": "小さな変更向けにコンパクトな Requirements-First SDD フローを実行",
     "argument-hint": "小さな要件を記述してください"
+  },
+  "auto-dev": {
+    "description": "共有ブループリント内のすべての未処理要件を自律的に開発",
+    "argument-hint": "\"\""
+  },
+  "blueprint": {
+    "description": "共有プロダクトブループリント内の確定済み要件を議論・管理",
+    "argument-hint": "新しい要件を説明するか、置換・削除・移動する未処理要件を指定"
+  },
+  "config": {
+    "description": "CodexSpec プロジェクト設定を対話的に管理",
+    "argument-hint": "[--view] 設定を変更せずに現在の構成を表示"
+  },
+  "debug": {
+    "description": "根本原因を突き止めてから修正を提案",
+    "argument-hint": "[エラー文 | 失敗テスト | ファイル:行 | 平易な言葉での症状]"
+  },
+  "distill": {
+    "description": "インタラクションから再利用可能なクロス機能の知識を汲み取り、プロジェクトプロフィールに蓄える",
+    "argument-hint": "[抽出対象のインタラクション断片またはコンテキスト]"
+  },
+  "evolve": {
+    "description": "審査済み（vetted）のプロフィール知識を再利用可能なコマンド/スキルに取りまとめ、レビュー付き PR でアップストリームに還元",
+    "argument-hint": "[進化対象、またはプロフィールの領域]"
+  },
+  "onboard": {
+    "description": "既存コードベースを走査して規約と制約を収集し、プロジェクトプロフィールをコールドスタート",
+    "argument-hint": "[パス]"
+  },
+  "release-notes": {
+    "description": "git 履歴からリリースノートを生成 — Keep a Changelog 形式の CHANGELOG.md エントリを維持し、ユーザー向けリリース本文を生成。バージョン決定や git 状態の変更は行わない"
+  },
+  "reverse-spec": {
+    "description": "既存コードから spec/design を逆引きし、コードを確定済みベースラインと突き合わせる",
+    "argument-hint": "[パス]"
+  },
+  "review-design": {
+    "description": "設計の忠実度・実現可能性・計画準備性をレビュー",
+    "argument-hint": "[design.md または 機能ディレクトリ]"
+  },
+  "spec-to-design": {
+    "description": "確定済み仕様をトレーサブルな設計ドキュメントに変換",
+    "argument-hint": "[spec.md または 機能ディレクトリ]"
   }
 }

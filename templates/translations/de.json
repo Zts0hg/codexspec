@@ -152,10 +152,53 @@
   },
   "review-code": {
     "description": "Ausgewählte Änderungen als striktes Defekt-Gate prüfen oder Pfade mit --audit auditieren",
-    "argument-hint": "[Defect-Gate-Selektoren | --audit [paths...]] (alle Argumente optional)\n\nDieser Befehl prüft Code in einem von zwei sich gegenseitig ausschließenden Modi.\n\nModus 1 - Defect Gate (Standard): merge-blockierendes Urteil über eine Git-Änderung.\n  1. Keine Argumente → gesamtes Branch-Delta: merge-base → Worktree (Basis-Branch: nur uncommittete Änderungen)\n  2. --committed → nur merge-base → HEAD; schließt gestagte, ungestagte und untracked Änderungen aus\n  3. --uncommitted → nur gestagte + ungestagte + untracked Änderungen\n  4. --commit <sha> → genau dieser Commit; mit --parent <n> einen Merge-Elternteil wählen\n  Modifizierer wählen selbst kein Ziel aus:\n  - --base <branch> → Basis-Auflösung überschreiben; nur ohne Argumente oder mit --committed gültig\n  - --feature <feature-dir> → Anforderungskontext für die Abdeckung anhängen; ändert den Git-Scope nie\n  - --focus <instructions> → Risk-Pass-Pflichten ergänzen; wiederholbar, engt nie ein\n\nModus 2 - Audit (advisory): beratende Qualitätswertung über den aktuellen Dateiinhalt (kein Gate-Urteil, kein Envelope).\n  1. --audit → Hauptquellverzeichnis prüfen (Standard: src/)\n  2. --audit <path> [<path>...] → nur die aufgeführten Pfade prüfen, durch Leerzeichen getrennt\n\nEin nackter Pfad wie src/ ist kein gültiges Defect-Gate-Ziel: mit --audit src/ migrieren.\n\nBeispiele:\n  /codexspec:review-code\n  /codexspec:review-code --uncommitted\n  /codexspec:review-code --commit <sha> --parent 1\n  /codexspec:review-code --committed --base origin/main\n  /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus \"Retry-Handling prüfen\"\n  /codexspec:review-code --audit src/api"
+    "argument-hint": "[Defect-Gate-Selektoren | --audit [paths...]] (alle Argumente optional)\n\nDieser Befehl durchläuft einen von zwei sich gegenseitig ausschließenden Prüfmodi.\n\nModus 1 - Defect Gate (Standard): prüft eine Git-Änderung und entscheidet, ob der Merge blockiert wird.\n  1. Keine Argumente → gesamtes Branch-Delta: merge-base → Worktree (Basis-Branch: nur uncommittete Änderungen)\n  2. --committed → nur merge-base → HEAD; schließt gestagte, ungestagte und untracked Änderungen aus\n  3. --uncommitted → nur gestagte + ungestagte + untracked Änderungen\n  4. --commit <sha> → genau dieser Commit; mit --parent <n> einen Merge-Elternteil wählen\n  Modifizierer ändern das Prüfziel nicht:\n  - --base <branch> → Basis-Auflösung überschreiben; nur ohne Argumente oder mit --committed gültig\n  - --feature <feature-dir> → Anforderungskontext für die Abdeckung anhängen; ändert den Git-Scope nie\n  - --focus <instructions> → Risk-Pass-Pflichten ergänzen; wiederholbar, engt nie ein\n\nModus 2 - Audit (advisory): orientierende Qualitätseinschätzung des Dateiinhalts (kein Gate-Urteil, kein Envelope).\n  1. --audit → Hauptquellverzeichnis prüfen (Standard: src/)\n  2. --audit <path> [<path>...] → nur die aufgeführten Pfade prüfen, durch Leerzeichen getrennt\n\nEin bloßer Pfad wie src/ ist kein gültiges Ziel für das Defect Gate: bitte --audit src/ verwenden.\n\nBeispiele:\n  /codexspec:review-code\n  /codexspec:review-code --uncommitted\n  /codexspec:review-code --commit <sha> --parent 1\n  /codexspec:review-code --committed --base origin/main\n  /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus \"Retry-Handling prüfen\"\n  /codexspec:review-code --audit src/api"
   },
   "quick": {
     "description": "Einen kompakten Requirements-First-SDD-Ablauf für eine kleine Änderung ausführen",
     "argument-hint": "Beschreiben Sie eine kleine Anforderung"
+  },
+  "auto-dev": {
+    "description": "Jede ausstehende Anforderung im gemeinsamen Blueprint autonom entwickeln",
+    "argument-hint": "\"\""
+  },
+  "blueprint": {
+    "description": "Bestätigte Anforderungen im gemeinsamen Produkt-Blueprint diskutieren und pflegen",
+    "argument-hint": "Eine neue Anforderung beschreiben oder eine ausstehende Anforderung zum Ersetzen, Löschen oder Verschieben angeben"
+  },
+  "config": {
+    "description": "CodexSpec-Projektkonfiguration interaktiv verwalten",
+    "argument-hint": "[--view] Aktuelle Konfiguration ohne Änderungen ansehen"
+  },
+  "debug": {
+    "description": "Fehlern vor jedem Lösungsvorschlag auf den Grund gehen",
+    "argument-hint": "[Fehlertext | fehlgeschlagener Test | Datei:Zeile | Symptom in einfacher Sprache]"
+  },
+  "distill": {
+    "description": "Wiederverwendbares funktionsübergreifendes Wissen aus einer Interaktion destillieren und ins Projekt-Profil schreiben",
+    "argument-hint": "[zu destillierendes Interaktionssegment oder Kontext]"
+  },
+  "evolve": {
+    "description": "Geprüftes (vetted) Profilwissen zu einem wiederverwendbaren Befehl/Skill aufbereiten und über einen reviewed PR upstream beitragen",
+    "argument-hint": "[zu entwickelndes Objekt oder ein Profilgebiet]"
+  },
+  "onboard": {
+    "description": "Das Projekt-Profil per Scan eines bestehenden Codebestands mit Konventionen und Constraints befüllen",
+    "argument-hint": "[Pfad]"
+  },
+  "release-notes": {
+    "description": "Release-Notes aus der Git-Historie erzeugen — einen Keep-a-Changelog-Eintrag in der CHANGELOG.md pflegen und einen nutzerseitigen Release-Text ausgeben, ohne Versionen festzulegen oder den Git-Zustand zu verändern"
+  },
+  "reverse-spec": {
+    "description": "Spec/Design rückwärts aus bestehendem Code ableiten und den Code gegen die bestätigte Baseline abgleichen",
+    "argument-hint": "[Pfad]"
+  },
+  "review-design": {
+    "description": "Design-Treue, Machbarkeit und Planungsreife prüfen",
+    "argument-hint": "[design.md oder Feature-Verzeichnis]"
+  },
+  "spec-to-design": {
+    "description": "Eine bestätigte Spezifikation in ein tracebares Design-Dokument überführen",
+    "argument-hint": "[spec.md oder Feature-Verzeichnis]"
   }
 }

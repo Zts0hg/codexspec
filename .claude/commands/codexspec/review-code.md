@@ -3,23 +3,23 @@ description: 将所选变更作为严格缺陷门禁进行审查，或使用 --a
 argument-hint: |
   [缺陷门禁选择器 | --audit [paths...]]（所有参数均可选）
 
-  本命令以两种互斥模式之一审查代码。
+  本命令提供两种互斥的使用模式。
 
-  模式一 - 缺陷门禁（默认）：对 Git 变更给出阻断合并的裁定。
+  模式一 - 缺陷门禁（默认）：对 Git 变更裁定是否阻断合并。
     1. 无参数 → 完整特性分支增量：merge-base → 工作区（若在基分支上：仅未提交变更）
     2. --committed → 仅 merge-base → HEAD；排除已暂存、未暂存、未跟踪的变更
     3. --uncommitted → 仅已暂存 + 未暂存 + 未跟踪的变更
     4. --commit <sha> → 仅该提交；加 --parent <n> 选择一个合并父节点
-    修饰符自身不选择审查对象：
+    修饰符不会改变审查对象：
     - --base <branch> → 覆盖基分支解析；仅可与无参数或 --committed 搭配
-    - --feature <feature-dir> → 附加需求上下文用于覆盖检查；绝不改变 Git 范围
+    - --feature <feature-dir> → 为覆盖检查附上需求上下文；绝不改变 Git 范围
     - --focus <instructions> → 追加风险审查义务；可重复，绝不收窄范围
 
-  模式二 - 审计（advisory）：对现有文件内容出具建议性质量评分卡（无门禁裁定、无 envelope）。
+  模式二 - 审计（advisory）：对现有文件内容给出建议性的质量评分（无门禁裁定、无 envelope）。
     1. --audit → 审查主源码目录（默认：src/）
     2. --audit <path> [<path>...] → 仅审查列出的路径，空格分隔
 
-  裸路径（如 src/）不是合法的缺陷门禁目标：请用 --audit src/ 迁移。
+  裸路径（如 src/）不能作为缺陷门禁目标：请改用 --audit src/。
 
   示例：
     /codexspec:review-code

@@ -204,10 +204,12 @@ def test_s5_5_never_mutates_git_state() -> None:
     assert "MUST NEVER create a commit" in c
 
 
-# --- T3.3 / S7.1: no translation-catalog entry ---
+# --- T3.3 / S7.1: translation-catalog entry (superseded 2026-09-01) ---
 
 
 def test_s7_1_no_translation_catalog_entry() -> None:
-    """S7.1: release-notes installs with English frontmatter (no en.json entry)."""
+    """S7.1 was superseded by the full-localization policy: release-notes MUST have a
+    catalog entry so installs render localized frontmatter in every supported language."""
     data = json.loads(EN_CATALOG.read_text(encoding="utf-8"))
-    assert "release-notes" not in data
+    assert isinstance(data.get("release-notes"), dict)
+    assert data["release-notes"].get("description")

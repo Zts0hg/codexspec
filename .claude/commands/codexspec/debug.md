@@ -1,6 +1,6 @@
 ---
-description: Debug a failure to its root cause before proposing any fix
-argument-hint: "[error text | failing test | file:line | plain-language symptom]"
+description: 先定位故障的根本原因，再着手修复
+argument-hint: "[错误文本 | 失败测试 | 文件:行号 | 通俗症状描述]"
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 ---
 

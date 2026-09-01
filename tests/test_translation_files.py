@@ -35,6 +35,7 @@ REQUIRED_ROOT_KEYS = [
 ]
 
 TRANSLATIONS_DIR = Path(__file__).parent.parent / "templates" / "translations"
+COMMANDS_DIR = Path(__file__).parent.parent / "templates" / "commands"
 
 REVIEW_CODE_HINTS = {
     "en": """[defect-gate selectors | --audit [paths...]] (all arguments optional)
@@ -66,23 +67,23 @@ Examples:
   /codexspec:review-code --audit src/api""",
     "zh-CN": """[缺陷门禁选择器 | --audit [paths...]]（所有参数均可选）
 
-本命令以两种互斥模式之一审查代码。
+本命令提供两种互斥的使用模式。
 
-模式一 - 缺陷门禁（默认）：对 Git 变更给出阻断合并的裁定。
+模式一 - 缺陷门禁（默认）：对 Git 变更裁定是否阻断合并。
   1. 无参数 → 完整特性分支增量：merge-base → 工作区（若在基分支上：仅未提交变更）
   2. --committed → 仅 merge-base → HEAD；排除已暂存、未暂存、未跟踪的变更
   3. --uncommitted → 仅已暂存 + 未暂存 + 未跟踪的变更
   4. --commit <sha> → 仅该提交；加 --parent <n> 选择一个合并父节点
-  修饰符自身不选择审查对象：
+  修饰符不会改变审查对象：
   - --base <branch> → 覆盖基分支解析；仅可与无参数或 --committed 搭配
-  - --feature <feature-dir> → 附加需求上下文用于覆盖检查；绝不改变 Git 范围
+  - --feature <feature-dir> → 为覆盖检查附上需求上下文；绝不改变 Git 范围
   - --focus <instructions> → 追加风险审查义务；可重复，绝不收窄范围
 
-模式二 - 审计（advisory）：对现有文件内容出具建议性质量评分卡（无门禁裁定、无 envelope）。
+模式二 - 审计（advisory）：对现有文件内容给出建议性的质量评分（无门禁裁定、无 envelope）。
   1. --audit → 审查主源码目录（默认：src/）
   2. --audit <path> [<path>...] → 仅审查列出的路径，空格分隔
 
-裸路径（如 src/）不是合法的缺陷门禁目标：请用 --audit src/ 迁移。
+裸路径（如 src/）不能作为缺陷门禁目标：请改用 --audit src/。
 
 示例：
   /codexspec:review-code
@@ -93,23 +94,23 @@ Examples:
   /codexspec:review-code --audit src/api""",
     "ja": """[欠陥ゲート選択子 | --audit [paths...]]（すべての引数は省略可能）
 
-このコマンドは、相互に排他的な 2 つのモードのいずれかでコードをレビューします。
+このコマンドには、互いに排他な 2 つのレビューモードがあります。
 
-モード 1 - 欠陥ゲート（デフォルト）：Git 変更に対するマージ阻止判定。
+モード 1 - 欠陥ゲート（デフォルト）：Git 変更をレビューし、マージ可否を判定します。
   1. 引数なし → フィーチャーブランチ全体の差分：merge-base → ワークツリー（ベースブランチ上では：未コミットの変更のみ）
   2. --committed → merge-base → HEAD のみ。ステージ済み・未ステージ・未追跡の変更は除外
   3. --uncommitted → ステージ済み + 未ステージ + 未追跡の変更のみ
   4. --commit <sha> → そのコミットのみ。--parent <n> を追加するとマージ親を 1 つ選択
-  修飾子はそれ自体では対象を選択しません：
+  修飾子は単独ではレビュー対象を切り替えません：
   - --base <branch> → ベース解決を上書き。引数なしまたは --committed とのみ組み合わせ可能
   - --feature <feature-dir> → カバレッジ確認のため要件コンテキストを添付。Git スコープは変更しない
   - --focus <instructions> → リスクパスの義務を追加。繰り返し可能、スコープは狭めない
 
-モード 2 - 監査（advisory）：現在のファイル内容に対するアドバイザリ品質スコアカード（ゲート判定なし、envelope なし）。
+モード 2 - 監査（advisory）：現在のファイル内容について参考となる品質スコアを提示（ゲート判定なし、envelope なし）。
   1. --audit → メインのソースディレクトリをレビュー（デフォルト：src/）
   2. --audit <path> [<path>...] → 指定したパスのみをレビュー（スペース区切り）
 
-src/ のような裸のパスは欠陥ゲートの対象として無効です：--audit src/ に移行してください。
+src/ のようなパスだけの指定は欠陥ゲートの対象にできません。--audit src/ を使用してください。
 
 例：
   /codexspec:review-code
@@ -120,23 +121,23 @@ src/ のような裸のパスは欠陥ゲートの対象として無効です：
   /codexspec:review-code --audit src/api""",
     "ko": """[결함 게이트 선택자 | --audit [paths...]] (모든 인자는 선택 사항)
 
-이 명령은 상호 배타적인 두 가지 모드 중 하나로 코드를 검토합니다.
+이 명령에는 서로 배타적인 두 가지 검토 모드가 있습니다.
 
-모드 1 - 결함 게이트 (기본값): Git 변경에 대한 병합 차단 판정.
+모드 1 - 결함 게이트 (기본값): Git 변경을 검토하고 병합 차단 여부를 판정합니다.
   1. 인자 없음 → 전체 피처 브랜치 델타: merge-base → 작업 트리 (베이스 브랜치 자체인 경우: 커밋되지 않은 변경만)
   2. --committed → merge-base → HEAD만. 스테이지됨, 스테이지 안 됨, 추적 안 됨 변경은 제외
   3. --uncommitted → 스테이지됨 + 스테이지 안 됨 + 추적 안 됨 변경만
   4. --commit <sha> → 해당 커밋만. --parent <n>을 추가하면 병합 부모 하나를 선택
-  수정자는 그 자체로 대상을 선택하지 않습니다:
+  수정자는 단독으로 검토 대상을 바꾸지 않습니다:
   - --base <branch> → 베이스 해석을 재정의. 인자 없음 또는 --committed와만 사용 가능
   - --feature <feature-dir> → 커버리지 확인용 요구사항 컨텍스트를 첨부. Git 범위는 변경하지 않음
   - --focus <instructions> → 리스크 패스 의무를 추가. 반복 가능, 범위를 좁히지 않음
 
-모드 2 - 감사 (advisory): 현재 파일 내용에 대한 자문 품질 스코어카드 (게이트 판정 없음, envelope 없음).
+모드 2 - 감사 (advisory): 현재 파일 내용에 대한 참고용 품질 스코어카드 (게이트 판정 없음, envelope 없음).
   1. --audit → 메인 소스 디렉터리를 검토 (기본값: src/)
   2. --audit <path> [<path>...] → 나열된 경로만 검토 (공백으로 구분)
 
-src/ 같은 베어 경로는 결함 게이트 대상으로 유효하지 않습니다: --audit src/로 전환하세요.
+src/처럼 경로만 지정하면 결함 게이트 대상이 될 수 없습니다. --audit src/를 사용하세요.
 
 예시:
   /codexspec:review-code
@@ -147,23 +148,23 @@ src/ 같은 베어 경로는 결함 게이트 대상으로 유효하지 않습�
   /codexspec:review-code --audit src/api""",
     "de": """[Defect-Gate-Selektoren | --audit [paths...]] (alle Argumente optional)
 
-Dieser Befehl prüft Code in einem von zwei sich gegenseitig ausschließenden Modi.
+Dieser Befehl durchläuft einen von zwei sich gegenseitig ausschließenden Prüfmodi.
 
-Modus 1 - Defect Gate (Standard): merge-blockierendes Urteil über eine Git-Änderung.
+Modus 1 - Defect Gate (Standard): prüft eine Git-Änderung und entscheidet, ob der Merge blockiert wird.
   1. Keine Argumente → gesamtes Branch-Delta: merge-base → Worktree (Basis-Branch: nur uncommittete Änderungen)
   2. --committed → nur merge-base → HEAD; schließt gestagte, ungestagte und untracked Änderungen aus
   3. --uncommitted → nur gestagte + ungestagte + untracked Änderungen
   4. --commit <sha> → genau dieser Commit; mit --parent <n> einen Merge-Elternteil wählen
-  Modifizierer wählen selbst kein Ziel aus:
+  Modifizierer ändern das Prüfziel nicht:
   - --base <branch> → Basis-Auflösung überschreiben; nur ohne Argumente oder mit --committed gültig
   - --feature <feature-dir> → Anforderungskontext für die Abdeckung anhängen; ändert den Git-Scope nie
   - --focus <instructions> → Risk-Pass-Pflichten ergänzen; wiederholbar, engt nie ein
 
-Modus 2 - Audit (advisory): beratende Qualitätswertung über den aktuellen Dateiinhalt (kein Gate-Urteil, kein Envelope).
+Modus 2 - Audit (advisory): orientierende Qualitätseinschätzung des Dateiinhalts (kein Gate-Urteil, kein Envelope).
   1. --audit → Hauptquellverzeichnis prüfen (Standard: src/)
   2. --audit <path> [<path>...] → nur die aufgeführten Pfade prüfen, durch Leerzeichen getrennt
 
-Ein nackter Pfad wie src/ ist kein gültiges Defect-Gate-Ziel: mit --audit src/ migrieren.
+Ein bloßer Pfad wie src/ ist kein gültiges Ziel für das Defect Gate: bitte --audit src/ verwenden.
 
 Beispiele:
   /codexspec:review-code
@@ -176,21 +177,21 @@ Beispiele:
 
 Este comando revisa código en uno de dos modos mutuamente excluyentes.
 
-Modo 1 - Defect gate (predeterminado): veredicto que bloquea la fusión sobre un cambio de Git.
+Modo 1 - Defect gate (predeterminado): revisa un cambio de Git y decide si bloquea la fusión.
   1. Sin argumentos → delta completo de la rama: merge-base → worktree (en la rama base: solo cambios sin confirmar)
   2. --committed → solo merge-base → HEAD; excluye lo staged, unstaged y untracked
   3. --uncommitted → solo staged + unstaged + untracked
   4. --commit <sha> → exactamente ese commit; añade --parent <n> para elegir un padre de fusión
-  Los modificadores nunca seleccionan un objetivo por sí mismos:
+  Los modificadores nunca cambian el objetivo por sí solos:
   - --base <branch> → anula la resolución de la base; válido solo sin argumentos o con --committed
   - --feature <feature-dir> → adjunta contexto de requisitos para la cobertura; nunca cambia el alcance de Git
   - --focus <instructions> → añade obligaciones al Risk Pass; repetible, nunca reduce el alcance
 
-Modo 2 - Audit (advisory): scorecard consultivo del contenido de los archivos (sin veredicto de gate ni envelope).
+Modo 2 - Audit (advisory): scorecard orientativo del contenido de los archivos (sin veredicto de gate ni envelope).
   1. --audit → revisa el directorio principal de código (predeterminado: src/)
   2. --audit <path> [<path>...] → revisa solo las rutas listadas, separadas por espacios
 
-Una ruta desnuda como src/ no es un objetivo de defect gate válido: migre con --audit src/.
+Una ruta suelta como src/ no es un objetivo válido del defect gate: use --audit src/.
 
 Ejemplos:
   /codexspec:review-code
@@ -201,23 +202,23 @@ Ejemplos:
   /codexspec:review-code --audit src/api""",
     "fr": """[sélecteurs defect-gate | --audit [paths...]] (tous les arguments sont facultatifs)
 
-Cette commande examine le code dans l'un de deux modes mutuellement exclusifs.
+Cette commande propose deux modes d'examen mutuellement exclusifs.
 
-Mode 1 - Defect gate (par défaut) : verdict bloquant la fusion sur une modification Git.
+Mode 1 - Defect gate (par défaut) : examine une modification Git et décide si elle bloque la fusion.
   1. Sans argument → delta complet de la branche : merge-base → worktree (branche de base : non validé uniquement)
   2. --committed → merge-base → HEAD uniquement ; exclut le staged, unstaged et untracked
   3. --uncommitted → staged + unstaged + untracked uniquement
   4. --commit <sha> → exactement ce commit ; ajoutez --parent <n> pour choisir un parent de fusion
-  Les modificateurs ne sélectionnent jamais de cible par eux-mêmes :
+  Les modificateurs ne changent jamais la cible par eux-mêmes :
   - --base <branch> → remplace la résolution de la base ; valable uniquement sans argument ou avec --committed
   - --feature <feature-dir> → joint le contexte des exigences pour la couverture ; ne change jamais le périmètre Git
   - --focus <instructions> → ajoute des obligations au Risk Pass ; répétable, ne rétrécit jamais le périmètre
 
-Mode 2 - Audit (advisory) : grille de qualité consultative du contenu des fichiers (sans verdict de gate ni envelope).
+Mode 2 - Audit (advisory) : évaluation indicative du contenu des fichiers (sans verdict de gate ni envelope).
   1. --audit → examine le répertoire source principal (par défaut : src/)
   2. --audit <path> [<path>...] → examine uniquement les chemins listés, séparés par des espaces
 
-Un chemin nu comme src/ n'est pas une cible defect gate valide : migrez avec --audit src/.
+Un chemin seul comme src/ n'est pas une cible valide du defect gate : utilisez --audit src/.
 
 Exemples :
   /codexspec:review-code
@@ -230,21 +231,21 @@ Exemples :
 
 Este comando revisa código em um de dois modos mutuamente exclusivos.
 
-Modo 1 - Defect gate (padrão): veredito que bloqueia o merge sobre uma alteração do Git.
+Modo 1 - Defect gate (padrão): revisa uma alteração do Git e decide se bloqueia o merge.
   1. Sem argumentos → delta completo do branch: merge-base → worktree (branch base: apenas alterações não commitadas)
   2. --committed → apenas merge-base → HEAD; exclui staged, unstaged e untracked
   3. --uncommitted → apenas staged + unstaged + untracked
   4. --commit <sha> → exatamente aquele commit; adicione --parent <n> para escolher um pai do merge
-  Modificadores nunca selecionam um alvo por si mesmos:
+  Modificadores nunca mudam o alvo por si sós:
   - --base <branch> → sobrepõe a resolução da base; válido apenas sem argumentos ou com --committed
   - --feature <feature-dir> → anexa contexto de requisitos para cobertura; nunca muda o escopo do Git
   - --focus <instructions> → adiciona obrigações ao Risk Pass; repetível, nunca restringe o escopo
 
-Modo 2 - Audit (advisory): scorecard de qualidade do conteúdo dos arquivos (sem veredito de gate nem envelope).
+Modo 2 - Audit (advisory): scorecard orientativo do conteúdo dos arquivos (sem veredito de gate nem envelope).
   1. --audit → revisa o diretório principal de código (padrão: src/)
   2. --audit <path> [<path>...] → revisa apenas os caminhos listados, separados por espaço
 
-Um caminho simples como src/ não é um alvo válido do defect gate: migre com --audit src/.
+Um caminho solto como src/ não é um alvo válido do defect gate: use --audit src/.
 
 Exemplos:
   /codexspec:review-code
@@ -361,3 +362,23 @@ class TestReviewCodeTranslationContract:
             "--audit [paths...]",
         ]:
             assert token in command["argument-hint"]
+
+
+class TestFullCatalogCoverage:
+    """Full-localization policy: every distributed command must have a translation-catalog
+    entry, so installs render localized frontmatter in every supported language.
+
+    Retires the former subset precedent (debug/distill/evolve/config installing with
+    English frontmatter); new commands must add their catalog entry in the same change.
+    """
+
+    @pytest.mark.parametrize(
+        "command_file",
+        sorted(COMMANDS_DIR.glob("*.md")),
+        ids=lambda p: p.stem,
+    )
+    def test_command_is_cataloged_in_en(self, command_file):
+        en = json.loads((TRANSLATIONS_DIR / "en.json").read_text(encoding="utf-8"))
+        entry = en.get(command_file.stem)
+        assert isinstance(entry, dict), f"{command_file.stem} missing from en.json catalog"
+        assert entry.get("description"), f"{command_file.stem} has an empty catalog description"

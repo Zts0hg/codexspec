@@ -1,6 +1,6 @@
 ---
-description: Convert a confirmed specification into a traceable design document
-argument-hint: "[spec.md or feature directory]"
+description: 将已确认的规格转换为可追溯的设计文档
+argument-hint: "[spec.md 或 功能目录]"
 handoffs:
   - agent: claude
     step: Produce a design document constrained by confirmed requirements and spec

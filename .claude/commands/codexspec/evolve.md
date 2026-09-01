@@ -1,6 +1,6 @@
 ---
-description: Compile vetted project-profile knowledge into a reusable command/skill and contribute it upstream via a reviewed PR
-argument-hint: "[what to evolve, or a profile area]"
+description: 把已定稿（vetted）的项目知识整理成可复用的命令/技能，经人工评审的 PR 贡献回上游
+argument-hint: "[要演化的内容或 profile 领域]"
 ---
 
 # Evolve

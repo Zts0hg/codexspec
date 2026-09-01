@@ -1,5 +1,5 @@
 ---
-description: Autonomously develop every pending requirement in the shared blueprint
+description: 自主开发共享蓝图中的每个待定需求
 argument-hint: ""
 ---
 

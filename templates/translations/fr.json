@@ -152,10 +152,53 @@
   },
   "review-code": {
     "description": "Examiner la modification sélectionnée comme contrôle strict des défauts ou auditer des chemins avec --audit",
-    "argument-hint": "[sélecteurs defect-gate | --audit [paths...]] (tous les arguments sont facultatifs)\n\nCette commande examine le code dans l'un de deux modes mutuellement exclusifs.\n\nMode 1 - Defect gate (par défaut) : verdict bloquant la fusion sur une modification Git.\n  1. Sans argument → delta complet de la branche : merge-base → worktree (branche de base : non validé uniquement)\n  2. --committed → merge-base → HEAD uniquement ; exclut le staged, unstaged et untracked\n  3. --uncommitted → staged + unstaged + untracked uniquement\n  4. --commit <sha> → exactement ce commit ; ajoutez --parent <n> pour choisir un parent de fusion\n  Les modificateurs ne sélectionnent jamais de cible par eux-mêmes :\n  - --base <branch> → remplace la résolution de la base ; valable uniquement sans argument ou avec --committed\n  - --feature <feature-dir> → joint le contexte des exigences pour la couverture ; ne change jamais le périmètre Git\n  - --focus <instructions> → ajoute des obligations au Risk Pass ; répétable, ne rétrécit jamais le périmètre\n\nMode 2 - Audit (advisory) : grille de qualité consultative du contenu des fichiers (sans verdict de gate ni envelope).\n  1. --audit → examine le répertoire source principal (par défaut : src/)\n  2. --audit <path> [<path>...] → examine uniquement les chemins listés, séparés par des espaces\n\nUn chemin nu comme src/ n'est pas une cible defect gate valide : migrez avec --audit src/.\n\nExemples :\n  /codexspec:review-code\n  /codexspec:review-code --uncommitted\n  /codexspec:review-code --commit <sha> --parent 1\n  /codexspec:review-code --committed --base origin/main\n  /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus \"vérifier les tentatives\"\n  /codexspec:review-code --audit src/api"
+    "argument-hint": "[sélecteurs defect-gate | --audit [paths...]] (tous les arguments sont facultatifs)\n\nCette commande propose deux modes d'examen mutuellement exclusifs.\n\nMode 1 - Defect gate (par défaut) : examine une modification Git et décide si elle bloque la fusion.\n  1. Sans argument → delta complet de la branche : merge-base → worktree (branche de base : non validé uniquement)\n  2. --committed → merge-base → HEAD uniquement ; exclut le staged, unstaged et untracked\n  3. --uncommitted → staged + unstaged + untracked uniquement\n  4. --commit <sha> → exactement ce commit ; ajoutez --parent <n> pour choisir un parent de fusion\n  Les modificateurs ne changent jamais la cible par eux-mêmes :\n  - --base <branch> → remplace la résolution de la base ; valable uniquement sans argument ou avec --committed\n  - --feature <feature-dir> → joint le contexte des exigences pour la couverture ; ne change jamais le périmètre Git\n  - --focus <instructions> → ajoute des obligations au Risk Pass ; répétable, ne rétrécit jamais le périmètre\n\nMode 2 - Audit (advisory) : évaluation indicative du contenu des fichiers (sans verdict de gate ni envelope).\n  1. --audit → examine le répertoire source principal (par défaut : src/)\n  2. --audit <path> [<path>...] → examine uniquement les chemins listés, séparés par des espaces\n\nUn chemin seul comme src/ n'est pas une cible valide du defect gate : utilisez --audit src/.\n\nExemples :\n  /codexspec:review-code\n  /codexspec:review-code --uncommitted\n  /codexspec:review-code --commit <sha> --parent 1\n  /codexspec:review-code --committed --base origin/main\n  /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus \"vérifier les tentatives\"\n  /codexspec:review-code --audit src/api"
   },
   "quick": {
     "description": "Exécuter un flux SDD compact Requirements-First pour un petit changement",
     "argument-hint": "Décrivez une petite exigence"
+  },
+  "auto-dev": {
+    "description": "Développer de manière autonome chaque exigence en attente du blueprint partagé",
+    "argument-hint": "\"\""
+  },
+  "blueprint": {
+    "description": "Discuter et maintenir les exigences confirmées dans le blueprint produit partagé",
+    "argument-hint": "Décrivez une nouvelle exigence ou identifiez une exigence en attente à remplacer, supprimer ou déplacer"
+  },
+  "config": {
+    "description": "Gérer interactivement la configuration du projet CodexSpec",
+    "argument-hint": "[--view] Afficher la configuration actuelle sans la modifier"
+  },
+  "debug": {
+    "description": "Déboguer un dysfonctionnement jusqu'à sa cause racine avant de proposer un correctif",
+    "argument-hint": "[texte d'erreur | test en échec | fichier:ligne | symptôme en langage simple]"
+  },
+  "distill": {
+    "description": "Distiller le savoir réutilisable inter-fonctionnalités d'une interaction vers le profil du projet",
+    "argument-hint": "[segment d'interaction ou contexte à distiller]"
+  },
+  "evolve": {
+    "description": "Compiler le savoir de profil validé (vetted) en commande/skill réutilisable et le contribuer en amont via une PR revue",
+    "argument-hint": "[ce qu'il faut faire évoluer, ou un domaine du profil]"
+  },
+  "onboard": {
+    "description": "Amorcer le profil du projet en scannant un code existant pour y relever conventions et contraintes",
+    "argument-hint": "[chemin]"
+  },
+  "release-notes": {
+    "description": "Générer les notes de version depuis l'historique git — tenir une entrée CHANGELOG.md façon Keep a Changelog et produire un corps de release orienté utilisateur, sans décider des versions ni modifier l'état git"
+  },
+  "reverse-spec": {
+    "description": "Dériver en sens inverse spec/design depuis le code existant, puis reconcilier le code avec la ligne de base confirmée",
+    "argument-hint": "[chemin]"
+  },
+  "review-design": {
+    "description": "Examiner la fidélité du design, sa faisabilité et sa disposition pour la planification",
+    "argument-hint": "[design.md ou répertoire de feature]"
+  },
+  "spec-to-design": {
+    "description": "Convertir une spécification confirmée en document de design traçable",
+    "argument-hint": "[spec.md ou répertoire de feature]"
   }
 }
