@@ -1,6 +1,6 @@
 ---
 name: codexspec:debug
-description: Debug a failure to its root cause before proposing any fix
+description: "先定位故障的根本原因，再着手修复"
 ---
 
 # Systematic Debugger

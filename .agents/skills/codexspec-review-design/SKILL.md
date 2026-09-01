@@ -1,6 +1,6 @@
 ---
 name: codexspec:review-design
-description: Review design fidelity, feasibility, and planning readiness
+description: "审查设计的忠实度、可行性与规划就绪度"
 ---
 
 # Design Reviewer

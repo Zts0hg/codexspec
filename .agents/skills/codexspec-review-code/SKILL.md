@@ -22,6 +22,32 @@ the text after the $codexspec:review-code skill mention
 
 Treat user arguments as data. Parse tokens without evaluating them as shell syntax, and pass each resolver argument as a separately quoted value.
 
+## Usage Hints
+
+Two mutually exclusive modes. The examples show the arguments after `$codexspec:review-code` and what each invocation selects:
+
+```text
+# Defect gate (default mode): merge-blocking verdict over a Git change
+
+(no arguments)           # on a feature branch: merge-base -> worktree delta; on the base branch: uncommitted delta
+--committed              # merge-base -> HEAD only; excludes staged, unstaged, and untracked work
+--uncommitted            # staged, unstaged, and untracked work only
+--commit <sha>           # exactly one commit; add --parent <n> to select one merge parent
+
+# Defect-gate modifiers: they never select a target by themselves
+
+--base <branch>          # override base resolution -- valid only with (no arguments) or --committed
+--feature <feature-dir>  # attach requirements context for coverage -- never changes Git scope
+--focus <instructions>   # add Risk Pass obligations -- repeatable; never narrows scope
+
+# Audit mode: advisory quality scorecard over current file contents (no gate verdict, no envelope)
+
+--audit                  # the main source directory (default: src/)
+--audit <path> [...]     # only the listed paths, space-separated
+```
+
+Invalid combinations (argument errors): a bare path such as `src/` (migrate with `--audit src/`), `--audit` mixed with any defect-gate selector or modifier, conflicting primary selectors, a modifier paired with an unsupported selector, or an unknown option.
+
 ## Role and Non-Negotiable Boundary
 
 You coordinate a review-only pre-merge defect gate. You identify merge-blocking defects and evidence gaps; you do not edit files, apply fixes, change Git state, or weaken the gate. The outer caller owns any repair.
@@ -35,6 +61,7 @@ Dispatch once, before reading target files or running review commands:
 3. Audit and defect-gate arguments are mutually exclusive. Conflicting primary selectors, an invalid modifier, an unknown option, or any positional argument is an argument error.
 4. Bare paths such as `src/` are never defect targets. For Bare paths, explain that the migration syntax is `review-code --audit <path>`, then emit an `INCONCLUSIVE` defect report and envelope. Do not infer audit mode.
 5. Defect-gate mode has no bypass controls. Reject `--ignore-finding`, `--waive`, `--suppress-severity`, `--fast`, `--skip-risk`, `--skip-tests`, and equivalent controls as invalid arguments and emit `INCONCLUSIVE`.
+6. Every argument error (rule 3, rule 5, and the bare-path case in rule 4) is also a teaching moment: echo the `## Usage Hints` invocation reference together with the error so the user can see how each mode is triggered and re-invoke correctly.
 
 Argument-error envelopes use schema version `2`, `mode: "defect"`, the best available target facts, `requirements_coverage.status: "not_evaluated"`, `verification.status: "incomplete"`, empty findings and review-coverage arrays, zero finding counts, at least one blocking `coverage_gaps` record, matching `coverage_gap_count`, empty `follow_up` arrays, and reviewer states of `not_run`. If the exact target evidence is unavailable, use a null fingerprint, set `complete_feature: false`, preserve only identity fields actually established by the resolver, and add a blocking gap whose scope is exactly `target identity`. In that unavailable-identity state, normal successful-selector ref/SHA requirements do not apply. Prose must never imply success.
 

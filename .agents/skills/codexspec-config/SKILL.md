@@ -1,6 +1,6 @@
 ---
 name: codexspec:config
-description: Manage CodexSpec project configuration interactively
+description: "以交互方式管理 CodexSpec 项目配置"
 ---
 
 # CodexSpec Configuration Manager

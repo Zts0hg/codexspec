@@ -1,6 +1,6 @@
 ---
 name: codexspec:blueprint
-description: Discuss and maintain confirmed requirements in the shared product blueprint
+description: "讨论并维护共享产品蓝图中的已确认需求"
 ---
 
 # Blueprint Requirements Discovery

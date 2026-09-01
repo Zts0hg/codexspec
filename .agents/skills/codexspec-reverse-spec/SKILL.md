@@ -1,6 +1,6 @@
 ---
 name: codexspec:reverse-spec
-description: Reverse-derive spec/design from existing code, then reconcile code against the confirmed baseline
+description: "从既有代码逆向还原 spec/design，再核对代码与已确认基线的偏差"
 ---
 
 # Reverse Specification

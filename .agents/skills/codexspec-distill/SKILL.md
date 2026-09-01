@@ -1,6 +1,6 @@
 ---
 name: codexspec:distill
-description: Distill reusable, cross-feature knowledge from an interaction into the project profile
+description: "从工作交互中提炼跨功能的可复用知识，沉淀到项目 profile"
 ---
 
 # Distill

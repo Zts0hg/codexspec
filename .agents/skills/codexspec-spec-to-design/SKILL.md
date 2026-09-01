@@ -1,6 +1,6 @@
 ---
 name: codexspec:spec-to-design
-description: Convert a confirmed specification into a traceable design document
+description: "将已确认的规格转换为可追溯的设计文档"
 ---
 
 # Specification to Design Converter

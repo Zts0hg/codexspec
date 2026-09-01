@@ -1,6 +1,6 @@
 ---
 name: codexspec:onboard
-description: Cold-start the project profile by scanning an existing codebase for conventions and constraints
+description: "扫描既有代码库，提取约定与约束，冷启动项目 profile"
 ---
 
 # Codebase Onboarding
