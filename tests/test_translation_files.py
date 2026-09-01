@@ -36,10 +36,33 @@ REQUIRED_ROOT_KEYS = [
 
 TRANSLATIONS_DIR = Path(__file__).parent.parent / "templates" / "translations"
 
-REVIEW_CODE_HINT = (
-    "[--committed | --uncommitted | --commit <sha>] [--base <branch>] "
-    "[--parent <n>] [--feature <feature-dir>] [--focus <instructions>]... | --audit [paths...]"
-)
+REVIEW_CODE_HINT = """[defect-gate selectors | --audit [paths...]] (all arguments optional)
+
+This command reviews code in one of two mutually exclusive modes.
+
+Mode 1 - Defect gate (default): merge-blocking verdict over a Git change.
+  1. No arguments → Full feature-branch delta: merge-base → worktree (on the base branch itself: uncommitted delta)
+  2. --committed → Merge-base to HEAD only; excludes staged, unstaged, untracked work
+  3. --uncommitted → Staged, unstaged, and untracked work only
+  4. --commit <sha> → Exactly that commit; add --parent <n> to select one merge parent
+  Modifiers never select a target by themselves:
+  - --base <branch> → Override base resolution; valid only with No arguments or --committed
+  - --feature <feature-dir> → Attach requirements context for coverage; never changes Git scope
+  - --focus <instructions> → Add Risk Pass obligations; repeatable, never narrows scope
+
+Mode 2 - Audit: advisory quality scorecard over current file contents (no gate verdict, no envelope).
+  1. --audit → Review the main source directory (default: src/)
+  2. --audit <path> [<path>...] → Review only the listed paths, space-separated
+
+A bare path such as src/ is not a valid defect target: migrate it with --audit src/.
+
+Examples:
+  /codexspec:review-code
+  /codexspec:review-code --uncommitted
+  /codexspec:review-code --commit <sha> --parent 1
+  /codexspec:review-code --committed --base origin/main
+  /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus "verify retry handling"
+  /codexspec:review-code --audit src/api"""
 REVIEW_CODE_DESCRIPTIONS = {
     "en": "Review a selected change as a strict defect gate, or audit paths with --audit",
     "zh-CN": "将所选变更作为严格缺陷门禁进行审查，或使用 --audit 审计路径",

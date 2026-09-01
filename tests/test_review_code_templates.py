@@ -35,13 +35,23 @@ def test_frontmatter_declares_change_gate_and_platform_resolver() -> None:
         "Review a selected change as a strict defect gate, or audit paths with --audit"
     )
     hint = str(frontmatter["argument-hint"])
+    assert "\n" in hint  # multi-line block scalar: explains mode semantics, not just flag names
     for syntax in [
-        "[--committed | --uncommitted | --commit <sha>]",
-        "[--base <branch>]",
-        "[--parent <n>]",
-        "[--feature <feature-dir>]",
-        "[--focus <instructions>]...",
-        "--audit [paths...]",
+        "[defect-gate selectors | --audit [paths...]]",
+        "two mutually exclusive modes",
+        "No arguments",
+        "--committed",
+        "--uncommitted",
+        "--commit <sha>",
+        "--parent <n>",
+        "--base <branch>",
+        "--feature <feature-dir>",
+        "--focus <instructions>",
+        "merge-base",
+        "no gate verdict, no envelope",
+        "--audit src/",
+        "Examples:",
+        "/codexspec:review-code --audit src/api",
     ]:
         assert syntax in hint
 
@@ -72,6 +82,38 @@ def test_mode_dispatch_is_early_explicit_and_fail_closed() -> None:
         "--skip-tests",
     ]:
         assert bypass in dispatch
+
+
+def test_usage_hints_give_concrete_invocations() -> None:
+    _, body = split_template()
+    hints = section(body, "## Usage Hints", "## Role and Non-Negotiable Boundary")
+
+    for invocation in [
+        "(no arguments)",
+        "--committed",
+        "--uncommitted",
+        "--commit <sha>",
+        "--base <branch>",
+        "--parent <n>",
+        "--feature <feature-dir>",
+        "--focus <instructions>",
+        "--audit <path> [...]",
+    ]:
+        assert invocation in hints
+
+    assert "merge-base" in hints
+    assert "valid only with (no arguments) or --committed" in hints
+    assert "never changes Git scope" in hints
+    assert "no gate verdict, no envelope" in hints
+    assert "--audit src/" in hints
+
+
+def test_argument_errors_echo_usage_hints() -> None:
+    _, body = split_template()
+    dispatch = section(body, "## Mode Dispatch", "## Audit Mode")
+
+    assert "argument error" in dispatch
+    assert "## Usage Hints" in dispatch
 
 
 def test_defect_selectors_and_modifiers_have_exact_boundaries() -> None:
