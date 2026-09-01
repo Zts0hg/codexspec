@@ -1,32 +1,32 @@
 ---
 description: 将所选变更作为严格缺陷门禁进行审查，或使用 --audit 审计路径
 argument-hint: |
-  [defect-gate selectors | --audit [paths...]] (all arguments optional)
+  [缺陷门禁选择器 | --audit [paths...]]（所有参数均可选）
 
-  This command reviews code in one of two mutually exclusive modes.
+  本命令以两种互斥模式之一审查代码。
 
-  Mode 1 - Defect gate (default): merge-blocking verdict over a Git change.
-    1. No arguments → Full feature-branch delta: merge-base → worktree (on the base branch itself: uncommitted delta)
-    2. --committed → Merge-base to HEAD only; excludes staged, unstaged, untracked work
-    3. --uncommitted → Staged, unstaged, and untracked work only
-    4. --commit <sha> → Exactly that commit; add --parent <n> to select one merge parent
-    Modifiers never select a target by themselves:
-    - --base <branch> → Override base resolution; valid only with No arguments or --committed
-    - --feature <feature-dir> → Attach requirements context for coverage; never changes Git scope
-    - --focus <instructions> → Add Risk Pass obligations; repeatable, never narrows scope
+  模式一 - 缺陷门禁（默认）：对 Git 变更给出阻断合并的裁定。
+    1. 无参数 → 完整特性分支增量：merge-base → 工作区（若在基分支上：仅未提交变更）
+    2. --committed → 仅 merge-base → HEAD；排除已暂存、未暂存、未跟踪的变更
+    3. --uncommitted → 仅已暂存 + 未暂存 + 未跟踪的变更
+    4. --commit <sha> → 仅该提交；加 --parent <n> 选择一个合并父节点
+    修饰符自身不选择审查对象：
+    - --base <branch> → 覆盖基分支解析；仅可与无参数或 --committed 搭配
+    - --feature <feature-dir> → 附加需求上下文用于覆盖检查；绝不改变 Git 范围
+    - --focus <instructions> → 追加风险审查义务；可重复，绝不收窄范围
 
-  Mode 2 - Audit: advisory quality scorecard over current file contents (no gate verdict, no envelope).
-    1. --audit → Review the main source directory (default: src/)
-    2. --audit <path> [<path>...] → Review only the listed paths, space-separated
+  模式二 - 审计（advisory）：对现有文件内容出具建议性质量评分卡（无门禁裁定、无 envelope）。
+    1. --audit → 审查主源码目录（默认：src/）
+    2. --audit <path> [<path>...] → 仅审查列出的路径，空格分隔
 
-  A bare path such as src/ is not a valid defect target: migrate it with --audit src/.
+  裸路径（如 src/）不是合法的缺陷门禁目标：请用 --audit src/ 迁移。
 
-  Examples:
+  示例：
     /codexspec:review-code
     /codexspec:review-code --uncommitted
     /codexspec:review-code --commit <sha> --parent 1
     /codexspec:review-code --committed --base origin/main
-    /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus "verify retry handling"
+    /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus "检查重试处理"
     /codexspec:review-code --audit src/api
 scripts:
   sh: .codexspec/scripts/review-context.sh
