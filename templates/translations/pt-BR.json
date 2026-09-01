@@ -152,10 +152,53 @@
   },
   "review-code": {
     "description": "Revisar a alteração selecionada como gate de defeitos estrito ou auditar caminhos com --audit",
-    "argument-hint": "[--committed | --uncommitted | --commit <sha>] [--base <branch>] [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]... | --audit [paths...]"
+    "argument-hint": "[seletores defect-gate | --audit [paths...]] (todos os argumentos são opcionais)\n\nEste comando revisa código em um de dois modos mutuamente exclusivos.\n\nModo 1 - Defect gate (padrão): revisa uma alteração do Git e decide se bloqueia o merge.\n  1. Sem argumentos → delta completo do branch: merge-base → worktree (branch base: apenas alterações não commitadas)\n  2. --committed → apenas merge-base → HEAD; exclui staged, unstaged e untracked\n  3. --uncommitted → apenas staged + unstaged + untracked\n  4. --commit <sha> → exatamente aquele commit; adicione --parent <n> para escolher um pai do merge\n  Modificadores nunca mudam o alvo por si sós:\n  - --base <branch> → sobrepõe a resolução da base; válido apenas sem argumentos ou com --committed\n  - --feature <feature-dir> → anexa contexto de requisitos para cobertura; nunca muda o escopo do Git\n  - --focus <instructions> → adiciona obrigações ao Risk Pass; repetível, nunca restringe o escopo\n\nModo 2 - Audit (advisory): scorecard orientativo do conteúdo dos arquivos (sem veredito de gate nem envelope).\n  1. --audit → revisa o diretório principal de código (padrão: src/)\n  2. --audit <path> [<path>...] → revisa apenas os caminhos listados, separados por espaço\n\nUm caminho solto como src/ não é um alvo válido do defect gate: use --audit src/.\n\nExemplos:\n  /codexspec:review-code\n  /codexspec:review-code --uncommitted\n  /codexspec:review-code --commit <sha> --parent 1\n  /codexspec:review-code --committed --base origin/main\n  /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus \"verificar as novas tentativas\"\n  /codexspec:review-code --audit src/api"
   },
   "quick": {
     "description": "Executar um fluxo SDD compacto Requirements-First para uma pequena mudança",
     "argument-hint": "Descreva um requisito pequeno"
+  },
+  "auto-dev": {
+    "description": "Desenvolver autonomamente cada requisito pendente do blueprint compartilhado",
+    "argument-hint": "\"\""
+  },
+  "blueprint": {
+    "description": "Discutir e manter os requisitos confirmados no blueprint de produto compartilhado",
+    "argument-hint": "Descreva um requisito novo ou identifique um requisito pendente a ser substituído, removido ou movido"
+  },
+  "config": {
+    "description": "Gerenciar interativamente a configuração do projeto CodexSpec",
+    "argument-hint": "[--view] Ver a configuração atual sem modificá-la"
+  },
+  "debug": {
+    "description": "Depurar uma falha até a causa raiz antes de propor qualquer correção",
+    "argument-hint": "[texto de erro | teste falhando | arquivo:linha | sintoma em linguagem simples]"
+  },
+  "distill": {
+    "description": "Destilar conhecimento reutilizável entre funcionalidades de uma interação para o perfil do projeto",
+    "argument-hint": "[segmento de interação ou contexto a destilar]"
+  },
+  "evolve": {
+    "description": "Compilar conhecimento já validado (vetted) do perfil em um comando/skill reutilizável e contribuir upstream via PR revisado",
+    "argument-hint": "[o que evoluir, ou uma área do perfil]"
+  },
+  "onboard": {
+    "description": "Criar o perfil do projeto do zero escaneando um código existente em busca de convenções e restrições",
+    "argument-hint": "[caminho]"
+  },
+  "release-notes": {
+    "description": "Gerar release notes do histórico do git — mantém uma entrada CHANGELOG.md no estilo Keep a Changelog e emite um corpo de release para o usuário, sem decidir versões nem alterar o estado do git"
+  },
+  "reverse-spec": {
+    "description": "Derivar spec/design reversamente a partir do código existente e reconciliar o código com a baseline confirmada",
+    "argument-hint": "[caminho]"
+  },
+  "review-design": {
+    "description": "Revisar a fidelidade do design, a viabilidade e a prontidão para o planejamento",
+    "argument-hint": "[design.md ou diretório de feature]"
+  },
+  "spec-to-design": {
+    "description": "Converter uma especificação confirmada em um documento de design rastreável",
+    "argument-hint": "[spec.md ou diretório de feature]"
   }
 }

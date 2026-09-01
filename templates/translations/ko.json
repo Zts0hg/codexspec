@@ -152,10 +152,53 @@
   },
   "review-code": {
     "description": "선택한 변경을 엄격한 결함 게이트로 검토하거나 --audit로 경로 감사",
-    "argument-hint": "[--committed | --uncommitted | --commit <sha>] [--base <branch>] [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]... | --audit [paths...]"
+    "argument-hint": "[결함 게이트 선택자 | --audit [paths...]] (모든 인자는 선택 사항)\n\n이 명령에는 서로 배타적인 두 가지 검토 모드가 있습니다.\n\n모드 1 - 결함 게이트 (기본값): Git 변경을 검토하고 병합 차단 여부를 판정합니다.\n  1. 인자 없음 → 전체 피처 브랜치 델타: merge-base → 작업 트리 (베이스 브랜치 자체인 경우: 커밋되지 않은 변경만)\n  2. --committed → merge-base → HEAD만. 스테이지됨, 스테이지 안 됨, 추적 안 됨 변경은 제외\n  3. --uncommitted → 스테이지됨 + 스테이지 안 됨 + 추적 안 됨 변경만\n  4. --commit <sha> → 해당 커밋만. --parent <n>을 추가하면 병합 부모 하나를 선택\n  수정자는 단독으로 검토 대상을 바꾸지 않습니다:\n  - --base <branch> → 베이스 해석을 재정의. 인자 없음 또는 --committed와만 사용 가능\n  - --feature <feature-dir> → 커버리지 확인용 요구사항 컨텍스트를 첨부. Git 범위는 변경하지 않음\n  - --focus <instructions> → 리스크 패스 의무를 추가. 반복 가능, 범위를 좁히지 않음\n\n모드 2 - 감사 (advisory): 현재 파일 내용에 대한 참고용 품질 스코어카드 (게이트 판정 없음, envelope 없음).\n  1. --audit → 메인 소스 디렉터리를 검토 (기본값: src/)\n  2. --audit <path> [<path>...] → 나열된 경로만 검토 (공백으로 구분)\n\nsrc/처럼 경로만 지정하면 결함 게이트 대상이 될 수 없습니다. --audit src/를 사용하세요.\n\n예시:\n  /codexspec:review-code\n  /codexspec:review-code --uncommitted\n  /codexspec:review-code --commit <sha> --parent 1\n  /codexspec:review-code --committed --base origin/main\n  /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus \"재시도 처리 확인\"\n  /codexspec:review-code --audit src/api"
   },
   "quick": {
     "description": "작은 변경을 위해 간결한 Requirements-First SDD 흐름을 실행합니다",
     "argument-hint": "작은 요구사항을 설명하세요"
+  },
+  "auto-dev": {
+    "description": "공유 블루프린트의 모든 보류 요구사항을 자율적으로 개발",
+    "argument-hint": "\"\""
+  },
+  "blueprint": {
+    "description": "공유 제품 블루프린트에서 확정된 요구사항을 논의하고 관리",
+    "argument-hint": "새 요구사항을 설명하거나 대체·삭제·이동할 보류 요구사항을 지정"
+  },
+  "config": {
+    "description": "CodexSpec 프로젝트 구성을 대화형으로 관리",
+    "argument-hint": "[--view] 수정 없이 현재 구성 보기"
+  },
+  "debug": {
+    "description": "수정을 제안하기 전에 근본 원인부터 찾아냄",
+    "argument-hint": "[오류 텍스트 | 실패한 테스트 | 파일:줄 | 일반 언어 증상]"
+  },
+  "distill": {
+    "description": "상호작용에서 재사용 가능한 교차 기능 지식을 추려 프로젝트 프로필에 기록",
+    "argument-hint": "[추출할 상호작용 구간 또는 컨텍스트]"
+  },
+  "evolve": {
+    "description": "검증된(vetted) 프로필 지식을 재사용 가능한 명령/스킬로 편찬하고 리뷰된 PR로 업스트림에 기여",
+    "argument-hint": "[진화할 대상 또는 프로필 영역]"
+  },
+  "onboard": {
+    "description": "기존 코드베이스를 훑어 관례와 제약을 수집하고 프로젝트 프로필을 처음부터 구축",
+    "argument-hint": "[경로]"
+  },
+  "release-notes": {
+    "description": "git 히스토리에서 릴리스 노트 생성 — Keep a Changelog 형식의 CHANGELOG.md 항목을 유지하고 사용자용 릴리스 본문을 작성, 버전 결정이나 git 상태 변경은 하지 않음"
+  },
+  "reverse-spec": {
+    "description": "기존 코드로부터 spec/design을 역으로 유도하고, 코드를 확정된 베이스라인과 대조",
+    "argument-hint": "[경로]"
+  },
+  "review-design": {
+    "description": "설계의 충실도, 실현 가능성, 계획 준비도를 검토",
+    "argument-hint": "[design.md 또는 기능 디렉터리]"
+  },
+  "spec-to-design": {
+    "description": "확정된 명세를 추적 가능한 설계 문서로 변환",
+    "argument-hint": "[spec.md 또는 기능 디렉터리]"
   }
 }

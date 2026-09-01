@@ -1,6 +1,6 @@
 ---
-description: Cold-start the project profile by scanning an existing codebase for conventions and constraints
-argument-hint: "[path]"
+description: 扫描既有代码库，提取约定与约束，冷启动项目 profile
+argument-hint: "[路径]"
 allowed-tools: Read, Grep, Glob, Bash(git:*), Bash(ls/cat/find:*), Edit, Write
 ---
 

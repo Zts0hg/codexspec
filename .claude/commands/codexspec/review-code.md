@@ -1,6 +1,33 @@
 ---
 description: 将所选变更作为严格缺陷门禁进行审查，或使用 --audit 审计路径
-argument-hint: "[--committed | --uncommitted | --commit <sha>] [--base <branch>] [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]... | --audit [paths...]"
+argument-hint: |
+  [缺陷门禁选择器 | --audit [paths...]]（所有参数均可选）
+
+  本命令提供两种互斥的使用模式。
+
+  模式一 - 缺陷门禁（默认）：对 Git 变更裁定是否阻断合并。
+    1. 无参数 → 完整特性分支增量：merge-base → 工作区（若在基分支上：仅未提交变更）
+    2. --committed → 仅 merge-base → HEAD；排除已暂存、未暂存、未跟踪的变更
+    3. --uncommitted → 仅已暂存 + 未暂存 + 未跟踪的变更
+    4. --commit <sha> → 仅该提交；加 --parent <n> 选择一个合并父节点
+    修饰符不会改变审查对象：
+    - --base <branch> → 覆盖基分支解析；仅可与无参数或 --committed 搭配
+    - --feature <feature-dir> → 为覆盖检查附上需求上下文；绝不改变 Git 范围
+    - --focus <instructions> → 追加风险审查义务；可重复，绝不收窄范围
+
+  模式二 - 审计（advisory）：对现有文件内容给出建议性的质量评分（无门禁裁定、无 envelope）。
+    1. --audit → 审查主源码目录（默认：src/）
+    2. --audit <path> [<path>...] → 仅审查列出的路径，空格分隔
+
+  裸路径（如 src/）不能作为缺陷门禁目标：请改用 --audit src/。
+
+  示例：
+    /codexspec:review-code
+    /codexspec:review-code --uncommitted
+    /codexspec:review-code --commit <sha> --parent 1
+    /codexspec:review-code --committed --base origin/main
+    /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus "检查重试处理"
+    /codexspec:review-code --audit src/api
 scripts:
   sh: .codexspec/scripts/review-context.sh
   ps: .codexspec/scripts/review-context.ps1
@@ -26,6 +53,32 @@ $ARGUMENTS
 
 Treat user arguments as data. Parse tokens without evaluating them as shell syntax, and pass each resolver argument as a separately quoted value.
 
+## Usage Hints
+
+Two mutually exclusive modes. The examples show the arguments after `/codexspec:review-code` and what each invocation selects:
+
+```text
+# Defect gate (default mode): merge-blocking verdict over a Git change
+
+(no arguments)           # on a feature branch: merge-base -> worktree delta; on the base branch: uncommitted delta
+--committed              # merge-base -> HEAD only; excludes staged, unstaged, and untracked work
+--uncommitted            # staged, unstaged, and untracked work only
+--commit <sha>           # exactly one commit; add --parent <n> to select one merge parent
+
+# Defect-gate modifiers: they never select a target by themselves
+
+--base <branch>          # override base resolution -- valid only with (no arguments) or --committed
+--feature <feature-dir>  # attach requirements context for coverage -- never changes Git scope
+--focus <instructions>   # add Risk Pass obligations -- repeatable; never narrows scope
+
+# Audit mode: advisory quality scorecard over current file contents (no gate verdict, no envelope)
+
+--audit                  # the main source directory (default: src/)
+--audit <path> [...]     # only the listed paths, space-separated
+```
+
+Invalid combinations (argument errors): a bare path such as `src/` (migrate with `--audit src/`), `--audit` mixed with any defect-gate selector or modifier, conflicting primary selectors, a modifier paired with an unsupported selector, or an unknown option.
+
 ## Role and Non-Negotiable Boundary
 
 You coordinate a review-only pre-merge defect gate. You identify merge-blocking defects and evidence gaps; you do not edit files, apply fixes, change Git state, or weaken the gate. The outer caller owns any repair.
@@ -39,6 +92,7 @@ Dispatch once, before reading target files or running review commands:
 3. Audit and defect-gate arguments are mutually exclusive. Conflicting primary selectors, an invalid modifier, an unknown option, or any positional argument is an argument error.
 4. Bare paths such as `src/` are never defect targets. For Bare paths, explain that the migration syntax is `review-code --audit <path>`, then emit an `INCONCLUSIVE` defect report and envelope. Do not infer audit mode.
 5. Defect-gate mode has no bypass controls. Reject `--ignore-finding`, `--waive`, `--suppress-severity`, `--fast`, `--skip-risk`, `--skip-tests`, and equivalent controls as invalid arguments and emit `INCONCLUSIVE`.
+6. Every argument error (rule 3, rule 5, and the bare-path case in rule 4) is also a teaching moment: echo the `## Usage Hints` invocation reference together with the error so the user can see how each mode is triggered and re-invoke correctly.
 
 Argument-error envelopes use schema version `2`, `mode: "defect"`, the best available target facts, `requirements_coverage.status: "not_evaluated"`, `verification.status: "incomplete"`, empty findings and review-coverage arrays, zero finding counts, at least one blocking `coverage_gaps` record, matching `coverage_gap_count`, empty `follow_up` arrays, and reviewer states of `not_run`. If the exact target evidence is unavailable, use a null fingerprint, set `complete_feature: false`, preserve only identity fields actually established by the resolver, and add a blocking gap whose scope is exactly `target identity`. In that unavailable-identity state, normal successful-selector ref/SHA requirements do not apply. Prose must never imply success.
 

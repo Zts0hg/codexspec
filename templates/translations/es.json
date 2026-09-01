@@ -152,10 +152,53 @@
   },
   "review-code": {
     "description": "Revisar el cambio seleccionado como puerta de defectos estricta o auditar rutas con --audit",
-    "argument-hint": "[--committed | --uncommitted | --commit <sha>] [--base <branch>] [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]... | --audit [paths...]"
+    "argument-hint": "[selectores de defect-gate | --audit [paths...]] (todos los argumentos son opcionales)\n\nEste comando revisa código en uno de dos modos mutuamente excluyentes.\n\nModo 1 - Defect gate (predeterminado): revisa un cambio de Git y decide si bloquea la fusión.\n  1. Sin argumentos → delta completo de la rama: merge-base → worktree (en la rama base: solo cambios sin confirmar)\n  2. --committed → solo merge-base → HEAD; excluye lo staged, unstaged y untracked\n  3. --uncommitted → solo staged + unstaged + untracked\n  4. --commit <sha> → exactamente ese commit; añade --parent <n> para elegir un padre de fusión\n  Los modificadores nunca cambian el objetivo por sí solos:\n  - --base <branch> → anula la resolución de la base; válido solo sin argumentos o con --committed\n  - --feature <feature-dir> → adjunta contexto de requisitos para la cobertura; nunca cambia el alcance de Git\n  - --focus <instructions> → añade obligaciones al Risk Pass; repetible, nunca reduce el alcance\n\nModo 2 - Audit (advisory): scorecard orientativo del contenido de los archivos (sin veredicto de gate ni envelope).\n  1. --audit → revisa el directorio principal de código (predeterminado: src/)\n  2. --audit <path> [<path>...] → revisa solo las rutas listadas, separadas por espacios\n\nUna ruta suelta como src/ no es un objetivo válido del defect gate: use --audit src/.\n\nEjemplos:\n  /codexspec:review-code\n  /codexspec:review-code --uncommitted\n  /codexspec:review-code --commit <sha> --parent 1\n  /codexspec:review-code --committed --base origin/main\n  /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus \"verificar el manejo de reintentos\"\n  /codexspec:review-code --audit src/api"
   },
   "quick": {
     "description": "Ejecutar un flujo SDD compacto Requirements-First para un cambio pequeño",
     "argument-hint": "Describe un requisito pequeño"
+  },
+  "auto-dev": {
+    "description": "Desarrollar autónomamente cada requisito pendiente del blueprint compartido",
+    "argument-hint": "\"\""
+  },
+  "blueprint": {
+    "description": "Discutir y mantener los requisitos confirmados en el blueprint de producto compartido",
+    "argument-hint": "Describe un requisito nuevo o identifica un requisito pendiente que haya que reemplazar, eliminar o mover"
+  },
+  "config": {
+    "description": "Gestionar interactivamente la configuración del proyecto CodexSpec",
+    "argument-hint": "[--view] Ver la configuración actual sin modificarla"
+  },
+  "debug": {
+    "description": "Depurar un fallo hasta su causa raíz antes de proponer cualquier arreglo",
+    "argument-hint": "[texto de error | test fallido | archivo:línea | síntoma en lenguaje llano]"
+  },
+  "distill": {
+    "description": "Destilar conocimiento reutilizable entre funciones de una interacción hacia el perfil del proyecto",
+    "argument-hint": "[segmento de interacción o contexto a destilar]"
+  },
+  "evolve": {
+    "description": "Compilar conocimiento del perfil ya validado (vetted) en un comando/skill reutilizable y contribuirlo upstream mediante un PR revisado",
+    "argument-hint": "[qué evolucionar, o un área del perfil]"
+  },
+  "onboard": {
+    "description": "Crear el perfil del proyecto desde cero escaneando un código existente en busca de convenciones y restricciones",
+    "argument-hint": "[ruta]"
+  },
+  "release-notes": {
+    "description": "Generar release notes del historial de git — mantiene una entrada CHANGELOG.md al estilo Keep a Changelog y emite un cuerpo de release orientado al usuario, sin decidir versiones ni mutar el estado de git"
+  },
+  "reverse-spec": {
+    "description": "Derivar spec/design en sentido inverso desde código existente y reconciliar el código con la línea base confirmada",
+    "argument-hint": "[ruta]"
+  },
+  "review-design": {
+    "description": "Revisar la fidelidad del diseño, su viabilidad y la preparación para la planificación",
+    "argument-hint": "[design.md o directorio de feature]"
+  },
+  "spec-to-design": {
+    "description": "Convertir una especificación confirmada en un documento de diseño trazable",
+    "argument-hint": "[spec.md o directorio de feature]"
   }
 }

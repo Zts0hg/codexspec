@@ -152,10 +152,53 @@
   },
   "review-code": {
     "description": "将所选变更作为严格缺陷门禁进行审查，或使用 --audit 审计路径",
-    "argument-hint": "[--committed | --uncommitted | --commit <sha>] [--base <branch>] [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]... | --audit [paths...]"
+    "argument-hint": "[缺陷门禁选择器 | --audit [paths...]]（所有参数均可选）\n\n本命令提供两种互斥的使用模式。\n\n模式一 - 缺陷门禁（默认）：对 Git 变更裁定是否阻断合并。\n  1. 无参数 → 完整特性分支增量：merge-base → 工作区（若在基分支上：仅未提交变更）\n  2. --committed → 仅 merge-base → HEAD；排除已暂存、未暂存、未跟踪的变更\n  3. --uncommitted → 仅已暂存 + 未暂存 + 未跟踪的变更\n  4. --commit <sha> → 仅该提交；加 --parent <n> 选择一个合并父节点\n  修饰符不会改变审查对象：\n  - --base <branch> → 覆盖基分支解析；仅可与无参数或 --committed 搭配\n  - --feature <feature-dir> → 为覆盖检查附上需求上下文；绝不改变 Git 范围\n  - --focus <instructions> → 追加风险审查义务；可重复，绝不收窄范围\n\n模式二 - 审计（advisory）：对现有文件内容给出建议性的质量评分（无门禁裁定、无 envelope）。\n  1. --audit → 审查主源码目录（默认：src/）\n  2. --audit <path> [<path>...] → 仅审查列出的路径，空格分隔\n\n裸路径（如 src/）不能作为缺陷门禁目标：请改用 --audit src/。\n\n示例：\n  /codexspec:review-code\n  /codexspec:review-code --uncommitted\n  /codexspec:review-code --commit <sha> --parent 1\n  /codexspec:review-code --committed --base origin/main\n  /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus \"检查重试处理\"\n  /codexspec:review-code --audit src/api"
   },
   "quick": {
     "description": "为小型变更运行精简的 Requirements-First SDD 流程",
     "argument-hint": "描述一个小需求"
+  },
+  "auto-dev": {
+    "description": "自主开发共享蓝图中的每个待定需求",
+    "argument-hint": "\"\""
+  },
+  "blueprint": {
+    "description": "讨论并维护共享产品蓝图中的已确认需求",
+    "argument-hint": "描述新需求，或指定要替换、删除、移动的待定需求"
+  },
+  "config": {
+    "description": "以交互方式管理 CodexSpec 项目配置",
+    "argument-hint": "[--view] 查看当前配置而不修改"
+  },
+  "debug": {
+    "description": "先定位故障的根本原因，再着手修复",
+    "argument-hint": "[错误文本 | 失败测试 | 文件:行号 | 通俗症状描述]"
+  },
+  "distill": {
+    "description": "从工作交互中提炼跨功能的可复用知识，沉淀到项目 profile",
+    "argument-hint": "[要提炼的交互片段或上下文]"
+  },
+  "evolve": {
+    "description": "把已定稿（vetted）的项目知识整理成可复用的命令/技能，经人工评审的 PR 贡献回上游",
+    "argument-hint": "[要演化的内容或 profile 领域]"
+  },
+  "onboard": {
+    "description": "扫描既有代码库，提取约定与约束，冷启动项目 profile",
+    "argument-hint": "[路径]"
+  },
+  "release-notes": {
+    "description": "从 git 历史生成发布说明——维护 Keep a Changelog 风格的 CHANGELOG.md 条目并产出面向用户的发布正文，不决定版本号、不改动 git 状态"
+  },
+  "reverse-spec": {
+    "description": "从既有代码逆向还原 spec/design，再核对代码与已确认基线的偏差",
+    "argument-hint": "[路径]"
+  },
+  "review-design": {
+    "description": "审查设计的忠实度、可行性与规划就绪度",
+    "argument-hint": "[design.md 或 功能目录]"
+  },
+  "spec-to-design": {
+    "description": "将已确认的规格转换为可追溯的设计文档",
+    "argument-hint": "[spec.md 或 功能目录]"
   }
 }

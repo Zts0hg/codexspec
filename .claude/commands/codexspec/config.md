@@ -1,6 +1,6 @@
 ---
-description: Manage CodexSpec project configuration interactively
-argument-hint: "[--view] View current configuration without modification"
+description: 以交互方式管理 CodexSpec 项目配置
+argument-hint: "[--view] 查看当前配置而不修改"
 ---
 
 # CodexSpec Configuration Manager

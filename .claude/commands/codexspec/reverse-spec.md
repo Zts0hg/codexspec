@@ -1,6 +1,6 @@
 ---
-description: Reverse-derive spec/design from existing code, then reconcile code against the confirmed baseline
-argument-hint: "[path]"
+description: 从既有代码逆向还原 spec/design，再核对代码与已确认基线的偏差
+argument-hint: "[路径]"
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 ---
 

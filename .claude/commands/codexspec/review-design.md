@@ -1,6 +1,6 @@
 ---
-description: Review design fidelity, feasibility, and planning readiness
-argument-hint: "[design.md or feature directory]"
+description: 审查设计的忠实度、可行性与规划就绪度
+argument-hint: "[design.md 或 功能目录]"
 handoffs:
   - agent: claude
     step: Review design against confirmed requirements, spec, and repository facts

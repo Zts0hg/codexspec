@@ -152,10 +152,53 @@
   },
   "review-code": {
     "description": "Review a selected change as a strict defect gate, or audit paths with --audit",
-    "argument-hint": "[--committed | --uncommitted | --commit <sha>] [--base <branch>] [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]... | --audit [paths...]"
+    "argument-hint": "[defect-gate selectors | --audit [paths...]] (all arguments optional)\n\nThis command reviews code in one of two mutually exclusive modes.\n\nMode 1 - Defect gate (default): merge-blocking verdict over a Git change.\n  1. No arguments → Full feature-branch delta: merge-base → worktree (on the base branch itself: uncommitted delta)\n  2. --committed → Merge-base to HEAD only; excludes staged, unstaged, untracked work\n  3. --uncommitted → Staged, unstaged, and untracked work only\n  4. --commit <sha> → Exactly that commit; add --parent <n> to select one merge parent\n  Modifiers never select a target by themselves:\n  - --base <branch> → Override base resolution; valid only with No arguments or --committed\n  - --feature <feature-dir> → Attach requirements context for coverage; never changes Git scope\n  - --focus <instructions> → Add Risk Pass obligations; repeatable, never narrows scope\n\nMode 2 - Audit: advisory quality scorecard over current file contents (no gate verdict, no envelope).\n  1. --audit → Review the main source directory (default: src/)\n  2. --audit <path> [<path>...] → Review only the listed paths, space-separated\n\nA bare path such as src/ is not a valid defect target: migrate it with --audit src/.\n\nExamples:\n  /codexspec:review-code\n  /codexspec:review-code --uncommitted\n  /codexspec:review-code --commit <sha> --parent 1\n  /codexspec:review-code --committed --base origin/main\n  /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus \"verify retry handling\"\n  /codexspec:review-code --audit src/api"
   },
   "quick": {
     "description": "Run a compact requirements-first SDD flow for a small change",
     "argument-hint": "Describe a small requirement"
+  },
+  "auto-dev": {
+    "description": "Autonomously develop every pending requirement in the shared blueprint",
+    "argument-hint": "\"\""
+  },
+  "blueprint": {
+    "description": "Discuss and maintain confirmed requirements in the shared product blueprint",
+    "argument-hint": "Describe a new requirement, or identify a pending requirement to replace, delete, or move"
+  },
+  "config": {
+    "description": "Manage CodexSpec project configuration interactively",
+    "argument-hint": "[--view] View current configuration without modification"
+  },
+  "debug": {
+    "description": "Debug a failure to its root cause before proposing any fix",
+    "argument-hint": "[error text | failing test | file:line | plain-language symptom]"
+  },
+  "distill": {
+    "description": "Distill reusable, cross-feature knowledge from an interaction into the project profile",
+    "argument-hint": "[interaction segment or context to distill]"
+  },
+  "evolve": {
+    "description": "Compile vetted project-profile knowledge into a reusable command/skill and contribute it upstream via a reviewed PR",
+    "argument-hint": "[what to evolve, or a profile area]"
+  },
+  "onboard": {
+    "description": "Cold-start the project profile by scanning an existing codebase for conventions and constraints",
+    "argument-hint": "[path]"
+  },
+  "release-notes": {
+    "description": "Generate release notes from git history — maintain a Keep a Changelog CHANGELOG.md entry and emit a user-facing release body, without deciding versions or mutating git state"
+  },
+  "reverse-spec": {
+    "description": "Reverse-derive spec/design from existing code, then reconcile code against the confirmed baseline",
+    "argument-hint": "[path]"
+  },
+  "review-design": {
+    "description": "Review design fidelity, feasibility, and planning readiness",
+    "argument-hint": "[design.md or feature directory]"
+  },
+  "spec-to-design": {
+    "description": "Convert a confirmed specification into a traceable design document",
+    "argument-hint": "[spec.md or feature directory]"
   }
 }
