@@ -40,7 +40,7 @@ This document defines the governing principles and development guidelines for th
 
 - **Version**: 1.0.0
 - **Ratified**: 2026-04-10
-- **Last Amended**: 2026-08-29
+- **Last Amended**: 2026-09-06
 
 ## Core Principles
 
@@ -100,6 +100,13 @@ precise language reduces ambiguity and prevents terminology from obstructing req
 - Validate all inputs
 - Protect sensitive data
 - Keep dependencies updated
+
+### 8. Remote Push Gate
+
+- Before pushing any branch to the remote, confirm that CI/CD fully passes for the exact commit being pushed: every required check green, including the full platform matrix.
+- Run and pass the equivalent local quality gates first (tests, lint, documentation checks) so the push is expected to be green; after pushing, watch the remote run to completion instead of assuming success.
+- When a remote check fails, stop: fix the defect, or rerun to rule out a proven flake before pushing again. A red `main` blocks all subsequent work and must be repaired or reverted with top priority.
+- A push is never "done" because the command returned; it is done when the remote pipeline is green.
 
 ## Development Workflow
 

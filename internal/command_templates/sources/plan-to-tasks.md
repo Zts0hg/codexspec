@@ -1,0 +1,135 @@
+---
+description: Expand an approved plan into traceable, executable tasks
+argument-hint: "[tasks feature directory, plan.md, or spec.md]"
+handoffs:
+  - agent: claude
+    step: Generate tasks from the approved plan
+---
+
+# Plan to Tasks Converter
+
+## Language Preference
+
+Read `.codexspec/config.yml`. Two independent language controls apply (each falls back to `language.output`, then English):
+
+- **Interaction language** (`language.interaction`): language for all conversation with the user — questions, explanations, status messages, and `codexspec` CLI terminal output.
+- **Document language** (`language.document`): language for generated artifact files (requirements/spec/plan/tasks).
+
+Converse in the interaction language and author artifacts in the document language. Apply the project's translation standard to both: translate by meaning (not word-for-word), keep English for terms with no good native equivalent, and write as if originally in that language.
+
+<!-- CODEXSPEC:INCLUDE expression-standard.md -->
+
+## User Input
+
+`$ARGUMENTS`
+
+## Role
+
+Act as a **plan expander**. Produce implementation tasks that execute the approved plan without redesigning it.
+
+## Feature Resolution and Inputs
+
+Use an explicit path first, then the current branch. Ask the user if the feature cannot be resolved uniquely; never select the latest directory silently.
+
+Read:
+
+- `requirements.md`
+- `spec.md`
+- `design.md`
+- `plan.md`
+- Constitution and relevant repository conventions
+
+`design.md` (the confirmed design) sits between `spec.md` and `plan.md` in authority; read it as context so tasks trace to the design the plan implements. A legacy feature may have no `design.md`; proceed from `plan.md` in that case.
+
+Legacy compatibility: when `requirements.md` is absent, use `spec.md` as the temporary highest authority and state the limitation.
+
+## Stop Conditions
+
+Before task generation, verify that the plan covers the specification and does not contradict confirmed requirements.
+
+Stop instead of guessing when:
+
+- A plan component is undefined or internally contradictory.
+- A task would require a new architecture or product decision.
+- Required file paths or dependencies cannot be determined safely.
+- A critical upstream item remains open.
+
+## Task Rules
+
+- Every task must include `Covers: REQ-xxx; Plan: <component/phase>`.
+- A task must have one clear, verifiable outcome.
+- Do not equate atomicity with exactly one file. Multiple tightly related files may belong to one task when splitting them would make validation artificial or incomplete.
+- Use exact paths when they are known from the plan or repository; do not invent paths to satisfy a template.
+- Preserve the plan's organization. Group by user story, component, or technical phase according to the approved plan.
+- Declare only dependencies that are needed to execute or validate the task.
+- Mark `[P]` only when tasks can actually run concurrently after their declared dependencies. Missing `[P]` is not inherently a defect.
+- Require test-first ordering only when mandated by the constitution, specification, plan, or established repository workflow.
+- Otherwise include the appropriate verification task without imposing TDD as a universal method.
+- For every **testable** task, enumerate an explicit, individually identifiable **Test Scenarios** list: the happy path plus the boundary and error conditions the behavior implies. Non-testable tasks (docs, config, assets, infrastructure) keep their deterministic verification and do not carry test scenarios.
+- Derive test scenarios from the specification's acceptance criteria and the covered requirement's behavior, expanding them into concrete cases; never invent scenarios with no upstream basis. If upstream behavior is too underspecified to enumerate meaningful scenarios, stop per the Stop Conditions rather than guessing.
+- Keep each scenario individually identifiable and traceable so implementation and the `implement-tasks` self-check can map each scenario to a test one-to-one. Do not pad: enumerate only scenarios the behavior actually implies.
+- Do not add polish, monitoring, abstraction, documentation, or hardening tasks unless they are required by the approved plan, repository policy, or a verified implementation need.
+
+## Required Output
+
+Save `<feature-dir>/tasks.md`.
+
+Include:
+
+- Task groups derived from the plan
+- Task IDs, outcomes, paths, dependencies, and traceability
+- Verification steps and checkpoints appropriate to the change
+- An explicit **Test Scenarios** list for every testable task (happy path plus behavior-implied boundary/error cases), each scenario individually identifiable
+- A coverage table mapping plan components and requirements to tasks, including scenario-to-task mapping for testable tasks
+- Unmapped tasks, if any, with explicit justification
+
+## Pre-Save Validation
+
+1. Every plan deliverable has task coverage.
+2. Every task maps to upstream authority or necessary implementation support.
+3. Dependencies are acyclic and ordered before dependents.
+4. Verification is sufficient for the actual risk and project policy.
+5. No task expands product scope or silently changes the plan.
+6. Every testable task enumerates sufficient, individually traceable test scenarios (happy path plus behavior-implied boundary/error), all derived from upstream behavior with none invented.
+
+## Automatic Review Loop
+
+Invoke `/codexspec:review-tasks <feature-dir>/tasks.md`.
+
+- Automatically fix only verified defects with deterministic corrections.
+- Do not auto-apply Risk Advisories or Design Opportunities.
+- Do not split or add tasks solely to improve a score.
+- Run a maximum of two automatic fix-and-review rounds.
+- Stop if defects repeat, remain unresolved, or require a user or architecture decision.
+
+## Automatic Cross-Artifact Analysis
+
+When the review loop above concludes in a passing state — the final `/codexspec:review-tasks` Overall Status is `PASS` or `PASS_WITH_WARNINGS` — invoke `/codexspec:analyze <feature-dir>` exactly once.
+
+- Do not invoke analyze when the review loop stopped at `NEEDS_REVISION` or `BLOCKED`, or stopped early per the conditions above; in those cases end here, handing control back to the user as the review loop already does.
+- analyze runs once. It auto-remediates deterministic, authority-directed inconsistencies (conforming `spec.md`/`plan.md`/`tasks.md` to `requirements.md`; it never edits `requirements.md`) and reports the result. Do not run a fix-and-reanalyze loop.
+- If `requirements.md` is absent, analyze still runs in legacy mode, reports findings only (no auto-modification), and discloses its legacy limitation (it starts at `spec.md` and cannot verify fidelity to the original discussion) per its own behavior.
+- analyze's deterministic conforming fixes need no re-review; its remediations and any residual findings do not add a gate before `/codexspec:implement-tasks`.
+- Do not modify the Output Summary for analyze, and do not save an additional analyze report file; analyze's own output is the report.
+
+## Auto-Dev Delegation
+
+When the invocation context explicitly contains `CODEXSPEC_AUTO_DEV_DELEGATION`, execute this
+command, its task review, and cross-artifact analysis normally; return the resulting pass or stop
+state to `auto-dev`, and skip the entire **Auto-Next Chain Advance** section below. Do not read
+`workflow.auto_next` in that delegated invocation. Direct invocations are unchanged.
+
+## Auto-Next Chain Advance
+
+Read `workflow.auto_next` from `.codexspec/config.yml` (default `false`; only the literal value `true` enables it).
+
+When `workflow.auto_next` is `true` AND the review loop above concluded in a passing state (`PASS` or `PASS_WITH_WARNINGS`) — after the analyze step above has run — advance the chain automatically:
+
+1. Emit exactly one notice line, in the interaction language, e.g. `auto_next: review passed → invoking /codexspec:implement-tasks <feature-dir>`.
+2. Invoke `/codexspec:implement-tasks <feature-dir>` exactly once, with no confirmation prompt, then end this command.
+
+analyze's deterministic auto-fixes and any residual findings do NOT block this advance (see the Automatic Cross-Artifact Analysis section above). Do not auto-advance when `workflow.auto_next` is disabled, or the review loop stopped at `NEEDS_REVISION` or `BLOCKED`, or stopped early; hand control back to the user as the review loop already does. This advances the chain and does not modify the Output Summary.
+
+## Output Summary
+
+Report the tasks path, plan/requirement coverage, dependency summary, unresolved items, and auto-review status.
