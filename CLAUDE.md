@@ -194,6 +194,20 @@ When `codexspec init` is run:
 6. Copies helper scripts (bash and powershell)
 7. Initializes git (optional)
 
+### Maintainer-Only Shared Command Fragments
+
+Distributed consumers still receive complete files from `templates/commands/`; `codexspec init` and command execution do not parse fragment directives. Shared fragments are an optional, maintainer-only authoring path:
+
+- A command opts in only when `internal/command_templates/sources/<command>.md` exists.
+- Opted-in sources may use a standalone `<!-- CODEXSPEC:INCLUDE <relative-fragment-path> -->` line to insert literal bytes from `internal/command_templates/fragments/`.
+- Fragments are parameterless and cannot include other fragments.
+- Run `uv run python internal/command_template_fragments.py --write` after editing an opted-in source or fragment. This updates the same-named complete file under `templates/commands/`.
+- Run `uv run python internal/command_template_fragments.py --check-distribution` for a read-only source/output plus Claude/Codex self-bootstrap check. Tests, CI, and release automation use read-only checks and never repair stale output.
+- Commands without a same-named internal source remain directly maintained in `templates/commands/`.
+- The existing plugin-only `review-python-code.md` and `review-react-code.md` artifacts are retained for compatibility and remain outside fragment ownership and template-derived comparison.
+
+The internal authoring sources are excluded from wheel and sdist contents. Selecting or extracting shared content is a separate maintainer decision; the mechanism does not migrate commands automatically.
+
 ### Git Branch Safety Check
 
 **Feature**: Automatic branch detection and creation prompt for new feature development.
@@ -701,12 +715,12 @@ def get_templates_dir() -> Path:
 **Rule**:
 
 - ❌ **Never manually edit** files under `.claude/commands/codexspec/` for distributed commands. Any change there will be silently overwritten the next time CodexSpec is reinstalled, and will never reach end users.
-- ✅ **Always edit** the source templates under `templates/commands/` instead. The correct propagation path is:
-  1. Edit `templates/commands/<command>.md`
+- ✅ **Always edit** the authoritative maintainer source instead. For a command with `internal/command_templates/sources/<command>.md`, edit that file and/or its fragments, then run the renderer in write mode. For any other command, edit `templates/commands/<command>.md` directly. The propagation path is:
+  1. Edit the authoritative source; for an opted-in command run `uv run python internal/command_template_fragments.py --write`
   2. Publish a new CodexSpec version (`publish.sh`)
   3. Re-run `codexspec init` (or `uv tool install --force .`) to sync `.claude/commands/codexspec/` from the updated templates
 
-**The only exception** is the internal maintenance commands (`/codexspec:translate-docs`, `/codexspec:check-i18n-semantics`), which intentionally live *only* in `.claude/commands/codexspec/` and have no counterpart in `templates/commands/`. See `.codexspec/memory/constitution.md` → "Slash Command Template Modification Rules" for the full policy.
+**The exceptions** are the internal maintenance commands (`/codexspec:translate-docs`, `/codexspec:check-i18n-semantics`) and the pre-existing plugin-only compatibility artifacts (`review-python-code.md`, `review-react-code.md`). They intentionally have no counterpart in `templates/commands/`; fragment tooling must not derive, rewrite, or remove them. See `.codexspec/memory/constitution.md` → "Slash Command Template Modification Rules" for the full policy.
 
 **When auditing or analyzing the project**: treat `.claude/commands/codexspec/<distributed-command>.md` as a derived file, the same way you would treat a compiled artifact or a lockfile — read it to observe the installed state, but make fixes upstream in `templates/commands/`.
 
@@ -780,7 +794,9 @@ uv tool install --force .
 | `pyproject.toml`            | Project configuration, dependencies, entry points |
 | `src/codexspec/__init__.py` | Main CLI implementation                           |
 | `src/codexspec/i18n.py`     | Internationalization utilities                    |
-| `templates/commands/*.md`   | Slash command templates                           |
+| `templates/commands/*.md`   | Complete slash-command distribution templates; direct source unless the command is opted into internal fragments |
+| `internal/command_templates/` | Optional maintainer sources and literal fragments; never shipped |
+| `internal/command_template_fragments.py` | Maintainer renderer and read-only distribution check |
 | `scripts/bash/*.sh`         | Bash helper scripts                               |
 | `scripts/powershell/*.ps1`  | PowerShell helper scripts                         |
 | `extensions/`               | Extension system                                  |

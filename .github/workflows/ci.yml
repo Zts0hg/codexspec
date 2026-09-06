@@ -8,6 +8,12 @@ on:
       - 'tests/**'
       - 'scripts/**'
       - 'templates/**'
+      - 'internal/command_template_fragments.py'
+      - 'internal/command_templates/**'
+      - '.claude/commands/codexspec/**'
+      - '.agents/skills/**'
+      - '.codexspec/config.yml'
+      - '.gitattributes'
       - 'pyproject.toml'
       - '.github/workflows/ci.yml'
   pull_request:
@@ -17,6 +23,12 @@ on:
       - 'tests/**'
       - 'scripts/**'
       - 'templates/**'
+      - 'internal/command_template_fragments.py'
+      - 'internal/command_templates/**'
+      - '.claude/commands/codexspec/**'
+      - '.agents/skills/**'
+      - '.codexspec/config.yml'
+      - '.gitattributes'
       - 'pyproject.toml'
       - '.github/workflows/ci.yml'
 
@@ -100,7 +112,11 @@ jobs:
       - name: Install build tools
         run: |
           python -m pip install --upgrade pip
+          pip install -e .
           pip install build pytest twine
+
+      - name: Verify command distribution state
+        run: python internal/command_template_fragments.py --check-distribution
 
       - name: Build package
         run: python -m build

@@ -16,11 +16,11 @@ Keeping the two physically separated — and enforcing the boundary via explicit
 | Path | Audience | In wheel/sdist? | Copied by `init`? | Notes |
 |---|---|---|---|---|
 | `src/codexspec/` | USER | wheel (=the package) + sdist | — | CLI implementation |
-| `templates/` | USER | wheel + sdist | yes (commands/docs) | Slash-command templates — **source of truth** for commands |
+| `templates/` | USER | wheel + sdist | yes (commands/docs) | Complete slash-command distribution templates; direct source for commands not opted into maintainer fragments |
 | `scripts/bash/*.sh` | USER | wheel + sdist | yes (mac/linux) | The ONLY scripts `init` copies on unix |
 | `scripts/powershell/*.ps1` | USER | wheel + sdist | yes (windows) | The ONLY scripts `init` copies on windows |
 | `scripts/python/` | **MAINTAINER** | ❌ excluded | ❌ | Claude Code automation; contains `.env` (secrets), `.venv/`, `logs/` |
-| `internal/` | **MAINTAINER** | ❌ (outside every include) | ❌ | Maintainer ops scripts (e.g. `google_search_console.py`) |
+| `internal/` | **MAINTAINER** | ❌ (outside every include) | ❌ | Maintainer ops and authoring tools, including optional command-fragment sources; never user runtime content |
 | `docs/` | MAINTAINER (site build source) | ❌ | ❌ | mkdocs `docs_dir`; builds the Pages site — **not** a docs store |
 | `docs/internal/` | MAINTAINER | ❌ (site + pkg) | ❌ | internal reference assets; listed in mkdocs `exclude_docs` |
 | `.codexspec/memory/` | MAINTAINER | ❌ | ❌ | repo governance (`constitution.md`, this file) |
@@ -49,6 +49,17 @@ include = ["/src", "/templates", "/scripts/bash", "/scripts/powershell",
 
 `codexspec init` (see `src/codexspec/__init__.py`) then copies `scripts/bash/*.sh` (unix) / `scripts/powershell/*.ps1` (windows) into the user's `.codexspec/scripts/`. **Nothing else under `scripts/` is ever read by `init`.**
 
+### Optional command-fragment authoring boundary
+
+The fragment mechanism is repository-maintenance tooling, not an installation feature:
+
+- `internal/command_templates/sources/<command>.md` exists only for commands that explicitly opt in. Its same-named `templates/commands/<command>.md` is a tracked generated output.
+- `internal/command_templates/fragments/` holds literal, parameterless, non-nested fragments referenced by opted-in sources.
+- `internal/command_template_fragments.py --write` synchronizes complete outputs; `--check-distribution` validates sources, outputs, and tracked Claude/Codex self-bootstrap artifacts without writing.
+- Commands with no internal source remain directly authored in `templates/commands/`.
+- The pre-existing plugin-only `.claude` commands `review-python-code.md` and `review-react-code.md` remain compatibility artifacts: fragment tooling neither derives, rewrites, nor removes them.
+- Only complete `templates/commands/` files cross the packaging boundary. Internal sources, fragments, and renderer code remain excluded from wheel and sdist contents, and `codexspec init` has no fragment awareness.
+
 **Verification** — run before any packaging change, confirm the result shows ONLY `bash/` and `powershell/`:
 
 ```bash
@@ -72,7 +83,7 @@ Only `docs/en/google*.html` is effective — `en` is the default language, so it
 
 Ask: **"Will an end user of `codexspec` need this at runtime?"**
 
-- **Yes** (CLI behavior, a template, a script they receive via `init`) → a shipping path: `src/codexspec/`, `templates/`, or `scripts/bash/`·`scripts/powershell/`.
+- **Yes** (CLI behavior, a complete template, a script they receive via `init`) → a shipping path: `src/codexspec/`, `templates/`, or `scripts/bash/`·`scripts/powershell/`.
 - **No** (only for developing / testing / publishing / operating CodexSpec) → an internal path: `internal/` (ops), `scripts/python/` (automation), `docs/internal/` (reference assets), `.codexspec/memory/` (governance), `tests/`, `hooks/`, etc.
 
 **Caveat**: the include/force-include lists above are **explicit, not wildcards**. Adding a new internal subdir under `scripts/` or `templates/` does NOT auto-exclude it — but adding a new *user* subdir will NOT auto-ship either; you must extend the include lists deliberately. Adding a new non-language folder under `docs/` requires adding it to `exclude_docs` to keep it off the site.

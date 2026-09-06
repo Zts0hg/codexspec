@@ -118,18 +118,20 @@ precise language reduces ambiguity and prevents terminology from obstructing req
 
 | Directory | Purpose | Modification Policy |
 |-----------|---------|---------------------|
-| `templates/commands/` | **Source template directory** - Templates are copied from here when users run `codexspec init` | ✅ **MODIFY HERE** for distributed commands |
+| `templates/commands/` | **Complete distribution directory** - Templates are copied from here when users run `codexspec init` | ✅ **MODIFY HERE** for distributed commands without a same-named internal source; generated output for a command with a same-named internal source |
+| `internal/command_templates/sources/` | Optional maintainer-only sources for commands that explicitly opt into shared fragments | ✅ **MODIFY HERE** instead of the matching generated complete template |
+| `internal/command_templates/fragments/` | Maintainer-only literal shared fragments | ✅ **MODIFY HERE** for opted-in shared text; never shipped |
 | `.claude/commands/codexspec/` | **Active command directory** - Commands currently in use by this project | ❌ **DO NOT MODIFY** for distributed commands; ✅ **MODIFY HERE** for internal maintenance commands listed below |
 
 ### Why This Matters
 
-1. **Source of Truth**: `templates/commands/` is the authoritative source for all distributed command templates
+1. **Source of Truth**: A command without a same-named internal source is authored directly in `templates/commands/`; an opted-in command is authored in its same-named `internal/command_templates/sources/` file and rendered to `templates/commands/`
 2. **Distribution**: When users install/update CodexSpec, templates are copied from `templates/commands/`
-3. **Consistency**: Modifying source templates ensures all users receive the same updates
+3. **Consistency**: The maintainer fragment check ensures opted-in sources and their complete distribution outputs cannot drift
 4. **Version Control**: Changes to source templates are tracked in git and can be reviewed
 5. **Self-bootstrap**: CodexSpec uses itself — `.claude/commands/codexspec/` in this repo is an **install artifact** produced by running `codexspec init` (or equivalent) on the CodexSpec project itself. It is not a source file. Any fix made directly there would be silently overwritten the next time CodexSpec is reinstalled, and would never reach end users. The correct flow is: edit `templates/commands/` → publish a new CodexSpec version → re-run `codexspec init` to sync.
 
-**Rule of thumb**: If you catch yourself about to edit a file under `.claude/commands/codexspec/` for a distributed command, stop. Edit `templates/commands/` instead.
+**Rule of thumb**: If you catch yourself about to edit a file under `.claude/commands/codexspec/` for a distributed command, stop. For an opted-in command, edit its internal source or fragment and run `uv run python internal/command_template_fragments.py --write`; otherwise edit `templates/commands/` directly. Automated checks and release paths use `--check-distribution` and never rewrite files.
 
 ### Internal Maintenance Commands (Exception)
 
@@ -140,14 +142,17 @@ The following commands are **intentionally absent from `templates/commands/`** b
 
 Both reference `docs/i18n/glossary.yml` (the canonical, repo-only glossary). The path `.codexspec/i18n/glossary.yml` is **deprecated** and must not be reintroduced.
 
+The pre-existing plugin-only `review-python-code.md` and `review-react-code.md` files are separate compatibility artifacts. They also have no `templates/commands/` counterpart and must be preserved unchanged by fragment synchronization and distribution checks; they are not fragment-authoring sources.
+
 ### Workflow for Command Modifications
 
 **For distributed commands** (default case):
 
-1. Modify files in `templates/commands/`
-2. Test by running `codexspec init` in a test project (or reinstall with `uv tool install --force .`)
-3. Commit changes to the source templates
-4. Users receive updates when they reinstall or run `codexspec init`
+1. If `internal/command_templates/sources/<command>.md` exists, modify that source and/or its literal fragments, then run `uv run python internal/command_template_fragments.py --write`; do not edit its generated `templates/commands/<command>.md` directly.
+2. Otherwise modify `templates/commands/<command>.md` directly.
+3. Run `uv run python internal/command_template_fragments.py --check-distribution` and test by running `codexspec init` in a test project (or reinstall with `uv tool install --force .`).
+4. Commit the editable source and any changed complete distribution output together.
+5. Users receive only the complete templates when they reinstall or run `codexspec init`; fragment sources never ship and `init` never interprets them.
 
 **For internal maintenance commands** (the two listed above):
 

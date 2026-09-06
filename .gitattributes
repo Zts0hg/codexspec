@@ -1,0 +1,8 @@
+# Repository-wide line-ending policy.
+#
+# Distribution artifacts (templates/, .claude/commands/codexspec/, .agents/skills/)
+# are compared byte-for-byte by maintainer tooling (internal/command_template_fragments.py
+# --check-distribution) and by the test suite, so the working tree must materialize
+# identical bytes on every platform. Normalize all text files to LF on checkout;
+# git leaves genuinely binary files untouched (text=auto detection).
+* text=auto eol=lf
