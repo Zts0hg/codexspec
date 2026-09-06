@@ -895,7 +895,7 @@ def init(
             if ps_scripts.exists():
                 for script_file in ps_scripts.glob("*.ps1"):
                     dest_file = codexspec_dir / "scripts" / script_file.name
-                    dest_file.write_text(script_file.read_text(encoding="utf-8"), encoding="utf-8")
+                    dest_file.write_bytes(script_file.read_bytes())
                     console.print(f"[green]Copied script:[/green] {script_file.name}")
             else:
                 console.print("[yellow]Warning: PowerShell scripts directory not found[/yellow]")
@@ -905,7 +905,7 @@ def init(
             if bash_scripts.exists():
                 for script_file in bash_scripts.glob("*.sh"):
                     dest_file = codexspec_dir / "scripts" / script_file.name
-                    dest_file.write_text(script_file.read_text(encoding="utf-8"), encoding="utf-8")
+                    dest_file.write_bytes(script_file.read_bytes())
                     console.print(f"[green]Copied script:[/green] {script_file.name}")
             else:
                 console.print("[yellow]Warning: Bash scripts directory not found[/yellow]")
