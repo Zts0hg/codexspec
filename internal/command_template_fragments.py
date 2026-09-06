@@ -222,6 +222,17 @@ def _stat_signature(metadata: os.stat_result) -> StatSignature:
     )
 
 
+def _stat_identity(metadata: os.stat_result) -> tuple[int, int]:
+    """Return the mutation fields that compare reliably across path-stat and fstat.
+
+    On Windows, os.stat(path) and os.fstat(fd) can disagree on st_dev, st_ino,
+    and the timestamp fields for the same untouched file, so cross-source checks
+    compare only the mode and size; timestamp drift is caught by the same-source
+    full-signature pairs inside _read_stable_file_snapshot.
+    """
+    return (metadata.st_mode, metadata.st_size)
+
+
 def _validate_fragment_tree(directory: Path, fragments_root: Path) -> None:
     seen_names: dict[str, str] = {}
     for entry in sorted(directory.iterdir(), key=lambda path: path.name):
@@ -262,7 +273,7 @@ def _read_stable_file_snapshot(path: Path, root: Path, display: str) -> tuple[by
             raise FragmentError(f"{display}: file is not a regular file")
         with path.open("rb") as handle:
             opened_before = os.fstat(handle.fileno())
-            if _stat_signature(before) != _stat_signature(opened_before):
+            if _stat_identity(before) != _stat_identity(opened_before):
                 raise FragmentError(f"{display}: file changed while being opened")
             content = handle.read()
             opened_after = os.fstat(handle.fileno())
@@ -272,13 +283,18 @@ def _read_stable_file_snapshot(path: Path, root: Path, display: str) -> tuple[by
     except OSError as exc:
         raise FragmentError(f"{display}: cannot read stable file: {exc}") from exc
     _reject_symlink_components(path, root, display)
-    signatures = {
-        _stat_signature(before),
-        _stat_signature(opened_before),
-        _stat_signature(opened_after),
-        _stat_signature(after),
+    identities = {
+        _stat_identity(before),
+        _stat_identity(opened_before),
+        _stat_identity(opened_after),
+        _stat_identity(after),
     }
-    if not stat.S_ISREG(opened_after.st_mode) or len(signatures) != 1:
+    if (
+        not stat.S_ISREG(opened_after.st_mode)
+        or len(identities) != 1
+        or _stat_signature(before) != _stat_signature(after)
+        or _stat_signature(opened_before) != _stat_signature(opened_after)
+    ):
         raise FragmentError(f"{display}: file changed while being read")
     return content, _stat_signature(after)
 
