@@ -195,6 +195,14 @@ if ! $SKIP_TAG; then
     fi
 fi
 
+# Verify maintainer fragment outputs and tracked plugin/self-bootstrap artifacts
+# before creating any distribution. This is deliberately read-only: stale
+# generated files must be corrected and reviewed before release. `--locked`
+# keeps the check read-only for uv.lock as well: a stale lock aborts the
+# release loudly instead of being silently rewritten mid-publish.
+echo "Verifying command distribution state..."
+uv run --locked python internal/command_template_fragments.py --check-distribution
+
 # Clean dist directory
 echo "Cleaning dist directory..."
 rm -rf dist
