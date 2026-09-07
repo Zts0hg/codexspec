@@ -64,7 +64,7 @@ onboard **never** extracts `decisions`, `pitfalls`, `strategies`, or `runbooks`.
 
 ## Record Format
 
-onboard **reuses `distill`'s profile store and record format verbatim** — one record per file under a category directory (`conventions/<id>.md`, `constraints/<id>.md`), ids namespaced by the source-feature id, and `claim` physically separated from `evidence`. See `distill.md` for the canonical format. onboard writes with these **deltas**:
+onboard **reuses `distill`'s profile store and record format verbatim** — one record per file under a category directory (`conventions/<id>-<slug>.md`, `constraints/<id>-<slug>.md`; bare `<id>.md` when no meaningful slug applies), ids namespaced by the source-feature id, and `claim` physically separated from `evidence`. See `distill.md` for the canonical format. onboard writes with these **deltas**:
 
 - `provenance` marks the **onboard scan** as the source (distinct from `distill`), with `derivation: inferred` — always, because the knowledge is inferred from code, never quoted from the user.
 - An onboard record's `status` is always **`candidate`** at write time — onboard **never** writes `vetted` itself. Its `inferred` origin is **not** a permanent barrier: such a record can later be promoted to `vetted` via `/distill review` once it is outcome-verified and the user approves it (the `evolve` gate remains `vetted`). See the `status` rule in `distill.md`.

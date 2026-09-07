@@ -46,8 +46,8 @@ def test_distill_has_anti_hollow_rule() -> None:
 
 def test_distill_has_both_a_convention_and_a_pitfall_example() -> None:
     content = read_command("distill")
-    assert "Con-2026-0809-2219gg-1" in content  # convention example
-    assert "P-2026-0810-1330ab-1" in content  # pitfall example
+    assert "conventions/Con-2026-0809-2219gg-1-prefer-absolute-imports.md" in content  # convention example
+    assert "pitfalls/P-2026-0810-1330ab-1-re-sub-string-replacement-corruption.md" in content  # pitfall example
     # the pitfall example demonstrates the three-part body inside the fenced block
     assert "- root-cause:" in content
     assert "- workaround:" in content
@@ -139,8 +139,8 @@ def test_distill_anti_hollow_extends_to_new_types(distill: str) -> None:
 
 def test_distill_has_strategy_and_runbook_examples(distill: str) -> None:
     """T2.1-S5: worked strategy and runbook examples showing their body parts."""
-    assert "S-2026-0813-1606fz-1" in distill  # strategy example
-    assert "R-2026-0813-1143el-1" in distill  # runbook example
+    assert "strategies/S-2026-0813-1606fz-1-suspect-markdown-emphasis-first.md" in distill  # strategy example
+    assert "runbooks/R-2026-0813-1143el-1-release-a-new-codexspec-version.md" in distill  # runbook example
     assert "- trigger:" in distill
     assert "- action:" in distill
     assert "- steps:" in distill
