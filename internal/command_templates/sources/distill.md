@@ -46,7 +46,7 @@ Apply this boundary test to every candidate: **"Would a single feature's `requir
 
 ## The profile store: `.codexspec/profile/`
 
-Six **category directories**, each holding **one record per file** (`<id>.md`) with **only current-effective** knowledge — dense, with no "retired" section (git history is the ledger). One-file-per-record is deliberate: parallel feature branches each add differently-named files, so distilled knowledge merges without conflict. Create the directory and record file on first write.
+Six **category directories**, each holding **one record per file** (`<id>.md`, or `<id>-<slug>.md` — see the `id` rule below) with **only current-effective** knowledge — dense, with no "retired" section (git history is the ledger). One-file-per-record is deliberate: parallel feature branches each add differently-named files, so distilled knowledge merges without conflict. Create the directory and record file on first write.
 
 - `constraints/` — negative constraints (`严禁 / 仅允许`). These carry the **highest** weight and MUST be honored first.
 - `conventions/` — positive cross-feature conventions / steering.
@@ -61,7 +61,7 @@ There is **no** `facts/` category — a bare fact with no "therefore do X" is ei
 
 Every record MUST separate the distilled claim from the evidence it rests on:
 
-- `id` — **type letter + full source-feature id + local sequence**, e.g. `P-2026-0812-14054p-1` or `Con-2026-0812-14054p-1`. It is **both** the record's `### <id>: <title>` heading **and its filename** (`pitfalls/P-2026-0812-14054p-1.md`). The **source-feature id** is the distilling feature's full spec-dir id `{YYYY-MMDD-HHMM}{rr}` (e.g. `2026-0812-14054p`); it is globally unique by the timestamp+random scheme spec directories use, so records distilled on parallel feature branches never collide on id **or filename** (they merge with no conflict). Keep the **full** id (not a short tail) so the record is self-describing: the date supports recency/staleness reading, and the feature id ties the record to its originating change for decision context and scope. When distilling with no feature context, generate a fresh `{YYYY-MMDD-HHMM}{rr}` id now (same convention as create-new-feature). **Never** use a bare sequential id such as `P-001` — those collide across parallel branches.
+- `id` — **type letter + full source-feature id + local sequence**, e.g. `P-2026-0812-14054p-1` or `Con-2026-0812-14054p-1`. The `### <id>: <title>` heading keeps the bare id; the **filename** is `<id>-<slug>.md`, where the **slug** is a semantic suffix derived from the record title: lowercase ASCII letters and digits with hyphens as separators (`^[a-z0-9]+(-[a-z0-9]+)*$`, no leading/trailing hyphen), at most 50 characters, rendered in English when the title is not ASCII. When no meaningful slug can be derived, write the legacy bare form `<id>.md` — both forms are valid store members. The slug never enters the id, the heading, or `[[id]]` links, and never participates in uniqueness. Locating a record from its id stays mechanical: the record's file is exactly the one named `<id>.md` or the one named `<id>-<slug>.md`; because the slug admits only `[a-z0-9-]`, no other filename can begin with `<id>` followed by `-` or `.`, so a lookup by id is unambiguous even when one sequence number is a digit-prefix of another. The **source-feature id** is the distilling feature's full spec-dir id `{YYYY-MMDD-HHMM}{rr}` (e.g. `2026-0812-14054p`); it is globally unique by the timestamp+random scheme spec directories use, so records distilled on parallel feature branches never collide on id **or filename** (they merge with no conflict) — uniqueness is carried entirely by the id. Keep the **full** id (not a short tail) so the record is self-describing: the date supports recency/staleness reading, and the feature id ties the record to its originating change for decision context and scope. When distilling with no feature context, generate a fresh `{YYYY-MMDD-HHMM}{rr}` id now (same convention as create-new-feature). **Never** use a bare sequential id such as `P-001` — those collide across parallel branches.
 - `claim` — one-sentence reusable **summary** (a title line, not the actionable body — for a `pitfall` the usable content lives in the three body parts below, not in this sentence).
 - `type` — `convention` | `constraint` | `pitfall` | `decision` | `strategy` | `runbook` (`constraint` = highest priority).
 - `scope/when` — natural-language applicability condition (e.g. "when editing Python code"); omit for global. **No formal syntax.**
@@ -96,7 +96,7 @@ If you cannot state these parts, the strategy or runbook is not yet worth record
 
 This separation is what makes a later error locatable as **misread** (facts wrong) vs **overreach** (claim over-generalized) vs **stale** (state no longer holds).
 
-Example — a `convention` (claim + evidence is enough), file `conventions/Con-2026-0809-2219gg-1.md`:
+Example — a `convention` (claim + evidence is enough), file `conventions/Con-2026-0809-2219gg-1-prefer-absolute-imports.md`:
 
 ```markdown
 ### Con-2026-0809-2219gg-1: Prefer absolute imports
@@ -109,7 +109,7 @@ Example — a `convention` (claim + evidence is enough), file `conventions/Con-2
 - status: vetted
 ```
 
-Example — a `pitfall` (note the required `root-cause` / `workaround` / `lesson` body), file `pitfalls/P-2026-0810-1330ab-1.md`:
+Example — a `pitfall` (note the required `root-cause` / `workaround` / `lesson` body), file `pitfalls/P-2026-0810-1330ab-1-re-sub-string-replacement-corruption.md`:
 
 ```markdown
 ### P-2026-0810-1330ab-1: `re.sub` with a string replacement corrupts blocks containing backslashes
@@ -125,7 +125,7 @@ Example — a `pitfall` (note the required `root-cause` / `workaround` / `lesson
 - status: candidate
 ```
 
-Example — a `strategy` (note the `trigger` / `action` body), file `strategies/S-2026-0813-1606fz-1.md`:
+Example — a `strategy` (note the `trigger` / `action` body), file `strategies/S-2026-0813-1606fz-1-suspect-markdown-emphasis-first.md`:
 
 ```markdown
 ### S-2026-0813-1606fz-1: When a substring contract test fails, suspect markdown emphasis first
@@ -140,7 +140,7 @@ Example — a `strategy` (note the `trigger` / `action` body), file `strategies/
 - status: candidate
 ```
 
-Example — a `runbook` (note the ordered `steps` + `failure-recovery` body), file `runbooks/R-2026-0813-1143el-1.md`:
+Example — a `runbook` (note the ordered `steps` + `failure-recovery` body), file `runbooks/R-2026-0813-1143el-1-release-a-new-codexspec-version.md`:
 
 ```markdown
 ### R-2026-0813-1143el-1: Release a new CodexSpec version
@@ -182,7 +182,7 @@ When a new item conflicts with an existing rule, resolve in this order:
 
 Change the profile **only** through three conceptual operations (you edit the files directly — these are a discipline, **not** a tool API or matching algorithm):
 
-- `add` — create a new record file `<category>/<id>.md` for a verified item.
+- `add` — create a new record file `<category>/<id>-<slug>.md` (bare `<category>/<id>.md` when no meaningful slug applies) for a verified item.
 - `replace` — supersede an outdated/wrong item **in its own file** (keeps records dense).
 - `remove` — delete the record's file when a changed environment invalidates it.
 
