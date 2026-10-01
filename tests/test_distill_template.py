@@ -74,6 +74,23 @@ def test_distill_review_supplies_human_endorsement() -> None:
     assert "/codexspec:onboard" in content  # names onboard as the inferred-knowledge path to vetted
 
 
+def test_distill_manual_review_uses_deterministic_local_html_helper() -> None:
+    content = read_command("distill")
+    assert "codexspec _distill-review-helper" in content
+    assert "HTML" in content
+    assert "127.0.0.1" in content
+    assert "--mode text" in content
+    assert "versioned proposal manifest" in content
+    assert "deterministic backend" in content
+
+
+def test_distill_auto_paths_never_launch_manual_review() -> None:
+    content = read_command("distill")
+    assert "Auto-distill MUST NOT invoke the review helper" in content
+    assert "never opens a browser" in content
+    assert "never waits for review" in content
+
+
 # --- D4: status enum includes conflict/needs-adjudication ---
 
 
@@ -213,6 +230,8 @@ def test_distill_consolidation_merge_on_confirm(distill: str) -> None:
     """T2.4-S3 (US3-2): /distill review merges a cluster into general rule + exceptions."""
     assert "general rule plus its exceptions" in distill
     assert "/distill review" in distill
+    assert '"member_hashes"' in distill
+    assert "exact current-byte hash for every consolidation member" in distill
 
 
 def test_distill_consolidation_cross_category_promotion(distill: str) -> None:

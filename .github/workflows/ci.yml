@@ -124,7 +124,7 @@ jobs:
       - name: Inspect package contents
         env:
           CODEXSPEC_DIST_DIR: dist
-        run: pytest tests/test_package_contents.py -q
+        run: pytest tests/test_package_contents.py tests/test_distill_review_packaging.py -q
 
       - name: Check package
         run: twine check dist/*

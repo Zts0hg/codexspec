@@ -38,6 +38,9 @@ Grouped by category, mirroring the README catalog. Within each group, commands a
 | `/codexspec:analyze` | Cross-artifact consistency analysis (auto-remediating, severity-based) |
 | `/codexspec:checklist` | Generate requirements quality checklists |
 | `/codexspec:tasks-to-issues` | Convert tasks to GitHub Issues |
+| `/codexspec:distill` | Capture reusable project knowledge; review candidates in a local HTML workspace |
+| `/codexspec:evolve` | Turn vetted project knowledge into an upstream contribution draft |
+| `/codexspec:onboard` | Seed candidate profile knowledge from an existing codebase |
 
 ### Git Workflow Commands
 
@@ -996,6 +999,32 @@ AI:  Converting tasks to GitHub issues...
 - Only works with GitHub repositories
 - Creates issues in the repository's default configuration
 - Check for duplicates before running
+
+---
+
+### `/codexspec:distill`
+
+Capture reusable cross-feature knowledge in `.codexspec/profile/` and review pending candidates without hand-editing their Markdown files.
+
+**Syntax:**
+
+```text
+/codexspec:distill [interaction segment]
+/codexspec:distill review
+```
+
+**Manual review:**
+
+- `/codexspec:distill review`, or a direct invocation with no new segment to extract, opens an offline HTML page served only from `127.0.0.1`.
+- The page supports structured revision, Vetted, discard, defer, consolidation, a complete staged summary, and explicit **Apply all**. A revision or merge must show its exact final Markdown preview before the same action can be staged.
+- A record cannot become `vetted` without both human approval and outcome-verification evidence.
+- Staged decisions use a recoverable project draft excluded from Git. Only one writable review is active per project.
+- A structurally damaged draft is retained with an actionable diagnostic and is removed only through an explicit discard action.
+- Apply rechecks source hashes and rejects the entire batch if any record changed; it never overwrites a concurrent edit or reports partial success.
+- All page assets ship with CodexSpec. The page uses no CDN, remote model call, or telemetry.
+- If no browser can be opened, the command prints the token-protected local URL. Request explicit text mode when a browser is unsuitable; it uses the same validation and write path.
+
+Auto-distill remains non-interactive and non-blocking: it never opens the page, starts text review, or waits for a saved draft.
 
 ---
 

@@ -292,6 +292,8 @@ workflow:
 - `/codexspec:distill` — extract reusable, **cross-feature** knowledge (constraints, conventions, pitfalls, cross-feature/architectural decisions, metacognitive strategies, and multi-step runbooks) from an interaction into `.codexspec/profile/` (six category directories — `constraints/` `conventions/` `pitfalls/` `decisions/` `strategies/` `runbooks/`, one record per file). Each record separates the `claim` from its `evidence`, and files are mutated only via add/replace/remove with git history as the audit ledger. Bounded by the requirements-as-truth test ("would a single feature's `requirements`/`spec`/`plan` record it?" → yes = leave it there); there is no feature-local tier.
 - `/codexspec:evolve` — compile **vetted** profile sediment into a SKILL.md / command-template draft and contribute it upstream via a **human-reviewed PR** (confirms before any push; edits only `templates/`, never the install artifact).
 
+**Manual Distill Review**: `/codexspec:distill review` (and a direct `/codexspec:distill` with no new segment) uses a packaged, offline HTML workspace by default. The Agent prepares optional semantic proposals, then the hidden `_distill-review-helper` owns a token-protected `127.0.0.1` service, structured edits with exact final-Markdown preview before staging, recoverable Git-excluded drafts, one-writer locking, write-boundary source-hash checks, and journaled all-or-nothing application. Structurally damaged drafts are retained until an explicit discard. An explicit text mode calls the same domain and transaction code. Auto-distill never invokes either interactive carrier.
+
 **Auto-Distill** (`workflow.auto_distill`): when enabled, `distill` runs automatically at the end of the wrap-up commands (`implement-tasks`, `commit-staged`, `pr`) via an embedded `## Automatic Distillation` section — non-blocking, never mutates SDD artifacts, and early-exits when there is nothing to capture. **Unlike `auto_next`, `auto_distill` defaults to ON (opt-out)** — only the literal `false` disables it.
 
 **Configuration** (`.codexspec/config.yml`):
@@ -303,7 +305,7 @@ workflow:
 
 Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|off` (bare `--auto-distill` toggles).
 
-**Implementation**: Edit `templates/commands/distill.md` / `evolve.md` and the embedded `## Automatic Distillation` sections in the wrap-up templates; the `.claude/commands/codexspec/` and `.agents/skills/codexspec-*/` forms are regenerated from templates (do not hand-edit the derived copies).
+**Implementation**: Edit `internal/command_templates/sources/distill.md` (then render it), `templates/commands/evolve.md`, and the embedded `## Automatic Distillation` sections in the wrap-up templates. The deterministic review runtime lives in `src/codexspec/distill_review/`; the `.claude/commands/codexspec/` and `.agents/skills/codexspec-*/` forms are regenerated from templates (do not hand-edit the derived copies).
 
 ### Systematic Debugging: debug
 

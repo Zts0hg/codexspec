@@ -1,0 +1,17 @@
+:root { color-scheme: light dark; font: 16px/1.45 system-ui, sans-serif; }
+body { margin: 0; max-width: 1200px; padding: 1rem; margin-inline: auto; }
+main { display: grid; grid-template-columns: minmax(14rem, 1fr) minmax(24rem, 3fr) minmax(14rem, 1fr); gap: 1rem; }
+nav, section, aside { border: 1px solid #8886; border-radius: .5rem; padding: 1rem; min-width: 0; }
+nav button { display: block; width: 100%; margin-block: .35rem; text-align: left; }
+label { display: block; font-weight: 600; margin-top: .75rem; }
+input, textarea, select { width: 100%; box-sizing: border-box; font: inherit; }
+textarea { min-height: 5rem; }
+pre { overflow: auto; white-space: pre-wrap; }
+.actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+footer { display: flex; gap: .75rem; justify-content: flex-end; padding-block: 1rem; }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid #4a90e2; outline-offset: 2px; }
+.error { color: #c33; font-weight: 700; }
+.field-error { color: #c33; display: block; font-size: .9rem; margin-top: .25rem; }
+.field-error[hidden] { display: none; }
+[aria-invalid="true"] { border-color: #c33; outline-color: #c33; }
+@media (max-width: 800px) { main { grid-template-columns: 1fr; } }
