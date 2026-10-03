@@ -11,10 +11,11 @@ import pytest
 from codexspec.distill_review.domain import ReviewService
 from codexspec.distill_review.lease import ActiveSessionError, ReviewLease
 from codexspec.distill_review.models import ReviewDraft
+from codexspec.distill_review.records import parse_record
 from codexspec.distill_review.session import SessionError, SessionStore, atomic_bytes, ensure_runtime_ignored
 from codexspec.distill_review.transaction import ProfileTransaction, TransactionError
 from tests.automation_test_support import sanitized_git_env
-from tests.test_distill_review_core import make_profile
+from tests.test_distill_review_core import make_profile, record_text
 
 
 def git(root: Path, *args: str) -> str:
@@ -593,3 +594,198 @@ def test_transaction_aggregates_multiple_schema_failures(tmp_path: Path) -> None
         ProfileTransaction(root, service.records, service.draft, SessionStore(root)).prepare()
     assert set(error.value.records) == set(service.records)
     assert len(error.value.failures) == 2
+
+
+def _clustered_pitfall(record_id: str, cluster: str) -> str:
+    return (
+        f"### {record_id}: Preserve unknown content\n\n"
+        "- claim: Original claim\n"
+        "- type: pitfall\n"
+        "- scope/when: editing profile records\n"
+        "- root-cause: A parser can discard unfamiliar Markdown.\n"
+        "- workaround: Preserve source spans.\n"
+        "- lesson: Render only fields the user changed.\n"
+        '- evidence.facts: "observed fact"\n'
+        "- evidence.state: full suite passed; still valid\n"
+        f"- consolidation: candidate; cluster: {cluster}\n"
+        "- provenance: distill @implement-tasks, 2026-09-28, derivation: inferred\n"
+        "- status: candidate\n"
+    )
+
+
+def _strategy(record_id: str) -> str:
+    return (
+        f"### {record_id}: Generalized strategy\n\n"
+        "- claim: Promote the shared lesson into a strategy.\n"
+        "- type: strategy\n"
+        "- scope/when: reviewing profile records\n"
+        "- trigger: the same pitfall recurs\n"
+        "- action: apply the generalized rule\n"
+        '- evidence.facts: "observed fact"\n'
+        "- evidence.state: full suite passed; still valid\n"
+        "- provenance: distill @implement-tasks, 2026-09-28, derivation: inferred\n"
+        "- status: candidate\n"
+    )
+
+
+def _cross_category_merge(tmp_path: Path) -> tuple[Path, ReviewService, SessionStore]:
+    """A profile with only `pitfalls/`, and a staged merge promoting them into a strategy."""
+    root = (tmp_path.resolve()) / "project"
+    pitfalls = root / ".codexspec/profile/pitfalls"
+    pitfalls.mkdir(parents=True)
+    members = ["P-2026-0927-2310d6-1", "P-2026-0927-2310d6-2"]
+    for member in members:
+        (pitfalls / f"{member}.md").write_text(_clustered_pitfall(member, "parser-loss"), encoding="utf-8")
+    output = "S-2026-0927-2310d6-9"
+    manifest = root / "consolidation.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "proposals": {},
+                "consolidations": [
+                    {
+                        "cluster": "parser-loss",
+                        "members": members,
+                        "member_hashes": {
+                            member: parse_record(pitfalls / f"{member}.md", root).sha256 for member in members
+                        },
+                        "category": "strategies",
+                        "record_id": output,
+                        "filename": f"{output}.md",
+                        "markdown": _strategy(output),
+                        "fields": {"claim": "Promote the shared lesson into a strategy."},
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    service = ReviewService.from_project(root, manifest_path=manifest)
+    service.stage(
+        {
+            "action": "merge",
+            "cluster": "parser-loss",
+            "field_changes": {"claim": "Promote the shared lesson into a strategy."},
+            "status": "candidate",
+        }
+    )
+    store = SessionStore(root)
+    store.save(service.draft)
+    return root, service, store
+
+
+def test_merge_creates_a_category_directory_that_does_not_exist_yet(tmp_path: Path) -> None:
+    """The profile creates a category directory on first write, so a cross-category
+    promotion must not require the directory to exist already."""
+    root, service, store = _cross_category_merge(tmp_path)
+    assert not (root / ".codexspec/profile/strategies").exists()
+    result = ProfileTransaction(service.project_root, service.records, service.draft, store).apply()
+    assert result["status"] == "applied"
+    written = root / ".codexspec/profile/strategies/S-2026-0927-2310d6-9.md"
+    assert written.is_file()
+    assert not (root / ".codexspec/profile/pitfalls/P-2026-0927-2310d6-1.md").exists()
+    assert not store.transaction_exists()
+
+
+def test_a_missing_target_directory_never_leaves_an_unrecoverable_journal(tmp_path: Path) -> None:
+    """A directory that disappears mid-flight must abort cleanly and clear the journal,
+    not report a symlink attack and refuse every later session."""
+    root, service, store = _cross_category_merge(tmp_path)
+    transaction = ProfileTransaction(service.project_root, service.records, service.draft, store)
+    original = ProfileTransaction._write_target
+
+    def vanish(self, path, new, *, expected, backup):  # type: ignore[no-untyped-def]
+        if path.parent.name == "strategies":
+            shutil.rmtree(path.parent)
+        return original(self, path, new, expected=expected, backup=backup)
+
+    ProfileTransaction._write_target = vanish  # type: ignore[method-assign]
+    try:
+        with pytest.raises(TransactionError) as failure:
+            transaction.apply()
+    finally:
+        ProfileTransaction._write_target = original  # type: ignore[method-assign]
+    assert "symlink_target" not in str(failure.value)
+    assert "rollback_failed" not in str(failure.value)
+    assert not store.transaction_exists(), "a failed batch left a journal that blocks every later session"
+    for member in ("P-2026-0927-2310d6-1", "P-2026-0927-2310d6-2"):
+        assert (root / f".codexspec/profile/pitfalls/{member}.md").is_file()
+    ProfileTransaction.recover(root, SessionStore(root))
+
+
+def test_recovery_resolves_changes_in_a_vanished_directory(tmp_path: Path) -> None:
+    """A category directory that disappeared while a batch was in flight holds no
+    user bytes: for a created record there is nothing to put back, and for a
+    replaced record its old bytes and the backup lived in that same directory.
+    Recovery must resolve such a change instead of failing forever. (S001.15)"""
+    root = make_profile(tmp_path)
+    record_path = root / ".codexspec/profile/pitfalls/P-2026-0927-2310d6-1-preserve-unknown.md"
+    old_b64 = base64.b64encode(record_path.read_bytes()).decode()
+    new_b64 = base64.b64encode(record_path.read_bytes().replace(b"Original claim", b"New claim")).decode()
+    store = SessionStore(root)
+    store.prepare()
+    store.save_transaction(
+        {
+            "schema_version": 2,
+            "state": "applying",
+            "changes": [
+                {
+                    "record_id": "P-2026-0927-2310d6-1",
+                    "path": ".codexspec/profile/pitfalls/P-2026-0927-2310d6-1-preserve-unknown.md",
+                    "backup": (
+                        ".codexspec/profile/pitfalls/"
+                        ".P-2026-0927-2310d6-1-preserve-unknown.md.distill-review-" + "0" * 16 + "-1.bak"
+                    ),
+                    "old": old_b64,
+                    "new": new_b64,
+                    "phase": "installed",
+                }
+            ],
+        }
+    )
+    shutil.rmtree(record_path.parent)
+    # Recovery resolves the change instead of failing forever on the absent directory.
+    ProfileTransaction.recover(root, SessionStore(root))
+    assert not SessionStore(root).transaction_exists()
+
+
+def test_runtime_ignore_covers_a_nested_project_root(tmp_path: Path) -> None:
+    """A project living inside a larger repository must still have its review runtime
+    excluded: the info/exclude rule has to be anchored at the project, not the
+    repository root. (S001.16)"""
+    outer = tmp_path / "repo"
+    outer.mkdir()
+    subprocess.run(["git", "-C", str(outer), "init"], check=True, capture_output=True)
+    root = outer / "deep" / "nested" / "project"
+    profile = root / ".codexspec/profile/pitfalls"
+    profile.mkdir(parents=True)
+    (profile / "P-2026-1002-2205zz-1.md").write_text(record_text(), encoding="utf-8")
+    ensure_runtime_ignored(root, install_managed_file=False)
+    SessionStore(root).save(ReviewDraft(revision=1))
+    probe = subprocess.run(
+        ["git", "-C", str(root), "check-ignore", "-q", ".codexspec/.runtime/draft.json"],
+        capture_output=True,
+    )
+    assert probe.returncode == 0, "runtime state must be git-excluded for a nested project"
+    exclude = Path(git(root, "rev-parse", "--git-path", "info/exclude"))
+    if not exclude.is_absolute():
+        exclude = root / exclude
+    assert "deep/nested/project/.codexspec/.runtime/" in exclude.read_text(encoding="utf-8")
+
+
+def test_whitespace_only_verification_stages_and_applies_like_an_absent_one(tmp_path: Path) -> None:
+    """Stage time normalizes a whitespace-only attestation to absent when rendering, so
+    apply time must re-render from the same normalized value. Storing the raw string made
+    the interface present a decision as accepted that the batch then refused. (S001.17)"""
+    root = make_profile(tmp_path)
+    record_id = "P-2026-0927-2310d6-1"
+    service = ReviewService.from_project(root)
+    service.stage({"action": "replace", "record_id": record_id, "verification": "   "})
+    assert service.draft.decisions[record_id]["verification"] == "", (
+        "the stored attestation must be the normalized value, not the raw whitespace"
+    )
+    store = SessionStore(root)
+    store.prepare()
+    result = ProfileTransaction(root, service.records, service.draft, store).apply()
+    assert result["status"] == "applied"

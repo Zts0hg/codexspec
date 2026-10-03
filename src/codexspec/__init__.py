@@ -104,7 +104,10 @@ def distill_review_helper(
     try:
         lease.acquire({"state": "starting", "mode": mode})
     except ActiveSessionError as exc:
-        _review_result(language, {"status": "active_session", "session": exc.metadata})
+        # Machine output reports the running session, but its capability token and
+        # token-bearing URL belong to the session that printed them.
+        session = {key: value for key, value in exc.metadata.items() if key not in {"capability", "url"}}
+        _review_result(language, {"status": "active_session", "session": session})
         return
     except (AutomationError, SessionError, OSError) as exc:
         _review_result(language, {"status": "invalid_input", "error": str(exc)})
@@ -113,51 +116,57 @@ def distill_review_helper(
     try:
         try:
             ProfileTransaction.recover(root, store)
-            if discard_draft:
-                store.discard()
-                _review_result(language, {"status": "discarded"})
-                return
-            draft = store.load()
-            service = ReviewService.from_project(
-                root,
-                manifest_path=manifest,
-                draft=draft,
-                interaction_language=language,
-            )
-        except (ReviewError, SessionError, TransactionError, OSError) as exc:
-            _review_result(language, {"status": "invalid_input", "error": str(exc)})
-            raise typer.Exit(2) from exc
-        if not service.records and not service.clusters and not (service.draft.decisions or service.draft.deferred):
-            _review_result(language, {"status": "nothing_to_review"})
+        except (TransactionError, SessionError, OSError):
+            if not discard_draft:
+                raise
+            # A failed recovery must not brick the documented escape hatch: an
+            # explicit discard abandons the draft and the stuck journal together.
+        if discard_draft:
+            store.discard()
+            store.discard_transaction()
+            _review_result(language, {"status": "discarded"})
             return
+        draft = store.load()
+        service = ReviewService.from_project(
+            root,
+            manifest_path=manifest,
+            draft=draft,
+            interaction_language=language,
+        )
+    except (ReviewError, SessionError, TransactionError, OSError) as exc:
+        _review_result(language, {"status": "invalid_input", "error": str(exc)})
+        raise typer.Exit(2) from exc
+    if not service.records and not service.clusters and not (service.draft.decisions or service.draft.deferred):
+        _review_result(language, {"status": "nothing_to_review"})
+        return
+    try:
+        if mode == "text":
+            lease.update({"mode": "text"})
+            result = run_text_review(service, store)
+            typer.echo()
+            _machine_json(result)
+            return
+        token = secrets.token_urlsafe(32)
+        server = create_server(service, store, token=token)
+        url = f"http://127.0.0.1:{server.server_port}/#token={token}"
+        lease.update({"mode": "html", "port": server.server_port, "capability": token, "url": url})
         try:
-            if mode == "text":
-                lease.update({"mode": "text"})
-                result = run_text_review(service, store)
-                typer.echo()
-                _machine_json(result)
-                return
-            token = secrets.token_urlsafe(32)
-            server = create_server(service, store, token=token)
-            url = f"http://127.0.0.1:{server.server_port}/#token={token}"
-            lease.update({"mode": "html", "port": server.server_port, "capability": token, "url": url})
-            try:
-                opened = False if no_open else webbrowser.open(url)
-            except (OSError, webbrowser.Error):
-                opened = False
-            if not opened:
-                typer.echo(url)
-            server.timeout = 0.5
-            while not server.stop_event.is_set():
-                server.handle_request()
-            _review_result(language, server.final_result or {"status": "finished"})
-        except (ReviewError, SessionError, TransactionError, OSError) as exc:
-            failure: dict[str, object] = {"status": "invalid_input", "error": str(exc)}
-            if isinstance(exc, TransactionError):
-                failure["records"] = exc.records
-                failure["failures"] = exc.failures
-            _review_result(language, failure)
-            raise typer.Exit(2) from exc
+            opened = False if no_open else webbrowser.open(url)
+        except (OSError, webbrowser.Error):
+            opened = False
+        if not opened:
+            typer.echo(url)
+        server.timeout = 0.5
+        while not server.stop_event.is_set():
+            server.handle_request()
+        _review_result(language, server.final_result or {"status": "finished"})
+    except (ReviewError, SessionError, TransactionError, OSError) as exc:
+        failure: dict[str, object] = {"status": "invalid_input", "error": str(exc)}
+        if isinstance(exc, TransactionError):
+            failure["records"] = exc.records
+            failure["failures"] = exc.failures
+        _review_result(language, failure)
+        raise typer.Exit(2) from exc
     finally:
         if server is not None:
             server.server_close()

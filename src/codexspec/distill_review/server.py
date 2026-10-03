@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import secrets
@@ -22,6 +23,27 @@ MAX_BODY = 1_048_576
 REQUEST_READ_TIMEOUT = 10.0
 MAX_CONCURRENT_REQUESTS = 32
 ASSET_DIR = Path(__file__).parent / "assets"
+
+
+def gate_token(operation_key: str) -> str:
+    """Opaque, stable identifier for one stored previewed-operation key."""
+    return hashlib.sha256(operation_key.encode("utf-8")).hexdigest()
+
+
+def _reject_unencodable(value: Any) -> None:
+    """Refuse strings no later UTF-8 write can encode, such as lone surrogates."""
+    stack = [value]
+    while stack:
+        item = stack.pop()
+        if isinstance(item, str):
+            try:
+                item.encode("utf-8")
+            except UnicodeEncodeError as exc:
+                raise ReviewError("invalid_encoding") from exc
+        elif isinstance(item, dict):
+            stack.extend(item.values())
+        elif isinstance(item, list):
+            stack.extend(item)
 
 
 class ReviewHTTPServer(ThreadingHTTPServer):
@@ -120,12 +142,21 @@ class ReviewHandler(BaseHTTPRequestHandler):
             return
 
     def _json(self, status: int, value: Any) -> None:
-        self._send(status, json.dumps(value, ensure_ascii=False, separators=(",", ":")).encode("utf-8"))
+        try:
+            body = json.dumps(value, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
+        except UnicodeEncodeError:
+            # Request content passed the boundary check, but a response must never
+            # die for lack of an encoding.
+            body = b'{"error":"unencodable_response"}'
+        self._send(status, body)
 
     def _authorized(self) -> bool:
         provided = self.headers.get("Authorization", "")
         expected = f"Bearer {self.server.token}"
-        if not secrets.compare_digest(provided, expected):
+        # Header values arrive latin-1 decoded, and `compare_digest` refuses a non-ASCII
+        # `str` operand with TypeError, which would drop the request instead of refusing
+        # it. Comparing the latin-1 bytes keeps the comparison constant-time and total.
+        if not secrets.compare_digest(provided.encode("latin-1"), expected.encode("latin-1")):
             self._json(HTTPStatus.UNAUTHORIZED, {"error": "unauthorized"})
             return False
         return True
@@ -167,10 +198,11 @@ class ReviewHandler(BaseHTTPRequestHandler):
             value = json.loads(b"".join(chunks) or b"{}")
         except TimeoutError as exc:
             raise ReviewError("request_timeout") from exc
-        except json.JSONDecodeError as exc:
+        except (json.JSONDecodeError, UnicodeDecodeError) as exc:
             raise ReviewError("invalid_json") from exc
         if not isinstance(value, dict):
             raise ReviewError("object_required")
+        _reject_unencodable(value)
         if value.get("schema_version") != SCHEMA_VERSION:
             raise ReviewError("unsupported_request_schema")
         return value
@@ -179,6 +211,15 @@ class ReviewHandler(BaseHTTPRequestHandler):
         encoded = json.dumps(operation, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
         return f"{self.server.service.draft.revision}:{encoded}"
 
+    def _gate_tokens(self) -> list[str]:
+        """Project the previewed-operation set so the page can display the gate instead of inferring it.
+
+        A key is stored under the revision current at preview time and the enforcement lookup composes
+        the revision current at staging time, so the set is cleared whenever the revision advances and
+        every token listed here belongs to the current revision.
+        """
+        return sorted(gate_token(key) for key in self.server.previewed_operations)
+
     def do_GET(self) -> None:  # noqa: N802
         self._cancel_request_deadline()
         path = self.path.split("?", 1)[0]
@@ -186,7 +227,11 @@ class ReviewHandler(BaseHTTPRequestHandler):
             if not self._authorized():
                 return
             if path == "/api/session":
-                self._json(HTTPStatus.OK, self.server.service.snapshot())
+                # Every mutation holds this lock; reading the same state without it can
+                # observe a half-applied change and kill the handler with no response.
+                with self.server.state_lock:
+                    payload = {**self.server.service.snapshot(), "gate_tokens": self._gate_tokens()}
+                self._json(HTTPStatus.OK, payload)
             else:
                 self._json(HTTPStatus.NOT_FOUND, {"error": "not_found"})
             return
@@ -202,16 +247,24 @@ class ReviewHandler(BaseHTTPRequestHandler):
             self._json(HTTPStatus.NOT_FOUND, {"error": "not_found"})
             return
         asset = ASSET_DIR / asset_name
-        if not asset.is_file():
-            self._json(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": "missing_asset"})
-            return
         content_type = {
             ".html": "text/html; charset=utf-8",
             ".js": "text/javascript; charset=utf-8",
             ".css": "text/css; charset=utf-8",
             ".json": "application/json; charset=utf-8",
         }[asset.suffix]
-        self._send(HTTPStatus.OK, asset.read_bytes(), content_type)
+        # The catalog route takes a caller-sized name, so a filesystem call here can fail
+        # on a name the platform cannot represent. That is not a served path; answer it
+        # rather than letting the handler die without a response.
+        try:
+            if not asset.is_file():
+                self._json(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": "missing_asset"})
+                return
+            body = asset.read_bytes()
+        except OSError:
+            self._json(HTTPStatus.NOT_FOUND, {"error": "not_found"})
+            return
+        self._send(HTTPStatus.OK, body, content_type)
 
     def do_POST(self) -> None:  # noqa: N802
         if not self._authorized() or not self._valid_mutation():
@@ -238,14 +291,15 @@ class ReviewHandler(BaseHTTPRequestHandler):
             self._json(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": "persistence_failed"})
 
     def _dispatch_post(self, payload: dict[str, Any]) -> None:
+        operation = payload.get("operation", {})
+        if not isinstance(operation, dict):
+            # The domain expects a mapping; anything else would crash the handler
+            # instead of answering the request.
+            raise ReviewError("object_required")
         if self.path == "/api/draft":
-            operation = payload.get("operation", {})
-            if isinstance(operation, dict) and operation.get("action") in {"vet", "replace", "merge"}:
-                operation_key = self._operation_key(operation)
-                if operation_key not in self.server.previewed_operations:
+            if operation.get("action") in {"vet", "replace", "merge"}:
+                if self._operation_key(operation) not in self.server.previewed_operations:
                     raise ReviewError("preview_required")
-            else:
-                operation_key = None
             previous_draft = ReviewDraft.from_dict(self.server.service.draft.to_dict())
             draft = self.server.service.stage(operation, expected_revision=payload.get("expected_revision"))
             try:
@@ -253,14 +307,17 @@ class ReviewHandler(BaseHTTPRequestHandler):
             except (SessionError, OSError):
                 self.server.service.draft = previous_draft
                 raise
-            if operation_key is not None:
-                self.server.previewed_operations.discard(operation_key)
-            self._json(HTTPStatus.OK, {**draft, "summary": self.server.service.summary()})
+            # The revision has advanced, so no stored key can satisfy a lookup any more.
+            self.server.previewed_operations.clear()
+            self._json(
+                HTTPStatus.OK,
+                {**draft, "summary": self.server.service.summary(), "gate_tokens": self._gate_tokens()},
+            )
         elif self.path == "/api/preview":
-            operation = payload.get("operation", {})
             preview = self.server.service.preview_operation(operation)
-            self.server.previewed_operations.add(self._operation_key(operation))
-            self._json(HTTPStatus.OK, preview)
+            operation_key = self._operation_key(operation)
+            self.server.previewed_operations.add(operation_key)
+            self._json(HTTPStatus.OK, {**preview, "gate_token": gate_token(operation_key)})
         elif self.path == "/api/apply":
             if payload.get("expected_revision") != self.server.service.draft.revision:
                 raise ReviewError("stale_draft_revision")
@@ -293,7 +350,7 @@ class ReviewHandler(BaseHTTPRequestHandler):
                 self.server.service.clusters = previous_clusters
                 raise
             self.server.previewed_operations.clear()
-            self._json(HTTPStatus.OK, snapshot)
+            self._json(HTTPStatus.OK, {**snapshot, "gate_tokens": self._gate_tokens()})
         elif self.path == "/api/cancel":
             retained = bool(self.server.service.draft.decisions or self.server.service.draft.deferred)
             if not retained:

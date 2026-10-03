@@ -38,6 +38,9 @@ Agrupados por categoría, reflejando el catálogo del README. Dentro de cada gru
 | `/codexspec:analyze` | Análisis de consistencia entre artefactos (con corrección automática, basado en severidad) |
 | `/codexspec:checklist` | Generar checklists de calidad de requisitos |
 | `/codexspec:tasks-to-issues` | Convertir tareas en GitHub Issues |
+| `/codexspec:distill` | Capturar conocimiento reutilizable del proyecto; revisar candidatos en un espacio de trabajo HTML local |
+| `/codexspec:evolve` | Convertir el conocimiento aprobado del proyecto en un borrador de contribución upstream |
+| `/codexspec:onboard` | Sembrar conocimiento candidato en el perfil a partir de una base de código existente |
 
 ### Comandos del flujo de trabajo con Git
 
@@ -996,6 +999,35 @@ AI:  Converting tasks to GitHub issues...
 - Solo funciona con repositorios de GitHub
 - Crea issues en la configuración predeterminada del repositorio
 - Comprueba si hay duplicados antes de ejecutarlo
+
+---
+
+### `/codexspec:distill`
+
+Captura conocimiento reutilizable entre funcionalidades en `.codexspec/profile/` y revisa los candidatos pendientes sin editar a mano sus archivos Markdown.
+
+**Sintaxis:**
+
+```text
+/codexspec:distill [segmento de interacción]
+/codexspec:distill review
+```
+
+**Revisión manual:**
+
+- `/codexspec:distill review`, o una invocación directa sin un segmento nuevo que extraer, abre una página HTML sin conexión servida únicamente desde `127.0.0.1`. Su encabezado nombra el directorio del proyecto en el que escribirá la sesión, de modo que dos revisiones abiertas a la vez no puedan confundirse.
+- La página admite revisión estructurada, aprobación, descarte, aplazamiento, consolidación, un resumen completo de lo preparado y un **Aplicar todo** explícito. Una revisión o una fusión debe mostrar su vista previa final exacta en Markdown antes de poder preparar la misma acción; la página indica en cuál de los tres estados de vista previa está cada registro —sin vista previa, coincidente con los cambios actuales, o modificado tras la vista previa— antes de que uses un control de decisión.
+- Toda acción que elimina archivos de registro pide una segunda confirmación que declara su consecuencia: descartar nombra el archivo que se eliminará al aplicar, fusionar nombra cuántos registros miembro se eliminarán, y descartar el borrador nombra cuántas decisiones preparadas se perderán.
+- Un registro no pasa a `vetted` sin aprobación humana **y** prueba de verificación basada en resultados. La página muestra, antes de que elijas aprobar, si las pruebas guardadas ya cumplen ese requisito.
+- La cola agrupa los registros según lo decidido y muestra cuántos de los pendientes ya están resueltos. Al preparar una decisión pasa al siguiente registro sin decidir; un interruptor en el encabezado lo desactiva.
+- La página se maneja con el teclado: pulsa `?` para ver las teclas. Ninguna tecla por sí sola aplica el lote, cancela la sesión ni descarta el borrador.
+- Las decisiones preparadas usan un borrador de proyecto recuperable y excluido de Git. Solo hay una revisión con permiso de escritura activa por proyecto.
+- Un borrador dañado estructuralmente se conserva con un diagnóstico accionable y solo se elimina mediante una acción de descarte explícita.
+- Al aplicar se vuelven a comprobar los hash de origen y se rechaza todo el lote si algún registro cambió; nunca sobrescribe una edición concurrente ni informa de un éxito parcial.
+- Todos los recursos de la página se distribuyen con CodexSpec. La página no usa CDN, llamada a modelo remoto ni telemetría.
+- Si no se puede abrir ningún navegador, el comando imprime la URL local protegida por token. Pide el modo de texto explícito cuando un navegador no sea adecuado; usa la misma validación y la misma ruta de escritura.
+
+La destilación automática sigue siendo no interactiva y no bloqueante: nunca abre la página, nunca inicia la revisión de texto y nunca espera un borrador guardado.
 
 ---
 

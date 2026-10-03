@@ -96,11 +96,15 @@ def ensure_runtime_ignored(project_root: Path, *, install_managed_file: bool) ->
     ignored = git.run(root, "check-ignore", "-q", ".codexspec/.runtime/example", check=False)
     if ignored.returncode == 0:
         return
+    # info/exclude patterns with a leading slash are anchored at the repository root,
+    # so a project nested below the root needs its own prefix spelled out.
+    prefix = git.run(root, "rev-parse", "--show-prefix").stdout.strip()
     result = git.run(root, "rev-parse", "--git-path", "info/exclude")
     exclude_path = Path(result.stdout.strip())
     if not exclude_path.is_absolute():
         exclude_path = root / exclude_path
-    _append_unique_line(exclude_path, LEGACY_EXCLUDE_RULE)
+    rule = LEGACY_EXCLUDE_RULE if not prefix else f"/{prefix}.codexspec/.runtime/"
+    _append_unique_line(exclude_path, rule)
 
 
 class SessionStore:

@@ -1015,9 +1015,12 @@ Capture reusable cross-feature knowledge in `.codexspec/profile/` and review pen
 
 **Manual review:**
 
-- `/codexspec:distill review`, or a direct invocation with no new segment to extract, opens an offline HTML page served only from `127.0.0.1`.
-- The page supports structured revision, Vetted, discard, defer, consolidation, a complete staged summary, and explicit **Apply all**. A revision or merge must show its exact final Markdown preview before the same action can be staged.
-- A record cannot become `vetted` without both human approval and outcome-verification evidence.
+- `/codexspec:distill review`, or a direct invocation with no new segment to extract, opens an offline HTML page served only from `127.0.0.1`. Its header names the project directory the session will write to, so two reviews open side by side cannot be confused.
+- The page supports structured revision, Vetted, discard, defer, consolidation, a complete staged summary, and explicit **Apply all**. A revision or merge must show its exact final Markdown preview before the same action can be staged; the page states which of the three preview states each record is in — not previewed, matching the current edits, or changed since the preview — before you use a decision control.
+- Every action that removes record files asks for a second confirmation that states the consequence: discarding a record names the file that applying will delete, merging a cluster names how many member records it will delete, and discarding the draft names how many staged decisions will be dropped.
+- A record cannot become `vetted` without both human approval and outcome-verification evidence. The page shows, before you choose Vetted, whether a record's stored evidence already satisfies that requirement.
+- The queue groups records by what has been decided and shows how many of the pending records are already settled. Staging a decision moves to the next undecided record; a switch in the header turns that off.
+- The page is operable from the keyboard — press `?` to see the keys. No single key applies the batch, cancels the session, or discards the draft.
 - Staged decisions use a recoverable project draft excluded from Git. Only one writable review is active per project.
 - A structurally damaged draft is retained with an actionable diagnostic and is removed only through an explicit discard action.
 - Apply rechecks source hashes and rejects the entire batch if any record changed; it never overwrites a concurrent edit or reports partial success.

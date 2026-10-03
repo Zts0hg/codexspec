@@ -330,6 +330,221 @@ def test_server_requires_matching_preview_before_staging_revision(tmp_path: Path
         thread.join(timeout=3)
 
 
+def test_session_reports_project_directory_name(tmp_path: Path) -> None:
+    root = make_profile(tmp_path)
+    server = create_server(ReviewService.from_project(root), SessionStore(root), token="secret")
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        status, _, body = request(server, "GET", "/api/session", token="secret")
+        assert status == 200
+        payload = json.loads(body)
+        assert payload["project_name"] == root.name  # S001.1
+        assert "/" not in payload["project_name"] and "\\" not in payload["project_name"]  # S001.2
+        assert {  # S001.3
+            "schema_version",
+            "records",
+            "clusters",
+            "proposals",
+            "consolidations",
+            "draft",
+            "summary",
+            "interaction_language",
+        } <= set(payload)
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=3)
+
+
+def test_preview_reports_gate_token_and_responses_list_held_tokens(tmp_path: Path) -> None:
+    root = make_profile(tmp_path)
+    server = create_server(ReviewService.from_project(root), SessionStore(root), token="secret")
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    origin = f"http://127.0.0.1:{server.server_port}"
+    record_id = "P-2026-0927-2310d6-1"
+    operation = {"action": "replace", "record_id": record_id, "fields": {"claim": "First"}}
+    other = {"action": "replace", "record_id": record_id, "fields": {"claim": "Second"}}
+
+    def preview(payload):
+        status, _, body = request(server, "POST", "/api/preview", token="secret", payload=payload, origin=origin)
+        assert status == 200
+        return json.loads(body)
+
+    try:
+        opened = json.loads(request(server, "GET", "/api/session", token="secret")[2])
+        assert opened["gate_tokens"] == []  # S002.2
+        first = preview({"operation": operation})
+        assert isinstance(first["gate_token"], str) and first["gate_token"]  # S002.1
+        assert {"record_id", "markdown", "decision"} <= set(first)  # S002.5
+        listed = json.loads(request(server, "GET", "/api/session", token="secret")[2])["gate_tokens"]
+        assert first["gate_token"] in listed  # S002.3
+        assert preview({"operation": operation})["gate_token"] == first["gate_token"]  # S002.4
+        assert preview({"operation": other})["gate_token"] != first["gate_token"]  # S002.4
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=3)
+
+
+def test_gate_tokens_never_outlive_the_draft_revision_that_stored_them(tmp_path: Path) -> None:
+    root = make_profile(tmp_path)
+    target = next((root / ".codexspec/profile/pitfalls").glob("*.md"))
+    target.write_text(
+        target.read_text().replace(
+            "- status: candidate",
+            "- consolidation: candidate; cluster: parser-loss\n- status: candidate",
+        ),
+        encoding="utf-8",
+    )
+    manifest = write_consolidation_manifest(root, tmp_path / "gate-cluster.json")
+    service = ReviewService.from_project(root, manifest_path=manifest)
+    store = SessionStore(root)
+    server = create_server(service, store, token="secret")
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    origin = f"http://127.0.0.1:{server.server_port}"
+    merge = {
+        "action": "merge",
+        "cluster": "parser-loss",
+        "field_changes": {"claim": "Generalized"},
+        "status": "candidate",
+    }
+    try:
+        status, _, body = request(
+            server, "POST", "/api/preview", token="secret", payload={"operation": merge}, origin=origin
+        )
+        assert status == 200
+        merge_token = json.loads(body)["gate_token"]
+        keep = {"expected_revision": 0, "operation": {"action": "keep_separate", "cluster": "parser-loss"}}
+        status, _, body = request(server, "POST", "/api/draft", token="secret", payload=keep, origin=origin)
+        assert status == 200
+        assert json.loads(body)["gate_tokens"] == []  # S003.3
+        assert merge_token not in json.loads(request(server, "GET", "/api/session", token="secret")[2])["gate_tokens"]
+        status, _, body = request(
+            server,
+            "POST",
+            "/api/draft",
+            token="secret",
+            payload={"expected_revision": 1, "operation": merge},
+            origin=origin,
+        )
+        assert status == 400  # S003.2
+        assert json.loads(body)["error"] == "preview_required"
+        refreshed = request(
+            server,
+            "POST",
+            "/api/refresh",
+            token="secret",
+            payload={"record_ids": ["P-2026-0927-2310d6-1"], "expected_revision": 1},
+            origin=origin,
+        )
+        assert refreshed[0] == 200
+        assert json.loads(refreshed[2])["gate_tokens"] == []  # S003.4
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=3)
+
+
+def test_matching_preview_still_stages_and_survives_a_rolled_back_save(tmp_path: Path, monkeypatch) -> None:
+    root = make_profile(tmp_path)
+    service = ReviewService.from_project(root)
+    store = SessionStore(root)
+    server = create_server(service, store, token="secret")
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    origin = f"http://127.0.0.1:{server.server_port}"
+    operation = {"action": "replace", "record_id": "P-2026-0927-2310d6-1", "fields": {"claim": "Revised"}}
+    payload = {"expected_revision": 0, "operation": operation}
+    try:
+        assert (
+            request(server, "POST", "/api/preview", token="secret", payload={"operation": operation}, origin=origin)[0]
+            == 200
+        )
+        monkeypatch.setattr(store, "save", lambda draft: (_ for _ in ()).throw(OSError("disk full")))
+        assert request(server, "POST", "/api/draft", token="secret", payload=payload, origin=origin)[0] == 500
+        assert service.draft.revision == 0
+        monkeypatch.undo()
+        status, _, body = request(server, "POST", "/api/draft", token="secret", payload=payload, origin=origin)
+        assert status == 200  # S003.5 and S003.1
+        assert json.loads(body)["gate_tokens"] == []  # S003.3
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=3)
+
+
+def test_non_ascii_authorization_header_is_rejected_with_a_response(tmp_path: Path) -> None:
+    """A header byte above ASCII must produce 401, not a dropped connection."""
+    root = make_profile(tmp_path)
+    server = create_server(ReviewService.from_project(root), SessionStore(root), token="secret")
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    origin = f"http://127.0.0.1:{server.server_port}"
+    try:
+        for value in ("Bearer \xff", "Bearer caf\xe9", "\x80"):
+            connection = http.client.HTTPConnection("127.0.0.1", server.server_port, timeout=3)
+            connection.request("GET", "/api/session", headers={"Authorization": value})
+            assert connection.getresponse().status == 401, value
+            connection.close()
+        payload = {"schema_version": 1, "expected_revision": 0, "operation": {"action": "defer"}}
+        connection = http.client.HTTPConnection("127.0.0.1", server.server_port, timeout=3)
+        connection.request(
+            "POST",
+            "/api/draft",
+            body=json.dumps(payload),
+            headers={"Authorization": "Bearer \xff", "Content-Type": "application/json", "Origin": origin},
+        )
+        assert connection.getresponse().status == 401
+        connection.close()
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=3)
+
+
+def test_unreadable_asset_name_returns_a_response(tmp_path: Path) -> None:
+    """A filesystem error on the unauthenticated asset branch must become a response."""
+    root = make_profile(tmp_path)
+    server = create_server(ReviewService.from_project(root), SessionStore(root), token="secret")
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        for name in ("a" * 250, "a" * 300, "a" * 1000):
+            status = request(server, "GET", f"/i18n/{name}.json")[0]
+            assert status in {404, 500}, (name, status)
+        assert request(server, "GET", "/i18n/en.json")[0] == 200
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=3)
+
+
+def test_session_read_waits_for_an_in_flight_mutation(tmp_path: Path) -> None:
+    """The read path must take the same lock every mutation holds."""
+    root = make_profile(tmp_path)
+    server = create_server(ReviewService.from_project(root), SessionStore(root), token="secret")
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    finished = threading.Event()
+    try:
+        with server.state_lock:
+            reader = threading.Thread(
+                target=lambda: (request(server, "GET", "/api/session", token="secret"), finished.set()),
+                daemon=True,
+            )
+            reader.start()
+            assert not finished.wait(0.4), "the session read did not wait for the state lock"
+        assert finished.wait(3), "the session read never completed after the lock was released"
+        reader.join(timeout=3)
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=3)
+
+
 def test_terminal_response_failure_still_stops_server(tmp_path: Path, monkeypatch) -> None:
     root = make_profile(tmp_path)
     server = create_server(ReviewService.from_project(root), SessionStore(root), token="secret")
@@ -380,6 +595,142 @@ def test_frontend_is_offline_and_uses_fragment_bearer() -> None:
     assert "/i18n/" in script
     assert (assets / "i18n/en.json").is_file()
     assert (assets / "i18n/zh-CN.json").is_file()
+
+
+def test_frontend_exposes_queue_selection_gate_states_and_native_progress() -> None:
+    assets = Path("src/codexspec/distill_review/assets")
+    html = (assets / "index.html").read_text(encoding="utf-8")
+    script = (assets / "app.js").read_text(encoding="utf-8")
+    assert 'setAttribute("aria-current", "true")' in script
+    assert 'glyph.setAttribute("aria-hidden", "true")' in script
+    for key in ('t("gate.none"', 't("gate.fresh"', 't("gate.stale"'):
+        assert key in script, key
+    assert "<progress" in html
+    assert 'querySelector("#progress")' in script
+    assert 'format("progress"' in script
+
+
+def test_frontend_confirms_every_destructive_action_and_writes_no_inline_style() -> None:
+    assets = Path("src/codexspec/distill_review/assets")
+    html = (assets / "index.html").read_text(encoding="utf-8")
+    script = (assets / "app.js").read_text(encoding="utf-8")
+    css = (assets / "styles.css").read_text(encoding="utf-8")
+    for key in ("confirmDiscardRecord", "confirmMerge", "confirmDiscardDraft"):
+        assert key in script, key
+    assert script.count("window.confirm(") >= 3
+    combined = html + script + css
+    assert "<style" not in combined
+    assert "style=" not in combined
+    assert ".style." not in script
+    assert 'setAttribute("style"' not in script
+
+
+def test_frontend_binds_decisions_by_key_attribute_and_never_to_a_terminal_action() -> None:
+    script = Path("src/codexspec/distill_review/assets/app.js").read_text(encoding="utf-8")
+    # Dispatch reads the attribute, so one letter cannot mean a different action on the
+    # cluster surface than it does on the record surface.
+    assert "button.dataset.key = key" in script
+    assert 'click(`[data-key="${key}"]`)' in script
+    table = script.split("const KEYS = {", 1)[1].split("};", 1)[0]
+    keys = {line.split(":", 1)[0].strip().strip('"') for line in table.splitlines() if ":" in line}
+    assert {"j", "k", "e", "p", "v", "r", "s", "d", "m", "x", "?"} <= keys
+    assert not keys & {"q", "a", "c", "Enter"}
+
+
+def test_frontend_completion_state_follows_undecided_work_not_the_stored_record_status() -> None:
+    # A staged decision never changes a record's stored `candidate` status, so completion
+    # must be read from the draft. Reading it from the record set left the last reviewed
+    # record on screen, and gating it on the advance switch hid it whenever that was off.
+    script = Path("src/codexspec/distill_review/assets/app.js").read_text(encoding="utf-8")
+    advance = script.split("function advance()", 1)[1].split("\n}", 1)[0]
+    assert "undecidedKeys()" in advance
+    assert advance.index("select(null)") < advance.index("#auto-advance"), (
+        "completion must be stated even when the advance switch is off"
+    )
+    boot = script.split("if (!selected) {", 1)[1].split("}", 1)[0]
+    assert "undecidedKeys()" in boot and "candidateRecords()" not in boot
+    assert "if (selected === null) {" in script
+    assert 't("allDecided"' in script
+    all_decided = script.split("function renderAllDecided(", 1)[1].split("\n}", 1)[0]
+    assert "undecidedKeys()" in all_decided, "the completion panel must not claim completion while work remains"
+
+
+def test_frontend_derives_the_gate_from_the_operation_each_control_submits() -> None:
+    # The backend keys the gate on the exact operation. Deriving the indicator from one
+    # hard-coded variant made it claim a match for a control the backend still refuses.
+    script = Path("src/codexspec/distill_review/assets/app.js").read_text(encoding="utf-8")
+    gate = script.split("function renderGate(form)", 1)[1].split("\n}", 1)[0]
+    assert "[data-gated]" in gate and "gatedOperations.get(button)" in gate
+    assert "button.dataset.ready" in gate
+    assert script.count("markGated(") >= 5, "every gated control carries its own operation builder"
+    for builder in (
+        'candidateOperation(record, "replace", form)',
+        'candidateOperation(record, "vet", form)',
+        'mergeOperation(proposal, "candidate", form)',
+        'mergeOperation(proposal, "vetted", form)',
+    ):
+        assert builder in script, builder
+    applied = script.split("function applyDraft(", 1)[1].split("\n}", 1)[0]
+    assert "refreshGate()" in applied, "a staged decision must re-derive the gate it invalidated"
+
+
+def test_frontend_ledger_entries_resolve_to_a_surface_that_can_open() -> None:
+    # The ledger names records that are in scope only as cluster members; the editor
+    # resolves candidates. An entry that resolved to neither fell through to the
+    # completion panel and claimed the queue was finished.
+    script = Path("src/codexspec/distill_review/assets/app.js").read_text(encoding="utf-8")
+    target = script.split("function ledgerTarget(", 1)[1].split("\n}", 1)[0]
+    assert 'record.status === "candidate"' in target
+    assert "record.cluster ? `cluster:${record.cluster}`" in target
+    editor = script.split("function renderEditor()", 1)[1].split("\nfunction ", 1)[0]
+    assert "const remaining = undecidedKeys();" in editor, (
+        "an unresolvable selection must fall back to remaining work, not to the completion state"
+    )
+
+
+def test_stylesheet_pins_literal_content_direction_and_uses_logical_properties_only() -> None:
+    css = Path("src/codexspec/distill_review/assets/styles.css").read_text(encoding="utf-8")
+    # Logical properties mirror the layout but do not stop bidirectional reordering: left
+    # to the paragraph direction, a right-to-left interface renders each Markdown line with
+    # its leading marker at the far edge and truncates an identifier from its start.
+    rule = css.split("direction: ltr", 1)[0].rsplit("}", 1)[-1]
+    for selector in (".final pre", ".members pre", ".queue-entry .meta", ".chip", ".mono"):
+        assert selector in rule, selector
+    assert "unicode-bidi: plaintext" in css
+    for physical in (
+        "margin-left",
+        "margin-right",
+        "padding-left",
+        "padding-right",
+        "border-left",
+        "border-right",
+        "text-align: left",
+        "text-align: right",
+    ):
+        assert physical not in css, physical
+
+
+def test_server_serves_only_the_documented_asset_paths(tmp_path: Path) -> None:
+    root = make_profile(tmp_path)
+    server = create_server(ReviewService.from_project(root), SessionStore(root), token="secret")
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        for path in ("/", "/index.html", "/app.js", "/styles.css", "/i18n/en.json", "/i18n/zh-CN.json"):
+            assert request(server, "GET", path)[0] == 200, path
+        for path in (
+            "/favicon.ico",
+            "/styles.css.map",
+            "/assets/app.js",
+            "/fonts/body.woff2",
+            "/i18n/en.json/../../server.py",
+            "/i18n/en.yaml",
+        ):
+            assert request(server, "GET", path)[0] == 404, path
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=3)
 
 
 def test_frontend_and_terminal_catalogs_cover_every_interaction_language() -> None:
@@ -721,3 +1072,181 @@ def test_hidden_cli_text_mode_ends_with_standalone_machine_result(tmp_path: Path
     envelope = json.loads([line for line in result.output.splitlines() if line][-1])
     assert envelope["status"] == "applied"
     assert envelope["summary"]["promoted"] == ["P-2026-0927-2310d6-1"]
+
+
+def _raw_request(server, path: str, body: bytes) -> tuple[int | None, bytes]:
+    """POST raw bytes the way the page cannot: hostile shapes and encodings."""
+    connection = http.client.HTTPConnection("127.0.0.1", server.server_port, timeout=3)
+    try:
+        connection.request(
+            "POST",
+            path,
+            body=body,
+            headers={
+                "Authorization": "Bearer secret",
+                "Content-Type": "application/json",
+                "Origin": f"http://127.0.0.1:{server.server_port}",
+                "Content-Length": str(len(body)),
+            },
+        )
+        response = connection.getresponse()
+        return response.status, response.read()
+    finally:
+        connection.close()
+
+
+def test_server_rejects_non_object_operation_with_a_response(tmp_path: Path) -> None:
+    """A request whose operation is not an object must be refused with a JSON error,
+    not kill the handler and leave the page with a dropped connection. (S001.10)"""
+    root = make_profile(tmp_path)
+    service = ReviewService.from_project(root)
+    server = create_server(service, SessionStore(root), token="secret")
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        for path, body in (
+            ("/api/draft", json.dumps({"schema_version": 1, "operation": "vet", "expected_revision": 0}).encode()),
+            ("/api/preview", json.dumps({"schema_version": 1, "operation": 7}).encode()),
+            ("/api/preview", json.dumps({"schema_version": 1, "operation": ["vet"]}).encode()),
+        ):
+            status, data = _raw_request(server, path, body)
+            assert status == 400, f"{path}: {status} {data!r}"
+            assert json.loads(data)["error"] == "object_required"
+        status, _, _ = request(server, "GET", "/api/session", token="secret")
+        assert status == 200, "the handler must survive a hostile request"
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=3)
+
+
+def test_server_rejects_unreadable_body_and_lone_surrogates_with_a_response(tmp_path: Path) -> None:
+    """Bytes that are not UTF-8 and strings carrying lone surrogates must both be
+    answered with a 400 instead of killing the handler mid-request. (S001.11)"""
+    root = make_profile(tmp_path)
+    service = ReviewService.from_project(root)
+    server = create_server(service, SessionStore(root), token="secret")
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        status, data = _raw_request(server, "/api/draft", b'\xff\xfe{"schema_version":1}')
+        assert status == 400, data
+        assert json.loads(data)["error"] == "invalid_json"
+        poisoned = json.dumps(
+            {
+                "schema_version": 1,
+                "operation": {
+                    "action": "vet",
+                    "record_id": "P-2026-0927-2310d6-1",
+                    "fields": {"claim": "bad\ud800surrogate"},
+                },
+            }
+        ).encode()
+        status, data = _raw_request(server, "/api/preview", poisoned)
+        assert status == 400, data
+        assert json.loads(data)["error"] == "invalid_encoding"
+        status, _, _ = request(server, "GET", "/api/session", token="secret")
+        assert status == 200, "the handler must survive a hostile request"
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(timeout=3)
+
+
+def test_manifest_with_unreadable_bytes_reports_invalid_manifest(tmp_path: Path) -> None:
+    """A manifest that is not valid UTF-8 is an input error, not a traceback."""
+    root = make_profile(tmp_path)
+    manifest = tmp_path / "manifest.json"
+    manifest.write_bytes(b'{"schema_version": 1, "proposals": \xff\xfe}')
+    with pytest.raises(ReviewError) as failure:
+        ReviewService.from_project(root, manifest_path=manifest)
+    assert "invalid_manifest" in str(failure.value)
+
+
+def test_active_session_machine_output_omits_capability_and_url(tmp_path: Path) -> None:
+    """A second run's machine output reports the running session without echoing
+    its capability token or token-bearing URL. (S001.12)"""
+    root = make_profile(tmp_path)
+    lease = ReviewLease(root)
+    lease.acquire({})
+    lease.update(
+        {
+            "mode": "html",
+            "port": 54469,
+            "capability": "LEAKED-SECRET-TOKEN",
+            "url": "http://127.0.0.1:54469/#token=LEAKED-SECRET-TOKEN",
+        }
+    )
+    try:
+        result = CliRunner().invoke(
+            app,
+            ["_distill-review-helper", "--project-root", str(root), "--mode", "text", "--no-open"],
+        )
+    finally:
+        lease.release()
+    assert result.exit_code == 0, result.output
+    envelope = json.loads([line for line in result.output.splitlines() if line][-1])
+    assert envelope["status"] == "active_session"
+    assert envelope["session"]["port"] == 54469
+    assert "LEAKED-SECRET-TOKEN" not in result.output
+    assert "#token=" not in result.output
+
+
+def test_hidden_cli_discard_draft_clears_a_failed_transaction_journal(tmp_path: Path) -> None:
+    """A journal this version cannot recover from must not brick the review: the
+    documented escape hatch removes the draft and the stuck journal together. (S001.13)"""
+    root = make_profile(tmp_path)
+    service = ReviewService.from_project(root)
+    service.stage({"action": "defer", "record_id": "P-2026-0927-2310d6-1"})
+    store = SessionStore(root)
+    store.save(service.draft)
+    store.save_transaction({"schema_version": 99, "state": "prepared", "changes": []})
+    result = CliRunner().invoke(
+        app,
+        ["_distill-review-helper", "--project-root", str(root), "--discard-draft", "--no-open"],
+    )
+    assert result.exit_code == 0, result.output
+    assert '"status":"discarded"' in result.output
+    assert not store.draft_path.exists()
+    assert not store.transaction_path.exists()
+    # Startup recovery no longer refuses, so the next review session can begin.
+    ProfileTransaction.recover(root, store)
+
+
+def test_frontend_cluster_resolves_when_its_members_carry_decisions() -> None:
+    # The queue lists cluster members individually, so deciding every member is a normal
+    # path. Without a terminal branch for that outcome the cluster stayed undecided
+    # forever: keep-separate was inert, completion was unreachable, and the page's
+    # remaining-work set disagreed with the ledger's accounting. (F-001)
+    script = Path("src/codexspec/distill_review/assets/app.js").read_text(encoding="utf-8")
+    state_fn = script.split("function clusterState(", 1)[1].split("\n}", 1)[0]
+    assert '"separate"' in state_fn, "a cluster whose members all carry decisions must resolve"
+    assert "state.draft.decisions[member]" in state_fn and "deferred.includes(member)" in state_fn
+    keep = script.split("function renderConsolidation(", 1)[1].split("\nfunction ", 1)[0]
+    assert "keepSeparate" in keep
+    assert '["separate", "deferred"].includes(clusterState(cluster))' in keep, (
+        "keep-separate is a no-op on any resolved cluster — members carry decisions "
+        "(separate) or deferrals (deferred) — and staging it must not be offered as an action"
+    )
+
+
+def test_frontend_keep_separate_reports_failure_next_to_the_control() -> None:
+    # REQ-009: decision-control feedback must appear next to that control, never only in
+    # the page-level status region. keep-separate was the one control on the page path. (F-002)
+    script = Path("src/codexspec/distill_review/assets/app.js").read_text(encoding="utf-8")
+    fn = script.split("async function stageKeepSeparate(", 1)[1].split("\n}", 1)[0]
+    assert "reportFormError(form, error)" in fn
+    assert "setErrorStatus(error)" not in fn
+    keep = script.split("function renderConsolidation(", 1)[1].split("\nfunction ", 1)[0]
+    assert "stageKeepSeparate(cluster, form)" in keep, "the control must carry its surface form"
+
+
+def test_frontend_cluster_verification_hint_reflects_the_proposal_evidence() -> None:
+    """REQ-008 via REQ-023: the merge surface must state whether the proposal's stored
+    evidence already satisfies the vetting requirement, from the backend-reported flag —
+    not claim evidence is required when the backend would accept the merge without it. (S001.19)"""
+    script = Path("src/codexspec/distill_review/assets/app.js").read_text(encoding="utf-8")
+    surface = script.split("function renderConsolidation(", 1)[1].split("\nfunction ", 1)[0]
+    assert "verificationHint(" in surface
+    assert "verificationHint(false)" not in surface
+    assert "verificationHint(proposal.outcome_verified === true)" in surface

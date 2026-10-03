@@ -99,7 +99,8 @@ class ReviewService:
         so the UI can report and refresh them, but a decision whose base hash is
         current must exactly match the deterministic domain rendering.
         """
-        for key, decision in self.draft.decisions.items():
+        stale: list[str] = []
+        for key, decision in list(self.draft.decisions.items()):
             action = decision["action"]
             if action in {"vet", "replace", "remove"}:
                 document = self.records.get(key)
@@ -112,10 +113,18 @@ class ReviewService:
                 }
                 derived = self._decision_for_record(action, key, request)
             elif action == "merge":
+                members = decision["members"]
                 current = all(
                     member in self.records and decision["member_hashes"].get(member) == self.records[member].sha256
-                    for member in decision["members"]
+                    for member in members
                 )
+                if current and sorted(members) != sorted(self.clusters.get(decision["cluster"], [])):
+                    # A record joined or left the cluster between sessions. The staged merge
+                    # can no longer describe it, so drop that one decision and its
+                    # reconstructed proposal; the cluster returns as undecided and asks for a
+                    # fresh proposal, while every other staged decision stays resumable.
+                    stale.append(key)
+                    continue
                 if not current:
                     continue
                 request = {
@@ -140,6 +149,24 @@ class ReviewService:
                 raise ReviewError(f"invalid_draft_semantics: {key}")
             if decision != derived:
                 raise ReviewError(f"invalid_draft_semantics: {key}; rerun with --discard-draft to remove it")
+        for key in stale:
+            dropped = self.draft.decisions.pop(key, None)
+            if dropped is not None:
+                # Only the proposal reconstructed from this draft shares its bytes.
+                # A fresh manifest proposal for the same cluster describes the
+                # current membership and must survive so the cluster stays mergeable.
+                reconstruction = {
+                    "cluster": dropped["cluster"],
+                    "members": dropped["members"],
+                    "member_hashes": dropped["member_hashes"],
+                    "category": dropped["category"],
+                    "record_id": dropped["record_id"],
+                    "filename": dropped["filename"],
+                    "markdown": dropped["proposal_markdown"],
+                    "fields": dropped["editable_fields"],
+                    "outcome_verified": outcome_state_is_verified(dropped["editable_fields"].get("evidence.state", "")),
+                }
+                self.consolidations = [item for item in self.consolidations if item != reconstruction]
 
     @classmethod
     def from_project(
@@ -168,7 +195,7 @@ class ReviewService:
         if manifest_path is not None:
             try:
                 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-            except (OSError, json.JSONDecodeError) as exc:
+            except (OSError, json.JSONDecodeError, UnicodeDecodeError) as exc:
                 raise ReviewError("invalid_manifest") from exc
             if not isinstance(manifest, dict) or manifest.get("schema_version") != SCHEMA_VERSION:
                 raise ReviewError("unsupported_manifest_schema")
@@ -182,7 +209,7 @@ class ReviewService:
                 if proposal.get("base_hash") != records[record_id].sha256:
                     raise ReviewError(f"stale_proposal: {record_id}")
                 fields = proposal.get("fields", {})
-                if not isinstance(fields, dict):
+                if not isinstance(fields, dict) or not all(isinstance(value, str) for value in fields.values()):
                     raise ReviewError(f"invalid_proposal_fields: {record_id}")
                 try:
                     records[record_id].render(fields)
@@ -209,7 +236,8 @@ class ReviewService:
                 stale_members = [member for member in members if member_hashes.get(member) != records[member].sha256]
                 if stale_members:
                     raise ReviewError(f"stale_consolidation: {','.join(sorted(stale_members))}")
-                if not isinstance(item.get("fields", {}), dict):
+                editable = item.get("fields", {})
+                if not isinstance(editable, dict) or not all(isinstance(value, str) for value in editable.values()):
                     raise ReviewError("invalid_consolidation_fields")
                 category = item.get("category")
                 output_record_id = item.get("record_id")
@@ -247,6 +275,12 @@ class ReviewService:
                 normalized["fields"] = {
                     key: editable.get(key, output_fields[key]) for key in editable_fields_for(category, output_fields)
                 }
+                # The page cannot evaluate outcome evidence by itself; report whether the
+                # rendered evidence.state already satisfies the vetting gate, the same flag
+                # the record surface reads from the backend.
+                normalized["outcome_verified"] = outcome_state_is_verified(
+                    normalized["fields"].get("evidence.state", output_fields.get("evidence.state", ""))
+                )
                 consolidations.append(normalized)
         if clusters:
             supplied_clusters = {item.get("cluster") for item in consolidations}
@@ -265,6 +299,9 @@ class ReviewService:
                             "filename": saved["filename"],
                             "markdown": saved["proposal_markdown"],
                             "fields": saved["editable_fields"],
+                            "outcome_verified": outcome_state_is_verified(
+                                saved["editable_fields"].get("evidence.state", "")
+                            ),
                         }
                     )
                     continue
@@ -282,6 +319,7 @@ class ReviewService:
     def snapshot(self) -> dict[str, Any]:
         return {
             "schema_version": SCHEMA_VERSION,
+            "project_name": self.project_root.name,
             "records": [self.records[key].to_public_dict() for key in sorted(self.records)],
             "clusters": self.clusters,
             "proposals": self.proposals,
@@ -317,6 +355,9 @@ class ReviewService:
                 raise ReviewError("unknown_record")
             if self.records[record_id].status != "candidate":
                 raise ReviewError("record_not_candidate")
+            # Validate before touching the draft: a request rejected here must leave the
+            # staged work exactly as it was, including any merge this record belongs to.
+            decision = None if action == "defer" else self._decision_for_record(action, record_id, request)
             for key, staged in list(self.draft.decisions.items()):
                 if staged.get("action") == "merge" and record_id in staged.get("members", []):
                     self.draft.decisions.pop(key)
@@ -326,7 +367,6 @@ class ReviewService:
                     self.draft.deferred.append(record_id)
             else:
                 self.draft.deferred = [item for item in self.draft.deferred if item != record_id]
-                decision = self._decision_for_record(action, record_id, request)
                 self.draft.decisions[record_id] = decision
         self.draft.revision += 1
         return self.draft.to_dict()
@@ -334,7 +374,9 @@ class ReviewService:
     def _decision_for_record(self, action: str, record_id: str, request: Mapping[str, Any]) -> dict[str, Any]:
         document = self.records[record_id]
         fields = request.get("fields", {})
-        if not isinstance(fields, dict):
+        # Values persist into the draft verbatim and the draft codec requires strings;
+        # anything else would stage successfully and make the saved draft unopenable.
+        if not isinstance(fields, dict) or not all(isinstance(value, str) for value in fields.values()):
             raise ReviewError("invalid_fields")
         verification = request.get("verification")
         if verification is not None and not isinstance(verification, str):
@@ -348,12 +390,6 @@ class ReviewService:
             raise ReviewError("invalid_desired_status")
         if action == "vet":
             desired_status = "vetted"
-        final_evidence_state = str(fields.get("evidence.state", document.fields["evidence.state"]))
-        if desired_status == "vetted" and not (
-            outcome_state_is_verified(final_evidence_state)
-            or (isinstance(verification, str) and outcome_state_is_verified(verification))
-        ):
-            raise ReviewError("verification_required")
         try:
             rendered = document.render(
                 fields,
@@ -362,12 +398,31 @@ class ReviewService:
             )
         except RecordError as exc:
             raise ReviewError(str(exc)) from exc
+        # Gate on the bytes that will be written, exactly as the apply-time gate does.
+        # `render` rebuilds `evidence.state` from the stored value whenever an attestation
+        # is supplied, so the request's own field value is not what gets written, and a
+        # gate reading the request would accept a decision that application then refuses.
+        final_evidence_state = next(
+            (
+                line.split(":", 1)[1].strip()
+                for line in rendered.decode("utf-8").splitlines()
+                if line.startswith("- evidence.state:")
+            ),
+            "",
+        )
+        if desired_status == "vetted" and not (
+            outcome_state_is_verified(final_evidence_state)
+            or (isinstance(verification, str) and outcome_state_is_verified(verification))
+        ):
+            raise ReviewError("verification_required")
         return {
             "action": "vet" if action == "vet" and not fields else "replace",
             "base_hash": document.sha256,
             "fields": dict(fields),
             "status": desired_status,
-            "verification": verification or "",
+            # Store the value exactly as it was rendered: whitespace-only normalizes to
+            # absent above, and apply-time re-render reads this field back verbatim.
+            "verification": (verification or "").strip(),
             "rendered": rendered.decode("utf-8"),
         }
 
@@ -412,7 +467,7 @@ class ReviewService:
         if verification is not None and not isinstance(verification, str):
             raise ReviewError("invalid_verification")
         field_changes = request.get("field_changes", {})
-        if not isinstance(field_changes, dict):
+        if not isinstance(field_changes, dict) or not all(isinstance(value, str) for value in field_changes.values()):
             raise ReviewError("invalid_fields")
         allowed_fields = set(proposal.get("fields", {}))
         if set(field_changes) - allowed_fields:
@@ -445,7 +500,9 @@ class ReviewService:
             "markdown": rendered,
             "field_changes": dict(field_changes),
             "status": status,
-            "verification": verification or "",
+            # Same convention as record decisions: store the value as it was rendered,
+            # so an apply-time re-render can never read different bytes than staging did.
+            "verification": (verification or "").strip(),
             "proposal_markdown": markdown,
             "editable_fields": dict(proposal.get("fields", {})),
         }

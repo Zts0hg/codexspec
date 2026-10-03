@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 
 from codexspec.distill_review.domain import ReviewError, ReviewService, render_consolidation
+from codexspec.distill_review.models import ReviewDraft
 from codexspec.distill_review.records import (
     RecordError,
     discover_records,
@@ -11,6 +12,7 @@ from codexspec.distill_review.records import (
     parse_record,
     validate_record_content,
 )
+from codexspec.distill_review.session import SessionStore
 
 
 def record_text(record_id: str = "P-2026-0927-2310d6-1", *, verified: bool = False) -> str:
@@ -690,3 +692,303 @@ def test_outcome_gate_rejects_non_outcome_keywords(state: str) -> None:
 )
 def test_outcome_gate_accepts_concrete_results(state: str) -> None:
     assert outcome_state_is_verified(state)
+
+
+def test_vetting_gate_matches_the_bytes_that_will_be_written(tmp_path: Path) -> None:
+    """The gate must read the rendered record, not the request.
+
+    `render()` rebuilds `evidence.state` from the stored value whenever a verification
+    attestation is supplied, discarding an edit to that field. A gate that reads the
+    request therefore accepts a decision whose written bytes do not establish
+    verification, and the apply-time gate then refuses the whole batch.
+    """
+    root = make_profile(tmp_path)
+    service = ReviewService.from_project(root)
+    operation = {
+        "action": "vet",
+        "record_id": "P-2026-0927-2310d6-1",
+        "fields": {"evidence.state": "full suite passed; still valid"},
+        "verification": "see CI run 123",
+    }
+    with pytest.raises(ReviewError, match="verification_required"):
+        service.preview_operation(operation)
+    with pytest.raises(ReviewError, match="verification_required"):
+        service.stage(operation)
+    assert not service.draft.decisions
+
+
+def test_vetting_gate_still_accepts_an_attestation_that_establishes_the_outcome(tmp_path: Path) -> None:
+    root = make_profile(tmp_path)
+    service = ReviewService.from_project(root)
+    operation = {
+        "action": "vet",
+        "record_id": "P-2026-0927-2310d6-1",
+        "verification": "full suite passed; still valid",
+    }
+    rendered = service.preview_operation(operation)["markdown"]
+    assert "- status: vetted" in rendered
+    assert "review verification: full suite passed" in rendered
+
+
+def test_rejected_staging_request_leaves_the_draft_untouched(tmp_path: Path) -> None:
+    """`stage()` must not mutate the draft before its last validation runs."""
+    root = make_profile(tmp_path)
+    target = next((root / ".codexspec/profile/pitfalls").glob("*.md"))
+    target.write_text(
+        target.read_text().replace(
+            "- status: candidate",
+            "- consolidation: candidate; cluster: parser-loss\n- status: candidate",
+        ),
+        encoding="utf-8",
+    )
+    manifest = write_consolidation_manifest(root, tmp_path / "reject.json")
+    service = ReviewService.from_project(root, manifest_path=manifest)
+    service.stage({"action": "merge", "cluster": "parser-loss", "field_changes": {"claim": "Generalized"}})
+    before = json.dumps(service.draft.to_dict(), sort_keys=True)
+    with pytest.raises(ReviewError, match="remove_has_payload"):
+        service.stage(
+            {
+                "action": "remove",
+                "record_id": "P-2026-0927-2310d6-1",
+                "fields": {"claim": "x"},
+            }
+        )
+    assert json.dumps(service.draft.to_dict(), sort_keys=True) == before
+
+
+def test_saved_merge_draft_survives_a_new_member_joining_its_cluster(tmp_path: Path) -> None:
+    """A membership change makes a staged merge stale, not the whole session unopenable."""
+    root = make_profile(tmp_path)
+    first = next((root / ".codexspec/profile/pitfalls").glob("*.md"))
+    first.write_text(
+        first.read_text().replace(
+            "- status: candidate",
+            "- consolidation: candidate; cluster: parser-loss\n- status: candidate",
+        ),
+        encoding="utf-8",
+    )
+    manifest = write_consolidation_manifest(root, tmp_path / "join.json")
+    service = ReviewService.from_project(root, manifest_path=manifest)
+    service.stage({"action": "merge", "cluster": "parser-loss", "field_changes": {"claim": "Generalized"}})
+    saved = ReviewDraft.from_dict(service.draft.to_dict())
+    joined = first.with_name("P-2026-0927-2310d6-2-joined.md")
+    joined.write_text(
+        record_text("P-2026-0927-2310d6-2").replace(
+            "- status: candidate",
+            "- consolidation: candidate; cluster: parser-loss\n- status: candidate",
+        ),
+        encoding="utf-8",
+    )
+    # Reopened without a manifest: the saved draft supplies the merge proposal, so the
+    # membership change is seen by the loaded-draft re-derivation rather than by manifest
+    # validation. A stale merge must drop out of the draft, not refuse the whole session.
+    reopened = ReviewService.from_project(root, draft=saved)
+    assert "cluster:parser-loss" not in reopened.draft.decisions
+    assert sorted(reopened.clusters["parser-loss"]) == ["P-2026-0927-2310d6-1", "P-2026-0927-2310d6-2"]
+    assert "P-2026-0927-2310d6-2" in reopened.records
+
+
+def test_stale_draft_prune_keeps_a_fresh_manifest_consolidation(tmp_path: Path) -> None:
+    """Dropping a stale staged merge must remove only the proposal reconstructed from
+    that draft. A fresh manifest proposal for the same cluster describes the current
+    membership and must survive so the cluster stays mergeable this session. (S001.14)"""
+    root = tmp_path / "project"
+    pit = root / ".codexspec/profile/pitfalls"
+    pit.mkdir(parents=True)
+    members = ["P-2026-1002-2205zz-1", "P-2026-1002-2205zz-2"]
+    for member in members:
+        (pit / f"{member}.md").write_text(
+            record_text(member).replace(
+                "- status: candidate",
+                "- consolidation: cluster: dup\n- status: candidate",
+            ),
+            encoding="utf-8",
+        )
+    late_joiner = "P-2026-1002-2205zz-3"
+    (pit / f"{late_joiner}.md").write_text(record_text(late_joiner), encoding="utf-8")
+
+    def manifest(cluster_members: list[str], output_id: str) -> Path:
+        hashes = {member: parse_record(pit / f"{member}.md", root).sha256 for member in cluster_members}
+        manifest_path = root / "manifest.json"
+        manifest_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "proposals": {},
+                    "consolidations": [
+                        {
+                            "cluster": "dup",
+                            "members": cluster_members,
+                            "member_hashes": hashes,
+                            "category": "pitfalls",
+                            "record_id": output_id,
+                            "filename": f"{output_id}-generalized.md",
+                            "markdown": record_text(output_id, verified=True),
+                            "fields": {"claim": "Generalized"},
+                        }
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+        return manifest_path
+
+    stale_service = ReviewService.from_project(root, manifest_path=manifest(members, "P-2026-1002-2205zz-9"))
+    stale_service.stage({"action": "merge", "cluster": "dup", "status": "candidate", "field_changes": {}})
+    store = SessionStore(root)
+    store.prepare()
+    store.save(ReviewDraft.from_dict(stale_service.draft.to_dict()))
+
+    # A third record joins the cluster and the agent regenerates the manifest for it.
+    (pit / f"{late_joiner}.md").write_text(
+        record_text(late_joiner).replace(
+            "- status: candidate",
+            "- consolidation: cluster: dup\n- status: candidate",
+        ),
+        encoding="utf-8",
+    )
+    fresh = manifest([*members, late_joiner], "P-2026-1002-2205zz-8")
+
+    service = ReviewService.from_project(root, manifest_path=fresh, draft=store.load())
+    assert any(item.get("cluster") == "dup" for item in service.consolidations), (
+        "the fresh manifest proposal must survive the stale-draft prune"
+    )
+    assert "cluster:dup" not in service.draft.decisions, "the stale staged merge is gone"
+    service.stage({"action": "merge", "cluster": "dup", "status": "candidate", "field_changes": {}})
+
+
+def test_consolidation_snapshot_reports_whether_its_evidence_satisfies_vetting(tmp_path: Path) -> None:
+    """REQ-007/REQ-023: the page cannot evaluate outcome evidence by itself, so a
+    consolidation must report whether its rendered evidence.state already satisfies the
+    vetting gate — the same flag the record surface reads from the backend. (S001.18)"""
+    root = tmp_path / "project"
+    pit = root / ".codexspec/profile/pitfalls"
+    pit.mkdir(parents=True)
+    member = "P-2026-1003-2205zz-1"
+    (pit / f"{member}.md").write_text(
+        record_text(member).replace(
+            "- status: candidate",
+            "- consolidation: cluster: dup\n- status: candidate",
+        ),
+        encoding="utf-8",
+    )
+    member_hash = parse_record(pit / f"{member}.md", root).sha256
+
+    def manifest_with(markdown: str, output_id: str) -> Path:
+        manifest_path = root / f"manifest-{output_id}.json"
+        manifest_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "proposals": {},
+                    "consolidations": [
+                        {
+                            "cluster": "dup",
+                            "members": [member],
+                            "member_hashes": {member: member_hash},
+                            "category": "pitfalls",
+                            "record_id": output_id,
+                            "filename": f"{output_id}-generalized.md",
+                            "markdown": markdown,
+                            "fields": {},
+                        }
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+        return manifest_path
+
+    verified = ReviewService.from_project(
+        root, manifest_path=manifest_with(record_text("P-2026-1003-2205zz-9", verified=True), "P-2026-1003-2205zz-9")
+    )
+    unverified = ReviewService.from_project(
+        root, manifest_path=manifest_with(record_text("P-2026-1003-2205zz-8"), "P-2026-1003-2205zz-8")
+    )
+    assert verified.consolidations[0]["outcome_verified"] is True
+    assert unverified.consolidations[0]["outcome_verified"] is False
+    # The backend half of the disagreement: vetting such a merge needs no attestation.
+    decision = verified.stage({"action": "merge", "cluster": "dup", "status": "vetted", "field_changes": {}})
+    assert decision["decisions"]["cluster:dup"]["status"] == "vetted"
+
+
+def test_non_string_field_values_are_refused_before_entering_the_draft(tmp_path: Path) -> None:
+    """Field values persist into the draft verbatim and the draft codec requires strings,
+    so a non-string value staged from the text carrier or a raw client made the saved
+    draft unopenable until every staged decision was discarded. (S001.20)"""
+    root = make_profile(tmp_path)
+    record_id = "P-2026-0927-2310d6-1"
+    service = ReviewService.from_project(root)
+    with pytest.raises(ReviewError):
+        service.stage({"action": "replace", "record_id": record_id, "fields": {"claim": 42}})
+    assert record_id not in service.draft.decisions, "a refused request leaves the draft untouched"
+
+    target = next((root / ".codexspec/profile/pitfalls").glob("*.md"))
+    target.write_text(
+        target.read_text(encoding="utf-8").replace(
+            "- status: candidate",
+            "- consolidation: cluster: parser-loss\n- status: candidate",
+        ),
+        encoding="utf-8",
+    )
+    manifest = write_consolidation_manifest(root, root / "manifest.json")
+    merged = ReviewService.from_project(root, manifest_path=manifest)
+    with pytest.raises(ReviewError):
+        merged.stage(
+            {"action": "merge", "cluster": "parser-loss", "status": "candidate", "field_changes": {"claim": 42}}
+        )
+    assert "cluster:parser-loss" not in merged.draft.decisions
+
+
+def test_manifest_rejects_non_string_editable_values(tmp_path: Path) -> None:
+    """Manifest-supplied editable values reach the draft verbatim on resume, so they are
+    validated at ingestion like every other structured input. (S001.21)"""
+    root = tmp_path / "project"
+    pit = root / ".codexspec/profile/pitfalls"
+    pit.mkdir(parents=True)
+    member = "P-2026-1003-2205zz-1"
+    (pit / f"{member}.md").write_text(
+        record_text(member).replace("- status: candidate", "- consolidation: cluster: dup\n- status: candidate"),
+        encoding="utf-8",
+    )
+    member_hash = parse_record(pit / f"{member}.md", root).sha256
+
+    def manifest(payload: dict) -> Path:
+        path = root / "manifest.json"
+        path.write_text(json.dumps({"schema_version": 1, **payload}), encoding="utf-8")
+        return path
+
+    with pytest.raises(ReviewError) as proposal_failure:
+        ReviewService.from_project(
+            root,
+            manifest_path=manifest(
+                {
+                    "proposals": {member: {"base_hash": member_hash, "fields": {"claim": 42}}},
+                    "consolidations": [],
+                }
+            ),
+        )
+    assert "invalid_proposal_fields" in str(proposal_failure.value)
+
+    with pytest.raises(ReviewError) as consolidation_failure:
+        ReviewService.from_project(
+            root,
+            manifest_path=manifest(
+                {
+                    "proposals": {},
+                    "consolidations": [
+                        {
+                            "cluster": "dup",
+                            "members": [member],
+                            "member_hashes": {member: member_hash},
+                            "category": "pitfalls",
+                            "record_id": "P-2026-1003-2205zz-9",
+                            "filename": "P-2026-1003-2205zz-9.md",
+                            "markdown": record_text("P-2026-1003-2205zz-9"),
+                            "fields": {"claim": 42},
+                        }
+                    ],
+                }
+            ),
+        )
+    assert "invalid_consolidation_fields" in str(consolidation_failure.value)

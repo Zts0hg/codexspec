@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import errno
 import hashlib
 import json
 import os
@@ -40,6 +41,10 @@ class TransactionError(RuntimeError):
         super().__init__(message)
         self.records = records or []
         self.failures = failures or [message]
+
+
+class MissingTargetDirectoryError(TransactionError):
+    """A profile category directory the batch needs is absent rather than hostile."""
 
 
 def _encoded(content: bytes | None) -> str | None:
@@ -296,9 +301,29 @@ class ProfileTransaction:
     def prepare(self) -> dict[str, Any]:
         self.store.prepare()
         changes = self._changes()
+        self._ensure_target_directories(changes)
         journal = {"schema_version": 2, "state": "prepared", "changes": changes}
         self.store.save_transaction(journal)
         return journal
+
+    def _ensure_target_directories(self, changes: list[dict[str, Any]]) -> None:
+        """Create a category directory a new record needs, before any journal exists.
+
+        The profile creates a category directory on first write, so a consolidation that
+        promotes across categories can target one that does not exist yet. Creating it
+        here keeps the mutation path free of a missing-directory case, and a failure at
+        this point leaves no journal to recover from.
+        """
+        for change in changes:
+            if _decoded(change["new"]) is None:
+                continue
+            directory = self._confined_path(change["path"]).parent
+            if directory.is_dir() and not directory.is_symlink():
+                continue
+            if directory.exists() or directory.is_symlink():
+                raise TransactionError(f"symlink_target: {change['path']}", records=[change["record_id"]])
+            directory.mkdir(parents=True)
+            self._sync_directory(directory.parent)
 
     @staticmethod
     def _sync_directory(path: Path) -> None:
@@ -390,6 +415,10 @@ class ProfileTransaction:
         except OSError as exc:
             for descriptor in reversed(descriptors):
                 os.close(descriptor)
+            if exc.errno == errno.ENOENT:
+                # Absent is not hostile. Reporting it as a symlink swap also made the
+                # rollback fail the same way, which left the journal unrecoverable.
+                raise MissingTargetDirectoryError(f"missing_target_directory: {path}") from exc
             raise TransactionError(f"symlink_target: {path}") from exc
         try:
             yield descriptors[-1], path.name, checked_backup.name
@@ -625,12 +654,15 @@ class ProfileTransaction:
         for change in journal["changes"]:
             path = self._confined_path(change["path"])
             backup = self._backup_path(change["backup"], path)
-            with self._mutation_directory(path, backup) as pinned:
-                if pinned is not None:
-                    directory, _, backup_name = pinned
-                    self._unlink_at(directory, backup_name)
-                    self._unlink_at(directory, f"{backup_name}.rollback")
-                    continue
+            try:
+                with self._mutation_directory(path, backup) as pinned:
+                    if pinned is not None:
+                        directory, _, backup_name = pinned
+                        self._unlink_at(directory, backup_name)
+                        self._unlink_at(directory, f"{backup_name}.rollback")
+                        continue
+            except MissingTargetDirectoryError:
+                continue
             backup.unlink(missing_ok=True)
             self._rollback_path(backup).unlink(missing_ok=True)
             self._sync_directory(path.parent)
@@ -705,6 +737,12 @@ class ProfileTransaction:
             backup = self._backup_path(change["backup"], path)
             old = _decoded(change["old"])
             new = _decoded(change["new"])
+            if not path.parent.exists():
+                # The change's directory is gone. A created record has nothing of the
+                # user's to put back, and for a replaced record both its old bytes and
+                # the backup lived in that same directory, so there is nothing to
+                # restore; refusing here would leave the journal unrecoverable.
+                continue
             with self._mutation_directory(path, backup) as pinned:
                 if pinned is not None:
                     directory, target_name, backup_name = pinned

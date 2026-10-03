@@ -1,17 +1,824 @@
-:root { color-scheme: light dark; font: 16px/1.45 system-ui, sans-serif; }
-body { margin: 0; max-width: 1200px; padding: 1rem; margin-inline: auto; }
-main { display: grid; grid-template-columns: minmax(14rem, 1fr) minmax(24rem, 3fr) minmax(14rem, 1fr); gap: 1rem; }
-nav, section, aside { border: 1px solid #8886; border-radius: .5rem; padding: 1rem; min-width: 0; }
-nav button { display: block; width: 100%; margin-block: .35rem; text-align: left; }
-label { display: block; font-weight: 600; margin-top: .75rem; }
-input, textarea, select { width: 100%; box-sizing: border-box; font: inherit; }
-textarea { min-height: 5rem; }
-pre { overflow: auto; white-space: pre-wrap; }
-.actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
-footer { display: flex; gap: .75rem; justify-content: flex-end; padding-block: 1rem; }
-button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 3px solid #4a90e2; outline-offset: 2px; }
-.error { color: #c33; font-weight: 700; }
-.field-error { color: #c33; display: block; font-size: .9rem; margin-top: .25rem; }
-.field-error[hidden] { display: none; }
-[aria-invalid="true"] { border-color: #c33; outline-color: #c33; }
-@media (max-width: 800px) { main { grid-template-columns: 1fr; } }
+/* Distill review workspace.
+   Colour, spacing, radius and elevation follow the project's "Organic" palette: a cream
+   ground with a terracotta primary accent and a sage second voice, rounded geometry,
+   soft ink-tinted elevation instead of hairline-only edges, and generous air. Four
+   values are not taken from it and are marked at their declaration.
+   Every colour meets at least 4.5:1 against the surface it is used on.
+
+   No style element, no style attribute, no vector graphic, no network reference: the
+   content-security policy admits only same-origin stylesheets, and the three front-end
+   assets are asserted to contain no absolute URL scheme. Dynamic state is carried by
+   class names, attributes and native element state only. All directional rules use
+   logical properties so a right-to-left interaction language needs no second rule set. */
+
+:root {
+  color-scheme: light dark;
+
+  --paper: #f5ead8;
+  --surface: #ebddc5;
+  --sunken: #f9f4ed;
+  --ink: #201e1d;
+  --muted: #645c50;
+  --stamp: #c67139;
+  --stamp-ink: #8c491a;
+  --stamp-fill: #8c491a;
+  --stamp-fill-hover: #b2622d;
+  --stamp-on-fill: #f9f4ed;
+  --stamp-soft: #fff2eb;
+  --pass: #56633f;
+  --hold: #645c50;
+  /* Not in the reference palette: it carries no destructive hue, and reusing the
+     terracotta accent would make a file-removing control look like the primary action. */
+  --drop: #a3301f;
+
+  --divider: color-mix(in srgb, var(--ink) 16%, transparent);
+  --tint-soft: color-mix(in srgb, var(--ink) 6%, transparent);
+  --tint-firm: color-mix(in srgb, var(--ink) 12%, transparent);
+  --tint-accent: color-mix(in srgb, var(--stamp) 12%, transparent);
+
+  --shadow-sm: 0 1px 2px color-mix(in srgb, #2e2b25 14%, transparent);
+  --shadow-md: 0 3px 10px color-mix(in srgb, #2e2b25 16%, transparent);
+  --shadow-lg: 0 12px 32px color-mix(in srgb, #2e2b25 22%, transparent);
+
+  /* The reference's 1.10x density scale. The 2px hairline step is the one addition:
+     a state rule needs a sub-pixel-ish weight the scale does not carry. */
+  --s0: 2px;
+  --s1: 4.4px;
+  --s2: 8.8px;
+  --s3: 13.2px;
+  --s4: 17.6px;
+  --s6: 26.4px;
+  --s8: 35.2px;
+
+  --r-sm: 8px;
+  --r-md: 16px;
+  --r-lg: 28px;
+  --r-panel: 32px;
+  --r-pill: 999px;
+
+  --t-xs: 0.8125rem;
+  --t-sm: 0.9375rem;
+  --t-md: 1.125rem;
+  --t-lg: 1.5rem;
+
+  /* The reference pairs a rounded display face with a soft geometric sans, both loaded
+     from a font service. This page may make no network request, so both fall back to the
+     platform stack; the display voice is carried by weight and size instead. */
+  --sans: system-ui, -apple-system, "Segoe UI Variable", "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans Arabic", sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+/* The reference palette is light only; the dark scheme is derived from its own neutral,
+   accent and sage ramps, with a hairline edge plus ambient darkness for elevation. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #201e1d;
+    --surface: #2e2b25;
+    --sunken: #474238;
+    --ink: #f9f4ed;
+    --muted: #c0b6a5;
+    --stamp: #f6a06b;
+    --stamp-ink: #ffc6a5;
+    --stamp-fill: #f6a06b;
+    --stamp-fill-hover: #ffc6a5;
+    --stamp-on-fill: #2e2b25;
+    --stamp-soft: #643312;
+    --pass: #aebf92;
+    --hold: #a19786;
+    --drop: #f09a8c;
+
+    --divider: color-mix(in srgb, var(--ink) 14%, transparent);
+    --tint-soft: color-mix(in srgb, var(--ink) 8%, transparent);
+    --tint-firm: color-mix(in srgb, var(--ink) 14%, transparent);
+
+    --shadow-sm: 0 1px 2px color-mix(in srgb, #000000 40%, transparent);
+    --shadow-md: 0 4px 14px color-mix(in srgb, #000000 45%, transparent);
+    --shadow-lg: 0 14px 36px color-mix(in srgb, #000000 55%, transparent);
+  }
+}
+
+/* ---------- base ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  background: var(--paper);
+  color: var(--ink);
+  font: var(--t-sm) / 1.6 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+h1 {
+  font-size: var(--t-sm);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  font-size: var(--t-lg);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+
+h3 {
+  font-size: var(--t-xs);
+  font-weight: 700;
+  color: var(--muted);
+}
+
+p {
+  margin: 0;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--stamp) 30%, transparent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--stamp);
+  outline-offset: 2px;
+}
+
+.mono {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+}
+
+/* Bidirectional text. A record identifier, a file path and the bytes of a record are
+   literal text whose reading order is left-to-right whatever the interface language:
+   left to the paragraph direction, a right-to-left interface renders each Markdown line
+   with its leading marker at the right edge and truncates an identifier from its start.
+   Record titles and field values carry user content in an unknown language, so their
+   direction is resolved from the content itself. */
+.mono,
+.project,
+.queue-entry .meta,
+.chip,
+.final pre,
+.members pre {
+  direction: ltr;
+  text-align: start;
+}
+
+.queue-entry .label,
+.record-meta dd {
+  unicode-bidi: plaintext;
+}
+
+/* ---------- controls ---------- */
+
+button {
+  font: 600 var(--t-xs) / 1.3 var(--sans);
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--divider);
+  border-radius: var(--r-pill);
+  padding: var(--s2) var(--s3);
+  cursor: pointer;
+  transition: background-color 120ms ease-out;
+}
+
+button:hover:not(:disabled) {
+  background: var(--tint-soft);
+}
+
+button:active:not(:disabled) {
+  background: var(--tint-firm);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.btn-primary {
+  background: var(--stamp-fill);
+  border-color: transparent;
+  color: var(--stamp-on-fill);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover:not(:disabled),
+.btn-primary:active:not(:disabled) {
+  background: var(--stamp-fill-hover);
+}
+
+.btn-danger {
+  color: var(--drop);
+  border-color: color-mix(in srgb, var(--drop) 45%, transparent);
+}
+
+.btn-danger:hover:not(:disabled),
+.btn-danger:active:not(:disabled) {
+  background: color-mix(in srgb, var(--drop) 14%, transparent);
+}
+
+.btn-quiet {
+  border-color: transparent;
+  color: var(--muted);
+}
+
+.btn-quiet:hover:not(:disabled) {
+  background: var(--tint-accent);
+  color: var(--stamp-ink);
+}
+
+input[type="checkbox"] {
+  accent-color: var(--stamp);
+  inline-size: var(--s3);
+  block-size: var(--s3);
+  margin: 0;
+}
+
+/* ---------- header ---------- */
+
+.page-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2) var(--s4);
+  padding: var(--s3) var(--s6);
+}
+
+.page-head .project {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  color: var(--muted);
+  padding: var(--s0) var(--s2);
+  border-radius: var(--r-pill);
+  background: var(--tint-soft);
+}
+
+.progress-group {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  margin-inline-start: auto;
+  font-size: var(--t-xs);
+  color: var(--muted);
+}
+
+progress {
+  inline-size: 6rem;
+  block-size: var(--s1);
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--tint-firm);
+  overflow: hidden;
+}
+
+progress::-webkit-progress-bar {
+  background: var(--tint-firm);
+  border-radius: var(--r-pill);
+}
+
+progress::-webkit-progress-value {
+  background: var(--stamp);
+  border-radius: var(--r-pill);
+}
+
+progress::-moz-progress-bar {
+  background: var(--stamp);
+  border-radius: var(--r-pill);
+}
+
+.advance-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  font-size: var(--t-xs);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+#shortcuts {
+  flex-basis: 100%;
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  color: var(--muted);
+  padding: var(--s2) var(--s3);
+  border-radius: var(--r-md);
+  background: var(--tint-soft);
+}
+
+#shortcuts[hidden] {
+  display: none;
+}
+
+/* ---------- layout ---------- */
+
+main {
+  display: grid;
+  grid-template-columns: minmax(230px, 270px) minmax(0, 1fr) minmax(250px, 310px);
+  gap: var(--s4);
+  padding: var(--s1) var(--s6) var(--s4);
+  min-height: 0;
+  overflow: hidden;
+}
+
+main > * {
+  min-inline-size: 0;
+  min-block-size: 0;
+  overflow-y: auto;
+  background: var(--surface);
+  border-radius: var(--r-panel);
+  box-shadow: var(--shadow-sm);
+}
+
+#records,
+aside {
+  padding: var(--s4);
+}
+
+#editor {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+#editor > form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-block-size: 0;
+}
+
+/* ---------- queue ---------- */
+
+.queue-group + .queue-group {
+  margin-block-start: var(--s4);
+}
+
+.queue-group h3 {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s2);
+  padding: 0 var(--s2) var(--s2);
+}
+
+.queue-entry {
+  display: grid;
+  grid-template-columns: 1.15rem minmax(0, 1fr);
+  gap: 0 var(--s2);
+  inline-size: 100%;
+  text-align: start;
+  font-weight: 400;
+  border: 0;
+  border-radius: var(--r-md);
+  padding: var(--s2) var(--s3);
+}
+
+.queue-entry + .queue-entry {
+  margin-block-start: var(--s0);
+}
+
+.queue-entry[aria-current="true"] {
+  background: var(--stamp-soft);
+}
+
+.queue-entry[aria-current="true"]:hover {
+  background: var(--stamp-soft);
+}
+
+.queue-entry .mark {
+  grid-row: span 2;
+  font-size: var(--t-xs);
+  line-height: 1.7;
+}
+
+.queue-entry .label {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.queue-entry .meta {
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.state-candidate {
+  color: var(--stamp-ink);
+}
+
+.state-vetted {
+  color: var(--pass);
+}
+
+.state-removed {
+  color: var(--drop);
+}
+
+.state-deferred {
+  color: var(--hold);
+}
+
+/* A cluster resolved by its members' own decisions carries no pending work. */
+.state-separate {
+  color: var(--pass);
+}
+
+/* ---------- working surface ---------- */
+
+.surface-head {
+  padding: var(--s6) var(--s6) var(--s4);
+}
+
+.record-meta {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--s1) var(--s3);
+  margin: var(--s3) 0 0;
+  font-size: var(--t-xs);
+}
+
+.record-meta dt {
+  color: var(--muted);
+}
+
+.record-meta dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.surface-body {
+  flex: 1;
+  padding: 0 var(--s6) var(--s6);
+}
+
+label {
+  display: block;
+  margin-block-start: var(--s3);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+label:first-of-type {
+  margin-block-start: 0;
+}
+
+/* The reference puts inputs on a pill radius. A field here grows to fit a long value,
+   and a pill radius fights a multi-line box, so these take its medium radius instead. */
+textarea {
+  display: block;
+  inline-size: 100%;
+  margin-block-start: var(--s1);
+  font: 400 var(--t-sm) / 1.55 var(--sans);
+  color: var(--ink);
+  background: var(--sunken);
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  padding: var(--s2) var(--s3);
+  resize: none;
+  overflow: hidden;
+  field-sizing: content;
+  transition: border-color 120ms ease-out;
+}
+
+textarea:hover {
+  border-color: var(--divider);
+}
+
+textarea:focus-visible {
+  border-color: var(--stamp);
+  outline: none;
+}
+
+.field-error {
+  display: block;
+  margin-block-start: var(--s1);
+  font-size: var(--t-xs);
+  font-weight: 600;
+  color: var(--drop);
+}
+
+.field-error[hidden] {
+  display: none;
+}
+
+[aria-invalid="true"] {
+  border-color: var(--drop);
+}
+
+@media (min-width: 1240px) {
+  label {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr);
+    gap: var(--s3);
+    align-items: start;
+  }
+
+  label > textarea,
+  label > .field-error {
+    grid-column: 2;
+    margin-block-start: 0;
+  }
+}
+
+/* ---------- final content panel ---------- */
+
+/* The gate reads from the palette's own semantics: sage means ready, terracotta means
+   this needs attention, a neutral tint means nothing has been previewed yet. */
+.final {
+  margin-block-start: var(--s6);
+  border-radius: var(--r-lg);
+  background: var(--sunken);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.final-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2) var(--s3);
+  padding: var(--s3) var(--s4);
+  background: var(--tint-soft);
+}
+
+.final.gate-fresh .final-head {
+  background: color-mix(in srgb, var(--pass) 14%, transparent);
+}
+
+.final.gate-stale .final-head {
+  background: var(--tint-accent);
+}
+
+.gate {
+  font-size: var(--t-xs);
+  color: var(--muted);
+}
+
+.gate-fresh .gate {
+  color: var(--pass);
+}
+
+.gate-stale .gate {
+  color: var(--stamp-ink);
+}
+
+.final-head .preview-action {
+  margin-inline-start: auto;
+}
+
+.final pre {
+  margin: 0;
+  padding: var(--s4);
+  max-block-size: 40vh;
+  overflow: auto;
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.members {
+  margin: var(--s3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.members > li {
+  margin-block-start: var(--s2);
+  padding: var(--s3);
+  border-radius: var(--r-lg);
+  background: var(--tint-soft);
+}
+
+.members pre {
+  margin: var(--s2) 0 0;
+  padding: var(--s3);
+  background: var(--sunken);
+  border-radius: var(--r-md);
+  font-family: var(--mono);
+  font-size: var(--t-xs);
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- action bar ---------- */
+
+.actions {
+  position: sticky;
+  inset-block-end: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2) var(--s3);
+  padding: var(--s3) var(--s6) var(--s4);
+  background: var(--surface);
+  box-shadow: 0 -8px 16px -12px color-mix(in srgb, var(--ink) 30%, transparent);
+}
+
+.actions .routine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+.actions .destructive {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+  margin-inline-start: auto;
+}
+
+.verification,
+.feedback {
+  flex-basis: 100%;
+  font-size: var(--t-xs);
+  color: var(--muted);
+}
+
+.verification.required {
+  color: var(--stamp-ink);
+}
+
+.feedback.error {
+  color: var(--drop);
+  font-weight: 600;
+}
+
+.feedback[hidden] {
+  display: none;
+}
+
+/* The gated control whose operation the live preview actually covers. Two controls on a
+   surface submit different operations, so only the previewed one is ready to stage. */
+[data-gated][data-ready="true"] {
+  border-color: var(--stamp);
+  box-shadow: inset 0 0 0 1px var(--stamp);
+}
+
+/* ---------- ledger ---------- */
+
+.ledger-group {
+  padding: var(--s2) var(--s2) var(--s3);
+  border-radius: var(--r-md);
+}
+
+.ledger-group + .ledger-group {
+  margin-block-start: var(--s1);
+}
+
+.ledger-group h3 {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s1);
+  margin-block-start: var(--s2);
+}
+
+.chip {
+  font-family: var(--mono);
+  font-weight: 400;
+  font-size: var(--t-xs);
+  padding: var(--s0) var(--s2);
+  border-color: transparent;
+  background: var(--tint-soft);
+  color: var(--muted);
+}
+
+.chip:hover:not(:disabled) {
+  background: var(--tint-accent);
+  color: var(--stamp-ink);
+}
+
+/* ---------- empty and completion states ---------- */
+
+.empty {
+  padding: var(--s8) var(--s6);
+  color: var(--muted);
+  text-align: center;
+}
+
+.empty .cta {
+  margin-block-start: var(--s4);
+}
+
+/* ---------- footer ---------- */
+
+.page-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2) var(--s4);
+  padding: var(--s3) var(--s6) var(--s4);
+}
+
+#status {
+  flex: 1;
+  min-inline-size: 12rem;
+  font-size: var(--t-xs);
+  color: var(--muted);
+  white-space: pre-wrap;
+}
+
+#status.error {
+  padding: var(--s2) var(--s3);
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--drop) 12%, transparent);
+  color: var(--drop);
+  font-weight: 600;
+}
+
+.page-foot .global {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1239px) {
+  main {
+    grid-template-columns: minmax(210px, 250px) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  aside {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 879px) {
+  body {
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  main {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    overflow: visible;
+    padding-inline: var(--s3);
+  }
+
+  main > * {
+    overflow-y: visible;
+  }
+
+  aside {
+    grid-column: auto;
+  }
+
+  .page-head,
+  .page-foot {
+    padding-inline: var(--s3);
+  }
+
+  .surface-head {
+    padding: var(--s4) var(--s4) var(--s3);
+  }
+
+  .surface-body {
+    padding: 0 var(--s4) var(--s4);
+  }
+
+  .actions {
+    padding: var(--s3) var(--s4);
+  }
+
+  .record-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .record-meta dt {
+    margin-block-start: var(--s1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none;
+  }
+}
