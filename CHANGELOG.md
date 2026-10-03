@@ -5,6 +5,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.18] - 2026-10-04
+
+### Added
+
+- Ordinary features now use one Git worktree per feature by default, under the sibling
+  `<repository-name>-codexspec-worktrees/<full-feature-name>` directory. Existing feature
+  workspaces are reused and retained after completion.
+- Added checkout-local `workflow.worktrees` configuration and `codexspec config --worktrees`
+  controls. Only literal YAML `false` disables ordinary worktree isolation.
+- Added isolated maintenance workspaces for standalone project edits, shared workspace
+  routing across all 28 commands, and recoverable feature preparation. Creation compares
+  local and fetched remote main by ancestry; divergent histories merge in the new worktree
+  and require verification before development continues.
+
+### Changed
+
+- **Breaking:** Ordinary workflow writes now leave the main checkout untouched by default.
+  Blueprint and auto-dev retain their fixed shared worktree model, but use the same new
+  sibling parent directory. Earlier directory layouts have no migration layer.
+- Configuration changes take effect in their destination checkout and propagate to other
+  checkouts through Git integration. First-time initialization and installation updates
+  continue to operate on the explicitly selected checkout.
+
+### Fixed
+
+- Worktree configuration edits preserve UTF-8 content, comments, and LF/CRLF line endings,
+  including exact-byte round trips when toggling an existing setting.
+
+### For contributors
+
+- Git test fixtures now require explicit commit identity, and test launchers align CLI
+  lookup with the selected Python environment. Cleanup and file-mutation regressions cover
+  disappearing temporary locks, timestamp granularity, and Windows text handling.
+- CI collects all six OS/Python test results independently of lint; package builds require
+  both lint and the full matrix to pass.
+- Updated plugin marketplace metadata for the preceding v0.7.17 release.
+
 ## [0.7.17] - 2026-10-03
 
 ### Added
