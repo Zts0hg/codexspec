@@ -456,3 +456,27 @@ def test_feature_entry_points_reject_hardlinked_requirements(tmp_path, action):
         else:
             getattr(manager, action)(FEATURE)
     assert protected.read_text() == "protected main\n"
+
+
+@pytest.mark.parametrize("newline", ["\n", "\r\n"])
+@pytest.mark.parametrize(
+    "before,after",
+    [
+        ("workflow:\n  worktrees: true # keep\n", "workflow:\n  worktrees: false # keep\n"),
+        ("workflow:\n  auto_next: true\n", "workflow:\n  worktrees: false\n  auto_next: true\n"),
+        ("language: {output: en}\n", "language: {output: en}\nworkflow:\n  worktrees: false\n"),
+        ("---\nlanguage: {output: en}\n...\n", "---\nlanguage: {output: en}\nworkflow:\n  worktrees: false\n...\n"),
+    ],
+)
+def test_worktree_setting_preserves_line_endings(tmp_path, newline, before, after):
+    config = tmp_path / "config.yml"
+    comment = "# Preserve café and line endings\n"
+    original = (comment + before).replace("\n", newline).encode("utf-8")
+    expected = (comment + after).replace("\n", newline).encode("utf-8")
+    config.write_bytes(original)
+    write_worktrees(config, False)
+    assert config.read_bytes() == expected
+    assert not read_worktrees(config)
+    if "worktrees: true" in before:
+        write_worktrees(config, True)
+        assert config.read_bytes() == original

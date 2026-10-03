@@ -30,7 +30,7 @@ MAINTENANCE_NAME = "worktree-for-codexspec-maintenance"
 
 
 def _document(config: Path) -> tuple[str, Any]:
-    content = config.read_text(encoding="utf-8") if config.exists() else ""
+    content = config.read_bytes().decode("utf-8") if config.exists() else ""
     try:
         node = yaml.compose(content)
     except yaml.YAMLError as exc:
@@ -102,6 +102,7 @@ def _expand_aliases(content: str) -> str:
 def write_worktrees(config: Path, enabled: bool) -> None:
     """Surgically write one boolean without normalizing unrelated YAML or comments."""
     original, node = _document(config)
+    newline = "\r\n" if "\r\n" in original else "\n"
     try:
         content = _expand_aliases(original)
         node = yaml.compose(content)
@@ -120,7 +121,7 @@ def write_worktrees(config: Path, enabled: bool) -> None:
             offset = workflow.value[0][0].start_mark.index
             # Use the first actual key, not a preceding mapping anchor.
             indent = workflow.value[0][0].start_mark.column
-            addition = f"worktrees: {token}\n" + " " * indent
+            addition = f"worktrees: {token}{newline}" + " " * indent
         content = content[:offset] + addition + content[offset:]
     elif workflow is not None:
         raise AutomationError("invalid_workflow_section", str(config))
@@ -131,8 +132,10 @@ def write_worktrees(config: Path, enabled: bool) -> None:
     else:
         end = next((event for event in yaml.parse(content) if isinstance(event, yaml.DocumentEndEvent)), None)
         offset = end.start_mark.index if end is not None and end.explicit else len(content)
-        prefix = content[:offset].rstrip("\n")
-        content = prefix + ("\n" if prefix else "") + f"workflow:\n  worktrees: {token}\n" + content[offset:]
+        prefix = content[:offset].rstrip("\r\n")
+        content = (
+            prefix + (newline if prefix else "") + f"workflow:{newline}  worktrees: {token}{newline}" + content[offset:]
+        )
     try:
         before = yaml.safe_load(original) or {}
         expected = {**before, "workflow": {**before.get("workflow", {}), "worktrees": enabled}}

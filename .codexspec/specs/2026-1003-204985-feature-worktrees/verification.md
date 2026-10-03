@@ -92,8 +92,8 @@ The reviewed 148-file target fingerprint was
 `sha256:1b74bef011a6a4feb65fb5da534350d2c430fadaf269e0e080fe3ca4dbc8a954`.
 Before the initial feature commit, only task completion bookkeeping and this final verification
 record changed after that gate. The CI follow-up below changes test infrastructure and is outside
-that original review fingerprint; feature runtime, templates, generated copies, and user
-documentation retain the reviewed bytes.
+that original review fingerprint. The later Windows configuration newline repair also changes
+feature runtime; templates, generated copies, and user documentation retain the reviewed bytes.
 
 ## CI Follow-up Verification
 
@@ -122,3 +122,10 @@ The plain Git commit hook additionally exposed a mixed-environment PATH: pytest 
 virtual environment while Bash tests found an older globally installed CodexSpec. The test launcher
 now prepends the selected interpreter's scripts directory for child commands. A nested pytest probe
 outside the repository reproduces the missing PATH entry and verifies the correct CLI is selected.
+
+Both native Windows CI jobs then exposed default-codec template reads and CRLF normalization in
+configuration editing. Template reads now explicitly select UTF-8. Configuration reads preserve
+original newline bytes, and inserted keys use the existing newline style. Eight LF/CRLF cases cover
+existing-key replacement, missing-key insertion, a missing workflow mapping, explicit YAML document
+ends, Unicode comments, and exact-byte round trips. Four CRLF cases failed before the runtime repair;
+all eight pass afterward. The complete worktree, CLI, and template suite passes all 106 cases.
