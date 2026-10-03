@@ -5,6 +5,38 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.17] - 2026-10-03
+
+### Added
+
+- Added a manual distill review workspace: `/codexspec:distill review` (and a bare
+  `/codexspec:distill`) opens a packaged, fully offline HTML page — a three-column
+  layout (review queue / working surface / staged-change ledger) in the project design
+  system, with state-grouped queues, byte-identical final-Markdown previews gated per
+  control, destructive-action second confirmations, a keyboard map with no
+  terminal-operation key, adaptive single-line fields, and 13 display-language
+  catalogs. The workspace ships as three static assets plus catalogs: no CDN, no
+  network calls, strict CSP.
+- Added the deterministic review runtime (`src/codexspec/distill_review/`): a
+  field-aware, lossless record codec; a review domain with preview-before-stage and
+  byte-symmetric vetting gates; a token-protected loopback HTTP carrier; a recoverable,
+  Git-excluded draft store with a single-writer lease; and a journaled, hash-guarded,
+  all-or-nothing batch application with crash recovery.
+- Added the hidden `_distill-review-helper` CLI (HTML and text modes, `--manifest`
+  proposals, `--discard-draft` escape) that the distill command drives; auto-distill
+  never invokes either interactive carrier.
+- Added six project profile records distilled from the review loop, including one
+  marked consolidation cluster awaiting human review in `/distill review`.
+
+### Changed
+
+- Documentation command tables now list `distill`, `evolve`, and `onboard` with the
+  distill guide in all eight languages.
+- The pre-commit pytest hook reruns the suite in the project's own environment
+  (repository `.venv`, the current interpreter when pytest is importable, or
+  `uv run`) instead of requiring `uv`, and CI now runs the distill-review suites
+  on every platform, including Windows.
+
 ## [0.7.16] - 2026-09-07
 
 ### Added
