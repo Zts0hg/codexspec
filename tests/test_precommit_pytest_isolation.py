@@ -77,3 +77,58 @@ def test_pytest_hook_runs_without_uv_on_path(tmp_path: Path, monkeypatch) -> Non
     probe = tmp_path / "test_no_uv_probe.py"
     probe.write_text("def test_probe_passes():\n    assert True\n", encoding="utf-8")
     assert run_pytest.main(["-q", str(probe)]) == 0
+
+
+def test_unconfigured_repository_cannot_inherit_or_guess_commit_identity(tmp_path: Path) -> None:
+    from tests.automation_test_support import git
+
+    repo = tmp_path / "unconfigured"
+    git(tmp_path, "init", "-b", "main", str(repo))
+    (repo / "file.txt").write_text("content\n", encoding="utf-8")
+    git(repo, "add", "file.txt")
+    result = git(repo, "commit", "-m", "must require explicit fixture identity", check=False)
+    assert result.returncode != 0, "Tests must not inherit or auto-detect the developer's Git identity"
+    assert git(repo, "rev-parse", "--verify", "HEAD", check=False).returncode != 0
+
+
+def test_bare_fixture_worktree_has_explicit_commit_identity(tmp_path: Path) -> None:
+    from tests.automation_test_support import git, make_bare_remote
+
+    repo = make_repo(tmp_path / "source")
+    remote = make_bare_remote(tmp_path / "remote.git", repo)
+    peer = tmp_path / "peer"
+    git(remote, "worktree", "add", str(peer), "main")
+    assert git(peer, "config", "--local", "--get", "user.name", check=False).stdout.strip() == "CodexSpec Tests"
+    assert (
+        git(peer, "config", "--local", "--get", "user.email", check=False).stdout.strip() == "tests@codexspec.invalid"
+    )
+    (peer / "remote.txt").write_text("remote change\n", encoding="utf-8")
+    git(peer, "add", "remote.txt")
+    git(peer, "commit", "-m", "remote change")
+    assert git(peer, "log", "-1", "--format=%an <%ae>").stdout.strip() == "CodexSpec Tests <tests@codexspec.invalid>"
+
+
+def test_pytest_hook_uses_cli_from_selected_python_environment(tmp_path: Path, monkeypatch) -> None:
+    import sysconfig
+
+    import tests.run_pytest as run_pytest
+
+    script_name = "codexspec.exe" if os.name == "nt" else "codexspec"
+    scripts = Path(sysconfig.get_path("scripts")).absolute()
+    assert (scripts / script_name).is_file()
+    remaining = [
+        directory
+        for directory in os.environ.get("PATH", "").split(os.pathsep)
+        if directory and Path(directory).absolute() != scripts
+    ]
+    monkeypatch.setenv("PATH", os.pathsep.join(remaining))
+    probe = tmp_path / "test_cli_environment_probe.py"
+    probe.write_text(
+        "import pathlib, shutil\n"
+        "def test_cli_belongs_to_selected_environment():\n"
+        "    assert pathlib.Path(shutil.which('codexspec')).absolute() == "
+        f"pathlib.Path({str(scripts / script_name)!r})\n",
+        encoding="utf-8",
+    )
+    # The probe runs outside the repository, so no repository conftest can repair PATH.
+    assert run_pytest.main(["-q", str(probe), "-o", "addopts="]) == 0

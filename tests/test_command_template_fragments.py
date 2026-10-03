@@ -734,7 +734,12 @@ def test_check_outputs_binds_content_to_returned_output_signature(
     ) -> tuple[bytes, command_template_fragments.StatSignature]:
         snapshot = real_read(path, root, display)
         if path == output:
+            metadata = output.stat()
             output.write_bytes(b"changed!\n")
+            # Same-size rewrites can share a timestamp on coarse-grained filesystems.
+            # This test requires a changed signature, not a particular clock resolution.
+            os.utime(output, ns=(metadata.st_atime_ns, metadata.st_mtime_ns + 2_000_000_000))
+            assert command_template_fragments._stat_signature(output.stat()) != snapshot[1]
         return snapshot
 
     monkeypatch.setattr(command_template_fragments, "_read_stable_file_snapshot", read_then_change)

@@ -90,5 +90,35 @@ have asserting coverage, and the final reviewer independently repeated the 1822-
 
 The reviewed 148-file target fingerprint was
 `sha256:1b74bef011a6a4feb65fb5da534350d2c430fadaf269e0e080fe3ca4dbc8a954`.
-Only task completion bookkeeping and this final verification record were updated after that gate;
-runtime code, tests, templates, generated copies, and user documentation retain the reviewed bytes.
+Before the initial feature commit, only task completion bookkeeping and this final verification
+record changed after that gate. The CI follow-up below changes test infrastructure and is outside
+that original review fingerprint; feature runtime, templates, generated copies, and user
+documentation retain the reviewed bytes.
+
+## CI Follow-up Verification
+
+The initial PR CI exposed a bare-remote fixture without a local commit identity. The fixture now
+sets its own identity, and the entire pytest suite disables inherited and inferred Git identities.
+Two regression tests failed before this repair and pass afterward, including a bare repository's
+attached worktree committing successfully.
+
+Historical PR CI logs also exposed an unfixed cleanup race: a Git maintenance lock can disappear
+before chmod or before the removal retry. Both cases now pass deterministic regressions, while
+real permission failures remain visible. The evaluation module passes all 32 cases.
+
+A fresh Linux/Python 3.12 container exposed a separate test prerequisite: same-size writes can
+retain identical timestamps. The fragment test now explicitly advances mtime and asserts signature
+drift; the implementation's rejection contract is unchanged. All 119 fragment tests pass locally
+with one platform skip.
+
+Local full-suite validation after Git-identity and cleanup repairs passed 1827 tests with 54 skips;
+all pre-commit gates passed. The final timestamp-fixture adjustment also passed its complete module
+and the full hook-run suite. A fresh Linux/Python 3.12 container with pip-installed development
+dependencies passed all 1827 tests with 54 skips after that adjustment.
+CI runs lint and all six OS/Python combinations independently; package building requires both lint
+and the entire test matrix to pass. Native platform results remain required before merging.
+
+The plain Git commit hook additionally exposed a mixed-environment PATH: pytest used the selected
+virtual environment while Bash tests found an older globally installed CodexSpec. The test launcher
+now prepends the selected interpreter's scripts directory for child commands. A nested pytest probe
+outside the repository reproduces the missing PATH entry and verifies the correct CLI is selected.
