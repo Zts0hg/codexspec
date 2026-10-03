@@ -3,6 +3,7 @@ import shlex
 import subprocess
 from pathlib import Path
 
+import pytest  # type: ignore[import-untyped]
 import yaml  # type: ignore[import-untyped]
 
 from tests.automation_test_support import make_repo
@@ -54,3 +55,25 @@ def test_pytest_hook_clears_caller_git_environment(tmp_path: Path) -> None:
             text=True,
         ).stdout
     )
+
+
+def test_pytest_hook_runs_without_uv_on_path(tmp_path: Path, monkeypatch) -> None:
+    """CI installs the development dependencies with pip and has no `uv` binary, so the
+    hook must rerun pytest with its own interpreter; dropping uv from PATH must not
+    break the hook. (Regression: FileNotFoundError 'uv' on every CI platform.)"""
+    import shutil
+
+    import tests.run_pytest as run_pytest
+
+    if shutil.which("uv") is None:  # the condition only occurs where uv was never installed
+        pytest.skip("uv is not installed here; nothing to remove from PATH")
+
+    def has_uv(directory: str) -> bool:
+        return (Path(directory) / "uv").exists() or (Path(directory) / "uv.exe").exists()
+
+    remaining = [p for p in os.environ.get("PATH", "").split(os.pathsep) if p and not has_uv(p)]
+    monkeypatch.setenv("PATH", os.pathsep.join(remaining))
+
+    probe = tmp_path / "test_no_uv_probe.py"
+    probe.write_text("def test_probe_passes():\n    assert True\n", encoding="utf-8")
+    assert run_pytest.main(["-q", str(probe)]) == 0
