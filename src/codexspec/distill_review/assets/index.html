@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CodexSpec Distill Review</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="page-head">
+    <h1 id="page-title">Distill review</h1>
+    <span id="project" class="project"></span>
+    <div class="progress-group">
+      <label class="advance-toggle" for="auto-advance">
+        <input id="auto-advance" type="checkbox" checked>
+        <span id="auto-advance-label"></span>
+      </label>
+      <span id="progress-text"></span>
+      <progress id="progress" value="0" max="0"></progress>
+      <button id="shortcuts-toggle" class="btn-quiet" type="button" aria-expanded="false" aria-controls="shortcuts">?</button>
+    </div>
+    <p id="shortcuts" hidden></p>
+  </header>
+  <main>
+    <nav id="records" aria-label="Candidate records"></nav>
+    <section id="editor"></section>
+    <aside aria-labelledby="summary-title">
+      <h3 id="summary-title">Staged changes</h3>
+      <div id="summary"></div>
+    </aside>
+  </main>
+  <footer class="page-foot">
+    <p id="status" role="status" aria-live="polite" aria-atomic="true" tabindex="-1">Loading…</p>
+    <div class="global">
+      <button id="refresh" type="button" hidden>Refresh conflicted records</button>
+      <button id="apply" class="btn-primary" type="button">Apply all</button>
+      <button id="cancel" type="button">Cancel</button>
+      <button id="discard" class="btn-danger" type="button">Discard draft</button>
+    </div>
+  </footer>
+  <script src="/app.js"></script>
+</body>
+</html>

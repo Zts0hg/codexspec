@@ -38,7 +38,7 @@ Converse in the interaction language and author artifacts in the document langua
 - **Long-run**: in a long-running `implement-tasks`, distill **along the way** near each knowledge-producing event rather than only at the very end, so mid-task evidence is not lost to context compaction; the end-of-task `auto_distill` still runs as a **backstop**.
 - **Manual (fallback)**: invoked directly on the supplied or most-recent interaction segment.
 
-distill is **non-blocking and non-interactive**: it never prompts, never gates another command, and **early-exits without writing** when the delta contains nothing reusable.
+The extraction paths above are **non-blocking and non-interactive**: they never prompt, never gate another command, and **early-exit without writing** when the delta contains nothing reusable. Manual review is a separate, explicitly invoked mode described under **Vetting candidates**. Auto-distill MUST NOT invoke the review helper, never opens a browser, never waits for review, and is never gated by a saved manual-review draft.
 
 **Input contract**: distill operates on "a segment of interaction to distill." It MUST NOT assume it is live in the conversation, so the same routine works whether embedded (fed live context) or invoked manually on a supplied segment.
 
@@ -209,11 +209,55 @@ The merge itself is confirmed by a human in `/distill review` (below); distill n
 
 ## Vetting candidates (manual, interactive)
 
-Auto-distill writes `candidate` records non-interactively and **never prompts**. Promote them through the **manual review mode** — `/distill review` (or `/distill` with no new segment to distill): list every pending `candidate` compactly (claim + evidence + provenance) and let the user approve inline — "vet all", "vet 1,3", "edit 2", "drop 4". Apply the choices by editing each record's `status` (a `replace`). **The user never hand-edits the profile files.**
+Auto-distill writes `candidate` records non-interactively and **never prompts**. A direct `/distill review`, or a direct `/distill` with no new segment to distill, enters manual review. Manual review defaults to the local HTML carrier; use the explicit text fallback only when the user requests it or a browser is unsuitable. Auto-distill MUST NOT invoke the review helper.
 
-The user's approval here **is** the human endorsement half of the `vetted` gate: an approved `candidate` that is already outcome-verified becomes `vetted` **regardless of its original `derivation`** (an `inferred` record is not blocked from vetting). If a candidate has not yet been outcome-verified, approval keeps it `candidate` (or the user may attest the outcome to complete the gate). This is the path by which `inferred` knowledge — including everything `$codexspec:onboard` writes — reaches `vetted` and becomes `evolve`-eligible.
+### Prepare semantic proposals, then hand control to deterministic code
 
-**Consolidation review.** In the same review mode, also surface any **consolidation candidate** clusters (records sharing a `cluster:` key, from the Consolidation section above): show the cluster's members compactly and let the user confirm the merge inline — "merge 1", "merge all", "keep separate". On confirmation, write the single general record (a **general rule plus its exceptions**), `remove` the superseded members, and clear the `cluster:`/`consolidation:` marker from anything that survives so no stale flag lingers. If the user declines, leave every member untouched. distill only ever **marked** the cluster; the merge happens **only** here, on explicit confirmation.
+The Agent performs semantic work **before** the UI starts: read the pending candidates, identify their editable structured fields, and draft a generalized consolidation record for every discovered cluster. Put candidate suggestions and required consolidation proposals in a **versioned proposal manifest** in an operating-system temporary file outside the repository:
+
+```json
+{
+  "schema_version": 1,
+  "proposals": {
+    "<record-id>": {
+      "base_hash": "<sha256-of-current-record-bytes>",
+      "fields": {"claim": "<suggested claim>"}
+    }
+  },
+  "consolidations": [
+    {
+      "cluster": "<cluster-key>",
+      "members": ["<record-id>"],
+      "member_hashes": {"<record-id>": "<sha256-of-current-member-bytes>"},
+      "category": "<target-category>",
+      "record_id": "<new-record-id>",
+      "filename": "<new-record-filename>.md",
+      "markdown": "<complete proposed record>",
+      "fields": {"claim": "<editable value>", "scope/when": "<editable value>"}
+    }
+  ]
+}
+```
+
+Suggestions and consolidation proposals are untrusted inputs. The helper re-scans the profile, checks every proposal base hash, requires an exact current-byte hash for every consolidation member, checks protected identity, and rejects a stale or invalid manifest. Candidate suggestions are optional, but every discovered consolidation cluster MUST have exactly one generalized proposal so HTML and text review can offer the complete merge-or-keep-separate decision. Omit the manifest only when there are no consolidation clusters and no useful candidate suggestions; ordinary candidate-only review still works without it. Delete the temporary manifest after the helper finishes.
+
+Invoke the packaged helper exactly through the installed CLI:
+
+```text
+codexspec _distill-review-helper --project-root . --manifest <temporary-manifest-path>
+```
+
+For the explicit fallback, add `--mode text`. The helper is hidden from the documented CLI surface; it exists so the slash command can cross into deterministic code without asking the user to edit files.
+
+If the helper reports a structurally invalid saved draft, preserve that file and show the diagnostic. Only after the user explicitly chooses to discard the damaged session, rerun the helper with `--discard-draft`; never delete a damaged draft implicitly.
+
+The helper starts a token-protected service bound only to `127.0.0.1`, opens the packaged offline HTML page, and prints the local URL if browser launch fails. The UI lists every candidate and consolidation cluster. For each candidate the user may vet, revise structured fields, discard, or defer. Revision cannot change the record ID, category, provenance, or file identity. After revision the user chooses candidate or vetted status. A candidate without recorded outcome verification cannot become `vetted` until the user supplies the verification result or evidence.
+
+Every decision is staged in a recoverable, Git-excluded project draft. Nothing changes in `.codexspec/profile/` until the user reviews the complete summary and selects **Apply all**. The deterministic backend—not the Agent—validates typed `vet` / `replace` / `remove` / `merge` operations, rechecks source hashes, and applies the batch with recoverable all-or-nothing semantics. Any conflict stops the whole batch, preserves the draft, and identifies the affected records. Cancel never applies profile mutations; discard removes only the saved draft.
+
+The user's approval in this UI **is** the human endorsement half of the `vetted` gate. An approved candidate that is already outcome-verified becomes `vetted` regardless of its original `derivation`. If a candidate has not yet been outcome-verified, the UI requires an attested outcome before promotion. This is the path by which inferred knowledge—including everything `$codexspec:onboard` writes—reaches `vetted` and becomes `evolve`-eligible.
+
+**Consolidation review.** In the same HTML or text review, show every consolidation cluster and the Agent-proposed general rule plus its exceptions as structured editable fields with a final Markdown preview. The user may merge as candidate, merge as vetted when verification is complete, or keep the members separate. On confirmed merge, the deterministic backend creates the generalized record and removes every superseded member in the same batch. Keeping records separate leaves their profile files untouched. Distill only ever marks clusters; a merge still happens only on explicit human confirmation.
 
 ## Self-check before finishing
 

@@ -38,6 +38,9 @@ Nach Kategorie gruppiert – analog zum Katalog im README. Innerhalb jeder Grupp
 | `/codexspec:analyze` | Bereichsübergreifende Konsistenzanalyse (automatische Behebung, schweregradbasiert) |
 | `/codexspec:checklist` | Checklisten für die Qualität der Anforderungen erzeugen |
 | `/codexspec:tasks-to-issues` | Aufgaben in GitHub-Issues überführen |
+| `/codexspec:distill` | Wiederverwendbares Projektwissen erfassen; Kandidaten in einem lokalen HTML-Arbeitsbereich prüfen |
+| `/codexspec:evolve` | Freigegebenes Projektwissen in einen Beitragsentwurf für das Upstream-Projekt überführen |
+| `/codexspec:onboard` | Kandidatenwissen aus einer bestehenden Codebasis in das Profil übernehmen |
 
 ### Git Workflow Commands
 
@@ -996,6 +999,35 @@ AI:  Converting tasks to GitHub issues...
 - Funktioniert nur mit GitHub-Repositories
 - Erzeugt Issues in der Standard-Konfiguration des Repositories
 - Vor dem Lauf auf Duplikate prüfen
+
+---
+
+### `/codexspec:distill`
+
+Erfasst wiederverwendbares, funktionsübergreifendes Wissen in `.codexspec/profile/` und prüft offene Kandidaten, ohne deren Markdown-Dateien von Hand zu bearbeiten.
+
+**Syntax:**
+
+```text
+/codexspec:distill [Interaktionsabschnitt]
+/codexspec:distill review
+```
+
+**Manuelle Prüfung:**
+
+- `/codexspec:distill review` – oder ein direkter Aufruf ohne neuen Abschnitt zum Extrahieren – öffnet eine Offline-HTML-Seite, die ausschließlich von `127.0.0.1` ausgeliefert wird. Ihre Kopfzeile nennt das Projektverzeichnis, in das die Sitzung schreibt, damit zwei gleichzeitig geöffnete Prüfungen nicht verwechselt werden können.
+- Die Seite unterstützt strukturierte Überarbeitung, Freigabe, Verwerfen, Zurückstellen, Zusammenführung, eine vollständige Übersicht der vorgemerkten Entscheidungen und ein ausdrückliches **Alle anwenden**. Eine Überarbeitung oder Zusammenführung muss ihre exakte endgültige Markdown-Vorschau zeigen, bevor dieselbe Aktion vorgemerkt werden kann; die Seite nennt vor jeder Entscheidung, in welchem der drei Vorschauzustände ein Eintrag ist – keine Vorschau, mit den aktuellen Änderungen übereinstimmend, oder seit der Vorschau geändert.
+- Jede Aktion, die Eintragsdateien entfernt, verlangt eine zweite Bestätigung mit ihrer Folge: Verwerfen nennt die Datei, die beim Anwenden gelöscht wird, eine Zusammenführung nennt die Anzahl der Mitgliedseinträge, die sie löscht, und das Verwerfen des Entwurfs nennt die Anzahl der vorgemerkten Entscheidungen, die verloren gehen.
+- Ein Eintrag wird nur mit menschlicher Freigabe **und** ergebnisbasiertem Verifikationsbeleg `vetted`. Die Seite zeigt vor der Freigabe, ob die gespeicherten Belege diese Anforderung bereits erfüllen.
+- Die Warteschlange gruppiert Einträge nach dem, was entschieden ist, und zeigt, wie viele der offenen Einträge bereits erledigt sind. Nach einer vorgemerkten Entscheidung springt die Seite zum nächsten unentschiedenen Eintrag; ein Schalter in der Kopfzeile schaltet das ab.
+- Die Seite ist über die Tastatur bedienbar – `?` zeigt die Tasten. Keine einzelne Taste wendet den Stapel an, bricht die Sitzung ab oder verwirft den Entwurf.
+- Vorgemerkte Entscheidungen liegen in einem wiederherstellbaren, von Git ausgeschlossenen Projektentwurf. Pro Projekt ist nur eine schreibende Prüfung aktiv.
+- Ein strukturell beschädigter Entwurf bleibt mit einer verwertbaren Diagnose erhalten und wird nur durch ein ausdrückliches Verwerfen entfernt.
+- Beim Anwenden werden die Quell-Hashes erneut geprüft; hat sich ein Eintrag geändert, wird der gesamte Stapel abgelehnt. Eine gleichzeitige Änderung wird nie überschrieben und kein Teilerfolg gemeldet.
+- Alle Seitenressourcen werden mit CodexSpec ausgeliefert. Die Seite nutzt kein CDN, keinen Remote-Modellaufruf und keine Telemetrie.
+- Lässt sich kein Browser öffnen, gibt der Befehl die tokengeschützte lokale URL aus. Fordern Sie den ausdrücklichen Textmodus an, wenn ein Browser unpassend ist; er nutzt dieselbe Prüfung und denselben Schreibpfad.
+
+Auto-Distill bleibt nicht-interaktiv und nicht-blockierend: Es öffnet die Seite nie, startet keine Textprüfung und wartet nicht auf einen gespeicherten Entwurf.
 
 ---
 

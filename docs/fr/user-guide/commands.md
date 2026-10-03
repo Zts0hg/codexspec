@@ -38,6 +38,9 @@ Regroupées par catégorie, en miroir du catalogue du README. Au sein de chaque 
 | `/codexspec:analyze` | Analyse de cohérence inter-artifacts (avec correction automatique, fondée sur la sévérité) |
 | `/codexspec:checklist` | Générer des checklists de qualité des exigences |
 | `/codexspec:tasks-to-issues` | Convertir les tâches en issues GitHub |
+| `/codexspec:distill` | Capturer les connaissances réutilisables du projet ; passer en revue les candidats dans un espace de travail HTML local |
+| `/codexspec:evolve` | Transformer les connaissances validées du projet en une proposition de contribution en amont |
+| `/codexspec:onboard` | Amorcer le profil avec des connaissances candidates issues d'une base de code existante |
 
 ### Commandes de flux Git
 
@@ -996,6 +999,35 @@ AI:  Converting tasks to GitHub issues...
 - Ne fonctionne qu'avec les dépôts GitHub
 - Crée les issues dans la configuration par défaut du dépôt
 - Vérifiez l'absence de doublons avant exécution
+
+---
+
+### `/codexspec:distill`
+
+Capture les connaissances réutilisables transverses dans `.codexspec/profile/` et passe en revue les candidats en attente sans modifier leurs fichiers Markdown à la main.
+
+**Syntaxe :**
+
+```text
+/codexspec:distill [segment d'interaction]
+/codexspec:distill review
+```
+
+**Revue manuelle :**
+
+- `/codexspec:distill review`, ou un appel direct sans nouveau segment à extraire, ouvre une page HTML hors ligne servie uniquement depuis `127.0.0.1`. Son en-tête nomme le répertoire de projet dans lequel la session écrira, afin que deux revues ouvertes côte à côte ne puissent pas être confondues.
+- La page prend en charge la révision structurée, la validation, le rejet, le report, la consolidation, un récapitulatif complet de ce qui est préparé et un **Tout appliquer** explicite. Une révision ou une fusion doit afficher sa prévisualisation Markdown finale exacte avant que la même action puisse être préparée ; la page indique dans lequel des trois états de prévisualisation se trouve chaque enregistrement — pas de prévisualisation, conforme aux modifications actuelles, ou modifié depuis la prévisualisation — avant que vous n'utilisiez une commande de décision.
+- Toute action qui supprime des fichiers d'enregistrement demande une seconde confirmation énonçant sa conséquence : le rejet nomme le fichier que l'application supprimera, une fusion nomme le nombre d'enregistrements membres qu'elle supprimera, et l'abandon du brouillon nomme le nombre de décisions préparées qui seront perdues.
+- Un enregistrement ne devient `vetted` qu'avec une approbation humaine **et** une preuve de vérification fondée sur un résultat. La page indique, avant que vous ne choisissiez la validation, si les preuves enregistrées satisfont déjà cette exigence.
+- La file regroupe les enregistrements selon ce qui est décidé et indique combien des enregistrements en attente sont déjà réglés. Préparer une décision fait passer à l'enregistrement suivant non décidé ; un interrupteur dans l'en-tête le désactive.
+- La page s'utilise au clavier : appuyez sur `?` pour voir les touches. Aucune touche seule n'applique le lot, n'annule la session ni n'abandonne le brouillon.
+- Les décisions préparées utilisent un brouillon de projet récupérable et exclu de Git. Une seule revue en écriture est active par projet.
+- Un brouillon structurellement endommagé est conservé avec un diagnostic exploitable et n'est supprimé que par une action d'abandon explicite.
+- L'application revérifie les empreintes source et rejette la totalité du lot si un enregistrement a changé ; elle n'écrase jamais une modification concurrente et ne signale jamais un succès partiel.
+- Toutes les ressources de la page sont livrées avec CodexSpec. La page n'utilise ni CDN, ni appel de modèle distant, ni télémétrie.
+- Si aucun navigateur ne peut être ouvert, la commande affiche l'URL locale protégée par jeton. Demandez le mode texte explicite lorsqu'un navigateur ne convient pas ; il utilise la même validation et le même chemin d'écriture.
+
+La distillation automatique reste non interactive et non bloquante : elle n'ouvre jamais la page, ne démarre jamais la revue en mode texte et n'attend jamais un brouillon enregistré.
 
 ---
 

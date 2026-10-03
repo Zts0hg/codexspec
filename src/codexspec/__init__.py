@@ -8,8 +8,10 @@ executable specifications that guide AI-assisted implementation.
 
 import json
 import re
+import secrets
 import subprocess
 import sys
+import webbrowser
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -43,6 +45,12 @@ from .commands.installer import (
     should_update_commands,
     update_installed_command_frontmatter,
 )
+from .distill_review.domain import ReviewError, ReviewService
+from .distill_review.lease import ActiveSessionError, ReviewLease
+from .distill_review.server import create_server
+from .distill_review.session import SessionError, SessionStore, ensure_runtime_ignored
+from .distill_review.terminal import localized_error, localized_result, run_text_review, safe_terminal
+from .distill_review.transaction import ProfileTransaction, TransactionError
 from .i18n import (
     generate_config_content,
     get_explicit_language_key,
@@ -72,6 +80,97 @@ app = typer.Typer(
     add_completion=False,
 )
 console = Console()
+
+
+@app.command("_distill-review-helper", hidden=True)
+def distill_review_helper(
+    project_root: Path = typer.Option(Path("."), "--project-root"),
+    mode: str = typer.Option("html", "--mode"),
+    manifest: Optional[Path] = typer.Option(None, "--manifest"),
+    no_open: bool = typer.Option(False, "--no-open"),
+    discard_draft: bool = typer.Option(False, "--discard-draft"),
+) -> None:
+    """Run the deterministic local carrier used by the distill command."""
+    root = project_root.resolve()
+    language = get_interaction_language(root / ".codexspec" / "config.yml")
+    if mode not in {"html", "text"}:
+        _review_result(language, {"status": "invalid_input", "error": "invalid_mode"})
+        raise typer.Exit(2)
+    if not root.is_dir() or not (root / ".codexspec" / "profile").is_dir():
+        _review_result(language, {"status": "invalid_input", "error": "invalid_project_root"})
+        raise typer.Exit(2)
+    store = SessionStore(root)
+    lease = ReviewLease(root)
+    try:
+        lease.acquire({"state": "starting", "mode": mode})
+    except ActiveSessionError as exc:
+        # Machine output reports the running session, but its capability token and
+        # token-bearing URL belong to the session that printed them.
+        session = {key: value for key, value in exc.metadata.items() if key not in {"capability", "url"}}
+        _review_result(language, {"status": "active_session", "session": session})
+        return
+    except (AutomationError, SessionError, OSError) as exc:
+        _review_result(language, {"status": "invalid_input", "error": str(exc)})
+        raise typer.Exit(2) from exc
+    server = None
+    try:
+        try:
+            ProfileTransaction.recover(root, store)
+        except (TransactionError, SessionError, OSError):
+            if not discard_draft:
+                raise
+            # A failed recovery must not brick the documented escape hatch: an
+            # explicit discard abandons the draft and the stuck journal together.
+        if discard_draft:
+            store.discard()
+            store.discard_transaction()
+            _review_result(language, {"status": "discarded"})
+            return
+        draft = store.load()
+        service = ReviewService.from_project(
+            root,
+            manifest_path=manifest,
+            draft=draft,
+            interaction_language=language,
+        )
+    except (ReviewError, SessionError, TransactionError, OSError) as exc:
+        _review_result(language, {"status": "invalid_input", "error": str(exc)})
+        raise typer.Exit(2) from exc
+    if not service.records and not service.clusters and not (service.draft.decisions or service.draft.deferred):
+        _review_result(language, {"status": "nothing_to_review"})
+        return
+    try:
+        if mode == "text":
+            lease.update({"mode": "text"})
+            result = run_text_review(service, store)
+            typer.echo()
+            _machine_json(result)
+            return
+        token = secrets.token_urlsafe(32)
+        server = create_server(service, store, token=token)
+        url = f"http://127.0.0.1:{server.server_port}/#token={token}"
+        lease.update({"mode": "html", "port": server.server_port, "capability": token, "url": url})
+        try:
+            opened = False if no_open else webbrowser.open(url)
+        except (OSError, webbrowser.Error):
+            opened = False
+        if not opened:
+            typer.echo(url)
+        server.timeout = 0.5
+        while not server.stop_event.is_set():
+            server.handle_request()
+        _review_result(language, server.final_result or {"status": "finished"})
+    except (ReviewError, SessionError, TransactionError, OSError) as exc:
+        failure: dict[str, object] = {"status": "invalid_input", "error": str(exc)}
+        if isinstance(exc, TransactionError):
+            failure["records"] = exc.records
+            failure["failures"] = exc.failures
+        _review_result(language, failure)
+        raise typer.Exit(2) from exc
+    finally:
+        if server is not None:
+            server.server_close()
+        lease.release()
 
 
 def get_version() -> str:
@@ -190,6 +289,25 @@ def check() -> None:
 
 def _machine_json(value: object) -> None:
     sys.stdout.write(json.dumps(value, sort_keys=True, separators=(",", ":")) + "\n")
+
+
+def _review_result(language: str, value: dict[str, object]) -> None:
+    status = str(value.get("status", "invalid_input"))
+    if status in {"invalid_input", "conflict"}:
+        raw_records = value.get("records")
+        raw_failures = value.get("failures")
+        records = [str(item) for item in raw_records] if isinstance(raw_records, list) else None
+        failures = [str(item) for item in raw_failures] if isinstance(raw_failures, list) else None
+        message = localized_error(
+            language,
+            str(value.get("error", status)),
+            records=records,
+            failures=failures,
+        )
+    else:
+        message = localized_result(language, status)
+    typer.echo(safe_terminal(message))
+    _machine_json(value)
 
 
 def _stdin_json() -> dict:
@@ -885,6 +1003,7 @@ def init(
     # so knowledge distilled later is effective immediately with no re-init and
     # no dangling reference. Non-destructive: existing profile files are kept.
     ensure_profile_scaffold(target_dir)
+    ensure_runtime_ignored(target_dir, install_managed_file=True)
 
     # Copy helper scripts based on platform
     scripts_source_dir = get_scripts_dir()

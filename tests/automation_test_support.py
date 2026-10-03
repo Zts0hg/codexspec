@@ -6,20 +6,45 @@ import os
 import subprocess
 from pathlib import Path
 
-_GIT_LOCAL_ENV_VARS = (
+_FALLBACK_GIT_LOCAL_ENV_VARS = {
+    "GIT_CONFIG",
+    "GIT_CONFIG_PARAMETERS",
+    "GIT_CONFIG_COUNT",
     "GIT_DIR",
     "GIT_WORK_TREE",
+    "GIT_IMPLICIT_WORK_TREE",
     "GIT_INDEX_FILE",
     "GIT_OBJECT_DIRECTORY",
     "GIT_ALTERNATE_OBJECT_DIRECTORIES",
     "GIT_COMMON_DIR",
-)
+    "GIT_GRAFT_FILE",
+    "GIT_NO_REPLACE_OBJECTS",
+    "GIT_REPLACE_REF_BASE",
+    "GIT_PREFIX",
+    "GIT_INTERNAL_SUPER_PREFIX",
+    "GIT_SHALLOW_FILE",
+}
+
+
+def _git_local_environment_variables() -> frozenset[str]:
+    discovery_environment = os.environ.copy()
+    for name in _FALLBACK_GIT_LOCAL_ENV_VARS:
+        discovery_environment.pop(name, None)
+    result = subprocess.run(
+        ["git", "rev-parse", "--local-env-vars"],
+        check=False,
+        capture_output=True,
+        text=True,
+        env=discovery_environment,
+    )
+    reported = set(result.stdout.split()) if result.returncode == 0 else set()
+    return frozenset(_FALLBACK_GIT_LOCAL_ENV_VARS | reported)
 
 
 def sanitized_git_env() -> dict[str, str]:
     """Caller-local Git variables break nested repositories (see P-2026-0829-0035hy-1)."""
     env = os.environ.copy()
-    for name in _GIT_LOCAL_ENV_VARS:
+    for name in _git_local_environment_variables():
         env.pop(name, None)
     return env
 
