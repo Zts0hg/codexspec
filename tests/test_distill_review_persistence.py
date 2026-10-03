@@ -48,7 +48,7 @@ def test_session_round_trip_discard_and_corrupt_draft(tmp_path: Path) -> None:
 
 
 def test_atomic_bytes_tolerates_platform_without_fchmod(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.delattr(os, "fchmod")
+    monkeypatch.delattr(os, "fchmod", raising=False)  # already absent on Windows
     target = tmp_path / "result.txt"
     atomic_bytes(target, b"portable")
     assert target.read_bytes() == b"portable"
@@ -93,6 +93,7 @@ def test_session_rejects_runtime_symlink_swap_without_external_write(
     assert external_draft.read_text(encoding="utf-8") == "must survive"
 
 
+@pytest.mark.skipif(os.name == "nt", reason="runtime directory identity pinning is POSIX-only")
 def test_session_rejects_runtime_directory_identity_swap(tmp_path: Path) -> None:
     root = make_profile(tmp_path)
     store = SessionStore(root)
@@ -421,7 +422,7 @@ def test_transaction_reports_every_hash_conflict(tmp_path: Path) -> None:
     root = make_profile(tmp_path)
     original = next((root / ".codexspec/profile/pitfalls").glob("*.md"))
     second = original.with_name("P-2026-0927-2310d6-2.md")
-    second.write_text(original.read_text().replace("P-2026-0927-2310d6-1", "P-2026-0927-2310d6-2"))
+    second.write_text(original.read_text().replace("P-2026-0927-2310d6-1", "P-2026-0927-2310d6-2"), newline="\n")
     service = ReviewService.from_project(root)
     for record_id in sorted(service.records):
         service.stage({"action": "remove", "record_id": record_id})
@@ -583,7 +584,7 @@ def test_transaction_aggregates_multiple_schema_failures(tmp_path: Path) -> None
     root = make_profile(tmp_path)
     original = next((root / ".codexspec/profile/pitfalls").glob("*.md"))
     second = original.with_name("P-2026-0927-2310d6-2.md")
-    second.write_text(original.read_text().replace("P-2026-0927-2310d6-1", "P-2026-0927-2310d6-2"))
+    second.write_text(original.read_text().replace("P-2026-0927-2310d6-1", "P-2026-0927-2310d6-2"), newline="\n")
     service = ReviewService.from_project(root)
     for record_id in sorted(service.records):
         service.stage({"action": "replace", "record_id": record_id, "fields": {"claim": "valid first"}})

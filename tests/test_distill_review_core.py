@@ -38,7 +38,9 @@ def make_profile(tmp_path: Path, *, verified: bool = False) -> Path:
     root = tmp_path / "project"
     target = root / ".codexspec/profile/pitfalls/P-2026-0927-2310d6-1-preserve-unknown.md"
     target.parent.mkdir(parents=True)
-    target.write_text(record_text(verified=verified), encoding="utf-8")
+    # Pin LF: the codec preserves each line's ending, so a CRLF fixture would make
+    # every byte assertion OS-dependent.
+    target.write_text(record_text(verified=verified), encoding="utf-8", newline="\n")
     return root
 
 
