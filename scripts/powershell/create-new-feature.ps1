@@ -132,6 +132,34 @@ if (-not $branchSuffix) {
     exit 1
 }
 
+# Resolve isolation before any feature directory or branch mutation.
+if (-not (Get-Command codexspec -ErrorAction SilentlyContinue)) {
+    Write-Error "CodexSpec runtime is unavailable. Install codexspec before creating a feature."
+    exit 1
+}
+$settingOutput = & codexspec _worktree-helper setting
+if ($LASTEXITCODE -ne 0) { Write-Output $settingOutput; exit $LASTEXITCODE }
+$setting = $settingOutput | ConvertFrom-Json
+if ($setting.enabled) {
+    $workspaceOutput = & codexspec _worktree-helper create --name $branchSuffix
+    $workspaceExit = $LASTEXITCODE
+    if ($workspaceExit -ne 0) { Write-Output $workspaceOutput; exit $workspaceExit }
+    $workspace = $workspaceOutput | ConvertFrom-Json
+    $env:CODEXSPEC_FEATURE = $workspace.branch
+    $result = [PSCustomObject]@{
+        BRANCH_NAME = $workspace.branch
+        REQUIREMENTS_FILE = $workspace.requirements_file
+        FEATURE_ID = $workspace.feature_id
+        WORKTREE_PATH = $workspace.workspace
+        HAS_GIT = $true
+        STATUS = $workspace.status
+        WARNINGS = $workspace.warnings
+    }
+    if ($Json) { $result | ConvertTo-Json -Compress }
+    else { $result | Format-List | Out-String | Write-Output }
+    exit 0
+}
+
 $specsDir = Join-Path $repoRoot '.codexspec/specs'
 New-Item -ItemType Directory -Path $specsDir -Force | Out-Null
 

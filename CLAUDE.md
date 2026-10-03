@@ -336,7 +336,7 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 - **Two axes** (the load-bearing distinction): the **authority axis** (requirements > spec > design > plan > tasks) decides which artifact wins a conflict; the **reconcilability axis** (design ≳ spec ≫ requirements) decides what can be compared to code. Reconciliation therefore compares against **confirmed spec/design** and adjudicates direction with **requirements** — code is never mechanically compared to `requirements.md`, which deliberately withholds verifiable contracts.
 - **Report, never repair** (opposite of `analyze`): when code and a confirmed spec disagree, the code may carry a defect or the spec may be stale, so the direction is surfaced (`fix-code` / `update-spec` / `needs-your-judgment`) but never applied. `analyze` may auto-remediate only because its fix direction is uniquely fixed by the authority hierarchy; here it is not. Three drift kinds (`undocumented-behavior`, `unimplemented-spec`, `semantic-mismatch`), severity assigned by **impact rather than by kind**, and `semantic-mismatch` requires evidence quoted from **both** sides.
 - **Inference is never authority**: everything derived is marked `Status: inferred/open` and becomes a baseline only when the user flips it to `confirmed` and appends a Confirmation Log entry — reusing the `requirements.md` convention, adding no new command. An unconfirmed draft is refused as a baseline, since comparing code against a mirror of itself yields zero drift by construction.
-- **Slice-sized and read-only**: the unit is a directory/module path; each generate run seeds `.codexspec/specs/<id>-<slice>/` whose `Slice:` header is the entire baseline-lookup mechanism (no index file). Workspace creation **reuses the id/directory convention but never creates a git branch** — `create-new-feature.sh` is deliberately not invoked because it runs `git checkout -b`. Standalone: no `auto_next`, no automatic hook, no Automatic Distillation section; never writes `.codexspec/profile/` (that store belongs to `distill`/`onboard`).
+- **Slice-sized and read-only**: the unit is a directory/module path; each generate run seeds `.codexspec/specs/<id>-<slice>/` whose `Slice:` header is the entire baseline-lookup mechanism (no index file). Artifact workspace creation **reuses the id/directory convention inside the routed output checkout**. Shared worktree routing may first prepare that checkout; artifact publication never switches or modifies the inspected source checkout. Standalone: no `auto_next`, no automatic hook, no Automatic Distillation section; never writes `.codexspec/profile/` (that store belongs to `distill`/`onboard`).
 
 **Implementation**: Edit `templates/commands/reverse-spec.md`; register under the `enhanced` category in `installer.py`. The `.claude/commands/codexspec/` and `.agents/skills/codexspec-*/` forms are regenerated from templates (do not hand-edit the derived copies).
 
@@ -357,7 +357,7 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 
 **Feature**: A shared product blueprint plus an autonomous development loop over it. `/codexspec:blueprint` discusses and maintains confirmed requirements in a single shared document; `/codexspec:auto-dev` takes ownership of a dedicated workspace and develops every pending requirement in that blueprint end-to-end through the existing SDD chain.
 
-- **Shared blueprint document**: `.codexspec/blueprint.md` in a dedicated Git worktree on a fixed branch (`codexspec/auto-dev`, worktree `<repo>-worktrees/worktree-for-codexspec-auto-dev`), so multiple feature branches share one confirmed-requirements source.
+- **Shared blueprint document**: `.codexspec/blueprint.md` in a dedicated Git worktree on a fixed branch (`codexspec/auto-dev`, worktree `<repo>-codexspec-worktrees/worktree-for-codexspec-auto-dev`), so multiple feature branches share one confirmed-requirements source.
 - **Strict mutation protocol**: the blueprint changes only through a versioned JSON request/response protocol (`append_requirement`, `replace_pending_requirement`, `delete_pending_requirement`, `move_pending_requirement`, `update_status`) classified strictly as `invalid_request → conflict → rejected → applied`, with exact-byte SHA-256 optimistic concurrency (`expected_blueprint_hash`).
 - **Managed metadata**: each block carries an exact three-line managed prefix (Feature ID / Development Status / Feature Directory); pending blocks are freely editable, in-progress/completed blocks are view-only, and only `auto-dev` may transition status (with a valid ownership token).
 - **Atomic persistence**: every applied operation is one atomic file replacement plus one blueprint-only commit, journaled with a recovery record so every interrupt window recovers deterministically or fails closed.
@@ -826,3 +826,25 @@ Read the full record — each carries a `status` of `candidate` or `vetted`; wei
 
 **Capture knowledge as you go.** When this session produces reusable cross-feature knowledge — even in plain chat or a non-SDD fix — run `/codexspec:distill` near that moment rather than only at wrap-up. It is non-blocking and early-exits when there is nothing new.
 <!-- CODEXSPEC PROFILE END -->
+
+### Ordinary Feature Worktrees
+
+`workflow.worktrees` defaults on; only literal `false` selects in-place ordinary writes.
+`src/codexspec/worktrees.py` owns checkout-local YAML access, feature/maintenance creation,
+Git registration validation, durable preparation state, and the verification handoff.
+The hidden `_worktree-helper` exposes absolute JSON paths for scripts and agents.
+All 28 command sources include `workspace-routing.md`; regenerate their distributed
+and installed forms when changing this contract.
+
+Use `<primary-repository>-codexspec-worktrees/<full-feature-id-and-name>` for ordinary
+features, and fixed basenames for maintenance and auto-dev. Discovery handles normal
+and bare repositories independently of the invoking linked checkout. Baselines compare
+local/remote main by ancestry after fetch; divergent histories merge in the new checkout
+and remain non-ready until verified. Preparation metadata is stored under the common
+Git directory, protected by a short creation lock. Never replace missing/occupied paths
+with main-checkout writes. Keep prepared worktrees after completion.
+
+Configuration and mutable profile-review setup route before writing. Config values stay
+checkout-local; destination values govern toggles, and Git integration propagates edits.
+First-time and update init are explicit routing exceptions. Auto-dev always keeps its
+fixed workspace and existing ownership protocol, even when ordinary isolation is off.

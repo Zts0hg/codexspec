@@ -14,7 +14,7 @@ import sys
 import webbrowser
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 import typer
 from rich.console import Console
@@ -64,6 +64,15 @@ from .i18n import (
 from .integrations import get_integrations
 from .profile import ensure_profile_scaffold, inject_profile_block
 from .translator import SUPPORTED_LANGUAGES, translate
+from .worktrees import (
+    MAINTENANCE_NAME,
+    WorkspaceManager,
+    feature_name,
+    read_worktrees,
+    validate_write_path,
+    write_destination,
+    write_worktrees,
+)
 
 # Version info
 __version__ = "0.7.17"
@@ -82,6 +91,51 @@ app = typer.Typer(
 console = Console()
 
 
+@app.command("_worktree-helper", hidden=True)
+def worktree_helper(
+    action: str = typer.Argument(...),
+    name: Optional[str] = typer.Option(None, "--name"),
+    feature: Optional[str] = typer.Option(None, "--feature"),
+    verification: Optional[Path] = typer.Option(None, "--verification"),
+) -> None:
+    """Return structured workspace facts; never emit shell code for callers to evaluate."""
+    recovery: dict[str, Any] = {}
+    result: dict[str, Any]
+    try:
+        from .worktrees import checkout_root
+
+        root = checkout_root(Path.cwd())
+        if action == "setting":
+            result = {"enabled": read_worktrees(root / ".codexspec/config.yml")}
+        elif action == "route":
+            result = {"status": "ready", "workspace": str(write_destination(root))}
+        elif action == "create" and not read_worktrees(root / ".codexspec/config.yml"):
+            result = {"status": "disabled", "workspace": str(root.resolve())}
+        else:
+            manager = WorkspaceManager(root)
+            if action == "create":
+                if bool(name) == bool(feature):
+                    raise AutomationError("expected_name_or_feature")
+                identity = feature if feature else feature_name(name or "")
+                branch, path, _ = manager._identity(identity)
+                recovery = {"branch": branch, "workspace": str(path)}
+                result = manager.create(identity, reuse=feature is not None)
+            elif action == "resolve" and feature:
+                result = manager.resolve(feature)
+            elif action == "maintenance":
+                result = manager.create(MAINTENANCE_NAME)
+            elif action == "finish" and feature and verification:
+                result = manager.finish(feature, json.loads(verification.read_text(encoding="utf-8")))
+            else:
+                raise AutomationError("invalid_workspace_action", action)
+        print(json.dumps(result, ensure_ascii=False))
+        if result.get("status") in {"creating", "merge_requires_resolution", "merge_requires_verification"}:
+            raise typer.Exit(3)
+    except (AutomationError, OSError, ValueError) as exc:
+        print(json.dumps({**recovery, "status": "blocked", "error": str(exc)}, ensure_ascii=False))
+        raise typer.Exit(1) from exc
+
+
 @app.command("_distill-review-helper", hidden=True)
 def distill_review_helper(
     project_root: Path = typer.Option(Path("."), "--project-root"),
@@ -98,6 +152,17 @@ def distill_review_helper(
         raise typer.Exit(2)
     if not root.is_dir() or not (root / ".codexspec" / "profile").is_dir():
         _review_result(language, {"status": "invalid_input", "error": "invalid_project_root"})
+        raise typer.Exit(2)
+    try:
+        root = write_destination(root)
+    except (AutomationError, OSError) as exc:
+        _review_result(language, {"status": "invalid_input", "error": str(exc)})
+        raise typer.Exit(2) from exc
+    language = get_interaction_language(root / ".codexspec" / "config.yml")
+    if not (root / ".codexspec" / "profile").is_dir():
+        _review_result(
+            language, {"status": "invalid_input", "error": "missing_destination_profile", "project_root": str(root)}
+        )
         raise typer.Exit(2)
     store = SessionStore(root)
     lease = ReviewLease(root)
@@ -526,6 +591,9 @@ def config(
         "--auto-distill",
         help="Toggle workflow.auto_distill (bare), or set it (on/off|true/false|1/0|yes/no).",
     ),
+    worktrees: Optional[str] = typer.Option(
+        None, "--worktrees", help="Toggle checkout-local worktree isolation (default on), or set on/off."
+    ),
 ) -> None:
     """
     View or modify CodexSpec project configuration.
@@ -560,6 +628,58 @@ def config(
         console.print("[yellow]No CodexSpec project found in current directory.[/yellow]")
         console.print("Run [cyan]codexspec init[/cyan] to create a new project.")
         raise typer.Exit(1)
+
+    # Validate values before creating any destination workspace.
+    for value, sentinel, option in (
+        (auto_next, _AUTO_NEXT_SENTINEL, "--auto-next"),
+        (auto_distill, _AUTO_DISTILL_SENTINEL, "--auto-distill"),
+        (worktrees, "__toggle_worktrees__", "--worktrees"),
+    ):
+        if value is not None and value != sentinel:
+            try:
+                parse_auto_next_value(value)
+            except ValueError:
+                console.print(f"[red]Invalid {option} value:[/red] {value!r}")
+                raise typer.Exit(1)
+    modifying = any(
+        value is not None
+        for value in (
+            auto_next,
+            auto_distill,
+            worktrees,
+            set_lang,
+            set_commit_lang,
+            set_interaction_lang,
+            set_document_lang,
+        )
+    )
+    if modifying:
+        try:
+            isolated = read_worktrees(config_file)
+            destination = write_destination(config_file.parent.parent)
+            config_file = destination / ".codexspec" / "config.yml"
+            if isolated:
+                validate_write_path(destination, config_file)
+                if set_lang is not None or set_interaction_lang is not None:
+                    _validate_command_frontmatter(destination)
+            if not config_file.is_file():
+                raise AutomationError("missing_destination_config", str(config_file))
+            console.print(f"Configuration destination: {config_file}", markup=False, soft_wrap=True)
+            console.print("Changes apply to this checkout; other checkouts receive them through Git integration.")
+        except (AutomationError, OSError) as exc:
+            console.print(str(exc), markup=False)
+            raise typer.Exit(1) from exc
+    if worktrees is not None:
+        target = (
+            not read_worktrees(config_file) if worktrees == "__toggle_worktrees__" else parse_auto_next_value(worktrees)
+        )
+        try:
+            write_worktrees(config_file, target)
+        except (AutomationError, OSError) as exc:
+            console.print(str(exc), markup=False)
+            raise typer.Exit(1) from exc
+        console.print(f"workflow.worktrees = {str(target).lower()}")
+        return
 
     # Handle auto-next toggle/set
     if auto_next is not None:
@@ -740,6 +860,7 @@ def config(
         return
 
     # Display current configuration
+    console.print(f"Effective workflow.worktrees: {str(read_worktrees(config_file)).lower()}")
     console.print(
         Panel(
             config_file.read_text(encoding="utf-8"),
@@ -1228,6 +1349,15 @@ def init(
     console.print(f"[yellow]{_important_action(integrations, normalized_lang)}[/yellow]")
 
 
+def _validate_command_frontmatter(root: Path) -> None:
+    commands = root / ".claude" / "commands" / COMMANDS_SUBDIR
+    validate_write_path(root, commands)
+    if commands.exists() and not commands.is_dir():
+        raise AutomationError("unsafe_write_path", str(commands))
+    for command in commands.glob("*.md"):
+        validate_write_path(root, command)
+
+
 def _rerender_command_frontmatter(config_file: Path) -> None:
     """Re-render installed command frontmatter in the current interaction language.
 
@@ -1237,7 +1367,7 @@ def _rerender_command_frontmatter(config_file: Path) -> None:
     pre-translated cache are not re-rendered here (that path would invoke the
     ``claude`` CLI once per command); the user is advised to run ``codexspec init``.
     """
-    commands_subdir = Path.cwd() / ".claude" / "commands" / COMMANDS_SUBDIR
+    commands_subdir = config_file.parent.parent / ".claude" / "commands" / COMMANDS_SUBDIR
     if not commands_subdir.exists():
         return
     language = get_interaction_language(config_file)  # re-read AFTER the config write
@@ -1919,6 +2049,8 @@ def main() -> None:
         sys.argv = _normalize_auto_next_argv(sys.argv)
     if "--auto-distill" in sys.argv:
         sys.argv = _normalize_auto_distill_argv(sys.argv)
+    if "--worktrees" in sys.argv:
+        sys.argv = _normalize_optional_value_argv(sys.argv, "--worktrees", "__toggle_worktrees__")
     app()
 
 

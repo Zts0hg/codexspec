@@ -66,6 +66,8 @@ forbidden-tools: Bash(git add:*), Bash(git reset:*), Bash(git checkout:*), Bash(
 
 <!-- CODEXSPEC:INCLUDE expression-standard.md -->
 
+<!-- CODEXSPEC:INCLUDE workspace-routing.md -->
+
 ## Parameter Check
 
 Check if `$ARGUMENTS` contains `-p`:

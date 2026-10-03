@@ -1109,3 +1109,35 @@ def test_review_code_eval_corpus_declares_required_cases_and_expectations() -> N
             assert "return 'stable'" in case.data["setup"]["baseline_files"]["src/api.py"]
         if case.case_id in {"contract-multi-surface", "clean-contract-propagation"}:
             assert case.data["expect"]["minimum_contract_surfaces"] >= 2
+
+
+@pytest.mark.parametrize("disappears_at", ["before_chmod", "before_retry"])
+def test_cleanup_tolerates_a_file_removed_by_another_process(tmp_path: Path, monkeypatch, disappears_at: str):
+    import os
+
+    target = tmp_path / "maintenance.lock"
+    target.write_bytes(b"temporary Git lock")
+    if disappears_at == "before_chmod":
+        target.unlink()
+    else:
+        real_chmod = os.chmod
+
+        def chmod_then_remove(path, mode):
+            real_chmod(path, mode)
+            target.unlink()
+
+        monkeypatch.setattr(run_eval.os, "chmod", chmod_then_remove)
+    run_eval._retry_remove_writable(os.unlink, str(target), FileNotFoundError(str(target)))
+    assert not target.exists()
+
+
+def test_cleanup_keeps_real_permission_failures_visible(tmp_path: Path):
+    target = tmp_path / "locked"
+    target.write_bytes(b"protected")
+
+    def deny_removal(path):
+        raise PermissionError(path)
+
+    with pytest.raises(PermissionError):
+        run_eval._retry_remove_writable(deny_removal, str(target), PermissionError(str(target)))
+    assert target.read_bytes() == b"protected"

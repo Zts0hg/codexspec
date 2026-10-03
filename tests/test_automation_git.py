@@ -24,7 +24,7 @@ def test_locate_repository_from_nested_directory(tmp_path: Path) -> None:
     assert context.repository_root == repo.resolve()
     assert context.default_branch == "main"
     assert context.worktree_path.name == WORKTREE_BASENAME
-    assert context.worktree_path.parent == Path(f"{repo.resolve()}-worktrees")
+    assert context.worktree_path.parent == Path(f"{repo.resolve()}-codexspec-worktrees")
 
 
 def test_adjacent_repositories_have_distinct_dedicated_worktree_paths(tmp_path: Path) -> None:

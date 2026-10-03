@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.util
+import os
 import shutil
 import subprocess
 import sys
@@ -33,11 +34,17 @@ def _pytest_command(arguments: list[str]) -> list[str]:
 
 def main(arguments: list[str] | None = None) -> int:
     pytest_arguments = sys.argv[1:] if arguments is None else arguments
-    result = subprocess.run(
-        _pytest_command(pytest_arguments),
-        check=False,
-        env=sanitized_git_env(),
-    )
+    command = _pytest_command(pytest_arguments)
+    environment = sanitized_git_env()
+    if command[0] != "uv":
+        # Match child CLI tools to the selected interpreter even from a plain git hook.
+        scripts = subprocess.check_output(
+            [command[0], "-c", "import sysconfig; print(sysconfig.get_path('scripts'))"],
+            text=True,
+            env=environment,
+        ).strip()
+        environment["PATH"] = scripts + os.pathsep + environment.get("PATH", "")
+    result = subprocess.run(command, check=False, env=environment)
     return result.returncode
 
 

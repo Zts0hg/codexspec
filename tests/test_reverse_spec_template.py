@@ -475,13 +475,12 @@ def test_generated_artifacts_are_marked_inferred_and_open() -> None:
 # --- S17 safety boundary ---
 
 
-def test_workspace_creation_never_touches_git() -> None:
-    """Regression for the review's P2 finding (CON-007, REQ-017): the workspace is a
-    plain directory, and the branch-creating script is explicitly not invoked."""
+def test_workspace_creation_preserves_source_checkout() -> None:
+    """Artifact creation follows isolation routing and preserves the inspected source."""
     content = prose("reverse-spec")
-    assert "Create the directory only." in content
-    assert "create and switch a git branch, which this command must never do" in content
-    assert "Creating a workspace changes no git state" in content
+    assert "OUTPUT_ROOT" in content and "SOURCE_ROOT" in content
+    assert "must never switch the invoking checkout" in content
+    assert "artifact directory" in content
 
 
 def test_workspace_identifier_convention_is_guarded() -> None:

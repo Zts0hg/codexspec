@@ -131,8 +131,13 @@ def _write_files(root: Path, files: dict[str, str]) -> None:
 
 
 def _retry_remove_writable(function: Any, path: str, _exc: Any) -> None:
-    os.chmod(path, stat.S_IREAD | stat.S_IWRITE)
-    function(path)
+    try:
+        os.chmod(path, stat.S_IREAD | stat.S_IWRITE)
+        function(path)
+    except FileNotFoundError:
+        # Git maintenance can remove a transient lock while rmtree is visiting it.
+        # Absence completes removal; permission and other I/O failures still surface.
+        pass
 
 
 def _remove_tree(path: Path) -> None:

@@ -98,6 +98,10 @@ def test_installed_wheel_initializes_and_runs_offline_review(tmp_path: Path) -> 
     assert init.returncode == 0
     assert (project / ".codexspec/.gitignore").read_text(encoding="utf-8").count(".runtime/") == 1
 
+    # This offline UI test intentionally exercises in-place, non-Git operation.
+    from codexspec.worktrees import write_worktrees
+
+    write_worktrees(project / ".codexspec/config.yml", False)
     record_id = "P-2026-0929-1200aa-1"
     record = project / ".codexspec/profile/pitfalls" / f"{record_id}-installed-review.md"
     record.write_text(

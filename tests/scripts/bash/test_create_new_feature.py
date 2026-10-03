@@ -15,6 +15,15 @@ import pytest
 class TestCreateNewFeature:
     """Tests for create-new-feature.sh script."""
 
+    @pytest.fixture(autouse=True)
+    def explicit_legacy_optout(self, request):
+        """Existing cases exercise the intentionally preserved in-place mode."""
+        for name in ("temp_codexspec_project", "temp_codexspec_git_project"):
+            if name in request.fixturenames:
+                project = request.getfixturevalue(name)
+                config = project / ".codexspec/config.yml"
+                config.write_text(config.read_text() + "workflow:\n  worktrees: false\n")
+
     def test_help_flag(self, bash_scripts_dir: Path, tmp_path: Path):
         """-h flag displays help message."""
         script_path = bash_scripts_dir / "create-new-feature.sh"
@@ -227,3 +236,56 @@ class TestCreateNewFeature:
         assert result.returncode == 0
         assert "Next steps:" in result.stdout
         assert "Confirm the requirements record" in result.stdout
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="Bash requires Unix")
+def test_s026_default_isolated_script(tmp_path, bash_scripts_dir):
+    import json
+
+    from tests.automation_test_support import git
+    from tests.test_worktrees import configured
+
+    repo = configured(tmp_path / "repo")
+    result = subprocess.run(
+        ["bash", str(bash_scripts_dir / "create-new-feature.sh"), "--name", "sample"],
+        cwd=repo,
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+    data = json.loads(result.stdout)
+    assert Path(data["workspace"]).parent == Path(str(repo) + "-codexspec-worktrees")
+    assert Path(data["requirements_file"]).is_file()
+    assert git(repo, "branch", "--show-current").stdout.strip() == "main"
+    assert not (repo / ".codexspec/specs").exists()
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="Bash requires Unix")
+def test_s028_missing_helper_never_falls_back_to_main(tmp_path):
+    import os
+    import shutil
+    import subprocess
+
+    from tests.test_worktrees import configured
+
+    repo = configured(tmp_path / "repo")
+    commands = tmp_path / "commands"
+    commands.mkdir()
+    # Supply script prerequisites, deliberately excluding the CodexSpec executable.
+    for name in ("dirname", "tr", "sed", "git", "date", "head", "pwd"):
+        executable = shutil.which(name)
+        if executable:
+            (commands / name).symlink_to(executable)
+    env = os.environ.copy()
+    env["PATH"] = str(commands)
+    script = Path(__file__).resolve().parents[3] / "scripts/bash/create-new-feature.sh"
+    result = subprocess.run(
+        ["/bin/bash", str(script), "--name", "missing-helper"],
+        cwd=repo,
+        env=env,
+        capture_output=True,
+        text=True,
+    )
+    assert result.returncode != 0 and "runtime is unavailable" in result.stderr + result.stdout
+    assert not (repo / ".codexspec/specs").exists()
+    assert not Path(str(repo) + "-codexspec-worktrees").exists()

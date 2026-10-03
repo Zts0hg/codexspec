@@ -29,6 +29,8 @@ Converse in the interaction language and author artifacts in the document langua
 
 <!-- CODEXSPEC:INCLUDE expression-standard.md -->
 
+<!-- CODEXSPEC:INCLUDE workspace-routing.md -->
+
 ## Checklist Purpose: "Unit Tests for Requirements"
 
 **CRITICAL CONCEPT**: Checklists are **UNIT TESTS FOR REQUIREMENTS WRITING** - they validate the quality, clarity, and completeness of requirements.

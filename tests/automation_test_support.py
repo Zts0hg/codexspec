@@ -84,6 +84,9 @@ def make_bare_remote(path: Path, source: Path) -> Path:
         capture_output=True,
         env=sanitized_git_env(),
     )
+    # Cloning does not copy source-local config; attached worktrees commit here too.
+    git(path, "config", "user.name", "CodexSpec Tests")
+    git(path, "config", "user.email", "tests@codexspec.invalid")
     git(source, "remote", "add", "origin", str(path))
     git(source, "fetch", "origin")
     git(source, "remote", "set-head", "origin", "main")

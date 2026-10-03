@@ -18,7 +18,15 @@ from codexspec.distill_review.session import SessionStore
 from codexspec.distill_review.terminal import localized_error, run_text_review
 from codexspec.distill_review.transaction import ProfileTransaction, TransactionError
 from codexspec.i18n import LANGUAGE_ALIASES
-from tests.test_distill_review_core import make_profile, write_consolidation_manifest
+from tests.test_distill_review_core import make_profile as _make_profile
+from tests.test_distill_review_core import write_consolidation_manifest
+
+
+def make_profile(*args, **kwargs):
+    """Interface cases select in-place mode; worktree routing has its own Git fixtures."""
+    root = _make_profile(*args, **kwargs)
+    (root / ".codexspec/config.yml").write_text("workflow:\n  worktrees: false\n")
+    return root
 
 
 def request(server, method: str, path: str, *, token: str | None = None, payload=None, origin: str | None = None):
@@ -871,6 +879,7 @@ def test_text_review_can_stop_during_cluster_review_and_retain_draft(tmp_path: P
 def test_hidden_cli_reports_nothing_to_review_and_is_not_in_help(tmp_path: Path) -> None:
     root = tmp_path / "project"
     (root / ".codexspec/profile").mkdir(parents=True)
+    (root / ".codexspec/config.yml").write_text("workflow:\n  worktrees: false\n")
     runner = CliRunner()
     result = runner.invoke(app, ["_distill-review-helper", "--project-root", str(root), "--no-open"])
     assert result.exit_code == 0, result.output
@@ -954,7 +963,9 @@ def test_hidden_cli_localizes_server_start_failure_and_emits_machine_result(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     root = make_profile(tmp_path)
-    (root / ".codexspec/config.yml").write_text("language:\n  interaction: zh-CN\n", encoding="utf-8")
+    (root / ".codexspec/config.yml").write_text(
+        "language:\n  interaction: zh-CN\nworkflow:\n  worktrees: false\n", encoding="utf-8"
+    )
     monkeypatch.setattr("codexspec.create_server", lambda *args, **kwargs: (_ for _ in ()).throw(OSError("bind")))
     result = CliRunner().invoke(app, ["_distill-review-helper", "--project-root", str(root), "--no-open"])
     assert result.exit_code == 2
@@ -967,7 +978,9 @@ def test_hidden_cli_localizes_text_carrier_failure_and_emits_machine_result(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     root = make_profile(tmp_path)
-    (root / ".codexspec/config.yml").write_text("language:\n  interaction: zh-CN\n", encoding="utf-8")
+    (root / ".codexspec/config.yml").write_text(
+        "language:\n  interaction: zh-CN\nworkflow:\n  worktrees: false\n", encoding="utf-8"
+    )
     monkeypatch.setattr("codexspec.run_text_review", lambda *args, **kwargs: (_ for _ in ()).throw(OSError("stdin")))
     result = CliRunner().invoke(
         app,
@@ -982,7 +995,7 @@ def test_hidden_cli_localizes_text_carrier_failure_and_emits_machine_result(
 def test_hidden_cli_localizes_human_diagnostic_and_keeps_machine_result(tmp_path: Path) -> None:
     root = make_profile(tmp_path)
     config = root / ".codexspec/config.yml"
-    config.write_text("language:\n  interaction: zh-CN\n", encoding="utf-8")
+    config.write_text("language:\n  interaction: zh-CN\nworkflow:\n  worktrees: false\n", encoding="utf-8")
     result = CliRunner().invoke(
         app,
         ["_distill-review-helper", "--project-root", str(root), "--mode", "invalid"],
@@ -996,7 +1009,7 @@ def test_hidden_cli_localizes_human_diagnostic_and_keeps_machine_result(tmp_path
 def test_hidden_cli_localizes_unmapped_validation_and_preserves_rule_detail(tmp_path: Path) -> None:
     root = make_profile(tmp_path)
     config = root / ".codexspec/config.yml"
-    config.write_text("language:\n  interaction: zh-CN\n", encoding="utf-8")
+    config.write_text("language:\n  interaction: zh-CN\nworkflow:\n  worktrees: false\n", encoding="utf-8")
     target = next((root / ".codexspec/profile/pitfalls").glob("*.md"))
     target.write_text(target.read_text().replace("### P-", "### C-"), encoding="utf-8")
     result = CliRunner().invoke(

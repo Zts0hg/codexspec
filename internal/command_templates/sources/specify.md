@@ -19,6 +19,8 @@ Converse in the interaction language and author artifacts in the document langua
 
 <!-- CODEXSPEC:INCLUDE expression-standard.md -->
 
+<!-- CODEXSPEC:INCLUDE workspace-routing.md -->
+
 ## User Input
 
 `$ARGUMENTS`
@@ -40,7 +42,10 @@ When `$ARGUMENTS` is a new requirement:
    - Bash: `{SCRIPT} --name "<feature-name>"`
    - PowerShell: `{SCRIPT} -ShortName "<feature-name>" "<description>"`
 3. Parse the created feature directory and `requirements.md` path.
-4. If branch creation is unavailable, continue in the workspace and report the limitation.
+4. With worktree isolation enabled, require a `ready` result and carry its absolute workspace and
+   artifact paths throughout discovery. Follow Workspace Routing Before Writes for pending baseline
+   verification or failure; never continue by writing in the invoking checkout. Only explicit
+   disabled mode retains the existing unavailable-branch fallback.
 
 ### Existing Feature
 

@@ -1502,6 +1502,7 @@ AI:  Select a dimension to change:
      - Document language
      - Commit-message language
      - workflow.auto_next
+     - workflow.worktrees (default on; checkout-local)
 
 You: Output language (base) → zh-CN
 
@@ -1585,3 +1586,8 @@ The `/codexspec:tasks-to-issues` command requires GitHub authentication.
 
 - [Workflow](workflow.md) - Common patterns and when to use each command
 - [CLI](../reference/cli.md) - Terminal commands for project initialization
+
+All mutating commands follow [worktree routing](workflow.md#worktree-development) by
+default. Read-only inspection retains its selected source. Configuration edits report
+the actual checkout they affect; use `codexspec config --worktrees on|off` or a bare
+`--worktrees` toggle to change the setting.
