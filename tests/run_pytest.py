@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import importlib.util
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -9,23 +11,30 @@ from pathlib import Path
 from tests.automation_test_support import sanitized_git_env
 
 
-def _project_interpreter() -> str:
-    """The interpreter that owns the project's dev dependencies.
+def _pytest_command(arguments: list[str]) -> list[str]:
+    """Select how to run pytest in the environment that owns the dev dependencies.
 
     The hook's `python` can be any interpreter (a system Anaconda, a pip-based CI
-    environment); the project's own environment is what must run the suite. `uv run`
-    used to select it, but `uv` does not exist on pip-based CI runners.
+    environment), and CI ships two different shapes: test jobs install pytest with
+    pip and have no `uv`, while the lint job has `uv` and no direct pytest install.
+    Order: the project's own `.venv` when it exists (what `uv run` selects locally);
+    the current interpreter when pytest is importable (pip-based CI test jobs);
+    `uv run` as the bootstrap of last resort (CI lint jobs).
     """
     for candidate in (Path(".venv/bin/python"), Path(".venv/Scripts/python.exe")):
         if candidate.is_file():
-            return str(candidate)
-    return sys.executable
+            return [str(candidate), "-m", "pytest", *arguments]
+    if importlib.util.find_spec("pytest") is not None:
+        return [sys.executable, "-m", "pytest", *arguments]
+    if shutil.which("uv") is None:
+        raise SystemExit("pytest is unavailable: no .venv, no pytest in the current interpreter, and no uv on PATH")
+    return ["uv", "run", "--extra", "dev", "pytest", *arguments]
 
 
 def main(arguments: list[str] | None = None) -> int:
     pytest_arguments = sys.argv[1:] if arguments is None else arguments
     result = subprocess.run(
-        [_project_interpreter(), "-m", "pytest", *pytest_arguments],
+        _pytest_command(pytest_arguments),
         check=False,
         env=sanitized_git_env(),
     )
