@@ -16,6 +16,8 @@ Converse in the interaction language and author artifacts in the document langua
 
 <!-- CODEXSPEC:INCLUDE expression-standard.md -->
 
+<!-- CODEXSPEC:INCLUDE workspace-routing.md -->
+
 ## User Input
 
 `$ARGUMENTS`

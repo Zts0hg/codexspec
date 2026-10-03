@@ -520,6 +520,7 @@ Implementation follows **conditional TDD workflow**:
 | `--list-langs`            | List all supported languages |
 | `--auto-next`            | Toggle/set `workflow.auto_next` (bare toggles; or on/off) |
 | `--auto-distill`         | Toggle/set `workflow.auto_distill` (default on; bare toggles; or on/off) |
+| `--worktrees`            | Toggle/set checkout-local worktree isolation (default on; bare toggles; or on/off) |
 
 </details>
 
@@ -792,3 +793,10 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 - Inspired by [GitHub spec-kit](https://github.com/github/spec-kit)
 - Built for [Claude Code](https://claude.ai/code)
+
+Ordinary features develop in separate worktrees under the main checkout's sibling
+`<repository-name>-codexspec-worktrees/`, starting before the first requirements write.
+Blueprint and auto-dev retain their fixed shared worktree. Standalone project edits
+use a maintenance worktree; settings take effect per checkout and reach other checkouts
+through Git integration. See [worktree development](docs/en/user-guide/workflow.md#worktree-development)
+and [configuration](docs/en/reference/configuration.md#workflowworktrees).

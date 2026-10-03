@@ -18,6 +18,8 @@ clear, standard software-development terminology; do not invent abbreviations to
 
 <!-- CODEXSPEC:INCLUDE expression-standard.md -->
 
+<!-- CODEXSPEC:INCLUDE workspace-routing.md -->
+
 ## User Input
 
 `$ARGUMENTS`

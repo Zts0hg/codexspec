@@ -17,6 +17,8 @@ Converse in the interaction language and author artifacts in the document langua
 
 <!-- CODEXSPEC:INCLUDE expression-standard.md -->
 
+<!-- CODEXSPEC:INCLUDE workspace-routing.md -->
+
 ## User Input
 
 `$ARGUMENTS`
@@ -322,13 +324,13 @@ If the runtime cannot provide handle-relative no-follow access and opened-handle
 identity checks, report the unsupported prerequisite and stop before any artifact
 read or write. Never weaken this to a second path check.
 
-Create the directory only. Prepare and publish it directly as specified above;
-do not run `.codexspec/scripts/create-new-feature.sh`
-or its PowerShell counterpart: those scripts create and switch a git branch, which
-this command must never do. Creating a workspace changes no git state, so the
-command is safe to run on whatever branch the user is already working on. That
-restriction is about git side effects, not about writing: what the new directory
-must contain from its first moment is set out below.
+After Workspace Routing Before Writes establishes OUTPUT_ROOT, create the artifact directory
+only. Prepare and publish it directly as specified above; do not run the feature-creation script
+again for a reverse-spec artifact workspace. Repository containment for artifact publication refers
+to OUTPUT_ROOT, while source analysis continues to use SOURCE_ROOT. The routing helper may prepare
+an external worktree when isolation is enabled, but this command must never switch the invoking
+checkout's branch. With isolation explicitly disabled, artifact-directory creation retains its
+existing no-Git-side-effect behavior. The directory's initial contents are specified below.
 
 Every `spec.md` and `design.md` generated **for a slice** carries a `Slice:` header
 holding the repo-relative path its content describes, written in the normalized form

@@ -16,6 +16,8 @@ Converse in the interaction language and author artifacts in the document langua
 
 <!-- CODEXSPEC:INCLUDE expression-standard.md -->
 
+<!-- CODEXSPEC:INCLUDE workspace-routing.md -->
+
 ## User Input
 
 `$ARGUMENTS`
@@ -31,7 +33,7 @@ If the change is broad or has multiple independent outcomes, explain why the sta
 Even in Quick mode, do not rely on session-only context.
 
 1. Resolve only ambiguities that materially change implementation.
-2. Create a feature workspace and `requirements.md` using the same timestamp feature convention as `/codexspec:specify`.
+2. Create the feature worktree before `requirements.md`, using the same creation helper and timestamp feature convention as `/codexspec:specify`; carry the returned absolute workspace paths through the full flow.
 3. Present a concise confirmed requirement summary containing:
    - `NEED-*`
    - relevant `CON-*` and `DEC-*`

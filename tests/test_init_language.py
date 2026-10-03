@@ -626,6 +626,9 @@ class TestConfigRerendersFrontmatter:
     def test_set_interaction_lang_rerenders(self, tmp_path, monkeypatch) -> None:
         proj = tmp_path / "p"
         _init(proj, "--lang", "en")
+        from codexspec.worktrees import write_worktrees
+
+        write_worktrees(proj / ".codexspec/config.yml", False)
         assert _frontmatter_desc(proj) == _expected_desc("constitution", "en")
         monkeypatch.chdir(proj)
         result = _runner.invoke(app, ["config", "--set-interaction-lang", "zh-CN"])
@@ -635,6 +638,9 @@ class TestConfigRerendersFrontmatter:
     def test_set_lang_rerenders_when_interaction_unset(self, tmp_path, monkeypatch) -> None:
         proj = tmp_path / "p"
         _init(proj, "--lang", "en")
+        from codexspec.worktrees import write_worktrees
+
+        write_worktrees(proj / ".codexspec/config.yml", False)
         monkeypatch.chdir(proj)
         result = _runner.invoke(app, ["config", "--set-lang", "zh-CN"])
         assert result.exit_code == 0, result.output
@@ -643,6 +649,9 @@ class TestConfigRerendersFrontmatter:
     def test_set_lang_preserves_custom_command_body(self, tmp_path, monkeypatch) -> None:
         proj = tmp_path / "p"
         _init(proj, "--lang", "en")
+        from codexspec.worktrees import write_worktrees
+
+        write_worktrees(proj / ".codexspec/config.yml", False)
         command_file = proj / ".claude" / "commands" / COMMANDS_SUBDIR / "constitution.md"
         command_file.write_text(
             command_file.read_text(encoding="utf-8").replace("## User Input", "## Custom User Input", 1),
@@ -659,6 +668,9 @@ class TestConfigRerendersFrontmatter:
     def test_set_lang_does_not_override_explicit_interaction(self, tmp_path, monkeypatch) -> None:
         proj = tmp_path / "p"
         _init(proj, "--interaction-lang", "en", "--lang", "en")
+        from codexspec.worktrees import write_worktrees
+
+        write_worktrees(proj / ".codexspec/config.yml", False)
         assert _frontmatter_desc(proj) == _expected_desc("constitution", "en")
         monkeypatch.chdir(proj)
         result = _runner.invoke(app, ["config", "--set-lang", "zh-CN"])
@@ -669,6 +681,9 @@ class TestConfigRerendersFrontmatter:
     def test_set_document_lang_does_not_rerender(self, tmp_path, monkeypatch) -> None:
         proj = tmp_path / "p"
         _init(proj, "--lang", "en")
+        from codexspec.worktrees import write_worktrees
+
+        write_worktrees(proj / ".codexspec/config.yml", False)
         monkeypatch.chdir(proj)
         result = _runner.invoke(app, ["config", "--set-document-lang", "zh-CN"])
         assert result.exit_code == 0, result.output
@@ -677,6 +692,9 @@ class TestConfigRerendersFrontmatter:
     def test_rerender_noop_without_commands_subdir(self, tmp_path, monkeypatch) -> None:
         proj = tmp_path / "p"
         _init(proj, "--lang", "en")
+        from codexspec.worktrees import write_worktrees
+
+        write_worktrees(proj / ".codexspec/config.yml", False)
         import shutil
 
         shutil.rmtree(proj / ".claude" / "commands" / COMMANDS_SUBDIR)

@@ -211,3 +211,62 @@ def test_built_archives_contain_resolvers_and_all_current_command_templates() ->
         packaged_review = _archive_member(members, "/templates/commands/review-code.md")
         assert b"strict defect gate" in packaged_review
         assert b"review-code --audit {paths}" in packaged_review
+
+
+def test_s034_installed_worktree_runtime_and_templates(tmp_path: Path) -> None:
+    """The built wheel must work outside this repository, without authoring fragments."""
+    import json
+    import shutil
+    import subprocess
+    import sys
+
+    from tests.automation_test_support import git, make_repo, sanitized_git_env
+
+    dist_value = os.environ.get("CODEXSPEC_DIST_DIR")
+    if not dist_value:
+        pytest.skip("set CODEXSPEC_DIST_DIR to exercise the installed worktree helper")
+    dist = Path(dist_value).resolve()
+    wheel = next(dist.glob("*.whl"))
+    sdist = next(dist.glob("*.tar.gz"))
+    for members in (_wheel_members(wheel), _sdist_members(sdist)):
+        assert _archive_member(members, "codexspec/worktrees.py") == (ROOT / "src/codexspec/worktrees.py").read_bytes()
+        _assert_packaged_commands(members, _expected_command_templates())
+        _assert_internal_authoring_absent(members)
+    installed = tmp_path / "installed"
+    uv = shutil.which("uv")
+    installer = [uv, "pip", "install"] if uv else [sys.executable, "-m", "pip", "install"]
+    subprocess.run(
+        [*installer, "--target", str(installed), "--no-index", "--no-deps", str(wheel)],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    env = sanitized_git_env()
+    env["PYTHONPATH"] = str(installed)
+    cli = [sys.executable, "-c", "from codexspec import main; main()"]
+    repo = make_repo((tmp_path / "project").resolve())
+    subprocess.run(
+        [*cli, "init", ".", "--ai", "both", "--lang", "en", "--force"],
+        cwd=repo,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    git(repo, "add", ".")
+    git(repo, "commit", "-m", "install")
+    result = subprocess.run(
+        [*cli, "_worktree-helper", "create", "--name", "packaged"],
+        cwd=repo,
+        env=env,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    data = json.loads(result.stdout)
+    assert data["status"] == "ready"
+    assert Path(data["workspace"]).parent == Path(str(repo) + "-codexspec-worktrees")
+    assert Path(data["requirements_file"]).is_file()
+    assert not (repo / ".codexspec/specs" / data["branch"]).exists()
+    assert git(repo, "status", "--porcelain").stdout == ""
+    assert git(repo, "branch", "--show-current").stdout.strip() == "main"

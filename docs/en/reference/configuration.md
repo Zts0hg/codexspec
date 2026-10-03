@@ -22,6 +22,7 @@ project:
 
 workflow:
   auto_next: false       # Auto-advance between workflow stages (opt-in)
+  worktrees: true        # Isolate writes in Git worktrees (default on)
 ```
 
 ## Language Settings
@@ -96,3 +97,24 @@ specify → generate-spec → spec-to-plan → plan-to-tasks → implement-tasks
 - `implement-tasks`: terminal stage — nothing auto-fires after it.
 
 When the review loop reports `NEEDS_REVISION` or `BLOCKED`, the chain halts and control returns to you. Before each advance the agent emits one notice line (for example: `auto_next: review passed → invoking /codexspec:spec-to-plan`).
+
+### `workflow.worktrees`
+
+Defaults to **on**, including when the key or file is absent. Only the literal YAML
+boolean `false` disables ordinary worktree isolation. Display effective settings with
+`codexspec config`; use `codexspec config --worktrees on`, `--worktrees off`, or the bare
+`--worktrees` flag to toggle the destination checkout's current value.
+
+Settings are **checkout-local**. Routing uses the source checkout's setting. With isolation
+on, a configuration edit from main writes to the dedicated maintenance worktree; an edit
+from an active feature writes there. The CLI prints the exact destination config path.
+For example, disabling from main disables the maintenance checkout first: main continues
+to read its unchanged configuration until that change is integrated through Git. There
+is no repository-wide immediate override. Other language and workflow settings follow
+the same routing.
+
+With isolation off, ordinary feature and project-level writes use the selected checkout.
+`blueprint` and `auto-dev` always retain their fixed shared worktree. First-time and update
+`codexspec init` operations always write to the explicitly selected checkout, regardless
+of this setting. See [worktree development](../user-guide/workflow.md#worktree-development)
+for directory layout, baseline selection, and continuation.

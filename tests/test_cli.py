@@ -89,6 +89,10 @@ class TestConfig:
         cfg = project_dir / ".codexspec" / "config.yml"
         cfg.parent.mkdir(parents=True, exist_ok=True)
         cfg.write_text(body, encoding="utf-8")
+        # These cases exercise explicit in-place configuration behavior.
+        from codexspec.worktrees import write_worktrees
+
+        write_worktrees(cfg, False)
         return cfg
 
     def test_auto_next_toggle_true_to_false(self, isolated_runner: Path, runner: CliRunner) -> None:
@@ -157,7 +161,7 @@ class TestConfig:
         result = runner.invoke(app, ["config", "--auto-next", _AUTO_NEXT_SENTINEL])
         assert result.exit_code == 0
         # workflow.auto_next was false -> toggle -> true; project.auto_next untouched
-        assert "workflow:\n  auto_next: true" in cfg.read_text()
+        assert "workflow:\n  worktrees: false\n  auto_next: true" in cfg.read_text()
         assert "project:\n  auto_next: true" in cfg.read_text()
 
     def test_auto_next_no_project(self, isolated_runner: Path, runner: CliRunner) -> None:
@@ -174,7 +178,7 @@ class TestConfig:
 
         cfg = tmp_path / ".codexspec" / "config.yml"
         cfg.parent.mkdir(parents=True, exist_ok=True)
-        cfg.write_text("workflow:\n  auto_next: true\n", encoding="utf-8")
+        cfg.write_text("workflow:\n  worktrees: false\n  auto_next: true\n", encoding="utf-8")
         code = "import sys; sys.argv=['codexspec','config','--auto-next'];from codexspec import main; main()"
         result = subprocess.run([sys.executable, "-c", code], cwd=tmp_path, capture_output=True, text=True)
         assert result.returncode == 0
@@ -263,7 +267,7 @@ class TestConfig:
         """The bare `--auto-distill` form is normalized in main()."""
         cfg = tmp_path / ".codexspec" / "config.yml"
         cfg.parent.mkdir(parents=True)
-        cfg.write_text("workflow:\n  auto_distill: true\n", encoding="utf-8")
+        cfg.write_text("workflow:\n  worktrees: false\n  auto_distill: true\n", encoding="utf-8")
         code = "import sys; sys.argv=['codexspec','config','--auto-distill'];from codexspec import main; main()"
         result = subprocess.run([sys.executable, "-c", code], cwd=tmp_path, capture_output=True, text=True)
         assert result.returncode == 0

@@ -16,6 +16,15 @@ import pytest
 class TestCreateNewFeature:
     """Tests for create-new-feature.ps1 script."""
 
+    @pytest.fixture(autouse=True)
+    def explicit_legacy_optout(self, request):
+        """Existing cases exercise the intentionally preserved in-place mode."""
+        for name in ("temp_codexspec_project", "temp_codexspec_git_project"):
+            if name in request.fixturenames:
+                project = request.getfixturevalue(name)
+                config = project / ".codexspec/config.yml"
+                config.write_text(config.read_text() + "workflow:\n  worktrees: false\n")
+
     def test_help_flag(self, powershell_scripts_dir: Path, tmp_path: Path):
         """-Help displays the current command interface."""
         script_path = powershell_scripts_dir / "create-new-feature.ps1"

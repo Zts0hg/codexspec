@@ -173,8 +173,12 @@ def locate_repository(cwd: Path | str, *, runner: GitRunner | None = None) -> Re
     current = Path(cwd).resolve()
     top = git.run(current, "rev-parse", "--show-toplevel", check=False)
     if top.returncode != 0:
-        raise AutomationError("not_git_repository")
-    invoking_root = Path(top.stdout.strip()).resolve()
+        bare = git.run(current, "rev-parse", "--is-bare-repository", check=False)
+        if bare.returncode != 0 or bare.stdout.strip() != "true":
+            raise AutomationError("not_git_repository")
+        invoking_root = Path(git.run(current, "rev-parse", "--absolute-git-dir").stdout.strip()).resolve()
+    else:
+        invoking_root = Path(top.stdout.strip()).resolve()
     worktrees = _parse_worktrees(git.run(invoking_root, "worktree", "list", "--porcelain").stdout)
     if not worktrees:
         raise AutomationError("worktree_registry_empty")
@@ -188,7 +192,7 @@ def locate_repository(cwd: Path | str, *, runner: GitRunner | None = None) -> Re
     default_branch = remote_branch or _local_default_branch(git, primary_root, worktrees[0].get("branch"))
     if remote_name and remote_ref is None:
         remote_ref = f"refs/remotes/{remote_name}/{default_branch}"
-    worktree_path = Path(f"{primary_root}-worktrees") / WORKTREE_BASENAME
+    worktree_path = Path(f"{primary_root}-codexspec-worktrees") / WORKTREE_BASENAME
     return RepositoryContext(
         repository_root=primary_root,
         common_git_dir=common_git_dir,
@@ -303,16 +307,22 @@ def _remote_default(git: GitRunner, root: Path) -> tuple[str | None, str | None,
     if symbolic.returncode != 0:
         return remote, None, None
     ref = symbolic.stdout.strip()
-    return remote, ref, ref.rsplit("/", 1)[-1]
+    return remote, ref, ref.removeprefix(f"refs/remotes/{remote}/")
 
 
 def _local_default_branch(git: GitRunner, root: Path, primary_branch_ref: str | None) -> str:
     for candidate in ("main", "master"):
         if git.run(root, "show-ref", "--verify", "--quiet", f"refs/heads/{candidate}", check=False).returncode == 0:
             return candidate
-    if primary_branch_ref and primary_branch_ref.startswith("refs/heads/"):
-        return primary_branch_ref.removeprefix("refs/heads/")
-    raise AutomationError("default_branch_not_found")
+    configured = git.run(root, "config", "--get", "init.defaultBranch", check=False).stdout.strip()
+    if (
+        configured
+        and git.run(root, "show-ref", "--verify", "--quiet", f"refs/heads/{configured}", check=False).returncode == 0
+    ):
+        return configured
+    raise AutomationError(
+        "default_branch_not_found", "Configure the remote default branch or a valid init.defaultBranch."
+    )
 
 
 def _parse_worktrees(output: str) -> list[dict[str, Any]]:

@@ -47,6 +47,8 @@ Write the human report in the interaction language. Keep result-envelope field n
 
 <!-- CODEXSPEC:INCLUDE expression-standard.md -->
 
+<!-- CODEXSPEC:INCLUDE workspace-routing.md -->
+
 ## User Input
 
 ```text

@@ -12,6 +12,8 @@ Read `.codexspec/config.yml`. Converse in `language.interaction` and author SDD 
 
 <!-- CODEXSPEC:INCLUDE expression-standard.md -->
 
+<!-- CODEXSPEC:INCLUDE workspace-routing.md -->
+
 ## Goal
 
 Continuously run the complete Requirements-First SDD flow for the shared blueprint in document

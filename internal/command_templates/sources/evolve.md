@@ -16,6 +16,8 @@ Converse in the interaction language. **The compiled command/skill draft is a di
 
 <!-- CODEXSPEC:INCLUDE expression-standard.md -->
 
+<!-- CODEXSPEC:INCLUDE workspace-routing.md -->
+
 ## User Input
 
 `$ARGUMENTS`

@@ -18,6 +18,8 @@ A fresh or reset config writes only `output`; `interaction` and `document` resol
 
 <!-- CODEXSPEC:INCLUDE expression-standard.md -->
 
+<!-- CODEXSPEC:INCLUDE workspace-routing.md -->
+
 ## Parameter Check
 
 Check if `$ARGUMENTS` contains `--view`:
@@ -339,3 +341,14 @@ project:
 Converse in the interaction language and author generated artifacts in the document language. If either is unset, it falls back to `output`, then English.
 
 Technical terms and file paths should remain in English for clarity.
+
+## Worktree Isolation Setting
+
+Offer `workflow.worktrees` in the workflow settings menu. It is enabled by default, including when
+absent; only literal boolean `false` disables it. Use `codexspec config --worktrees on|off` (bare
+`--worktrees` toggles) for the CLI surface. Apply Workspace Routing Before Writes before any setting
+creation, edit, or command-frontmatter regeneration, including language and other workflow changes.
+Read and toggle the destination checkout's setting, preserve all unrelated fields, and report the
+actual configuration path. Changes affect that checkout first; other checkouts receive them through
+Git integration. The switch does not disable the fixed shared blueprint/auto-dev workspace, and
+both first-time and update `codexspec init` installations remain exempt.

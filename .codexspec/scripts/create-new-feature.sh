@@ -50,6 +50,17 @@ if [ -z "$FEATURE_SUFFIX" ]; then
     exit 1
 fi
 
+# Resolve the switch before creating directories or changing Git state.
+if ! command_exists codexspec; then
+    log_error "CodexSpec runtime is unavailable. Install codexspec before creating a feature."
+    exit 1
+fi
+WORKTREE_SETTING=$(codexspec _worktree-helper setting) || exit $?
+case "$WORKTREE_SETTING" in
+    *'"enabled": false'*) ;; # Explicit opt-out retains the original in-place flow below.
+    *) exec codexspec _worktree-helper create --name "$FEATURE_SUFFIX" ;;
+esac
+
 TIMESTAMP=$(date +"%Y-%m%d-%H%M")
 RANDOM_SUFFIX=$(LC_ALL=C tr -dc 'a-z0-9' </dev/urandom | head -c 2)
 FEATURE_ID="${TIMESTAMP}${RANDOM_SUFFIX}"

@@ -37,6 +37,8 @@ allowed-tools: Bash(git branch:*), Bash(git diff:*), Bash(git log:*), Bash(git r
 
 <!-- CODEXSPEC:INCLUDE expression-standard.md -->
 
+<!-- CODEXSPEC:INCLUDE workspace-routing.md -->
+
 ## User Input
 
 ```

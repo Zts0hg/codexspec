@@ -21,6 +21,52 @@ Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-t
 
 `requirements.md` persists the result of requirement discussions. It records confirmed needs, constraints, decisions, exclusions, open questions, user evidence, and a confirmation log.
 
+## Worktree Development
+
+Ordinary features use one Git worktree each by default. CodexSpec creates it before
+writing `requirements.md`, then keeps requirements, specifications, reviews, implementation,
+and tests in that same checkout. Continuing a feature reuses its worktree and existing
+changes. Pass its full feature directory or continue from its branch to select it.
+
+```text
+projects/
+├── my-project/                         # main checkout
+└── my-project-codexspec-worktrees/
+    ├── 2026-1003-2049ab-user-auth/      # feature branch with the same name
+    ├── 2026-1003-2050cd-search/
+    ├── worktree-for-codexspec-maintenance/
+    └── worktree-for-codexspec-auto-dev/
+```
+
+The parent is derived from the primary repository, even when invoked from a nested
+folder or another linked worktree. For a bare repository it is the bare repository's
+sibling, named `<bare-repository-name>-codexspec-worktrees`. Standalone configuration,
+constitution, and profile edits use `worktree-for-codexspec-maintenance` on branch
+`codexspec/maintenance`; edits made within a selected feature stay in that feature.
+`blueprint` and `auto-dev` share `worktree-for-codexspec-auto-dev` on the fixed branch
+`codexspec/auto-dev`, processing requirements sequentially.
+
+New worktrees fetch the configured remote before comparing local and remote main.
+The descendant commit wins by Git ancestry, irrespective of timestamps. Without a
+remote, local main is used. A failed fetch warns that remote information may be stale
+and uses available local refs; the next creation retries. If both main histories
+have diverged, CodexSpec merges them **in the new worktree**, resolves conflicts, and
+requires successful project checks before publishing feature requirements or starting
+development. Failed checks or unresolved conflicts stop preparation and retain its
+identity for continuation. Unusable baselines, occupied directories, and creation
+errors stop explicitly; they do not cause writes to main or overwrite unrelated work.
+
+Completion retains worktrees and branches. Merge, removal, and other lifecycle actions
+remain explicit operations. No old-directory migration is provided. Read-only inspection
+keeps its selected source; reports are written to the resolved output checkout. Staged
+commit execution requires the selected index and cannot silently transfer main's staged
+changes into another checkout.
+
+Use [the checkout-local worktree setting](../reference/configuration.md#workflowworktrees)
+to opt out. `codexspec init`, for both installation and updates, always uses the checkout
+you select. If a fresh worktree lacks installation assets, install them there before
+continuing.
+
 ## Workflow Steps
 
 | Step                         | Command                      | Output                      | Human Check |
