@@ -446,7 +446,7 @@ def test_defect_report_has_exactly_six_human_sections_and_one_envelope() -> None
         '"specialists"',
     ]:
         assert field in rendered
-    assert '"schema_version": "2"' in rendered
+    assert '"schema_version": "3"' in rendered
     assert '"fingerprint"' in rendered
     for priority in ["P0", "P1", "P2", "P3"]:
         assert f'"{priority}"' in rendered
@@ -459,7 +459,7 @@ def test_defect_report_has_exactly_six_human_sections_and_one_envelope() -> None
     assert "all four finding counts are zero" in output
     assert "all five stages complete" in output
     assert "unique" in output and "cross-reference" in output
-    assert "originating schema-v2 result" in output
+    assert "originating schema-v3 result" in output
     assert "finding counts match" in output.lower()
     assert "coverage gap count matches" in output.lower()
     assert "completed coverage record" in output and "evidence" in output
@@ -528,3 +528,159 @@ def test_audit_is_a_self_contained_advisory_scorecard_without_envelope() -> None
     assert "MUST NOT emit a result envelope" in audit
     assert "MUST NOT be consumed by `implement-tasks`" in audit
     assert "<review-code-result>" not in audit
+
+
+# --- Review convergence (feature 2026-1008-1952ti) ---
+
+
+def test_decision_and_incremental_modifiers_are_documented() -> None:
+    """TS-5.1"""
+    frontmatter, body = split_template()
+    hint = str(frontmatter["argument-hint"])
+    hints = section(body, "## Usage Hints", "## Role and Non-Negotiable Boundary")
+    for text in (hint, hints):
+        assert "--decided-by reviewer|ask" in text
+        assert "--incremental-from <fingerprint>" in text
+        assert "review.decided_by" in text
+
+
+def test_decision_and_incremental_modifier_boundaries() -> None:
+    """TS-5.2 / TS-5.3 / TS-5.4"""
+    _, body = split_template()
+    contract = " ".join(section(body, "### Defect-Gate Argument Contract", "## Resolver Compatibility Gate").split())
+
+    assert "`--incremental-from` is valid only with default or `--committed`" in contract
+    assert "with `--uncommitted` or `--commit` it is an argument error" in contract
+    assert "`--decided-by` is valid with every defect-gate selector" in contract
+    assert "any value other than `reviewer` or `ask` is an argument error" in contract
+    assert "combining either with `--audit` is an argument error" in contract
+    assert "Each of `--decided-by` and `--incremental-from` may appear at most once" in contract
+
+
+def test_coordinator_strips_its_own_modifiers_before_the_resolver() -> None:
+    """TS-5.5"""
+    _, body = split_template()
+    resolver = " ".join(section(body, "## Resolver Compatibility Gate", "## Defect-Gate Review Protocol").split())
+
+    assert "removes `--decided-by` and `--incremental-from`" in resolver
+    assert "before invoking the resolver" in resolver
+    assert "the resolver scripts, their argument parsing, and the manifest schema are unchanged" in resolver
+
+
+def _compact(text: str) -> str:
+    return " ".join(text.split())
+
+
+def test_decision_mode_resolution_and_scenario_items() -> None:
+    """TS-6.1 - TS-6.6, TS-6.8"""
+    _, body = split_template()
+    decision = _compact(section(body, "### Decision Mode and Scenario Decisions", "## Defect-Gate Output Contract"))
+
+    assert "`--decided-by` → `review.decided_by` in `.codexspec/config.yml` → `reviewer`" in decision
+    assert "is an argument error" in decision and "never treated as `ask`" in decision
+    assert "In `reviewer` mode there is no scenario classification" in decision
+    assert "Finding Admission applies exactly as written" in decision
+    assert "outside the project's real operating context" in decision
+    assert "confirmed requirements, the Constitution, and recognized project instructions" in decision
+    assert "`context_basis`" in decision
+    assert "blocking coverage gap whose scope is exactly `scenario decision <id>`" in decision
+    assert "never `PASS` while any scenario decision is pending" in decision
+    assert "`FAIL` when any admitted finding exists, otherwise `INCONCLUSIVE`" in decision
+    assert "accepted scenario" in decision and "is not reported again" in decision
+    assert "confirmed `CON` entry" in decision and "ordinary admitted finding" in decision
+
+    output = _compact(section(body, "## Defect-Gate Output Contract", "## Audit Mode"))
+    assert "resolved decision mode" in output
+
+
+def test_schema_v3_envelope_members_and_rules() -> None:
+    """TS-7.1 - TS-7.4"""
+    _, body = split_template()
+    output = section(body, "## Defect-Gate Output Contract", "## Audit Mode")
+    rendered = re.search(r"````markdown\n(.*?)\n````", output, re.DOTALL)
+    assert rendered is not None
+    for member in [
+        '"review_scope"',
+        '"kind": "complete"',
+        '"since": null',
+        '"decided_by": "reviewer"',
+        '"scenario_decisions": []',
+    ]:
+        assert member in rendered.group(1)
+
+    rules = _compact(output)
+    assert "`schema_version = 3`" in rules
+    assert "`review_scope.kind = complete | incremental`" in rules
+    assert "`decided_by = reviewer | ask`" in rules
+    assert "`since` is a fingerprint string exactly when `kind` is `incremental`" in rules
+    assert "and null when it is `complete`" in rules
+    assert "`scenario_decisions` is empty when `decided_by` is `reviewer`" in rules
+    assert "`context_basis`" in rules and "`status: pending`" in rules
+    assert "its blocking coverage gap is an outgoing follow-up source" in rules
+    assert "A result with a pending scenario decision is never `PASS`" in rules
+    assert "no pending scenario decision" in rules
+
+    dispatch = _compact(section(body, "## Mode Dispatch", "### Defect-Gate Argument Contract"))
+    assert "Argument-error envelopes use schema version `3`" in dispatch
+    assert "empty `scenario_decisions`" in dispatch
+
+
+def test_incremental_review_reuses_only_unchanged_unaffected_coverage() -> None:
+    """TS-8.1 - TS-8.9"""
+    _, body = split_template()
+    store = _compact(section(body, "### Review State Store", "### Incremental Review"))
+    assert "`${XDG_CACHE_HOME:-$HOME/.cache}/codexspec/review/<repo-id>/`" in store
+    assert "`%LOCALAPPDATA%\\codexspec\\review\\<repo-id>\\`" in store
+    assert "never inside the repository" in store
+    assert "`results/sha256-<hex>/`" in store
+    assert "per-entry evidence digest" in store and "`partition_ids`" in store
+
+    incremental = _compact(section(body, "### Incremental Review", "### Stage 1: Scope Pass"))
+    assert "Without `--incremental-from`, run the complete review" in incremental
+    assert "missing, unreadable, or mismatched records" in incremental.lower()
+    for field in ["repository", "selector", "feature", "`base_ref`", "`merge_base_sha`"]:
+        assert field in incremental
+    assert "run a complete review" in incremental
+    assert "changed, added, removed, or renamed" in incremental
+    assert "affected partition" in incremental and "`contract_ids`" in incremental
+    assert "never prior coverage evidence, statuses, findings, or variant searches" in incremental
+    assert "`carried`" in incremental
+    assert "describes the complete selected target" in incremental
+    assert "`review_coverage` lists only this round's" in incremental
+    assert "never terminal" in incremental
+    assert "may trace beyond" in incremental
+    assert "carried coverage never suppresses an admitted finding" in incremental
+
+
+def test_verification_mirror_output_and_topology_rules() -> None:
+    """TS-9.1 - TS-9.5"""
+    _, body = split_template()
+    verification = _compact(section(body, "### Verification Safety", "### Finding Admission"))
+    assert "the manifest `HEAD` for default, `--committed`, and `--uncommitted`" in verification
+    assert "the selected commit for `--commit`" in verification
+    assert "copied rather than linked" in verification
+    assert "without installing anything" in verification
+    assert "its own Git metadata from a local clone" in verification
+    assert "never share the original's Git directory" in verification
+    assert "never use `git worktree add`" in verification
+
+    output = _compact(section(body, "## Defect-Gate Output Contract", "## Audit Mode"))
+    assert "review state store" in output
+    assert "only the six-section human report and the envelope" in output
+
+    isolation = _compact(section(body, "### Reviewer Isolation", "### Instruction and Evidence Trust"))
+    assert "is the only spawner" in isolation
+    assert "direct children of the coordinator" in isolation
+    assert "never spawn reviewers" in isolation
+
+
+def test_isolation_is_explicit_for_each_host() -> None:
+    """TS-10.1 - TS-10.3"""
+    _, body = split_template()
+    isolation = _compact(section(body, "### Reviewer Isolation", "### Instruction and Evidence Trust"))
+    assert '`spawn_agent` with `fork_turns: "none"`' in isolation
+    assert 'Never use `fork_turns: "all"`' in isolation
+    assert "fresh non-fork subagent" in isolation and "`Task`/`Agent`" in isolation
+    assert "never use a fork that inherits the conversation" in isolation
+    assert "the task message contains only" in isolation
+    assert "prior finding prose, implementation reasoning, or claims that a repair succeeded" in isolation

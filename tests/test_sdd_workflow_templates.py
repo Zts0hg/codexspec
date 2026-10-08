@@ -186,11 +186,11 @@ def test_implement_tasks_validates_result_envelope_and_review_topology():
         assert f"`{field}`" in content
 
     assert "exactly one `<review-code-result>`" in content
-    assert "schema version `2`" in content
+    assert "schema version `3`" in content
     assert "schema version `1`" in content and "reject" in compact.lower()
     assert "`mode: defect`" in content
     assert "target and feature context match" in compact
-    assert "retained originating schema-v2 result" in compact
+    assert "retained originating schema-v3 result" in compact
     assert "`requirements_coverage.status: complete`" in content
     assert "`verification.status: complete`" in content
     assert "`review_context: isolated`" in content
@@ -208,7 +208,7 @@ def test_implement_tasks_validates_result_envelope_and_review_topology():
     assert "every incomplete mandatory" in compact.lower()
 
 
-def test_implement_tasks_carries_only_neutral_schema_v2_follow_up() -> None:
+def test_implement_tasks_carries_only_neutral_schema_v3_follow_up() -> None:
     content = read_command("implement-tasks")
     compact = " ".join(content.split())
 
@@ -593,3 +593,71 @@ def test_new_behavior_synced_across_distribution_forms(command):
 
     for label, form in [("template", template), ("claude", claude_copy), ("skill", skill_copy)]:
         assert marker in form.lower(), f"{command} {label} missing marker {marker!r}"
+
+
+# ---------------------------------------------------------------------------
+# Feature 2026-1008-1952ti: review convergence (implement-tasks review loop)
+# ---------------------------------------------------------------------------
+
+
+def _review_loop() -> str:
+    content = read_command("implement-tasks")
+    loop = content.split("### 7. Final Code Review Loop", 1)[1].split("### 8. Auto-Dev Delegation", 1)[0]
+    return " ".join(loop.split())
+
+
+def test_implement_tasks_validates_schema_v3_members() -> None:
+    """TS-12.1 - TS-12.3"""
+    loop = _review_loop()
+    assert "schema version `3`" in loop
+    assert "reject schema versions `1` and `2` explicitly" in loop
+    for member in ["`review_scope`", "`decided_by`", "`scenario_decisions`"]:
+        assert member in loop
+    assert "`review_scope.kind: complete`" in loop
+    assert "no pending scenario decision" in loop
+
+
+def test_implement_tasks_round_policy_is_incremental_then_complete() -> None:
+    """TS-13.1 - TS-13.6"""
+    loop = _review_loop()
+    assert "/codexspec:review-code --feature <feature-dir>" in loop
+    assert "The first review is complete" in loop
+    assert "/codexspec:review-code --feature <feature-dir> --incremental-from <fingerprint>" in loop
+    assert "last valid result" in loop
+    assert "After an incremental `PASS`, run a complete review" in loop
+    assert "Only a complete `PASS` satisfies 7.6" in loop
+    assert "After a complete `FAIL`, return to incremental review" in loop
+    assert "prior-record-unavailable or target-mismatch argument error" in loop
+    assert "not a transient retry and not a failed round" in loop
+    assert "Never pass `--decided-by`" in loop
+    assert "There is no fixed round count" in loop
+
+
+def test_implement_tasks_keeps_a_loop_ledger_outside_the_repository() -> None:
+    """TS-14.1 - TS-14.3"""
+    loop = _review_loop()
+    assert "`loops/<feature-id>.json`" in loop
+    assert "review state store" in loop
+    for item in [
+        "round list",
+        "last complete-review fingerprint",
+        "`root_cause_class`",
+        "retained follow-up obligations",
+        "pending scenario decisions",
+    ]:
+        assert item in loop
+    assert "Do not create repository-local review-state files" in loop
+
+
+def test_implement_tasks_asks_once_and_records_scenario_decisions() -> None:
+    """TS-15.1 - TS-15.5"""
+    loop = _review_loop()
+    decisions = loop.split("#### 7.3c Scenario Decisions", 1)[1].split("#### 7.4", 1)[0]
+    assert "before the 7.5 transient-retry and persistent-`INCONCLUSIVE` handling" in decisions
+    assert "structured-question tool" in decisions
+    assert "ask in plain text and end the turn" in decisions
+    assert "resume from the loop ledger" in decisions
+    assert "new `OUT-xxx` entry" in decisions and "new `CON-xxx` entry" in decisions
+    assert "Confirmation Log" in decisions
+    assert "handled as a verified finding" in decisions
+    assert "`CODEXSPEC_AUTO_DEV_DELEGATION`" in decisions and "stop state" in decisions

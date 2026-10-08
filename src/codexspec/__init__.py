@@ -544,6 +544,13 @@ _AUTO_NEXT_ACCEPTED = "on/off, true/false, 1/0, yes/no"
 # sets for parsing; a distinct sentinel keeps the bare-toggle rewrites separate.
 _AUTO_DISTILL_SENTINEL = "__toggle_distill__"
 
+# review.decided_by: who decides about a review-code finding whose trigger lies
+# outside the project's real operating context. ``reviewer`` (default) keeps
+# today's behavior; ``ask`` lets the user decide once.
+_DECIDED_BY_VALUES = ("reviewer", "ask")
+_DECIDED_BY_DEFAULT = "reviewer"
+_DECIDED_BY_ACCEPTED = ", ".join(_DECIDED_BY_VALUES)
+
 
 @app.command()
 def config(
@@ -594,6 +601,11 @@ def config(
     worktrees: Optional[str] = typer.Option(
         None, "--worktrees", help="Toggle checkout-local worktree isolation (default on), or set on/off."
     ),
+    decided_by: Optional[str] = typer.Option(
+        None,
+        "--decided-by",
+        help="Set review.decided_by (reviewer|ask): who decides about out-of-context review findings.",
+    ),
 ) -> None:
     """
     View or modify CodexSpec project configuration.
@@ -607,6 +619,7 @@ def config(
         codexspec config --set-commit-lang en  # Set commit messages to English
         codexspec config --auto-next           # Toggle workflow.auto_next
         codexspec config --auto-distill off    # Disable workflow.auto_distill (default on)
+        codexspec config --decided-by ask      # Ask the user about out-of-context review findings
         codexspec config --list-langs          # List supported languages
     """
     # Handle list languages
@@ -641,12 +654,20 @@ def config(
             except ValueError:
                 console.print(f"[red]Invalid {option} value:[/red] {value!r}")
                 raise typer.Exit(1)
+    if decided_by is not None:
+        try:
+            parse_decided_by_value(decided_by)
+        except ValueError:
+            console.print(f"[red]Invalid --decided-by value:[/red] {decided_by!r}")
+            console.print(f"Accepted values: {_DECIDED_BY_ACCEPTED}.")
+            raise typer.Exit(1)
     modifying = any(
         value is not None
         for value in (
             auto_next,
             auto_distill,
             worktrees,
+            decided_by,
             set_lang,
             set_commit_lang,
             set_interaction_lang,
@@ -679,6 +700,16 @@ def config(
             console.print(str(exc), markup=False)
             raise typer.Exit(1) from exc
         console.print(f"workflow.worktrees = {str(target).lower()}")
+        return
+
+    # Handle review.decided_by set
+    if decided_by is not None:
+        mode = parse_decided_by_value(decided_by)
+        if _write_review_decided_by(config_file, mode):
+            console.print(f"[green]review.decided_by = {mode}[/green]")
+        else:
+            console.print("[red]Failed to update review.decided_by[/red]")
+            raise typer.Exit(1)
         return
 
     # Handle auto-next toggle/set
@@ -861,6 +892,15 @@ def config(
 
     # Display current configuration
     console.print(f"Effective workflow.worktrees: {str(read_worktrees(config_file)).lower()}")
+    stored_mode = _read_review_decided_by(config_file)
+    if stored_mode in _DECIDED_BY_VALUES:
+        console.print(f"Effective review.decided_by: {stored_mode}")
+    else:
+        console.print(
+            f"review.decided_by: invalid value {stored_mode!r} (accepted: {_DECIDED_BY_ACCEPTED}); "
+            "review-code rejects it until it is corrected.",
+            markup=False,
+        )
     console.print(
         Panel(
             config_file.read_text(encoding="utf-8"),
@@ -1589,6 +1629,97 @@ def _write_auto_distill(config_file: Path, value: bool) -> bool:
         return _dump_lines(config_file, lines)
 
     section = f"workflow:\n  auto_distill: {token}"
+    if not content:
+        new_content = section + "\n"
+    elif content.endswith("\n"):
+        new_content = content + "\n" + section + "\n"
+    else:
+        new_content = content + "\n\n" + section + "\n"
+    try:
+        config_file.write_text(new_content, encoding="utf-8")
+    except OSError:
+        return False
+    return True
+
+
+# --- review.decided_by helpers ---------------------------------------------
+
+
+def parse_decided_by_value(raw: str) -> str:
+    """Parse a ``review.decided_by`` value (``reviewer`` or ``ask``).
+
+    Case-insensitive; surrounding whitespace is ignored. Raises ``ValueError``
+    for any other token so callers can report it instead of guessing a mode.
+    """
+    token = (raw or "").strip().lower()
+    if token in _DECIDED_BY_VALUES:
+        return token
+    raise ValueError(f"invalid review.decided_by value: {raw!r}")
+
+
+def _read_review_decided_by(config_file: Path) -> str:
+    """Return the stored ``review.decided_by`` token, or the default when absent.
+
+    An absent file, section, or key yields ``reviewer``. A present value is
+    returned verbatim, even when invalid, so callers can report it as invalid
+    rather than masking it as the default (review-code rejects invalid values).
+    """
+    try:
+        content = config_file.read_text(encoding="utf-8")
+    except OSError:
+        return _DECIDED_BY_DEFAULT
+    in_review = False
+    for line in content.splitlines():
+        if not line.strip():
+            continue
+        if not line[0].isspace():  # top-level key (or comment)
+            key = line.split("#", 1)[0].strip()
+            in_review = key == "review:"
+            continue
+        if in_review:
+            match = re.match(r"^\s*decided_by:\s*(\S+?)\s*(?:#.*)?$", line)
+            if match:
+                return match.group(1)
+    return _DECIDED_BY_DEFAULT
+
+
+def _write_review_decided_by(config_file: Path, value: str) -> bool:
+    """Set ``review.decided_by`` to ``reviewer`` or ``ask``.
+
+    Mirrors ``_write_auto_next``: update the value in place when the key exists
+    under ``review:``; insert it as the section's first child when the section
+    exists without the key; append a ``review:`` section when absent. Preserves
+    all other lines and comments. Raises ``ValueError`` for an invalid value and
+    returns ``False`` on I/O error.
+    """
+    token = parse_decided_by_value(value)
+    try:
+        content = config_file.read_text(encoding="utf-8")
+    except OSError:
+        return False
+
+    lines = content.split("\n")
+    review_idx: Optional[int] = None
+    in_review = False
+    for i, line in enumerate(lines):
+        if not line.strip():
+            continue
+        if not line[0].isspace():
+            key = line.split("#", 1)[0].strip()
+            in_review = key == "review:"
+            if in_review:
+                review_idx = i
+            continue
+        if in_review and re.match(r"^\s*decided_by:\s*\S+", line):
+            indent = line[: len(line) - len(line.lstrip())]
+            lines[i] = f"{indent}decided_by: {token}"
+            return _dump_lines(config_file, lines)
+
+    if review_idx is not None:
+        lines.insert(review_idx + 1, f"  decided_by: {token}")
+        return _dump_lines(config_file, lines)
+
+    section = f"review:\n  decided_by: {token}"
     if not content:
         new_content = section + "\n"
     elif content.endswith("\n"):

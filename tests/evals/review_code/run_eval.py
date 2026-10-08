@@ -33,8 +33,15 @@ REQUIRED_RESULT_KEYS = {
     "coverage_gap_count",
     "review_context",
     "reviewers",
+    "review_scope",
+    "decided_by",
+    "scenario_decisions",
 }
+RESULT_SCHEMA_VERSION = "3"
 VALID_VERDICTS = {"PASS", "FAIL", "INCONCLUSIVE"}
+VALID_REVIEW_SCOPE_KINDS = {"complete", "incremental"}
+VALID_DECISION_MODES = {"reviewer", "ask"}
+SCENARIO_DECISION_FIELDS = {"id", "location", "summary", "trigger", "impact", "context_basis", "status"}
 VALID_PRIORITIES = {"P0", "P1", "P2", "P3"}
 VALID_SELECTORS = {"default", "committed", "uncommitted", "commit"}
 VALID_REQUIREMENTS_STATUSES = {"complete", "partial", "not_evaluated"}
@@ -598,6 +605,39 @@ def _validate_gaps_and_reviewers(result: dict[str, Any]) -> None:
         raise ResultParseError("incomplete mandatory work requires a blocking coverage gap")
 
 
+def _validate_scope_and_decisions(result: dict[str, Any]) -> None:
+    scope = _object(result["review_scope"], "review_scope")
+    _required_fields(scope, {"kind", "since"}, "review_scope")
+    _known_fields(scope, {"kind", "since"}, "review_scope")
+    if scope["kind"] not in VALID_REVIEW_SCOPE_KINDS:
+        raise ResultParseError(f"unsupported review_scope.kind {scope['kind']!r}")
+    since = _string(scope["since"], "review_scope.since", nullable=True)
+    if (scope["kind"] == "incremental") != (since is not None):
+        raise ResultParseError("review_scope.since must be a fingerprint exactly when the scope is incremental")
+
+    if result["decided_by"] not in VALID_DECISION_MODES:
+        raise ResultParseError(f"unsupported decided_by {result['decided_by']!r}")
+    decisions = [
+        _object(item, "scenario decision") for item in _array(result["scenario_decisions"], "scenario_decisions")
+    ]
+    if result["decided_by"] == "reviewer" and decisions:
+        raise ResultParseError("scenario decisions are not allowed in reviewer mode")
+    _unique_ids(decisions, "scenario decision")
+    gap_scopes = {gap["scope"]: gap for gap in result["coverage_gaps"]}
+    for decision in decisions:
+        _required_fields(decision, SCENARIO_DECISION_FIELDS, "scenario decision")
+        _known_fields(decision, SCENARIO_DECISION_FIELDS, "scenario decision")
+        for field in SCENARIO_DECISION_FIELDS - {"status"}:
+            _string(decision[field], f"scenario_decision.{field}")
+        if decision["status"] != "pending":
+            raise ResultParseError("scenario decision status must be pending")
+        gap = gap_scopes.get(f"scenario decision {decision['id']}")
+        if gap is None or gap["blocking"] is not True:
+            raise ResultParseError(f"pending scenario decision {decision['id']} requires a blocking coverage gap")
+    if decisions and result["verdict"] == "PASS":
+        raise ResultParseError("PASS cannot contain a pending scenario decision")
+
+
 def _validate_verdict_consistency(result: dict[str, Any]) -> None:
     verdict = result["verdict"]
     blocking_gaps = [gap for gap in result["coverage_gaps"] if gap["blocking"]]
@@ -650,7 +690,7 @@ def parse_review_result(output: str) -> dict[str, Any]:
     if missing:
         raise ResultParseError(f"result envelope missing required keys: {', '.join(missing)}")
     _known_fields(result, REQUIRED_RESULT_KEYS, "result envelope")
-    if result["schema_version"] != "2":
+    if result["schema_version"] != RESULT_SCHEMA_VERSION:
         raise ResultParseError(f"unsupported result schema {result['schema_version']!r}")
     if result["mode"] != "defect":
         raise ResultParseError(f"unsupported mode {result['mode']!r}")
@@ -785,6 +825,7 @@ def parse_review_result(output: str) -> dict[str, Any]:
             raise ResultParseError("a non-empty target requires review partitions")
     _validate_follow_up(result)
     _validate_gaps_and_reviewers(result)
+    _validate_scope_and_decisions(result)
     _validate_verdict_consistency(result)
     result["_output_text"] = output
     return result

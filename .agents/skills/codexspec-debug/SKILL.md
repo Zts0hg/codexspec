@@ -121,6 +121,8 @@ When the symptom is too thin to act on, **reproduce-or-ask** before doing anythi
 - If you still cannot reproduce it reliably, ask the user for exactly what is missing — reproduction steps, the precise input that triggers it, expected-vs-actual behavior, the verbatim error, and when it started.
 - Do NOT propose a fix for an unreproduced symptom.
 
+The symptom may also be a **recurring defect class** with its known instances — for example, when `implement-tasks` escalates a root-cause class that reappeared across review rounds. Treat the class as one defect: reproduce each known instance, and investigate the shared cause rather than any single location.
+
 ## Investigation Protocol
 
 Work the phases in order. Phase 1 is a hard gate.
@@ -150,10 +152,11 @@ Work the phases in order. Phase 1 is a hard gate.
 - Write a failing test first that captures the defect (a reproducing regression test) and observe it fail for the right reason. For a symptom with no natural unit test — a documentation or configuration defect, a production-log incident — construct the closest reproducing check instead.
 - Apply a single, minimal fix that targets the root cause — not the symptom, and no "while I'm here" changes.
 - Verify: the new test passes and no previously-passing test breaks.
+- For a defect class, apply one uniform fix at the shared root cause instead of patching each instance, then search the codebase for every location of the class (equivalent callers, implementations, adapters, and entry surfaces) and cover each location with a regression check.
 
 ### Architecture Gate (≥3 failed fixes)
 
-If three fixes for the same problem have failed, STOP. Do not attempt a fourth blind fix. Repeated failure is evidence that the model of the problem — or the architecture — is wrong. Surface it: state what was tried, why each attempt failed, and what architectural question must be answered before continuing.
+If three fixes for the same problem have failed, STOP. Do not attempt a fourth blind fix. Repeated failure is evidence that the model of the problem — or the architecture — is wrong. Surface it: state what was tried, why each attempt failed, and what architectural question must be answered before continuing. For a defect class, the gate applies to the class as a whole: three failed fixes across its instances count toward the same gate.
 
 ## Completion
 
