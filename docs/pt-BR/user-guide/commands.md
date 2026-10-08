@@ -1123,13 +1123,20 @@ Revisa a alteração Git selecionada como um gate de defeitos rigoroso antes do 
 /codexspec:review-code --committed [--base <branch>] [--feature <feature-dir>] [--focus <instructions>]
 /codexspec:review-code --uncommitted [--feature <feature-dir>] [--focus <instructions>]
 /codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code [--committed] --incremental-from <fingerprint> [--feature <feature-dir>]
 ```
+
+Toda forma do gate de defeitos também aceita `--decided-by reviewer|ask`, que substitui `review.decided_by` naquela execução.
 
 <!-- REVIEW-CODE-SYSTEM-CONTRACT -->
 <!-- REVIEW-CODE-VARIANT-SEARCH -->
 <!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
 
-O gate inventaria todos os artefatos selecionados, avalia requisitos aplicáveis e executa cinco fases nesta ordem: Scope, System Contract, Behavior, Risk e Verification. Ele registra contratos entre módulos sustentados por evidências e partições semânticas de revisão; cada causa raiz repetível e validada aciona, antes do fim da rodada, uma busca delimitada por ocorrências relacionadas. As seis seções do relatório são seguidas por um único envelope `<review-code-result>` legível por máquina com `schema_version: "2"`. O envelope transporta a identidade do alvo, a cobertura e obrigações objetivas a serem verificadas novamente após o reparo. O chamador preserva essas obrigações neutras para uma nova revisão completa, sem transmitir o raciocínio do reparo nem conclusões anteriores de correção. O veredito é `PASS`, `FAIL` ou `INCONCLUSIVE`: todo defeito P0-P3 produz `FAIL`; evidência obrigatória ausente ou cobertura incompleta produz `INCONCLUSIVE`.
+O gate inventaria todos os artefatos selecionados, avalia requisitos aplicáveis e executa cinco fases nesta ordem: Scope, System Contract, Behavior, Risk e Verification. Ele registra contratos entre módulos sustentados por evidências e partições semânticas de revisão; cada causa raiz repetível e validada aciona, antes do fim da rodada, uma busca delimitada por ocorrências relacionadas. As seis seções do relatório são seguidas por um único envelope `<review-code-result>` legível por máquina com `schema_version: "3"`. O envelope transporta a identidade do alvo, a cobertura e obrigações objetivas a serem verificadas novamente após o reparo. O chamador preserva essas obrigações neutras para uma nova revisão completa, sem transmitir o raciocínio do reparo nem conclusões anteriores de correção. O veredito é `PASS`, `FAIL` ou `INCONCLUSIVE`: todo defeito P0-P3 produz `FAIL`; evidência obrigatória ausente ou cobertura incompleta produz `INCONCLUSIVE`.
+
+**Rodadas incrementais.** Depois de um reparo, `--incremental-from <fingerprint>` revisa novamente apenas o que mudou desde aquele resultado anterior: os arquivos alterados, as partições de revisão e os contratos que eles tocam, e as obrigações pendentes. A cobertura dos arquivos inalterados e não afetados é reaproveitada, e o revisor ainda relata qualquer defeito que encontrar em outro lugar. Um `PASS` incremental nunca conclui uma funcionalidade: o `implement-tasks` executa primeiro uma revisão completa, revisões incrementais após cada reparo e, como aceite final, uma nova revisão completa. Os registros da revisão são gravados fora do repositório, no seu diretório de cache de usuário (`~/.cache/codexspec/review/` ou `%LOCALAPPDATA%\codexspec\review\`); na conversa aparecem apenas o relatório e o envelope.
+
+**Modo de decisão.** `review.decided_by` em `.codexspec/config.yml` define quem decide sobre um achado cujo gatilho está fora do contexto real de uso do projeto, como uma entrada que o projeto nunca recebe. Com o padrão `reviewer`, a revisão se comporta exatamente como antes. Com `ask`, a revisão relata esse item como uma decisão de cenário pendente em vez de falhar por ele, e o `implement-tasks` pergunta a você uma única vez: corrigir ou aceitar que o cenário está fora do escopo. Sua resposta é registrada em `requirements.md` como uma entrada `CON` ou `OUT` confirmada, para que rodadas posteriores não a levantem novamente.
 
 ```text
 You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example

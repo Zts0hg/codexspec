@@ -238,7 +238,7 @@ All tasks edit `templates/commands/implement-tasks.md` sequentially; contract as
 
 ## Phase 6: Documentation
 
-- [ ] **T018** Update the English docs:
+- [x] **T018** Update the English docs:
   - the `docs/en/user-guide/commands.md` review-code section: schema `3`, `--decided-by`, `--incremental-from`, incremental and complete rounds, scenario decisions, keeping every test-enforced marker and syntax;
   - `docs/en/reference/configuration.md`: `review.decided_by`;
   - `docs/en/reference/cli.md`: `codexspec config --decided-by`;
@@ -253,12 +253,13 @@ All tasks edit `templates/commands/implement-tasks.md` sequentially; contract as
     Then confirm the pages read correctly.
   - **Covers**: NFR-004, REQ-005, REQ-010; Plan: Phase 6 (English docs)
 
-- [ ] **T019** Run `/codexspec:translate-docs` for the three changed English pages across the seven locales (zh, ja, ko, de, es, fr, pt-BR); check each locale's test-enforced strings.
+- [x] **T019** Run `/codexspec:translate-docs` for the three changed English pages across the seven locales (zh, ja, ko, de, es, fr, pt-BR); check each locale's test-enforced strings.
+  - **Implementation note**: `/codexspec:translate-docs` retranslates whole pages, and `commands.md` alone is over 1,200 lines. To avoid rewriting unrelated sections (the risk flagged in review-tasks), the changed paragraphs were translated and inserted at the same positions in each locale instead. The goal of plan Decision 3, consistent localization, is unchanged. The localized `reference/configuration.md` pages were already behind English (they lack the `workflow.worktrees` section); this feature only adds its own `review.decided_by` content to them.
   - **Depends on**: T018
   - **Verification**: `uv run pytest tests/test_review_code_docs.py tests/test_translation_files.py` passes for all locales.
   - **Covers**: NFR-004; Plan: Phase 6 (localization, plan Decision 3)
 
-- [ ] **T020** [P] Update `CLAUDE.md`:
+- [x] **T020** [P] Update `CLAUDE.md`:
   - add a "Review Convergence" architecture section covering incremental rounds, `review.decided_by`, schema `3`, the state store, and cross-round escalation;
   - change the debug section's "two trip conditions" to three;
   - list `review.decided_by` with the configuration keys.
@@ -272,12 +273,12 @@ All tasks edit `templates/commands/implement-tasks.md` sequentially; contract as
 
 ## Phase 7: Verification and Acceptance
 
-- [ ] **T021** Run the full suite, lint, and the docs build: `uv run pytest`, `uv run ruff check src/ tests/`, and `mkdocs build --strict` when available locally (otherwise the `docs.yml` CI).
+- [x] **T021** Run the full suite, lint, and the docs build: `uv run pytest`, `uv run ruff check src/ tests/`, and `mkdocs build --strict` when available locally (otherwise the `docs.yml` CI).
   - **Depends on**: T003, T004, T010, T011, T015, T016, T017, T019, T020
   - **Verification**: All green.
   - **Covers**: NFR-004; Plan: Phase 7
 
-- [ ] **T022** [P] Consistency check:
+- [x] **T022** [P] Consistency check:
   - Grep the source-of-truth paths (`templates/`, `src/`, `tests/`, `docs/`, `CLAUDE.md`, root `README*.md`) for ``schema version `2` ``, `schema-v2`, and `"schema_version": "2"`. Nothing may still require, emit, or document schema `2` as current.
   - Expected exceptions: rejection rules and rejection fixtures for `1`/`2`, and the eval case files' independent case schema `"1"`.
   - Excluded paths: `.codexspec/specs/` and the derived `.claude/commands/codexspec/` and `.agents/skills/` copies.
@@ -286,11 +287,12 @@ All tasks edit `templates/commands/implement-tasks.md` sequentially; contract as
   - **Verification**: The grep shows only expected exceptions; the resolver is unchanged.
   - **Covers**: NFR-002, NFR-004; Plan: Phase 7 (consistency grep)
 
-- [ ] **T023** [P] Rendering check in a scratch project:
+- [x] **T023** [P] Rendering check in a scratch project:
   - run `uv tool install --force .`, then `codexspec init --ai both` in a temporary directory;
   - inspect the rendered `review-code`, `implement-tasks`, `debug`, and `config` in both `.claude/commands/codexspec/` and `.agents/skills/` forms, including localized `argument-hint` for one non-English language.
   - **Depends on**: T021
   - **Verification**: Both forms contain the new rules (`/codexspec:` versus `$codexspec:` syntax) and the isolation instructions.
+  - **Implementation note**: rendered with the worktree's own `.venv/bin/codexspec init --ai both --lang zh-CN` into a scratch repository instead of `uv tool install --force .`, which would have replaced the user's globally installed tool. `codexspec config --decided-by` was also exercised end to end there (set, reject an invalid value, show the effective value, flag an invalid stored value).
   - **Covers**: REQ-016, NFR-004; Plan: Phase 7 (rendering check, plan Decision 4)
 
 - [ ] **T024** Manual acceptance in a scratch repository with a seeded defect. Run it from a linked worktree, on Codex and Claude Code where available, and record each scenario's outcome.

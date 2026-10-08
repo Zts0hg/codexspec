@@ -108,5 +108,6 @@ codexspec config [OPTIONS]
 | `--set-commit-lang` | `-c` | 커밋 메시지 언어 설정 |
 | `--list-langs` | | 지원하는 모든 언어 나열 |
 | `--auto-next` | | `workflow.auto_next` 토글/설정(플래그만 쓰면 토글, 또는 on/off 명시) |
+| `--decided-by` | | `review.decided_by`를 `reviewer`(기본값) 또는 `ask`로 설정 |
 
 각 `--set-*-lang`은 하나의 [언어 차원](../user-guide/i18n.md)을 업데이트합니다. 설정하지 않은 차원은 `output` → `en` 순으로 폴백합니다.

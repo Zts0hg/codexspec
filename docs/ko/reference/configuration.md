@@ -22,6 +22,9 @@ project:
 
 workflow:
   auto_next: false       # 워크플로우 단계 간 자동 진행 (옵트인)
+
+review:
+  decided_by: reviewer   # 실제 사용 범위 밖 결함의 판정 주체: reviewer(기본값) 또는 ask
 ```
 
 ## 언어 설정
@@ -96,3 +99,14 @@ specify → generate-spec → spec-to-plan → plan-to-tasks → implement-tasks
 - `implement-tasks`: 종착 단계 — 이후에 자동으로 발동하는 것은 없습니다.
 
 리뷰 루프가 `NEEDS_REVISION` 또는 `BLOCKED`를 보고하면 체인은 멈추고 제어가 사용자에게 돌아갑니다. 각 진행 전에 에이전트는 알림 한 줄을 출력합니다(예: `auto_next: review passed → invoking /codexspec:spec-to-plan`).
+
+## 검토 설정
+
+### `review.decided_by`
+
+`/codexspec:review-code`가 찾은 결함 중 트리거가 프로젝트의 실제 사용 범위 밖의 입력이나 환경에 의존하는 결함을 누가 판정할지 정합니다.
+
+- **기본값:** `reviewer`(키나 섹션이 없을 때도 동일). 검토자가 모든 결함을 판정하며 이전과 똑같이 동작합니다.
+- **`ask`:** 검토는 이런 항목으로 실패 처리하지 않고 보류 중인 시나리오 판정으로 보고합니다. `implement-tasks`가 수정할지, 아니면 해당 시나리오를 범위 밖으로 받아들일지 한 번 묻고, 답변을 확정된 `CON` 또는 `OUT` 항목으로 `requirements.md`에 기록합니다. 이후 검토 라운드는 그 항목을 따릅니다.
+- **설정 방법:** `codexspec config --decided-by reviewer|ask` 또는 `/codexspec:config`. 한 번의 `review-code` 실행에서는 `--decided-by`로 재정의할 수 있습니다.
+- 그 밖의 값은 유효하지 않습니다. `codexspec config`가 이를 보고하고, `review-code`는 수정될 때까지 인수 오류로 중단합니다.

@@ -107,5 +107,6 @@ codexspec config [OPTIONS]
 | `--set-commit-lang` | `-c` | 设置提交信息语言 |
 | `--list-langs` | | 列出所有支持的语言 |
 | `--auto-next` | | 切换/设置 `workflow.auto_next`（裸标志切换；或传 on/off） |
+| `--decided-by` | | 将 `review.decided_by` 设为 `reviewer`（默认）或 `ask` |
 
 每个 `--set-*-lang` 更新一个[语言维度](../user-guide/i18n.md)；未设置的维度回退到 `output`，再到 `en`。

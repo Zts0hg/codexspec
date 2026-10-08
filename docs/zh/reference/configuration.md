@@ -22,6 +22,9 @@ project:
 
 workflow:
   auto_next: false       # 在工作流各阶段之间自动推进（opt-in）
+
+review:
+  decided_by: reviewer   # 超出实际使用场景的缺陷由谁判定：reviewer（默认）或 ask
 ```
 
 ## 语言设置
@@ -96,3 +99,14 @@ specify → generate-spec → spec-to-plan → plan-to-tasks → implement-tasks
 - `implement-tasks`：终端阶段——其后不会自动触发任何内容。
 
 当评审闭环报告 `NEEDS_REVISION` 或 `BLOCKED` 时，链路停下并把控制权交还给你。每次推进之前，agent 会输出一条提示行（例如：`auto_next: review passed → invoking /codexspec:spec-to-plan`）。
+
+## 审查设置
+
+### `review.decided_by`
+
+决定当 `/codexspec:review-code` 发现的缺陷，其触发条件依赖项目实际使用场景之外的输入或环境时，由谁来判定。
+
+- **默认值：** `reviewer`（键或分组缺失时同样如此）。由审查员判定每一个缺陷，行为与之前完全一致。
+- **`ask`：** 审查会把这类问题报告为待决的场景判定，而不是据此判定失败。`implement-tasks` 会询问你一次：修复，还是确认该场景不在范围内，并把你的回答以已确认的 `CON` 或 `OUT` 条目写入 `requirements.md`。后续审查轮次会遵循该条目。
+- **设置方式：** `codexspec config --decided-by reviewer|ask` 或 `/codexspec:config`。单次 `review-code` 运行可以用 `--decided-by` 覆盖。
+- 其他任何值都无效：`codexspec config` 会报告该问题，`review-code` 会以参数错误停止，直到修正为止。

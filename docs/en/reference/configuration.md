@@ -23,6 +23,9 @@ project:
 workflow:
   auto_next: false       # Auto-advance between workflow stages (opt-in)
   worktrees: true        # Isolate writes in Git worktrees (default on)
+
+review:
+  decided_by: reviewer   # Who decides out-of-context review findings: reviewer (default) or ask
 ```
 
 ## Language Settings
@@ -112,6 +115,17 @@ For example, disabling from main disables the maintenance checkout first: main c
 to read its unchanged configuration until that change is integrated through Git. There
 is no repository-wide immediate override. Other language and workflow settings follow
 the same routing.
+
+## Review Settings
+
+### `review.decided_by`
+
+Decides who rules on a `/codexspec:review-code` finding whose trigger depends on inputs or environments outside the project's real operating context.
+
+- **Default:** `reviewer`, including when the key or section is absent. The reviewer decides every finding, exactly as before.
+- **`ask`:** the review reports such an item as a pending scenario decision instead of failing on it. `implement-tasks` asks you once to fix it or accept that the scenario is out of scope, and records your answer in `requirements.md` as a confirmed `CON` or `OUT` entry. Later review rounds follow that entry.
+- **Set with:** `codexspec config --decided-by reviewer|ask` or `/codexspec:config`. A single `review-code` run can override it with `--decided-by`.
+- Any other value is invalid: `codexspec config` reports it, and `review-code` stops with an argument error until it is corrected.
 
 With isolation off, ordinary feature and project-level writes use the selected checkout.
 `blueprint` and `auto-dev` always retain their fixed shared worktree. First-time and update

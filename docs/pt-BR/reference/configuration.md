@@ -22,6 +22,9 @@ project:
 
 workflow:
   auto_next: false       # Avanço automático entre etapas do fluxo (opt-in)
+
+review:
+  decided_by: reviewer   # Quem decide achados fora do contexto real de uso: reviewer (padrão) ou ask
 ```
 
 ## Configurações de idioma
@@ -96,3 +99,14 @@ specify → generate-spec → spec-to-plan → plan-to-tasks → implement-tasks
 - `implement-tasks`: etapa terminal — nada dispara automaticamente depois dela.
 
 Quando o loop de revisão informa `NEEDS_REVISION` ou `BLOCKED`, a cadeia para e o controle volta a você. Antes de cada avanço, o agente emite uma linha de aviso (por exemplo: `auto_next: review passed → invoking /codexspec:spec-to-plan`).
+
+## Configurações de revisão
+
+### `review.decided_by`
+
+Define quem decide sobre um achado do `/codexspec:review-code` cujo gatilho depende de entradas ou ambientes fora do contexto real de uso do projeto.
+
+- **Padrão:** `reviewer`, inclusive quando a chave ou a seção está ausente. O revisor decide cada achado, exatamente como antes.
+- **`ask`:** a revisão relata esse item como uma decisão de cenário pendente em vez de falhar por ele. O `implement-tasks` pergunta a você uma única vez se deve corrigi-lo ou aceitar que o cenário está fora do escopo, e registra sua resposta em `requirements.md` como uma entrada `CON` ou `OUT` confirmada. As rodadas de revisão seguintes respeitam essa entrada.
+- **Defina com:** `codexspec config --decided-by reviewer|ask` ou `/codexspec:config`. Uma única execução de `review-code` pode substituí-lo com `--decided-by`.
+- Qualquer outro valor é inválido: o `codexspec config` o informa e o `review-code` para com um erro de argumento até que seja corrigido.

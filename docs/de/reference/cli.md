@@ -108,5 +108,6 @@ codexspec config [OPTIONEN]
 | `--set-commit-lang` | `-c` | Die Commit-Nachrichten-Sprache festlegen |
 | `--list-langs` | | Alle unterstützten Sprachen auflisten |
 | `--auto-next` | | `workflow.auto_next` umschalten/setzen (bare schaltet um; oder on/off) |
+| `--decided-by` | | `review.decided_by` auf `reviewer` (Standard) oder `ask` setzen |
 
 Jedes `--set-*-lang` aktualisiert eine [Sprach-Dimension](../user-guide/i18n.md); jede Dimension, die Sie nicht festlegen, fällt auf `output`, dann auf `en` zurück.

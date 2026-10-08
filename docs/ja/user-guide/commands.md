@@ -1123,13 +1123,20 @@ AI:  Preview mode - no commit will be executed
 /codexspec:review-code --committed [--base <branch>] [--feature <feature-dir>] [--focus <instructions>]
 /codexspec:review-code --uncommitted [--feature <feature-dir>] [--focus <instructions>]
 /codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code [--committed] --incremental-from <fingerprint> [--feature <feature-dir>]
 ```
+
+すべての欠陥ゲート形式で `--decided-by reviewer|ask` を指定でき、その実行に限り `review.decided_by` を上書きします。
 
 <!-- REVIEW-CODE-SYSTEM-CONTRACT -->
 <!-- REVIEW-CODE-VARIANT-SEARCH -->
 <!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
 
-ゲートは対象内の全成果物を棚卸しし、適用要件を評価して Scope、System Contract、Behavior、Risk、Verification の 5 パスをこの順で実行します。根拠のあるモジュール間契約と意味単位のレビューパーティションを記録し、検証済みで反復可能な根本原因ごとに、ラウンド終了前に境界を限定した関連箇所の検索を行います。6 つのレポートセクションの後に、`schema_version: "2"` を使用する機械可読な `<review-code-result>` envelope が 1 つ続きます。この envelope には対象識別子、カバレッジ、修正後に再確認する客観的な義務が含まれます。呼び出し側はこの中立な義務を新しい完全レビューに渡しますが、修正理由や以前の正しさの結論は渡しません。判定は `PASS`、`FAIL`、`INCONCLUSIVE` のいずれかです。P0-P3 の指摘はすべて `FAIL`、必須証拠またはカバレッジの不足は `INCONCLUSIVE` です。
+ゲートは対象内の全成果物を棚卸しし、適用要件を評価して Scope、System Contract、Behavior、Risk、Verification の 5 パスをこの順で実行します。根拠のあるモジュール間契約と意味単位のレビューパーティションを記録し、検証済みで反復可能な根本原因ごとに、ラウンド終了前に境界を限定した関連箇所の検索を行います。6 つのレポートセクションの後に、`schema_version: "3"` を使用する機械可読な `<review-code-result>` envelope が 1 つ続きます。この envelope には対象識別子、カバレッジ、修正後に再確認する客観的な義務が含まれます。呼び出し側はこの中立な義務を新しい完全レビューに渡しますが、修正理由や以前の正しさの結論は渡しません。判定は `PASS`、`FAIL`、`INCONCLUSIVE` のいずれかです。P0-P3 の指摘はすべて `FAIL`、必須証拠またはカバレッジの不足は `INCONCLUSIVE` です。
+
+**増分ラウンド。** 修正後は `--incremental-from <fingerprint>` で、その結果以降に変わった部分だけを再レビューします。対象は変更されたファイル、それらが関わるレビューパーティションと契約、そして引き継がれた義務です。変更がなく影響も受けないファイルは以前のカバレッジを再利用しますが、レビュアーは他の場所で見つけた欠陥も通常どおり報告します。増分の `PASS` で機能が完了することはありません。`implement-tasks` は最初に完全レビューを行い、修正のたびに増分レビューを行い、最終受け入れとして新しい完全レビューをもう一度行います。レビュー記録はリポジトリ外のユーザーキャッシュディレクトリ (`~/.cache/codexspec/review/` または `%LOCALAPPDATA%\codexspec\review\`) に書き込まれ、会話にはレポートと envelope だけが表示されます。
+
+**判定モード。** `.codexspec/config.yml` の `review.decided_by` は、トリガーがプロジェクトの実際の利用状況の外にある指摘 (プロジェクトが決して受け取らない入力など) を誰が判断するかを決めます。既定の `reviewer` では、レビューはこれまでとまったく同じように動作します。`ask` にすると、レビューはその項目を理由に失敗とせず、保留中のシナリオ判断として報告します。`implement-tasks` は一度だけ、修正するか、そのシナリオを対象外として受け入れるかを尋ねます。回答は確定済みの `CON` または `OUT` エントリとして `requirements.md` に記録され、以降のラウンドでは再び指摘されません。
 
 ```text
 You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example
