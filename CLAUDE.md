@@ -327,7 +327,7 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 - **Schema 3 envelope**: adds `review_scope`, `decided_by`, and `scenario_decisions`; `implement-tasks` and the eval harness accept only schema `3`.
 - **Environment and isolation rules**: verification mirrors keep their own Git metadata and copied (not linked) dependencies and never share the original Git directory; the coordinator is the only spawner (depth 1); Codex reviewers use `spawn_agent` with `fork_turns: "none"` and Claude Code reviewers use a fresh non-fork subagent.
 
-**Implementation**: Edit `internal/command_templates/sources/{review-code,implement-tasks,debug,config}.md`, render with `uv run python internal/command_template_fragments.py --write`, regenerate the tracked `.claude/commands/codexspec/` and `.agents/skills/` copies, and confirm `--check-distribution`. The `review-code` `argument-hint` is localized in `templates/translations/*.json`. The config helpers live in `src/codexspec/__init__.py`.
+**Implementation**: Edit `internal/command_templates/sources/{review-code,implement-tasks,debug,config}.md`, render with `uv run python internal/command_template_fragments.py --write`, regenerate the tracked `.claude/commands/codexspec/` and `.agents/skills/` copies, and confirm `--check-distribution`. The `review-code` `argument-hint` is localized in `templates/translations/*.json`. The config helpers live in `src/codexspec/__init__.py` and write through the shared surgical writer `write_config_scalar` in `src/codexspec/worktrees.py` (also used by `workflow.worktrees`).
 
 ### Codebase Onboarding: onboard
 

@@ -71,6 +71,7 @@ from .worktrees import (
     feature_name,
     read_worktrees,
     validate_write_path,
+    write_config_scalar,
     write_destination,
     write_worktrees,
 )
@@ -1710,89 +1711,29 @@ def _read_review_decided_by(config_file: Path) -> str:
 
 
 def _write_review_decided_by(config_file: Path, value: str) -> bool:
-    """Set ``review.decided_by`` to ``reviewer`` or ``ask`` and verify the result.
+    """Set ``review.decided_by`` to ``reviewer`` or ``ask``.
 
-    Edits the block-style ``review:`` mapping line by line so other lines and
-    comments are preserved: the value is replaced in place when the key exists
-    (including an empty value), inserted as the section's first child when the
-    section exists without it, or appended as a new ``review:`` section.
-    Comment lines never end a section. The edited file is then verified as a
-    whole: unless the parsed document equals the original with only
-    ``review.decided_by`` replaced and has no duplicate keys (for example a
-    flow-style or anchored mapping, or a nested or block-scalar ``decided_by``),
-    the original content is restored and ``False`` is returned, so callers never
-    report a change that does not take effect or that alters anything else. Raises
-    ``ValueError`` for an invalid value; returns ``False`` on I/O error.
+    Delegates to the shared surgical writer used for ``workflow.worktrees``, which
+    preserves comments, line endings, and every other value, handles block and
+    flow mappings, and writes atomically only when the parsed document equals the
+    original with just this key replaced. Returns ``False`` (file untouched) when
+    the edit cannot be made that way or on I/O error; raises ``ValueError`` for an
+    invalid value.
     """
     token = parse_decided_by_value(value)
     try:
-        content = config_file.read_text(encoding="utf-8")
-    except OSError:
-        return False
-
-    lines = content.split("\n")
-    review_idx: Optional[int] = None
-    in_review = False
-    edited: Optional[list[str]] = None
-    for i, line in enumerate(lines):
-        stripped = line.strip()
-        if not stripped or stripped.startswith("#"):
-            continue
-        if not line[0].isspace():
-            key = line.split("#", 1)[0].strip()
-            in_review = key == "review:"
-            if in_review:
-                review_idx = i
-            continue
-        if in_review and re.match(r"^\s*decided_by:(\s|$)", line):
-            indent = line[: len(line) - len(line.lstrip())]
-            edited = [*lines[:i], f"{indent}decided_by: {token}", *lines[i + 1 :]]
-            break
-
-    if edited is not None:
-        new_content = "\n".join(edited)
-    elif review_idx is not None:
-        new_content = "\n".join([*lines[: review_idx + 1], f"  decided_by: {token}", *lines[review_idx + 1 :]])
-    else:
-        section = f"review:\n  decided_by: {token}"
-        if not content:
-            new_content = section + "\n"
-        elif content.endswith("\n"):
-            new_content = content + "\n" + section + "\n"
-        else:
-            new_content = content + "\n\n" + section + "\n"
-
-    try:
-        config_file.write_text(new_content, encoding="utf-8")
-    except OSError:
-        return False
-    if not _decided_by_write_is_exact(content, new_content, token):
-        try:
-            config_file.write_text(content, encoding="utf-8")
-        except OSError:
-            pass
+        write_config_scalar(
+            config_file,
+            "review",
+            "decided_by",
+            token,
+            token,
+            error_prefix="review",
+            invalid_section_code="invalid_review_section",
+        )
+    except (AutomationError, OSError):
         return False
     return True
-
-
-def _decided_by_write_is_exact(before_text: str, after_text: str, token: str) -> bool:
-    """Return True only when the edit set ``review.decided_by`` and changed nothing else.
-
-    Mirrors ``write_worktrees``: the parsed document after the edit must equal the
-    parsed document before it with only ``review.decided_by`` replaced, and the
-    edited text must contain no duplicate mapping keys.
-    """
-    try:
-        before = yaml.safe_load(before_text) or {}
-        after = yaml.safe_load(after_text)
-    except yaml.YAMLError:
-        return False
-    if not isinstance(before, dict) or _yaml_has_duplicate_keys(after_text):
-        return False
-    review = before.get("review") or {}
-    if not isinstance(review, dict):
-        return False
-    return after == {**before, "review": {**review, "decided_by": token}}
 
 
 def _next_step_start(integration_keys: set[str], language: str) -> str:

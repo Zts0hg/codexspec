@@ -287,3 +287,19 @@ def test_write_never_changes_anything_but_the_target_key(tmp_path: Path, body: s
 def test_read_reports_duplicate_review_keys_as_invalid(tmp_path: Path) -> None:
     cfg = _make_config(tmp_path, "review:\n  decided_by: ask\nreview:\n  decided_by: reviewer\n")
     assert _read_review_decided_by(cfg) not in ("ask", "reviewer")
+
+
+@pytest.mark.parametrize(
+    "body", ["version: '1.0'\r\nreview:\r\n  decided_by: reviewer\r\n", "review: {decided_by: reviewer}\r\n"]
+)
+def test_write_preserves_line_endings_and_bytes_on_failure(tmp_path: Path, body: str) -> None:
+    """Review round 6 SF-001: CRLF survives a write, and a refused write leaves the bytes intact."""
+    cfg = tmp_path / "config.yml"
+    cfg.write_bytes(body.encode("utf-8"))
+    ok = _write_review_decided_by(cfg, "ask")
+    data = cfg.read_bytes()
+    if ok:
+        assert b"\r\n" in data and b"\n" not in data.replace(b"\r\n", b"")
+        assert _read_review_decided_by(cfg) == "ask"
+    else:
+        assert data == body.encode("utf-8")
