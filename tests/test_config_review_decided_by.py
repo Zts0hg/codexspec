@@ -355,3 +355,70 @@ def test_empty_review_in_flow_root_is_settable(tmp_path: Path, body: str) -> Non
     assert _read_review_decided_by(cfg) == "reviewer"
     assert _write_review_decided_by(cfg, "ask") is True
     assert _read_review_decided_by(cfg) == "ask"
+
+
+# --- Review round 9: the display derives validity from the writer itself ---
+
+_PARITY_CORPUS = [
+    "",
+    "review:\n  decided_by: ask\n",
+    "review:\n",
+    "review: ~\n",
+    "review: []\n",
+    "review: {decided_by: ask}\n",
+    "{a: 1, review: }\n",
+    "review:\n  decided_by: |-\n    ask\n",
+    "review:\n  decided_by: ask\nreview:\n  decided_by: reviewer\n",
+    "  workflow:\n    worktrees: false\n  other: 1\n",
+    "  review:\n  other: 1\n",
+    "  review:\n    decided_by: ask\n",
+    "b: &b {review: {decided_by: ask, x: 1}}\nworkflow: {worktrees: false}\n<<: *b\n",
+    "b: &b {decided_by: ask}\nreview:\n  <<: *b\n",
+    "review: [\n",
+]
+
+
+@pytest.mark.parametrize("body", _PARITY_CORPUS)
+def test_display_validity_matches_writer_and_yaml(tmp_path: Path, body: str) -> None:
+    """A state shown as a valid effective mode can be set, and shows what YAML resolves."""
+    import yaml
+
+    cfg = _make_config(tmp_path, body)
+    shown = _read_review_decided_by(cfg)
+    if shown in ("ask", "reviewer"):
+        data = yaml.safe_load(body) or {}
+        assert ((data.get("review") or {}).get("decided_by") or "reviewer") == shown
+        for mode in ("ask", "reviewer"):
+            assert _write_review_decided_by(cfg, mode) is True, (body, mode)
+            assert _read_review_decided_by(cfg) == mode
+    else:
+        assert _write_review_decided_by(cfg, "ask") is False
+        assert cfg.read_text(encoding="utf-8") == body
+
+
+def test_bare_config_explains_a_layout_the_writer_refuses(project: Path) -> None:
+    _make_config(project, "  workflow:\n    worktrees: false\n  review:\n  other: 1\n")
+    result = CliRunner().invoke(app, ["config"])
+    assert result.exit_code == 0, result.stdout
+    assert "Effective review.decided_by" not in result.stdout
+    assert "cannot be managed (unsupported layout)" in result.stdout
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        "{workflow: {worktrees: false}, review}\n",
+        "{x: 1, review}\n",
+        "{review}\n",
+        "{? review , x: 1}\n",
+        "workflow:\n  worktrees: false\n? review\n",
+        "review: {decided_by}\n",
+        "review: {x: 1, decided_by}\n",
+    ],
+)
+def test_valueless_keys_are_settable(tmp_path: Path, body: str) -> None:
+    """Review round 9 F-001: a key written without ':' is an implicit null and can be filled in place."""
+    cfg = _make_config(tmp_path, body)
+    assert _read_review_decided_by(cfg) in ("reviewer", "null")
+    assert _write_review_decided_by(cfg, "ask") is True, cfg.read_text(encoding="utf-8")
+    assert _read_review_decided_by(cfg) == "ask"

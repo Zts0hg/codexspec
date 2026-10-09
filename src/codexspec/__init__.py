@@ -68,7 +68,6 @@ from .translator import SUPPORTED_LANGUAGES, translate
 from .worktrees import (
     MAINTENANCE_NAME,
     WorkspaceManager,
-    _is_null_node,
     feature_name,
     read_worktrees,
     validate_write_path,
@@ -553,6 +552,12 @@ _AUTO_DISTILL_SENTINEL = "__toggle_distill__"
 _DECIDED_BY_VALUES = ("reviewer", "ask")
 _DECIDED_BY_DEFAULT = "reviewer"
 _DECIDED_BY_ACCEPTED = ", ".join(_DECIDED_BY_VALUES)
+# Writer refusal codes, as reported by the display; any other refusal is "unsupported layout".
+_DECIDED_BY_REFUSALS = {
+    "invalid_review_config": "unparseable",
+    "duplicate_config_key": "duplicate keys",
+    "invalid_review_section": "invalid review section",
+}
 
 
 @app.command()
@@ -898,6 +903,12 @@ def config(
     stored_mode = _read_review_decided_by(config_file)
     if stored_mode in _DECIDED_BY_VALUES:
         console.print(f"Effective review.decided_by: {stored_mode}")
+    elif stored_mode in _DECIDED_BY_REFUSALS.values() or stored_mode == "unsupported layout":
+        console.print(
+            f"review.decided_by: config.yml cannot be managed ({stored_mode}); "
+            "fix the file by hand before setting it with --decided-by.",
+            markup=False,
+        )
     else:
         console.print(
             f"review.decided_by: invalid value {stored_mode!r} (accepted: {_DECIDED_BY_ACCEPTED}); "
@@ -1684,38 +1695,35 @@ def _yaml_has_duplicate_keys(content: str) -> bool:
 
 
 def _read_review_decided_by(config_file: Path) -> str:
-    """Return the effective ``review.decided_by`` value under YAML semantics.
+    """Return the effective ``review.decided_by`` value, or why the file cannot be managed.
 
-    Uses the same validity model as the writer (``write_config_scalar``): an
-    absent file, a missing or null ``review`` section, or a missing key yields
-    ``reviewer``; duplicate keys on the ``review``/``decided_by`` path yield
-    ``"duplicate keys"``; a non-mapping ``review`` yields ``"invalid review section"``;
-    a file that is not valid YAML yields ``"unparseable"``. A present value is
-    returned as YAML resolves it (``"null"`` for null, text for non-strings), so
-    callers report invalid values rather than masking them as the default.
+    Validity comes from the writer itself: the file is checked with a dry run of
+    ``write_config_scalar`` (the writer behind ``--decided-by``), so a state shown as
+    valid is always settable and a successful write is never shown as invalid. A file
+    the writer refuses yields ``"unparseable"``, ``"duplicate keys"``,
+    ``"invalid review section"``, or ``"unsupported layout"``. Otherwise the value is
+    the one YAML resolves (merge keys included): ``reviewer`` when absent, ``"null"``
+    for null, text for non-strings, so callers report invalid values rather than
+    masking them as the default. An absent or unreadable file yields ``reviewer``.
     """
     try:
         content = config_file.read_bytes().decode("utf-8")
     except (OSError, UnicodeDecodeError):
         return _DECIDED_BY_DEFAULT
     try:
-        root = yaml.compose(content)
+        write_config_scalar(
+            config_file,
+            "review",
+            "decided_by",
+            _DECIDED_BY_DEFAULT,
+            _DECIDED_BY_DEFAULT,
+            error_prefix="review",
+            invalid_section_code="invalid_review_section",
+            dry_run=True,
+        )
         data = yaml.safe_load(content)
-    except yaml.YAMLError:
-        return "unparseable"
-    if root is None:
-        return _DECIDED_BY_DEFAULT
-    if not isinstance(root, yaml.MappingNode):
-        return "unparseable"
-    review_keys = [value for key, value in root.value if key.value == "review"]
-    if len(review_keys) > 1:
-        return "duplicate keys"
-    if not review_keys or _is_null_node(review_keys[0]):
-        return _DECIDED_BY_DEFAULT
-    if not isinstance(review_keys[0], yaml.MappingNode):
-        return "invalid review section"
-    if len([key for key, _ in review_keys[0].value if key.value == "decided_by"]) > 1:
-        return "duplicate keys"
+    except (AutomationError, yaml.YAMLError) as exc:
+        return _DECIDED_BY_REFUSALS.get(getattr(exc, "code", "invalid_review_config"), "unsupported layout")
     review = data.get("review") if isinstance(data, dict) else None
     if not isinstance(review, dict) or "decided_by" not in review:
         return _DECIDED_BY_DEFAULT

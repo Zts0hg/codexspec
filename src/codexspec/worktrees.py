@@ -49,6 +49,27 @@ def _field(node: Any, name: str) -> Any:
     return matches[0] if matches else None
 
 
+def _key_node(node: Any, value: Any) -> Any:
+    """Return the key node paired with ``value`` in mapping ``node``."""
+    return next(key for key, item in node.value if item is value)
+
+
+def _implicit_value_offset(content: str, key: Any, start: int, newline: str) -> tuple[int, str]:
+    """Return where to fill an empty value at ``start`` and the text that must precede it.
+
+    A key written without ``:`` (``{review}``, ``? review``) has an implicit null whose
+    mark points at the next token, so the value goes right after the key, behind a
+    ``:`` indicator (on its own line for a block explicit key).
+    """
+    if ":" in content[key.end_mark.index : start]:
+        return start, ""
+    line_start = content.rfind("\n", 0, key.start_mark.index) + 1
+    lead = content[line_start : key.start_mark.index]
+    if lead.strip() == "?":
+        return key.end_mark.index, f"{newline}{' ' * lead.index('?')}: "
+    return key.end_mark.index, ": "
+
+
 def read_worktrees(config: Path) -> bool:
     """Default on; only an unquoted literal false in workflow disables isolation."""
     _, node = _document(config)
@@ -113,6 +134,7 @@ def write_config_scalar(
     *,
     error_prefix: str = "worktree",
     invalid_section_code: str = "invalid_workflow_section",
+    dry_run: bool = False,
 ) -> None:
     """Surgically set ``section.key`` to ``token`` without normalizing unrelated YAML.
 
@@ -122,6 +144,8 @@ def write_config_scalar(
     ``AutomationError`` is raised and the file is left untouched. The write is
     atomic. Error codes are ``invalid_<prefix>_config``, ``unsupported_<prefix>_config``,
     ``unrelated_config_change``, ``duplicate_config_key``, and ``invalid_section_code``.
+    ``dry_run`` performs every check without writing, so a reader can ask whether
+    the current file is settable under exactly the rules the writer applies.
     """
     original, node = _document(config, f"invalid_{error_prefix}_config")
     newline = "\r\n" if "\r\n" in original else "\n"
@@ -136,7 +160,13 @@ def write_config_scalar(
         # A present but empty/null section (``section:`` or ``section: ~``) is
         # filled in place, like an absent mapping.
         start, end = mapping.start_mark.index, mapping.end_mark.index
-        if start != end or (isinstance(node, yaml.MappingNode) and node.flow_style):
+        lead = ""
+        if start == end:
+            start, lead = _implicit_value_offset(content, _key_node(node, mapping), start, newline)
+            end = start
+        if lead:
+            addition = f"{lead}{{{key}: {token}}}"
+        elif start != end or (isinstance(node, yaml.MappingNode) and node.flow_style):
             # Replace ``~``/``null``, or fill an empty value inside a flow mapping.
             addition = f"{{{key}: {token}}}"
             if start == end and content[start - 1 : start] not in (" ", "\t"):
@@ -152,8 +182,10 @@ def write_config_scalar(
                 end -= 1
         replacement = token
         if start == end and isinstance(value, yaml.ScalarNode) and value.value == "":
+            start, lead = _implicit_value_offset(content, _key_node(mapping, value), start, newline)
+            end = start
             # An empty value: keep a separator between the colon and the new token.
-            replacement = token if content[start - 1 : start] == " " else " " + token
+            replacement = lead + token if lead or content[start - 1 : start] == " " else " " + token
         content = content[:start] + replacement + content[end:]
     elif isinstance(mapping, yaml.MappingNode):
         if mapping.flow_style:
@@ -185,7 +217,8 @@ def write_config_scalar(
             raise AutomationError("unrelated_config_change", str(config))
     except (yaml.YAMLError, RecursionError, TypeError) as exc:
         raise AutomationError(f"unsupported_{error_prefix}_config", str(config)) from exc
-    _atomic_bytes(config, content.encode("utf-8"))
+    if not dry_run:
+        _atomic_bytes(config, content.encode("utf-8"))
 
 
 def write_worktrees(config: Path, enabled: bool) -> None:
