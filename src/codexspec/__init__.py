@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 import typer
+import yaml
 from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Confirm, Prompt
@@ -1658,43 +1659,43 @@ def parse_decided_by_value(raw: str) -> str:
 
 
 def _read_review_decided_by(config_file: Path) -> str:
-    """Return the stored ``review.decided_by`` token, or the default when absent.
+    """Return the effective ``review.decided_by`` value under YAML semantics.
 
-    An absent file, section, or key yields ``reviewer``. A YAML-quoted scalar
-    (``"ask"`` or ``'ask'``) is unquoted, matching YAML semantics. Any other
-    present value is returned verbatim, even when invalid, so callers can report
-    it as invalid rather than masking it as the default.
+    An absent file, ``review`` mapping, or key yields ``reviewer``. A present
+    value is returned as YAML resolves it (quoted scalars unquoted, comments
+    ignored); a null value is returned as ``"null"`` and any other non-string
+    value as its text, so callers report it as invalid rather than masking it as
+    the default. A file that is not valid YAML yields ``"unparseable"``.
     """
     try:
         content = config_file.read_text(encoding="utf-8")
     except OSError:
         return _DECIDED_BY_DEFAULT
-    in_review = False
-    for line in content.splitlines():
-        if not line.strip():
-            continue
-        if not line[0].isspace():  # top-level key (or comment)
-            key = line.split("#", 1)[0].strip()
-            in_review = key == "review:"
-            continue
-        if in_review:
-            match = re.match(r"^\s*decided_by:\s*(\S+?)\s*(?:#.*)?$", line)
-            if match:
-                token = match.group(1)
-                if len(token) >= 2 and token[0] == token[-1] and token[0] in "'\"":
-                    token = token[1:-1]
-                return token
-    return _DECIDED_BY_DEFAULT
+    try:
+        data = yaml.safe_load(content)
+    except yaml.YAMLError:
+        return "unparseable"
+    review = data.get("review") if isinstance(data, dict) else None
+    if not isinstance(review, dict) or "decided_by" not in review:
+        return _DECIDED_BY_DEFAULT
+    value = review["decided_by"]
+    if value is None:
+        return "null"
+    return value if isinstance(value, str) else str(value)
 
 
 def _write_review_decided_by(config_file: Path, value: str) -> bool:
-    """Set ``review.decided_by`` to ``reviewer`` or ``ask``.
+    """Set ``review.decided_by`` to ``reviewer`` or ``ask`` and verify the result.
 
-    Mirrors ``_write_auto_next``: update the value in place when the key exists
-    under ``review:``; insert it as the section's first child when the section
-    exists without the key; append a ``review:`` section when absent. Preserves
-    all other lines and comments. Raises ``ValueError`` for an invalid value and
-    returns ``False`` on I/O error.
+    Edits the block-style ``review:`` mapping line by line so other lines and
+    comments are preserved: the value is replaced in place when the key exists
+    (including an empty value), inserted as the section's first child when the
+    section exists without it, or appended as a new ``review:`` section.
+    Comment lines never end a section. The edited file is then parsed as YAML;
+    if the effective value is not the requested one (for example a flow-style
+    mapping), the original content is restored and ``False`` is returned, so
+    callers never report a change that does not take effect. Raises
+    ``ValueError`` for an invalid value; returns ``False`` on I/O error.
     """
     token = parse_decided_by_value(value)
     try:
@@ -1705,8 +1706,10 @@ def _write_review_decided_by(config_file: Path, value: str) -> bool:
     lines = content.split("\n")
     review_idx: Optional[int] = None
     in_review = False
+    edited: Optional[list[str]] = None
     for i, line in enumerate(lines):
-        if not line.strip():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
             continue
         if not line[0].isspace():
             key = line.split("#", 1)[0].strip()
@@ -1714,25 +1717,33 @@ def _write_review_decided_by(config_file: Path, value: str) -> bool:
             if in_review:
                 review_idx = i
             continue
-        if in_review and re.match(r"^\s*decided_by:\s*\S+", line):
+        if in_review and re.match(r"^\s*decided_by:(\s|$)", line):
             indent = line[: len(line) - len(line.lstrip())]
-            lines[i] = f"{indent}decided_by: {token}"
-            return _dump_lines(config_file, lines)
+            edited = [*lines[:i], f"{indent}decided_by: {token}", *lines[i + 1 :]]
+            break
 
-    if review_idx is not None:
-        lines.insert(review_idx + 1, f"  decided_by: {token}")
-        return _dump_lines(config_file, lines)
-
-    section = f"review:\n  decided_by: {token}"
-    if not content:
-        new_content = section + "\n"
-    elif content.endswith("\n"):
-        new_content = content + "\n" + section + "\n"
+    if edited is not None:
+        new_content = "\n".join(edited)
+    elif review_idx is not None:
+        new_content = "\n".join([*lines[: review_idx + 1], f"  decided_by: {token}", *lines[review_idx + 1 :]])
     else:
-        new_content = content + "\n\n" + section + "\n"
+        section = f"review:\n  decided_by: {token}"
+        if not content:
+            new_content = section + "\n"
+        elif content.endswith("\n"):
+            new_content = content + "\n" + section + "\n"
+        else:
+            new_content = content + "\n\n" + section + "\n"
+
     try:
         config_file.write_text(new_content, encoding="utf-8")
     except OSError:
+        return False
+    if _read_review_decided_by(config_file) != token:
+        try:
+            config_file.write_text(content, encoding="utf-8")
+        except OSError:
+            pass
         return False
     return True
 

@@ -702,3 +702,13 @@ def test_incremental_baseline_error_is_machine_readable() -> None:
     assert "falls back to a complete review in the same invocation" in incremental
     assert "non-blocking coverage gap whose scope is exactly `incremental baseline`" in incremental
     assert "never an argument error" in incremental
+
+
+def test_isolation_allow_list_includes_incremental_scope_obligations() -> None:
+    """Review round 4 F-001: incremental scope delivery must not contradict isolation."""
+    _, body = split_template()
+    isolation = _compact(section(body, "### Reviewer Isolation", "### Instruction and Evidence Trust"))
+    protocol = _compact(section(body, "## Defect-Gate Review Protocol", "### Review State Store"))
+    for text in (isolation, protocol):
+        assert "incremental scope obligations" in text
+    assert "never the prior evidence, statuses, findings, or variant searches" in isolation

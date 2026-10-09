@@ -208,3 +208,42 @@ def test_write_updates_a_quoted_value_in_place(tmp_path: Path) -> None:
     assert _write_review_decided_by(cfg, "reviewer") is True
     assert cfg.read_text(encoding="utf-8").count("decided_by:") == 1
     assert _read_review_decided_by(cfg) == "reviewer"
+
+
+# --- Review round 4: YAML semantics, never a false success ---
+
+
+@pytest.mark.parametrize(
+    ("body", "expected"),
+    [
+        ("review:\n  decided_by:\n", "null"),
+        ("review:\n  decided_by: ~\n", "null"),
+        ("review:\n# note\n  decided_by: ask\n", "ask"),
+        ("review: {decided_by: ask}\n", "ask"),
+        ("review:\n  decided_by: ask # why\n", "ask"),
+    ],
+)
+def test_read_follows_yaml_semantics(tmp_path: Path, body: str, expected: str) -> None:
+    cfg = _make_config(tmp_path, body)
+    assert _read_review_decided_by(cfg) == expected
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        "review:\n  decided_by:\n",
+        "review:\n# note\n  decided_by: ask\n",
+        "review: {decided_by: ask}\n",
+        "# top\nlanguage:\n  output: en\n",
+    ],
+)
+def test_write_takes_effect_under_yaml_or_reports_failure(tmp_path: Path, body: str) -> None:
+    import yaml
+
+    cfg = _make_config(tmp_path, body)
+    ok = _write_review_decided_by(cfg, "reviewer")
+    data = yaml.safe_load(cfg.read_text(encoding="utf-8")) or {}
+    if ok:
+        assert data["review"]["decided_by"] == "reviewer"
+    else:
+        assert cfg.read_text(encoding="utf-8") == body
