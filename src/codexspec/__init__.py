@@ -68,6 +68,7 @@ from .translator import SUPPORTED_LANGUAGES, translate
 from .worktrees import (
     MAINTENANCE_NAME,
     WorkspaceManager,
+    _is_null_node,
     feature_name,
     read_worktrees,
     validate_write_path,
@@ -1685,21 +1686,35 @@ def _yaml_has_duplicate_keys(content: str) -> bool:
 def _read_review_decided_by(config_file: Path) -> str:
     """Return the effective ``review.decided_by`` value under YAML semantics.
 
-    An absent file, ``review`` mapping, or key yields ``reviewer``. A present
-    value is returned as YAML resolves it (quoted scalars unquoted, comments
-    ignored); a null value is returned as ``"null"`` and any other non-string
-    value as its text, so callers report it as invalid rather than masking it as
-    the default. A file that is not valid YAML yields ``"unparseable"``.
+    Uses the same validity model as the writer (``write_config_scalar``): an
+    absent file, a missing or null ``review`` section, or a missing key yields
+    ``reviewer``; duplicate keys on the ``review``/``decided_by`` path yield
+    ``"duplicate keys"``; a non-mapping ``review`` yields ``"invalid review section"``;
+    a file that is not valid YAML yields ``"unparseable"``. A present value is
+    returned as YAML resolves it (``"null"`` for null, text for non-strings), so
+    callers report invalid values rather than masking them as the default.
     """
     try:
-        content = config_file.read_text(encoding="utf-8")
-    except OSError:
+        content = config_file.read_bytes().decode("utf-8")
+    except (OSError, UnicodeDecodeError):
         return _DECIDED_BY_DEFAULT
     try:
+        root = yaml.compose(content)
         data = yaml.safe_load(content)
     except yaml.YAMLError:
         return "unparseable"
-    if _yaml_has_duplicate_keys(content):
+    if root is None:
+        return _DECIDED_BY_DEFAULT
+    if not isinstance(root, yaml.MappingNode):
+        return "unparseable"
+    review_keys = [value for key, value in root.value if key.value == "review"]
+    if len(review_keys) > 1:
+        return "duplicate keys"
+    if not review_keys or _is_null_node(review_keys[0]):
+        return _DECIDED_BY_DEFAULT
+    if not isinstance(review_keys[0], yaml.MappingNode):
+        return "invalid review section"
+    if len([key for key, _ in review_keys[0].value if key.value == "decided_by"]) > 1:
         return "duplicate keys"
     review = data.get("review") if isinstance(data, dict) else None
     if not isinstance(review, dict) or "decided_by" not in review:

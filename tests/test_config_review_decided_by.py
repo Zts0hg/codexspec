@@ -303,3 +303,27 @@ def test_write_preserves_line_endings_and_bytes_on_failure(tmp_path: Path, body:
         assert _read_review_decided_by(cfg) == "ask"
     else:
         assert data == body.encode("utf-8")
+
+
+# --- Review round 7: one validity model for reader and writer ---
+
+
+@pytest.mark.parametrize("body", ["review:\n", "review:\n#  decided_by: ask\n", "review: ~\n", "review: null\n"])
+def test_null_review_section_reads_default_and_is_settable(tmp_path: Path, body: str) -> None:
+    cfg = _make_config(tmp_path, body)
+    assert _read_review_decided_by(cfg) == "reviewer"
+    assert _write_review_decided_by(cfg, "ask") is True
+    assert _read_review_decided_by(cfg) == "ask"
+
+
+def test_unrelated_duplicate_keys_do_not_affect_decided_by(tmp_path: Path) -> None:
+    cfg = _make_config(tmp_path, "language:\n  output: en\n  output: zh-CN\nreview:\n  decided_by: ask\n")
+    assert _read_review_decided_by(cfg) == "ask"
+
+
+@pytest.mark.parametrize("body", ["review: []\n", "review: 5\n"])
+def test_non_mapping_review_is_invalid_for_reader_and_writer(tmp_path: Path, body: str) -> None:
+    cfg = _make_config(tmp_path, body)
+    assert _read_review_decided_by(cfg) not in ("ask", "reviewer")
+    assert _write_review_decided_by(cfg, "ask") is False
+    assert cfg.read_text(encoding="utf-8") == body

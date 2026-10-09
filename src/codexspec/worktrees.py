@@ -99,6 +99,11 @@ def _expand_aliases(content: str) -> str:
         loader.dispose()
 
 
+def _is_null_node(node: Any) -> bool:
+    """Return True for a YAML scalar node that resolves to null (empty, ``~``, ``null``)."""
+    return isinstance(node, yaml.ScalarNode) and node.tag == "tag:yaml.org,2002:null"
+
+
 def write_config_scalar(
     config: Path,
     section: str,
@@ -126,8 +131,14 @@ def write_config_scalar(
     except (yaml.YAMLError, RecursionError) as exc:
         raise AutomationError(f"unsupported_{error_prefix}_config", str(config)) from exc
     mapping = _field(node, section)
-    value = _field(mapping, key)
-    if value is not None:
+    value = None if _is_null_node(mapping) else _field(mapping, key)
+    if _is_null_node(mapping):
+        # A present but empty/null section (``section:`` or ``section: ~``) is
+        # filled in place, like an absent mapping.
+        start, end = mapping.start_mark.index, mapping.end_mark.index
+        addition = f"{newline}  {key}: {token}" if start == end else f"{{{key}: {token}}}"
+        content = content[:start] + addition + content[end:]
+    elif value is not None:
         start, end = value.start_mark.index, value.end_mark.index
         replacement = token
         if start == end and isinstance(value, yaml.ScalarNode) and value.value == "":
