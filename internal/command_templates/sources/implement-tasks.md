@@ -163,17 +163,25 @@ owns verification and edits.
 
 #### 7.1 Invoke the Complete Feature Gate
 
-Invoke exactly:
+The first review is complete. For every complete round, invoke exactly:
 
 ```text
 /codexspec:review-code --feature <feature-dir>
 ```
 
-Replace `<feature-dir>` with the resolved workspace path. Do not pass `--audit`:
+For an incremental round (see the round policy in 7.5), invoke exactly:
+
+```text
+/codexspec:review-code --feature <feature-dir> --incremental-from <fingerprint>
+```
+
+Replace `<feature-dir>` with the resolved workspace path and `<fingerprint>`
+with the target fingerprint of the last valid result. Do not pass `--audit`:
 an advisory scorecard is never a completion gate. Do not pass a narrowed
 selector (`--committed`, `--uncommitted`, or `--commit`) or paths. The default
 resolver target must be the complete feature target, including committed,
-staged, unstaged, and untracked non-ignored changes.
+staged, unstaged, and untracked non-ignored changes. Never pass `--decided-by`:
+`review-code` reads `review.decided_by` from the project configuration itself.
 
 Do not filter by extension or artifact class. Source, tests, documentation and
 configuration, schemas, scripts, workflows, dependency files, generated
@@ -188,9 +196,18 @@ object. Prose cannot override, repair, or supply missing machine data. Validate:
 - required fields `schema_version`, `mode`, `verdict`, `target`,
   `requirements_coverage`, `verification`, `findings`, `finding_counts`,
   `review_coverage`, `follow_up`, `coverage_gaps`, `coverage_gap_count`,
-  `review_context`, and `reviewers` exist with known types and enum values;
-- schema version `2` and `mode: defect` are exact; reject schema version `1`
-  explicitly as unsupported instead of migrating or inferring missing coverage;
+  `review_context`, `reviewers`, `review_scope`, `decided_by`, and
+  `scenario_decisions` exist with known types and enum values;
+- schema version `3` and `mode: defect` are exact; reject schema versions `1`
+  and `2` explicitly as unsupported (a schema version `1` or `2` result is
+  never migrated, and missing coverage is never inferred);
+- `review_scope.kind` is `complete` or `incremental`, and `review_scope.since`
+  is a fingerprint exactly when the round is incremental and then names the
+  requested prior result (an incremental request may return a complete result
+  under rule 5 of 7.5); `decided_by` is `reviewer` or `ask`;
+  `scenario_decisions` is empty in `reviewer` mode, and every pending item has a
+  blocking coverage gap whose scope is exactly `scenario decision <id>` that is
+  an outgoing follow-up source;
 - target and feature context match this repository, invocation, and resolved
   feature directory; the default selector represents the complete feature, and
   the target fingerprint is a non-empty deterministic identifier for the exact
@@ -214,7 +231,7 @@ object. Prose cannot override, repair, or supply missing machine data. Validate:
   variant-search, or coverage-gap record; every admitted finding and every
   incomplete mandatory contract, partition, variant search, or blocking gap is
   named by an outgoing obligation; every incoming
-  follow-up source resolves in the retained originating schema-v2 result
+  follow-up source resolves in the retained originating schema-v3 result
   identified by its fingerprint; and every completed coverage record has
   evidence;
 - the top-level object and every nested record contain no undeclared fields;
@@ -238,12 +255,15 @@ or contradictory data as `INCONCLUSIVE`. Never infer success from an empty
 finding list or favorable prose.
 
 A successful envelope additionally requires `verdict: PASS`,
-`requirements_coverage.status: complete`, `verification.status: complete`, all
+`review_scope.kind: complete`, `requirements_coverage.status: complete`,
+`verification.status: complete`, all
 P0-P3 counts are zero, mandatory contract coverage and all review partitions are
 complete, every required root-cause variant search is complete, every received
 follow-up obligation is verified or validly superseded with evidence, there is
-no open or unresolved follow-up obligation, and no blocking coverage gap. Any
-other state enters the repair, retry, or blocked path below.
+no open or unresolved follow-up obligation, no blocking coverage gap, and no
+pending scenario decision. A valid incremental `PASS` is not success; it
+triggers the complete review in the 7.5 round policy. Any other state enters the
+repair, retry, decision, or blocked path below.
 
 #### 7.3 Independently Verify Findings
 
@@ -261,7 +281,7 @@ request that decision. Do not invent intent or weaken the requirement.
 
 #### 7.3b Retain Neutral Cross-Round Obligations
 
-For every valid non-PASS schema-v2 result, retain the union of every neutral
+For every valid non-PASS schema-v3 result, retain the union of every neutral
 obligation from `follow_up.required` and every incoming record from
 `follow_up.received` whose `status: unresolved`. Only a fresh reviewer may
 retire an incoming obligation by recording it as `verified` or `superseded`
@@ -272,7 +292,7 @@ The obligations may have been derived from findings, contracts, partitions, or
 incomplete searches, but do not transmit the completed coverage records or
 variant-search records themselves. Preserve each obligation's stable ID,
 source IDs, objective statement, and originating target fingerprint in the
-caller's execution context. Reject conflicting records with the same ID rather
+loop ledger (7.5). Reject conflicting records with the same ID rather
 than choosing one. Do not create repository-local review-state files.
 
 The retained handoff states only the behavior or evidence to re-establish. It
@@ -295,6 +315,33 @@ covering test, observe it fail for the missing behavior, then make it pass), the
 re-verify and re-review per 7.5. This check is owned by this implementer; it adds
 no command and does not modify `review-code`.
 
+#### 7.3c Scenario Decisions
+
+A valid result may carry pending `scenario_decisions` only when the project
+configuration (or an override) sets `review.decided_by: ask`. Handle them here,
+before the 7.5 transient-retry and persistent-`INCONCLUSIVE` handling, which
+applies only to the remaining blocking gaps: a pending decision is never retried
+as a transient failure or treated as a terminal stop.
+
+1. Present each pending item once — its location, trigger, impact, and context
+   basis — and ask the user to choose: fix it, or accept that the scenario is
+   out of scope. Use the host's structured-question tool (`AskUserQuestion` in
+   Claude Code; `request_user_input` in Codex, following that tool's own
+   schema). When the tool is absent or not available in the current mode, ask in
+   plain text and end the turn; on the user's reply, resume from the loop ledger.
+2. Record each answer in the feature's `requirements.md` as a confirmed entry
+   with the user's answer as evidence: accept adds a new `OUT-xxx` entry stating
+   that the scenario is not supported; fix adds a new `CON-xxx` entry stating
+   that the scenario must be handled. Append a Confirmation Log line for the
+   decisions.
+3. A fix decision is handled as a verified finding and repaired through 7.4. An
+   accept decision needs no edit. Either way, the next review reads the recorded
+   entry as authoritative context, so the same issue is not raised again.
+4. Under `CODEXSPEC_AUTO_DEV_DELEGATION`, never prompt: return a stop state
+   naming each pending item to `auto-dev`.
+
+Never decide a scenario on the user's behalf.
+
 #### 7.4 Apply Test-Safe Repairs
 
 Apply only verified repairs:
@@ -316,8 +363,24 @@ Apply only verified repairs:
 
 #### 7.5 Fresh Re-Review and Progress Guards
 
-After every green repair set, invoke the exact complete-feature command from
-7.1 with a fresh isolated reviewer. Supply only the retained neutral follow-up
+After every green repair set, invoke the next review from 7.1 with a fresh
+isolated reviewer according to this round policy:
+
+1. The first review is complete.
+2. After a green repair set, run an incremental review with
+   `--incremental-from <fingerprint>` naming the last valid result (a
+   schema-validated result that is not an argument error).
+3. After an incremental `PASS`, run a complete review. Only a complete `PASS`
+   satisfies 7.6.
+4. After a complete `FAIL`, return to incremental review after the next green
+   repair set.
+5. If an incremental invocation returns `review_scope.kind: complete` with a
+   non-blocking gap whose scope is exactly `incremental baseline`, the prior
+   records were unusable and `review-code` reviewed completely instead: that
+   result is a valid complete round and is handled as one (its `PASS` satisfies
+   7.6). This is not a transient retry and not a failed round.
+
+Supply only the retained neutral follow-up
 obligations from 7.3b as incoming work, including each originating target
 fingerprint, source IDs, and objective statement. Do not provide completed
 prior coverage or variant-search records, previous finding prose,
@@ -327,10 +390,24 @@ repair succeeded.
 The fresh isolated reviewer must associate incoming obligations with the
 originating target, verify each obligation independently against the updated
 target and its new fingerprint, and still execute all five general passes:
-Scope, System Contract, Behavior, Risk, and Verification. Incoming obligations
-supplement rather than replace this complete review. Revalidate the entire
-schema-v2 envelope and reviewer topology from scratch; any unresolved,
+Scope, System Contract, Behavior, Risk, and Verification, over the complete
+target or, in an incremental round, over the scope `review-code` computes.
+Incoming obligations supplement rather than replace that review. Revalidate the
+entire schema-v3 envelope and reviewer topology from scratch; any unresolved,
 unvalidated, or unassociated required obligation is `INCONCLUSIVE`.
+
+Keep the loop ledger at `loops/<feature-id>.json` in the review state store
+that `review-code` uses, outside the repository, so the loop survives long
+sessions and context compaction. It holds the round list (fingerprint,
+`review_scope.kind`, verdict), the last complete-review fingerprint, verified
+findings with their `root_cause_class`, retained follow-up obligations, and
+pending scenario decisions. A `root_cause_class` is a short, normalized cause
+statement that this implementer assigns from the reviewer's root-cause
+description and its own 7.3 verification. Each run of this command starts a new ledger
+for the feature, replacing any earlier one, so a run never inherits rounds, findings,
+refutations, or root-cause classes from an earlier run; read an existing ledger only
+to continue the same run (for example after a 7.3c question or context compaction).
+Do not create repository-local review-state files.
 
 Continue while substantive progress occurs: verified defects are repaired or a
 fresh review identifies new actionable defects that can be verified. Maintain
@@ -355,7 +432,7 @@ or cleared by an audit score.
 #### 7.6 Terminal Status
 
 Success requires a final valid `PASS` envelope from a fresh complete-feature
-review, with complete requirements, contract and partition coverage, variant
+review (`review_scope.kind: complete`) with no pending scenario decision, with complete requirements, contract and partition coverage, variant
 searches, received follow-up verification, and deterministic verification;
 isolated required reviewer topology; zero P0-P3 counts; no open or unresolved
 follow-up; no blocking coverage gaps; no uncovered enumerated test scenario
@@ -389,10 +466,11 @@ later stage or blueprint transition; do not inspect or invoke `workflow.auto_nex
 
 When a fix is not converging, escalate into the systematic root-cause discipline instead of continuing to patch. This is a reference, not a duplicate: the discipline lives once in `/codexspec:debug`.
 
-**Trip conditions** (either one):
+**Trip conditions** (any one):
 
 - **(a) During the TDD Verify/green loop (§3)**: the same test stays red after several green attempts, a fix reddens a previously-passing test, or you notice guess-and-check behavior.
 - **(b) During a test-safe repair (§7.4)**: you are fixing a **functional/correctness (or robustness) defect** whose fix is **non-trivial** — it requires tracing across call chains, state, or data flow, not a mechanical local edit. This trip does NOT apply to idiomatic-clarity, architecture, constitution-alignment, style, or trivial mechanical fixes.
+- **(c) Across review rounds (§7.5)**: a verified finding whose `root_cause_class` matches a class recorded in an earlier round. Before repairing it, treat the whole class as one defect: give `debug` every known instance and the reviewer's variant-search scope, so it finds the shared root cause, repairs it uniformly, and searches the codebase for every location of the class. Classification never removes a finding from repair: a finding that matches no recorded class is repaired through the normal §7.4 path.
 
 **Escalation**:
 
@@ -400,7 +478,7 @@ When a fix is not converging, escalate into the systematic root-cause discipline
 Invoke /codexspec:debug
 ```
 
-Apply its root-cause discipline to the failing test (trip a) or the defect under repair (trip b). The escalation is **non-gating and low-ceremony**: it produces no PASS/FAIL, emits no mandatory notice line, and does not interrupt the user.
+Apply its root-cause discipline to the failing test (trip a), the defect under repair (trip b), or the whole recurring class (trip c). The escalation is **non-gating and low-ceremony**: it produces no PASS/FAIL, emits no mandatory notice line, and does not interrupt the user.
 
 **Resume**: once `debug` has reached the root cause and applied a verified fix, **return here and continue** the task or repair exactly where you left off — re-establish the green baseline and proceed. There is no runtime stack; resuming is your responsibility, not the engine's.
 

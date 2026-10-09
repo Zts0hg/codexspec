@@ -22,6 +22,9 @@ project:
 
 workflow:
   auto_next: false       # ワークフローステージ間の自動進行 (オプトイン)
+
+review:
+  decided_by: reviewer   # 実際の利用状況外の指摘を誰が判断するか: reviewer (既定) または ask
 ```
 
 ## 言語設定
@@ -96,3 +99,14 @@ specify → generate-spec → spec-to-plan → plan-to-tasks → implement-tasks
 - `implement-tasks`: 終端ステージであり、後に自動で発火するものはありません。
 
 レビューループが `NEEDS_REVISION` または `BLOCKED` を報告した場合、チェーンは止まり、あなたに制御が戻ります。各進行の前に、エージェントは 1 行の通知を出します (例: `auto_next: review passed → invoking /codexspec:spec-to-plan`)。
+
+## レビュー設定
+
+### `review.decided_by`
+
+`/codexspec:review-code` の指摘のうち、トリガーがプロジェクトの実際の利用状況の外にある入力や環境に依存するものを誰が判断するかを決めます。
+
+- **既定値:** `reviewer` (キーやセクションがない場合も同じ)。レビュアーがすべての指摘を判断し、これまでとまったく同じように動作します。
+- **`ask`:** レビューはそうした項目を理由に失敗とせず、保留中のシナリオ判断として報告します。`implement-tasks` は修正するか、そのシナリオを対象外として受け入れるかを一度だけ尋ね、回答を確定済みの `CON` または `OUT` エントリとして `requirements.md` に記録します。以降のレビューラウンドはそのエントリに従います。
+- **設定方法:** `codexspec config --decided-by reviewer|ask` または `/codexspec:config`。1 回の `review-code` 実行では `--decided-by` で上書きできます。
+- それ以外の値は無効です。`codexspec config` が報告し、`review-code` は修正されるまで引数エラーで停止します。

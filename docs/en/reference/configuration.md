@@ -23,6 +23,9 @@ project:
 workflow:
   auto_next: false       # Auto-advance between workflow stages (opt-in)
   worktrees: true        # Isolate writes in Git worktrees (default on)
+
+review:
+  decided_by: reviewer   # Who decides out-of-context review findings: reviewer (default) or ask
 ```
 
 ## Language Settings
@@ -118,3 +121,14 @@ With isolation off, ordinary feature and project-level writes use the selected c
 `codexspec init` operations always write to the explicitly selected checkout, regardless
 of this setting. See [worktree development](../user-guide/workflow.md#worktree-development)
 for directory layout, baseline selection, and continuation.
+
+## Review Settings
+
+### `review.decided_by`
+
+Decides who rules on a `/codexspec:review-code` finding whose trigger depends on inputs or environments outside the project's real operating context.
+
+- **Default:** `reviewer`, including when the key or section is absent. The reviewer decides every finding, exactly as before.
+- **`ask`:** the review reports such an item as a pending scenario decision instead of failing on it. `implement-tasks` asks you once to fix it or accept that the scenario is out of scope, and records your answer in `requirements.md` as a confirmed `CON` or `OUT` entry. Later review rounds follow that entry.
+- **Set with:** `codexspec config --decided-by reviewer|ask` or `/codexspec:config`. A single `review-code` run can override it with `--decided-by`.
+- Any other value is invalid: `codexspec config` reports it, and `review-code` stops with an argument error until it is corrected.

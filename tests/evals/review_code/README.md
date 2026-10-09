@@ -15,6 +15,9 @@ python tests/evals/review_code/run_eval.py \
 
 Records contain host, case, verdict, profile, finding-count, and expectation
 outcomes only. They do not store prompts, credentials, or model output.
+The live adapters parse only the host's standard-output answer; diagnostic
+standard error is excluded. A nonzero host exit is an evaluation error, even
+when partial output contains a success envelope.
 
 The corpus covers every semantic risk profile plus source-independent cases for
 cross-module contract propagation, multiple findings from one root cause,

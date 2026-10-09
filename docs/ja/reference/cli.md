@@ -108,5 +108,6 @@ codexspec config [OPTIONS]
 | `--set-commit-lang` | `-c` | コミットメッセージの言語を設定 |
 | `--list-langs` | | サポートされているすべての言語を一覧表示 |
 | `--auto-next` | | `workflow.auto_next` の切り替え/設定 (フラグ単独でトグル、on/off も可) |
+| `--decided-by` | | `review.decided_by` を `reviewer` (既定) または `ask` に設定 |
 
 各 `--set-*-lang` は [言語の次元](../user-guide/i18n.md) のいずれかを更新します。設定しなかった次元は `output` に、さらに `en` にフォールバックします。

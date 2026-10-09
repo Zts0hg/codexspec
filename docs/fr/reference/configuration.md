@@ -22,6 +22,9 @@ project:
 
 workflow:
   auto_next: false       # Avance automatique entre les étapes du workflow (opt-in)
+
+review:
+  decided_by: reviewer   # Qui tranche les constats hors du contexte réel : reviewer (par défaut) ou ask
 ```
 
 ## Paramètres de langue
@@ -96,3 +99,14 @@ specify → generate-spec → spec-to-plan → plan-to-tasks → implement-tasks
 - `implement-tasks` : étape terminale — rien ne se déclenche automatiquement après elle.
 
 Quand la boucle de revue renvoie `NEEDS_REVISION` ou `BLOCKED`, la chaîne s'interrompt et le contrôle vous revient. Avant chaque avance, l'agent émet une ligne de notification (par exemple : `auto_next: review passed → invoking /codexspec:spec-to-plan`).
+
+## Paramètres de revue
+
+### `review.decided_by`
+
+Détermine qui tranche sur un constat de `/codexspec:review-code` dont le déclencheur dépend d'entrées ou d'environnements hors du contexte d'utilisation réel du projet.
+
+- **Par défaut :** `reviewer`, y compris lorsque la clé ou la section est absente. Le relecteur tranche chaque constat, exactement comme avant.
+- **`ask` :** la revue signale ce point comme une décision de scénario en attente au lieu d'échouer. `implement-tasks` vous demande une seule fois s'il faut le corriger ou accepter que le scénario est hors périmètre, et consigne votre réponse dans `requirements.md` comme une entrée `CON` ou `OUT` confirmée. Les tours de revue suivants respectent cette entrée.
+- **Définir avec :** `codexspec config --decided-by reviewer|ask` ou `/codexspec:config`. Une exécution unique de `review-code` peut le remplacer avec `--decided-by`.
+- Toute autre valeur est invalide : `codexspec config` la signale, et `review-code` s'arrête sur une erreur d'argument tant qu'elle n'est pas corrigée.

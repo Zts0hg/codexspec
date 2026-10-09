@@ -191,6 +191,7 @@ Display the configuration as in Step 2, then exit.
       {"label": "Commit language", "description": "Language for commit messages (currently: {current value})"},
       {"label": "Auto-next chain", "description": "Auto-advance the SDD pipeline once a stage passes (workflow.auto_next) (currently: {current value})"},
       {"label": "Auto-distill", "description": "Run $codexspec:distill on completion of wrap-up commands to capture reusable knowledge (workflow.auto_distill) (currently: {current value})"},
+      {"label": "Review decision mode", "description": "Who decides about review-code findings whose trigger lies outside the project's real operating context (review.decided_by) (currently: {current value})"},
       {"label": "Back", "description": "Return to main menu"}
     ]
   }]
@@ -259,6 +260,29 @@ Display the configuration as in Step 2, then exit.
    `workflow.auto_distill` as an unquoted `true`/`false` (update the value in place
    when the key exists; otherwise add `auto_distill: <bool>` under the `workflow:`
    section, creating that section if absent), preserving every other line and comment.
+
+3c. For "Review decision mode", ask who decides:
+
+```json
+{
+  "questions": [{
+    "question": "Set review.decided_by:",
+    "header": "Decided by",
+    "options": [
+      {"label": "reviewer (default)", "description": "The reviewer decides every finding; review-code behaves exactly as before"},
+      {"label": "ask", "description": "A finding whose trigger lies outside the project's real operating context is presented to you once to fix or accept; your decision is recorded in requirements.md"},
+      {"label": "Back", "description": "Return without changing"}
+    ]
+  }]
+}
+```
+
+   Then read `.codexspec/config.yml`. `reviewer` is the default: an absent key/section means `reviewer`.
+   Write `review.decided_by` as an unquoted `reviewer` or `ask` (update the value in place when the key
+   exists; otherwise add `decided_by: <value>` under the `review:` section, creating that section if
+   absent), preserving every other line and comment. Never write any other value. If the stored value is
+   neither `reviewer` nor `ask`, report it as invalid (review-code rejects it as an argument error) and
+   offer to correct it.
 
 4. Update the configuration file with the new value
 5. Display the updated configuration

@@ -106,3 +106,27 @@ def test_no_auto_debug_config_key_introduced() -> None:
     """Scenario 10 (NFR-003 / SC-003)."""
     for cmd in ["config", "debug", "implement-tasks"]:
         assert "auto_debug" not in read_command(cmd)
+
+
+def test_implement_tasks_escalates_recurring_root_cause_class() -> None:
+    """TS-16.1 / TS-16.5 (feature 2026-1008-1952ti)."""
+    section = " ".join(_escalation_section().split())
+    assert "(c) Across review rounds" in section
+    assert "`root_cause_class` matches a class recorded in an earlier round" in section
+    assert "treat the whole class as one defect" in section
+    assert "never removes a finding from repair" in section
+
+
+def test_debug_accepts_a_recurring_defect_class() -> None:
+    """TS-17.1 - TS-17.3 (feature 2026-1008-1952ti)."""
+    content = " ".join(read_command("debug").split())
+    intake = content.split("## Symptom Intake", 1)[1].split("## Investigation Protocol", 1)[0]
+    assert "recurring defect class" in intake and "known instances" in intake
+
+    fix = content.split("### Phase 4 — Fix", 1)[1].split("### Architecture Gate", 1)[0]
+    assert "one uniform fix" in fix
+    assert "search the codebase for every location of the class" in fix
+    assert "regression check" in fix
+
+    gate = content.split("### Architecture Gate", 1)[1].split("## Completion", 1)[0]
+    assert "applies to the class as a whole" in gate

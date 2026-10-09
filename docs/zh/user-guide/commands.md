@@ -1122,13 +1122,20 @@ AI:  预览模式 - 不会执行提交
 /codexspec:review-code --committed [--base <branch>] [--feature <feature-dir>] [--focus <instructions>]
 /codexspec:review-code --uncommitted [--feature <feature-dir>] [--focus <instructions>]
 /codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code [--committed] --incremental-from <fingerprint> [--feature <feature-dir>]
 ```
+
+每种缺陷门禁形式都可以附加 `--decided-by reviewer|ask`，用于在本次运行中覆盖 `review.decided_by`。
 
 <!-- REVIEW-CODE-SYSTEM-CONTRACT -->
 <!-- REVIEW-CODE-VARIANT-SEARCH -->
 <!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
 
-门禁会清点目标中的全部工件、评估适用需求，并依次执行五个阶段：Scope、System Contract、Behavior、Risk 和 Verification。它会记录有来源依据的跨模块契约和按行为划分的审查分区；每个已确认且可重复出现的根因都会在本轮结束前触发一次有明确边界的同类问题搜索。六个报告段落之后会附带一个使用 `schema_version: "2"` 的机器可读 `<review-code-result>` envelope。该 envelope 包含目标标识、覆盖记录和修复后需要重新核实的客观事项；调用方保留这些中立事项并交给新的完整审查，但不会传递修复思路或之前的正确性结论。结果只能是 `PASS`、`FAIL` 或 `INCONCLUSIVE`：任何 P0-P3 缺陷都会得到 `FAIL`，缺少强制证据或覆盖不完整时得到 `INCONCLUSIVE`。
+门禁会清点目标中的全部工件、评估适用需求，并依次执行五个阶段：Scope、System Contract、Behavior、Risk 和 Verification。它会记录有来源依据的跨模块契约和按行为划分的审查分区；每个已确认且可重复出现的根因都会在本轮结束前触发一次有明确边界的同类问题搜索。六个报告段落之后会附带一个使用 `schema_version: "3"` 的机器可读 `<review-code-result>` envelope。该 envelope 包含目标标识、覆盖记录和修复后需要重新核实的客观事项；调用方保留这些中立事项并交给新的完整审查，但不会传递修复思路或之前的正确性结论。结果只能是 `PASS`、`FAIL` 或 `INCONCLUSIVE`：任何 P0-P3 缺陷都会得到 `FAIL`，缺少强制证据或覆盖不完整时得到 `INCONCLUSIVE`。
+
+**增量复审。** 修复之后，`--incremental-from <fingerprint>` 只复审自那次结果以来的变化：改动过的文件、它们触及的审查分区和契约，以及遗留的待核实事项。未改动且未受影响的文件沿用之前的覆盖结果，审查员在其他位置发现的缺陷仍会照常报告。增量 `PASS` 永远不代表功能完成：`implement-tasks` 先做一次完整审查，每次修复后做增量审查，最后再做一次全新的完整审查作为最终验收。审查记录写在仓库之外的用户缓存目录（`~/.cache/codexspec/review/` 或 `%LOCALAPPDATA%\codexspec\review\`），对话中只出现报告和 envelope。
+
+**判定模式。** `.codexspec/config.yml` 中的 `review.decided_by` 决定：当某个缺陷的触发条件超出项目实际使用场景（例如项目根本不会接收的输入）时，由谁来判定。默认值 `reviewer` 下，审查行为与之前完全一致。设为 `ask` 时，审查会把这类问题报告为待决的场景判定，而不是据此判定失败；`implement-tasks` 会就此询问你一次：修复，还是确认该场景不在范围内。你的回答会以已确认的 `CON` 或 `OUT` 条目写入 `requirements.md`，后续轮次不会再次提出。
 
 ```text
 你: /codexspec:review-code --feature .codexspec/specs/2026-0714-example

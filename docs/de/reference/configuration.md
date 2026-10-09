@@ -22,6 +22,9 @@ project:
 
 workflow:
   auto_next: false       # Automatisches Weiterschalten zwischen Workflow-Stufen (opt-in)
+
+review:
+  decided_by: reviewer   # Wer über Befunde außerhalb des Einsatzkontexts entscheidet: reviewer (Standard) oder ask
 ```
 
 ## Spracheinstellungen
@@ -96,3 +99,14 @@ specify → generate-spec → spec-to-plan → plan-to-tasks → implement-tasks
 - `implement-tasks`: terminale Stufe – danach wird nichts automatisch ausgelöst.
 
 Wenn die Review-Schleife `NEEDS_REVISION` oder `BLOCKED` meldet, hält die Kette an und die Kontrolle geht an Sie zurück. Vor jedem Weiterschalten gibt der Agent eine Notice-Zeile aus (zum Beispiel: `auto_next: review passed → invoking /codexspec:spec-to-plan`).
+
+## Review-Einstellungen
+
+### `review.decided_by`
+
+Legt fest, wer über einen Befund von `/codexspec:review-code` entscheidet, dessen Auslöser von Eingaben oder Umgebungen außerhalb des realen Einsatzkontexts des Projekts abhängt.
+
+- **Standard:** `reviewer`, auch wenn der Schlüssel oder Abschnitt fehlt. Der Reviewer entscheidet jeden Befund, genau wie bisher.
+- **`ask`:** Das Review meldet einen solchen Punkt als offene Szenario-Entscheidung, statt daran zu scheitern. `implement-tasks` fragt Sie einmal, ob er behoben oder das Szenario als außerhalb des Umfangs akzeptiert werden soll, und hält Ihre Antwort als bestätigten `CON`- oder `OUT`-Eintrag in `requirements.md` fest. Spätere Review-Runden folgen diesem Eintrag.
+- **Setzen mit:** `codexspec config --decided-by reviewer|ask` oder `/codexspec:config`. Ein einzelner `review-code`-Lauf kann den Wert mit `--decided-by` überschreiben.
+- Jeder andere Wert ist ungültig: `codexspec config` meldet ihn, und `review-code` bricht mit einem Argumentfehler ab, bis er korrigiert ist.

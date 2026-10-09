@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 import typer
+import yaml
 from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Confirm, Prompt
@@ -70,6 +71,7 @@ from .worktrees import (
     feature_name,
     read_worktrees,
     validate_write_path,
+    write_config_scalar,
     write_destination,
     write_worktrees,
 )
@@ -544,6 +546,25 @@ _AUTO_NEXT_ACCEPTED = "on/off, true/false, 1/0, yes/no"
 # sets for parsing; a distinct sentinel keeps the bare-toggle rewrites separate.
 _AUTO_DISTILL_SENTINEL = "__toggle_distill__"
 
+# review.decided_by: who decides about a review-code finding whose trigger lies
+# outside the project's real operating context. ``reviewer`` (default) keeps
+# today's behavior; ``ask`` lets the user decide once.
+_DECIDED_BY_VALUES = ("reviewer", "ask")
+_DECIDED_BY_DEFAULT = "reviewer"
+_DECIDED_BY_ACCEPTED = ", ".join(_DECIDED_BY_VALUES)
+
+
+class _DecidedByRefusal(str):
+    """Why the writer refuses config.yml; typed so it never collides with a stored value."""
+
+
+# Writer refusal codes, as reported by the display; any other refusal is "unsupported layout".
+_DECIDED_BY_REFUSALS = {
+    "invalid_review_config": "unparseable",
+    "duplicate_config_key": "duplicate keys",
+    "invalid_review_section": "invalid review section",
+}
+
 
 @app.command()
 def config(
@@ -594,6 +615,11 @@ def config(
     worktrees: Optional[str] = typer.Option(
         None, "--worktrees", help="Toggle checkout-local worktree isolation (default on), or set on/off."
     ),
+    decided_by: Optional[str] = typer.Option(
+        None,
+        "--decided-by",
+        help="Set review.decided_by (reviewer|ask): who decides about out-of-context review findings.",
+    ),
 ) -> None:
     """
     View or modify CodexSpec project configuration.
@@ -607,6 +633,7 @@ def config(
         codexspec config --set-commit-lang en  # Set commit messages to English
         codexspec config --auto-next           # Toggle workflow.auto_next
         codexspec config --auto-distill off    # Disable workflow.auto_distill (default on)
+        codexspec config --decided-by ask      # Ask the user about out-of-context review findings
         codexspec config --list-langs          # List supported languages
     """
     # Handle list languages
@@ -641,12 +668,20 @@ def config(
             except ValueError:
                 console.print(f"[red]Invalid {option} value:[/red] {value!r}")
                 raise typer.Exit(1)
+    if decided_by is not None:
+        try:
+            parse_decided_by_value(decided_by)
+        except ValueError:
+            console.print(f"[red]Invalid --decided-by value:[/red] {decided_by!r}")
+            console.print(f"Accepted values: {_DECIDED_BY_ACCEPTED}.")
+            raise typer.Exit(1)
     modifying = any(
         value is not None
         for value in (
             auto_next,
             auto_distill,
             worktrees,
+            decided_by,
             set_lang,
             set_commit_lang,
             set_interaction_lang,
@@ -679,6 +714,16 @@ def config(
             console.print(str(exc), markup=False)
             raise typer.Exit(1) from exc
         console.print(f"workflow.worktrees = {str(target).lower()}")
+        return
+
+    # Handle review.decided_by set
+    if decided_by is not None:
+        mode = parse_decided_by_value(decided_by)
+        if _write_review_decided_by(config_file, mode):
+            console.print(f"[green]review.decided_by = {mode}[/green]")
+        else:
+            console.print("[red]Failed to update review.decided_by[/red]")
+            raise typer.Exit(1)
         return
 
     # Handle auto-next toggle/set
@@ -861,6 +906,21 @@ def config(
 
     # Display current configuration
     console.print(f"Effective workflow.worktrees: {str(read_worktrees(config_file)).lower()}")
+    stored_mode = _read_review_decided_by(config_file)
+    if stored_mode in _DECIDED_BY_VALUES:
+        console.print(f"Effective review.decided_by: {stored_mode}")
+    elif isinstance(stored_mode, _DecidedByRefusal):
+        console.print(
+            f"review.decided_by: config.yml cannot be managed ({stored_mode}); "
+            "fix the file by hand before setting it with --decided-by.",
+            markup=False,
+        )
+    else:
+        console.print(
+            f"review.decided_by: invalid value {stored_mode!r} (accepted: {_DECIDED_BY_ACCEPTED}); "
+            "review-code rejects it until it is corrected.",
+            markup=False,
+        )
     console.print(
         Panel(
             config_file.read_text(encoding="utf-8"),
@@ -1598,6 +1658,111 @@ def _write_auto_distill(config_file: Path, value: bool) -> bool:
     try:
         config_file.write_text(new_content, encoding="utf-8")
     except OSError:
+        return False
+    return True
+
+
+# --- review.decided_by helpers ---------------------------------------------
+
+
+def parse_decided_by_value(raw: str) -> str:
+    """Parse a ``review.decided_by`` value (``reviewer`` or ``ask``).
+
+    Case-insensitive; surrounding whitespace is ignored. Raises ``ValueError``
+    for any other token so callers can report it instead of guessing a mode.
+    """
+    token = (raw or "").strip().lower()
+    if token in _DECIDED_BY_VALUES:
+        return token
+    raise ValueError(f"invalid review.decided_by value: {raw!r}")
+
+
+def _yaml_has_duplicate_keys(content: str) -> bool:
+    """Return True when any YAML mapping in ``content`` repeats a key."""
+    try:
+        root = yaml.compose(content)
+    except yaml.YAMLError:
+        return False
+    stack = [root] if root is not None else []
+    seen_nodes: set[int] = set()
+    while stack:
+        node = stack.pop()
+        if id(node) in seen_nodes:
+            continue
+        seen_nodes.add(id(node))
+        if isinstance(node, yaml.MappingNode):
+            keys = [key.value for key, _ in node.value if isinstance(key, yaml.ScalarNode)]
+            if len(keys) != len(set(keys)):
+                return True
+            stack.extend(value for _, value in node.value)
+        elif isinstance(node, yaml.SequenceNode):
+            stack.extend(node.value)
+    return False
+
+
+def _read_review_decided_by(config_file: Path) -> str:
+    """Return the effective ``review.decided_by`` value, or why the file cannot be managed.
+
+    Validity comes from the writer itself: the file is checked with a dry run of
+    ``write_config_scalar`` (the writer behind ``--decided-by``), so a state shown as
+    valid is always settable and a successful write is never shown as invalid. A file
+    the writer refuses yields a ``_DecidedByRefusal`` (``"unparseable"``,
+    ``"duplicate keys"``, ``"invalid review section"``, or ``"unsupported layout"``),
+    typed so a stored value with the same text is never mistaken for one. Otherwise the value is
+    the one YAML resolves (merge keys included): ``reviewer`` when absent, ``"null"``
+    for null, text for non-strings, so callers report invalid values rather than
+    masking them as the default. An absent or unreadable file yields ``reviewer``.
+    """
+    try:
+        content = config_file.read_bytes().decode("utf-8")
+    except (OSError, UnicodeDecodeError):
+        return _DECIDED_BY_DEFAULT
+    try:
+        write_config_scalar(
+            config_file,
+            "review",
+            "decided_by",
+            _DECIDED_BY_DEFAULT,
+            _DECIDED_BY_DEFAULT,
+            error_prefix="review",
+            invalid_section_code="invalid_review_section",
+            dry_run=True,
+        )
+        data = yaml.safe_load(content)
+    except (AutomationError, yaml.YAMLError) as exc:
+        code = getattr(exc, "code", "invalid_review_config")
+        return _DecidedByRefusal(_DECIDED_BY_REFUSALS.get(code, "unsupported layout"))
+    review = data.get("review") if isinstance(data, dict) else None
+    if not isinstance(review, dict) or "decided_by" not in review:
+        return _DECIDED_BY_DEFAULT
+    value = review["decided_by"]
+    if value is None:
+        return "null"
+    return value if isinstance(value, str) else str(value)
+
+
+def _write_review_decided_by(config_file: Path, value: str) -> bool:
+    """Set ``review.decided_by`` to ``reviewer`` or ``ask``.
+
+    Delegates to the shared surgical writer used for ``workflow.worktrees``, which
+    preserves comments, line endings, and every other value, handles block and
+    flow mappings, and writes atomically only when the parsed document equals the
+    original with just this key replaced. Returns ``False`` (file untouched) when
+    the edit cannot be made that way or on I/O error; raises ``ValueError`` for an
+    invalid value.
+    """
+    token = parse_decided_by_value(value)
+    try:
+        write_config_scalar(
+            config_file,
+            "review",
+            "decided_by",
+            token,
+            token,
+            error_prefix="review",
+            invalid_section_code="invalid_review_section",
+        )
+    except (AutomationError, OSError):
         return False
     return True
 

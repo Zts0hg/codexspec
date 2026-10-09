@@ -54,7 +54,9 @@ def test_localized_guide_documents_defect_gate_and_audit_migration(
     for verdict in ["PASS", "FAIL", "INCONCLUSIVE"]:
         assert verdict in default_gate
     assert "<review-code-result>" in default_gate
-    assert 'schema_version: "2"' in default_gate
+    assert 'schema_version: "3"' in default_gate
+    for syntax in ["--incremental-from <fingerprint>", "--decided-by reviewer|ask", "review.decided_by"]:
+        assert syntax in default_gate
     assert "<!-- REVIEW-CODE-SYSTEM-CONTRACT -->" in default_gate
     assert "<!-- REVIEW-CODE-VARIANT-SEARCH -->" in default_gate
     assert "<!-- REVIEW-CODE-NEUTRAL-HANDOFF -->" in default_gate

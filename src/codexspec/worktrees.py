@@ -29,14 +29,14 @@ MAINTENANCE_BRANCH = "codexspec/maintenance"
 MAINTENANCE_NAME = "worktree-for-codexspec-maintenance"
 
 
-def _document(config: Path) -> tuple[str, Any]:
+def _document(config: Path, invalid_code: str = "invalid_worktree_config") -> tuple[str, Any]:
     content = config.read_bytes().decode("utf-8") if config.exists() else ""
     try:
         node = yaml.compose(content)
     except yaml.YAMLError as exc:
-        raise AutomationError("invalid_worktree_config", str(config)) from exc
+        raise AutomationError(invalid_code, str(config)) from exc
     if node is not None and not isinstance(node, yaml.MappingNode):
-        raise AutomationError("invalid_worktree_config", str(config))
+        raise AutomationError(invalid_code, str(config))
     return content, node
 
 
@@ -47,6 +47,62 @@ def _field(node: Any, name: str) -> Any:
     if len(matches) > 1:
         raise AutomationError("duplicate_config_key", name)
     return matches[0] if matches else None
+
+
+def _key_node(node: Any, value: Any) -> Any:
+    """Return the key node paired with ``value`` in mapping ``node``."""
+    return next(key for key, item in node.value if item is value)
+
+
+def _key_tokens(content: str, key: Any) -> tuple[list[Any], int]:
+    """Return the scanner tokens of ``content`` and the index of scalar ``key``'s token."""
+    tokens = list(yaml.scan(content))
+    index = next(
+        i
+        for i, token in enumerate(tokens)
+        if isinstance(token, yaml.ScalarToken) and token.end_mark.index == key.end_mark.index
+    )
+    return tokens, index
+
+
+def _explicit_indicator(tokens: list[Any], index: int) -> Any:
+    """Return the ``?`` token that introduces the key at ``index``, or None for an implicit key."""
+    before = index - 1
+    while isinstance(tokens[before], (yaml.AnchorToken, yaml.TagToken)):
+        before -= 1
+    indicator = tokens[before]
+    explicit = isinstance(indicator, yaml.KeyToken) and indicator.end_mark.index > indicator.start_mark.index
+    return indicator if explicit else None
+
+
+def _implicit_value_offset(content: str, key: Any, start: int, newline: str) -> tuple[int, str]:
+    """Return where to fill an empty value at ``start`` and the text that must precede it.
+
+    A key written without ``:`` (``{review}``, ``? review``) has an implicit null whose
+    mark points at the next token, so the value goes right after the key, behind a
+    ``:`` indicator (on its own line for a block explicit key). Scanner tokens decide
+    this, so comments, a BOM, anchors, and tags are never mistaken for syntax.
+    """
+    tokens, index = _key_tokens(content, key)
+    if index + 1 < len(tokens) and isinstance(tokens[index + 1], yaml.ValueToken):
+        return start, ""
+    indicator = _explicit_indicator(tokens, index)
+    flow_level = sum(
+        1 if isinstance(token, (yaml.FlowMappingStartToken, yaml.FlowSequenceStartToken)) else -1
+        for token in tokens[:index]
+        if isinstance(
+            token,
+            (
+                yaml.FlowMappingStartToken,
+                yaml.FlowSequenceStartToken,
+                yaml.FlowMappingEndToken,
+                yaml.FlowSequenceEndToken,
+            ),
+        )
+    )
+    if indicator is not None and not flow_level:
+        return key.end_mark.index, f"{newline}{' ' * indicator.start_mark.column}: "
+    return key.end_mark.index, ": "
 
 
 def read_worktrees(config: Path) -> bool:
@@ -99,51 +155,117 @@ def _expand_aliases(content: str) -> str:
         loader.dispose()
 
 
-def write_worktrees(config: Path, enabled: bool) -> None:
-    """Surgically write one boolean without normalizing unrelated YAML or comments."""
-    original, node = _document(config)
+def _is_null_node(node: Any) -> bool:
+    """Return True for a YAML scalar node that resolves to null (empty, ``~``, ``null``)."""
+    return isinstance(node, yaml.ScalarNode) and node.tag == "tag:yaml.org,2002:null"
+
+
+def write_config_scalar(
+    config: Path,
+    section: str,
+    key: str,
+    token: str,
+    expected: Any,
+    *,
+    error_prefix: str = "worktree",
+    invalid_section_code: str = "invalid_workflow_section",
+    dry_run: bool = False,
+) -> None:
+    """Surgically set ``section.key`` to ``token`` without normalizing unrelated YAML.
+
+    Preserves comments, line endings, and every other value; handles block and
+    flow mappings, anchors, and an empty value. The edited document must parse to
+    the original with only ``section.key`` replaced by ``expected``; otherwise an
+    ``AutomationError`` is raised and the file is left untouched. The write is
+    atomic. Error codes are ``invalid_<prefix>_config``, ``unsupported_<prefix>_config``,
+    ``unrelated_config_change``, ``duplicate_config_key``, and ``invalid_section_code``.
+    ``dry_run`` performs every check without writing, so a reader can ask whether
+    the current file is settable under exactly the rules the writer applies.
+    """
+    original, node = _document(config, f"invalid_{error_prefix}_config")
     newline = "\r\n" if "\r\n" in original else "\n"
     try:
         content = _expand_aliases(original)
         node = yaml.compose(content)
     except (yaml.YAMLError, RecursionError) as exc:
-        raise AutomationError("unsupported_worktree_config", str(config)) from exc
-    workflow = _field(node, "workflow")
-    value = _field(workflow, "worktrees")
-    token = str(enabled).lower()
-    if value is not None:
-        content = content[: value.start_mark.index] + token + content[value.end_mark.index :]
-    elif isinstance(workflow, yaml.MappingNode):
-        if workflow.flow_style:
-            offset = workflow.end_mark.index - 1
-            addition = (", " if workflow.value else "") + f"worktrees: {token}"
+        raise AutomationError(f"unsupported_{error_prefix}_config", str(config)) from exc
+    mapping = _field(node, section)
+    value = None if _is_null_node(mapping) else _field(mapping, key)
+    if _is_null_node(mapping):
+        # A present but empty/null section (``section:`` or ``section: ~``) is
+        # filled in place, like an absent mapping.
+        start, end = mapping.start_mark.index, mapping.end_mark.index
+        lead = ""
+        if start == end:
+            start, lead = _implicit_value_offset(content, _key_node(node, mapping), start, newline)
+            end = start
+        if lead:
+            addition = f"{lead}{{{key}: {token}}}"
+        elif start != end or (isinstance(node, yaml.MappingNode) and node.flow_style):
+            # Replace ``~``/``null``, or fill an empty value inside a flow mapping.
+            addition = f"{{{key}: {token}}}"
+            if start == end and content[start - 1 : start] not in (" ", "\t"):
+                addition = " " + addition
         else:
-            offset = workflow.value[0][0].start_mark.index
-            # Use the first actual key, not a preceding mapping anchor.
-            indent = workflow.value[0][0].start_mark.column
-            addition = f"worktrees: {token}{newline}" + " " * indent
+            addition = f"{newline}  {key}: {token}"
+        content = content[:start] + addition + content[end:]
+    elif value is not None:
+        start, end = value.start_mark.index, value.end_mark.index
+        if isinstance(value, yaml.ScalarNode) and value.style in ("|", ">"):
+            # A block scalar's span includes its trailing line break(s); keep them.
+            while end > start and content[end - 1] in "\r\n":
+                end -= 1
+        replacement = token
+        if start == end and isinstance(value, yaml.ScalarNode) and value.value == "":
+            start, lead = _implicit_value_offset(content, _key_node(mapping, value), start, newline)
+            end = start
+            # An empty value: keep a separator between the colon and the new token.
+            replacement = lead + token if lead or content[start - 1 : start] == " " else " " + token
+        content = content[:start] + replacement + content[end:]
+    elif isinstance(mapping, yaml.MappingNode):
+        if mapping.flow_style:
+            offset = mapping.end_mark.index - 1
+            addition = (", " if mapping.value else "") + f"{key}: {token}"
+        else:
+            # Insert before the first key's own start: its '?' indicator when it is
+            # explicit, never a preceding mapping anchor.
+            first = mapping.value[0][0]
+            mark = first.start_mark
+            indicator = (
+                _explicit_indicator(*_key_tokens(content, first)) if isinstance(first, yaml.ScalarNode) else None
+            )
+            if indicator is not None:
+                mark = indicator.start_mark
+            offset, indent = mark.index, mark.column
+            addition = f"{key}: {token}{newline}" + " " * indent
         content = content[:offset] + addition + content[offset:]
-    elif workflow is not None:
-        raise AutomationError("invalid_workflow_section", str(config))
+    elif mapping is not None:
+        raise AutomationError(invalid_section_code, str(config))
     elif isinstance(node, yaml.MappingNode) and node.flow_style:
         offset = node.end_mark.index - 1
-        addition = (", " if node.value else "") + f"workflow: {{worktrees: {token}}}"
+        addition = (", " if node.value else "") + f"{section}: {{{key}: {token}}}"
         content = content[:offset] + addition + content[offset:]
     else:
-        end = next((event for event in yaml.parse(content) if isinstance(event, yaml.DocumentEndEvent)), None)
-        offset = end.start_mark.index if end is not None and end.explicit else len(content)
+        end_event = next((event for event in yaml.parse(content) if isinstance(event, yaml.DocumentEndEvent)), None)
+        offset = end_event.start_mark.index if end_event is not None and end_event.explicit else len(content)
         prefix = content[:offset].rstrip("\r\n")
         content = (
-            prefix + (newline if prefix else "") + f"workflow:{newline}  worktrees: {token}{newline}" + content[offset:]
+            prefix + (newline if prefix else "") + f"{section}:{newline}  {key}: {token}{newline}" + content[offset:]
         )
     try:
         before = yaml.safe_load(original) or {}
-        expected = {**before, "workflow": {**before.get("workflow", {}), "worktrees": enabled}}
-        if yaml.safe_load(content) != expected:
+        expected_document = {**before, section: {**(before.get(section) or {}), key: expected}}
+        if yaml.safe_load(content) != expected_document:
             raise AutomationError("unrelated_config_change", str(config))
-    except (yaml.YAMLError, RecursionError) as exc:
-        raise AutomationError("unsupported_worktree_config", str(config)) from exc
-    _atomic_bytes(config, content.encode("utf-8"))
+    except (yaml.YAMLError, RecursionError, TypeError) as exc:
+        raise AutomationError(f"unsupported_{error_prefix}_config", str(config)) from exc
+    if not dry_run:
+        _atomic_bytes(config, content.encode("utf-8"))
+
+
+def write_worktrees(config: Path, enabled: bool) -> None:
+    """Surgically write one boolean without normalizing unrelated YAML or comments."""
+    write_config_scalar(config, "workflow", "worktrees", str(enabled).lower(), enabled)
 
 
 def feature_name(short_name: str) -> str:

@@ -1123,13 +1123,20 @@ Review the selected Git change as a strict defect gate before merge. The default
 /codexspec:review-code --committed [--base <branch>] [--feature <feature-dir>] [--focus <instructions>]
 /codexspec:review-code --uncommitted [--feature <feature-dir>] [--focus <instructions>]
 /codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code [--committed] --incremental-from <fingerprint> [--feature <feature-dir>]
 ```
+
+Every defect-gate form also accepts `--decided-by reviewer|ask`, which overrides `review.decided_by` for that run.
 
 <!-- REVIEW-CODE-SYSTEM-CONTRACT -->
 <!-- REVIEW-CODE-VARIANT-SEARCH -->
 <!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
 
-The gate inventories every selected artifact, assesses applicable requirements, and runs five passes in order: Scope, System Contract, Behavior, Risk, and Verification. It records source-backed cross-module contracts and semantic review partitions, and every validated repeatable root cause triggers a bounded search for related occurrences before the round finishes. The six report sections are followed by one machine-readable `<review-code-result>` envelope using `schema_version: "2"`. The envelope carries target identity, coverage, and objective post-repair obligations; the caller retains those neutral obligations for a fresh complete review without passing repair reasoning or prior correctness conclusions. The verdict is exactly `PASS`, `FAIL`, or `INCONCLUSIVE`: every P0-P3 finding produces `FAIL`, while missing mandatory evidence or incomplete coverage produces `INCONCLUSIVE`.
+The gate inventories every selected artifact, assesses applicable requirements, and runs five passes in order: Scope, System Contract, Behavior, Risk, and Verification. It records source-backed cross-module contracts and semantic review partitions, and every validated repeatable root cause triggers a bounded search for related occurrences before the round finishes. The six report sections are followed by one machine-readable `<review-code-result>` envelope using `schema_version: "3"`. The envelope carries target identity, coverage, and objective post-repair obligations; the caller retains those neutral obligations for a fresh complete review without passing repair reasoning or prior correctness conclusions. The verdict is exactly `PASS`, `FAIL`, or `INCONCLUSIVE`: every P0-P3 finding produces `FAIL`, while missing mandatory evidence or incomplete coverage produces `INCONCLUSIVE`.
+
+**Incremental rounds.** After a repair, `--incremental-from <fingerprint>` re-reviews only what changed since that earlier result: the changed files, the review partitions and contracts they touch, and the carried-over obligations. Coverage of unchanged, unaffected files is reused, and the reviewer may still report any defect it finds elsewhere. An incremental `PASS` never completes a feature: `implement-tasks` runs a complete review first, incremental reviews after each repair, and one fresh complete review as the final acceptance. Review records are written outside the repository, under your user cache directory (`~/.cache/codexspec/review/` or `%LOCALAPPDATA%\codexspec\review\`); only the report and the envelope appear in the conversation.
+
+**Decision mode.** `review.decided_by` in `.codexspec/config.yml` decides who rules on a finding whose trigger lies outside the project's real operating context, such as an input the project never receives. With the default `reviewer`, the review behaves exactly as before. With `ask`, the review reports such an item as a pending scenario decision instead of failing on it, and `implement-tasks` asks you once: fix it, or accept that the scenario is out of scope. Your answer is recorded in `requirements.md` as a confirmed `CON` or `OUT` entry, so later rounds do not raise it again.
 
 ```text
 You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example

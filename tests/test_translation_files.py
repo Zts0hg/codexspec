@@ -51,6 +51,8 @@ Mode 1 - Defect gate (default): merge-blocking verdict over a Git change.
   - --base <branch> → Override base resolution; valid only with No arguments or --committed
   - --feature <feature-dir> → Attach requirements context for coverage; never changes Git scope
   - --focus <instructions> → Add Risk Pass obligations; repeatable, never narrows scope
+  - --decided-by reviewer|ask → Who decides out-of-context findings; overrides review.decided_by (default: reviewer)
+  - --incremental-from <fingerprint> → Re-review only the repair delta; valid only with No arguments or --committed
 
 Mode 2 - Audit: advisory quality scorecard over current file contents (no gate verdict, no envelope).
   1. --audit → Review the main source directory (default: src/)
@@ -78,6 +80,8 @@ Examples:
   - --base <branch> → 覆盖基分支解析；仅可与无参数或 --committed 搭配
   - --feature <feature-dir> → 为覆盖检查附上需求上下文；绝不改变 Git 范围
   - --focus <instructions> → 追加风险审查义务；可重复，绝不收窄范围
+  - --decided-by reviewer|ask → 超出实际使用场景的缺陷由谁决定；覆盖 review.decided_by（默认 reviewer）
+  - --incremental-from <fingerprint> → 仅复审该结果之后的修复增量；仅可与无参数或 --committed 搭配
 
 模式二 - 审计（advisory）：对现有文件内容给出建议性的质量评分（无门禁裁定、无 envelope）。
   1. --audit → 审查主源码目录（默认：src/）
@@ -105,6 +109,8 @@ Examples:
   - --base <branch> → ベース解決を上書き。引数なしまたは --committed とのみ組み合わせ可能
   - --feature <feature-dir> → カバレッジ確認のため要件コンテキストを添付。Git スコープは変更しない
   - --focus <instructions> → リスクパスの義務を追加。繰り返し可能、スコープは狭めない
+  - --decided-by reviewer|ask → 実際の利用状況外で起きる欠陥の判断者。review.decided_by を上書き（既定：reviewer）
+  - --incremental-from <fingerprint> → 修正差分のみ再レビュー。引数なしか --committed とのみ併用可
 
 モード 2 - 監査（advisory）：現在のファイル内容について参考となる品質スコアを提示（ゲート判定なし、envelope なし）。
   1. --audit → メインのソースディレクトリをレビュー（デフォルト：src/）
@@ -132,6 +138,8 @@ src/ のようなパスだけの指定は欠陥ゲートの対象にできませ
   - --base <branch> → 베이스 해석을 재정의. 인자 없음 또는 --committed와만 사용 가능
   - --feature <feature-dir> → 커버리지 확인용 요구사항 컨텍스트를 첨부. Git 범위는 변경하지 않음
   - --focus <instructions> → 리스크 패스 의무를 추가. 반복 가능, 범위를 좁히지 않음
+  - --decided-by reviewer|ask → 실제 사용 범위 밖 결함의 결정 주체. review.decided_by 재정의 (기본값: reviewer)
+  - --incremental-from <fingerprint> → 수정 변경분만 재검토. 인수 없음 또는 --committed와만 사용 가능
 
 모드 2 - 감사 (advisory): 현재 파일 내용에 대한 참고용 품질 스코어카드 (게이트 판정 없음, envelope 없음).
   1. --audit → 메인 소스 디렉터리를 검토 (기본값: src/)
@@ -159,6 +167,8 @@ Modus 1 - Defect Gate (Standard): prüft eine Git-Änderung und entscheidet, ob 
   - --base <branch> → Basis-Auflösung überschreiben; nur ohne Argumente oder mit --committed gültig
   - --feature <feature-dir> → Anforderungskontext für die Abdeckung anhängen; ändert den Git-Scope nie
   - --focus <instructions> → Risk-Pass-Pflichten ergänzen; wiederholbar, engt nie ein
+  - --decided-by reviewer|ask → Wer Befunde außerhalb des Einsatzkontexts entscheidet; überschreibt review.decided_by
+  - --incremental-from <fingerprint> → Nur das Reparatur-Delta erneut prüfen; nur ohne Argumente oder mit --committed
 
 Modus 2 - Audit (advisory): orientierende Qualitätseinschätzung des Dateiinhalts (kein Gate-Urteil, kein Envelope).
   1. --audit → Hauptquellverzeichnis prüfen (Standard: src/)
@@ -186,6 +196,8 @@ Modo 1 - Defect gate (predeterminado): revisa un cambio de Git y decide si bloqu
   - --base <branch> → anula la resolución de la base; válido solo sin argumentos o con --committed
   - --feature <feature-dir> → adjunta contexto de requisitos para la cobertura; nunca cambia el alcance de Git
   - --focus <instructions> → añade obligaciones al Risk Pass; repetible, nunca reduce el alcance
+  - --decided-by reviewer|ask → Quién decide hallazgos fuera del contexto real de uso; anula review.decided_by
+  - --incremental-from <fingerprint> → Revisar solo el delta de reparación; solo sin argumentos o con --committed
 
 Modo 2 - Audit (advisory): scorecard orientativo del contenido de los archivos (sin veredicto de gate ni envelope).
   1. --audit → revisa el directorio principal de código (predeterminado: src/)
@@ -213,6 +225,8 @@ Mode 1 - Defect gate (par défaut) : examine une modification Git et décide si 
   - --base <branch> → remplace la résolution de la base ; valable uniquement sans argument ou avec --committed
   - --feature <feature-dir> → joint le contexte des exigences pour la couverture ; ne change jamais le périmètre Git
   - --focus <instructions> → ajoute des obligations au Risk Pass ; répétable, ne rétrécit jamais le périmètre
+  - --decided-by reviewer|ask → Qui décide des constats hors du contexte réel ; remplace review.decided_by
+  - --incremental-from <fingerprint> → Réexaminer le seul delta de correction ; sans argument ou avec --committed
 
 Mode 2 - Audit (advisory) : évaluation indicative du contenu des fichiers (sans verdict de gate ni envelope).
   1. --audit → examine le répertoire source principal (par défaut : src/)
@@ -240,6 +254,8 @@ Modo 1 - Defect gate (padrão): revisa uma alteração do Git e decide se bloque
   - --base <branch> → sobrepõe a resolução da base; válido apenas sem argumentos ou com --committed
   - --feature <feature-dir> → anexa contexto de requisitos para cobertura; nunca muda o escopo do Git
   - --focus <instructions> → adiciona obrigações ao Risk Pass; repetível, nunca restringe o escopo
+  - --decided-by reviewer|ask → Quem decide achados fora do contexto real de uso; substitui review.decided_by
+  - --incremental-from <fingerprint> → Revisar só o delta de reparo; válido sem argumentos ou com --committed
 
 Modo 2 - Audit (advisory): scorecard orientativo do conteúdo dos arquivos (sem veredito de gate nem envelope).
   1. --audit → revisa o diretório principal de código (padrão: src/)
@@ -359,6 +375,9 @@ class TestReviewCodeTranslationContract:
             "--parent <n>",
             "--feature <feature-dir>",
             "--focus <instructions>",
+            "--decided-by reviewer|ask",
+            "--incremental-from <fingerprint>",
+            "review.decided_by",
             "--audit [paths...]",
         ]:
             assert token in command["argument-hint"]

@@ -1123,13 +1123,20 @@ AI:  Preview mode - no commit will be executed
 /codexspec:review-code --committed [--base <branch>] [--feature <feature-dir>] [--focus <instructions>]
 /codexspec:review-code --uncommitted [--feature <feature-dir>] [--focus <instructions>]
 /codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code [--committed] --incremental-from <fingerprint> [--feature <feature-dir>]
 ```
+
+모든 결함 게이트 형식에 `--decided-by reviewer|ask`를 붙일 수 있으며, 해당 실행에 한해 `review.decided_by`를 재정의합니다.
 
 <!-- REVIEW-CODE-SYSTEM-CONTRACT -->
 <!-- REVIEW-CODE-VARIANT-SEARCH -->
 <!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
 
-게이트는 대상의 모든 산출물을 인벤토리화하고 적용 가능한 요구사항을 평가한 뒤 Scope, System Contract, Behavior, Risk, Verification의 다섯 단계를 순서대로 실행합니다. 근거가 있는 모듈 간 계약과 의미 단위 검토 파티션을 기록하며, 검증된 반복 가능 근본 원인마다 라운드가 끝나기 전에 범위가 제한된 관련 발생 위치 검색을 수행합니다. 여섯 개의 보고서 섹션 뒤에는 `schema_version: "2"`를 사용하는 기계 판독 가능한 `<review-code-result>` envelope 하나가 옵니다. 이 envelope는 대상 식별자, 커버리지, 수정 후 다시 확인할 객관적 의무를 전달합니다. 호출자는 이 중립적 의무를 새로운 전체 검토에 제공하지만 수정 이유나 이전의 정확성 결론은 제공하지 않습니다. 판정은 `PASS`, `FAIL`, `INCONCLUSIVE` 중 하나입니다. 모든 P0-P3 결함은 `FAIL`, 필수 증거나 커버리지 부족은 `INCONCLUSIVE`입니다.
+게이트는 대상의 모든 산출물을 인벤토리화하고 적용 가능한 요구사항을 평가한 뒤 Scope, System Contract, Behavior, Risk, Verification의 다섯 단계를 순서대로 실행합니다. 근거가 있는 모듈 간 계약과 의미 단위 검토 파티션을 기록하며, 검증된 반복 가능 근본 원인마다 라운드가 끝나기 전에 범위가 제한된 관련 발생 위치 검색을 수행합니다. 여섯 개의 보고서 섹션 뒤에는 `schema_version: "3"`를 사용하는 기계 판독 가능한 `<review-code-result>` envelope 하나가 옵니다. 이 envelope는 대상 식별자, 커버리지, 수정 후 다시 확인할 객관적 의무를 전달합니다. 호출자는 이 중립적 의무를 새로운 전체 검토에 제공하지만 수정 이유나 이전의 정확성 결론은 제공하지 않습니다. 판정은 `PASS`, `FAIL`, `INCONCLUSIVE` 중 하나입니다. 모든 P0-P3 결함은 `FAIL`, 필수 증거나 커버리지 부족은 `INCONCLUSIVE`입니다.
+
+**증분 라운드.** 수정 후에는 `--incremental-from <fingerprint>`로 해당 결과 이후에 바뀐 부분만 다시 검토합니다. 대상은 변경된 파일, 그 파일이 관련된 검토 파티션과 계약, 이월된 의무입니다. 변경되지 않았고 영향도 받지 않는 파일은 이전 커버리지를 재사용하지만, 검토자는 다른 곳에서 발견한 결함도 그대로 보고합니다. 증분 `PASS`로 기능이 완료되지는 않습니다. `implement-tasks`는 먼저 전체 검토를 실행하고, 수정할 때마다 증분 검토를 실행한 뒤, 최종 인수로 새로운 전체 검토를 한 번 더 실행합니다. 검토 기록은 저장소 밖의 사용자 캐시 디렉터리(`~/.cache/codexspec/review/` 또는 `%LOCALAPPDATA%\codexspec\review\`)에 기록되며, 대화에는 보고서와 envelope만 표시됩니다.
+
+**판정 모드.** `.codexspec/config.yml`의 `review.decided_by`는 트리거가 프로젝트의 실제 사용 범위 밖에 있는 결함(예: 프로젝트가 절대 받지 않는 입력)을 누가 판정할지 정합니다. 기본값 `reviewer`에서는 검토가 이전과 똑같이 동작합니다. `ask`로 설정하면 검토는 해당 항목으로 실패 처리하지 않고 보류 중인 시나리오 판정으로 보고하며, `implement-tasks`가 수정할지, 아니면 해당 시나리오를 범위 밖으로 받아들일지 한 번 묻습니다. 답변은 확정된 `CON` 또는 `OUT` 항목으로 `requirements.md`에 기록되므로 이후 라운드에서 다시 제기되지 않습니다.
 
 ```text
 You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example

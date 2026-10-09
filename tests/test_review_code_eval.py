@@ -73,9 +73,12 @@ def _envelope(
         )
 
     result = {
-        "schema_version": "2",
+        "schema_version": "3",
         "mode": "defect",
         "verdict": verdict,
+        "review_scope": {"kind": "complete", "since": None},
+        "decided_by": "reviewer",
+        "scenario_decisions": [],
         "target": {
             "selector": "default",
             "fingerprint": "sha256:fixture-target",
@@ -869,6 +872,39 @@ def test_live_host_adapters_use_subprocess_argument_arrays(monkeypatch: pytest.M
     assert all(all(name not in call["env"] for name in local_git_vars) for call in calls)
 
 
+@pytest.mark.parametrize("adapter", [run_eval.CodexHost, run_eval.ClaudeHost])
+def test_live_host_result_excludes_diagnostic_envelopes(monkeypatch, tmp_path: Path, adapter) -> None:
+    answer = _envelope(verdict="PASS")
+    diagnostic = "tool output and repeated final answer\n" + answer + answer
+    monkeypatch.setattr(run_eval, "_foreign_repo_environment", lambda: {})
+    monkeypatch.setattr(
+        run_eval.subprocess,
+        "run",
+        lambda args, **kwargs: subprocess.CompletedProcess(args, 0, stdout=answer, stderr=diagnostic),
+    )
+
+    result = adapter().run(tmp_path, Path(".codexspec/specs/example"))
+
+    assert result == answer
+    assert run_eval.parse_review_result(result)["verdict"] == "PASS"
+
+
+@pytest.mark.parametrize("adapter", [run_eval.CodexHost, run_eval.ClaudeHost])
+def test_failed_live_host_cannot_supply_a_success_result(monkeypatch, tmp_path: Path, adapter) -> None:
+    monkeypatch.setattr(run_eval, "_foreign_repo_environment", lambda: {})
+    monkeypatch.setattr(
+        run_eval.subprocess,
+        "run",
+        lambda args, **kwargs: subprocess.CompletedProcess(
+            args, 7, stdout=_envelope(verdict="PASS"), stderr="private host diagnostic"
+        ),
+    )
+
+    with pytest.raises(RuntimeError, match="exit code 7") as error:
+        adapter().run(tmp_path, Path(".codexspec/specs/example"))
+    assert "private host diagnostic" not in str(error.value)
+
+
 def test_systematic_coverage_expectations_reject_hollow_or_unrelated_evidence() -> None:
     cases_root = Path("tests/evals/review_code/cases")
 
@@ -1141,3 +1177,150 @@ def test_cleanup_keeps_real_permission_failures_visible(tmp_path: Path):
     with pytest.raises(PermissionError):
         run_eval._retry_remove_writable(deny_removal, str(target), PermissionError(str(target)))
     assert target.read_bytes() == b"protected"
+
+
+# --- Schema 3: review scope, decision mode, scenario decisions (feature 2026-1008-1952ti) ---
+
+
+def _result(output: str) -> dict[str, Any]:
+    return json.loads(run_eval.RESULT_RE.search(output).group(1))
+
+
+def _wrap(result: dict[str, Any]) -> str:
+    return "<review-code-result>\n" + json.dumps(result) + "\n</review-code-result>"
+
+
+def _ask_inconclusive() -> dict[str, Any]:
+    """A valid ask-mode result whose only blocker is one pending scenario decision."""
+    result = _result(_envelope(verdict="INCONCLUSIVE"))
+    result["decided_by"] = "ask"
+    result["scenario_decisions"] = [
+        {
+            "id": "S-001",
+            "location": "src/tool.py:3",
+            "summary": "names differing only by German sharp s collide",
+            "trigger": "two assets named with ß and ẞ in one directory",
+            "impact": "one asset overwrites the other",
+            "context_basis": "requirements limit asset names to Chinese and English",
+            "status": "pending",
+        }
+    ]
+    result["coverage_gaps"] = [
+        {"id": "G-001", "scope": "scenario decision S-001", "impact": "awaits the user's decision", "blocking": True}
+    ]
+    result["coverage_gap_count"] = 1
+    _add_blocking_gap_obligations(result)
+    return result
+
+
+def test_parse_review_result_accepts_schema_v3_complete_result() -> None:
+    """TS-11.1"""
+    parsed = run_eval.parse_review_result(_envelope(verdict="PASS"))
+    assert parsed["schema_version"] == "3"
+    assert parsed["review_scope"] == {"kind": "complete", "since": None}
+    assert parsed["decided_by"] == "reviewer"
+    assert parsed["scenario_decisions"] == []
+
+
+@pytest.mark.parametrize("version", ["1", "2"])
+def test_parse_review_result_rejects_older_schemas(version: str) -> None:
+    """TS-11.2"""
+    result = _result(_envelope(verdict="PASS"))
+    result["schema_version"] = version
+    with pytest.raises(run_eval.ResultParseError, match="unsupported result schema"):
+        run_eval.parse_review_result(_wrap(result))
+
+
+@pytest.mark.parametrize("member", ["review_scope", "decided_by", "scenario_decisions"])
+def test_parse_review_result_requires_schema_v3_members(member: str) -> None:
+    """TS-11.3"""
+    result = _result(_envelope(verdict="PASS"))
+    del result[member]
+    with pytest.raises(run_eval.ResultParseError, match="missing required keys"):
+        run_eval.parse_review_result(_wrap(result))
+
+
+def test_parse_review_result_binds_since_to_incremental_scope() -> None:
+    """TS-11.4"""
+    incremental = _result(_envelope(verdict="PASS"))
+    incremental["review_scope"] = {"kind": "incremental", "since": "sha256:prior-target"}
+    assert run_eval.parse_review_result(_wrap(incremental))["review_scope"]["kind"] == "incremental"
+
+    missing_since = _result(_envelope(verdict="PASS"))
+    missing_since["review_scope"] = {"kind": "incremental", "since": None}
+    with pytest.raises(run_eval.ResultParseError, match="since"):
+        run_eval.parse_review_result(_wrap(missing_since))
+
+    complete_with_since = _result(_envelope(verdict="PASS"))
+    complete_with_since["review_scope"] = {"kind": "complete", "since": "sha256:prior-target"}
+    with pytest.raises(run_eval.ResultParseError, match="since"):
+        run_eval.parse_review_result(_wrap(complete_with_since))
+
+    unknown_kind = _result(_envelope(verdict="PASS"))
+    unknown_kind["review_scope"] = {"kind": "partial", "since": None}
+    with pytest.raises(run_eval.ResultParseError, match="review_scope.kind"):
+        run_eval.parse_review_result(_wrap(unknown_kind))
+
+
+def test_parse_review_result_rejects_scenarios_in_reviewer_mode() -> None:
+    """TS-11.5"""
+    result = _ask_inconclusive()
+    result["decided_by"] = "reviewer"
+    with pytest.raises(run_eval.ResultParseError, match="reviewer mode"):
+        run_eval.parse_review_result(_wrap(result))
+
+    unknown_mode = _ask_inconclusive()
+    unknown_mode["decided_by"] = "user"
+    with pytest.raises(run_eval.ResultParseError, match="decided_by"):
+        run_eval.parse_review_result(_wrap(unknown_mode))
+
+
+def test_parse_review_result_requires_gap_and_follow_up_per_pending_scenario() -> None:
+    """TS-11.6"""
+    without_gap = _ask_inconclusive()
+    without_gap["coverage_gaps"] = [
+        {"id": "G-001", "scope": "verification", "impact": "check unavailable", "blocking": True}
+    ]
+    with pytest.raises(run_eval.ResultParseError, match="scenario decision S-001"):
+        run_eval.parse_review_result(_wrap(without_gap))
+
+    without_follow_up = _ask_inconclusive()
+    without_follow_up["follow_up"]["required"] = []
+    with pytest.raises(run_eval.ResultParseError, match="follow-up"):
+        run_eval.parse_review_result(_wrap(without_follow_up))
+
+    not_pending = _ask_inconclusive()
+    not_pending["scenario_decisions"][0]["status"] = "accepted"
+    with pytest.raises(run_eval.ResultParseError, match="pending"):
+        run_eval.parse_review_result(_wrap(not_pending))
+
+
+def test_parse_review_result_rejects_pass_with_pending_scenario() -> None:
+    """TS-11.7"""
+    result = _ask_inconclusive()
+    result["verdict"] = "PASS"
+    with pytest.raises(run_eval.ResultParseError, match="PASS"):
+        run_eval.parse_review_result(_wrap(result))
+
+
+def test_parse_review_result_accepts_ask_mode_pending_scenario() -> None:
+    """TS-11.8"""
+    parsed = run_eval.parse_review_result(_wrap(_ask_inconclusive()))
+    assert parsed["verdict"] == "INCONCLUSIVE"
+    assert parsed["scenario_decisions"][0]["status"] == "pending"
+
+
+def test_parse_review_result_accepts_complete_fallback_with_baseline_gap() -> None:
+    """Review round 2 F-001: an unusable baseline yields a valid complete result."""
+    result = _result(_envelope(verdict="PASS"))
+    result["coverage_gaps"] = [
+        {
+            "id": "G-001",
+            "scope": "incremental baseline",
+            "impact": "prior records unusable; reviewed completely",
+            "blocking": False,
+        }
+    ]
+    result["coverage_gap_count"] = 1
+    parsed = run_eval.parse_review_result(_wrap(result))
+    assert parsed["review_scope"]["kind"] == "complete"

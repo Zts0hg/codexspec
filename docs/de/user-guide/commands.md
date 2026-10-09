@@ -1123,13 +1123,20 @@ Prüft die ausgewählte Git-Änderung vor dem Merge als striktes Defekt-Gate. Da
 /codexspec:review-code --committed [--base <branch>] [--feature <feature-dir>] [--focus <instructions>]
 /codexspec:review-code --uncommitted [--feature <feature-dir>] [--focus <instructions>]
 /codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code [--committed] --incremental-from <fingerprint> [--feature <feature-dir>]
 ```
+
+Jede Defekt-Gate-Form akzeptiert zusätzlich `--decided-by reviewer|ask`, das `review.decided_by` für diesen Lauf überschreibt.
 
 <!-- REVIEW-CODE-SYSTEM-CONTRACT -->
 <!-- REVIEW-CODE-VARIANT-SEARCH -->
 <!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
 
-Das Gate inventarisiert alle ausgewählten Artefakte, bewertet zutreffende Anforderungen und führt fünf Pässe in dieser Reihenfolge aus: Scope, System Contract, Behavior, Risk und Verification. Es erfasst belegte modulübergreifende Verträge und semantische Review-Partitionen; jede bestätigte wiederholbare Ursache löst vor Abschluss der Runde eine begrenzte Suche nach verwandten Vorkommen aus. Auf sechs Berichtsabschnitte folgt ein maschinenlesbares `<review-code-result>` envelope mit `schema_version: "2"`. Das Envelope enthält Zielidentität, Abdeckung und objektive Prüfpflichten nach der Reparatur. Der Aufrufer bewahrt diese neutralen Pflichten für eine neue vollständige Prüfung auf, ohne Reparaturbegründungen oder frühere Korrektheitsschlüsse weiterzugeben. Das Ergebnis ist genau `PASS`, `FAIL` oder `INCONCLUSIVE`: Jeder P0-P3-Befund führt zu `FAIL`; fehlende Pflichtnachweise oder unvollständige Abdeckung führen zu `INCONCLUSIVE`.
+Das Gate inventarisiert alle ausgewählten Artefakte, bewertet zutreffende Anforderungen und führt fünf Pässe in dieser Reihenfolge aus: Scope, System Contract, Behavior, Risk und Verification. Es erfasst belegte modulübergreifende Verträge und semantische Review-Partitionen; jede bestätigte wiederholbare Ursache löst vor Abschluss der Runde eine begrenzte Suche nach verwandten Vorkommen aus. Auf sechs Berichtsabschnitte folgt ein maschinenlesbares `<review-code-result>` envelope mit `schema_version: "3"`. Das Envelope enthält Zielidentität, Abdeckung und objektive Prüfpflichten nach der Reparatur. Der Aufrufer bewahrt diese neutralen Pflichten für eine neue vollständige Prüfung auf, ohne Reparaturbegründungen oder frühere Korrektheitsschlüsse weiterzugeben. Das Ergebnis ist genau `PASS`, `FAIL` oder `INCONCLUSIVE`: Jeder P0-P3-Befund führt zu `FAIL`; fehlende Pflichtnachweise oder unvollständige Abdeckung führen zu `INCONCLUSIVE`.
+
+**Inkrementelle Runden.** Nach einer Reparatur prüft `--incremental-from <fingerprint>` nur, was sich seit diesem früheren Ergebnis geändert hat: die geänderten Dateien, die Review-Partitionen und Verträge, die sie berühren, und die übernommenen Verpflichtungen. Die Abdeckung unveränderter, nicht betroffener Dateien wird wiederverwendet; der Reviewer meldet dennoch jeden Defekt, den er an anderer Stelle findet. Ein inkrementelles `PASS` schließt ein Feature nie ab: `implement-tasks` führt zuerst ein vollständiges Review aus, nach jeder Reparatur inkrementelle Reviews und zum Schluss ein frisches vollständiges Review als Abnahme. Review-Aufzeichnungen liegen außerhalb des Repositorys in Ihrem Benutzer-Cache-Verzeichnis (`~/.cache/codexspec/review/` bzw. `%LOCALAPPDATA%\codexspec\review\`); im Gespräch erscheinen nur der Bericht und das Envelope.
+
+**Entscheidungsmodus.** `review.decided_by` in `.codexspec/config.yml` legt fest, wer über einen Befund entscheidet, dessen Auslöser außerhalb des realen Einsatzkontexts des Projekts liegt, etwa eine Eingabe, die das Projekt nie erhält. Mit dem Standardwert `reviewer` verhält sich das Review genau wie bisher. Mit `ask` meldet das Review einen solchen Punkt als offene Szenario-Entscheidung, statt daran zu scheitern, und `implement-tasks` fragt Sie einmal: beheben oder das Szenario als außerhalb des Umfangs akzeptieren. Ihre Antwort wird als bestätigter `CON`- oder `OUT`-Eintrag in `requirements.md` festgehalten, sodass spätere Runden den Punkt nicht erneut melden.
 
 ```text
 You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example
