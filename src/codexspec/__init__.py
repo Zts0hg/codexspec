@@ -1660,9 +1660,10 @@ def parse_decided_by_value(raw: str) -> str:
 def _read_review_decided_by(config_file: Path) -> str:
     """Return the stored ``review.decided_by`` token, or the default when absent.
 
-    An absent file, section, or key yields ``reviewer``. A present value is
-    returned verbatim, even when invalid, so callers can report it as invalid
-    rather than masking it as the default (review-code rejects invalid values).
+    An absent file, section, or key yields ``reviewer``. A YAML-quoted scalar
+    (``"ask"`` or ``'ask'``) is unquoted, matching YAML semantics. Any other
+    present value is returned verbatim, even when invalid, so callers can report
+    it as invalid rather than masking it as the default.
     """
     try:
         content = config_file.read_text(encoding="utf-8")
@@ -1679,7 +1680,10 @@ def _read_review_decided_by(config_file: Path) -> str:
         if in_review:
             match = re.match(r"^\s*decided_by:\s*(\S+?)\s*(?:#.*)?$", line)
             if match:
-                return match.group(1)
+                token = match.group(1)
+                if len(token) >= 2 and token[0] == token[-1] and token[0] in "'\"":
+                    token = token[1:-1]
+                return token
     return _DECIDED_BY_DEFAULT
 
 

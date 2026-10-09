@@ -684,3 +684,20 @@ def test_isolation_is_explicit_for_each_host() -> None:
     assert "never use a fork that inherits the conversation" in isolation
     assert "the task message contains only" in isolation
     assert "prior finding prose, implementation reasoning, or claims that a repair succeeded" in isolation
+
+
+def test_mirror_checks_must_resolve_to_the_mirror() -> None:
+    """Review round 1 F-001: copied environments with absolute paths are not isolated."""
+    _, body = split_template()
+    verification = _compact(section(body, "### Verification Safety", "### Finding Admission"))
+    assert "embeds absolute paths to the original checkout" in verification
+    assert "editable-install" in verification and "shebang" in verification
+    assert "imported code resolves inside the mirror" in verification
+    assert "never execute code from the original checkout" in verification
+
+
+def test_incremental_baseline_error_is_machine_readable() -> None:
+    """Review round 1 F-003."""
+    _, body = split_template()
+    incremental = _compact(section(body, "### Incremental Review", "### Stage 1: Scope Pass"))
+    assert "blocking coverage gap whose scope is exactly `incremental baseline`" in incremental

@@ -661,3 +661,9 @@ def test_implement_tasks_asks_once_and_records_scenario_decisions() -> None:
     assert "Confirmation Log" in decisions
     assert "handled as a verified finding" in decisions
     assert "`CODEXSPEC_AUTO_DEV_DELEGATION`" in decisions and "stop state" in decisions
+
+
+def test_implement_tasks_falls_back_on_the_incremental_baseline_gap() -> None:
+    """Review round 1 F-003."""
+    loop = _review_loop()
+    assert "blocking gap whose scope is exactly `incremental baseline`" in loop

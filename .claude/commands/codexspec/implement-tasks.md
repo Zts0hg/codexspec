@@ -453,8 +453,9 @@ isolated reviewer according to this round policy:
 4. After a complete `FAIL`, return to incremental review after the next green
    repair set.
 5. If an incremental invocation returns the prior-record-unavailable or
-   target-mismatch argument error, run a complete review instead; this is not a
-   transient retry and not a failed round.
+   target-mismatch argument error — an `INCONCLUSIVE` result with a blocking gap
+   whose scope is exactly `incremental baseline` — run a complete review
+   instead; this is not a transient retry and not a failed round.
 
 Supply only the retained neutral follow-up
 obligations from 7.3b as incoming work, including each originating target

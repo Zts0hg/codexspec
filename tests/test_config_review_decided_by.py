@@ -194,3 +194,17 @@ class TestConfigTemplateDecidedBy:
         flow = _decided_by_flow()
         assert "Never write any other value" in flow
         assert "report it as invalid" in flow
+
+
+@pytest.mark.parametrize("stored", ['"ask"', "'ask'"])
+def test_read_accepts_yaml_quoted_values(tmp_path: Path, stored: str) -> None:
+    """Review round 1 F-002: a YAML-quoted valid value is the same value."""
+    cfg = _make_config(tmp_path, f"review:\n  decided_by: {stored}\n")
+    assert _read_review_decided_by(cfg) == "ask"
+
+
+def test_write_updates_a_quoted_value_in_place(tmp_path: Path) -> None:
+    cfg = _make_config(tmp_path, 'review:\n  decided_by: "ask"\n')
+    assert _write_review_decided_by(cfg, "reviewer") is True
+    assert cfg.read_text(encoding="utf-8").count("decided_by:") == 1
+    assert _read_review_decided_by(cfg) == "reviewer"
