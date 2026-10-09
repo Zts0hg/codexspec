@@ -295,7 +295,7 @@ All tasks edit `templates/commands/implement-tasks.md` sequentially; contract as
   - **Implementation note**: rendered with the worktree's own `.venv/bin/codexspec init --ai both --lang zh-CN` into a scratch repository instead of `uv tool install --force .`, which would have replaced the user's globally installed tool. `codexspec config --decided-by` was also exercised end to end there (set, reject an invalid value, show the effective value, flag an invalid stored value).
   - **Covers**: REQ-016, NFR-004; Plan: Phase 7 (rendering check, plan Decision 4)
 
-- [ ] **T024** Manual acceptance in a scratch repository with a seeded defect. Run it from a linked worktree, on Codex and Claude Code where available, and record each scenario's outcome.
+- [x] **T024** Manual acceptance in a scratch repository with a seeded defect. Run it from a linked worktree, on Codex and Claude Code where available, and record each scenario's outcome.
   - **Depends on**: T023
   - **Covers**: REQ-001–REQ-016, NFR-001–NFR-003; Plan: Phase 7 (manual acceptance)
   - **Test Scenarios**:
@@ -307,7 +307,7 @@ All tasks edit `templates/commands/implement-tasks.md` sequentially; contract as
     - TS-24.6 A check that needs Git metadata and installed dependencies passes in the mirror, and the original repository's Git state is unchanged (spec US4 scenario 1).
     - TS-24.7 Default configuration: no scenario items; admission behavior unchanged (spec US2 scenario 1).
 
-- [ ] **T025** [P] Optional live eval: run `python tests/evals/review_code/run_eval.py --cases tests/evals/review_code/cases --host codex` (or `--host claude`) on two or three cases and confirm the schema `3` envelopes parse.
+- [x] **T025** [P] Optional live eval: run `python tests/evals/review_code/run_eval.py --cases tests/evals/review_code/cases --host codex` (or `--host claude`) on two or three cases and confirm the schema `3` envelopes parse.
   - **Depends on**: T021
   - **Verification**: The recorded results show parsed verdicts with no parse failures.
   - **Covers**: REQ-003, NFR-002; Plan: Phase 7 (optional live eval)
@@ -381,3 +381,31 @@ The graph is acyclic: same-file tasks are chained, and every dependency precedes
 ### Unmapped Tasks
 
 None. T001, T021, T022, T023 and T025 are implementation-support verification tasks required by plan Phases 0 and 7.
+
+## Acceptance Evidence (2026-10-09)
+
+T024 ran on Codex with fresh non-fork reviewer agents in temporary linked worktrees. The coordinator validated every schema-3 result, target fingerprint, inventory accounting and terminal verdict. Claude Code was available but its live invocation timed out after 900 seconds; no Claude behavioral pass is claimed.
+
+| Scenario | Executed assertion and outcome |
+|---|---|
+| TS-24.1 | Numeric parser fixture: complete FAIL → repair → incremental PASS → complete review; final complete PASS covers all ten entries. Incremental inventories retain unaffected entries with `carried: true`. |
+| TS-24.2 | The test driver deliberately introduces a timeout-parser defect before the complete review. That review returns FAIL; repair → incremental PASS → complete PASS follows. This is a controlled new-defect stimulus, not a claim that the first reviewer missed an existing defect. |
+| TS-24.3 | Ask-mode reviewer returns a pending Unicode scenario and a blocking gap. The coordinator constructs the scenario prompt and supplies the prescribed scripted `accept` test input, records OUT-001 with a Confirmation Log, and a fresh complete review returns PASS with no repeated scenario. This tests the decision-recording path; it does not test a human click or the host question UI, and records no real product decision. |
+| TS-24.4 | Explicit reviewer mode overrides configured ask: the same Unicode trigger becomes an admitted P2 finding, with an empty scenario array. |
+| TS-24.5 | A repeated invalid-number-to-sentinel class triggers debug trip (c). Both parser implementations and sibling patterns are inspected; a regression test fails on the timeout instance before the uniform fix and passes afterward. |
+| TS-24.6 | A local clone with independent Git metadata and copied installed PyYAML executes Git and dependency checks successfully. Source HEAD, index, config, status and worktree-list signatures are identical before and after. |
+| TS-24.7 | Default reviewer mode admits the seeded defect and emits no scenario decisions. |
+
+The numeric fixture's five rounds are complete FAIL, incremental PASS, complete FAIL, incremental PASS, complete PASS. Review and verification records are external, under `$HOME/.cache/codexspec/review/`: numeric repository `44c159536beb10005e6cc860c1b1ecae63b2ceebfe900c7301bc8182a69d2918`, scenario repository `2cd1a17647019765444120c004f6b84db1797014c088035f0d554a2b2bd76f14`, and override repository `933fa65c5f65981a4920ff9f3cc288031d0baee712f8450852a0f19dd6054a08`. Each contains fingerprint-keyed results; the first two also contain the loop ledger.
+
+T025 runs `clean-refactor` and `parsing-invalid-default` through the Codex live adapter. Both schema-3 answers parse after the adapter correction in commit `a37ce2b`; neither reports a parse failure. Both verdicts are INCONCLUSIVE because the CLI's read-only sandbox prevents required review operations, so case verdict expectations do not pass. Claude's timeout is recorded separately. This task confirms parsing, not cross-host behavioral correctness.
+
+The live run exposed diagnostic envelopes on stderr being mixed with the answer on stdout. Four regression cases first failed, then passed after both host adapters were corrected to parse stdout only and reject nonzero exit status. The eval test module passes all 48 tests.
+
+Main-repository acceptance logs live in `$HOME/.cache/codexspec/review/797fd308835574ea54a57974956066b8573c8b3d70922981ed7081842e60bc75/acceptance/`, including `codex-postfix.json`, `claude-clean.json`, `mirror-check.json`, `pytest.log`, `precommit-cached.log`, and `pip-audit-recheck.log`.
+
+### Scenario Coverage Self-Check
+
+The implementer inspected assertions, not only test names. TS-2.1–2.8 and TS-4.1–4.3 map to the reader/writer/CLI and template classes in `tests/test_config_review_decided_by.py`. TS-5 through TS-10 map to modifier-boundary, decision-mode, schema, incremental, mirror and host-isolation contract assertions in `tests/test_review_code_templates.py`, with catalog assertions in `tests/test_translation_files.py`. TS-11.1–11.9 map to executable parser rejection/acceptance and canned-adapter tests in `tests/test_review_code_eval.py`. TS-12 through TS-15 map to validation, round-policy, ledger and decision-flow assertions in `tests/test_sdd_workflow_templates.py`. TS-16 and TS-17 map to escalation and class-intake assertions in `tests/test_debug_template.py`. TS-24's executed assertions are listed above. Template assertions establish the shipped instruction contract; the live fixtures provide separate behavioral evidence within the disclosed host limits.
+
+Verification after the live-adapter correction: full suite 1972 passed, 54 skipped; Ruff clean; distribution check clean; strict MkDocs build passed; applicable pre-commit checks passed, including a separate successful pip-audit recheck. The pre-commit all-files run used existing Python 3.12 hook environments through an external configuration copy because creating Python 3.11 hook environments required unavailable downloads. No dependency or repository configuration change was made for that accommodation.
