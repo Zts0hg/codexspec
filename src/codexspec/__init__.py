@@ -1658,6 +1658,29 @@ def parse_decided_by_value(raw: str) -> str:
     raise ValueError(f"invalid review.decided_by value: {raw!r}")
 
 
+def _yaml_has_duplicate_keys(content: str) -> bool:
+    """Return True when any YAML mapping in ``content`` repeats a key."""
+    try:
+        root = yaml.compose(content)
+    except yaml.YAMLError:
+        return False
+    stack = [root] if root is not None else []
+    seen_nodes: set[int] = set()
+    while stack:
+        node = stack.pop()
+        if id(node) in seen_nodes:
+            continue
+        seen_nodes.add(id(node))
+        if isinstance(node, yaml.MappingNode):
+            keys = [key.value for key, _ in node.value if isinstance(key, yaml.ScalarNode)]
+            if len(keys) != len(set(keys)):
+                return True
+            stack.extend(value for _, value in node.value)
+        elif isinstance(node, yaml.SequenceNode):
+            stack.extend(node.value)
+    return False
+
+
 def _read_review_decided_by(config_file: Path) -> str:
     """Return the effective ``review.decided_by`` value under YAML semantics.
 
@@ -1675,6 +1698,8 @@ def _read_review_decided_by(config_file: Path) -> str:
         data = yaml.safe_load(content)
     except yaml.YAMLError:
         return "unparseable"
+    if _yaml_has_duplicate_keys(content):
+        return "duplicate keys"
     review = data.get("review") if isinstance(data, dict) else None
     if not isinstance(review, dict) or "decided_by" not in review:
         return _DECIDED_BY_DEFAULT
@@ -1691,10 +1716,12 @@ def _write_review_decided_by(config_file: Path, value: str) -> bool:
     comments are preserved: the value is replaced in place when the key exists
     (including an empty value), inserted as the section's first child when the
     section exists without it, or appended as a new ``review:`` section.
-    Comment lines never end a section. The edited file is then parsed as YAML;
-    if the effective value is not the requested one (for example a flow-style
-    mapping), the original content is restored and ``False`` is returned, so
-    callers never report a change that does not take effect. Raises
+    Comment lines never end a section. The edited file is then verified as a
+    whole: unless the parsed document equals the original with only
+    ``review.decided_by`` replaced and has no duplicate keys (for example a
+    flow-style or anchored mapping, or a nested or block-scalar ``decided_by``),
+    the original content is restored and ``False`` is returned, so callers never
+    report a change that does not take effect or that alters anything else. Raises
     ``ValueError`` for an invalid value; returns ``False`` on I/O error.
     """
     token = parse_decided_by_value(value)
@@ -1739,13 +1766,33 @@ def _write_review_decided_by(config_file: Path, value: str) -> bool:
         config_file.write_text(new_content, encoding="utf-8")
     except OSError:
         return False
-    if _read_review_decided_by(config_file) != token:
+    if not _decided_by_write_is_exact(content, new_content, token):
         try:
             config_file.write_text(content, encoding="utf-8")
         except OSError:
             pass
         return False
     return True
+
+
+def _decided_by_write_is_exact(before_text: str, after_text: str, token: str) -> bool:
+    """Return True only when the edit set ``review.decided_by`` and changed nothing else.
+
+    Mirrors ``write_worktrees``: the parsed document after the edit must equal the
+    parsed document before it with only ``review.decided_by`` replaced, and the
+    edited text must contain no duplicate mapping keys.
+    """
+    try:
+        before = yaml.safe_load(before_text) or {}
+        after = yaml.safe_load(after_text)
+    except yaml.YAMLError:
+        return False
+    if not isinstance(before, dict) or _yaml_has_duplicate_keys(after_text):
+        return False
+    review = before.get("review") or {}
+    if not isinstance(review, dict):
+        return False
+    return after == {**before, "review": {**review, "decided_by": token}}
 
 
 def _next_step_start(integration_keys: set[str], language: str) -> str:

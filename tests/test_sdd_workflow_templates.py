@@ -667,3 +667,11 @@ def test_implement_tasks_falls_back_on_the_incremental_baseline_gap() -> None:
     loop = _review_loop()
     assert "non-blocking gap whose scope is exactly `incremental baseline`" in loop
     assert "is a valid complete round" in loop
+
+
+def test_implement_tasks_ledger_has_a_per_run_lifecycle() -> None:
+    """Review round 5 SF-002: a new run never inherits an earlier run's ledger."""
+    loop = _review_loop()
+    assert "Each run of this command starts a new ledger" in loop
+    assert "never inherits rounds, findings, refutations, or root-cause classes from an earlier run" in loop
+    assert "only to continue the same run" in loop

@@ -712,3 +712,10 @@ def test_isolation_allow_list_includes_incremental_scope_obligations() -> None:
     for text in (isolation, protocol):
         assert "incremental scope obligations" in text
     assert "never the prior evidence, statuses, findings, or variant searches" in isolation
+
+
+def test_host_rule_allows_each_reviewers_listed_items() -> None:
+    """Review round 5 G-003: specialists may receive the items their bullet lists."""
+    _, body = split_template()
+    isolation = _compact(section(body, "### Reviewer Isolation", "### Instruction and Evidence Trust"))
+    assert "contains only the items this section allows for that reviewer" in isolation

@@ -295,7 +295,7 @@ Host spawn rules (mandatory):
 
 - Codex: spawn each reviewer and specialist with `spawn_agent` with `fork_turns: "none"`. Never use `fork_turns: "all"` or any other conversation fork for a reviewer or specialist.
 - Claude Code: delegate each reviewer and specialist to a fresh non-fork subagent with the `Task`/`Agent` tool; never use a fork that inherits the conversation.
-- On every host, the task message contains only the items listed in the first bullet of this section; it never includes prior finding prose, implementation reasoning, or claims that a repair succeeded.
+- On every host, the task message contains only the items this section allows for that reviewer (the first bullet for every reviewer, plus the specialist bullet for a specialist); it never includes prior finding prose, implementation reasoning, or claims that a repair succeeded.
 
 ### Instruction and Evidence Trust
 

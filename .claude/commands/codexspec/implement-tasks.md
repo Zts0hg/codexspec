@@ -482,8 +482,11 @@ sessions and context compaction. It holds the round list (fingerprint,
 findings with their `root_cause_class`, retained follow-up obligations, and
 pending scenario decisions. A `root_cause_class` is a short, normalized cause
 statement that this implementer assigns from the reviewer's root-cause
-description and its own 7.3 verification. Do not create repository-local
-review-state files.
+description and its own 7.3 verification. Each run of this command starts a new ledger
+for the feature, replacing any earlier one, so a run never inherits rounds, findings,
+refutations, or root-cause classes from an earlier run; read an existing ledger only
+to continue the same run (for example after a 7.3c question or context compaction).
+Do not create repository-local review-state files.
 
 Continue while substantive progress occurs: verified defects are repaired or a
 fresh review identifies new actionable defects that can be verified. Maintain

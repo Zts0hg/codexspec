@@ -15,7 +15,13 @@ from typing import Generator
 import pytest
 from typer.testing import CliRunner
 
-from codexspec import _read_review_decided_by, _write_review_decided_by, app, parse_decided_by_value
+from codexspec import (
+    _read_review_decided_by,
+    _write_review_decided_by,
+    _yaml_has_duplicate_keys,
+    app,
+    parse_decided_by_value,
+)
 
 
 def _make_config(tmp_path: Path, body: str) -> Path:
@@ -247,3 +253,37 @@ def test_write_takes_effect_under_yaml_or_reports_failure(tmp_path: Path, body: 
         assert data["review"]["decided_by"] == "reviewer"
     else:
         assert cfg.read_text(encoding="utf-8") == body
+
+
+# --- Review round 5: whole-document verification (class-level fix) ---
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        "review: {decided_by: ask, extra: keep}\n",
+        "review: &r\n  extra: keep\n",
+        '"review":\n  decided_by: ask\n  extra: keep\n',
+        "review:\n  sub:\n    decided_by: keep\n",
+        "review:\n  note: |\n    decided_by: keep-this-text\n",
+    ],
+)
+def test_write_never_changes_anything_but_the_target_key(tmp_path: Path, body: str) -> None:
+    import yaml
+
+    cfg = _make_config(tmp_path, body)
+    before = yaml.safe_load(body)
+    ok = _write_review_decided_by(cfg, "reviewer")
+    text = cfg.read_text(encoding="utf-8")
+    if not ok:
+        assert text == body
+        return
+    after = yaml.safe_load(text)
+    expected = {**before, "review": {**(before.get("review") or {}), "decided_by": "reviewer"}}
+    assert after == expected
+    assert not _yaml_has_duplicate_keys(text)
+
+
+def test_read_reports_duplicate_review_keys_as_invalid(tmp_path: Path) -> None:
+    cfg = _make_config(tmp_path, "review:\n  decided_by: ask\nreview:\n  decided_by: reviewer\n")
+    assert _read_review_decided_by(cfg) not in ("ask", "reviewer")
