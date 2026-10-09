@@ -627,7 +627,6 @@ def test_implement_tasks_round_policy_is_incremental_then_complete() -> None:
     assert "After an incremental `PASS`, run a complete review" in loop
     assert "Only a complete `PASS` satisfies 7.6" in loop
     assert "After a complete `FAIL`, return to incremental review" in loop
-    assert "prior-record-unavailable or target-mismatch argument error" in loop
     assert "not a transient retry and not a failed round" in loop
     assert "Never pass `--decided-by`" in loop
     assert "There is no fixed round count" in loop
@@ -666,4 +665,5 @@ def test_implement_tasks_asks_once_and_records_scenario_decisions() -> None:
 def test_implement_tasks_falls_back_on_the_incremental_baseline_gap() -> None:
     """Review round 1 F-003."""
     loop = _review_loop()
-    assert "blocking gap whose scope is exactly `incremental baseline`" in loop
+    assert "non-blocking gap whose scope is exactly `incremental baseline`" in loop
+    assert "is a valid complete round" in loop

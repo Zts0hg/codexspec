@@ -202,8 +202,9 @@ object. Prose cannot override, repair, or supply missing machine data. Validate:
   and `2` explicitly as unsupported (a schema version `1` or `2` result is
   never migrated, and missing coverage is never inferred);
 - `review_scope.kind` is `complete` or `incremental`, and `review_scope.since`
-  is a fingerprint exactly when the round is incremental and names the
-  requested prior result; `decided_by` is `reviewer` or `ask`;
+  is a fingerprint exactly when the round is incremental and then names the
+  requested prior result (an incremental request may return a complete result
+  under rule 5 of 7.5); `decided_by` is `reviewer` or `ask`;
   `scenario_decisions` is empty in `reviewer` mode, and every pending item has a
   blocking coverage gap whose scope is exactly `scenario decision <id>` that is
   an outgoing follow-up source;
@@ -373,10 +374,11 @@ isolated reviewer according to this round policy:
    satisfies 7.6.
 4. After a complete `FAIL`, return to incremental review after the next green
    repair set.
-5. If an incremental invocation returns the prior-record-unavailable or
-   target-mismatch argument error — an `INCONCLUSIVE` result with a blocking gap
-   whose scope is exactly `incremental baseline` — run a complete review
-   instead; this is not a transient retry and not a failed round.
+5. If an incremental invocation returns `review_scope.kind: complete` with a
+   non-blocking gap whose scope is exactly `incremental baseline`, the prior
+   records were unusable and `review-code` reviewed completely instead: that
+   result is a valid complete round and is handled as one (its `PASS` satisfies
+   7.6). This is not a transient retry and not a failed round.
 
 Supply only the retained neutral follow-up
 obligations from 7.3b as incoming work, including each originating target

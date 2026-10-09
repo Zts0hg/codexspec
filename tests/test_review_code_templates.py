@@ -640,7 +640,6 @@ def test_incremental_review_reuses_only_unchanged_unaffected_coverage() -> None:
     assert "missing, unreadable, or mismatched records" in incremental.lower()
     for field in ["repository", "selector", "feature", "`base_ref`", "`merge_base_sha`"]:
         assert field in incremental
-    assert "run a complete review" in incremental
     assert "changed, added, removed, or renamed" in incremental
     assert "affected partition" in incremental and "`contract_ids`" in incremental
     assert "never prior coverage evidence, statuses, findings, or variant searches" in incremental
@@ -700,4 +699,6 @@ def test_incremental_baseline_error_is_machine_readable() -> None:
     """Review round 1 F-003."""
     _, body = split_template()
     incremental = _compact(section(body, "### Incremental Review", "### Stage 1: Scope Pass"))
-    assert "blocking coverage gap whose scope is exactly `incremental baseline`" in incremental
+    assert "falls back to a complete review in the same invocation" in incremental
+    assert "non-blocking coverage gap whose scope is exactly `incremental baseline`" in incremental
+    assert "never an argument error" in incremental

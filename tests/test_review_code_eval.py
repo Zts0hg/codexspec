@@ -1275,3 +1275,19 @@ def test_parse_review_result_accepts_ask_mode_pending_scenario() -> None:
     parsed = run_eval.parse_review_result(_wrap(_ask_inconclusive()))
     assert parsed["verdict"] == "INCONCLUSIVE"
     assert parsed["scenario_decisions"][0]["status"] == "pending"
+
+
+def test_parse_review_result_accepts_complete_fallback_with_baseline_gap() -> None:
+    """Review round 2 F-001: an unusable baseline yields a valid complete result."""
+    result = _result(_envelope(verdict="PASS"))
+    result["coverage_gaps"] = [
+        {
+            "id": "G-001",
+            "scope": "incremental baseline",
+            "impact": "prior records unusable; reviewed completely",
+            "blocking": False,
+        }
+    ]
+    result["coverage_gap_count"] = 1
+    parsed = run_eval.parse_review_result(_wrap(result))
+    assert parsed["review_scope"]["kind"] == "complete"
