@@ -5,6 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.19] - 2026-10-09
+
+### Added
+
+- Review repair loops now reuse coverage for unchanged, unaffected evidence through
+  `review-code --incremental-from`, while final acceptance still requires a fresh
+  complete-feature review with a PASS verdict.
+- Added `review.decided_by` and `codexspec config --decided-by reviewer|ask`.
+  The default `reviewer` mode keeps existing defect admission; `ask` lets users
+  resolve out-of-context scenarios once through confirmed OUT/CON requirements.
+- Implementation loops retain neutral follow-up obligations and root-cause classes
+  outside the repository, escalating recurring classes into systematic debugging.
+
+### Changed
+
+- **Breaking:** Review-result envelopes now use schema 3. Schema-1/2 results are
+  rejected; update command installations and result consumers together. The
+  resolver manifest schema remains unchanged.
+- Verification mirrors require independent Git metadata, copied dependencies and
+  imports resolved inside the mirror. Reviewers use fresh contexts as direct
+  children of the coordinator on both supported hosts.
+
+### Fixed
+
+- Decision-mode configuration writes preserve unrelated YAML values and line endings
+  across supported block, flow, quoted, null, alias and explicit-key layouts.
+  Configuration display uses the writer's validation rules.
+- An unusable incremental baseline falls back to a complete review. Incremental
+  obligations are permitted by the reviewer isolation rules without exposing prior
+  findings or conclusions.
+
+### For contributors
+
+- Live eval adapters parse successful host stdout separately from diagnostic stderr
+  and reject nonzero host exits. Schema-3 parser, workflow, configuration and
+  localization tests cover the updated contracts.
+- Updated eight-language documentation, generated command forms and acceptance
+  evidence; recorded checks for relocated Python environments.
+- Updated plugin marketplace metadata for the preceding v0.7.18 release.
+
 ## [0.7.18] - 2026-10-04
 
 ### Added
