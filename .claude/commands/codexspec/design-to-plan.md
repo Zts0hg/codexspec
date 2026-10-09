@@ -6,7 +6,7 @@ handoffs:
     step: Generate an implementation plan constrained by the confirmed design and requirements
 ---
 
-# Specification to Plan Converter
+# Design to Plan Converter
 
 ## Language Preference
 

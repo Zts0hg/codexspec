@@ -89,16 +89,16 @@ Controla si el pipeline de Requirements-First SDD **avanza automáticamente** a 
 **Cadena:**
 
 ```
-specify → generate-spec → spec-to-plan → plan-to-tasks → implement-tasks
+specify → generate-spec → spec-to-design → design-to-plan → plan-to-tasks → implement-tasks
 ```
 
 **Puerta de paso (pass gate):**
 
-- `generate-spec`, `spec-to-plan`, `plan-to-tasks`: el bucle de revisión integrado en el comando debe reportar un Overall Status de `PASS` o `PASS_WITH_WARNINGS`.
+- `generate-spec`, `spec-to-design`, `design-to-plan`, `plan-to-tasks`: el bucle de revisión integrado en el comando debe reportar un Overall Status de `PASS` o `PASS_WITH_WARNINGS`.
 - `specify`: no hay bucle de revisión, de modo que la puerta es tu confirmación explícita de que el descubrimiento de requisitos ha terminado (el resumen de la etapa **final**, no cada uno intermedio).
 - `implement-tasks`: etapa terminal; nada se dispara automáticamente después.
 
-Cuando el bucle de revisión reporta `NEEDS_REVISION` o `BLOCKED`, la cadena se detiene y el control regresa a ti. Antes de cada avance, el agente emite una línea de aviso (por ejemplo: `auto_next: review passed → invoking /codexspec:spec-to-plan`).
+Cuando el bucle de revisión reporta `NEEDS_REVISION` o `BLOCKED`, la cadena se detiene y el control regresa a ti. Antes de cada avance, el agente emite una línea de aviso (por ejemplo: `auto_next: review passed → invoking /codexspec:design-to-plan`).
 
 ## Configuración de revisión
 

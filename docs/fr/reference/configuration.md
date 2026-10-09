@@ -89,16 +89,16 @@ Contrôle si le pipeline Requirements-First SDD **avance automatiquement** vers 
 **Chaîne :**
 
 ```
-specify → generate-spec → spec-to-plan → plan-to-tasks → implement-tasks
+specify → generate-spec → spec-to-design → design-to-plan → plan-to-tasks → implement-tasks
 ```
 
 **Porte de réussite :**
 
-- `generate-spec`, `spec-to-plan`, `plan-to-tasks` : la boucle de revue intégrée à la commande doit renvoyer un Overall Status `PASS` ou `PASS_WITH_WARNINGS`.
+- `generate-spec`, `spec-to-design`, `design-to-plan`, `plan-to-tasks` : la boucle de revue intégrée à la commande doit renvoyer un Overall Status `PASS` ou `PASS_WITH_WARNINGS`.
 - `specify` : aucune boucle de revue, la porte est donc votre confirmation explicite que la découverte des exigences est terminée (le résumé **final** de l'étape, pas chaque résumé intermédiaire).
 - `implement-tasks` : étape terminale — rien ne se déclenche automatiquement après elle.
 
-Quand la boucle de revue renvoie `NEEDS_REVISION` ou `BLOCKED`, la chaîne s'interrompt et le contrôle vous revient. Avant chaque avance, l'agent émet une ligne de notification (par exemple : `auto_next: review passed → invoking /codexspec:spec-to-plan`).
+Quand la boucle de revue renvoie `NEEDS_REVISION` ou `BLOCKED`, la chaîne s'interrompt et le contrôle vous revient. Avant chaque avance, l'agent émet une ligne de notification (par exemple : `auto_next: review passed → invoking /codexspec:design-to-plan`).
 
 ## Paramètres de revue
 

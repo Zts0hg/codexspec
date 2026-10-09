@@ -6,7 +6,7 @@
 
 **Funcionalidad objetivo**: añadir el comando `/codexspec:pr`, que genera descripciones estructuradas de PR de GitHub / MR de GitLab. (Consulta la [entrada `/codexspec:pr` en el README](https://github.com/Zts0hg/codexspec/blob/main/README.md) para el resumen orientado al usuario del comando publicado.)
 
-**Flujo de desarrollo**: `specify → generate-spec → review-spec → clarify → spec-to-plan`
+**Flujo de desarrollo**: `specify → generate-spec → review-spec → clarify → design-to-plan`
 
 **Característica clave**: un problema de requisitos afloró a mitad de proceso y se corrigió mediante el comando `clarify`, ilustrando la flexibilidad de SDD. Es un ejemplo concreto del **Confirmation Gate** de CodexSpec: nada es vinculante hasta que lo confirmas explícitamente, y una decisión previamente aceptada puede reabrirse y revertirse en el punto de control de clarify.
 
@@ -266,7 +266,7 @@ Esta inversión es la ilustración más nítida del Confirmation Gate en este ca
 
 ---
 
-## Etapa 5: Plan técnico de implementación (`/codexspec:spec-to-plan`)
+## Etapa 5: Plan técnico de implementación (`/codexspec:design-to-plan`)
 
 ### Visión general del plan
 
@@ -355,7 +355,7 @@ Esta inversión es la ilustración más nítida del Confirmation Gate en este ca
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec:spec-to-plan                                                │
+│  /codexspec:design-to-plan                                                │
 │  ├─ Actualiza el plan técnico de implementación                         │
 │  ├─ 9 decisiones técnicas, incluidas 5 nuevas                           │
 │  ├─ 5 fases de implementación                                           │
@@ -386,7 +386,7 @@ Este caso muestra el papel decisivo del comando `clarify`:
 ### 2. Flexibilidad del flujo SDD
 
 - No es un flujo lineal; puedes retroceder y ajustar en cualquier etapa
-- `clarify` puede intercalarse después de `review-spec` y antes de `spec-to-plan`
+- `clarify` puede intercalarse después de `review-spec` y antes de `design-to-plan`
 - Tanto el documento de especificación como el plan técnico se actualizan para reflejar el cambio
 
 ### 3. Evolución del diseño del parámetro
@@ -408,7 +408,7 @@ Este cambio refleja un giro de "flujo SDD por defecto" a "soportar también fluj
 | generate-spec | spec.md | Documento de especificación completo |
 | review-spec | review-spec.md | Informe de revisión de calidad |
 | clarify | (actualiza spec.md) | Registros de clarificación + actualizaciones de requisitos |
-| spec-to-plan | plan.md | Plan técnico de implementación |
+| design-to-plan | plan.md | Plan técnico de implementación |
 
 ---
 
@@ -428,7 +428,7 @@ Este cambio refleja un giro de "flujo SDD por defecto" a "soportar también fluj
 /codexspec:clarify [descripción del problema]
 
 # 5. Generar el plan técnico
-/codexspec:spec-to-plan
+/codexspec:design-to-plan
 
 # 6. Revisar la calidad del plan (opcional)
 /codexspec:review-plan

@@ -14,7 +14,7 @@ SDD:          Ideia → Requisitos Confirmados → Spec → Plano → Tarefas �
 No CodexSpec, essa cadeia vira uma sequência de pontos de verificação em slash commands, cada um produzindo um artefato persistido com um marcador de revisão:
 
 ```text
-Ideia → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+Ideia → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               Revisar spec              Revisar plano                Revisar tarefas
 ```
@@ -28,7 +28,7 @@ O `requirements.md` persiste o resultado das discussões de requisitos. Ele regi
 | 1. Princípios do projeto       | `/codexspec:constitution`    | `constitution.md`          | Sim                |
 | 2. Esclarecimento de requisitos | `/codexspec:specify`         | `requirements.md`          | Sim                |
 | 3. Gerar spec                  | `/codexspec:generate-spec`   | `spec.md` + auto-review    | Sim                |
-| 4. Planejamento técnico        | `/codexspec:spec-to-plan`    | `plan.md` + auto-review    | Sim                |
+| 4. Planejamento técnico        | `/codexspec:design-to-plan`    | `plan.md` + auto-review    | Sim                |
 | 5. Decomposição de tarefas     | `/codexspec:plan-to-tasks`   | `tasks.md` + auto-review   | Sim                |
 | 6. Análise entre artefatos     | `/codexspec:analyze`         | Relatório de análise       | Sim                |
 | 7. Implementação               | `/codexspec:implement-tasks` | Código                     | -                  |

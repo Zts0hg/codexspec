@@ -121,7 +121,7 @@ CodexSpec repose sur une conviction : **un développement efficace assisté par 
 CodexSpec structure le développement en **points de contrôle révisables** :
 
 ```
-Idée → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+Idée → /specify → requirements.md → /generate-spec → spec.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               Réviser la spec            Réviser le plan              Réviser les tâches
 ```
@@ -162,7 +162,7 @@ claude
 > /codexspec:constitution Créer des principes axés sur la qualité du code et les tests
 > /codexspec:specify Je veux construire une application de gestion de tâches
 > /codexspec:generate-spec
-> /codexspec:spec-to-plan
+> /codexspec:design-to-plan
 > /codexspec:plan-to-tasks
 > /codexspec:implement-tasks
 ```
@@ -310,7 +310,7 @@ La commande `config` vous accompagne pour :
 CodexSpec découpe le développement en **points de contrôle révisables** :
 
 ```
-Idée → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+Idée → /specify → requirements.md → /generate-spec → spec.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               Réviser la spec            Réviser le plan              Réviser les tâches
 ```
@@ -322,7 +322,7 @@ Idée → /specify → requirements.md → /generate-spec → spec.md → /spec-
 | 1. Principes du projet         | `/codexspec:constitution`     | `constitution.md`           | ✅              |
 | 2. Clarification des exigences | `/codexspec:specify`          | `requirements.md`           | ✅              |
 | 3. Génération de la spec       | `/codexspec:generate-spec`    | `spec.md` + auto-revue      | ✅              |
-| 4. Planification technique     | `/codexspec:spec-to-plan`     | `plan.md` + auto-revue      | ✅              |
+| 4. Planification technique     | `/codexspec:design-to-plan`     | `plan.md` + auto-revue      | ✅              |
 | 5. Décomposition des tâches    | `/codexspec:plan-to-tasks`    | `tasks.md` + auto-revue     | ✅              |
 | 6. Analyse inter-artefacts     | `/codexspec:analyze`          | Rapport d'analyse           | ✅              |
 | 7. Implémentation              | `/codexspec:implement-tasks`  | Code                        | -               |
@@ -424,7 +424,8 @@ Cette commande :
 ### 5. Créer le plan technique
 
 ```
-/codexspec:spec-to-plan Utiliser Python FastAPI pour le backend, PostgreSQL pour la base de données, React pour le frontend
+/codexspec:spec-to-design Utiliser Python FastAPI pour le backend, PostgreSQL pour la base de données, React pour le frontend
+/codexspec:design-to-plan
 ```
 
 N'utilise que les sections de planification pertinentes, enregistre les liens `Covers` vers les exigences de la spécification et vérifie les principes applicables du projet.
@@ -525,7 +526,7 @@ L'implémentation suit le **flux de travail TDD conditionnel** :
 | `/codexspec:blueprint`        | Discuter et gérer les exigences confirmées du blueprint partagé          |
 | `/codexspec:generate-spec`    | Générer le document `spec.md` ★ Auto-revue                               |
 | `/codexspec:spec-to-design`   | Générer `design.md` (architecture/composants/décisions) ★ Auto-revue     |
-| `/codexspec:spec-to-plan`     | Convertir la spec en plan technique ★ Auto-revue                         |
+| `/codexspec:design-to-plan`     | Convertir la spec en plan technique ★ Auto-revue                         |
 | `/codexspec:plan-to-tasks`    | Décomposer le plan en tâches traçables et vérifiables ★ Auto-revue       |
 | `/codexspec:implement-tasks`  | Exécuter les tâches (TDD conditionnel)                                   |
 | `/codexspec:auto-dev`         | Développer dans l'ordre toutes les exigences en attente du blueprint     |

@@ -112,7 +112,7 @@
     "description": "Compilar requisitos confirmados en un spec.md trazable",
     "argument-hint": "[requirements.md o directorio de característica]"
   },
-  "spec-to-plan": {
+  "design-to-plan": {
     "description": "Convertir un diseño confirmado en un plan de implementación trazable",
     "argument-hint": "[design.md, spec.md o directorio de la funcionalidad]"
   },

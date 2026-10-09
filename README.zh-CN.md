@@ -121,7 +121,7 @@ CodexSpec 始于一个判断：**真正有效的 AI 辅助开发，需要人在�
 CodexSpec 把开发拆解成一连串**可审查的检查点**：
 
 ```
-想法 → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+想法 → /specify → requirements.md → /generate-spec → spec.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               审查规格                    审查计划                     审查任务
 ```
@@ -162,7 +162,7 @@ claude
 > /codexspec:constitution 创建以代码质量和测试为核心的原则
 > /codexspec:specify 我想做一个待办应用
 > /codexspec:generate-spec
-> /codexspec:spec-to-plan
+> /codexspec:design-to-plan
 > /codexspec:plan-to-tasks
 > /codexspec:implement-tasks
 ```
@@ -310,7 +310,7 @@ config 命令会依次引导你：
 CodexSpec 把开发拆解成一连串**可审查的检查点**：
 
 ```
-想法 → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+想法 → /specify → requirements.md → /generate-spec → spec.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               审查规格                    审查计划                     审查任务
 ```
@@ -322,7 +322,7 @@ CodexSpec 把开发拆解成一连串**可审查的检查点**：
 | 1. 项目原则          | `/codexspec:constitution`     | `constitution.md`           | ✅       |
 | 2. 需求澄清          | `/codexspec:specify`          | `requirements.md`           | ✅       |
 | 3. 生成规格          | `/codexspec:generate-spec`    | `spec.md` + 自动审查        | ✅       |
-| 4. 技术规划          | `/codexspec:spec-to-plan`     | `plan.md` + 自动审查        | ✅       |
+| 4. 技术规划          | `/codexspec:design-to-plan`     | `plan.md` + 自动审查        | ✅       |
 | 5. 任务分解          | `/codexspec:plan-to-tasks`    | `tasks.md` + 自动审查       | ✅       |
 | 6. 跨产物分析        | `/codexspec:analyze`          | 分析报告                    | ✅       |
 | 7. 实现              | `/codexspec:implement-tasks`  | 代码                        | -        |
@@ -424,7 +424,8 @@ claude
 ### 5. 制定技术计划
 
 ```
-/codexspec:spec-to-plan 用 Python FastAPI 做后端，PostgreSQL 做数据库，React 做前端
+/codexspec:spec-to-design 用 Python FastAPI 做后端，PostgreSQL 做数据库，React 做前端
+/codexspec:design-to-plan
 ```
 
 只生成与本功能相关的规划内容，用 `Covers` 链接关联到规格需求，并校验适用的项目原则。
@@ -525,7 +526,7 @@ claude
 | `/codexspec:blueprint`        | 讨论并维护共享 blueprint 中已确认的需求                    |
 | `/codexspec:generate-spec`    | 生成 `spec.md` 文档 ★ 自动审查                             |
 | `/codexspec:spec-to-design`  | 生成 `design.md`（架构/组件/决策）★ 自动审查                |
-| `/codexspec:spec-to-plan`     | 把规格转换成技术计划 ★ 自动审查                            |
+| `/codexspec:design-to-plan`     | 把规格转换成技术计划 ★ 自动审查                            |
 | `/codexspec:plan-to-tasks`    | 把计划拆解成可追溯、可验证的任务 ★ 自动审查                |
 | `/codexspec:implement-tasks`  | 执行任务（条件式 TDD）                                     |
 | `/codexspec:auto-dev`         | 按顺序自主开发 blueprint 中所有待实现需求                  |

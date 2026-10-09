@@ -67,7 +67,7 @@ class TestGetCommandsMetadata:
     def test_design_commands_placed_in_chain_order(self) -> None:
         """S3.1.2: design commands sit in chain order within core."""
         names = [c["name"] for c in get_commands_metadata()]
-        assert names.index("generate-spec") < names.index("spec-to-design") < names.index("spec-to-plan")
+        assert names.index("generate-spec") < names.index("spec-to-design") < names.index("design-to-plan")
         assert names.index("review-spec") < names.index("review-design") < names.index("review-plan")
 
     def test_enhanced_commands_count(self) -> None:

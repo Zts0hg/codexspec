@@ -121,7 +121,7 @@ CodexSpec se construye sobre la convicción de que **el desarrollo efectivo asis
 CodexSpec estructura el desarrollo en **puntos de control revisables**:
 
 ```
-Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+Idea → /specify → requirements.md → /generate-spec → spec.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               Revisar spec              Revisar plan                 Revisar tareas
 ```
@@ -162,7 +162,7 @@ claude
 > /codexspec:constitution Crear principios enfocados en calidad de código y testing
 > /codexspec:specify Quiero construir una aplicación de tareas
 > /codexspec:generate-spec
-> /codexspec:spec-to-plan
+> /codexspec:design-to-plan
 > /codexspec:plan-to-tasks
 > /codexspec:implement-tasks
 ```
@@ -310,7 +310,7 @@ El comando config te guiará a través de:
 CodexSpec descompone el desarrollo en **puntos de control revisables**:
 
 ```
-Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+Idea → /specify → requirements.md → /generate-spec → spec.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               Revisar spec              Revisar plan                 Revisar tareas
 ```
@@ -322,7 +322,7 @@ Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-t
 | 1. Principios del proyecto      | `/codexspec:constitution`    | `constitution.md`            | ✅                  |
 | 2. Clarificación de requisitos  | `/codexspec:specify`         | `requirements.md`            | ✅                  |
 | 3. Generar spec                 | `/codexspec:generate-spec`   | `spec.md` + auto-revisión    | ✅                  |
-| 4. Planificación técnica        | `/codexspec:spec-to-plan`    | `plan.md` + auto-revisión    | ✅                  |
+| 4. Planificación técnica        | `/codexspec:design-to-plan`    | `plan.md` + auto-revisión    | ✅                  |
 | 5. Desglose de tareas           | `/codexspec:plan-to-tasks`   | `tasks.md` + auto-revisión   | ✅                  |
 | 6. Análisis entre artefactos    | `/codexspec:analyze`         | Reporte de análisis          | ✅                  |
 | 7. Implementación               | `/codexspec:implement-tasks` | Código                       | -                   |
@@ -424,7 +424,8 @@ Este comando:
 ### 5. Crear el plan técnico
 
 ```
-/codexspec:spec-to-plan Usar Python con FastAPI para el backend, PostgreSQL para la base de datos y React para el frontend
+/codexspec:spec-to-design Usar Python con FastAPI para el backend, PostgreSQL para la base de datos y React para el frontend
+/codexspec:design-to-plan
 ```
 
 Usa únicamente las secciones de planificación relevantes, registra enlaces `Covers` hacia los requisitos de la especificación y verifica los principios de proyecto aplicables.
@@ -525,7 +526,7 @@ La implementación sigue un **flujo de trabajo TDD condicional**:
 | `/codexspec:blueprint`       | Debatir y mantener requisitos confirmados en el blueprint compartido |
 | `/codexspec:generate-spec`   | Generar el documento `spec.md` ★ Auto-revisión                    |
 | `/codexspec:spec-to-design`  | Generar `design.md` (arquitectura/componentes/decisiones) ★ Auto-revisión |
-| `/codexspec:spec-to-plan`    | Convertir la spec en un plan técnico ★ Auto-revisión              |
+| `/codexspec:design-to-plan`    | Convertir la spec en un plan técnico ★ Auto-revisión              |
 | `/codexspec:plan-to-tasks`   | Desglosar el plan en tareas trazables y verificables ★ Auto-revisión |
 | `/codexspec:implement-tasks` | Ejecutar las tareas (TDD condicional)                             |
 | `/codexspec:auto-dev`        | Desarrollar en orden todos los requisitos pendientes del blueprint |

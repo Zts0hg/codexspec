@@ -77,7 +77,8 @@ Se trata de una **revisión basada en evidencia**: todo defecto reportado cita e
 ## 6. Crear el plan técnico
 
 ```
-/codexspec:spec-to-plan Usar Python FastAPI para el backend
+/codexspec:spec-to-design Usar Python FastAPI para el backend
+/codexspec:design-to-plan
 ```
 
 El plan registra enlaces `Covers` hacia los requisitos de la especificación y verifica los principios de constitución aplicables.
@@ -110,7 +111,7 @@ Quick respeta las mismas salvaguardas que el flujo completo:
 
 - Crea un espacio de trabajo de funcionalidad y un `requirements.md` usando la misma convención de marca de tiempo que `/codexspec:specify`.
 - Presenta un resumen conciso de requisitos confirmados (`NEED-*`, `CON-*`/`DEC-*` relevantes, `OUT-*`, `OPEN-*` sin resolver) y espera tu confirmación explícita: el **Confirmation Gate** sigue vigente.
-- Luego encadena `/codexspec:generate-spec` → `/codexspec:spec-to-plan` → `/codexspec:plan-to-tasks` → `/codexspec:implement-tasks` sobre ese directorio de funcionalidad, donde cada comando de generación gestiona su propio bucle automático de revisión.
+- Luego encadena `/codexspec:generate-spec` → `/codexspec:design-to-plan` → `/codexspec:plan-to-tasks` → `/codexspec:implement-tasks` sobre ese directorio de funcionalidad, donde cada comando de generación gestiona su propio bucle automático de revisión.
 
 Si el cambio resulta amplio o tiene múltiples resultados independientes, Quick se detiene y recomienda el flujo estándar.
 

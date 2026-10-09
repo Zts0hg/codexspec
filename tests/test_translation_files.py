@@ -22,7 +22,7 @@ REQUIRED_ROOT_KEYS = [
     "analyze",
     "checklist",
     "generate-spec",
-    "spec-to-plan",
+    "design-to-plan",
     "plan-to-tasks",
     "review-spec",
     "review-plan",

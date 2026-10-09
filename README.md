@@ -124,7 +124,7 @@ CodexSpec structures development into **reviewable checkpoints**:
 Idea → /specify           → requirements.md
      → /generate-spec      → spec.md      → review-spec
      → /spec-to-design     → design.md    → review-design
-     → /spec-to-plan       → plan.md      → review-plan
+     → /design-to-plan       → plan.md      → review-plan
      → /plan-to-tasks      → tasks.md     → review-tasks
      → /implement-tasks    → code
 ```
@@ -167,7 +167,7 @@ claude
 > /codexspec:specify I want to build a todo application
 > /codexspec:generate-spec
 > /codexspec:spec-to-design
-> /codexspec:spec-to-plan
+> /codexspec:design-to-plan
 > /codexspec:plan-to-tasks
 > /codexspec:implement-tasks
 ```
@@ -318,7 +318,7 @@ CodexSpec breaks development into **reviewable checkpoints**:
 Idea → /specify           → requirements.md
      → /generate-spec      → spec.md      → review-spec
      → /spec-to-design     → design.md    → review-design
-     → /spec-to-plan       → plan.md      → review-plan
+     → /design-to-plan       → plan.md      → review-plan
      → /plan-to-tasks      → tasks.md     → review-tasks
      → /implement-tasks    → code
 ```
@@ -331,7 +331,7 @@ Idea → /specify           → requirements.md
 | 2. Requirement Clarification | `/codexspec:specify`         | `requirements.md`           | ✅           |
 | 3. Generate Spec             | `/codexspec:generate-spec`   | `spec.md` + auto-review     | ✅           |
 | 4. System Design             | `/codexspec:spec-to-design`  | `design.md` + auto-review   | ✅           |
-| 5. Technical Planning        | `/codexspec:spec-to-plan`    | `plan.md` + auto-review     | ✅           |
+| 5. Technical Planning        | `/codexspec:design-to-plan`    | `plan.md` + auto-review     | ✅           |
 | 6. Task Breakdown            | `/codexspec:plan-to-tasks`   | `tasks.md` + auto-review    | ✅           |
 | 7. Cross-Artifact Analysis   | `/codexspec:analyze`         | Analysis report             | ✅           |
 | 8. Implementation            | `/codexspec:implement-tasks` | Code                        | -           |
@@ -433,7 +433,8 @@ This command:
 ### 5. Create Technical Plan
 
 ```
-/codexspec:spec-to-plan Use Python FastAPI for backend, PostgreSQL for database, React for frontend
+/codexspec:spec-to-design Use Python FastAPI for backend, PostgreSQL for database, React for frontend
+/codexspec:design-to-plan
 ```
 
 Uses only relevant planning sections, records `Covers` links to specification requirements, and verifies applicable project principles.
@@ -535,7 +536,7 @@ Implementation follows **conditional TDD workflow**:
 | `/codexspec:blueprint`       | Discuss and maintain confirmed requirements in the shared blueprint |
 | `/codexspec:generate-spec`   | Generate `spec.md` document ★ Auto-review                         |
 | `/codexspec:spec-to-design`  | Produce `design.md` (architecture/components/decisions) ★ Auto-review |
-| `/codexspec:spec-to-plan`    | Convert design to implementation plan ★ Auto-review              |
+| `/codexspec:design-to-plan`    | Convert design to implementation plan ★ Auto-review              |
 | `/codexspec:plan-to-tasks`   | Break down plan into traceable, verifiable tasks ★ Auto-review    |
 | `/codexspec:implement-tasks` | Execute tasks (conditional TDD)                                   |
 | `/codexspec:auto-dev`        | Autonomously develop all pending blueprint requirements in order  |

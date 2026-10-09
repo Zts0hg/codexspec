@@ -121,7 +121,7 @@ CodexSpec は、**効果的な AI 支援開発にはすべての段階で人間�
 CodexSpec は開発を**レビュー可能なチェックポイント**に分割します。
 
 ```
-アイデア → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+アイデア → /specify → requirements.md → /generate-spec → spec.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                   │                        │                          │
                                             スペックをレビュー         計画をレビュー            タスクをレビュー
 ```
@@ -162,7 +162,7 @@ claude
 > /codexspec:constitution コード品質とテストに焦点を当てた原則を作成
 > /codexspec:specify タスク管理アプリを構築したい
 > /codexspec:generate-spec
-> /codexspec:spec-to-plan
+> /codexspec:design-to-plan
 > /codexspec:plan-to-tasks
 > /codexspec:implement-tasks
 ```
@@ -310,7 +310,7 @@ config コマンドが次の手順を案内します。
 CodexSpec は開発を**レビュー可能なチェックポイント**に分解します。
 
 ```
-アイデア → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+アイデア → /specify → requirements.md → /generate-spec → spec.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                   │                        │                          │
                                             スペックをレビュー         計画をレビュー            タスクをレビュー
 ```
@@ -322,7 +322,7 @@ CodexSpec は開発を**レビュー可能なチェックポイント**に分解
 | 1. プロジェクト原則     | `/codexspec:constitution`    | `constitution.md`             | ✅         |
 | 2. 要件の明確化         | `/codexspec:specify`         | `requirements.md`             | ✅         |
 | 3. スペックの生成       | `/codexspec:generate-spec`   | `spec.md` + 自動レビュー      | ✅         |
-| 4. 技術計画             | `/codexspec:spec-to-plan`    | `plan.md` + 自動レビュー      | ✅         |
+| 4. 技術計画             | `/codexspec:design-to-plan`    | `plan.md` + 自動レビュー      | ✅         |
 | 5. タスク分解           | `/codexspec:plan-to-tasks`   | `tasks.md` + 自動レビュー     | ✅         |
 | 6. クロスアーティファクト分析 | `/codexspec:analyze`         | 分析レポート                  | ✅         |
 | 7. 実装                 | `/codexspec:implement-tasks` | コード                        | -          |
@@ -424,7 +424,8 @@ claude
 ### 5. 技術計画を作成
 
 ```
-/codexspec:spec-to-plan バックエンドに Python FastAPI、データベースに PostgreSQL、フロントエンドに React を使用
+/codexspec:spec-to-design バックエンドに Python FastAPI、データベースに PostgreSQL、フロントエンドに React を使用
+/codexspec:design-to-plan
 ```
 
 関連する計画セクションのみを使用し、スペックの要件に対する `Covers` リンクを記録し、該当するプロジェクト原則を検証します。
@@ -525,7 +526,7 @@ claude
 | `/codexspec:blueprint`       | 共有 blueprint の確認済み要件を議論・管理                         |
 | `/codexspec:generate-spec`   | `spec.md` ドキュメントを生成 ★ 自動レビュー                       |
 | `/codexspec:spec-to-design`  | `design.md` を生成（アーキテクチャ/コンポーネント/決定）★ 自動レビュー |
-| `/codexspec:spec-to-plan`    | スペックを技術計画に変換 ★ 自動レビュー                           |
+| `/codexspec:design-to-plan`    | スペックを技術計画に変換 ★ 自動レビュー                           |
 | `/codexspec:plan-to-tasks`   | 計画をトレーサブルで検証可能なタスクに分解 ★ 自動レビュー         |
 | `/codexspec:implement-tasks` | タスクを実行（条件付き TDD）                                      |
 | `/codexspec:auto-dev`        | blueprint の保留中要件を順番に自律開発                            |

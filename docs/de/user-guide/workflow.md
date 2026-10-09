@@ -14,7 +14,7 @@ SDD:           Idee → Bestätigte Anforderungen → Spec → Plan → Aufgaben
 In CodexSpec wird diese Kette zu einer Folge von Slash-Befehls-Checkpoints, von denen jeder ein persistentes Artefakt mit einem Review-Marker erzeugt:
 
 ```text
-Idee → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+Idee → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               Spec reviewen              Plan reviewen               Aufgaben reviewen
 ```
@@ -28,7 +28,7 @@ Idee → /specify → requirements.md → /generate-spec → spec.md → /spec-t
 | 1. Projektprinzipien             | `/codexspec:constitution`   | `constitution.md`             | Ja               |
 | 2. Anforderungs-Klärung          | `/codexspec:specify`        | `requirements.md`             | Ja               |
 | 3. Spec erzeugen                 | `/codexspec:generate-spec`  | `spec.md` + Auto-Review       | Ja               |
-| 4. Technische Planung            | `/codexspec:spec-to-plan`   | `plan.md` + Auto-Review       | Ja               |
+| 4. Technische Planung            | `/codexspec:design-to-plan`   | `plan.md` + Auto-Review       | Ja               |
 | 5. Aufgaben-Aufteilung           | `/codexspec:plan-to-tasks`  | `tasks.md` + Auto-Review      | Ja               |
 | 6. Artefaktübergreifende Analyse | `/codexspec:analyze`        | Analyse-Bericht               | Ja               |
 | 7. Implementierung               | `/codexspec:implement-tasks`| Code                          | –                |

@@ -16,7 +16,7 @@ CodexSpec의 슬래시 명령어 레퍼런스입니다. 이 명령어들은 Clau
 | `/codexspec:specify` | 대화를 통해 요구사항을 명확화·확정하고 `requirements.md`에 저장 |
 | `/codexspec:blueprint` | 공유 blueprint의 확정된 요구사항을 논의하고 관리 |
 | `/codexspec:generate-spec` | 명확화된 요구사항으로부터 `spec.md` 생성 (★ 자동 리뷰) |
-| `/codexspec:spec-to-plan` | 명세서를 기술 구현 계획으로 변환 (★ 자동 리뷰) |
+| `/codexspec:design-to-plan` | 확정된 설계를 추적 가능한 구현 계획으로 변환 ★ |
 | `/codexspec:plan-to-tasks` | 계획을 추적 가능하고 검증 가능한 태스크로 분해 (★ 자동 리뷰) |
 | `/codexspec:implement-tasks` | 조건부 TDD 워크플로우로 태스크 실행 |
 | `/codexspec:auto-dev` | blueprint의 대기 요구사항을 문서 순서대로 자율 개발 |
@@ -295,7 +295,7 @@ AI:  Generating specification...
 
      Next steps:
      - Review the spec with /codexspec:review-spec
-     - Or proceed to /codexspec:spec-to-plan
+     - Or proceed to /codexspec:design-to-plan
 ```
 
 **Tips:**
@@ -377,80 +377,17 @@ AI:  ✓ Updated NFR-001: Response time < 500ms reads, < 1s writes
 
 ---
 
-### `/codexspec:spec-to-plan`
+### `/codexspec:design-to-plan`
 
-기능 명세서를 기술 구현 계획으로 변환합니다. 이 단계에서 기능을 **어떻게** 구축할지 정의합니다.
-
-**Syntax:**
-
-```
-/codexspec:spec-to-plan [path_to_spec.md]
-```
-
-**Arguments:**
-
-| Argument | Required | Description |
-|----------|----------|-------------|
-| `path_to_spec.md` | No | spec 파일 경로 (제공하지 않으면 `.codexspec/specs/`에서 자동 감지) |
-
-**What it does:**
-
-- 명세서와 헌법을 읽음
-- 확정된 요구사항과 리포지토리 제약에 필요한 기술적 디테일만 포함
-- 적용 가능한 헌법 규칙을 점검하되, 선택적 관례를 기능 요구사항으로 취급하지는 않음
-- 명세서 요구사항으로 향하는 `Covers` 링크 추가
-- 기술 결정과 그 근거를 문서화
-- 결정이 확정된 의도를 변경하는 경우 정지
-
-**What it creates:**
-
-```
-.codexspec/
-└── specs/
-    └── 2026-0613-1200ab-task-management/
-        └── plan.md    # Technical implementation plan
-```
-
-**Example:**
+확인된 설계를 구현 계획으로 변환합니다. 먼저 `spec-to-design`을 실행해 아키텍처, 구성 요소, 인터페이스와 기술 선택을 정의합니다.
 
 ```text
-You: /codexspec:spec-to-plan Use Python FastAPI for backend, React for frontend, PostgreSQL for database
-
-AI:  Generating technical plan...
-
-     Constitutionality Review:
-     ✓ Clean Architecture: Modular design with clear boundaries
-     ✓ TDD: Test-first approach enforced in phases
-     ✓ Code Quality: Linting and type hints required
-
-     Architecture:
-     - Backend: FastAPI with layered architecture
-     - Frontend: React with component structure
-     - Database: PostgreSQL with migration strategy
-
-     Module Dependency Graph:
-     ┌─────────────┐
-     │    API      │
-     └──────┬──────┘
-            │
-     ┌──────▼──────┐
-     │  Services   │
-     └──────┬──────┘
-            │
-     ┌──────▼──────┐
-     │    Data     │
-     └─────────────┘
-
-     ✓ Created plan.md
-     5 Implementation Phases defined
+/codexspec:design-to-plan [design.md | spec.md | feature-directory]
 ```
 
-**Tips:**
+`requirements.md`, `spec.md`, `design.md`와 프로젝트 헌법을 읽고 구현 단계, 순서와 검증 방법을 계획합니다. 시스템을 다시 설계하지 않고 기존 설계를 참조합니다. 각 계획 구성 요소에는 `Covers: REQ-xxx; Design: <design component>`를 명시합니다.
 
-- spec이 검토되어 안정된 뒤에 실행하세요
-- 적용 가능한 헌법 규칙은 필수이지만, 무관한 템플릿 관례는 그렇지 않습니다
-- 프로젝트 유형에 맞춰 관련 섹션을 포함하세요
-- 태스크로 넘어가기 전에 계획을 검토하세요
+`plan.md`를 생성하고 `review-plan`을 실행합니다. `auto_next`가 활성화되어 있으면 리뷰 통과 후 `plan-to-tasks`로 진행합니다. 확인된 의도를 바꾸는 결정에는 사용자 확인이 필요합니다. 명시적 경로를 우선하고 그다음 현재 기능 브랜치를 사용하며, 기능이 모호하면 선택을 요청합니다. `design.md`가 없는 기존 기능은 계속 `spec.md`를 바탕으로 계획할 수 있습니다.
 
 ---
 
@@ -678,7 +615,7 @@ AI:  Overall Status: NEEDS_REVISION
 
 **Tips:**
 
-- `/codexspec:spec-to-plan` 이전에 실행하세요
+- `/codexspec:design-to-plan` 이전에 실행하세요
 - `BLOCKED`와 `NEEDS_REVISION`은 진행할 준비가 안 된 상태로 취급하세요
 - 권고를 요구사항으로 끌어올리지 마세요
 - 수정한 뒤에 다시 실행하세요
@@ -1346,7 +1283,7 @@ AI:  # React Code Review Report
 - `/codexspec:specify`와 동일한 타임스탬프 관례로 기능 워크스페이스와 `requirements.md`를 생성
 - 구현을 materially 변경하는 모호성만 해결하고, 간결한 확정 요약을 제시 (`NEED-*`, 관련 `CON-*`/`DEC-*`, `OUT-*`, 미해결 `OPEN-*`)
 - Confirmation Gate에서 멈춤: 요약을 확정하기 전에는 아무것도 생성하지 않음
-- 새 기능 디렉토리에 대해 생성 명령어들을 연쇄 실행: `/codexspec:generate-spec`, `/codexspec:spec-to-plan`, `/codexspec:plan-to-tasks`, `/codexspec:implement-tasks`
+- 새 기능 디렉토리에 대해 생성 명령어들을 연쇄 실행: `/codexspec:generate-spec`, `/codexspec:design-to-plan`, `/codexspec:plan-to-tasks`, `/codexspec:implement-tasks`
 - 각 생성 명령어의 자체 자동 리뷰 루프에 위임. 리뷰가 새 제품 또는 아키텍처 결정을 필요로 하면 멈추고 사용자에게 묻습니다
 - 기능 디렉토리, 산출물 경로, 리뷰 결과, 구현 검증, 미해결 권고를 분리해서 보고
 
@@ -1376,7 +1313,7 @@ AI:  Scope check: 1 component, 1 form field, no new dependencies. Quick is appro
 
 You: y
 
-AI:  Running generate-spec → spec-to-plan → plan-to-tasks → implement-tasks ...
+AI:  Running generate-spec → design-to-plan → plan-to-tasks → implement-tasks ...
 
      ✓ Feature dir: .codexspec/specs/2026-0713-0915ab-remember-me/
      ✓ All reviews PASS_WITH_WARNINGS or higher
@@ -1527,7 +1464,7 @@ AI:  ✓ Updated language.output: "zh-CN"
 ## Workflow Overview
 
 ```text
-Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               Review spec               Review plan                  Review tasks
 ```
@@ -1573,7 +1510,7 @@ Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-t
 
 **Solutions:**
 
-- 먼저 `/codexspec:spec-to-plan`을 실행했는지 확인하세요
+- 먼저 `/codexspec:design-to-plan`을 실행했는지 확인하세요
 - 그 다음 `/codexspec:plan-to-tasks`를 실행하여 tasks.md를 생성하세요
 
 ### "GitHub CLI not authenticated"

@@ -114,7 +114,7 @@ Then execute in order as needed:
 
 1. `/codexspec:generate-spec <feature-dir>`
 2. `/codexspec:spec-to-design <feature-dir>`
-3. `/codexspec:spec-to-plan <feature-dir>`
+3. `/codexspec:design-to-plan <feature-dir>`
 4. `/codexspec:plan-to-tasks <feature-dir>`
 5. `/codexspec:implement-tasks <feature-dir>`
 

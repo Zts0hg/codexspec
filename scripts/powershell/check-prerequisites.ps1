@@ -95,7 +95,7 @@ if (-not (Test-Path $paths.FEATURE_DIR -PathType Container)) {
 
 if (-not (Test-Path $paths.IMPL_PLAN -PathType Leaf)) {
     Write-Output "ERROR: plan.md not found in $($paths.FEATURE_DIR)"
-    Write-Output "Run /codexspec:spec-to-plan first to create the implementation plan."
+    Write-Output "Run /codexspec:design-to-plan first to create the implementation plan."
     exit 1
 }
 

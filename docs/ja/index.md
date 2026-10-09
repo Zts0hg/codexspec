@@ -73,7 +73,7 @@ Idea → Confirmed Requirements → Spec → Plan → Tasks → Code
 各成果物は専用のコマンドで生成され、次の段階に進む前に検証されます。
 
 ```
-Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               Review spec               Review plan                  Review tasks
 ```

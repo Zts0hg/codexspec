@@ -253,16 +253,16 @@ git:
 
 **Feature**: When `workflow.auto_next` is enabled, the SDD pipeline advances to the next command automatically once the current stage passes, instead of requiring manual triggering between stages.
 
-**Affected Commands**: `/codexspec:specify`, `/codexspec:generate-spec`, `/codexspec:spec-to-design`, `/codexspec:spec-to-plan`, `/codexspec:plan-to-tasks` each gain an `## Auto-Next Chain Advance` section. `/codexspec:implement-tasks` is the terminal stage (nothing auto-fires after it).
+**Affected Commands**: `/codexspec:specify`, `/codexspec:generate-spec`, `/codexspec:spec-to-design`, `/codexspec:design-to-plan`, `/codexspec:plan-to-tasks` each gain an `## Auto-Next Chain Advance` section. `/codexspec:implement-tasks` is the terminal stage (nothing auto-fires after it).
 
-**Chain**: `specify → generate-spec → spec-to-design → spec-to-plan → plan-to-tasks → implement-tasks`.
+**Chain**: `specify → generate-spec → spec-to-design → design-to-plan → plan-to-tasks → implement-tasks`.
 
 **Pass gate**:
 
-- `generate-spec` / `spec-to-design` / `spec-to-plan` / `plan-to-tasks`: the command's built-in review loop Overall Status is `PASS` or `PASS_WITH_WARNINGS`. (`NEEDS_REVISION` / `BLOCKED` stops the chain and returns control to the user.)
+- `generate-spec` / `spec-to-design` / `design-to-plan` / `plan-to-tasks`: the command's built-in review loop Overall Status is `PASS` or `PASS_WITH_WARNINGS`. (`NEEDS_REVISION` / `BLOCKED` stops the chain and returns control to the user.)
 - `specify`: has no review loop; the gate is the user's explicit confirmation that requirements discovery is complete (the **final** stage summary, not each intermediate one).
 
-Before each advance the agent emits one notice line (e.g. `auto_next: review passed → invoking /codexspec:spec-to-plan`). For `plan-to-tasks`, the existing `analyze` auto-invoke runs first: it auto-remediates deterministic inconsistencies (conforming spec/plan/tasks to `requirements.md`, which it never modifies) and remains non-blocking (does not block `implement-tasks`); the jump into `implement-tasks` proceeds with no confirmation prompt.
+Before each advance the agent emits one notice line (e.g. `auto_next: review passed → invoking /codexspec:design-to-plan`). For `plan-to-tasks`, the existing `analyze` auto-invoke runs first: it auto-remediates deterministic inconsistencies (conforming spec/plan/tasks to `requirements.md`, which it never modifies) and remains non-blocking (does not block `implement-tasks`); the jump into `implement-tasks` proceeds with no confirmation prompt.
 
 **Configuration** (`.codexspec/config.yml`):
 
@@ -275,15 +275,15 @@ workflow:
 
 ### First-Class Design Stage: spec-to-design
 
-**Feature**: A dedicated **design** stage inserted between `spec` and `plan`, so the authoritative chain is `requirements → spec → design → plan → tasks`. It closes the "front-half design layer" gap where `spec-to-plan` used to conflate *what the system is* (architecture, components, interfaces, design decisions) with *how to build it* (phases, ordering, verification).
+**Feature**: A dedicated **design** stage inserted between `spec` and `plan`, so the authoritative chain is `requirements → spec → design → plan → tasks`. It closes the "front-half design layer" gap where `design-to-plan` used to conflate *what the system is* (architecture, components, interfaces, design decisions) with *how to build it* (phases, ordering, verification).
 
-- **`/codexspec:spec-to-design`** (new) reads `requirements.md` + `spec.md`, produces `design.md` as a first-class traceable artifact (every component/interface/data change/decision carries `Covers: REQ-xxx`), and embeds its own review loop (`review-design`) + `auto_next` (→ `spec-to-plan`). It acts as a **constrained system designer** and stops rather than change confirmed product intent.
+- **`/codexspec:spec-to-design`** (new) reads `requirements.md` + `spec.md`, produces `design.md` as a first-class traceable artifact (every component/interface/data change/decision carries `Covers: REQ-xxx`), and embeds its own review loop (`review-design`) + `auto_next` (→ `design-to-plan`). It acts as a **constrained system designer** and stops rather than change confirmed product intent.
 - **`/codexspec:review-design`** (new) is symmetric with `review-spec`/`review-plan`/`review-tasks` (same Severity/Status/**Compatibility Score** formula), saving `review-design.md`.
 - **`design.md`** uses a single `templates/docs/design-template.md` — a fixed core (Architecture & Components, ADR-lite Key Design Decisions, Requirements Coverage) plus **on-demand** optional sections (data models, API/interface contracts, sequence/data flow, cross-cutting design, risks). Output scales with complexity; no simple/detailed two-tier split.
-- **`spec-to-plan` narrowed** to an implementation planner that consumes `design.md`; plan components carry `Covers: REQ-xxx; Design: <design component>` (ultimate REQ anchor + immediate upstream pointer, extending the existing `tasks` notation). The plan templates were slimmed — the design-only sections (Architecture / Component Structure / Data Models / API Contracts / ADR-style Decisions) moved to `design.md`.
+- **`design-to-plan` narrowed** to an implementation planner that consumes `design.md`; plan components carry `Covers: REQ-xxx; Design: <design component>` (ultimate REQ anchor + immediate upstream pointer, extending the existing `tasks` notation). The plan templates were slimmed — the design-only sections (Architecture / Component Structure / Data Models / API Contracts / ADR-style Decisions) moved to `design.md`.
 - **Authority order** across the affected commands is `requirements > spec > design > plan > tasks` (design ranked below the constitution/verified-facts authority, above the plan). `generate-spec` auto_next now targets `spec-to-design`; `plan-to-tasks` / `implement-tasks` read `design.md`; `analyze` deepened its chain to `confirmed → REQ → design → plan → task`; `review-plan` / `review-tasks` gained `design` in their authority order. `review-code` and both constitutions are untouched.
 
-**Implementation**: Edit `templates/commands/spec-to-design.md` / `review-design.md`, `templates/docs/design-template.md`, and the design-aware edits to `generate-spec` / `spec-to-plan` / `plan-to-tasks` / `analyze` / `implement-tasks` / `review-plan` / `review-tasks` and the slimmed `plan-template-{simple,detailed}.md`; register both commands in `installer.py` (core). The `.claude/commands/codexspec/` and `.agents/skills/codexspec-*/` forms are regenerated from templates (do not hand-edit the derived copies).
+**Implementation**: Edit `templates/commands/spec-to-design.md` / `review-design.md`, `templates/docs/design-template.md`, and the design-aware edits to `generate-spec` / `design-to-plan` / `plan-to-tasks` / `analyze` / `implement-tasks` / `review-plan` / `review-tasks` and the slimmed `plan-template-{simple,detailed}.md`; register both commands in `installer.py` (core). The `.claude/commands/codexspec/` and `.agents/skills/codexspec-*/` forms are regenerated from templates (do not hand-edit the derived copies).
 
 ### Self-Evolution: Distill & Evolve
 
@@ -453,7 +453,7 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 | `/codexspec:blueprint`       | Discuss and maintain confirmed requirements in the shared product blueprint |
 | `/codexspec:generate-spec`   | Generate detailed spec from requirements |
 | `/codexspec:spec-to-design`  | Produce design.md (architecture/components/ADR-lite) from spec |
-| `/codexspec:spec-to-plan`    | Convert design to implementation plan    |
+| `/codexspec:design-to-plan`    | Convert design to implementation plan    |
 | `/codexspec:plan-to-tasks`   | Break down plan into tasks               |
 | `/codexspec:review-spec`     | Review specification                     |
 | `/codexspec:review-design`   | Review design                            |
@@ -517,7 +517,7 @@ Both commands read the project glossary at `docs/i18n/glossary.yml` (canonical, 
 
 ### Naming Conventions
 
-- **CLI Commands**: lowercase with hyphens (e.g., `spec-to-plan`)
+- **CLI Commands**: lowercase with hyphens (e.g., `design-to-plan`)
 - **Python Functions**: snake_case (e.g., `get_templates_dir`)
 - **Python Classes**: PascalCase (e.g., `Console`)
 - **Constants**: UPPER_SNAKE_CASE (e.g., `__version__`)
@@ -573,7 +573,7 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec:blueprint`       | ✅ Template | Template complete — discuss/maintain confirmed requirements in the shared blueprint via the strict helper protocol |
 | `/codexspec:generate-spec`   | ✅ Template | Template complete                                                             |
 | `/codexspec:spec-to-design`  | ✅ Template | Template complete — first-class design stage between spec and plan            |
-| `/codexspec:spec-to-plan`    | ✅ Template | Template complete — narrowed to implementation planning, consumes design.md   |
+| `/codexspec:design-to-plan`    | ✅ Template | Template complete — narrowed to implementation planning, consumes design.md   |
 | `/codexspec:plan-to-tasks`   | ✅ Template | Template complete                                                             |
 | `/codexspec:review-spec`     | ✅ Template | Template complete                                                             |
 | `/codexspec:review-design`   | ✅ Template | Template complete — reviews design.md, symmetric with the other review gates  |

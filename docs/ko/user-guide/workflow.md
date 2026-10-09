@@ -14,7 +14,7 @@ SDD:          아이디어 → 확정된 요구사항 → 명세 → 계획 → 
 CodexSpec에서 이 사슬은 슬래시 명령어 체크포인트의 연속이 되며, 각 체크포인트는 리뷰 마커가 붙은 영속적인 산출물을 만들어냅니다:
 
 ```text
-아이디어 → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+아이디어 → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                        │                        │                           │
                                                   명세 리뷰                계획 리뷰                  태스크 리뷰
 ```
@@ -28,7 +28,7 @@ CodexSpec에서 이 사슬은 슬래시 명령어 체크포인트의 연속이 �
 | 1. 프로젝트 원칙              | `/codexspec:constitution`    | `constitution.md`           | 예        |
 | 2. 요구사항 명확화           | `/codexspec:specify`         | `requirements.md`           | 예        |
 | 3. 명세 생성                 | `/codexspec:generate-spec`   | `spec.md` + 자동 리뷰       | 예        |
-| 4. 기술 계획 수립            | `/codexspec:spec-to-plan`    | `plan.md` + 자동 리뷰       | 예        |
+| 4. 기술 계획 수립            | `/codexspec:design-to-plan`    | `plan.md` + 자동 리뷰       | 예        |
 | 5. 태스크 분해               | `/codexspec:plan-to-tasks`   | `tasks.md` + 자동 리뷰      | 예        |
 | 6. 교차 산출물 분석          | `/codexspec:analyze`         | 분석 보고서                  | 예        |
 | 7. 구현                       | `/codexspec:implement-tasks` | 코드                         | -         |

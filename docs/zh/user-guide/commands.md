@@ -16,7 +16,7 @@
 | `/codexspec:specify` | 澄清、确认需求并持久化到 `requirements.md` |
 | `/codexspec:blueprint` | 讨论并维护共享 blueprint 中已确认的需求 |
 | `/codexspec:generate-spec` | 从已澄清的需求生成 `spec.md` 文档（★ 自动评审） |
-| `/codexspec:spec-to-plan` | 将规格转换为技术实现计划（★ 自动评审） |
+| `/codexspec:design-to-plan` | 将已确认的设计转换为可追溯的实现计划 ★ |
 | `/codexspec:plan-to-tasks` | 将计划拆解为可追溯、可验证的任务（★ 自动评审） |
 | `/codexspec:implement-tasks` | 使用条件 TDD 工作流执行任务 |
 | `/codexspec:auto-dev` | 按文档顺序自主开发 blueprint 中所有待实现需求 |
@@ -295,7 +295,7 @@ AI:  正在生成规格...
 
      下一步：
      - 用 /codexspec:review-spec 评审规格
-     - 或继续 /codexspec:spec-to-plan
+     - 或继续 /codexspec:design-to-plan
 ```
 
 **提示：**
@@ -377,80 +377,17 @@ AI:  ✓ 已更新 NFR-001：响应时间 读取 < 500ms，写入 < 1s
 
 ---
 
-### `/codexspec:spec-to-plan`
+### `/codexspec:design-to-plan`
 
-把功能规格转换为技术实现计划。这一步决定功能**如何**构建。
-
-**语法：**
-
-```
-/codexspec:spec-to-plan [path_to_spec.md]
-```
-
-**参数：**
-
-| 参数 | 必需 | 描述 |
-|----------|----------|-------------|
-| `path_to_spec.md` | 否 | 规格文件路径（未提供时从 `.codexspec/specs/` 自动检测） |
-
-**功能：**
-
-- 读取规格与宪法
-- 仅纳入已确认需求与仓库约束真正需要的技术细节
-- 检查适用的宪法规则，但不把可选惯例当成功能需求
-- 通过 `Covers` 关联回规格需求
-- 记录技术决策及其理由
-- 当某个决策会改动已确认意图时停下
-
-**生成的文件：**
-
-```
-.codexspec/
-└── specs/
-    └── 2026-0613-1200ab-task-management/
-        └── plan.md    # 技术实现计划
-```
-
-**示例：**
+将已确认的设计转换为实现计划。先运行 `spec-to-design`，确定架构、组件、接口和技术选型。
 
 ```text
-你: /codexspec:spec-to-plan 后端用 Python FastAPI，前端用 React，数据库用 PostgreSQL
-
-AI:  正在生成技术计划...
-
-     合宪性评审：
-     ✓ 整洁架构：边界清晰的模块化设计
-     ✓ TDD：在相应阶段强制测试先行
-     ✓ 代码质量：要求 lint 与类型注解
-
-     架构：
-     - 后端：FastAPI 分层架构
-     - 前端：React 组件结构
-     - 数据库：PostgreSQL 迁移策略
-
-     模块依赖图：
-     ┌─────────────┐
-     │    API      │
-     └──────┬──────┘
-            │
-     ┌──────▼──────┐
-     │  Services   │
-     └──────┬──────┘
-            │
-     ┌──────▼──────┐
-     │    Data     │
-     └─────────────┘
-
-     ✓ 已创建 plan.md
-     定义了 5 个实现阶段
+/codexspec:design-to-plan [design.md | spec.md | feature-directory]
 ```
 
-**提示：**
+读取 `requirements.md`、`spec.md`、`design.md` 和项目宪法，规划实现阶段、顺序与验证方式；引用设计，不重新设计系统。每个计划组件标注 `Covers: REQ-xxx; Design: <design component>`。
 
-- 在规格评审通过并稳定后运行
-- 适用的宪法规则必须遵守；无关的模板惯例不构成要求
-- 按项目类型纳入相关章节
-- 进入任务之前先评审计划
+生成 `plan.md` 并运行 `review-plan`。启用 `auto_next` 时，评审通过后进入 `plan-to-tasks`。改变已确认意图的决策需要用户确认。优先使用显式路径，其次匹配当前功能分支；无法唯一确定功能时要求选择。缺少 `design.md` 的旧功能仍保留从 `spec.md` 规划的原有行为。
 
 ---
 
@@ -677,7 +614,7 @@ AI:  Overall Status: NEEDS_REVISION
 
 **提示：**
 
-- 在 `/codexspec:spec-to-plan` 之前运行
+- 在 `/codexspec:design-to-plan` 之前运行
 - 把 `BLOCKED` 与 `NEEDS_REVISION` 视为尚未就绪
 - 不要把建议项提升为需求
 - 修复后重新运行
@@ -1345,7 +1282,7 @@ AI:  # React Code Review Report
 - 用与 `/codexspec:specify` 相同的时间戳约定创建功能工作区与 `requirements.md`
 - 只解决会实质改变实现的歧义；呈现精简的已确认摘要（`NEED-*`、相关的 `CON-*`/`DEC-*`、`OUT-*`、未解决的 `OPEN-*`）
 - 停在确认门：在你确认摘要之前不会生成任何内容
-- 在新建的功能目录上链式调用生成命令：`/codexspec:generate-spec`、`/codexspec:spec-to-plan`、`/codexspec:plan-to-tasks`、`/codexspec:implement-tasks`
+- 在新建的功能目录上链式调用生成命令：`/codexspec:generate-spec`、`/codexspec:design-to-plan`、`/codexspec:plan-to-tasks`、`/codexspec:implement-tasks`
 - 把评审交给各生成命令自带的自动评审闭环；若某次评审需要新的产品或架构决策，则暂停并向用户提问
 - 分别报告功能目录、工件路径、评审结果、实现验证情况，以及未决的建议项
 
@@ -1375,7 +1312,7 @@ AI:  范围检查：1 个组件、1 个表单字段、无新依赖。Quick 适�
 
 你: y
 
-AI:  运行 generate-spec → spec-to-plan → plan-to-tasks → implement-tasks ...
+AI:  运行 generate-spec → design-to-plan → plan-to-tasks → implement-tasks ...
 
      ✓ Feature dir: .codexspec/specs/2026-0713-0915ab-remember-me/
      ✓ 所有评审为 PASS_WITH_WARNINGS 或更高
@@ -1526,7 +1463,7 @@ AI:  ✓ Updated language.output: "zh-CN"
 ## 工作流概览
 
 ```text
-想法 → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+想法 → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                   │                          │                           │
                                              评审 spec                   评审 plan                    评审 tasks
 ```
@@ -1572,7 +1509,7 @@ AI:  ✓ Updated language.output: "zh-CN"
 
 **解决方案：**
 
-- 确保先运行过 `/codexspec:spec-to-plan`
+- 确保先运行过 `/codexspec:design-to-plan`
 - 然后运行 `/codexspec:plan-to-tasks` 创建 tasks.md
 
 ### "GitHub CLI not authenticated"

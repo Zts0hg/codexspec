@@ -9,7 +9,12 @@ from typing import Any
 
 import yaml
 
-from codexspec.commands.installer import get_commands_metadata
+from codexspec.commands.installer import (
+    get_commands_metadata,
+    remove_retired_planning_entry,
+    validate_planning_replacement,
+    validate_retired_planning_entry,
+)
 from codexspec.profile import inject_profile_block
 from codexspec.translator import load_translation_cache, translate_template_frontmatter
 
@@ -50,6 +55,13 @@ class CodexIntegration:
         if not templates_dir.exists():
             return 0
 
+        replacement = templates_dir / "design-to-plan.md"
+        retired_entry = self.skills_dir(target_dir) / "codexspec-spec-to-plan" / "SKILL.md"
+        replacement_entry = self.skills_dir(target_dir) / "codexspec-design-to-plan" / "SKILL.md"
+        if replacement.is_file():
+            validate_retired_planning_entry(retired_entry, self.skills_dir(target_dir))
+            validate_planning_replacement(replacement_entry, self.skills_dir(target_dir))
+
         descriptions = {cmd["file_name"]: cmd["description"] for cmd in get_commands_metadata()}
         translation_cache = None
         if language != "en":
@@ -69,6 +81,12 @@ class CodexIntegration:
             skill_dir.mkdir(parents=True, exist_ok=True)
             skill_file.write_text(skill_content, encoding="utf-8")
             installed_count += 1
+
+        if replacement.is_file():
+            validate_planning_replacement(replacement_entry, self.skills_dir(target_dir))
+            if not replacement_entry.is_file():
+                raise OSError(f"Planning command replacement was not installed: {replacement_entry}")
+            remove_retired_planning_entry(retired_entry, self.skills_dir(target_dir), remove_empty_parent=True)
 
         return installed_count
 
@@ -117,7 +135,7 @@ Use these Codex skills when working on CodexSpec workflows:
 - `$codexspec:blueprint` to discuss and maintain confirmed requirements in the shared blueprint.
 - `$codexspec:generate-spec` to produce `spec.md`.
 - `$codexspec:spec-to-design` to produce `design.md`.
-- `$codexspec:spec-to-plan` to produce `plan.md`.
+- `$codexspec:design-to-plan` to produce `plan.md`.
 - `$codexspec:plan-to-tasks` to produce `tasks.md`.
 - `$codexspec:implement-tasks` to implement approved tasks.
 - `$codexspec:auto-dev` to develop pending blueprint requirements autonomously in document order.

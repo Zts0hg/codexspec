@@ -6,7 +6,7 @@
 
 **目标功能**：添加 `/codexspec:pr` 命令，用于生成结构化的 GitHub PR / GitLab MR 描述。（已发布命令的用户侧摘要见 [README 中的 `/codexspec:pr` 条目](https://github.com/Zts0hg/codexspec/blob/main/README.md)。）
 
-**开发流程**：`specify → generate-spec → review-spec → clarify → spec-to-plan`
+**开发流程**：`specify → generate-spec → review-spec → clarify → design-to-plan`
 
 **关键特点**：在开发过程中发现了一个需求问题，并通过 `clarify` 命令加以纠正，体现了 SDD 的灵活性。这是 CodexSpec **确认门（Confirmation Gate）** 的一个具体实例——在你显式确认之前，任何内容都不具约束力，先前的已接受决策也可以在 clarify 检查点重新打开并推翻。
 
@@ -266,7 +266,7 @@ The command shall determine output language in the following priority order:
 
 ---
 
-## 阶段 5: 技术实现计划 (`/codexspec:spec-to-plan`)
+## 阶段 5: 技术实现计划 (`/codexspec:design-to-plan`)
 
 ### 计划概述
 
@@ -355,7 +355,7 @@ The command shall determine output language in the following priority order:
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec:spec-to-plan                                                 │
+│  /codexspec:design-to-plan                                                 │
 │  ├─ 更新技术实现计划                                                     │
 │  ├─ 9 个技术决策，包含 5 个新增决策                                      │
 │  ├─ 5 个实现阶段                                                         │
@@ -386,7 +386,7 @@ The command shall determine output language in the following priority order:
 ### 2. SDD 流程的灵活性
 
 - 不是线性流程，可以在任何阶段返回调整
-- `clarify` 可以在 `review-spec` 之后、`spec-to-plan` 之前插入
+- `clarify` 可以在 `review-spec` 之后、`design-to-plan` 之前插入
 - 规格文档和技术计划都会被更新以反映变更
 
 ### 3. 参数设计的演变
@@ -408,7 +408,7 @@ The command shall determine output language in the following priority order:
 | generate-spec | spec.md | 完整规格文档 |
 | review-spec | review-spec.md | 质量审查报告 |
 | clarify | (更新 spec.md) | 澄清记录 + 需求更新 |
-| spec-to-plan | plan.md | 技术实现计划 |
+| design-to-plan | plan.md | 技术实现计划 |
 
 ---
 
@@ -428,7 +428,7 @@ The command shall determine output language in the following priority order:
 /codexspec:clarify [问题描述]
 
 # 5. 生成技术计划
-/codexspec:spec-to-plan
+/codexspec:design-to-plan
 
 # 6. 审查计划质量 (可选)
 /codexspec:review-plan

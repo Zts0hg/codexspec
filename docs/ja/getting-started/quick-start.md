@@ -77,7 +77,8 @@ constitution コマンドを使って、後続のすべての成果物が照ら�
 ## 6. 技術計画を作成する
 
 ```
-/codexspec:spec-to-plan Use Python FastAPI for backend
+/codexspec:spec-to-design Use Python FastAPI for backend
+/codexspec:design-to-plan
 ```
 
 計画は仕様の要件への `Covers` リンクを記録し、該当する憲法原則を検証します。
@@ -110,7 +111,7 @@ Quick は完全なフローと同じガードレールを守ります。
 
 - `/codexspec:specify` と同じタイムスタンプ規約で、機能ワークスペースと `requirements.md` を作成します。
 - 簡潔な確認済み要件サマリ (`NEED-*`、関連する `CON-*`/`DEC-*`、`OUT-*`、未解決の `OPEN-*`) を提示し、あなたの明示的な確認を待ちます ― **Confirmation Gate** は引き続き適用されます。
-- その後、`/codexspec:generate-spec` → `/codexspec:spec-to-plan` → `/codexspec:plan-to-tasks` → `/codexspec:implement-tasks` をその機能ディレクトリに対して連鎖実行します。各生成コマンドは自身の自動レビューループを持ちます。
+- その後、`/codexspec:generate-spec` → `/codexspec:design-to-plan` → `/codexspec:plan-to-tasks` → `/codexspec:implement-tasks` をその機能ディレクトリに対して連鎖実行します。各生成コマンドは自身の自動レビューループを持ちます。
 
 変更が広範になったり複数の独立した結果を持つことが分かった場合、Quick は一旦止まり、標準フローへの切り替えを勧めます。
 

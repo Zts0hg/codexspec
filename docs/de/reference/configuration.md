@@ -89,16 +89,16 @@ Steuert, ob die Requirements-First-SDD-Pipeline nach Bestehen der aktuellen Stuf
 **Kette:**
 
 ```
-specify → generate-spec → spec-to-plan → plan-to-tasks → implement-tasks
+specify → generate-spec → spec-to-design → design-to-plan → plan-to-tasks → implement-tasks
 ```
 
 **Pass-Gate:**
 
-- `generate-spec`, `spec-to-plan`, `plan-to-tasks`: die eingebaute Review-Schleife des Befehls muss einen Overall-Status von `PASS` oder `PASS_WITH_WARNINGS` melden.
+- `generate-spec`, `spec-to-design`, `design-to-plan`, `plan-to-tasks`: die eingebaute Review-Schleife des Befehls muss einen Overall-Status von `PASS` oder `PASS_WITH_WARNINGS` melden.
 - `specify`: es gibt keine Review-Schleife, deshalb ist das Gate Ihre ausdrückliche Bestätigung, dass die Anforderungs-Erkundung abgeschlossen ist (die **finale** Stufenzusammenfassung, nicht jede intermediate).
 - `implement-tasks`: terminale Stufe – danach wird nichts automatisch ausgelöst.
 
-Wenn die Review-Schleife `NEEDS_REVISION` oder `BLOCKED` meldet, hält die Kette an und die Kontrolle geht an Sie zurück. Vor jedem Weiterschalten gibt der Agent eine Notice-Zeile aus (zum Beispiel: `auto_next: review passed → invoking /codexspec:spec-to-plan`).
+Wenn die Review-Schleife `NEEDS_REVISION` oder `BLOCKED` meldet, hält die Kette an und die Kontrolle geht an Sie zurück. Vor jedem Weiterschalten gibt der Agent eine Notice-Zeile aus (zum Beispiel: `auto_next: review passed → invoking /codexspec:design-to-plan`).
 
 ## Review-Einstellungen
 

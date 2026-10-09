@@ -77,7 +77,8 @@ Dies ist ein **evidenzbasiertes Review**: jeder gemeldete Mangel zitiert konkret
 ## 6. Technischen Plan erstellen
 
 ```
-/codexspec:spec-to-plan Verwende Python FastAPI für das Backend
+/codexspec:spec-to-design Verwende Python FastAPI für das Backend
+/codexspec:design-to-plan
 ```
 
 Der Plan trägt `Covers`-Links zurück zu Spezifikationsanforderungen und prüft anwendbare Verfassungsprinzipien.
@@ -110,7 +111,7 @@ Quick respektiert dieselben Schutzmaßnahmen wie der vollständige Ablauf:
 
 - Es legt einen Feature-Workspace und eine `requirements.md` mit derselben Zeitstempel-Konvention wie `/codexspec:specify` an.
 - Es präsentiert eine kompakte bestätigte Anforderungszusammenfassung (`NEED-*`, relevante `CON-*`/`DEC-*`, `OUT-*`, ungelöste `OPEN-*`) und wartet auf Ihre ausdrückliche Bestätigung – das **Confirmation Gate** greift weiterhin.
-- Danach verkettet es `/codexspec:generate-spec` → `/codexspec:spec-to-plan` → `/codexspec:plan-to-tasks` → `/codexspec:implement-tasks` gegen dieses Feature-Verzeichnis, wobei jeder Generierungsbefehl seine eigene automatische Review-Schleife besitzt.
+- Danach verkettet es `/codexspec:generate-spec` → `/codexspec:design-to-plan` → `/codexspec:plan-to-tasks` → `/codexspec:implement-tasks` gegen dieses Feature-Verzeichnis, wobei jeder Generierungsbefehl seine eigene automatische Review-Schleife besitzt.
 
 Stellt sich die Änderung als umfangreich heraus oder hat sie mehrere unabhängige Ergebnisse, pausiert Quick und empfiehlt stattdessen den Standard-Ablauf.
 

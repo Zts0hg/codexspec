@@ -112,7 +112,7 @@
     "description": "Compiler les exigences confirmées en un spec.md traçable",
     "argument-hint": "[requirements.md ou répertoire de fonctionnalité]"
   },
-  "spec-to-plan": {
+  "design-to-plan": {
     "description": "Convertir une conception confirmée en un plan d'implémentation traçable",
     "argument-hint": "[design.md, spec.md ou répertoire de fonctionnalité]"
   },

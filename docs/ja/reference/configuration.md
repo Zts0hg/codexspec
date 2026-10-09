@@ -89,16 +89,16 @@ git コミットメッセージの言語です。任意で、デフォルトは 
 **チェーン:**
 
 ```
-specify → generate-spec → spec-to-plan → plan-to-tasks → implement-tasks
+specify → generate-spec → spec-to-design → design-to-plan → plan-to-tasks → implement-tasks
 ```
 
 **パスの条件:**
 
-- `generate-spec`, `spec-to-plan`, `plan-to-tasks`: コマンド組み込みのレビューループが Overall Status `PASS` または `PASS_WITH_WARNINGS` を報告すること。
+- `generate-spec`, `spec-to-design`, `design-to-plan`, `plan-to-tasks`: コマンド組み込みのレビューループが Overall Status `PASS` または `PASS_WITH_WARNINGS` を報告すること。
 - `specify`: レビューループはないため、要件の発見が完了したことの明示的な確認 (各中間サマリではなく**最終**ステージサマリでの確認) がゲートになります。
 - `implement-tasks`: 終端ステージであり、後に自動で発火するものはありません。
 
-レビューループが `NEEDS_REVISION` または `BLOCKED` を報告した場合、チェーンは止まり、あなたに制御が戻ります。各進行の前に、エージェントは 1 行の通知を出します (例: `auto_next: review passed → invoking /codexspec:spec-to-plan`)。
+レビューループが `NEEDS_REVISION` または `BLOCKED` を報告した場合、チェーンは止まり、あなたに制御が戻ります。各進行の前に、エージェントは 1 行の通知を出します (例: `auto_next: review passed → invoking /codexspec:design-to-plan`)。
 
 ## レビュー設定
 

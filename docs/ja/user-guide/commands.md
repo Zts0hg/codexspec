@@ -16,7 +16,7 @@ README のカタログと対応するよう、カテゴリ別にグループ化�
 | `/codexspec:specify` | 対話を通じて要件を明確化・確認し、`requirements.md` に保存します |
 | `/codexspec:blueprint` | 共有 blueprint の確認済み要件を議論・管理します |
 | `/codexspec:generate-spec` | 明確化された要件から `spec.md` を生成します（★ 自動レビュー付き） |
-| `/codexspec:spec-to-plan` | 仕様書を技術的な実装計画に変換します（★ 自動レビュー付き） |
+| `/codexspec:design-to-plan` | 確認済みの設計をトレース可能な実装計画に変換 ★ |
 | `/codexspec:plan-to-tasks` | 計画を追跡可能で検証可能なタスクに分割します（★ 自動レビュー付き） |
 | `/codexspec:implement-tasks` | タスクを条件付き TDD ワークフローで実行します |
 | `/codexspec:auto-dev` | blueprint の保留中要件を文書順に自律開発します |
@@ -295,7 +295,7 @@ AI:  Generating specification...
 
      Next steps:
      - Review the spec with /codexspec:review-spec
-     - Or proceed to /codexspec:spec-to-plan
+     - Or proceed to /codexspec:design-to-plan
 ```
 
 **Tips:**
@@ -377,80 +377,17 @@ AI:  ✓ Updated NFR-001: Response time < 500ms reads, < 1s writes
 
 ---
 
-### `/codexspec:spec-to-plan`
+### `/codexspec:design-to-plan`
 
-機能の仕様書を技術的な実装計画に変換します。ここでは機能を **どのように** 構築するかを定義します。
-
-**Syntax:**
-
-```
-/codexspec:spec-to-plan [path_to_spec.md]
-```
-
-**Arguments:**
-
-| Argument | Required | Description |
-|----------|----------|-------------|
-| `path_to_spec.md` | No | spec ファイルのパス（指定がない場合は `.codexspec/specs/` から自動検出されます） |
-
-**What it does:**
-
-- 仕様書と憲法を読み取ります
-- 確認された要件とリポジトリの制約によって必要な技術的詳細だけを盛り込みます
-- 該当する憲法ルールを確認しますが、任意の慣習を機能要件としては扱いません
-- 仕様書の要件への `Covers` リンクを追加します
-- 技術的な決定とその根拠を文書化します
-- 決定が確認された意図を変える場合は停止します
-
-**What it creates:**
-
-```
-.codexspec/
-└── specs/
-    └── 2026-0613-1200ab-task-management/
-        └── plan.md    # 技術的な実装計画
-```
-
-**Example:**
+確認済みの設計を実装計画に変換します。先に `spec-to-design` を実行し、アーキテクチャ、コンポーネント、インターフェース、技術選定を定義します。
 
 ```text
-You: /codexspec:spec-to-plan Use Python FastAPI for backend, React for frontend, PostgreSQL for database
-
-AI:  Generating technical plan...
-
-     Constitutionality Review:
-     ✓ Clean Architecture: Modular design with clear boundaries
-     ✓ TDD: Test-first approach enforced in phases
-     ✓ Code Quality: Linting and type hints required
-
-     Architecture:
-     - Backend: FastAPI with layered architecture
-     - Frontend: React with component structure
-     - Database: PostgreSQL with migration strategy
-
-     Module Dependency Graph:
-     ┌─────────────┐
-     │    API      │
-     └──────┬──────┘
-            │
-     ┌──────▼──────┐
-     │  Services   │
-     └──────┬──────┘
-            │
-     ┌──────▼──────┐
-     │    Data     │
-     └─────────────┘
-
-     ✓ Created plan.md
-     5 Implementation Phases defined
+/codexspec:design-to-plan [design.md | spec.md | feature-directory]
 ```
 
-**Tips:**
+`requirements.md`、`spec.md`、`design.md`、プロジェクト憲章を読み、実装フェーズ、順序、検証方法を計画します。システムを再設計せず、設計を参照します。各計画コンポーネントには `Covers: REQ-xxx; Design: <design component>` を記載します。
 
-- spec をレビューして安定させてから実行します
-- 該当する憲法ルールは必須ですが、無関係なテンプレート慣習は必須ではありません
-- プロジェクトの種類に応じて関連するセクションを盛り込みます
-- タスクに進む前に計画をレビューします
+`plan.md` を生成して `review-plan` を実行します。`auto_next` が有効な場合、レビュー合格後に `plan-to-tasks` に進みます。確認済みの意図を変更する判断にはユーザーの確認が必要です。明示的なパスを優先し、次に現在の機能ブランチを使用します。機能が一意に決まらない場合は選択を求めます。`design.md` のない旧機能では、従来どおり `spec.md` から計画できます。
 
 ---
 
@@ -678,7 +615,7 @@ AI:  Overall Status: NEEDS_REVISION
 
 **Tips:**
 
-- `/codexspec:spec-to-plan` の前に実行します
+- `/codexspec:design-to-plan` の前に実行します
 - `BLOCKED` と `NEEDS_REVISION` は先に進める準備ができていない合図とみなします
 - 助言を要件に昇格させないようにします
 - 修正後にもう一度実行します
@@ -1346,7 +1283,7 @@ AI:  # React Code Review Report
 - `/codexspec:specify` と同じタイムスタンプ規約で機能ワークスペースと `requirements.md` を作成します
 - 実装に実質的な影響を与える曖昧さだけを解消し、簡潔な確認済み要約（`NEED-*`、関連する `CON-*`/`DEC-*`、`OUT-*`、未解決の `OPEN-*`）を提示します
 - Confirmation Gate で止まります。要約を確認するまでは何も生成しません
-- 新しい機能ディレクトリに対して生成コマンドを連鎖させます: `/codexspec:generate-spec`、`/codexspec:spec-to-plan`、`/codexspec:plan-to-tasks`、`/codexspec:implement-tasks`
+- 新しい機能ディレクトリに対して生成コマンドを連鎖させます: `/codexspec:generate-spec`、`/codexspec:design-to-plan`、`/codexspec:plan-to-tasks`、`/codexspec:implement-tasks`
 - 各生成コマンド自身の自動レビューループに委ねます。レビューが新たなプロダクトやアーキテクチャの決定を必要とする場合は一時停止してユーザーに尋ねます
 - 機能ディレクトリ、アーティファクトのパス、レビュー結果、実装の検証結果、未解決の助言は別個に報告します
 
@@ -1376,7 +1313,7 @@ AI:  Scope check: 1 component, 1 form field, no new dependencies. Quick is appro
 
 You: y
 
-AI:  Running generate-spec → spec-to-plan → plan-to-tasks → implement-tasks ...
+AI:  Running generate-spec → design-to-plan → plan-to-tasks → implement-tasks ...
 
      ✓ Feature dir: .codexspec/specs/2026-0713-0915ab-remember-me/
      ✓ All reviews PASS_WITH_WARNINGS or higher
@@ -1527,7 +1464,7 @@ AI:  ✓ Updated language.output: "zh-CN"
 ## Workflow Overview
 
 ```text
-Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               Review spec               Review plan                  Review tasks
 ```
@@ -1573,7 +1510,7 @@ Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-t
 
 **Solutions:**
 
-- まず `/codexspec:spec-to-plan` を実行済みであることを確認します
+- まず `/codexspec:design-to-plan` を実行済みであることを確認します
 - その後 `/codexspec:plan-to-tasks` を実行して tasks.md を作成します
 
 ### "GitHub CLI not authenticated"

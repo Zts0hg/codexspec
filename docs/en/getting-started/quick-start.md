@@ -77,7 +77,8 @@ This is an **evidence-based review**: every reported defect cites concrete evide
 ## 6. Create Technical Plan
 
 ```
-/codexspec:spec-to-plan Use Python FastAPI for backend
+/codexspec:spec-to-design Use Python FastAPI for backend
+/codexspec:design-to-plan
 ```
 
 The plan records `Covers` links back to specification requirements and verifies applicable constitution principles.
@@ -110,7 +111,7 @@ Quick still respects the same guardrails as the full flow:
 
 - It creates a feature workspace and `requirements.md` using the same timestamp convention as `/codexspec:specify`.
 - It presents a concise confirmed requirement summary (`NEED-*`, relevant `CON-*`/`DEC-*`, `OUT-*`, unresolved `OPEN-*`) and waits for your explicit confirmation — the **Confirmation Gate** still applies.
-- It then chains `/codexspec:generate-spec` → `/codexspec:spec-to-plan` → `/codexspec:plan-to-tasks` → `/codexspec:implement-tasks` against that feature directory, with each generation command owning its own automatic review loop.
+- It then chains `/codexspec:generate-spec` → `/codexspec:design-to-plan` → `/codexspec:plan-to-tasks` → `/codexspec:implement-tasks` against that feature directory, with each generation command owning its own automatic review loop.
 
 If the change turns out to be broad or to have multiple independent outcomes, Quick pauses and recommends the standard flow instead.
 

@@ -14,7 +14,7 @@ SDD:          Idea → Confirmed Requirements → Spec → Plan → Tasks → Co
 In CodexSpec, that chain becomes a sequence of slash-command checkpoints, each producing a persisted artifact with a review marker:
 
 ```text
-Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               Review spec               Review plan                  Review tasks
 ```
@@ -74,7 +74,7 @@ continuing.
 | 1. Project Principles        | `/codexspec:constitution`    | `constitution.md`           | Yes         |
 | 2. Requirement Clarification | `/codexspec:specify`         | `requirements.md`           | Yes         |
 | 3. Generate Spec             | `/codexspec:generate-spec`   | `spec.md` + auto-review     | Yes         |
-| 4. Technical Planning        | `/codexspec:spec-to-plan`    | `plan.md` + auto-review     | Yes         |
+| 4. Technical Planning        | `/codexspec:design-to-plan`    | `plan.md` + auto-review     | Yes         |
 | 5. Task Breakdown            | `/codexspec:plan-to-tasks`   | `tasks.md` + auto-review    | Yes         |
 | 6. Cross-Artifact Analysis   | `/codexspec:analyze`         | Analysis report             | Yes         |
 | 7. Implementation            | `/codexspec:implement-tasks` | Code                        | -           |

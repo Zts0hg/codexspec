@@ -77,7 +77,8 @@ claude
 ## 6. 创建技术计划
 
 ```
-/codexspec:spec-to-plan 后端使用 Python FastAPI
+/codexspec:spec-to-design 后端使用 Python FastAPI
+/codexspec:design-to-plan
 ```
 
 计划会记录指向规格需求的 `Covers` 链接，并校验适用的宪法原则。
@@ -110,7 +111,7 @@ Quick 仍然遵守与完整流程相同的护栏：
 
 - 它创建功能工作区与 `requirements.md`，时间戳命名约定与 `/codexspec:specify` 一致。
 - 它呈现精简的已确认需求摘要（`NEED-*`、相关的 `CON-*`/`DEC-*`、`OUT-*`、未解决的 `OPEN-*`），并等待你的显式确认——**确认门**依然生效。
-- 随后在该功能目录上链式调用 `/codexspec:generate-spec` → `/codexspec:spec-to-plan` → `/codexspec:plan-to-tasks` → `/codexspec:implement-tasks`，每个生成命令各自负责其自动评审闭环。
+- 随后在该功能目录上链式调用 `/codexspec:generate-spec` → `/codexspec:design-to-plan` → `/codexspec:plan-to-tasks` → `/codexspec:implement-tasks`，每个生成命令各自负责其自动评审闭环。
 
 如果改动最终范围较广、或包含多个独立结果，Quick 会暂停并建议改用标准流程。
 
