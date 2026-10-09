@@ -414,6 +414,16 @@ def test_bare_config_explains_a_layout_the_writer_refuses(project: Path) -> None
         "workflow:\n  worktrees: false\n? review\n",
         "review: {decided_by}\n",
         "review: {x: 1, decided_by}\n",
+        "? review  # note: x\nother: 1\n",
+        "? review\n# TODO: fix\nother: 1\n",
+        "review:\n  ? decided_by  # see: docs\n  other: 1\n",
+        "{x: 1, review  # c: d\n}\n",
+        "\ufeff? review\nother: 1\n",
+        "? &a !!str review\nother: 1\n",
+        "review:\r\n  ? decided_by\r\n  other: 1\r\n",
+        "?\n  review\nother: 1\n",
+        "review:\n  ?\n    decided_by\n",
+        "{x: 1, ? review # a: b\n}\n",
     ],
 )
 def test_valueless_keys_are_settable(tmp_path: Path, body: str) -> None:
@@ -422,3 +432,21 @@ def test_valueless_keys_are_settable(tmp_path: Path, body: str) -> None:
     assert _read_review_decided_by(cfg) in ("reviewer", "null")
     assert _write_review_decided_by(cfg, "ask") is True, cfg.read_text(encoding="utf-8")
     assert _read_review_decided_by(cfg) == "ask"
+
+
+@pytest.mark.parametrize("body", ["review:\n  ? x\n  : 1\n", "review:\n  ? &a x\n  : 1\n"])
+def test_key_inserted_before_an_explicit_first_key(tmp_path: Path, body: str) -> None:
+    """Review round 10 F-001: a new key goes before the first key's '?' indicator."""
+    cfg = _make_config(tmp_path, body)
+    assert _write_review_decided_by(cfg, "ask") is True
+    assert _read_review_decided_by(cfg) == "ask"
+
+
+@pytest.mark.parametrize("stored", ["unparseable", "duplicate keys", "invalid review section", "unsupported layout"])
+def test_stored_value_equal_to_a_refusal_reason_is_shown_as_invalid_value(project: Path, stored: str) -> None:
+    """Review round 10 F-002: a stored value is never mistaken for a writer refusal."""
+    _write_project_config(project, f"review:\n  decided_by: {stored}\n")
+    result = CliRunner().invoke(app, ["config"])
+    assert "cannot be managed" not in result.stdout
+    assert f"invalid value '{stored}'" in result.stdout
+    assert CliRunner().invoke(app, ["config", "--decided-by", "ask"]).exit_code == 0

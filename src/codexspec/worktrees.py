@@ -54,19 +54,54 @@ def _key_node(node: Any, value: Any) -> Any:
     return next(key for key, item in node.value if item is value)
 
 
+def _key_tokens(content: str, key: Any) -> tuple[list[Any], int]:
+    """Return the scanner tokens of ``content`` and the index of scalar ``key``'s token."""
+    tokens = list(yaml.scan(content))
+    index = next(
+        i
+        for i, token in enumerate(tokens)
+        if isinstance(token, yaml.ScalarToken) and token.end_mark.index == key.end_mark.index
+    )
+    return tokens, index
+
+
+def _explicit_indicator(tokens: list[Any], index: int) -> Any:
+    """Return the ``?`` token that introduces the key at ``index``, or None for an implicit key."""
+    before = index - 1
+    while isinstance(tokens[before], (yaml.AnchorToken, yaml.TagToken)):
+        before -= 1
+    indicator = tokens[before]
+    explicit = isinstance(indicator, yaml.KeyToken) and indicator.end_mark.index > indicator.start_mark.index
+    return indicator if explicit else None
+
+
 def _implicit_value_offset(content: str, key: Any, start: int, newline: str) -> tuple[int, str]:
     """Return where to fill an empty value at ``start`` and the text that must precede it.
 
     A key written without ``:`` (``{review}``, ``? review``) has an implicit null whose
     mark points at the next token, so the value goes right after the key, behind a
-    ``:`` indicator (on its own line for a block explicit key).
+    ``:`` indicator (on its own line for a block explicit key). Scanner tokens decide
+    this, so comments, a BOM, anchors, and tags are never mistaken for syntax.
     """
-    if ":" in content[key.end_mark.index : start]:
+    tokens, index = _key_tokens(content, key)
+    if index + 1 < len(tokens) and isinstance(tokens[index + 1], yaml.ValueToken):
         return start, ""
-    line_start = content.rfind("\n", 0, key.start_mark.index) + 1
-    lead = content[line_start : key.start_mark.index]
-    if lead.strip() == "?":
-        return key.end_mark.index, f"{newline}{' ' * lead.index('?')}: "
+    indicator = _explicit_indicator(tokens, index)
+    flow_level = sum(
+        1 if isinstance(token, (yaml.FlowMappingStartToken, yaml.FlowSequenceStartToken)) else -1
+        for token in tokens[:index]
+        if isinstance(
+            token,
+            (
+                yaml.FlowMappingStartToken,
+                yaml.FlowSequenceStartToken,
+                yaml.FlowMappingEndToken,
+                yaml.FlowSequenceEndToken,
+            ),
+        )
+    )
+    if indicator is not None and not flow_level:
+        return key.end_mark.index, f"{newline}{' ' * indicator.start_mark.column}: "
     return key.end_mark.index, ": "
 
 
@@ -192,9 +227,16 @@ def write_config_scalar(
             offset = mapping.end_mark.index - 1
             addition = (", " if mapping.value else "") + f"{key}: {token}"
         else:
-            offset = mapping.value[0][0].start_mark.index
-            # Use the first actual key, not a preceding mapping anchor.
-            indent = mapping.value[0][0].start_mark.column
+            # Insert before the first key's own start: its '?' indicator when it is
+            # explicit, never a preceding mapping anchor.
+            first = mapping.value[0][0]
+            mark = first.start_mark
+            indicator = (
+                _explicit_indicator(*_key_tokens(content, first)) if isinstance(first, yaml.ScalarNode) else None
+            )
+            if indicator is not None:
+                mark = indicator.start_mark
+            offset, indent = mark.index, mark.column
             addition = f"{key}: {token}{newline}" + " " * indent
         content = content[:offset] + addition + content[offset:]
     elif mapping is not None:

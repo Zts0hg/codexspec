@@ -552,6 +552,12 @@ _AUTO_DISTILL_SENTINEL = "__toggle_distill__"
 _DECIDED_BY_VALUES = ("reviewer", "ask")
 _DECIDED_BY_DEFAULT = "reviewer"
 _DECIDED_BY_ACCEPTED = ", ".join(_DECIDED_BY_VALUES)
+
+
+class _DecidedByRefusal(str):
+    """Why the writer refuses config.yml; typed so it never collides with a stored value."""
+
+
 # Writer refusal codes, as reported by the display; any other refusal is "unsupported layout".
 _DECIDED_BY_REFUSALS = {
     "invalid_review_config": "unparseable",
@@ -903,7 +909,7 @@ def config(
     stored_mode = _read_review_decided_by(config_file)
     if stored_mode in _DECIDED_BY_VALUES:
         console.print(f"Effective review.decided_by: {stored_mode}")
-    elif stored_mode in _DECIDED_BY_REFUSALS.values() or stored_mode == "unsupported layout":
+    elif isinstance(stored_mode, _DecidedByRefusal):
         console.print(
             f"review.decided_by: config.yml cannot be managed ({stored_mode}); "
             "fix the file by hand before setting it with --decided-by.",
@@ -1700,8 +1706,9 @@ def _read_review_decided_by(config_file: Path) -> str:
     Validity comes from the writer itself: the file is checked with a dry run of
     ``write_config_scalar`` (the writer behind ``--decided-by``), so a state shown as
     valid is always settable and a successful write is never shown as invalid. A file
-    the writer refuses yields ``"unparseable"``, ``"duplicate keys"``,
-    ``"invalid review section"``, or ``"unsupported layout"``. Otherwise the value is
+    the writer refuses yields a ``_DecidedByRefusal`` (``"unparseable"``,
+    ``"duplicate keys"``, ``"invalid review section"``, or ``"unsupported layout"``),
+    typed so a stored value with the same text is never mistaken for one. Otherwise the value is
     the one YAML resolves (merge keys included): ``reviewer`` when absent, ``"null"``
     for null, text for non-strings, so callers report invalid values rather than
     masking them as the default. An absent or unreadable file yields ``reviewer``.
@@ -1723,7 +1730,8 @@ def _read_review_decided_by(config_file: Path) -> str:
         )
         data = yaml.safe_load(content)
     except (AutomationError, yaml.YAMLError) as exc:
-        return _DECIDED_BY_REFUSALS.get(getattr(exc, "code", "invalid_review_config"), "unsupported layout")
+        code = getattr(exc, "code", "invalid_review_config")
+        return _DecidedByRefusal(_DECIDED_BY_REFUSALS.get(code, "unsupported layout"))
     review = data.get("review") if isinstance(data, dict) else None
     if not isinstance(review, dict) or "decided_by" not in review:
         return _DECIDED_BY_DEFAULT
