@@ -872,6 +872,39 @@ def test_live_host_adapters_use_subprocess_argument_arrays(monkeypatch: pytest.M
     assert all(all(name not in call["env"] for name in local_git_vars) for call in calls)
 
 
+@pytest.mark.parametrize("adapter", [run_eval.CodexHost, run_eval.ClaudeHost])
+def test_live_host_result_excludes_diagnostic_envelopes(monkeypatch, tmp_path: Path, adapter) -> None:
+    answer = _envelope(verdict="PASS")
+    diagnostic = "tool output and repeated final answer\n" + answer + answer
+    monkeypatch.setattr(run_eval, "_foreign_repo_environment", lambda: {})
+    monkeypatch.setattr(
+        run_eval.subprocess,
+        "run",
+        lambda args, **kwargs: subprocess.CompletedProcess(args, 0, stdout=answer, stderr=diagnostic),
+    )
+
+    result = adapter().run(tmp_path, Path(".codexspec/specs/example"))
+
+    assert result == answer
+    assert run_eval.parse_review_result(result)["verdict"] == "PASS"
+
+
+@pytest.mark.parametrize("adapter", [run_eval.CodexHost, run_eval.ClaudeHost])
+def test_failed_live_host_cannot_supply_a_success_result(monkeypatch, tmp_path: Path, adapter) -> None:
+    monkeypatch.setattr(run_eval, "_foreign_repo_environment", lambda: {})
+    monkeypatch.setattr(
+        run_eval.subprocess,
+        "run",
+        lambda args, **kwargs: subprocess.CompletedProcess(
+            args, 7, stdout=_envelope(verdict="PASS"), stderr="private host diagnostic"
+        ),
+    )
+
+    with pytest.raises(RuntimeError, match="exit code 7") as error:
+        adapter().run(tmp_path, Path(".codexspec/specs/example"))
+    assert "private host diagnostic" not in str(error.value)
+
+
 def test_systematic_coverage_expectations_reject_hollow_or_unrelated_evidence() -> None:
     cases_root = Path("tests/evals/review_code/cases")
 

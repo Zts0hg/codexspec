@@ -1047,7 +1047,9 @@ class CodexHost(HostAdapter):
             capture_output=True,
             timeout=900,
         )
-        return completed.stdout + completed.stderr
+        if completed.returncode != 0:
+            raise RuntimeError(f"{self.name} host exited with exit code {completed.returncode}")
+        return completed.stdout
 
 
 class ClaudeHost(HostAdapter):
@@ -1066,7 +1068,9 @@ class ClaudeHost(HostAdapter):
             capture_output=True,
             timeout=900,
         )
-        return completed.stdout + completed.stderr
+        if completed.returncode != 0:
+            raise RuntimeError(f"{self.name} host exited with exit code {completed.returncode}")
+        return completed.stdout
 
 
 def _adapter(host: str, canned_output: str | None) -> HostAdapter:
