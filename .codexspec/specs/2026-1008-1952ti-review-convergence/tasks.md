@@ -118,7 +118,7 @@ All tasks edit `templates/commands/review-code.md` sequentially. Contract assert
   - **Covers**: REQ-001, REQ-002, REQ-003, REQ-014; Plan: Phase 2 (Incremental review)
   - **Test Scenarios**:
     - TS-8.1 The state store root is under `$XDG_CACHE_HOME` (fallback `$HOME/.cache`) or `%LOCALAPPDATA%`, keyed by repository; result directories are named `sha256-<hex>`; `inventory.json` records per-entry digests and `partition_ids`.
-    - TS-8.2 Missing or unreadable prior records, or a mismatch in repository, selector, feature, `base_ref`, or `merge_base_sha`, produce an `INCONCLUSIVE` argument error that tells the caller to run a complete review.
+    - TS-8.2 Missing or unreadable prior records, or a mismatch in repository, selector, feature, `base_ref`, or `merge_base_sha`, make the coordinator fall back to a complete review in the same invocation, with a non-blocking `incremental baseline` gap; an unusable baseline is never an argument error.
     - TS-8.3 The delta is the changed, added, removed, or renamed entries by digest; affected partitions come from the delta entries' `partition_ids`; affected contracts come from those partitions' `contract_ids`.
     - TS-8.4 The fresh reviewer receives the delta, affected-contract obligations, incoming follow-ups, and full current evidence, but no prior coverage evidence, statuses, or findings.
     - TS-8.5 Unchanged entries outside affected partitions keep prior coverage, marked `carried`.
@@ -188,7 +188,7 @@ All tasks edit `templates/commands/implement-tasks.md` sequentially; contract as
     - TS-13.2 After a green repair set, the next review is incremental with `--incremental-from <last valid result fingerprint>`.
     - TS-13.3 After an incremental `PASS`, a complete review runs; only a complete `PASS` satisfies §7.6.
     - TS-13.4 After a complete `FAIL`, the loop returns to incremental review.
-    - TS-13.5 A prior-record-unavailable or mismatch argument error triggers a complete review and is neither a transient retry nor a failed round.
+    - TS-13.5 A complete result carrying a non-blocking `incremental baseline` gap (unusable prior records) is handled as a valid complete round, neither a transient retry nor a failed round.
     - TS-13.6 The loop never passes `--decided-by`, keeps the neutral follow-up handoff, and introduces no round cap (the existing progress guards are unchanged).
 
 - [x] **T014** Loop ledger in the out-of-repository state store (design C1, C6).

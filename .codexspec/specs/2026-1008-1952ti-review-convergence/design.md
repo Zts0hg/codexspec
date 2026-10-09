@@ -25,7 +25,7 @@ This design adds: incremental intermediate rounds with a complete final round (R
 
 - **Responsibility**: When invoked with `--incremental-from <fingerprint>`, review only the repair delta and what it affects, reusing prior coverage for unchanged evidence; otherwise run today's complete review unchanged.
 - **Interface**:
-  - Input: the prior result's records from C1. Missing, unreadable, or target-mismatched records (different repository, selector, feature, `base_ref`, or `merge_base_sha`) → argument-level `INCONCLUSIVE` with guidance to run a complete review. A changed merge-base changes the selected evidence of every entry, so it never permits reuse.
+  - Input: the prior result's records from C1. Missing, unreadable, or target-mismatched records (different repository, selector, feature, `base_ref`, or `merge_base_sha`) → the coordinator falls back to a complete review in the same invocation, reports `review_scope` as complete, and records a non-blocking gap whose scope is exactly `incremental baseline` (Revised during the implement-tasks review loop, round 2: an unusable baseline is never an argument error.) A changed merge-base changes the selected evidence of every entry, so it never permits reuse.
   - Scope computation (coordinator, before delegation): compare per-entry evidence digests of the current inventory with the prior `inventory.json`. Changed, added, removed, or renamed entries form the **delta**. Every prior partition listed in any delta entry's `partition_ids` is an **affected partition**; the `contract_ids` of affected partitions are the **affected contracts**; every entry of an affected partition joins the scope. (Contract fields such as `producers` and `entry_surfaces` are free text, so the path-addressable `partition_ids` link is the mapping; it makes scope computation mechanical rather than a judgment by the coordinator that just made the repairs.) Carried-over follow-up obligations join as today.
   - Delegation: the fresh reviewer receives the delta, the affected-contract statements and their entry/consumer lists as review obligations, the incoming follow-ups, and the full current evidence for tracing. It does not receive prior coverage evidence, statuses, or findings (isolation preserved). It may trace beyond the scope and must report any finding it discovers.
   - Merge: entries with unchanged digests that are not in an affected partition keep their prior disposition and coverage (marked `carried` in `inventory.json`); everything else takes the fresh result.
@@ -68,7 +68,7 @@ This design adds: incremental intermediate rounds with a complete final round (R
   2. After a green repair set: incremental, `--incremental-from <last result fingerprint>`.
   3. After an incremental `PASS`: complete. Only a complete `PASS` satisfies §7.6.
   4. After a complete `FAIL`: back to rule 2.
-  5. `--incremental-from` always names the last valid (schema-validated, non-argument-error) result. If the incremental invocation returns the prior-record-unavailable or target-mismatch argument error, run a complete review instead; this is not a transient retry and not a failed round.
+  5. `--incremental-from` always names the last valid (schema-validated, non-argument-error) result. If an incremental invocation returns `review_scope.kind: complete` with a non-blocking `incremental baseline` gap, the prior records were unusable and `review-code` already reviewed completely: treat it as a valid complete round; this is not a transient retry and not a failed round.
   - Escalation: before repairing a verified finding whose class matches a class recorded in an earlier round, enter `debug` with the class (all known instances plus the reviewer's variant-search scope) as one defect.
 - **Covers**: REQ-001, REQ-003, REQ-004, REQ-011, REQ-012
 
@@ -149,7 +149,7 @@ This design adds: incremental intermediate rounds with a complete final round (R
 
 | Argument | Valid with | Effect | Errors |
 |---|---|---|---|
-| `--incremental-from <fingerprint>` | default, `--committed` | Incremental review against that prior result | Unknown/unreadable/mismatched prior result → `INCONCLUSIVE` (argument error); with `--audit` → argument error |
+| `--incremental-from <fingerprint>` | default, `--committed` | Incremental review against that prior result | Unknown/unreadable/mismatched prior result → complete review with a non-blocking `incremental baseline` gap (never an argument error); with `--audit` → argument error |
 | `--decided-by reviewer\|ask` | every defect-gate selector | Overrides `review.decided_by` | Any other value → `INCONCLUSIVE` (argument error) |
 
 Both modifiers are consumed by the `review-code` coordinator and stripped before the resolver call (C3, Resolver boundary); the resolver never sees them.

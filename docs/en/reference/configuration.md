@@ -116,6 +116,12 @@ to read its unchanged configuration until that change is integrated through Git.
 is no repository-wide immediate override. Other language and workflow settings follow
 the same routing.
 
+With isolation off, ordinary feature and project-level writes use the selected checkout.
+`blueprint` and `auto-dev` always retain their fixed shared worktree. First-time and update
+`codexspec init` operations always write to the explicitly selected checkout, regardless
+of this setting. See [worktree development](../user-guide/workflow.md#worktree-development)
+for directory layout, baseline selection, and continuation.
+
 ## Review Settings
 
 ### `review.decided_by`
@@ -126,9 +132,3 @@ Decides who rules on a `/codexspec:review-code` finding whose trigger depends on
 - **`ask`:** the review reports such an item as a pending scenario decision instead of failing on it. `implement-tasks` asks you once to fix it or accept that the scenario is out of scope, and records your answer in `requirements.md` as a confirmed `CON` or `OUT` entry. Later review rounds follow that entry.
 - **Set with:** `codexspec config --decided-by reviewer|ask` or `/codexspec:config`. A single `review-code` run can override it with `--decided-by`.
 - Any other value is invalid: `codexspec config` reports it, and `review-code` stops with an argument error until it is corrected.
-
-With isolation off, ordinary feature and project-level writes use the selected checkout.
-`blueprint` and `auto-dev` always retain their fixed shared worktree. First-time and update
-`codexspec init` operations always write to the explicitly selected checkout, regardless
-of this setting. See [worktree development](../user-guide/workflow.md#worktree-development)
-for directory layout, baseline selection, and continuation.

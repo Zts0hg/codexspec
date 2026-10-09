@@ -141,7 +141,7 @@ Edit `templates/commands/implement-tasks.md`; adjust `tests/test_sdd_workflow_te
   - after a green repair set, incremental with `--incremental-from <last valid result fingerprint>`;
   - after an incremental `PASS`, a complete review;
   - after a complete `FAIL`, back to incremental;
-  - fall back to a complete review on the prior-record-unavailable or mismatch argument error;
+  - treat a complete result with a non-blocking `incremental baseline` gap (unusable prior records) as a valid complete round;
   - keep the fixed `--feature` invocation and never pass `--decided-by`;
   - keep the neutral follow-up handoff.
 
