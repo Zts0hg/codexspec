@@ -327,3 +327,31 @@ def test_non_mapping_review_is_invalid_for_reader_and_writer(tmp_path: Path, bod
     assert _read_review_decided_by(cfg) not in ("ask", "reviewer")
     assert _write_review_decided_by(cfg, "ask") is False
     assert cfg.read_text(encoding="utf-8") == body
+
+
+# --- Review round 8: block scalars and empty values in flow mappings ---
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        "review:\n  decided_by: |-\n    ask\nproject:\n  ai: claude\n",
+        "review:\n  decided_by: >-\n    ask\nproject:\n  ai: claude\n",
+        "review:\n  decided_by: |-\n    ask\n",
+    ],
+)
+def test_block_scalar_value_is_settable_and_keeps_line_breaks(tmp_path: Path, body: str) -> None:
+    cfg = _make_config(tmp_path, body)
+    assert _read_review_decided_by(cfg) == "ask"
+    assert _write_review_decided_by(cfg, "reviewer") is True
+    text = cfg.read_text(encoding="utf-8")
+    assert _read_review_decided_by(cfg) == "reviewer"
+    assert text.endswith("\n")
+
+
+@pytest.mark.parametrize("body", ["{a: 1, review: }\n", "{version: '1.0', review: , project: {ai: claude}}\n"])
+def test_empty_review_in_flow_root_is_settable(tmp_path: Path, body: str) -> None:
+    cfg = _make_config(tmp_path, body)
+    assert _read_review_decided_by(cfg) == "reviewer"
+    assert _write_review_decided_by(cfg, "ask") is True
+    assert _read_review_decided_by(cfg) == "ask"

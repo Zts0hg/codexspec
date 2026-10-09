@@ -14,3 +14,10 @@
 
   Record which host ran each scenario. Re-running the original non-converging `games-dev-roguelite` loop is the most realistic check of NEED-001.
 - **Status**: Needs Discussion. It awaits the user's decision to run it, or permission for the implementer to run it.
+
+## Issue: Final review loop stopped after round 8 by user decision
+
+- **Task**: implement-tasks section 7 (final code review loop)
+- **Error**: Not a failure of the implementation. The loop ran with the review-code and implement-tasks versions installed in the session, which are the pre-feature versions: schema 2, a complete re-review every round, no decision mode, and no cross-round escalation. Rounds 1–4 found real design defects, which are now fixed: mirror isolation, the incremental-baseline fallback, the isolation allow-list conflict, and documentation placement. From round 5 on, every round admitted a new edge case in the same config writer. The cases were quoted values, empty values and comments, flow mappings and duplicate keys, CRLF, null sections, and block scalars or empty values in a flow root. After the third recurrence, the writer was rebuilt on the repository's existing surgical writer (`write_config_scalar`).
+- **Attempted**: Eight isolated complete reviews with a primary reviewer and a specialist. The round 8 findings (a block-scalar value, and an empty review value in a flow root) were fixed after round 8 but have not been re-reviewed.
+- **Status**: Needs Discussion. The terminal state is not success under section 7.6: there is no final PASS envelope, and T024 behavioral acceptance is pending. The user chose to stop here rather than run round 9.

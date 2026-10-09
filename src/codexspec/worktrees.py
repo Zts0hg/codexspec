@@ -136,10 +136,20 @@ def write_config_scalar(
         # A present but empty/null section (``section:`` or ``section: ~``) is
         # filled in place, like an absent mapping.
         start, end = mapping.start_mark.index, mapping.end_mark.index
-        addition = f"{newline}  {key}: {token}" if start == end else f"{{{key}: {token}}}"
+        if start != end or (isinstance(node, yaml.MappingNode) and node.flow_style):
+            # Replace ``~``/``null``, or fill an empty value inside a flow mapping.
+            addition = f"{{{key}: {token}}}"
+            if start == end and content[start - 1 : start] not in (" ", "\t"):
+                addition = " " + addition
+        else:
+            addition = f"{newline}  {key}: {token}"
         content = content[:start] + addition + content[end:]
     elif value is not None:
         start, end = value.start_mark.index, value.end_mark.index
+        if isinstance(value, yaml.ScalarNode) and value.style in ("|", ">"):
+            # A block scalar's span includes its trailing line break(s); keep them.
+            while end > start and content[end - 1] in "\r\n":
+                end -= 1
         replacement = token
         if start == end and isinstance(value, yaml.ScalarNode) and value.value == "":
             # An empty value: keep a separator between the colon and the new token.
