@@ -90,16 +90,16 @@ Controls whether the Requirements-First SDD pipeline **auto-advances** to the ne
 **Chain:**
 
 ```
-specify → generate-spec → spec-to-plan → plan-to-tasks → implement-tasks
+specify → generate-spec → spec-to-design → design-to-plan → plan-to-tasks → implement-tasks
 ```
 
 **Pass gate:**
 
-- `generate-spec`, `spec-to-plan`, `plan-to-tasks`: the command's built-in review loop must report an Overall Status of `PASS` or `PASS_WITH_WARNINGS`.
+- `generate-spec`, `spec-to-design`, `design-to-plan`, `plan-to-tasks`: the command's built-in review loop must report an Overall Status of `PASS` or `PASS_WITH_WARNINGS`.
 - `specify`: there is no review loop, so the gate is your explicit confirmation that requirements discovery is complete (the **final** stage summary, not each intermediate one).
 - `implement-tasks`: terminal stage — nothing auto-fires after it.
 
-When the review loop reports `NEEDS_REVISION` or `BLOCKED`, the chain halts and control returns to you. Before each advance the agent emits one notice line (for example: `auto_next: review passed → invoking /codexspec:spec-to-plan`).
+When the review loop reports `NEEDS_REVISION` or `BLOCKED`, the chain halts and control returns to you. Before each advance the agent emits one notice line (for example: `auto_next: review passed → invoking /codexspec:design-to-plan`).
 
 ### `workflow.worktrees`
 

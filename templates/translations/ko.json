@@ -112,7 +112,7 @@
     "description": "확인된 요구사항을 추적 가능한 spec.md로 정리합니다",
     "argument-hint": "[requirements.md 또는 기능 디렉터리]"
   },
-  "spec-to-plan": {
+  "design-to-plan": {
     "description": "확정된 설계를 추적 가능한 구현 계획으로 변환",
     "argument-hint": "[design.md, spec.md 또는 기능 디렉터리]"
   },

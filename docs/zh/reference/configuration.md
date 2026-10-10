@@ -89,16 +89,16 @@ git 提交信息所用的语言。可选——默认为 `output`。
 **链路：**
 
 ```
-specify → generate-spec → spec-to-plan → plan-to-tasks → implement-tasks
+specify → generate-spec → spec-to-design → design-to-plan → plan-to-tasks → implement-tasks
 ```
 
 **通过门：**
 
-- `generate-spec`、`spec-to-plan`、`plan-to-tasks`：命令内置的评审闭环需报告 Overall Status 为 `PASS` 或 `PASS_WITH_WARNINGS`。
+- `generate-spec`、`design-to-plan`、`plan-to-tasks`：命令内置的评审闭环需报告 Overall Status 为 `PASS` 或 `PASS_WITH_WARNINGS`。
 - `specify`：没有评审闭环，因此通过门是你对需求探索已完成的显式确认（指**最终**的阶段摘要，而不是每一次中间摘要）。
 - `implement-tasks`：终端阶段——其后不会自动触发任何内容。
 
-当评审闭环报告 `NEEDS_REVISION` 或 `BLOCKED` 时，链路停下并把控制权交还给你。每次推进之前，agent 会输出一条提示行（例如：`auto_next: review passed → invoking /codexspec:spec-to-plan`）。
+当评审闭环报告 `NEEDS_REVISION` 或 `BLOCKED` 时，链路停下并把控制权交还给你。每次推进之前，agent 会输出一条提示行（例如：`auto_next: review passed → invoking /codexspec:design-to-plan`）。
 
 ## 审查设置
 

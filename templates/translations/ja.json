@@ -112,7 +112,7 @@
     "description": "確認済み要件をトレーサブルな spec.md にまとめる",
     "argument-hint": "[requirements.md または 機能ディレクトリ]"
   },
-  "spec-to-plan": {
+  "design-to-plan": {
     "description": "確認済みの設計をトレース可能な実装計画に変換",
     "argument-hint": "[design.md、spec.md、または機能ディレクトリ]"
   },

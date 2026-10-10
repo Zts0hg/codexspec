@@ -1,9 +1,9 @@
 ---
-name: codexspec:spec-to-plan
+name: codexspec:design-to-plan
 description: "将已确认的设计转换为可追溯的实现计划"
 ---
 
-# Specification to Plan Converter
+# Design to Plan Converter
 
 ## Language Preference
 
@@ -99,7 +99,7 @@ creation, or unusable baseline is an explicit stop, never permission to fall bac
 
 ## User Input
 
-`the text after the $codexspec:spec-to-plan skill mention`
+`the text after the $codexspec:design-to-plan skill mention`
 
 ## Role
 

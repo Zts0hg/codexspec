@@ -73,7 +73,7 @@ Idea → Confirmed Requirements → Spec → Plan → Tasks → Code
 Every artifact is produced by a dedicated command and validated before the next stage begins:
 
 ```
-Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               Review spec               Review plan                  Review tasks
 ```

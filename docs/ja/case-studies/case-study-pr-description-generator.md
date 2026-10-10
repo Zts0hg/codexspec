@@ -6,7 +6,7 @@
 
 **対象となる機能**: `/codexspec:pr` コマンドの追加。構造化された GitHub PR / GitLab MR の説明を生成します。(出荷されたコマンドのユーザー向け概要は、[README の `/codexspec:pr` の項目](https://github.com/Zts0hg/codexspec/blob/main/README.md) を参照してください。)
 
-**開発フロー**: `specify → generate-spec → review-spec → clarify → spec-to-plan`
+**開発フロー**: `specify → generate-spec → review-spec → clarify → design-to-plan`
 
 **主な特徴**: 開発の途中で要件の問題が浮上し、`clarify` コマンドで修正された点です。これは SDD の柔軟性を示しています。CodexSpec の **Confirmation Gate** の具体例でもあり、あなたが明示的に確認するまでは何も確定せず、一度受け入れられた意思決定も clarify のチェックポイントで再検討されて覆すことができます。
 
@@ -266,7 +266,7 @@ The command shall determine output language in the following priority order:
 
 ---
 
-## ステージ 5: 技術実装計画 (`/codexspec:spec-to-plan`)
+## ステージ 5: 技術実装計画 (`/codexspec:design-to-plan`)
 
 ### 計画の概要
 
@@ -356,7 +356,7 @@ The command shall determine output language in the following priority order:
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec:spec-to-plan                                                │
+│  /codexspec:design-to-plan                                                │
 │  ├─ 技術実装計画を更新                                                   │
 │  ├─ 技術意思決定 9 つ、うち新規は 5 つ                                   │
 │  ├─ 実装フェーズ 5 つ                                                    │
@@ -388,7 +388,7 @@ The command shall determine output language in the following priority order:
 ### 2. SDD フローの柔軟性
 
 - 線形なフローではなく、どの段階でも戻って調整できる
-- `clarify` は `review-spec` のあと、`spec-to-plan` の前に挿入できる
+- `clarify` は `review-spec` のあと、`design-to-plan` の前に挿入できる
 - 仕様書ドキュメントも技術計画も、変更を反映して更新される
 
 ### 3. パラメータ設計の進化
@@ -410,7 +410,7 @@ The command shall determine output language in the following priority order:
 | generate-spec | spec.md | 完全な仕様書ドキュメント |
 | review-spec | review-spec.md | 品質レビューレポート |
 | clarify | (spec.md を更新) | 明確化の記録と要件の更新 |
-| spec-to-plan | plan.md | 技術実装計画 |
+| design-to-plan | plan.md | 技術実装計画 |
 
 ---
 
@@ -430,7 +430,7 @@ The command shall determine output language in the following priority order:
 /codexspec:clarify [issue description]
 
 # 5. 技術計画の生成
-/codexspec:spec-to-plan
+/codexspec:design-to-plan
 
 # 6. 計画の品質レビュー (任意)
 /codexspec:review-plan

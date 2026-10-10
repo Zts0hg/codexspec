@@ -73,7 +73,7 @@ CodexSpec 把开发过程拆解为一系列**可评审的检查点**。已确认
 每个工件都由专属命令产出，并在进入下一阶段之前完成校验：
 
 ```
-想法 → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+想法 → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                   │                          │                           │
                                              评审 spec                   评审 plan                    评审 tasks
 ```

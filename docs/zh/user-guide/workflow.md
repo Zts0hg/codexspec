@@ -14,7 +14,7 @@ SDD:       想法 → 已确认需求 → 规格 → 计划 → 任务 → 代�
 在 CodexSpec 中，这条链路被具体化为一串斜杠命令检查点，每个检查点产出一个带评审标记的持久化工件：
 
 ```text
-想法 → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+想法 → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                   │                          │                           │
                                              评审 spec                   评审 plan                    评审 tasks
 ```
@@ -28,7 +28,7 @@ SDD:       想法 → 已确认需求 → 规格 → 计划 → 任务 → 代�
 | 1. 项目原则 | `/codexspec:constitution` | `constitution.md` | 是 |
 | 2. 需求澄清 | `/codexspec:specify` | `requirements.md` | 是 |
 | 3. 生成规格 | `/codexspec:generate-spec` | `spec.md` + 自动评审 | 是 |
-| 4. 技术规划 | `/codexspec:spec-to-plan` | `plan.md` + 自动评审 | 是 |
+| 4. 技术规划 | `/codexspec:design-to-plan` | `plan.md` + 自动评审 | 是 |
 | 5. 任务拆解 | `/codexspec:plan-to-tasks` | `tasks.md` + 自动评审 | 是 |
 | 6. 跨工件分析 | `/codexspec:analyze` | 分析报告 | 是 |
 | 7. 实现 | `/codexspec:implement-tasks` | 代码 | - |

@@ -89,16 +89,16 @@ Controla se o pipeline de Requirements-First SDD **avança automaticamente** par
 **Cadeia:**
 
 ```
-specify → generate-spec → spec-to-plan → plan-to-tasks → implement-tasks
+specify → generate-spec → spec-to-design → design-to-plan → plan-to-tasks → implement-tasks
 ```
 
 **Critério de aprovação:**
 
-- `generate-spec`, `spec-to-plan`, `plan-to-tasks`: o loop de revisão embutido no comando precisa informar um Overall Status de `PASS` ou `PASS_WITH_WARNINGS`.
+- `generate-spec`, `spec-to-design`, `design-to-plan`, `plan-to-tasks`: o loop de revisão embutido no comando precisa informar um Overall Status de `PASS` ou `PASS_WITH_WARNINGS`.
 - `specify`: não há loop de revisão, então o critério é a sua confirmação explícita de que a descoberta de requisitos terminou (o resumo **final** da etapa, e não cada resumo intermediário).
 - `implement-tasks`: etapa terminal — nada dispara automaticamente depois dela.
 
-Quando o loop de revisão informa `NEEDS_REVISION` ou `BLOCKED`, a cadeia para e o controle volta a você. Antes de cada avanço, o agente emite uma linha de aviso (por exemplo: `auto_next: review passed → invoking /codexspec:spec-to-plan`).
+Quando o loop de revisão informa `NEEDS_REVISION` ou `BLOCKED`, a cadeia para e o controle volta a você. Antes de cada avanço, o agente emite uma linha de aviso (por exemplo: `auto_next: review passed → invoking /codexspec:design-to-plan`).
 
 ## Configurações de revisão
 

@@ -14,7 +14,7 @@ SDD:          Idea → Confirmed Requirements → Spec → Plan → Tasks → Co
 CodexSpec では、この連鎖がスラッシュコマンドのチェックポイントの連なりになります。各チェックポイントはレビューマーカー付きの永続化された成果物を生成します。
 
 ```text
-Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               Review spec               Review plan                  Review tasks
 ```
@@ -28,7 +28,7 @@ Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-t
 | 1. プロジェクト原則        | `/codexspec:constitution`    | `constitution.md`           | あり         |
 | 2. 要件の明確化 | `/codexspec:specify`         | `requirements.md`           | あり         |
 | 3. spec の生成             | `/codexspec:generate-spec`   | `spec.md` + 自動レビュー     | あり         |
-| 4. 技術計画        | `/codexspec:spec-to-plan`    | `plan.md` + 自動レビュー     | あり         |
+| 4. 技術計画        | `/codexspec:design-to-plan`    | `plan.md` + 自動レビュー     | あり         |
 | 5. タスク分割            | `/codexspec:plan-to-tasks`   | `tasks.md` + 自動レビュー    | あり         |
 | 6. 成果物間の分析   | `/codexspec:analyze`         | 分析レポート             | あり         |
 | 7. 実装            | `/codexspec:implement-tasks` | コード                        | -           |

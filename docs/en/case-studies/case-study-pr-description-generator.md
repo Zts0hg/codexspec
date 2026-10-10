@@ -6,7 +6,7 @@
 
 **Target feature**: Add the `/codexspec:pr` command, which generates structured GitHub PR / GitLab MR descriptions. (See the [README `/codexspec:pr` entry](https://github.com/Zts0hg/codexspec/blob/main/README.md) for the user-facing summary of the shipped command.)
 
-**Development flow**: `specify → generate-spec → review-spec → clarify → spec-to-plan`
+**Development flow**: `specify → generate-spec → review-spec → clarify → design-to-plan`
 
 **Key characteristic**: A requirement issue surfaced mid-stream and was corrected through the `clarify` command, illustrating the flexibility of SDD. This is a concrete example of the CodexSpec **Confirmation Gate** — nothing is binding until you explicitly confirm it, and a previously accepted decision can be reopened and reversed at the clarify checkpoint.
 
@@ -266,7 +266,7 @@ This reversal is the clearest illustration of the Confirmation Gate in this case
 
 ---
 
-## Stage 5: Technical Implementation Plan (`/codexspec:spec-to-plan`)
+## Stage 5: Technical Implementation Plan (`/codexspec:design-to-plan`)
 
 ### Plan Overview
 
@@ -355,7 +355,7 @@ This reversal is the clearest illustration of the Confirmation Gate in this case
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec:spec-to-plan                                                │
+│  /codexspec:design-to-plan                                                │
 │  ├─ Update the technical implementation plan                            │
 │  ├─ 9 technical decisions, including 5 new ones                         │
 │  ├─ 5 implementation phases                                             │
@@ -386,7 +386,7 @@ This case shows the pivotal role of the `clarify` command:
 ### 2. Flexibility of the SDD Flow
 
 - It is not a linear flow; you can return and adjust at any stage
-- `clarify` can be inserted after `review-spec` and before `spec-to-plan`
+- `clarify` can be inserted after `review-spec` and before `design-to-plan`
 - Both the specification document and the technical plan are updated to reflect the change
 
 ### 3. Evolution of the Parameter Design
@@ -408,7 +408,7 @@ This change reflects a design shift from "default SDD workflow" to "also support
 | generate-spec | spec.md | Complete specification document |
 | review-spec | review-spec.md | Quality review report |
 | clarify | (updates spec.md) | Clarification records + requirement updates |
-| spec-to-plan | plan.md | Technical implementation plan |
+| design-to-plan | plan.md | Technical implementation plan |
 
 ---
 
@@ -428,7 +428,7 @@ This change reflects a design shift from "default SDD workflow" to "also support
 /codexspec:clarify [issue description]
 
 # 5. Generate the technical plan
-/codexspec:spec-to-plan
+/codexspec:design-to-plan
 
 # 6. Review the plan quality (optional)
 /codexspec:review-plan

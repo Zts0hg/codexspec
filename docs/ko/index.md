@@ -73,7 +73,7 @@ CodexSpec은 개발을 **검토 가능한 체크포인트** 로 구성합니다.
 모든 산출물은 전용 명령어가 생성하며, 다음 단계로 넘어가기 전에 검증됩니다:
 
 ```
-아이디어 → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+아이디어 → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                        │                        │                           │
                                                   명세 리뷰                계획 리뷰                  태스크 리뷰
 ```

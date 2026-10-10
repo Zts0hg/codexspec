@@ -73,7 +73,7 @@ Ideia → Requisitos Confirmados → Spec → Plano → Tarefas → Código
 Cada artefato é produzido por um comando dedicado e validado antes do início da próxima etapa:
 
 ```
-Ideia → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+Ideia → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               Revisar spec              Revisar plano                Revisar tarefas
 ```

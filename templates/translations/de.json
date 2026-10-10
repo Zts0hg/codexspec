@@ -112,7 +112,7 @@
     "description": "Bestätigte Anforderungen in ein nachverfolgbares spec.md kompilieren",
     "argument-hint": "[requirements.md oder Feature-Verzeichnis]"
   },
-  "spec-to-plan": {
+  "design-to-plan": {
     "description": "Ein bestätigtes Design in einen nachvollziehbaren Implementierungsplan umwandeln",
     "argument-hint": "[design.md, spec.md oder Feature-Verzeichnis]"
   },

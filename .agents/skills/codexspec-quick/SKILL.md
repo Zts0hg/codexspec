@@ -128,7 +128,7 @@ Do not start generation before confirmation. If a critical question remains open
 Use the created feature directory explicitly for every command:
 
 1. `$codexspec:generate-spec <feature-dir>/requirements.md`
-2. `$codexspec:spec-to-plan <feature-dir>/spec.md`
+2. `$codexspec:design-to-plan <feature-dir>/spec.md`
 3. `$codexspec:plan-to-tasks <feature-dir>/plan.md`
 4. `$codexspec:implement-tasks <feature-dir>/tasks.md`
 

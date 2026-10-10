@@ -73,7 +73,7 @@ Idée → Exigences confirmées → Spec → Plan → Tâches → Code
 Chaque artefact est produit par une commande dédiée et validé avant de passer à l'étape suivante :
 
 ```
-Idée → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+Idée → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               Revue spec                 Revue plan                   Revue tasks
 ```

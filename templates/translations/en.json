@@ -112,7 +112,7 @@
     "description": "Compile confirmed requirements into a traceable spec.md",
     "argument-hint": "[requirements.md or feature directory]"
   },
-  "spec-to-plan": {
+  "design-to-plan": {
     "description": "Convert a confirmed design into a traceable implementation plan",
     "argument-hint": "[design.md, spec.md, or feature directory]"
   },

@@ -121,7 +121,7 @@ CodexSpec은 한 가지 믿음 위에 세워져 있습니다 — **효과적인 
 CodexSpec은 개발을 **리뷰 가능한 체크포인트** 단위로 구조화합니다.
 
 ```
-아이디어 → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+아이디어 → /specify → requirements.md → /generate-spec → spec.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               스펙 리뷰                계획 리뷰                    태스크 리뷰
 ```
@@ -162,7 +162,7 @@ claude
 > /codexspec:constitution 코드 품질과 테스트에 집중하는 원칙 만들기
 > /codexspec:specify 투두 애플리케이션을 만들고 싶어
 > /codexspec:generate-spec
-> /codexspec:spec-to-plan
+> /codexspec:design-to-plan
 > /codexspec:plan-to-tasks
 > /codexspec:implement-tasks
 ```
@@ -310,7 +310,7 @@ config 명령어가 다음 항목들을 안내합니다.
 CodexSpec은 개발을 **리뷰 가능한 체크포인트**로 쪼갭니다.
 
 ```
-아이디어 → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+아이디어 → /specify → requirements.md → /generate-spec → spec.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               스펙 리뷰                계획 리뷰                    태스크 리뷰
 ```
@@ -322,7 +322,7 @@ CodexSpec은 개발을 **리뷰 가능한 체크포인트**로 쪼갭니다.
 | 1. 프로젝트 원칙    | `/codexspec:constitution`     | `constitution.md`            | ✅        |
 | 2. 요구사항 명확화  | `/codexspec:specify`          | `requirements.md`            | ✅        |
 | 3. 스펙 생성        | `/codexspec:generate-spec`    | `spec.md` + 자동 리뷰        | ✅        |
-| 4. 기술 계획        | `/codexspec:spec-to-plan`     | `plan.md` + 자동 리뷰        | ✅        |
+| 4. 기술 계획        | `/codexspec:design-to-plan`     | `plan.md` + 자동 리뷰        | ✅        |
 | 5. 태스크 분해      | `/codexspec:plan-to-tasks`    | `tasks.md` + 자동 리뷰       | ✅        |
 | 6. 교차 산출물 분석 | `/codexspec:analyze`          | 분석 보고서                  | ✅        |
 | 7. 구현             | `/codexspec:implement-tasks`  | 코드                         | -         |
@@ -424,7 +424,8 @@ claude
 ### 5. 기술 계획 수립
 
 ```
-/codexspec:spec-to-plan 백엔드는 Python FastAPI, 데이터베이스는 PostgreSQL, 프론트엔드는 React 사용
+/codexspec:spec-to-design 백엔드는 Python FastAPI, 데이터베이스는 PostgreSQL, 프론트엔드는 React 사용
+/codexspec:design-to-plan
 ```
 
 관련 있는 계획 섹션만 사용하고, 스펙의 요구사항을 가리키는 `Covers` 링크를 기록하며, 적용 가능한 프로젝트 원칙을 검증합니다.
@@ -525,7 +526,7 @@ claude
 | `/codexspec:blueprint`        | 공유 blueprint의 확정된 요구사항을 논의하고 관리              |
 | `/codexspec:generate-spec`    | `spec.md` 문서를 생성 ★ 자동 리뷰                             |
 | `/codexspec:spec-to-design`   | `design.md` 생성 (아키텍처/구성요소/결정) ★ 자동 리뷰         |
-| `/codexspec:spec-to-plan`     | 스펙을 기술 계획으로 변환 ★ 자동 리뷰                         |
+| `/codexspec:design-to-plan`     | 스펙을 기술 계획으로 변환 ★ 자동 리뷰                         |
 | `/codexspec:plan-to-tasks`    | 계획을 추적 가능하고 검증 가능한 태스크로 분해 ★ 자동 리뷰    |
 | `/codexspec:implement-tasks`  | 태스크를 실행(조건부 TDD)                                     |
 | `/codexspec:auto-dev`         | blueprint의 대기 요구사항을 순서대로 자율 개발                |

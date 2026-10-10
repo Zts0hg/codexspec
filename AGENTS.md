@@ -12,7 +12,7 @@ Use these Codex skills when working on CodexSpec workflows:
 - `$codexspec:blueprint` to discuss and maintain confirmed requirements in the shared blueprint.
 - `$codexspec:generate-spec` to produce `spec.md`.
 - `$codexspec:spec-to-design` to produce `design.md`.
-- `$codexspec:spec-to-plan` to produce `plan.md`.
+- `$codexspec:design-to-plan` to produce `plan.md`.
 - `$codexspec:plan-to-tasks` to produce `tasks.md`.
 - `$codexspec:implement-tasks` to implement approved tasks.
 - `$codexspec:auto-dev` to develop pending blueprint requirements autonomously in document order.

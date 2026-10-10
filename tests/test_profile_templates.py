@@ -32,7 +32,7 @@ def test_no_other_stage_consults_profile() -> None:
     """
     pure_stages = [
         "generate-spec",
-        "spec-to-plan",
+        "design-to-plan",
         "plan-to-tasks",
         "review-spec",
         "review-plan",

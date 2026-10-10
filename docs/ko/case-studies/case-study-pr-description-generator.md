@@ -6,7 +6,7 @@
 
 **대상 기능**: 구조화된 GitHub PR / GitLab MR 설명을 생성하는 `/codexspec:pr` 명령어 추가. (출하된 명령어의 사용자용 요약은 프로젝트 [README 의 `/codexspec:pr` 항목](https://github.com/Zts0hg/codexspec/blob/main/README.md)을 참조하세요.)
 
-**개발 흐름**: `specify → generate-spec → review-spec → clarify → spec-to-plan`
+**개발 흐름**: `specify → generate-spec → review-spec → clarify → design-to-plan`
 
 **핵심 특징**: 중간에 요구사항 이슈가 하나 드러났고 `clarify` 명령을 통해 수정되었습니다. 이는 SDD 의 유연성을 보여 줍니다. 동시에 CodexSpec **컨펌 게이트(Confirmation Gate)** 의 구체적인 사례이기도 합니다. 명시적으로 확인하기 전에는 그 어떤 것도 확정되지 않으며, 한 번 수락된 결정도 clarify 체크포인트에서 다시 열어 뒤집을 수 있습니다.
 
@@ -266,7 +266,7 @@ The command shall determine output language in the following priority order:
 
 ---
 
-## 5단계: 기술 구현 계획 (`/codexspec:spec-to-plan`)
+## 5단계: 기술 구현 계획 (`/codexspec:design-to-plan`)
 
 ### 계획 개요
 
@@ -355,7 +355,7 @@ The command shall determine output language in the following priority order:
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec:spec-to-plan                                                │
+│  /codexspec:design-to-plan                                                │
 │  ├─ 기술 구현 계획 갱신                                                  │
 │  ├─ 기술 결정 9개, 새로운 결정 5개 포함                                  │
 │  ├─ 구현 단계 5개                                                        │
@@ -386,7 +386,7 @@ The command shall determine output language in the following priority order:
 ### 2. SDD 흐름의 유연성
 
 - 선형 흐름이 아니며, 어느 단계에서든 돌아가 조정할 수 있습니다.
-- `clarify`는 `review-spec` 이후, `spec-to-plan` 이전에 끼워 넣을 수 있습니다.
+- `clarify`는 `review-spec` 이후, `design-to-plan` 이전에 끼워 넣을 수 있습니다.
 - 명세 문서와 기술 계획 모두 변경을 반영하도록 갱신됩니다.
 
 ### 3. 매개변수 설계의 진화
@@ -408,7 +408,7 @@ The command shall determine output language in the following priority order:
 | generate-spec | spec.md | 완전한 명세 문서 |
 | review-spec | review-spec.md | 품질 리뷰 보고서 |
 | clarify | (spec.md 갱신) | 명확화 기록 + 요구사항 갱신 |
-| spec-to-plan | plan.md | 기술 구현 계획 |
+| design-to-plan | plan.md | 기술 구현 계획 |
 
 ---
 
@@ -428,7 +428,7 @@ The command shall determine output language in the following priority order:
 /codexspec:clarify [이슈 설명]
 
 # 5. 기술 계획 생성
-/codexspec:spec-to-plan
+/codexspec:design-to-plan
 
 # 6. 계획 품질 리뷰(선택)
 /codexspec:review-plan

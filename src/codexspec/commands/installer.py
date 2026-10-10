@@ -88,11 +88,11 @@ def get_commands_metadata() -> list[CommandMetadata]:
             "file_name": "spec-to-design.md",
         },
         {
-            "name": "spec-to-plan",
-            "display_name": "/codexspec:spec-to-plan",
+            "name": "design-to-plan",
+            "display_name": "/codexspec:design-to-plan",
             "description": "将已确认的设计转换为可追溯的实现计划",
             "category": "core",
-            "file_name": "spec-to-plan.md",
+            "file_name": "design-to-plan.md",
         },
         {
             "name": "plan-to-tasks",
@@ -363,6 +363,31 @@ def migrate_old_commands(
         return False
 
 
+def validate_retired_planning_entry(entry: Path, boundary: Path) -> None:
+    """Refuse to retire an entry through a symbolic-link parent directory."""
+    entry.relative_to(boundary)
+    for parent in entry.parents:
+        if parent.is_symlink():
+            raise OSError(f"Symbolic-link parent of planning command: {parent}")
+        if parent == boundary:
+            break
+
+
+def validate_planning_replacement(entry: Path, boundary: Path) -> None:
+    """Reject occupied or linked replacement paths before writing or retirement."""
+    validate_retired_planning_entry(entry, boundary)
+    if entry.is_symlink() or (entry.exists() and not entry.is_file()):
+        raise OSError(f"Planning command replacement must be a regular file: {entry}")
+
+
+def remove_retired_planning_entry(entry: Path, boundary: Path, *, remove_empty_parent: bool = False) -> None:
+    """Remove only the retired entry; retain additional files in a skill directory."""
+    validate_retired_planning_entry(entry, boundary)
+    entry.unlink(missing_ok=True)
+    if remove_empty_parent and entry.parent.is_dir() and not any(entry.parent.iterdir()):
+        entry.parent.rmdir()
+
+
 def install_commands_to_subdir(
     target_dir: Path,
     templates_dir: Path,
@@ -393,6 +418,13 @@ def install_commands_to_subdir(
     if not templates_dir.exists():
         return 0
 
+    replacement = templates_dir / "design-to-plan.md"
+    retired_entry = target_dir / "spec-to-plan.md"
+    replacement_entry = target_dir / replacement.name
+    if replacement.is_file():
+        validate_retired_planning_entry(retired_entry, target_dir)
+        validate_planning_replacement(replacement_entry, target_dir)
+
     # Ensure target directory exists
     target_dir.mkdir(parents=True, exist_ok=True)
 
@@ -419,6 +451,12 @@ def install_commands_to_subdir(
         # Write to target
         target_path.write_text(content, encoding="utf-8")
         installed_count += 1
+
+    if replacement.is_file():
+        validate_planning_replacement(replacement_entry, target_dir)
+        if not replacement_entry.is_file():
+            raise OSError(f"Planning command replacement was not installed: {replacement_entry}")
+        remove_retired_planning_entry(retired_entry, target_dir)
 
     return installed_count
 

@@ -76,7 +76,8 @@ constitution 명령어로 이후 모든 산출물이 검증받게 될 기준을 
 ## 6. 기술 계획 수립
 
 ```
-/codexspec:spec-to-plan 백엔드에는 Python FastAPI 사용
+/codexspec:spec-to-design 백엔드에는 Python FastAPI 사용
+/codexspec:design-to-plan
 ```
 
 계획은 명세 요구사항을 향한 `Covers` 링크를 기록하고, 적용 가능한 헌법 원칙을 검증합니다.
@@ -109,7 +110,7 @@ Quick 역시 전체 흐름과 동일한 가이드라인을 지킵니다:
 
 - `/codexspec:specify`와 동일한 타임스탬프 규칙으로 기능 워크스페이스와 `requirements.md`를 생성합니다.
 - 간결한 확정 요구사항 요약(`NEED-*`, 관련 `CON-*`/`DEC-*`, `OUT-*`, 미해결 `OPEN-*`)을 제시하고, 사용자의 명시적 확인을 기다립니다. **컨펌 게이트**는 여전히 적용됩니다.
-- 그런 다음 `/codexspec:generate-spec` → `/codexspec:spec-to-plan` → `/codexspec:plan-to-tasks` → `/codexspec:implement-tasks`를 해당 기능 디렉토리에 대해 연쇄 실행하며, 각 생성 명령은 자체적인 자동 리뷰 루프를 갖습니다.
+- 그런 다음 `/codexspec:generate-spec` → `/codexspec:design-to-plan` → `/codexspec:plan-to-tasks` → `/codexspec:implement-tasks`를 해당 기능 디렉토리에 대해 연쇄 실행하며, 각 생성 명령은 자체적인 자동 리뷰 루프를 갖습니다.
 
 변경이 광범위하거나 여러 독립적인 결과로 이어진다면 Quick은 잠시 멈추고 표준 흐름을 권합니다.
 

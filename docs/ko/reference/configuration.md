@@ -89,16 +89,16 @@ Requirements-First SDD 파이프라인이 현재 단계를 통과하면 **자동
 **체인:**
 
 ```
-specify → generate-spec → spec-to-plan → plan-to-tasks → implement-tasks
+specify → generate-spec → spec-to-design → design-to-plan → plan-to-tasks → implement-tasks
 ```
 
 **통과 게이트:**
 
-- `generate-spec`, `spec-to-plan`, `plan-to-tasks`: 명령어에 내장된 리뷰 루프가 Overall Status로 `PASS` 또는 `PASS_WITH_WARNINGS`를 보고해야 합니다.
+- `generate-spec`, `spec-to-design`, `design-to-plan`, `plan-to-tasks`: 명령어에 내장된 리뷰 루프가 Overall Status로 `PASS` 또는 `PASS_WITH_WARNINGS`를 보고해야 합니다.
 - `specify`: 리뷰 루프가 없으므로 게이트는 사용자가 요구사항 탐색이 끝났음을 명시적으로 확인하는 것입니다(각 중간 단계 요약이 아니라 **최종** 단계 요약).
 - `implement-tasks`: 종착 단계 — 이후에 자동으로 발동하는 것은 없습니다.
 
-리뷰 루프가 `NEEDS_REVISION` 또는 `BLOCKED`를 보고하면 체인은 멈추고 제어가 사용자에게 돌아갑니다. 각 진행 전에 에이전트는 알림 한 줄을 출력합니다(예: `auto_next: review passed → invoking /codexspec:spec-to-plan`).
+리뷰 루프가 `NEEDS_REVISION` 또는 `BLOCKED`를 보고하면 체인은 멈추고 제어가 사용자에게 돌아갑니다. 각 진행 전에 에이전트는 알림 한 줄을 출력합니다(예: `auto_next: review passed → invoking /codexspec:design-to-plan`).
 
 ## 검토 설정
 

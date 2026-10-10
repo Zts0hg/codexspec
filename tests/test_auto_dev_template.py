@@ -7,7 +7,7 @@ TEMPLATE = (ROOT / "templates/commands/auto-dev.md").read_text(encoding="utf-8")
 STAGES = (
     "generate-spec.md",
     "spec-to-design.md",
-    "spec-to-plan.md",
+    "design-to-plan.md",
     "plan-to-tasks.md",
     "implement-tasks.md",
 )
@@ -39,7 +39,7 @@ def test_auto_dev_owns_run_and_resumes_in_progress_first() -> None:
 def test_auto_dev_extracts_exact_requirements_and_runs_all_stages() -> None:
     assert "after exactly the three blueprint-managed" in TEMPLATE
     assert "directly to its `requirements.md`" in TEMPLATE
-    for stage in ("generate-spec", "spec-to-design", "spec-to-plan", "plan-to-tasks", "implement-tasks"):
+    for stage in ("generate-spec", "spec-to-design", "design-to-plan", "plan-to-tasks", "implement-tasks"):
         assert f"/codexspec:{stage}" in TEMPLATE
     assert "CODEXSPEC_AUTO_DEV_DELEGATION" in TEMPLATE
     assert "must not read, write, toggle, or rely on `workflow.auto_next`" in TEMPLATE

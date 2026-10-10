@@ -121,7 +121,7 @@ O CodexSpec parte do princípio de que **o desenvolvimento efetivo assistido por
 O CodexSpec estrutura o desenvolvimento em **pontos de verificação revisáveis**:
 
 ```
-Ideia → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+Ideia → /specify → requirements.md → /generate-spec → spec.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               Revisar spec             Revisar plano                Revisar tarefas
 ```
@@ -162,7 +162,7 @@ claude
 > /codexspec:constitution Criar princípios focados em qualidade de código e testes
 > /codexspec:specify Quero construir um aplicativo de tarefas
 > /codexspec:generate-spec
-> /codexspec:spec-to-plan
+> /codexspec:design-to-plan
 > /codexspec:plan-to-tasks
 > /codexspec:implement-tasks
 ```
@@ -310,7 +310,7 @@ O comando config vai guiá-lo por:
 O CodexSpec decompõe o desenvolvimento em **pontos de verificação revisáveis**:
 
 ```
-Ideia → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+Ideia → /specify → requirements.md → /generate-spec → spec.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               Revisar spec             Revisar plano                Revisar tarefas
 ```
@@ -322,7 +322,7 @@ Ideia → /specify → requirements.md → /generate-spec → spec.md → /spec-
 | 1. Princípios do projeto    | `/codexspec:constitution`    | `constitution.md`           | ✅                  |
 | 2. Clarificação de requisitos | `/codexspec:specify`       | `requirements.md`           | ✅                  |
 | 3. Gerar spec               | `/codexspec:generate-spec`   | `spec.md` + auto-revisão    | ✅                  |
-| 4. Planejamento técnico     | `/codexspec:spec-to-plan`    | `plan.md` + auto-revisão    | ✅                  |
+| 4. Planejamento técnico     | `/codexspec:design-to-plan`    | `plan.md` + auto-revisão    | ✅                  |
 | 5. Decomposição de tarefas  | `/codexspec:plan-to-tasks`   | `tasks.md` + auto-revisão   | ✅                  |
 | 6. Análise cross-artefato   | `/codexspec:analyze`         | Relatório de análise        | ✅                  |
 | 7. Implementação            | `/codexspec:implement-tasks` | Código                      | -                  |
@@ -424,7 +424,8 @@ Esse comando:
 ### 5. Criar o plano técnico
 
 ```
-/codexspec:spec-to-plan Usar Python FastAPI no backend, PostgreSQL no banco de dados e React no frontend
+/codexspec:spec-to-design Usar Python FastAPI no backend, PostgreSQL no banco de dados e React no frontend
+/codexspec:design-to-plan
 ```
 
 Usa apenas as seções relevantes de planejamento, registra links `Covers` para os requisitos da especificação e verifica os princípios aplicáveis do projeto.
@@ -525,7 +526,7 @@ A implementação segue o **fluxo de TDD condicional**:
 | `/codexspec:blueprint`        | Discute e mantém requisitos confirmados no blueprint compartilhado |
 | `/codexspec:generate-spec`    | Gera o documento `spec.md` ★ Auto-revisão                          |
 | `/codexspec:spec-to-design`   | Gera `design.md` (arquitetura/componentes/decisões) ★ Auto-revisão |
-| `/codexspec:spec-to-plan`     | Converte o spec em plano técnico ★ Auto-revisão                    |
+| `/codexspec:design-to-plan`     | Converte o spec em plano técnico ★ Auto-revisão                    |
 | `/codexspec:plan-to-tasks`    | Decompõe o plano em tarefas rastreáveis e verificáveis ★ Auto-revisão |
 | `/codexspec:implement-tasks`  | Executa as tarefas (TDD condicional)                               |
 | `/codexspec:auto-dev`         | Desenvolve em ordem todos os requisitos pendentes do blueprint     |

@@ -112,7 +112,7 @@
     "description": "Compilar requisitos confirmados em um spec.md rastreável",
     "argument-hint": "[requirements.md ou diretório de funcionalidade]"
   },
-  "spec-to-plan": {
+  "design-to-plan": {
     "description": "Converter um design confirmado em um plano de implementação rastreável",
     "argument-hint": "[design.md, spec.md ou diretório da funcionalidade]"
   },

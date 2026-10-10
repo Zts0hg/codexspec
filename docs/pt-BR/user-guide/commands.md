@@ -16,7 +16,7 @@ Agrupados por categoria, espelhando o catálogo do README. Dentro de cada grupo,
 | `/codexspec:specify` | Esclarecer, confirmar e persistir requisitos em `requirements.md` |
 | `/codexspec:blueprint` | Discutir e manter requisitos confirmados no blueprint compartilhado |
 | `/codexspec:generate-spec` | Gerar o documento `spec.md` a partir dos requisitos esclarecidos (★ Revisão automática) |
-| `/codexspec:spec-to-plan` | Converter a especificação em plano técnico de implementação (★ Revisão automática) |
+| `/codexspec:design-to-plan` | Converter um design confirmado em um plano de implementação rastreável ★ |
 | `/codexspec:plan-to-tasks` | Decompor o plano em tarefas rastreáveis e verificáveis (★ Revisão automática) |
 | `/codexspec:implement-tasks` | Executar tarefas com fluxo de trabalho TDD condicional |
 | `/codexspec:auto-dev` | Desenvolver autonomamente os requisitos pendentes na ordem do documento |
@@ -295,7 +295,7 @@ AI:  Generating specification...
 
      Next steps:
      - Review the spec with /codexspec:review-spec
-     - Or proceed to /codexspec:spec-to-plan
+     - Or proceed to /codexspec:design-to-plan
 ```
 
 **Dicas:**
@@ -377,80 +377,17 @@ AI:  ✓ Updated NFR-001: Response time < 500ms reads, < 1s writes
 
 ---
 
-### `/codexspec:spec-to-plan`
+### `/codexspec:design-to-plan`
 
-Converta a especificação da funcionalidade em um plano técnico de implementação. É aqui que você define **como** a funcionalidade será construída.
-
-**Sintaxe:**
-
-```
-/codexspec:spec-to-plan [path_to_spec.md]
-```
-
-**Argumentos:**
-
-| Argumento | Obrigatório | Descrição |
-|----------|----------|-------------|
-| `path_to_spec.md` | Não | Caminho para o arquivo de spec (detectado automaticamente em `.codexspec/specs/` se não fornecido) |
-
-**O que faz:**
-
-- Lê a especificação e a constituição
-- Inclui apenas o detalhamento técnico exigido pelos requisitos confirmados e pelas restrições do repositório
-- Verifica as regras aplicáveis da constituição sem tratar convenções opcionais como requisitos da funcionalidade
-- Adiciona links `Covers` aos requisitos da especificação
-- Documenta decisões técnicas com justificativa
-- Interrompe quando uma decisão alteraria a intenção confirmada
-
-**O que cria:**
-
-```
-.codexspec/
-└── specs/
-    └── 2026-0613-1200ab-task-management/
-        └── plan.md    # Plano técnico de implementação
-```
-
-**Exemplo:**
+Converte o design confirmado em um plano de implementação. Execute primeiro `spec-to-design` para definir arquitetura, componentes, interfaces e escolhas tecnológicas.
 
 ```text
-You: /codexspec:spec-to-plan Use Python FastAPI for backend, React for frontend, PostgreSQL for database
-
-AI:  Generating technical plan...
-
-     Constitutionality Review:
-     ✓ Clean Architecture: Modular design with clear boundaries
-     ✓ TDD: Test-first approach enforced in phases
-     ✓ Code Quality: Linting and type hints required
-
-     Architecture:
-     - Backend: FastAPI with layered architecture
-     - Frontend: React with component structure
-     - Database: PostgreSQL with migration strategy
-
-     Module Dependency Graph:
-     ┌─────────────┐
-     │    API      │
-     └──────┬──────┘
-            │
-     ┌──────▼──────┐
-     │  Services   │
-     └──────┬──────┘
-            │
-     ┌──────▼──────┐
-     │    Data     │
-     └─────────────┘
-
-     ✓ Created plan.md
-     5 Implementation Phases defined
+/codexspec:design-to-plan [design.md | spec.md | feature-directory]
 ```
 
-**Dicas:**
+Lê `requirements.md`, `spec.md`, `design.md` e a constituição. Planeja fases, ordem e verificação, referenciando o design sem redesenhar o sistema. Cada componente do plano inclui `Covers: REQ-xxx; Design: <design component>`.
 
-- Execute após a spec ser revisada e estável
-- Regras aplicáveis da constituição são obrigatórias; convenções irrelevantes do modelo, não
-- Inclua seções relevantes com base no tipo de projeto
-- Revise o plano antes de prosseguir para tarefas
+Gera `plan.md` e executa `review-plan`. Com `auto_next` ativado, uma revisão aprovada avança para `plan-to-tasks`. Decisões que alterem a intenção confirmada exigem confirmação. Um caminho explícito tem prioridade sobre a branch atual; ambiguidades exigem uma seleção. Funcionalidades antigas sem `design.md` mantêm a possibilidade de planejamento a partir de `spec.md`.
 
 ---
 
@@ -678,7 +615,7 @@ AI:  Overall Status: NEEDS_REVISION
 
 **Dicas:**
 
-- Execute antes de `/codexspec:spec-to-plan`
+- Execute antes de `/codexspec:design-to-plan`
 - Trate `BLOCKED` e `NEEDS_REVISION` como não prontos para prosseguir
 - Não promova achados consultivos a requisitos
 - Execute novamente após fazer correções
@@ -1346,7 +1283,7 @@ Execute um fluxo Requirements-First SDD simplificado para pequenas mudanças.
 - Cria um workspace da funcionalidade e `requirements.md` usando a mesma convenção de timestamp que `/codexspec:specify`
 - Resolve apenas ambiguidades que alterem materialmente a implementação; apresenta um resumo confirmado conciso (`NEED-*`, `CON-*`/`DEC-*` relevantes, `OUT-*`, `OPEN-*` não resolvidos)
 - Mantém-se no Portão de Confirmação: nada é gerado até você confirmar o resumo
-- Encadeia os comandos de geração contra o novo diretório da funcionalidade: `/codexspec:generate-spec`, `/codexspec:spec-to-plan`, `/codexspec:plan-to-tasks`, `/codexspec:implement-tasks`
+- Encadeia os comandos de geração contra o novo diretório da funcionalidade: `/codexspec:generate-spec`, `/codexspec:design-to-plan`, `/codexspec:plan-to-tasks`, `/codexspec:implement-tasks`
 - Delega ao próprio loop de revisão automática de cada comando de geração; pausa e pergunta ao usuário se uma revisão precisar de uma nova decisão de produto ou arquitetura
 - Relata o diretório da funcionalidade, os caminhos dos artefatos, os resultados das revisões, a verificação da implementação e os achados consultivos não resolvidos separadamente
 
@@ -1376,7 +1313,7 @@ AI:  Scope check: 1 component, 1 form field, no new dependencies. Quick is appro
 
 You: y
 
-AI:  Running generate-spec → spec-to-plan → plan-to-tasks → implement-tasks ...
+AI:  Running generate-spec → design-to-plan → plan-to-tasks → implement-tasks ...
 
      ✓ Feature dir: .codexspec/specs/2026-0713-0915ab-remember-me/
      ✓ All reviews PASS_WITH_WARNINGS or higher
@@ -1527,7 +1464,7 @@ AI:  ✓ Updated language.output: "zh-CN"
 ## Visão geral do fluxo de trabalho
 
 ```text
-Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               Review spec               Review plan                  Review tasks
 ```
@@ -1573,7 +1510,7 @@ A decomposição de tarefas não existe.
 
 **Soluções:**
 
-- Certifique-se de ter executado `/codexspec:spec-to-plan` primeiro
+- Certifique-se de ter executado `/codexspec:design-to-plan` primeiro
 - Em seguida execute `/codexspec:plan-to-tasks` para criar tasks.md
 
 ### "GitHub CLI not authenticated"

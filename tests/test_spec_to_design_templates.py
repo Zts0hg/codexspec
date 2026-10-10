@@ -71,7 +71,7 @@ def test_spec_to_design_auto_next_invokes_spec_to_plan() -> None:
     """S1.2.3."""
     content = read_command("spec-to-design")
     auto_next = section(content, "## Auto-Next Chain Advance")
-    assert "/codexspec:spec-to-plan" in auto_next
+    assert "/codexspec:design-to-plan" in auto_next
 
 
 def test_spec_to_design_authority_ranks_requirements_spec_above_design_decisions() -> None:
@@ -136,20 +136,20 @@ def test_generate_spec_auto_next_targets_spec_to_design() -> None:
     """S2.1.1 / S2.1.2."""
     auto_next = section(read_command("generate-spec"), "## Auto-Next Chain Advance")
     assert "/codexspec:spec-to-design" in auto_next
-    assert "/codexspec:spec-to-plan" not in auto_next
+    assert "/codexspec:design-to-plan" not in auto_next
 
 
-# --- T2.2: spec-to-plan narrowed ---
+# --- T2.2: design-to-plan narrowed ---
 
 
 def test_spec_to_plan_reads_design() -> None:
     """S2.2.1."""
-    assert "`design.md`" in read_command("spec-to-plan")
+    assert "`design.md`" in read_command("design-to-plan")
 
 
 def test_spec_to_plan_authority_design_below_spec_above_plan_decisions() -> None:
     """S2.2.2."""
-    body = section(read_command("spec-to-plan"), "## Authority and Stop Conditions")
+    body = section(read_command("design-to-plan"), "## Authority and Stop Conditions")
     spec_i = body.index("`spec.md`")
     design_i = body.index("`design.md`")
     plan_dec_i = body.index("Plan-level technical decisions")
@@ -158,12 +158,12 @@ def test_spec_to_plan_authority_design_below_spec_above_plan_decisions() -> None
 
 def test_spec_to_plan_uses_design_covers_notation() -> None:
     """S2.2.3."""
-    assert "Covers: REQ-xxx; Design:" in read_command("spec-to-plan")
+    assert "Covers: REQ-xxx; Design:" in read_command("design-to-plan")
 
 
 def test_spec_to_plan_role_is_implementation_planner() -> None:
     """S2.2.4."""
-    content = read_command("spec-to-plan")
+    content = read_command("design-to-plan")
     assert "implementation planner" in content
     assert "constrained technical designer" not in content
 

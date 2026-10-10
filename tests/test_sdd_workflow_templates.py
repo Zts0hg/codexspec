@@ -62,7 +62,7 @@ def test_specify_creates_and_confirms_requirements_record():
     [
         ("generate-spec", ["requirements.md"], "Sources:"),
         ("spec-to-design", ["requirements.md", "spec.md"], "Covers:"),
-        ("spec-to-plan", ["requirements.md", "spec.md", "design.md"], "Covers:"),
+        ("design-to-plan", ["requirements.md", "spec.md", "design.md"], "Covers:"),
         ("plan-to-tasks", ["requirements.md", "spec.md", "design.md", "plan.md"], "Covers:"),
     ],
 )
@@ -429,7 +429,7 @@ def test_command_templates_split_interaction_and_document_language():
 # --- auto-next chain advance -----------------------------------------------
 # `workflow.auto_next`: when enabled and a stage passes, a command auto-invokes
 # the next command in the SDD chain (specify -> generate-spec -> spec-to-design
-# -> spec-to-plan -> plan-to-tasks -> implement-tasks). Mirrors the analyze
+# -> design-to-plan -> plan-to-tasks -> implement-tasks). Mirrors the analyze
 # auto-invoke pattern added in #17. The source templates live in
 # templates/commands/; installed forms live under .claude/commands/codexspec/
 # (slash) and .agents/skills/codexspec-*/ ($mention).
@@ -437,8 +437,8 @@ def test_command_templates_split_interaction_and_document_language():
 _AUTO_NEXT_SUCCESSOR = {
     "specify": "generate-spec",
     "generate-spec": "spec-to-design",
-    "spec-to-design": "spec-to-plan",
-    "spec-to-plan": "plan-to-tasks",
+    "spec-to-design": "design-to-plan",
+    "design-to-plan": "plan-to-tasks",
     "plan-to-tasks": "implement-tasks",
 }
 

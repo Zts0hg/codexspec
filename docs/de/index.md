@@ -73,7 +73,7 @@ Idee → Bestätigte Anforderungen → Spec → Plan → Aufgaben → Code
 Jedes Artefakt wird von einem dedizierten Befehl erzeugt und validiert, bevor die nächste Stufe beginnt:
 
 ```
-Idee → /specify → requirements.md → /generate-spec → spec.md → /spec-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
+Idee → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
                                                    │                         │                            │
                                               Spec reviewen              Plan reviewen               Aufgaben reviewen
 ```

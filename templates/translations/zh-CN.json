@@ -112,7 +112,7 @@
     "description": "将已确认的需求编写为可追溯的 spec.md",
     "argument-hint": "[requirements.md 或 功能目录]"
   },
-  "spec-to-plan": {
+  "design-to-plan": {
     "description": "将已确认的设计转换为可追溯的实现计划",
     "argument-hint": "[design.md、spec.md 或 功能目录]"
   },
