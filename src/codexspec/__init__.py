@@ -77,7 +77,7 @@ from .worktrees import (
 )
 
 # Version info
-__version__ = "0.7.19"
+__version__ = "0.7.20"
 __author__ = "CodexSpec Team"
 
 # Constitution file path constants

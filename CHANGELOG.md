@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.20] - 2026-10-10
+
+### Changed
+
+- **Breaking:** Renamed `spec-to-plan` to `design-to-plan` to match the confirmed
+  design-to-plan stage. The old command is removed without an alias or forwarding
+  entry. Update explicit invocations and custom automation to the new name.
+- Workflow handoffs, command discovery, translations, and current documentation
+  use the new name. Planner inputs, legacy-artifact handling, `plan.md` output,
+  review behavior, and the existing Quick sequence are unchanged.
+- Claude and Codex installation updates retire the selected integrations' old
+  runnable entries after the replacement is available, preserve unrelated files,
+  and report replacement or cleanup failures explicitly.
+
+### For contributors
+
+- Removed orphaned nested helper-script copies from the repository while retaining
+  the active installed helper locations.
+- Added installation-retirement and failure-path regressions; synchronized generated
+  command artifacts and eight-language documentation.
+- Recorded guidance for keeping repository-sensitive test fixtures outside Git checkouts.
+- Updated plugin marketplace metadata for the preceding v0.7.19 release.
+
 ## [0.7.19] - 2026-10-09
 
 ### Added
