@@ -24,6 +24,7 @@
       "license": "MIT",
       "category": "development",
       "keywords": ["requirements-first", "spec-driven", "development", "ai", "claude", "sdd", "specification", "planning", "tdd"],
+      "commands": "./",
       "strict": false
     }
   ]

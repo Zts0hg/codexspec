@@ -225,6 +225,17 @@ def diverged(tmp_path, conflict=False):
 
 
 def evidence(work):
+    from codexspec.commit_runtime import snapshot
+
+    if git(work, "rev-parse", "--verify", "MERGE_HEAD", check=False).returncode == 0:
+        analyzed = snapshot(work)
+        return {
+            "head": analyzed["head"],
+            "tree": analyzed["tree"],
+            "analysis": analyzed,
+            "message": None if "default_message" in analyzed else "chore: integrate baseline changes",
+            "checks": [{"command": "project checks", "exit_code": 0}],
+        }
     return {
         "head": git(work, "rev-parse", "HEAD").stdout.strip(),
         "tree": git(work, "rev-parse", "HEAD^{tree}").stdout.strip(),
@@ -241,7 +252,7 @@ def test_s017_s019_merge_requires_verification_and_resumes(tmp_path):
     assert not Path(result["requirements_file"]).exists()
     assert m.resolve(FEATURE)["status"] == result["status"]
     assert git(work, "merge-base", "--is-ancestor", local, "HEAD").returncode == 0
-    assert git(work, "merge-base", "--is-ancestor", remote, "HEAD").returncode == 0
+    assert git(work, "rev-parse", "MERGE_HEAD").stdout.strip() == remote
     bad = evidence(work)
     bad["checks"][0]["exit_code"] = 1
     with pytest.raises(AutomationError, match="verification"):
@@ -265,7 +276,6 @@ def test_s018_conflict_must_be_resolved_before_finish(tmp_path):
         m.finish(FEATURE, evidence(work))
     (work / "README.md").write_text("both\n")
     git(work, "add", "README.md")
-    git(work, "commit", "-m", "resolve")
     assert m.finish(FEATURE, evidence(work))["status"] == "ready"
     assert git(repo, "rev-parse", "HEAD").stdout.strip() == local
 

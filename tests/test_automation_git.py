@@ -130,7 +130,14 @@ def test_ensure_merges_diverged_local_and_remote_histories(tmp_path: Path) -> No
     git(repo, "add", "local.txt")
     git(repo, "commit", "-m", "feat: local")
 
-    workspace = ensure_dedicated_workspace(locate_repository(repo))
+    from codexspec.automation import finish_initial_workspace
+    from tests.test_worktrees import evidence
+
+    context = locate_repository(repo)
+    with pytest.raises(AutomationError, match="initial_merge_requires_verification"):
+        ensure_dedicated_workspace(context)
+    finish_initial_workspace(context, evidence(context.worktree_path))
+    workspace = ensure_dedicated_workspace(context)
     assert (workspace.path / "local.txt").exists()
     assert (workspace.path / "remote.txt").exists()
     parents = git(workspace.path, "rev-list", "--parents", "-n", "1", "HEAD").stdout.split()
@@ -153,6 +160,6 @@ def test_git_runner_times_out_hung_subprocess(tmp_path: Path, monkeypatch: pytes
     def hang(*args: object, **kwargs: object) -> None:
         raise __import__("subprocess").TimeoutExpired(cmd=["git"], timeout=600)
 
-    monkeypatch.setattr("codexspec.automation.subprocess.run", hang)
+    monkeypatch.setattr("codexspec.commit_runtime.subprocess.run", hang)
     with pytest.raises(AutomationError, match="git_command_timeout"):
         GitRunner().run(repo, "status")

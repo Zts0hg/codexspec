@@ -1,7 +1,7 @@
 ---
 description: Analyze staged git changes and generate Conventional Commits compliant commit messages strictly from the staged diff
 argument-hint: "[-p] Use -p to only preview the message without committing"
-allowed-tools: Bash(git diff --staged:*), Bash(git diff --cached:*), Bash(git status:*), Bash(git commit:*)
+allowed-tools: Bash(git diff:*), Bash(git status:*), Bash(git rev-parse:*), Bash(git write-tree:*), Bash(codexspec _commit-staged-helper:*), Bash(python3:*), Bash(python:*), Bash(py:*)
 forbidden-tools: Bash(git add:*), Bash(git reset:*), Bash(git checkout:*), Bash(git restore:*), Bash(git stash:*), Bash(git rm:*)
 ---
 
@@ -68,99 +68,104 @@ forbidden-tools: Bash(git add:*), Bash(git reset:*), Bash(git checkout:*), Bash(
 
 <!-- CODEXSPEC:INCLUDE workspace-routing.md -->
 
-## Parameter Check
+## Parameter Check and Input Identity
 
-Check if `$ARGUMENTS` contains `-p`:
+If `$ARGUMENTS` contains `-p`, analyze and return the message without committing.
+Otherwise analyze and execute the authorized commit through the guarded helper.
 
-- **If `-p` is present**: Preview mode - only output the commit message, do not execute `git commit`
-- **If `-p` is NOT present**: Execute mode - generate the message and execute `git commit` directly
+By default the input is the invoking checkout's original staging area. Never
+route analysis to another checkout or substitute an index to make a commit work.
+A helper caller may explicitly supply its prepared `workspace`, `index_file`,
+`head`, `tree`, and `required_scope`; this is a preview-only invocation. Use the
+returned workspace and set `GIT_INDEX_FILE` to that exact prepared index for every
+Git read in this invocation. Scope constrains formatting, not message intent.
+Do not execute a helper-owned preparation here: return its message to its caller.
 
-## Forbidden Operations (CRITICAL)
+## Staging Boundary
 
-**SAFETY PRINCIPLE**: This command must NEVER modify the staging area. Only read staged changes and commit them as-is.
+The caller chooses and stages the intended changes before invoking this command.
+This command must never run `git add`, `git reset`, `git checkout`, `git restore`,
+`git stash`, or `git rm`, including after a hook failure. It must not select files,
+repair staging, or include unstaged changes. Report unexpected or empty staging.
 
-**UNDER NO CIRCUMSTANCES**:
+## Commit Runtime
 
-- `git add` - Do not stage new files
-- `git reset` - Do not unstage or rollback
-- `git checkout` / `git restore` - Do not restore files
-- `git stash` - Do not stash changes
-- `git rm` - Do not remove files
-- Any operation that modifies what is staged
+Resolve one runtime for this invocation, without changing the input workspace:
 
-**THE ONLY EXCEPTION** - Pre-commit Hook File Modifications:
+- When loaded from a Claude plugin, use its bundled
+  `${CLAUDE_PLUGIN_ROOT}/commit-staged-helper.py`.
+- After project initialization (including one-time `uvx` initialization), use
+  `<original workspace>/.codexspec/scripts/commit-staged-helper.py` when present.
+- Otherwise, an installed `codexspec _commit-staged-helper` is the same protocol.
 
-- If a pre-commit hook modifies file content during commit, you MAY re-stage ONLY the files the hook modified
-- This is the ONLY case where `git add` is permitted
-- The hook output will indicate which files were modified
+Run a bundled helper with an available Python 3.11+ interpreter, for example
+`python3 -I -S "<absolute helper path>" snapshot` (Windows: `py -3.11`, or a
+verified newer Python). Quote the helper path. Keep that same runtime for commit.
+The standalone file uses only the Python standard library and Git; it requires
+neither a persistent CodexSpec CLI nor an LLM client. The agent generates the
+message; the runtime only snapshots, validates, and executes Git.
 
-**If something seems wrong**: ABORT and inform the user. DO NOT attempt to "fix" or "repair" the staging area.
+If no runtime is available, report the missing installation asset or Python/Git
+prerequisite; do not install packages automatically or bypass validation.
+Existing workspace-routing requirements still apply to execution. Preview never
+requires creating or resolving another worktree. This runtime does not replace
+the CLI used by blueprint, auto-dev, or worktree routing.
 
-## Instructions
+## Analysis
 
-### Pre-commit Verification
+1. For the original index, invoke the selected runtime with `snapshot` and retain
+   its exact JSON object (`workspace`, `index_file`, nullable `head`, `tree`, plus
+   `merge_heads` and optional `default_message` during a merge).
+   For a helper-owned preview, verify `git rev-parse HEAD` and `git write-tree`
+   against the supplied `head` and `tree`, with its explicit index selected.
+   For a pending merge whose snapshot contains `default_message`, its staged tree
+   equals HEAD: skip semantic generation in steps 2–3 and retain that message unchanged. Preview
+   returns that default text; execution sends `message: null` with the exact snapshot.
+   Non-merge empty staging remains an error.
+2. Run `git diff --staged --name-status` and `git diff --staged` against that same
+   index. The staged diff is the only authoritative input for semantic claims.
+   Do not infer intent from earlier conversation or describe unstaged changes.
+   For a merge, these are changes integrated relative to the current HEAD. Do not
+   imply that all incoming changes were authored as conflict resolutions.
+   If the diff is insufficient, stop and report what cannot be established.
+3. Generate a Conventional Commits subject, `type(scope): description`, respecting
+   the project's conventions, required helper scope, and configured commit
+   language. Type and scope remain in English. Use a concise subject and a body
+   when needed to cover all material staged changes: relevant behavior, affected
+   components, removals, compatibility changes, and tests actually present in
+   the diff. Do not claim tests passed based on conversation or test-file presence.
+   Include `BREAKING CHANGE:` when the staged change supports it. Never add AI
+   attribution or `Co-Authored-By` lines.
+4. Verify the complete snapshot again, including merge parents/default message when present. If it changed, discard the stale message
+   and analyze again after the caller has prepared the intended content. Do not
+   keep the old message merely because file names are unchanged.
+5. In preview mode, return the full message only, retaining the validated input
+   identity for the calling workflow. Do not create a commit or invoke distill.
+6. In execute mode, invoke the selected runtime with `commit`, sending exactly
+   this JSON on stdin in the same workspace:
 
-Before analyzing changes, verify the staged state:
+```json
+{"analysis":{"workspace":"<original workspace>","index_file":"<original index>","head":"<HEAD or null>","tree":"<analyzed tree>"},"message":"<full subject and optional body>"}
+```
 
-1. Run `git diff --staged --name-only` to confirm what is staged
-2. If the list is empty, ABORT and inform the user (see Error Handling)
-3. If the list seems incorrect or unexpected, ABORT and inform the user
-4. DO NOT attempt to modify the staging area - only report what you see
+For merges, include every field from the exact snapshot in `analysis`; use null
+for `message` only when `default_message` is present.
 
-### Change Analysis
+Use structured input or a UTF-8 temporary file; never interpolate the message into
+shell code. The helper preserves hooks and checks the actual commit index before
+creation. Report success only after its `committed` response.
 
-**Source of truth**: The staged diff is the *only* authoritative input for the commit message. Do NOT infer intent, motivation, or scope from prior conversation turns, earlier session messages, or any discussion unrelated to what is actually staged. If the diff alone is insufficient to write a clear and accurate message, ABORT and ask the user for clarification rather than guessing.
+## Failure and Retry
 
-1. Execute `git diff --staged` to retrieve staged changes.
-
-2. Analyze the changes and generate a commit message that strictly follows **Conventional Commits** specification:
-   - Format: `type(scope): description`
-   - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
-   - If the project has a `CLAUDE.md` with custom commit conventions, follow those instead
-   - **DO NOT** include any AI attribution in the commit message
-   - Do not add `Co-Authored-By` lines or any references to AI tools/agents
-   - The commit message should focus solely on describing the changes present in the staged diff
-
-3. **If preview mode (`-p`)**: Display the generated commit message and stop.
-
-4. **If execute mode (default)**: Execute `git commit -m "..."` directly with the generated message.
-
-### Pre-commit Hook Handling
-
-If `git commit` fails due to a pre-commit hook modifying files:
-
-1. Check the hook output to identify which files were modified
-2. Re-stage ONLY those specific files: `git add <modified-files>`
-3. Retry the commit with the same message
-4. If it still fails or the situation is unclear, ABORT and inform the user
-
-## Important Notes
-
-- In execute mode (default), execute `git commit` directly after generating the message
-- In preview mode (`-p`), only display the commit message without executing
-- For breaking changes, include `BREAKING CHANGE:` in the commit body
-- Keep the description concise and in imperative mood (e.g., "add feature" not "added feature")
-
-## Error Handling
-
-**If no staged changes exist**:
-
-- Inform the user: "No staged changes found"
-- Suggest: "Use `git add <files>` to stage files first"
-- DO NOT attempt to stage files automatically
-
-**If unexpected state is detected**:
-
-- ABORT immediately
-- Report the issue clearly to the user
-- DO NOT use `git reset`, `git checkout`, `git restore`, or any repair operations
-- Let the user decide how to proceed
-
-**If commit fails for unknown reasons**:
-
-- Report the error message to the user
-- DO NOT attempt to "fix" the situation
-- The user should investigate and resolve manually
+- Empty, unexpected, or insufficient staged input: report the condition; do not
+  stage or guess a message.
+- `stale_analysis`: return to caller preparation and analyze again. A prepared
+  helper index must be refreshed by that helper, not repaired here.
+- Hook-modified files: the caller may stage only the authorized fixes, then must
+  invoke this command again to analyze the new staged content before retrying.
+  This command never restages or retries with a message from different content.
+- Other failures: report the exact error and preserve existing state. Never
+  bypass hooks, switch indexes, or fall back to raw `git commit`.
 
 ## Automatic Distillation
 

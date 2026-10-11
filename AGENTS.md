@@ -47,3 +47,23 @@ Read the full record — each carries a `status` of `candidate` or `vetted`; wei
 
 **Capture knowledge as you go.** When this session produces reusable cross-feature knowledge — even in plain chat or a non-SDD fix — run `/codexspec:distill` near that moment rather than only at wrap-up. It is non-blocking and early-exits when there is nothing new.
 <!-- CODEXSPEC PROFILE END -->
+
+<!-- CODEXSPEC COMMITS START -->
+## Commit Messages
+
+Before creating an authorized Git commit, invoke `$codexspec:commit-staged` to analyze staged
+changes and generate the message. This applies in plain conversation and SDD
+workflows, including auto-dev feature commits and blueprint commits. Command
+availability alone is not an invocation.
+
+The calling workflow prepares staging. `commit-staged` must not choose or stage
+files, and must not describe unstaged changes or conversation-only intent. Use a
+body when needed to cover material staged changes accurately and completely.
+
+For helper-owned commits, prepare the helper's explicit index first, invoke
+`$codexspec:commit-staged -p` against that index, and pass the full message and analyzed tree
+to the helper's finalization action. Keep ownership, path, locking, and recovery
+checks. If content changes, prepare and analyze again before committing; never
+fall back to a fixed message or direct Git execution to bypass a failed check.
+This rule does not grant authorization to stage, commit, or push.
+<!-- CODEXSPEC COMMITS END -->

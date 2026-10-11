@@ -562,6 +562,10 @@ claude
 
 #### Git 工作流命令
 
+Agent 在执行已获授权的提交前会调用 `commit-staged`，覆盖自动开发和蓝图提交。
+调用方负责准备暂存区；命令仅依据暂存 diff 生成标题和必要的正文。
+通过 helper 提交时，先调用预览分析，再校验最终提交内容与分析内容一致。
+
 | 命令                    | 说明                                       |
 | ----------------------- | ------------------------------------------ |
 | `/codexspec:commit-staged` | 基于暂存的 diff 生成提交信息                |
@@ -779,6 +783,8 @@ uv build
 ## 许可证
 
 MIT 许可证——详见 [LICENSE](LICENSE)。
+
+commit-staged 的执行模块随 Claude 插件分发，init（包括 uvx 一次性初始化）也会将其复制到 `.codexspec/scripts/commit-staged-helper.py`。直接预览和已授权的原地提交需要 Python 3.11+ 与 Git，无需长期安装 CodexSpec CLI。当前 agent 负责生成提交信息，共享 helper 负责校验和执行。工作树路由、blueprint 和 auto-dev 保留原有 CLI 前提。
 
 ## 致谢
 

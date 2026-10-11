@@ -428,6 +428,13 @@ def install_commands_to_subdir(
     # Ensure target directory exists
     target_dir.mkdir(parents=True, exist_ok=True)
 
+    if (templates_dir / "commit-staged.md").is_file():
+        from codexspec.commit_guidance import install_plugin_commit_guidance
+        from codexspec.commit_runtime import install_helper
+
+        install_helper(target_dir)
+        install_plugin_commit_guidance(target_dir)
+
     # Load translation cache if needed
     translation_cache = None
     if language != "en":

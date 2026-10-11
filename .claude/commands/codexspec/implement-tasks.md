@@ -67,14 +67,29 @@ name collision; report that collision and retry a new identity only for a genuin
 
 A `ready` response is required before writing feature artifacts or continuing development. Exit
 status 3 with `merge_requires_resolution` or `merge_requires_verification` is a preparation handoff,
-not success. Resolve conflicts and complete the merge only in the returned worktree, run the
-project's required checks, and call `codexspec _worktree-helper finish --feature <full-feature-name>
---verification <json-file>` (use `worktree-for-codexspec-maintenance` for maintenance preparation).
-The temporary JSON contains the verified `head`, `tree`, and `checks` entries with `command` and
-integer `exit_code`; never claim a check ran when it did not. If conflicts cannot be resolved or
-verification fails, stop. Retain the returned feature identity for continuation; do not create a
-second feature to bypass failed preparation. Fetch warnings mean remote information may be stale;
-they do not authorize bypassing an invalid baseline or failed verification.
+not success. Resolve and stage conflicts only in the returned worktree. Leave a pending
+merge uncommitted. Run the project's required checks against the prepared files, then take a
+`codexspec _commit-staged-helper snapshot` in that worktree with its original index (no inherited
+GIT_INDEX_FILE). For a contentful merge, invoke `/codexspec:commit-staged -p` on that exact
+snapshot and retain its complete message. Describe changes as integrated changes; do not attribute
+all incoming code to conflict resolution. If the snapshot contains `default_message`, the merge
+only connects history: keep its message unchanged by supplying `message: null`.
+
+Call `codexspec _worktree-helper finish --feature <full-feature-name> --verification <json-file>`
+(use `worktree-for-codexspec-maintenance` for maintenance preparation). The JSON contains the
+verified `head`, staged `tree`, `checks` entries with `command` and integer `exit_code`, and,
+for a pending merge, the complete `analysis` snapshot and `message`. The finish helper rechecks
+and commits the same index. Never commit the pending merge directly or bypass a rejected snapshot.
+If recovery finds the commit already created, verify its current HEAD/tree and submit head/tree/checks
+without a new message. Never claim checks ran when they did not. If conflicts or checks cannot
+be resolved, stop and retain the same identity; do not create a second feature to bypass preparation.
+Fetch warnings indicate potentially stale remote information, not permission to bypass checks.
+
+Initial fixed auto-dev/blueprint workspace creation follows the same pending handoff. If acquisition
+or blueprint setup exits 3 with `merge_requires_resolution` or `merge_requires_verification`, use
+its returned `workspace`, resolve/stage/check/analyze as above, and call
+`codexspec _worktree-helper finish-initial --verification <json-file>`. Retry the original setup
+only after `ready`. The helper excludes active auto-dev owners and retains interrupted preparation.
 
 Every mutating tool call and later SDD invocation must explicitly use `OUTPUT_ROOT` or paths inside
 it. Before each file write, verify real filesystem containment: refuse symbolic links in the
@@ -206,7 +221,10 @@ Implement directly and verify correctness. Task types that typically don't need 
 - When encountering blockers:
   - Record the issue in `issues.md` (task ID, error, attempted solutions, status)
   - Continue to the next independent task
-- Commit code after completing significant tasks or phases
+- For an authorized commit after significant tasks or phases, prepare its staging
+  in the calling workflow and invoke `/codexspec:commit-staged`. Under auto-dev,
+  use auto-dev's prepared-index preview/finalization protocol instead of direct
+  Git execution; commit-staged does not choose or stage files.
 - Update progress in `tasks.md` as tasks are completed
 
 ### 5. Issue Recording
@@ -539,7 +557,8 @@ later stage or blueprint transition; do not inspect or invoke `workflow.auto_nex
   the exact blocking evidence.
 - Commits remain outside verdict logic. If the surrounding workflow calls for
   a commit, create it only after the applicable checks are green; a commit must
-  never alter, replace, or imply the review verdict.
+  never alter, replace, or imply the review verdict. Generate its full message
+  through `/codexspec:commit-staged`; changed content requires fresh analysis.
 
 ## Systematic Debugging Escalation
 

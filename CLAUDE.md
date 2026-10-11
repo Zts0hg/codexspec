@@ -860,3 +860,41 @@ Configuration and mutable profile-review setup route before writing. Config valu
 checkout-local; destination values govern toggles, and Git integration propagates edits.
 First-time and update init are explicit routing exceptions. Auto-dev always keeps its
 fixed workspace and existing ownership protocol, even when ordinary isolation is off.
+
+## Unified Staged Commit Analysis
+
+The managed commit guidance block is installed into both integration context files
+by src/codexspec/commit_guidance.py. It routes authorized agent commits through
+commit-staged, including plain conversation and SDD workflows.
+
+src/codexspec/staged_commits.py prepares helper-owned Git indexes without changing
+caller staging and guards commits against stale analyzed content. Agents perform
+semantic analysis through commit-staged preview; Python helpers do not call an
+LLM. Full messages, including bodies, cross the hidden helper interfaces.
+
+Auto-dev uses prepare-feature then commit-feature. Blueprint uses prepare then
+apply, preserving the existing journal only around final publication/commit.
+Preparations live under the Git coordination directory and reserve generated
+feature IDs. Finalization validates ownership, HEAD, tree and current proposed
+content. Original Git hooks are delegated, and hook-induced staged changes abort
+for new preparation and analysis. Do not restore the legacy fixed-message path.
+
+<!-- CODEXSPEC COMMITS START -->
+## Commit Messages
+
+Before creating an authorized Git commit, invoke `/codexspec:commit-staged` to analyze staged
+changes and generate the message. This applies in plain conversation and SDD
+workflows, including auto-dev feature commits and blueprint commits. Command
+availability alone is not an invocation.
+
+The calling workflow prepares staging. `commit-staged` must not choose or stage
+files, and must not describe unstaged changes or conversation-only intent. Use a
+body when needed to cover material staged changes accurately and completely.
+
+For helper-owned commits, prepare the helper's explicit index first, invoke
+`/codexspec:commit-staged -p` against that index, and pass the full message and analyzed tree
+to the helper's finalization action. Keep ownership, path, locking, and recovery
+checks. If content changes, prepare and analyze again before committing; never
+fall back to a fixed message or direct Git execution to bypass a failed check.
+This rule does not grant authorization to stage, commit, or push.
+<!-- CODEXSPEC COMMITS END -->

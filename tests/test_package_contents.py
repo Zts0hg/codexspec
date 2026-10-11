@@ -204,6 +204,10 @@ def test_built_archives_contain_resolvers_and_all_current_command_templates() ->
     expected_commands = _expected_command_templates()
 
     for members in [_wheel_members(wheels[0]), _sdist_members(sdists[0])]:
+        assert (
+            _archive_member(members, "codexspec/commit_runtime.py")
+            == (ROOT / "src/codexspec/commit_runtime.py").read_bytes()
+        )
         assert _archive_member(members, "/scripts/bash/review-context.sh") == expected_bash
         assert _archive_member(members, "/scripts/powershell/review-context.ps1") == expected_powershell
         _assert_packaged_commands(members, expected_commands)

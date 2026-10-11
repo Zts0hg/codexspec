@@ -272,3 +272,28 @@ def test_init_ai_both_installs_claude_commands_and_codex_skills(tmp_path: Path) 
     assert (project / ".agents" / "skills" / "codexspec-specify" / "SKILL.md").exists()
     assert (project / "CLAUDE.md").exists()
     assert (project / "AGENTS.md").exists()
+
+
+@pytest.mark.parametrize(
+    "ai,filename,invocation",
+    [
+        ("codex", "AGENTS.md", "$codexspec:commit-staged"),
+        ("claude", "CLAUDE.md", "/codexspec:commit-staged"),
+    ],
+)
+def test_commit_guidance_installed_and_updated_without_clobber(tmp_path, ai, filename, invocation):
+    target = tmp_path / "project"
+    runner = CliRunner()
+    args = ["init", str(target), "--ai", ai, "--no-git", "--lang", "en", "--force"]
+    first = runner.invoke(app, args)
+    assert first.exit_code == 0, first.output
+    context = target / filename
+    text = context.read_text()
+    assert "<!-- CODEXSPEC COMMITS START -->" in text
+    assert invocation in text
+    assert "Before creating an authorized Git commit" in text
+    custom = "\nCustom literal: " + chr(92) + "g<0>\n"
+    context.write_text(text + custom)
+    second = runner.invoke(app, args)
+    assert second.exit_code == 0, second.output
+    assert context.read_text() == text + custom

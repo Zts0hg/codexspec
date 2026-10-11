@@ -304,7 +304,7 @@ The config command will guide you through:
 | Method | Best For | Features |
 |--------|----------|----------|
 | **CLI Installation** (`uv tool install`) | Full development workflow | CLI commands (`init`, `check`, `config`) + slash commands |
-| **Plugin Marketplace** | Quick start, existing projects | Slash commands only (use `/codexspec:config` for language setup) |
+| **Plugin Marketplace** | Quick start, existing projects | Slash commands + automatic commit guidance (use `/codexspec:config` for language setup) |
 
 **Note**: The plugin uses `strict: false` mode and reuses the existing multi-language support via LLM dynamic translation.
 
@@ -572,6 +572,11 @@ Implementation follows **conditional TDD workflow**:
 
 #### Git Workflow Commands
 
+Agents invoke `commit-staged` before authorized commits, including auto-dev and
+blueprint commits. The caller prepares staging; the command generates a subject
+and any needed body from the staged diff only. Helper workflows use preview
+analysis and verify that the finalized commit matches the analyzed content.
+
 | Command                    | Description                                       |
 | -------------------------- | ------------------------------------------------- |
 | `/codexspec:commit-staged` | Generate commit message from staged changes       |
@@ -790,6 +795,8 @@ Contributions are welcome! Please read the contributing guidelines before submit
 
 MIT License - see [LICENSE](LICENSE) for details.
 
+The commit-staged runtime is bundled with Claude plugins and copied by init to `.codexspec/scripts/commit-staged-helper.py`, including one-time uvx initialization. Direct preview and authorized in-place commits require Python 3.11+ and Git, but no persistent CodexSpec CLI. The current agent generates the message; the shared helper validates and executes it. Worktree routing, blueprint and auto-dev keep their existing CLI prerequisites.
+
 ## Acknowledgements
 
 - Inspired by [GitHub spec-kit](https://github.com/github/spec-kit)
@@ -801,3 +808,10 @@ Blueprint and auto-dev retain their fixed shared worktree. Standalone project ed
 use a maintenance worktree; settings take effect per checkout and reach other checkouts
 through Git integration. See [worktree development](docs/en/user-guide/workflow.md#worktree-development)
 and [configuration](docs/en/reference/configuration.md#workflowworktrees).
+
+The enabled Claude plugin loads the same commit guidance at session start,
+including resumed sessions, through its bundled `hooks/hooks.json`. This requires
+Git on PATH and a Claude Code version supporting command-hook `args` (exec form).
+It does not initialize the project or modify its Git state. Initialized projects
+receive the rule in CLAUDE.md or AGENTS.md. The guidance tells the agent to invoke
+commit-staged; it is not a Git-wide interceptor for manual terminal commands.
