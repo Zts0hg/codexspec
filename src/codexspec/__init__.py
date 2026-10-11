@@ -64,6 +64,7 @@ from .i18n import (
 )
 from .integrations import get_integrations
 from .profile import ensure_profile_scaffold, inject_profile_block
+from .specs_context import inject_specs_context
 from .translator import SUPPORTED_LANGUAGES, translate
 from .worktrees import (
     MAINTENANCE_NAME,
@@ -1463,6 +1464,7 @@ def init(
         # the compliance @import or the user's body (bounded, idempotent).
         inject_profile_block(claude_md)
         inject_commit_guidance(claude_md, "/codexspec:commit-staged")
+        inject_specs_context(claude_md)
 
     # Initialize git if requested
     if not no_git and not (target_dir / ".git").exists():

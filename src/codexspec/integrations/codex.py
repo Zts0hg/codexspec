@@ -17,6 +17,7 @@ from codexspec.commands.installer import (
 )
 from codexspec.commit_guidance import inject_commit_guidance
 from codexspec.profile import inject_profile_block
+from codexspec.specs_context import inject_specs_context
 from codexspec.translator import load_translation_cache, translate_template_frontmatter
 
 CODEXSPEC_CONTEXT_START = "<!-- CODEXSPEC START -->"
@@ -114,6 +115,7 @@ class CodexIntegration:
         # skills section, as its own bounded, idempotent managed block.
         inject_profile_block(context_path)
         inject_commit_guidance(context_path, self.invocation_for("commit-staged"))
+        inject_specs_context(context_path)
 
     def render_skill(self, command_name: str, content: str, fallback_description: str = "") -> str:
         """Render one command template into a Codex SKILL.md."""

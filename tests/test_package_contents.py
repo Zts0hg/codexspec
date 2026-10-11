@@ -204,6 +204,8 @@ def test_built_archives_contain_resolvers_and_all_current_command_templates() ->
     expected_commands = _expected_command_templates()
 
     for members in [_wheel_members(wheels[0]), _sdist_members(sdists[0])]:
+        for module in ("specs_context.py", "commit_guidance.py"):
+            assert _archive_member(members, f"codexspec/{module}") == (ROOT / "src/codexspec" / module).read_bytes()
         assert (
             _archive_member(members, "codexspec/commit_runtime.py")
             == (ROOT / "src/codexspec/commit_runtime.py").read_bytes()
@@ -257,6 +259,10 @@ def test_s034_installed_worktree_runtime_and_templates(tmp_path: Path) -> None:
         text=True,
         check=True,
     )
+    from codexspec.specs_context import render_specs_context
+
+    for context in ("CLAUDE.md", "AGENTS.md"):
+        assert render_specs_context() in (repo / context).read_text(encoding="utf-8")
     git(repo, "add", ".")
     git(repo, "commit", "-m", "install")
     result = subprocess.run(
