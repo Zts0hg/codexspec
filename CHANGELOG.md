@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.22] - 2026-10-11
+
+### Fixed
+
+- Invalid auto-dev helper requests no longer create the shared branch or worktree.
+  Request validation now runs before ownership or workspace mutations.
+- Auto-dev follow-up operations require the existing workspace instead of silently
+  recreating it. Ownership renewal, assertion and release work without initializing
+  a workspace; acquisition still creates one when needed.
+
+### For contributors
+
+- Added 24 regression cases covering invalid requests, ownership operations,
+  missing workspaces and successful acquisition.
+- Updated marketplace metadata for the preceding v0.7.21 release and documented
+  the release procedure using guarded commits.
+
 ## [0.7.21] - 2026-10-11
 
 ### Added
