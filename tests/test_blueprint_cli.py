@@ -118,7 +118,20 @@ def test_hidden_inspect_and_apply_use_machine_json(project: tuple[Path, Path], r
             "requirements_markdown": unmanaged_requirements("Release notes"),
         },
     }
-    applied = runner.invoke(app, ["_blueprint-helper", "apply"], input=json.dumps(request))
+    preparation = runner.invoke(app, ["_blueprint-helper", "prepare"], input=json.dumps(request))
+    assert preparation.exit_code == 0, preparation.output
+    prepared = json.loads(preparation.stdout)
+    applied = runner.invoke(
+        app,
+        ["_blueprint-helper", "apply"],
+        input=json.dumps(
+            {
+                "preparation_id": prepared["preparation_id"],
+                "analyzed_tree": prepared["tree"],
+                "message": "docs(blueprint): add release note requirements",
+            }
+        ),
+    )
     assert applied.exit_code == 0
     assert json.loads(applied.stdout)["result"] == "applied"
 
@@ -189,13 +202,31 @@ def test_concurrent_blueprint_helpers_apply_once_and_conflict_once(
         }
     )
     processes = [
-        _start_cli(repo, "_blueprint-helper", "apply", input_text=request),
-        _start_cli(repo, "_blueprint-helper", "apply", input_text=request),
+        _start_cli(repo, "_blueprint-helper", "prepare", input_text=request),
+        _start_cli(repo, "_blueprint-helper", "prepare", input_text=request),
+    ]
+    prepared_results = [_finish_cli(process) for process in processes]
+    assert [code for code, _, _ in prepared_results] == [0, 0]
+    preparations = [json.loads(stdout) for _, stdout, _ in prepared_results]
+    processes = [
+        _start_cli(
+            repo,
+            "_blueprint-helper",
+            "apply",
+            input_text=json.dumps(
+                {
+                    "preparation_id": item["preparation_id"],
+                    "analyzed_tree": item["tree"],
+                    "message": "docs(blueprint): add release notes requirements",
+                }
+            ),
+        )
+        for item in preparations
     ]
     results = [_finish_cli(process) for process in processes]
-    assert [code for code, _, _ in results] == [0, 0]
-    outcomes = sorted(json.loads(stdout)["result"] for _, stdout, _ in results)
-    assert outcomes == ["applied", "conflict"]
+    assert sorted(code for code, _, _ in results) == [0, 1]
+    assert next(json.loads(stdout)["result"] for code, stdout, _ in results if code == 0) == "applied"
+    assert "stale_analysis" in next(stderr for code, _, stderr in results if code != 0)
 
 
 def test_concurrent_auto_dev_acquire_has_exactly_one_owner(project: tuple[Path, Path]) -> None:

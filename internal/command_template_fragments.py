@@ -613,8 +613,21 @@ def _claude_artifacts(
     artifacts: dict[str, bytes] = {}
     identities: dict[str, StatSignature] = {}
     seen_names: dict[str, str] = {}
+    hook_directories: list[tuple[Path, StatSignature]] = []
     for path in sorted(commands_root.iterdir(), key=lambda item: item.name):
-        if not COMMAND_SOURCE_PATTERN.fullmatch(path.name) or not _portable_segment_is_safe(path.name):
+        if path.name == "hooks":
+            hooks, identity = _stable_directory(path, "Claude hook root", boundary=commands_root)
+            hook_directories.append((hooks, identity))
+            for entry in hooks.iterdir():
+                if entry.name != "hooks.json":
+                    raise FragmentError(f"unsafe Claude hook artifact name: {entry.name!r}")
+                content, signature = _read_stable_file_snapshot(entry, commands_root, "Claude hooks")
+                artifacts["hooks/hooks.json"] = content
+                identities["hooks/hooks.json"] = signature
+            continue
+        if path.name != "commit-staged-helper.py" and (
+            not COMMAND_SOURCE_PATTERN.fullmatch(path.name) or not _portable_segment_is_safe(path.name)
+        ):
             raise FragmentError(f"unsafe Claude artifact name: {path.name!r}")
         key = portable_name_key(path.name)
         if key in seen_names:
@@ -625,6 +638,8 @@ def _claude_artifacts(
         identities[path.name] = signature
     for name, identity in identities.items():
         _verify_file_identity(commands_root / name, commands_root, f"Claude artifact {name}", identity)
+    for hooks, identity in hook_directories:
+        _verify_directory_identity(hooks, identity, "Claude hook root", boundary=commands_root)
     _verify_directory_identity(commands_root, root_identity, "Claude artifact root", boundary=boundary)
     if canonical_generated:
         return {name: content.replace(b"\r\n", b"\n") for name, content in artifacts.items()}
@@ -700,7 +715,7 @@ def check_self_bootstrap(root: Path, *, language: str) -> None:
     templates_snapshot = _tree_snapshot(templates)
 
     with tempfile.TemporaryDirectory(prefix="codexspec-command-distribution-") as temporary:
-        target = Path(temporary)
+        target = Path(temporary).resolve()
         with patch("codexspec.integrations.codex.sys.platform", "linux"):
             ClaudeIntegration().install(target, templates, force=True, language=language)
             CodexIntegration().install_skills(target, templates, force=True, language=language)

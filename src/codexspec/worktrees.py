@@ -315,6 +315,8 @@ class WorkspaceManager:
             or not all(isinstance(v, str) and re.fullmatch(r"[0-9a-f]{40,64}", v) for v in data["baselines"])
         ):
             raise AutomationError("invalid_workspace_state", str(record))
+        if "merge_hook" in data and type(data["merge_hook"]) is not bool:
+            raise AutomationError("invalid_workspace_state", str(record))
         return data
 
     def _registered(self, branch: str, path: Path) -> bool:
@@ -483,10 +485,12 @@ class WorkspaceManager:
                 if len(data["baselines"]) == 2:
                     # Record the verification obligation before Git can leave a partial merge.
                     data["status"] = "merge_requires_verification"
+                    data["merge_hook"] = True
                     _atomic_json(record, data)
-                    result = self.git.run(path, "merge", "--no-edit", data["baselines"][1], check=False)
+                    result = self.git.run(path, "merge", "--no-edit", "--no-commit", data["baselines"][1], check=False)
                     if result.returncode:
                         data["status"] = "merge_requires_resolution"
+                        data["merge_hook"] = False
                         data["diagnostic"] = _redact_url_credentials(result.stderr.strip() or result.stdout.strip())
                 else:
                     data["status"] = "ready"
@@ -521,28 +525,9 @@ class WorkspaceManager:
                 raise AutomationError("missing_workspace_state", str(path))
             if feature != MAINTENANCE_NAME:
                 self._artifact_path(feature, data)
-            checks = verification.get("checks") if isinstance(verification, dict) else None
-            head = self.git.run(path, "rev-parse", "HEAD").stdout.strip()
-            tree = self.git.run(path, "rev-parse", "HEAD^{tree}").stdout.strip()
-            clean = not self.git.run(path, "status", "--porcelain", "--untracked-files=no").stdout
-            merging = self.git.run(path, "rev-parse", "--verify", "MERGE_HEAD", check=False).returncode == 0
-            if (
-                not isinstance(checks, list)
-                or not checks
-                or any(
-                    not isinstance(check, dict)
-                    or not check.get("command")
-                    or type(check.get("exit_code")) is not int
-                    or check["exit_code"] != 0
-                    for check in checks
-                )
-            ):
-                raise AutomationError("baseline_verification_failed", str(path))
-            if verification.get("head") != head or verification.get("tree") != tree or not clean or merging:
-                raise AutomationError("baseline_verification_stale_or_unresolved", str(path))
-            for baseline in data["baselines"]:
-                if self.git.run(path, "merge-base", "--is-ancestor", baseline, head, check=False).returncode:
-                    raise AutomationError("baseline_history_not_integrated", baseline)
+            from .merge_commits import finish_verified_merge
+
+            finish_verified_merge(path, verification, data["baselines"], merge_hook=data.get("merge_hook", False))
             data["status"] = "ready"
             data.pop("diagnostic", None)
             _atomic_json(record, data)

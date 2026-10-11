@@ -60,14 +60,29 @@ name collision; report that collision and retry a new identity only for a genuin
 
 A `ready` response is required before writing feature artifacts or continuing development. Exit
 status 3 with `merge_requires_resolution` or `merge_requires_verification` is a preparation handoff,
-not success. Resolve conflicts and complete the merge only in the returned worktree, run the
-project's required checks, and call `codexspec _worktree-helper finish --feature <full-feature-name>
---verification <json-file>` (use `worktree-for-codexspec-maintenance` for maintenance preparation).
-The temporary JSON contains the verified `head`, `tree`, and `checks` entries with `command` and
-integer `exit_code`; never claim a check ran when it did not. If conflicts cannot be resolved or
-verification fails, stop. Retain the returned feature identity for continuation; do not create a
-second feature to bypass failed preparation. Fetch warnings mean remote information may be stale;
-they do not authorize bypassing an invalid baseline or failed verification.
+not success. Resolve and stage conflicts only in the returned worktree. Leave a pending
+merge uncommitted. Run the project's required checks against the prepared files, then take a
+`codexspec _commit-staged-helper snapshot` in that worktree with its original index (no inherited
+GIT_INDEX_FILE). For a contentful merge, invoke `$codexspec:commit-staged -p` on that exact
+snapshot and retain its complete message. Describe changes as integrated changes; do not attribute
+all incoming code to conflict resolution. If the snapshot contains `default_message`, the merge
+only connects history: keep its message unchanged by supplying `message: null`.
+
+Call `codexspec _worktree-helper finish --feature <full-feature-name> --verification <json-file>`
+(use `worktree-for-codexspec-maintenance` for maintenance preparation). The JSON contains the
+verified `head`, staged `tree`, `checks` entries with `command` and integer `exit_code`, and,
+for a pending merge, the complete `analysis` snapshot and `message`. The finish helper rechecks
+and commits the same index. Never commit the pending merge directly or bypass a rejected snapshot.
+If recovery finds the commit already created, verify its current HEAD/tree and submit head/tree/checks
+without a new message. Never claim checks ran when they did not. If conflicts or checks cannot
+be resolved, stop and retain the same identity; do not create a second feature to bypass preparation.
+Fetch warnings indicate potentially stale remote information, not permission to bypass checks.
+
+Initial fixed auto-dev/blueprint workspace creation follows the same pending handoff. If acquisition
+or blueprint setup exits 3 with `merge_requires_resolution` or `merge_requires_verification`, use
+its returned `workspace`, resolve/stage/check/analyze as above, and call
+`codexspec _worktree-helper finish-initial --verification <json-file>`. Retry the original setup
+only after `ready`. The helper excludes active auto-dev owners and retains interrupted preparation.
 
 Every mutating tool call and later SDD invocation must explicitly use `OUTPUT_ROOT` or paths inside
 it. Before each file write, verify real filesystem containment: refuse symbolic links in the
@@ -141,8 +156,8 @@ Call `codexspec _blueprint-helper inspect` and validate the complete document.
    `{"token":"<token>","resolved_paths":["<every conflict path>"]}`. This helper rejects an
    incomplete or expanded path list and remaining conflict markers, stages only those literal paths
    under the shared Git lock, and must return `needs_verification`. If synchronization already returns `needs_verification`, use
-   that completed merge as the check candidate. Run the project's required baseline checks and call
-   `continue-sync` with `checks_passed: true` only after restoring a passing baseline. If conflict
+   that prepared merge as the check candidate. Run the project's required baseline checks and call
+   `continue-sync` using the synchronization finalization protocol below only after restoring a passing baseline. If conflict
    preparation or checks cannot pass, call `abort-sync`, release ownership, and stop while the next
    block remains pending. Never run `git add` or commit the synchronization merge directly.
 5. After every successful `continue-sync`, repeat `sync-default` so all locally available local and
@@ -152,6 +167,21 @@ Call `codexspec _blueprint-helper inspect` and validate the complete document.
 6. Re-inspect after synchronization and select the first current pending block. Document order is
    the only implementation order.
 
+## Synchronization Finalization
+
+For both recovered and newly prepared synchronization, run the required checks first.
+If MERGE_HEAD exists, take `_commit-staged-helper snapshot` in the dedicated worktree
+with the original index and no inherited GIT_INDEX_FILE. Invoke `$codexspec:commit-staged -p`
+for its contentful staged diff, then send `continue-sync` exactly
+`{"token":"<token>","checks_passed":true,"analysis":<complete snapshot>,"message":"<full message>"}`.
+Describe the incoming changes as integrated changes, not all as newly authored conflict fixes.
+If the snapshot contains `default_message`, use `message: null` instead: preserve Git's default
+message for the history-only merge. The helper commits and validates the analyzed tree and parents.
+If MERGE_HEAD is absent (fast-forward or recovery after commit creation), send only
+`{"token":"<token>","checks_passed":true}`. No new commit or message is generated in that case.
+A stale snapshot or hook mutation requires preparation, checks, and analysis again before retrying.
+Never call direct commit execution for helper-owned synchronization.
+
 ## Start a Pending Requirement
 
 For the selected block:
@@ -159,14 +189,15 @@ For the selected block:
 1. Derive a concise normalized `feature-name` from the requirements content and the exact directory
    `.codexspec/specs/<feature-id>-<feature-name>/`. Do not require or rewrite a particular Markdown
    heading to derive the name.
-2. Send `_blueprint-helper apply --auto-dev-token <token>` an `update_status` request with the
+2. Send `_blueprint-helper prepare --auto-dev-token <token>` an `update_status` request with the
    current hash and exactly:
 
 ```json
 {"protocol_version":"1","operation":"update_status","feature_id":"<feature-id>","expected_blueprint_hash":"sha256:<hex>","payload":{"expected_status":"pending","new_status":"in_progress","feature_directory":".codexspec/specs/<feature-id>-<feature-name>/"}}
 ```
 
-3. On conflict, re-inspect and restart selection. On rejected/invalid/transport failure, stop with
+3. On a prepared response, run the blueprint analysis/finalization protocol below
+   before creating the directory. On conflict, re-inspect and restart selection. On rejected/invalid/transport failure, stop with
    evidence; do not create the directory first.
 4. Create the recorded directory. Copy the block content after exactly the three blueprint-managed
    prefix lines directly to its `requirements.md`. This copied content includes the embedded Feature
@@ -207,15 +238,50 @@ Auto-dev owns advancement. It must not read, write, toggle, or rely on `workflow
 - Let every stage run its existing review, repair, retry, and no-progress rules. Repair verified
   findings autonomously. A stage stop guard ends this run; preserve the `in_progress` status,
   directory, artifacts, code, and exact evidence, release ownership, and do not start later work.
-- Before each implementation commit, assert ownership and call `_auto-dev-helper commit-feature`
-  with exact keys `token`, `feature_id`, `commit_type`, `description`, and explicit `paths`.
-  The helper constructs `<type>(<feature-id>): <description>`, rejects the blueprint path, and
-  preserves multiple commits in Git order. Do not squash and do not maintain a hash list.
+- Before each implementation commit, assert ownership and send
+  `_auto-dev-helper prepare-feature` exactly `token`, `feature_id`, and explicit
+  `paths`. The helper prepares its own index and preserves unrelated staging.
+- Invoke `$codexspec:commit-staged -p` with the returned `workspace`, `index_file`,
+  `head`, `tree`, and `required_scope`, explicitly selecting that index through
+  `GIT_INDEX_FILE`. This is the only semantic message-generation step.
+- Send `_auto-dev-helper commit-feature` exactly `token`, `preparation_id`,
+  `analyzed_tree`, and `message` (the full generated subject and optional body).
+  Preserve the `<type>(<feature-id>): <description>` subject convention without
+  truncating the generated body. Do not stage again after analysis or commit
+  directly. Stale content requires preparation and analysis again.
+- Use `_auto-dev-helper discard-feature` with exactly `token` and `preparation_id`
+  to abandon helper-owned preparation files. Do not alter caller staging.
+- Preserve multiple commits in Git order. Do not squash or maintain a hash list.
+
+## Analyze and Finalize a Blueprint Preparation
+
+A `state: prepared` response is not an applied mutation. It supplies
+`preparation_id`, `workspace`, `index_file`, `head`, `tree`, and `required_scope`.
+Invoke `$codexspec:commit-staged -p` with that exact workspace and prepared index,
+explicitly setting `GIT_INDEX_FILE` for its Git reads. Retain the validated tree
+and the full generated message, including its body when present. Then send:
+
+```json
+{"preparation_id":"<prepared id>","analyzed_tree":"<validated tree>","message":"<full generated message>"}
+```
+
+Send this to `codexspec _blueprint-helper apply`, adding the same
+`--auto-dev-token <token>` when the preparation belongs to auto-dev. Report an
+applied mutation only after this finalization succeeds. A no-op or rejected
+prepare result needs no message or commit. On stale analysis, inspect, prepare,
+and analyze again; never replace analysis with a fixed operation-name message.
+To abandon a preparation, send `{"preparation_id":"<prepared id>"}` to
+`codexspec _blueprint-helper discard`, with the same token option when applicable.
+This removes only helper-owned preparation files, not caller staging or blueprint
+content. Keep auto-dev heartbeat renewal active across the analysis step.
 
 ## Complete and Continue
 
+Use the blueprint analysis/finalization protocol for this transition too; a
+prepared response alone never marks the requirement completed.
+
 Only after all reused pass conditions, project checks, tests, final code review, and required repairs
-pass, send `_blueprint-helper apply --auto-dev-token <token>` this exact status operation using a
+pass, send `_blueprint-helper prepare --auto-dev-token <token>` this exact status operation using a
 fresh blueprint hash:
 
 ```json

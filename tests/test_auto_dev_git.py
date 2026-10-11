@@ -25,10 +25,24 @@ def services(tmp_path: Path) -> tuple[Path, AutoDevOwnership, AutoDevGit, str]:
     return repo, owner, AutoDevGit(workspace, owner), token
 
 
+def complete_sync(service, token):
+    from codexspec.commit_runtime import snapshot
+
+    if service._merge_in_progress():
+        analyzed = snapshot(service.workspace.path)
+        return service.continue_sync(
+            token,
+            checks_passed=True,
+            analysis=analyzed,
+            message=None if "default_message" in analyzed else "chore: integrate staged changes",
+        )
+    return service.continue_sync(token, checks_passed=True)
+
+
 def finish_sync(service: AutoDevGit, token: str) -> dict[str, object]:
     result = service.sync_default(token)
     while result["state"] == "needs_verification":
-        assert service.continue_sync(token, checks_passed=True)["state"] == "clean"
+        assert complete_sync(service, token)["state"] == "clean"
         result = service.sync_default(token)
     return result
 
@@ -40,7 +54,7 @@ def test_sync_local_default_and_commit_exact_feature_scope(tmp_path: Path) -> No
     git(repo, "commit", "-m", "feat: default change")
     result = service.sync_default(token)
     assert result["state"] == "needs_verification"
-    assert service.continue_sync(token, checks_passed=True)["state"] == "clean"
+    assert complete_sync(service, token)["state"] == "clean"
     result = service.sync_default(token)
     assert result["state"] == "clean"
     assert (service.workspace.path / "default.txt").exists()
@@ -50,7 +64,10 @@ def test_sync_local_default_and_commit_exact_feature_scope(tmp_path: Path) -> No
     unrelated = service.workspace.path / "unrelated.txt"
     unrelated.write_text("staged separately\n")
     git(service.workspace.path, "add", "unrelated.txt")
-    commit = service.commit_feature(token, FEATURE_ID, "feat", "implement login", ["feature.txt"])
+    prepared = service.prepare_feature(token, FEATURE_ID, ["feature.txt"])
+    commit = service.commit_feature(
+        token, prepared["preparation_id"], prepared["tree"], f"feat({FEATURE_ID}): implement login"
+    )
     assert commit["state"] == "committed"
     assert git(service.workspace.path, "log", "-1", "--format=%s").stdout.strip() == (
         f"feat({FEATURE_ID}): implement login"
@@ -62,10 +79,10 @@ def test_sync_local_default_and_commit_exact_feature_scope(tmp_path: Path) -> No
 def test_commit_feature_rejects_blueprint_and_wrong_owner(tmp_path: Path) -> None:
     _, _, service, token = services(tmp_path)
     with pytest.raises(AutomationError, match="blueprint_path_forbidden"):
-        service.commit_feature(token, FEATURE_ID, "feat", "bad", [".codexspec/blueprint.md"])
+        service.prepare_feature(token, FEATURE_ID, [".codexspec/blueprint.md"])
     for path in (".", ".codexspec", ":(glob)**"):
         with pytest.raises(AutomationError, match="blueprint_path_forbidden|invalid_commit_path"):
-            service.commit_feature(token, FEATURE_ID, "feat", "bad", [path])
+            service.prepare_feature(token, FEATURE_ID, [path])
     with pytest.raises(Exception, match="lost_ownership"):
         service.sync_default("wrong-token")
 
@@ -133,7 +150,7 @@ def test_resolved_conflict_is_prepared_before_verification_and_commit(tmp_path: 
     service.merge_record.write_text(json.dumps(interrupted_record))
     assert service.recover_merge_ownership(token)["state"] == "needs_verification"
     assert json.loads(service.merge_record.read_text())["phase"] == "resolved"
-    assert service.continue_sync(token, checks_passed=True)["state"] == "clean"
+    assert complete_sync(service, token)["state"] == "clean"
     assert (service.workspace.path / "README.md").read_text() == "resolved content\n"
     assert not service.merge_record.exists()
 
@@ -325,7 +342,7 @@ def test_abort_sync_ignores_untracked_files_and_clears_merge_ownership(tmp_path:
     assert restarted["state"] == "needs_resolution"
     (service.workspace.path / "README.md").write_text("resolved after restart\n")
     assert service.prepare_sync_verification(token, ["README.md"])["state"] == "needs_verification"
-    assert service.continue_sync(token, checks_passed=True)["state"] == "clean"
+    assert complete_sync(service, token)["state"] == "clean"
     assert service.sync_default(token)["state"] == "clean"
 
 
@@ -355,3 +372,31 @@ def test_fetch_warning_redacts_remote_url_credentials(tmp_path: Path) -> None:
     assert warning
     assert "secret-token" not in warning
     owner.release(token)
+
+
+def test_feature_commit_requires_current_staged_analysis(tmp_path):
+    _, _, service, token = services(tmp_path)
+    (service.workspace.path / "feature.txt").write_text("feature\n")
+    prepared = service.prepare_feature(token, FEATURE_ID, ["feature.txt"])
+    with pytest.raises(AutomationError, match="stale_analysis"):
+        service.commit_feature(token, prepared["preparation_id"], "0" * 40, f"feat({FEATURE_ID}): add feature")
+    result = service.commit_feature(
+        token,
+        prepared["preparation_id"],
+        prepared["tree"],
+        f"feat({FEATURE_ID}): add feature\n\nDescribe the staged implementation.\n",
+    )
+    assert result["state"] == "committed"
+    assert "Describe the staged implementation." in git(service.workspace.path, "log", "-1", "--format=%B").stdout
+
+
+def test_feature_changed_content_and_lost_owner_reject_analysis(tmp_path):
+    _, _, service, token = services(tmp_path)
+    target = service.workspace.path / "feature.txt"
+    target.write_text("first\n")
+    prepared = service.prepare_feature(token, FEATURE_ID, ["feature.txt"])
+    target.write_text("second\n")
+    with pytest.raises(AutomationError, match="stale_analysis"):
+        service.commit_feature(token, prepared["preparation_id"], prepared["tree"], f"feat({FEATURE_ID}): first")
+    with pytest.raises(AutomationError, match="lost_ownership"):
+        service.commit_feature("wrong", prepared["preparation_id"], prepared["tree"], f"feat({FEATURE_ID}): first")

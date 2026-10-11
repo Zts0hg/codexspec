@@ -9,23 +9,22 @@ import os
 import re
 import secrets
 import stat
-import subprocess
 import tempfile
 import time
-from collections.abc import Mapping
 from contextlib import contextmanager, nullcontext
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Iterator, Sequence
 
 from .blueprint import apply_operation
+from .commit_runtime import AutomationError as AutomationError
+from .commit_runtime import GitRunner as GitRunner
 
 FIXED_BRANCH = "codexspec/auto-dev"
 WORKTREE_BASENAME = "worktree-for-codexspec-auto-dev"
 BLUEPRINT_PATH = Path(".codexspec/blueprint.md")
 AUTO_DEV_STALE_AFTER_SECONDS = 300.0
 AUTO_DEV_HEARTBEAT_INTERVAL_SECONDS = 60
-GIT_TIMEOUT_SECONDS = 600
 _COORDINATION_DIR = "codexspec-automation"
 _LOCK_BUSY_ERRNOS = frozenset({errno.EAGAIN, errno.EWOULDBLOCK, errno.EACCES})
 # Disable every whitespace-error class so `diff --check` only reports leftover
@@ -36,32 +35,6 @@ _FEATURE_ID_RE = re.compile(r"^\d{4}-\d{4}-\d{4}[a-z0-9]{2}$")
 _COMMIT_TYPES = frozenset(
     {"build", "chore", "ci", "docs", "feat", "fix", "perf", "refactor", "revert", "style", "test"}
 )
-_FALLBACK_LOCAL_ENV_VARS = {
-    "GIT_ALTERNATE_OBJECT_DIRECTORIES",
-    "GIT_COMMON_DIR",
-    "GIT_CONFIG",
-    "GIT_CONFIG_COUNT",
-    "GIT_CONFIG_PARAMETERS",
-    "GIT_DIR",
-    "GIT_GRAFT_FILE",
-    "GIT_IMPLICIT_WORK_TREE",
-    "GIT_INDEX_FILE",
-    "GIT_INTERNAL_SUPER_PREFIX",
-    "GIT_NO_REPLACE_OBJECTS",
-    "GIT_OBJECT_DIRECTORY",
-    "GIT_PREFIX",
-    "GIT_REPLACE_REF_BASE",
-    "GIT_SHALLOW_FILE",
-    "GIT_WORK_TREE",
-}
-
-
-class AutomationError(RuntimeError):
-    """An automation operation could not safely continue."""
-
-    def __init__(self, code: str, message: str | None = None) -> None:
-        super().__init__(f"{code}: {message}" if message else code)
-        self.code = code
 
 
 class OwnershipError(AutomationError):
@@ -91,68 +64,6 @@ class WorkspaceContext:
     @property
     def blueprint_path(self) -> Path:
         return self.path / BLUEPRINT_PATH
-
-
-class GitRunner:
-    """Run Git against an explicit repository with caller-local state removed."""
-
-    def __init__(self) -> None:
-        self.local_environment_variables = self._discover_local_environment_variables()
-
-    @staticmethod
-    def _discover_local_environment_variables() -> frozenset[str]:
-        env = os.environ.copy()
-        for name in _FALLBACK_LOCAL_ENV_VARS:
-            env.pop(name, None)
-        result = _run_git_with_timeout(
-            ["git", "rev-parse", "--local-env-vars"],
-            env=env,
-        )
-        reported = set(result.stdout.split()) if result.returncode == 0 else set()
-        return frozenset(_FALLBACK_LOCAL_ENV_VARS | reported)
-
-    def environment(self) -> dict[str, str]:
-        env = os.environ.copy()
-        for name in self.local_environment_variables:
-            env.pop(name, None)
-        return env
-
-    def run(
-        self,
-        repository: Path,
-        *args: str,
-        check: bool = True,
-        input_text: str | None = None,
-    ) -> subprocess.CompletedProcess[str]:
-        result = _run_git_with_timeout(
-            ["git", "-C", str(repository), *args],
-            input=input_text,
-            env=self.environment(),
-        )
-        if check and result.returncode != 0:
-            detail = result.stderr.strip() or result.stdout.strip()
-            raise AutomationError("git_command_failed", f"git {' '.join(args)}: {detail}")
-        return result
-
-
-def _run_git_with_timeout(
-    command: list[str],
-    *,
-    input: str | None = None,
-    env: Mapping[str, str] | None = None,
-) -> subprocess.CompletedProcess[str]:
-    try:
-        return subprocess.run(
-            command,
-            capture_output=True,
-            check=False,
-            timeout=GIT_TIMEOUT_SECONDS,
-            encoding="utf-8",
-            input=input,
-            env=env,
-        )
-    except subprocess.TimeoutExpired as exc:
-        raise AutomationError("git_command_timeout", f"git {' '.join(command[1:])}") from exc
 
 
 def _redact_url_credentials(value: str) -> str:
@@ -254,14 +165,71 @@ def _ensure_dedicated_workspace_locked(context: RepositoryContext, git: GitRunne
     if registered is None:
         expected.parent.mkdir(parents=True, exist_ok=True)
         git.run(context.repository_root, "worktree", "add", str(expected), FIXED_BRANCH)
+    initial_record = context.coordination_dir / "initial-merge.json"
     if merge_ref is not None:
-        merged = git.run(expected, "merge", "--no-edit", merge_ref, check=False)
-        if merged.returncode != 0:
-            git.run(expected, "merge", "--abort", check=False)
-            git.run(context.repository_root, "worktree", "remove", "--force", str(expected), check=False)
-            git.run(context.repository_root, "branch", "-D", FIXED_BRANCH, check=False)
-            raise AutomationError("initial_history_merge_failed", merged.stderr.strip())
+        baselines = [git.run(expected, "rev-parse", ref).stdout.strip() for ref in ("HEAD", merge_ref)]
+        _atomic_json(initial_record, {"baselines": baselines, "merge_hook": True})
+    if initial_record.exists():
+        initial = _initial_merge_state(initial_record)
+        baselines = initial["baselines"]
+        merging = git.run(expected, "rev-parse", "--verify", "MERGE_HEAD", check=False).returncode == 0
+        head = git.run(expected, "rev-parse", "HEAD").stdout.strip()
+        if not merging and head == baselines[0]:
+            if git.run(expected, "status", "--porcelain").stdout:
+                raise AutomationError("initial_merge_workspace_dirty")
+            git.run(expected, "merge", "--no-edit", "--no-commit", baselines[1], check=False)
+        conflicts = git.run(expected, "diff", "--name-only", "--diff-filter=U").stdout.splitlines()
+        if conflicts:
+            initial["merge_hook"] = False
+            _atomic_json(initial_record, initial)
+        state = "merge_requires_resolution" if conflicts else "merge_requires_verification"
+        raise AutomationError(
+            "initial_merge_requires_verification",
+            json.dumps(
+                {
+                    "status": state,
+                    "workspace": str(expected),
+                    "conflict_paths": conflicts,
+                    "finish_action": "codexspec _worktree-helper finish-initial --verification <json-file>",
+                }
+            ),
+        )
     return locate_dedicated_workspace(context, runner=git)
+
+
+def _initial_merge_state(record: Path) -> dict[str, Any]:
+    value = json.loads(record.read_text(encoding="utf-8"))
+    if (
+        not isinstance(value, dict)
+        or set(value) not in ({"baselines"}, {"baselines", "merge_hook"})
+        or type(value.get("merge_hook", False)) is not bool
+        or not isinstance(value["baselines"], list)
+        or len(value["baselines"]) != 2
+        or not all(isinstance(item, str) and re.fullmatch(r"[0-9a-f]{40,64}", item) for item in value["baselines"])
+    ):
+        raise AutomationError("invalid_initial_merge_record")
+    return value
+
+
+def finish_initial_workspace(context: RepositoryContext, verification: dict[str, Any]) -> dict[str, Any]:
+    """Finish initial baseline preparation while excluding an active auto-dev run."""
+    from .merge_commits import finish_verified_merge
+
+    ownership = AutoDevOwnership(context)
+    token = ownership.acquire()
+    try:
+        with _git_write_lock(context):
+            with ownership.guard(token):
+                workspace = locate_dedicated_workspace(context)
+                record = context.coordination_dir / "initial-merge.json"
+                initial = _initial_merge_state(record)
+                finish_verified_merge(
+                    workspace.path, verification, initial["baselines"], merge_hook=initial.get("merge_hook", False)
+                )
+                record.unlink()
+                return {"status": "ready", "workspace": str(workspace.path)}
+    finally:
+        ownership.release(token)
 
 
 def _select_initial_refs(context: RepositoryContext, git: GitRunner) -> tuple[str, str | None]:
@@ -441,24 +409,32 @@ class BlueprintStore:
         with _git_write_lock(context):
             with FileLock(context.coordination_dir / "blueprint-modification.lock"):
                 with AutoDevOwnership(context).guard(owner_token):
-                    if (context.coordination_dir / "merge-owner.json").exists():
+                    if any(
+                        (context.coordination_dir / name).exists()
+                        for name in ("merge-owner.json", "initial-merge.json")
+                    ):
                         raise AutomationError("merge_in_progress")
                     self._recover()
 
-    def apply_and_commit(
+    def prepare(
         self,
         request: bytes,
         *,
         feature_id_factory: Callable[[], str] | None = None,
         owner_token: str | None = None,
     ) -> dict[str, Any]:
+        from .staged_commits import PreparedCommits
+
         context = self.workspace.repository
         with _git_write_lock(context):
             with FileLock(context.coordination_dir / "blueprint-modification.lock"):
                 owner = AutoDevOwnership(context)
                 guard = owner.guard(owner_token) if owner_token is not None else nullcontext()
                 with guard:
-                    if (context.coordination_dir / "merge-owner.json").exists():
+                    if any(
+                        (context.coordination_dir / name).exists()
+                        for name in ("merge-owner.json", "initial-merge.json")
+                    ):
                         raise AutomationError("merge_in_progress")
                     _sweep_stale_blueprint_temporaries(self.workspace.blueprint_path)
                     self._recover()
@@ -471,6 +447,68 @@ class BlueprintStore:
                         raise AutomationError("auto_dev_token_required")
                     if outcome.content == old_content:
                         return outcome.response
+                    return PreparedCommits(self.workspace).prepare(
+                        [BLUEPRINT_PATH.as_posix()],
+                        kind="blueprint",
+                        scope="blueprint",
+                        token=owner_token,
+                        content=outcome.content.decode("utf-8"),
+                        payload={"request": request.decode("utf-8"), "feature_id": outcome.response["feature_id"]},
+                    )
+
+    def apply_and_commit(
+        self,
+        preparation_id: str,
+        analyzed_tree: str,
+        message: str,
+        *,
+        owner_token: str | None = None,
+    ) -> dict[str, Any]:
+        from .staged_commits import PreparedCommits, guarded_commit, validate_message
+
+        validate_message(message, "blueprint")
+        context = self.workspace.repository
+        with _git_write_lock(context):
+            with FileLock(context.coordination_dir / "blueprint-modification.lock"):
+                guard = AutoDevOwnership(context).guard(owner_token) if owner_token is not None else nullcontext()
+                with guard:
+                    if any(
+                        (context.coordination_dir / name).exists()
+                        for name in ("merge-owner.json", "initial-merge.json")
+                    ):
+                        raise AutomationError("merge_in_progress")
+                    self._recover()
+                    preparations = PreparedCommits(self.workspace)
+                    prepared = preparations.load(preparation_id, kind="blueprint", token=owner_token)
+                    if prepared["tree"] != analyzed_tree:
+                        raise AutomationError("stale_analysis")
+                    payload = prepared["payload"]
+                    if (
+                        set(payload) != {"request", "feature_id"}
+                        or not isinstance(payload["request"], str)
+                        or not isinstance(payload["feature_id"], str)
+                    ):
+                        raise AutomationError("invalid_preparation")
+                    old_content, _ = self.inspect()
+                    outcome = apply_operation(
+                        payload["request"].encode("utf-8"),
+                        old_content,
+                        feature_id_factory=lambda: payload["feature_id"],
+                    )
+                    if outcome.response["result"] != "applied":
+                        raise AutomationError("stale_analysis", "blueprint operation must be prepared again")
+                    if outcome.response["operation"] == "update_status" and owner_token is None:
+                        raise AutomationError("auto_dev_token_required")
+                    current = preparations.prepare(
+                        [BLUEPRINT_PATH.as_posix()],
+                        kind="blueprint",
+                        scope="blueprint",
+                        token=owner_token,
+                        content=outcome.content.decode("utf-8"),
+                    )
+                    preparations.discard(current["preparation_id"], kind="blueprint", token=owner_token)
+                    if current["tree"] != analyzed_tree:
+                        raise AutomationError("stale_analysis")
                     pre_head = self.git.run(self.workspace.path, "rev-parse", "HEAD").stdout.strip()
                     record = {
                         "old_content": base64.b64encode(old_content).decode(),
@@ -484,21 +522,23 @@ class BlueprintStore:
                     try:
                         _atomic_bytes(self.workspace.blueprint_path, outcome.content)
                         self.git.run(self.workspace.path, "add", "--", BLUEPRINT_PATH.as_posix())
-                        operation = outcome.response["operation"].replace("_", " ")
-                        self.git.run(
+                        guarded_commit(
                             self.workspace.path,
-                            "commit",
-                            "--only",
-                            "-m",
-                            f"docs(blueprint): {operation}",
-                            "--",
-                            BLUEPRINT_PATH.as_posix(),
+                            prepared["head"],
+                            analyzed_tree,
+                            message,
+                            paths=[BLUEPRINT_PATH.as_posix()],
                         )
                     except Exception:
-                        self._restore_old(old_content)
-                        self.recovery_path.unlink(missing_ok=True)
+                        # A post-commit hook or the executor's final check can
+                        # fail after Git has advanced HEAD. Preserve publication
+                        # and its journal then; recovery must reconcile history.
+                        if self.git.run(self.workspace.path, "rev-parse", "HEAD").stdout.strip() == pre_head:
+                            self._restore_old(old_content)
+                            self.recovery_path.unlink(missing_ok=True)
                         raise
                     self.recovery_path.unlink(missing_ok=True)
+                    preparations.discard(preparation_id, kind="blueprint", token=owner_token)
                     return outcome.response
 
     def _recover(self) -> None:
@@ -699,12 +739,23 @@ class AutoDevGit:
                     if already_merged:
                         continue
                     pre_head = self.git.run(self.workspace.path, "rev-parse", "HEAD").stdout.strip()
-                    record = {"token": token, "pre_head": pre_head, "target": target, "phase": "merging"}
+                    target_commit = self.git.run(self.workspace.path, "rev-parse", target + "^{commit}").stdout.strip()
+                    record = {
+                        "token": token,
+                        "pre_head": pre_head,
+                        "target": target_commit,
+                        "phase": "merging",
+                        "merge_hook": True,
+                    }
                     _atomic_json(self.merge_record, record)
-                    merged = self.git.run(self.workspace.path, "merge", "--no-edit", target, check=False)
+                    merged = self.git.run(
+                        self.workspace.path, "merge", "--no-edit", "--no-commit", target_commit, check=False
+                    )
                     if merged.returncode != 0:
                         conflicts = self._conflict_paths()
                         if conflicts or self._merge_in_progress():
+                            record["merge_hook"] = False
+                            _atomic_json(self.merge_record, record)
                             return {
                                 "state": "needs_resolution",
                                 "attempted_refs": attempted,
@@ -718,7 +769,7 @@ class AutoDevGit:
                             "fetch_warning": fetch_warning,
                             "error": merged.stderr.strip(),
                         }
-                    record["phase"] = "verification"
+                    record["phase"] = "resolved" if self._merge_in_progress() else "verification"
                     _atomic_json(self.merge_record, record)
                     return {
                         "state": "needs_verification",
@@ -728,7 +779,9 @@ class AutoDevGit:
                     }
                 return {"state": "clean", "attempted_refs": attempted, "fetch_warning": fetch_warning}
 
-    def continue_sync(self, token: str, *, checks_passed: bool) -> dict[str, Any]:
+    def continue_sync(
+        self, token: str, *, checks_passed: bool, analysis: dict[str, Any] | None = None, message: str | None = None
+    ) -> dict[str, Any]:
         self.ownership.assert_owner(token)
         with _git_write_lock(self.workspace.repository):
             with self.ownership.guard(token):
@@ -744,7 +797,24 @@ class AutoDevGit:
                 if record["phase"] == "resolved":
                     if not self._merge_in_progress():
                         raise AutomationError("merge_state_missing")
-                    self.git.run(self.workspace.path, "commit", "--no-edit")
+                    from .commit_runtime import commit_snapshot
+
+                    if not isinstance(analysis, dict):
+                        raise AutomationError("analysis_required")
+                    target = self.git.run(
+                        self.workspace.path, "rev-parse", record["target"] + "^{commit}"
+                    ).stdout.strip()
+                    if analysis.get("head") != record["pre_head"] or analysis.get("merge_heads") != [target]:
+                        raise AutomationError("stale_analysis", "merge no longer matches the synchronization target")
+                    if self.git.run(self.workspace.path, "diff", "--quiet", check=False).returncode:
+                        raise AutomationError("unstaged_merge_changes")
+                    commit_snapshot(
+                        self.workspace.path,
+                        analysis,
+                        message,
+                        use_caller_index=False,
+                        merge_hook=record.get("merge_hook", False),
+                    )
                 self.merge_record.unlink()
                 return {"state": "clean"}
 
@@ -779,51 +849,72 @@ class AutoDevGit:
                 if unresolved:
                     raise AutomationError("merge_conflicts_unresolved", ", ".join(unresolved))
                 record["phase"] = "resolved"
+                record["merge_hook"] = False
                 _atomic_json(self.merge_record, record)
                 return {"state": "needs_verification", "target": record["target"]}
 
     def abort_sync(self, token: str) -> dict[str, Any]:
         return self.continue_sync(token, checks_passed=False)
 
-    def commit_feature(
-        self,
-        token: str,
-        feature_id: str,
-        commit_type: str,
-        description: str,
-        paths: Sequence[str],
-    ) -> dict[str, Any]:
+    def _assert_commit_ready(self) -> None:
+        if self.merge_record.exists():
+            raise AutomationError("merge_in_progress")
+        if (self.workspace.repository.coordination_dir / "blueprint-transaction.json").exists():
+            raise AutomationError("blueprint_recovery_required")
+
+    def prepare_feature(self, token: str, feature_id: str, paths: Sequence[str]) -> dict[str, Any]:
+        from .staged_commits import PreparedCommits
+
         self.ownership.assert_owner(token)
         if not _FEATURE_ID_RE.fullmatch(feature_id):
             raise AutomationError("invalid_feature_id")
-        if commit_type not in _COMMIT_TYPES:
-            raise AutomationError("invalid_commit_type")
-        if not description.strip() or "\n" in description:
-            raise AutomationError("invalid_commit_description")
         normalized = [_validate_commit_path(path) for path in paths]
         if not normalized:
             raise AutomationError("empty_commit_paths")
-        if BLUEPRINT_PATH.as_posix() in normalized:
-            raise AutomationError("blueprint_path_forbidden")
         with _git_write_lock(self.workspace.repository):
             with self.ownership.guard(token):
-                if self.merge_record.exists():
-                    raise AutomationError("merge_in_progress")
-                if (self.workspace.repository.coordination_dir / "blueprint-transaction.json").exists():
-                    raise AutomationError("blueprint_recovery_required")
-                self.git.run(self.workspace.path, "--literal-pathspecs", "add", "--", *normalized)
-                self.git.run(
-                    self.workspace.path,
-                    "--literal-pathspecs",
-                    "commit",
-                    "--only",
-                    "-m",
-                    f"{commit_type}({feature_id}): {description.strip()}",
-                    "--",
-                    *normalized,
+                self._assert_commit_ready()
+                return PreparedCommits(self.workspace).prepare(
+                    normalized,
+                    kind="feature",
+                    scope=feature_id,
+                    token=token,
                 )
-                commit = self.git.run(self.workspace.path, "rev-parse", "HEAD").stdout.strip()
-                return {"state": "committed", "commit": commit, "paths": normalized}
+
+    def commit_feature(
+        self,
+        token: str,
+        preparation_id: str,
+        analyzed_tree: str,
+        message: str,
+    ) -> dict[str, Any]:
+        from .staged_commits import PreparedCommits, guarded_commit, validate_message
+
+        self.ownership.assert_owner(token)
+        with _git_write_lock(self.workspace.repository):
+            with self.ownership.guard(token):
+                self._assert_commit_ready()
+                store = PreparedCommits(self.workspace)
+                record = store.load(preparation_id, kind="feature", token=token)
+                if not _FEATURE_ID_RE.fullmatch(record["scope"]):
+                    raise AutomationError("invalid_feature_id")
+                validate_message(message, record["scope"])
+                if record["tree"] != analyzed_tree:
+                    raise AutomationError("stale_analysis")
+                current = store.prepare(record["paths"], kind="feature", scope=record["scope"], token=token)
+                store.discard(current["preparation_id"], kind="feature", token=token)
+                if current["tree"] != analyzed_tree:
+                    raise AutomationError("stale_analysis", "prepare and analyze current changes again")
+                self.git.run(self.workspace.path, "--literal-pathspecs", "add", "--", *record["paths"])
+                commit = guarded_commit(
+                    self.workspace.path,
+                    record["head"],
+                    analyzed_tree,
+                    message,
+                    paths=record["paths"],
+                )
+                store.discard(preparation_id, kind="feature", token=token)
+                return {"state": "committed", "commit": commit, "paths": record["paths"]}
 
     def _assert_merge_owner(self, token: str) -> dict[str, Any]:
         record = self._read_merge_record()
@@ -831,7 +922,7 @@ class AutoDevGit:
             raise OwnershipError("lost_merge_ownership")
         return record
 
-    def _read_merge_record(self) -> dict[str, str]:
+    def _read_merge_record(self) -> dict[str, Any]:
         if not self.merge_record.exists():
             raise AutomationError("no_merge_in_progress")
         try:
@@ -840,14 +931,16 @@ class AutoDevGit:
             raise AutomationError("invalid_merge_record") from exc
         if (
             not isinstance(record, dict)
-            or set(record) != {"token", "pre_head", "target", "phase"}
-            or not all(isinstance(record[key], str) and record[key] for key in record)
+            or set(record)
+            not in ({"token", "pre_head", "target", "phase"}, {"token", "pre_head", "target", "phase", "merge_hook"})
+            or not all(isinstance(record[key], str) and record[key] for key in ("token", "pre_head", "target", "phase"))
+            or type(record.get("merge_hook", False)) is not bool
             or record["phase"] not in {"merging", "resolved", "verification"}
         ):
             raise AutomationError("invalid_merge_record")
         return record
 
-    def _recover_merge_state(self, record: dict[str, str]) -> dict[str, Any]:
+    def _recover_merge_state(self, record: dict[str, Any]) -> dict[str, Any]:
         if record["phase"] == "verification":
             return {"state": "needs_verification", "target": record["target"]}
         if record["phase"] == "resolved" and self._merge_in_progress():
@@ -858,6 +951,8 @@ class AutoDevGit:
                 record["phase"] = "resolved"
                 _atomic_json(self.merge_record, record)
                 return {"state": "needs_verification", "target": record["target"]}
+            record["merge_hook"] = False
+            _atomic_json(self.merge_record, record)
             return {
                 "state": "needs_resolution",
                 "target": record["target"],
