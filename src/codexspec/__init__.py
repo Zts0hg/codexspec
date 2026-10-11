@@ -30,7 +30,6 @@ from .automation import (
     AutomationError,
     BlueprintStore,
     OwnershipError,
-    WorkspaceContext,
     ensure_dedicated_workspace,
     locate_dedicated_workspace,
     locate_repository,
@@ -476,22 +475,64 @@ def blueprint_helper(
         _automation_failure(exc)
 
 
+def _validate_auto_dev_request(action: str, body: dict[str, Any]) -> None:
+    """Reject malformed requests before ownership or workspace mutations."""
+    if action == "acquire":
+        if body:
+            raise AutomationError("unexpected_fields")
+        return
+    token_only = {"renew", "assert-owner", "release", "sync-default", "abort-sync"}
+    if action not in token_only | {
+        "prepare-sync-verification",
+        "continue-sync",
+        "prepare-feature",
+        "commit-feature",
+        "discard-feature",
+    }:
+        raise AutomationError("unsupported_auto_dev_helper_action", action)
+    if not isinstance(body.get("token"), str):
+        raise AutomationError("missing_token")
+    if action in token_only:
+        if set(body) != {"token"}:
+            raise AutomationError("unexpected_fields")
+    elif action == "prepare-sync-verification":
+        if (
+            set(body) != {"token", "resolved_paths"}
+            or not isinstance(body["resolved_paths"], list)
+            or not body["resolved_paths"]
+            or not all(isinstance(path, str) for path in body["resolved_paths"])
+        ):
+            raise AutomationError("invalid_prepare_sync_request")
+    elif action == "continue-sync":
+        if set(body) not in (
+            {"token", "checks_passed"},
+            {"token", "checks_passed", "analysis", "message"},
+        ) or not isinstance(body.get("checks_passed"), bool):
+            raise AutomationError("invalid_continue_sync_request")
+    elif action == "prepare-feature":
+        if (
+            set(body) != {"token", "feature_id", "paths"}
+            or not isinstance(body["feature_id"], str)
+            or not isinstance(body["paths"], list)
+            or not all(isinstance(path, str) for path in body["paths"])
+        ):
+            raise AutomationError("invalid_prepare_feature_request")
+    elif action == "commit-feature":
+        _analysis_request(body, token=True)
+    elif action == "discard-feature":
+        if set(body) != {"token", "preparation_id"} or not isinstance(body["preparation_id"], str):
+            raise AutomationError("invalid_preparation")
+
+
 @app.command("_auto-dev-helper", hidden=True)
 def auto_dev_helper(action: str = typer.Argument(..., help="Internal helper action")) -> None:
     """Internal machine interface for auto-dev ownership and Git writes."""
     try:
         body = _stdin_json()
+        _validate_auto_dev_request(action, body)
         context = locate_repository(Path.cwd())
         ownership = AutoDevOwnership(context)
-        workspace: WorkspaceContext | None = None
-        service: AutoDevGit | None = None
-        if action != "acquire":
-            # Every non-acquire action legitimately waits behind the active run.
-            workspace = ensure_dedicated_workspace(context)
-            service = AutoDevGit(workspace, ownership)
         if action == "acquire":
-            if body:
-                raise AutomationError("unexpected_fields")
             token = ownership.acquire()
             try:
                 workspace = ensure_dedicated_workspace(context)
@@ -514,56 +555,42 @@ def auto_dev_helper(action: str = typer.Argument(..., help="Internal helper acti
                 }
             )
             return
-        if set(body) < {"token"} or not isinstance(body.get("token"), str):
-            raise AutomationError("missing_token")
         token = body["token"]
-        if action in {"renew", "assert-owner", "release", "sync-default", "abort-sync"} and set(body) != {"token"}:
-            raise AutomationError("unexpected_fields")
+        # Ownership operations must remain usable even if the worktree is missing.
         if action == "renew":
             ownership.renew(token)
-            result = {"state": "renewed"}
-        elif action == "assert-owner":
+            _machine_json({"state": "renewed"})
+            return
+        if action == "assert-owner":
             ownership.assert_owner(token)
-            result = {"state": "owner"}
-        elif action == "release":
+            _machine_json({"state": "owner"})
+            return
+        if action == "release":
             ownership.release(token)
-            result = {"state": "released"}
-        elif action == "sync-default":
+            _machine_json({"state": "released"})
+            return
+
+        # Only acquire may initialize a workspace; follow-up actions must not repair
+        # missing state or fetch/merge history before their operation is validated.
+        workspace = locate_dedicated_workspace(context)
+        service = AutoDevGit(workspace, ownership)
+        if action == "sync-default":
             result = service.sync_default(token)
         elif action == "prepare-sync-verification":
-            if set(body) != {"token", "resolved_paths"} or not isinstance(body["resolved_paths"], list):
-                raise AutomationError("invalid_prepare_sync_request")
-            if not body["resolved_paths"] or not all(isinstance(path, str) for path in body["resolved_paths"]):
-                raise AutomationError("invalid_prepare_sync_request")
             result = service.prepare_sync_verification(token, body["resolved_paths"])
         elif action == "abort-sync":
             result = service.abort_sync(token)
         elif action == "continue-sync":
-            if set(body) not in (
-                {"token", "checks_passed"},
-                {"token", "checks_passed", "analysis", "message"},
-            ) or not isinstance(body.get("checks_passed"), bool):
-                raise AutomationError("invalid_continue_sync_request")
             result = service.continue_sync(
                 token, checks_passed=body["checks_passed"], analysis=body.get("analysis"), message=body.get("message")
             )
         elif action == "prepare-feature":
-            if (
-                set(body) != {"token", "feature_id", "paths"}
-                or not isinstance(body["feature_id"], str)
-                or not isinstance(body["paths"], list)
-                or not all(isinstance(path, str) for path in body["paths"])
-            ):
-                raise AutomationError("invalid_prepare_feature_request")
             result = service.prepare_feature(token, body["feature_id"], body["paths"])
         elif action == "commit-feature":
-            _analysis_request(body, token=True)
             result = service.commit_feature(token, body["preparation_id"], body["analyzed_tree"], body["message"])
         elif action == "discard-feature":
             from .staged_commits import PreparedCommits
 
-            if set(body) != {"token", "preparation_id"} or not isinstance(body["preparation_id"], str):
-                raise AutomationError("invalid_preparation")
             ownership.assert_owner(token)
             PreparedCommits(workspace).discard(body["preparation_id"], kind="feature", token=token)
             result = {"state": "discarded"}
