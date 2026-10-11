@@ -30,28 +30,30 @@
 
 ## Startup Commands
 
+The paths below use the example username `user`; replace them with your own checkout and session paths.
+
 ### 1. Launch Claude Code inside tmux
 
 ```bash
 tmux attach -t 0
-cd /Users/xiaoming/code/codexspec
+cd /Users/user/code/codexspec
 claude
 ```
 
 ### 2. Locate the new session's jsonl file
 
 ```bash
-ls -lt ~/.claude/projects/-Users-xiaoming-code-codexspec/*.jsonl | head -1
+ls -lt ~/.claude/projects/-Users-user-code-codexspec/*.jsonl | head -1
 ```
 
 ### 3. Start the auto-responder in iTerm2
 
 ```bash
-cd /Users/xiaoming/code/codexspec
+cd /Users/user/code/codexspec
 python scripts/python/claude_auto_responder.py \
-    --jsonl ~/.claude/projects/-Users-xiaoming-code-codexspec/<session-id>.jsonl \
+    --jsonl ~/.claude/projects/-Users-user-code-codexspec/<session-id>.jsonl \
     --tmux-pane 0:0.0 \
-    --project-root /Users/xiaoming/code/codexspec \
+    --project-root /Users/user/code/codexspec \
     --log-file /tmp/auto-responder-demo.log \
     --poll-interval 2.0
 ```

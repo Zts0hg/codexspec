@@ -25,6 +25,8 @@ Claude Code 在长时间运行任务时，经常因为以下原因暂停并等�
 
 ## 快速开始
 
+以下路径使用示例用户名 `user`，请替换为你的实际项目和会话路径。
+
 ### 第一步：在 tmux 中启动 Claude Code
 
 ```bash
@@ -43,7 +45,7 @@ claude
 # 查看 jsonl 文件（找到最新的那个）
 ls -lt ~/.claude/projects/*/*.jsonl | head -5
 # 输出类似：
-# -rw-r--r--  1 xiaoming  staff  12345  Apr 16 10:00  /Users/xiaoming/.claude/projects/-Users-xiaoming-code-myproject/abc123-def456.jsonl
+# -rw-r--r--  1 user  staff  12345  Apr 16 10:00  /Users/user/.claude/projects/-Users-user-code-myproject/abc123-def456.jsonl
 
 # 查看 tmux pane 信息
 tmux list-panes -a -F "#{session_name}:#{window_index}.#{pane_index}"
@@ -55,7 +57,7 @@ tmux list-panes -a -F "#{session_name}:#{window_index}.#{pane_index}"
 
 ```bash
 python scripts/python/claude_auto_responder.py \
-    --jsonl ~/.claude/projects/-Users-xiaoming-code-myproject/abc123-def456.jsonl \
+    --jsonl ~/.claude/projects/-Users-user-code-myproject/abc123-def456.jsonl \
     --tmux-pane claude-main:0.0
 ```
 
@@ -63,7 +65,7 @@ python scripts/python/claude_auto_responder.py \
 
 ```
 [2026-04-16 10:00:01] 🚀 claude-auto-responder v0.2.0-dev 启动
-    └─ jsonl: /Users/xiaoming/.claude/projects/... | pane: claude-main:0.0 | interval: 2.0s | safety: 内置策略
+    └─ jsonl: /Users/user/.claude/projects/... | pane: claude-main:0.0 | interval: 2.0s | safety: 内置策略
 ```
 
 现在可以放心离开了。脚本会自动处理 Claude Code 的所有等待状态。按 `Ctrl+C` 停止。
@@ -404,7 +406,7 @@ claude
 
 # 终端 2：启动 auto-responder 值守
 python scripts/python/claude_auto_responder.py \
-    --jsonl ~/.claude/projects/-Users-xiaoming-code-myproject/session.jsonl \
+    --jsonl ~/.claude/projects/-Users-user-code-myproject/session.jsonl \
     --tmux-pane refactor:0.0 \
     --log-file ~/refactor-log.txt
 
@@ -431,7 +433,7 @@ python scripts/python/claude_auto_responder.py \
 python scripts/python/claude_auto_responder.py \
     --jsonl ~/.claude/projects/-xxx/session.jsonl \
     --tmux-pane claude-main:0.0 \
-    --project-root /Users/xiaoming/code/myproject
+    --project-root /Users/user/code/myproject
 ```
 
 ### 场景 4：多会话并行
