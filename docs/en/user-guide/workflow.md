@@ -100,6 +100,48 @@ Later artifacts cannot silently redefine earlier ones. Requirements use stable I
 
 Legacy feature directories containing only `spec.md` remain supported. Commands explicitly report that traceability to the original discussion is unavailable.
 
+## Reusing Historical Decisions
+
+Before substantive requirements, behavior, design, implementation, debugging, or
+review decisions, CodexSpec directs the agent to consult relevant feature history
+under `.codexspec/specs/`. This applies in ordinary conversation and SDD workflows
+through both Codex and Claude. Project initialization adds the guidance to the
+selected context files; the Claude plugin also supplies it at session startup.
+Update an existing project's installation with `codexspec init . --force --ai both`
+when both integrations are wanted, or select its existing integration with `--ai`.
+
+The agent first finds related features and reconstructs their decision timeline.
+Confirmed requirements remain authoritative user records: older unchanged
+requirements still apply, later additions supplement them, and later explicit
+changes update the same matter. Directory timestamps help establish the iteration
+sequence; confirmation and replacement records explain how the decisions relate.
+Your latest explicit decision in the current conversation takes precedence over
+historical specs. The agent uses history to explain implications, without asking
+you to decide the same explicit choice again.
+
+Reading depth follows the task:
+
+- **Requirements discussion:** related requirements and their evolution; design
+  rationale when needed to explain a trade-off.
+- **Design and planning:** relevant historical designs, alternatives, and trade-offs;
+  plans when implementation experience matters.
+- **Implementation and debugging:** expected behavior and its changes, then relevant
+  design, code, and tests. A plan alone does not prove what was implemented.
+- **Review:** requirements and design relevant to concrete changes, compatibility
+  concerns, or repeated problems within the selected target.
+
+The agent prepares known background before asking questions. Applicable established
+information can eliminate a question; uncertain applicability leads to a short
+confirmation with context. Conflicting or incomplete history should produce a
+specific question rather than an invented decision.
+
+Recall stops when the relevant requirements, decision evolution, and applicability
+support the current judgment. Prepared background is reused across stages and
+supplemented when scope changes, new evidence appears, or a judgment needs more
+support. Purely mechanical edits may omit recall. The instructions do not load all
+historical documents into startup context, and delivery of the rule alone is not
+a guarantee that every agent execution follows it correctly.
+
 ## Key Concept: Iterative Quality Loop
 
 Every generation command includes **automatic review**. Verified defects may be fixed and re-reviewed for at most two rounds; advisory suggestions remain separate and never trigger automatic changes.

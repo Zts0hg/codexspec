@@ -17,7 +17,8 @@ ROOT = Path(__file__).resolve().parents[1]
 @pytest.mark.parametrize("installation", ["plugin", "init"])
 @pytest.mark.parametrize("repository", [False, True])
 def test_session_start_emits_commit_rule_without_cli(tmp_path, installation, repository):
-    from codexspec.commit_guidance import render_commit_guidance
+    from codexspec.commit_guidance import render_commit_guidance, render_plugin_guidance
+    from codexspec.specs_context import render_specs_context
 
     plugin = tmp_path / "plugin cache ' $ space"
     if installation == "plugin":
@@ -53,7 +54,10 @@ def test_session_start_emits_commit_rule_without_cli(tmp_path, installation, rep
         check=False,
     )
     assert result.returncode == 0, result.stderr
-    assert result.stdout == render_commit_guidance("/codexspec:commit-staged") + "\n"
+    assert result.stdout == render_plugin_guidance() + "\n"
+    assert render_commit_guidance("/codexspec:commit-staged") in result.stdout
+    assert render_specs_context() in result.stdout
+    assert result.stdout.count("<!-- CODEXSPEC SPECS START -->") == 1
     assert "Before creating an authorized Git commit" in result.stdout
     assert "Command\navailability alone is not an invocation" in result.stdout
     assert {p.relative_to(project): p.read_bytes() for p in project.rglob("*") if p.is_file()} == original

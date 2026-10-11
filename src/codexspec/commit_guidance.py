@@ -1,9 +1,11 @@
-"""Managed context instructions for staged commit analysis."""
+"""Managed commit instructions and shared plugin startup guidance."""
 
 import json
 import re
 import shlex
 from pathlib import Path
+
+from .specs_context import render_specs_context
 
 START = "<!-- CODEXSPEC COMMITS START -->"
 END = "<!-- CODEXSPEC COMMITS END -->"
@@ -44,8 +46,13 @@ def inject_commit_guidance(path: Path, invocation: str) -> None:
     path.write_text(updated, encoding="utf-8", newline="\n")
 
 
+def render_plugin_guidance() -> str:
+    """Compose startup rules without duplicating either policy's source."""
+    return render_commit_guidance("/codexspec:commit-staged") + "\n\n" + render_specs_context()
+
+
 def install_plugin_commit_guidance(plugin: Path) -> Path:
-    """Install SessionStart context without needing the CLI or project init.
+    """Install commit and specs context without needing the CLI or project init.
 
     Git is already required for commits. Its shell alias provides printf on all
     Git platforms; exec-form hooks pass this static command without host-shell
@@ -59,7 +66,7 @@ def install_plugin_commit_guidance(plugin: Path) -> Path:
             raise AutomationError("linked_commit_guidance", str(part))
     if destination.exists() and (not destination.is_file() or destination.stat().st_nlink != 1):
         raise AutomationError("shared_commit_guidance", str(destination))
-    guidance = render_commit_guidance("/codexspec:commit-staged")
+    guidance = render_plugin_guidance()
     hook = {
         "type": "command",
         "command": "git",
