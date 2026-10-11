@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.23] - 2026-10-11
+
+### Added
+
+- Codex and Claude now receive guidance to recall relevant `.codexspec/specs/`
+  history before substantive decisions and questions, in ordinary conversation
+  and SDD workflows. Claude plugin startup provides the same guidance without
+  requiring project initialization or a persistent CodexSpec CLI.
+- Historical recall distinguishes unchanged requirements, later additions, and
+  explicit changes while always honoring the user's latest explicit decision.
+  Reading depth follows the task; sufficient background is reused to reduce
+  repeated questions and unnecessary searches.
+
+### For contributors
+
+- Added context installation, policy, plugin, and package coverage, plus the
+  feature's requirements, design, planning, and verification records. Validation
+  distinguishes instruction delivery from measured autonomous-agent effectiveness.
+- Replaced machine-specific usernames and paths in documentation examples with
+  generic placeholders.
+- Updated marketplace metadata for the preceding v0.7.22 release.
+
 ## [0.7.22] - 2026-10-11
 
 ### Fixed
