@@ -33,7 +33,7 @@ def test_sync_waits_for_analysis_before_creating_merge(tmp_path, empty):
     default = Path(git(work, "rev-parse", "--git-path", "MERGE_MSG").stdout.strip())
     if not default.is_absolute():
         default = work / default
-    expected = default.read_text() if empty else message
+    expected = default.read_text(encoding="utf-8") if empty else message
     with pytest.raises(AutomationError, match="analysis_required"):
         service.continue_sync(token, checks_passed=True)
     service.continue_sync(token, checks_passed=True, analysis=analysis, message=message)
@@ -71,11 +71,11 @@ def test_empty_merge_snapshot_binds_parents_and_uses_default_message(tmp_path):
     analysis = snapshot(repo)
     before = git(repo, "rev-parse", "HEAD").stdout.strip()
     merge_head = repo / ".git/MERGE_HEAD"
-    original = merge_head.read_text()
-    merge_head.write_text(before + "\n")
+    original = merge_head.read_bytes()
+    merge_head.write_bytes((before + "\n").encode("ascii"))
     with pytest.raises(AutomationError, match="stale_analysis"):
         commit_snapshot(repo, analysis, None)
-    merge_head.write_text(original)
+    merge_head.write_bytes(original)
     commit_snapshot(repo, analysis, None)
     assert len(git(repo, "rev-list", "--parents", "-n", "1", "HEAD").stdout.split()) == 3
     with pytest.raises(AutomationError, match="empty_staged_changes"):
@@ -130,7 +130,7 @@ def test_sync_rejects_analyzed_merge_with_replaced_target(tmp_path):
     assert service.sync_default(token)["state"] == "needs_verification"
     other = git(repo, "rev-parse", "main^").stdout.strip()
     path = Path(git(work, "rev-parse", "--path-format=absolute", "--git-path", "MERGE_HEAD").stdout.strip())
-    path.write_text(other + "\n")
+    path.write_bytes((other + "\n").encode("ascii"))
     analyzed = snapshot(work)
     with pytest.raises(AutomationError, match="stale_analysis"):
         service.continue_sync(token, checks_passed=True, analysis=analyzed, message="chore: integrate main")

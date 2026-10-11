@@ -107,15 +107,20 @@ def _run_git_with_timeout(
     env: Mapping[str, str] | None = None,
 ) -> subprocess.CompletedProcess[str]:
     try:
-        return subprocess.run(
+        # Text-mode stdin rewrites LF to CRLF on Windows, changing prepared
+        # blobs and commit messages. Encode explicitly to preserve input bytes.
+        result = subprocess.run(
             command,
             capture_output=True,
             check=False,
             timeout=GIT_TIMEOUT_SECONDS,
-            encoding="utf-8",
-            input=input,
+            input=input.encode("utf-8") if input is not None else None,
             env=env,
         )
+        stdout, stderr = (
+            value.decode("utf-8").replace("\r\n", "\n").replace("\r", "\n") for value in (result.stdout, result.stderr)
+        )
+        return subprocess.CompletedProcess(result.args, result.returncode, stdout, stderr)
     except subprocess.TimeoutExpired as exc:
         raise AutomationError("git_command_timeout", f"git {' '.join(command[1:])}") from exc
 

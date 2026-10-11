@@ -283,16 +283,37 @@ message/strategy values. `test_manual_merge_commit_does_not_inherit_merge_option
 retains normal manual-commit behavior. These 11 cases extend T02/T11 coverage
 of CON-002 and REQ-006.
 
-## Final Verification
+## Verification Before Remote CI
 
-The current implementation passed **2211 tests, with 54 skipped**. Ruff
+The implementation at the initial feature commit passed **2211 tests, with 54 skipped**. Ruff
 lint/format, mypy, Bandit, Markdown lint, distribution consistency, strict MkDocs
 and diff whitespace checks passed. Wheel/sdist verification passed 18 tests.
 These are local macOS results; native Windows/Linux execution is not claimed.
 A fresh isolated complete-feature primary review and command/process execution
 specialist review passed with no admitted defects or unresolved follow-up.
 The reviewed implementation fingerprint is `sha256:e6094e50a83d18df8b654ab01a2822031be2d68bc6faabf53cab2978b4edfeac`.
-Only this task-completion record was updated after that review; implementation
-and installation artifacts remain byte-identical to the reviewed evidence.
-Native Windows/Linux and empirical agent adherence remain unexecuted evidence
-limits; deterministic instruction and runtime checks are complete.
+At that point only this task-completion record changed after review. The
+subsequent CI correction below changes the runtime and installation artifacts;
+the earlier fingerprint and isolated reviews describe the pre-correction state.
+Empirical agent adherence remains an unexecuted evidence limit.
+
+## Windows CI Correction
+
+CI run 38104143348 passed lint and both Python versions on Linux/macOS, but
+both Windows jobs failed the same 14 cases. Text-mode subprocess stdin changed
+LF to CRLF even with explicit UTF-8, causing blueprint preparation/publication
+trees to disagree. Default-codec fixture reads and text writes to MERGE_HEAD
+caused the remaining failures.
+
+S40: tests/test_git_transport.py executes real Git with emulated Windows text
+transport and checks exact UTF-8 input bytes, both core.autocrlf values, and
+fixture output under a non-UTF-8 locale. Four cases failed and three controls
+passed before the fix; all seven pass with binary Git stdin and explicit UTF-8
+fixture decoding. This extends T02/T10/T11 coverage of REQ-006. Merge fixtures
+preserve Git metadata bytes, and context fixtures use explicit UTF-8/LF.
+
+The focused verification passed 90 tests. Ruff lint/format, mypy, Bandit,
+Markdown lint, distribution consistency, strict MkDocs and whitespace checks
+passed. Rebuilt wheel/sdist verification passed 18 tests. The full pre-commit
+suite and a fresh native CI matrix remain the gates before merging this
+correction; the initial Windows failures are not treated as successful checks.

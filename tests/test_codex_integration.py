@@ -288,12 +288,12 @@ def test_commit_guidance_installed_and_updated_without_clobber(tmp_path, ai, fil
     first = runner.invoke(app, args)
     assert first.exit_code == 0, first.output
     context = target / filename
-    text = context.read_text()
+    text = context.read_text(encoding="utf-8")
     assert "<!-- CODEXSPEC COMMITS START -->" in text
     assert invocation in text
     assert "Before creating an authorized Git commit" in text
     custom = "\nCustom literal: " + chr(92) + "g<0>\n"
-    context.write_text(text + custom)
+    context.write_text(text + custom, encoding="utf-8", newline="\n")
     second = runner.invoke(app, args)
     assert second.exit_code == 0, second.output
-    assert context.read_text() == text + custom
+    assert context.read_text(encoding="utf-8") == text + custom
