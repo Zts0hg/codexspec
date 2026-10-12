@@ -511,6 +511,7 @@ claude
 | `--set-commit-lang`, `-c` | 커밋 메시지 언어를 설정                               |
 | `--list-langs`            | 지원되는 모든 언어를 나열                             |
 | `--auto-next`             | `workflow.auto_next`를 토글/설정(값 없으면 토글, 또는 on/off) |
+| `--auto-maintenance` | `workflow.auto_maintenance` 토글/설정(기본 on, 값 없으면 토글, 또는 on/off) |
 | `--auto-distill`          | `workflow.auto_distill`를 토글/설정(기본 활성화, 값 없으면 토글, 또는 on/off) |
 
 </details>
@@ -652,6 +653,8 @@ codexspec config --set-document-lang en
 codexspec config --set-commit-lang en
 codexspec config --auto-next
 ```
+
+`codexspec config --auto-maintenance on|off`는 `.codexspec/config.yml`의 `workflow.auto_maintenance`를 YAML 불리언으로 저장합니다. 키가 없으면 `true`로 처리합니다. 두 워크플로 스위치는 대소문자를 구분하지 않는 `on/true/1/yes`와 `off/false/0/no`를 지원합니다. `implement-tasks`는 자동 수정 시 이 설정을 읽습니다. `on`이면 근거가 있는 점진적 유지보수 개선을 적용하고, `off`여도 제안은 보고합니다. 실제 결함과 필수 검증은 계속 처리해야 합니다. `auto-next`와 독립적이며 `implement-tasks` 호출 인자가 아닙니다.
 
 ### 지원 언어
 

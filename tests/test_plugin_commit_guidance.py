@@ -22,12 +22,16 @@ def test_session_start_emits_commit_rule_without_cli(tmp_path, installation, rep
 
     plugin = tmp_path / "plugin cache ' $ space"
     if installation == "plugin":
-        manifest = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text())
-        assert manifest["plugins"][0]["commands"] == "./"
-        shutil.copytree(ROOT / manifest["plugins"][0]["source"]["path"], plugin)
-        assert (plugin / "commit-staged.md").is_file()
+        # The development bundle uses the repository root; the published
+        # marketplace continues selecting the preceding tag until release.
+        source = ROOT
+        commands = Path(".claude/commands/codexspec")
+        shutil.copytree(source / commands, plugin / commands)
+        assert (plugin / commands / "commit-staged.md").is_file()
+        hook_file = plugin / commands / "hooks/hooks.json"
     else:
         install_commands_to_subdir(plugin, ROOT / "templates/commands", force=True)
+        hook_file = plugin / "hooks/hooks.json"
     project = tmp_path / "project"
     if repository:
         make_repo(project)
@@ -37,7 +41,7 @@ def test_session_start_emits_commit_rule_without_cli(tmp_path, installation, rep
     else:
         project.mkdir()
     original = {p.relative_to(project): p.read_bytes() for p in project.rglob("*") if p.is_file()}
-    config = json.loads((plugin / "hooks/hooks.json").read_text())
+    config = json.loads(hook_file.read_text())
     handlers = config["hooks"]["SessionStart"]
     assert len(handlers) == 1 and handlers[0].get("matcher", "") == ""
     (hook,) = handlers[0]["hooks"]

@@ -1,0 +1,80 @@
+{
+  "schema_version": "1",
+  "id": "reachable-bypass",
+  "description": "A new public preview bypasses the existing required-name guarantee",
+  "risk_profiles": [],
+  "setup": {
+    "files": {
+      "src/names.py": "def _normalize(request):\n    return request['name'].strip()\n\ndef greet(request):\n    if not isinstance(request, dict) or not isinstance(request.get('name'), str):\n        raise ValueError('name must be a string')\n    return 'Hello ' + _normalize(request)\n\ndef preview(request):\n    return _normalize(request)\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\n\n## Confirmed behavior\n\nPublic greet and preview must reject missing or non-string name without leaking internal KeyError; public preview is newly added.\n",
+      "spec.md": "# Spec\n\nPublic greet and preview must reject missing or non-string name without leaking internal KeyError; public preview is newly added.\n",
+      "plan.md": "# Plan\n\nPreserve the confirmed public behavior and wire contract.\n",
+      "tasks.md": "# Tasks\n\n- [x] Implement the selected behavior and review the actual paths.\n"
+    }
+  },
+  "expect": {
+    "verdict": "FAIL",
+    "require_profiles": false,
+    "require_maintenance": true,
+    "minimum_findings": [
+      {
+        "priority": "P2",
+        "contains": "preview",
+        "aliases": [
+          "name",
+          "missing"
+        ]
+      }
+    ],
+    "required_contract_trace": {
+      "producers": [
+        [
+          "preview",
+          "request"
+        ]
+      ],
+      "propagation": [
+        [
+          "bypass",
+          "without",
+          "unchecked"
+        ]
+      ],
+      "consumers": [
+        [
+          "_normalize"
+        ]
+      ],
+      "entry_surfaces": [
+        [
+          "preview"
+        ]
+      ],
+      "scenarios": [
+        [
+          "missing",
+          "invalid"
+        ]
+      ]
+    },
+    "required_evidence_terms": [
+      [
+        "preview"
+      ],
+      [
+        "name"
+      ],
+      [
+        "bypass",
+        "without",
+        "unchecked"
+      ]
+    ],
+    "forbidden_findings": [
+      "hypothetical future provider",
+      "generic style violation"
+    ]
+  }
+}

@@ -11,6 +11,8 @@ import pytest
 
 from tests.evals.review_code import run_eval
 
+ROOT = Path(__file__).resolve().parent.parent
+
 EXPECTED_CASES = {
     "authorization-bypass": "authorization/trust",
     "command-quoting": "command/process execution",
@@ -1114,15 +1116,24 @@ def test_review_code_eval_corpus_declares_required_cases_and_expectations() -> N
     cases_root = Path("tests/evals/review_code/cases")
     case_dirs = run_eval.iter_cases(cases_root)
 
-    assert {path.name for path in case_dirs} == set(EXPECTED_CASES)
+    assert set(EXPECTED_CASES).issubset({path.name for path in case_dirs})
+    assert {path.name for path in case_dirs} == set(EXPECTED_CASES) | {
+        "upstream-guarantee",
+        "reachable-bypass",
+        "missing-required-authorization",
+        "late-cross-language",
+        "incremental-maintenance",
+        "no-speculative-maintenance",
+    }
     for case_dir in case_dirs:
         case = run_eval.load_case(case_dir)
-        expected_profile = EXPECTED_CASES[case.case_id]
-        assert expected_profile in case.data["risk_profiles"]
+        expected_profile = EXPECTED_CASES.get(case.case_id)
+        if expected_profile is not None:
+            assert expected_profile in case.data["risk_profiles"]
         assert case.data["setup"]["files"]
         assert case.data["expect"]["verdict"] in {"PASS", "FAIL", "INCONCLUSIVE"}
         assert case.data["expect"]["forbidden_findings"]
-        if case.case_id.startswith("clean-"):
+        if case.data["expect"]["verdict"] == "PASS":
             assert case.data["expect"]["verdict"] == "PASS"
             assert case.data["expect"]["minimum_findings"] == []
         elif case.case_id == "incomplete-contract-coverage":
@@ -1324,3 +1335,203 @@ def test_parse_review_result_accepts_complete_fallback_with_baseline_gap() -> No
     result["coverage_gap_count"] = 1
     parsed = run_eval.parse_review_result(_wrap(result))
     assert parsed["review_scope"]["kind"] == "complete"
+
+
+def _maintenance_output(items):
+    return (
+        output_pass()
+        + "\n<review-code-maintenance>\n"
+        + json.dumps(
+            {
+                "schema_version": "1",
+                "target_fingerprint": "sha256:fixture-target",
+                "suggestions": items,
+            }
+        )
+        + "\n</review-code-maintenance>\n"
+    )
+
+
+def output_pass():
+    return _envelope(verdict="PASS")
+
+
+def _current_maintenance():
+    return {
+        "id": "M-001",
+        "location": "src/policy.py:2",
+        "summary": "Consolidate formatter",
+        "problem": "Duplicated equivalent branches obscure the format decision",
+        "improvement": "Use one consolidated formatting return",
+        "benefit": "Read one decision and maintain one implementation",
+        "evidence": ["format_name branches return the same value for every mode"],
+        "affected_paths": ["src/policy.py"],
+        "compatibility": "Preserve the returned prefix and stripped name for every mode",
+    }
+
+
+def test_e04_maintenance_evaluation_requires_present_case_evidence():
+    case = run_eval.load_case(ROOT / "tests/evals/review_code/cases/incremental-maintenance")
+    hollow = _current_maintenance()
+    hollow.update(problem="Could be better", evidence=["Code inspected"], benefit="Nice improvement")
+    parsed = run_eval.parse_review_result(_maintenance_output([hollow]))
+    assert not run_eval.evaluate_result(case, parsed).passed
+    parsed = run_eval.parse_review_result(_maintenance_output([_current_maintenance()]))
+    assert run_eval.evaluate_result(case, parsed).passed
+
+
+def test_e04_missing_companion_and_speculative_suggestion_fail():
+    case = run_eval.load_case(ROOT / "tests/evals/review_code/cases/incremental-maintenance")
+    parsed = run_eval.parse_review_result(output_pass())
+    assert not run_eval.evaluate_result(case, parsed).passed
+    clean = run_eval.load_case(ROOT / "tests/evals/review_code/cases/no-speculative-maintenance")
+    parsed = run_eval.parse_review_result(_maintenance_output([_current_maintenance()]))
+    assert not run_eval.evaluate_result(clean, parsed).passed
+
+
+def test_e04_companion_mismatch_is_parse_error():
+    text = _maintenance_output([]).replace(
+        '"target_fingerprint": "sha256:fixture-target"', '"target_fingerprint": "sha256:old-target"'
+    )
+    with pytest.raises(run_eval.ResultParseError):
+        run_eval.parse_review_result(text)
+
+
+def test_e01_paired_fixture_guarantee_has_real_bypass():
+    safe = run_eval.load_case(ROOT / "tests/evals/review_code/cases/upstream-guarantee")
+    bypass = run_eval.load_case(ROOT / "tests/evals/review_code/cases/reachable-bypass")
+    safe_code, bypass_code = {}, {}
+    exec(safe.data["setup"]["files"]["src/names.py"], safe_code)
+    exec(bypass.data["setup"]["files"]["src/names.py"], bypass_code)
+    assert safe_code["greet"]({"name": " user "}) == "Hello user"
+    with pytest.raises(ValueError):
+        safe_code["greet"]({})
+    with pytest.raises(KeyError):
+        bypass_code["preview"]({})
+
+
+@pytest.mark.parametrize(
+    "case_id",
+    [
+        "upstream-guarantee",
+        "reachable-bypass",
+        "missing-required-authorization",
+        "late-cross-language",
+    ],
+)
+def test_e01_e02_e03_hollow_trace_does_not_pass(case_id):
+    case = run_eval.load_case(ROOT / f"tests/evals/review_code/cases/{case_id}")
+    result = run_eval.parse_review_result(_maintenance_output([]))
+    assert not run_eval.evaluate_result(case, result).passed
+
+
+@pytest.mark.parametrize(
+    ("case_id", "trace", "finding", "profiles", "scope"),
+    [
+        (
+            "upstream-guarantee",
+            {
+                "statement": "The public greet rejects absent and invalid names before normalization.",
+                "sources": ["requirements.md: greet is the only supported public entry"],
+                "producers": ["greet receives the public request"],
+                "propagation": ["greet validates request and guards name's string type"],
+                "consumers": ["_normalize receives the checked name"],
+                "entry_surfaces": ["greet"],
+                "scenarios": ["missing name", "invalid non-string name", "valid name"],
+                "evidence": [
+                    "src/names.py: greet's name guard raises ValueError before _normalize; the only caller is greet"
+                ],
+            },
+            None,
+            [],
+            "",
+        ),
+        (
+            "reachable-bypass",
+            {
+                "statement": "All public name entries reject invalid names without KeyError.",
+                "sources": ["requirements.md: greet and preview are public"],
+                "producers": ["preview receives an unchecked request"],
+                "propagation": ["preview bypasses the guard in greet"],
+                "consumers": ["_normalize indexes request['name']"],
+                "entry_surfaces": ["preview"],
+                "scenarios": ["missing name through preview"],
+                "evidence": [
+                    "src/names.py: preview calls _normalize without a name guard; preview({}) raises KeyError"
+                ],
+            },
+            {"priority": "P2", "summary": "preview bypasses required name validation", "location": "src/names.py:10"},
+            [],
+            "",
+        ),
+        (
+            "missing-required-authorization",
+            {
+                "statement": "A protected delete must authorize its caller before mutation.",
+                "sources": ["requirements.md: store.can_delete(caller, record_id) must precede deletion"],
+                "producers": ["caller and record_id enter delete_record"],
+                "propagation": ["missing authorization check permits mutation"],
+                "consumers": ["store.delete(record_id)"],
+                "entry_surfaces": ["delete_record"],
+                "scenarios": ["unauthorized caller is denied without mutation"],
+                "evidence": [
+                    "src/delete.py: delete_record directly invokes store.delete; caller authorization is absent"
+                ],
+            },
+            {
+                "priority": "P1",
+                "summary": "Missing authorization allows protected deletion",
+                "location": "src/delete.py:2",
+            },
+            ["authorization/trust"],
+            "",
+        ),
+        (
+            "late-cross-language",
+            {
+                "statement": "The JSON limit emitted by Python must remain an integer accepted by Go.",
+                "sources": ["requirements.md: request_body feeds unchanged service/limit.go"],
+                "producers": ["Python client request_body"],
+                "propagation": ["json.dumps serializes str(limit) in the request"],
+                "consumers": ["Go Decode uses json.Unmarshal into Request.Limit int"],
+                "entry_surfaces": ["request_body"],
+                "scenarios": ["numeric integer limit becomes a JSON string"],
+                "evidence": [
+                    "src/client.py converts limit to a string; service/limit.go Decode requires an integer"
+                    " and rejects that JSON value"
+                ],
+            },
+            {
+                "priority": "P2",
+                "summary": "limit string fails the unchanged Go integer decoder",
+                "location": "src/client.py:4",
+            },
+            ["network/provider behavior"],
+            "## Scope\nLANG-PYTHON: producer serialization. LANG-GO: unchanged decoder reached through JSON.\n",
+        ),
+    ],
+)
+def test_e01_e02_e03_concrete_trace_passes_but_hollow_evidence_fails(
+    case_id,
+    trace,
+    finding,
+    profiles,
+    scope,
+):
+    case = run_eval.load_case(ROOT / f"tests/evals/review_code/cases/{case_id}")
+    companion = _maintenance_output([]).split("<review-code-maintenance>", 1)[1]
+    output = (
+        scope
+        + _envelope(
+            verdict="FAIL" if finding else "PASS",
+            findings=[finding] if finding else [],
+            profiles=profiles,
+        )
+        + "<review-code-maintenance>"
+        + companion
+    )
+    result = run_eval.parse_review_result(output)
+    result["review_coverage"]["contracts"][0].update(trace)
+    assert run_eval.evaluate_result(case, result).passed
+    result["review_coverage"]["contracts"][0]["evidence"] = ["All boundaries inspected"]
+    assert not run_eval.evaluate_result(case, result).passed

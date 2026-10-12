@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -21,12 +22,15 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_cli_free_snapshot_commit_and_hooks(tmp_path, installation):
     repo = make_repo(tmp_path / "project")
     if installation == "plugin":
-        # Copy only the marketplace's declared plugin root, outside the project.
-        manifest = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text())
-        source = ROOT / manifest["plugins"][0]["source"]["path"]
+        # Exercise the next release's repository-root bundle. Marketplace metadata
+        # retains the preceding release's layout until the new tag is published.
+        source = ROOT
+        commands = Path(".claude/commands/codexspec")
         plugin = tmp_path / "plugin cache with spaces"
-        shutil.copytree(source, plugin)
-        helper = plugin / "commit-staged-helper.py"
+        shutil.copytree(source / commands, plugin / commands)
+        command = (plugin / commands / "commit-staged.md").read_text(encoding="utf-8")
+        (runtime_path,) = re.findall(r"\$\{CLAUDE_PLUGIN_ROOT\}/([^`]*commit-staged-helper\.py)", command)
+        helper = plugin / runtime_path
     else:
         result = CliRunner().invoke(app, ["init", str(repo), "--force", "--ai", installation, "--lang", "en"])
         assert result.exit_code == 0, result.output

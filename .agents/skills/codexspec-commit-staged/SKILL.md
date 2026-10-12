@@ -185,7 +185,7 @@ repair staging, or include unstaged changes. Report unexpected or empty staging.
 Resolve one runtime for this invocation, without changing the input workspace:
 
 - When loaded from a Claude plugin, use its bundled
-  `${CLAUDE_PLUGIN_ROOT}/commit-staged-helper.py`.
+  `${CLAUDE_PLUGIN_ROOT}/.claude/commands/codexspec/commit-staged-helper.py`.
 - After project initialization (including one-time `uvx` initialization), use
   `<original workspace>/.codexspec/scripts/commit-staged-helper.py` when present.
 - Otherwise, an installed `codexspec _commit-staged-helper` is the same protocol.

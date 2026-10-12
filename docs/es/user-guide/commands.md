@@ -1082,6 +1082,12 @@ AI:  ## Verdict
      **PASS** — la revisión y verificación obligatorias terminaron sin hallazgos.
 ```
 
+**Criterios aplicables y mantenimiento.** Cada revisión lee las reglas comunes y el modo elegido, evalúa las siete dimensiones y carga detalles solo cuando el comportamiento, contrato o dependencia los hace pertinentes. Las dependencias sin cambios descubiertas durante el seguimiento también pueden activar listas de lenguaje o framework. Las propuestas de mantenimiento necesitan pruebas de un problema actual y una mejora local compatible con el comportamiento existente. La complejidad futura hipotética y los umbrales de estilo por sí solos no justifican reparaciones. El resultado de defectos mantiene la versión 3; un `<review-code-maintenance>` separado, de versión 1, informa propuestas vinculadas a la misma huella del objetivo. La revisión independiente solo informa. `implement-tasks` verifica y aplica según `workflow.auto_maintenance` (por defecto `true`). Las reparaciones continúan mientras haya avances sustanciales y respetan las condiciones de parada existentes. No hay un máximo fijo de rondas; la aceptación final requiere una nueva revisión completa.
+
+`codexspec config --auto-maintenance on|off` guarda `workflow.auto_maintenance` como booleano YAML en `.codexspec/config.yml`; si falta la clave, se aplica `true`. Ambos interruptores aceptan `on/true/1/yes` y `off/false/0/no` sin distinguir mayúsculas. `implement-tasks` lee esta configuración al reparar automáticamente: `on` incluye mejoras incrementales de mantenimiento fundamentadas; `off` sigue informándolas. Los defectos reales y la verificación necesaria siguen siendo obligatorios. La opción es independiente de `auto-next` y no es un parámetro de invocación de `implement-tasks`.
+
+`codexspec init` instala recursos de revisión compartidos por Claude Code y Codex en `.codexspec/review-code/`. `--force` actualiza los recursos distribuidos y conserva archivos de extensión con otras rutas. Instalar solo la CLI no crea archivos de proyecto. Si se usa únicamente el plugin y el proyecto no tiene recursos instalados, la revisión carga los mismos recursos desde la raíz resuelta por el anfitrión.
+
 <!-- REVIEW-CODE-AUDIT -->
 
 #### Auditoría de calidad por ruta

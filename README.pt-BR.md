@@ -511,6 +511,7 @@ A implementação segue o **fluxo de TDD condicional**:
 | `--set-commit-lang`, `-c` | Define o idioma das mensagens de commit                    |
 | `--list-langs`            | Lista todos os idiomas suportados                          |
 | `--auto-next`             | Alterna/define `workflow.auto_next` (sem valor alterna; ou on/off) |
+| `--auto-maintenance` | Alterna/define `workflow.auto_maintenance` (on por padrão; sem valor alterna; ou on/off) |
 | `--auto-distill`           | Alterna/define `workflow.auto_distill` (ativado por padrão; sem valor alterna; ou on/off) |
 
 </details>
@@ -652,6 +653,8 @@ codexspec config --set-document-lang en
 codexspec config --set-commit-lang en
 codexspec config --auto-next
 ```
+
+`codexspec config --auto-maintenance on|off` salva `workflow.auto_maintenance` como booleano YAML em `.codexspec/config.yml`; se a chave não existir, vale `true`. As duas opções aceitam `on/true/1/yes` e `off/false/0/no` sem diferenciar maiúsculas. `implement-tasks` lê essa configuração ao corrigir automaticamente: `on` inclui melhorias incrementais de manutenção fundamentadas; `off` continua relatando as sugestões. Defeitos reais e verificações necessárias continuam obrigatórios. A configuração é independente de `auto-next` e não é um parâmetro de chamada de `implement-tasks`.
 
 ### Idiomas suportados
 

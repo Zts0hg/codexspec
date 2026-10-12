@@ -1082,6 +1082,12 @@ AI:  ## Verdict
      **PASS** — revisão e verificação obrigatórias concluídas sem defeitos.
 ```
 
+**Critérios aplicáveis e manutenção.** Cada revisão lê as regras comuns e o modo escolhido, avalia as sete dimensões e carrega detalhes apenas quando o comportamento, contrato ou dependência os torna relevantes. Dependências sem alterações descobertas no rastreamento também podem ativar listas de linguagem ou framework. Sugestões de manutenção exigem evidência de um problema atual e uma melhoria local compatível com o comportamento existente. Complexidade futura hipotética e limites de estilo isolados não justificam correções. O resultado de defeitos mantém a versão 3; um `<review-code-maintenance>` separado, de versão 1, relata sugestões ligadas à mesma impressão digital do alvo. A revisão isolada apenas relata. `implement-tasks` verifica e aplica conforme `workflow.auto_maintenance` (padrão `true`). As correções continuam enquanto houver progresso substancial e respeitam os critérios de parada existentes. Não há um limite fixo de rodadas; a aceitação final exige uma nova revisão completa.
+
+`codexspec config --auto-maintenance on|off` salva `workflow.auto_maintenance` como booleano YAML em `.codexspec/config.yml`; se a chave não existir, vale `true`. As duas opções aceitam `on/true/1/yes` e `off/false/0/no` sem diferenciar maiúsculas. `implement-tasks` lê essa configuração ao corrigir automaticamente: `on` inclui melhorias incrementais de manutenção fundamentadas; `off` continua relatando as sugestões. Defeitos reais e verificações necessárias continuam obrigatórios. A configuração é independente de `auto-next` e não é um parâmetro de chamada de `implement-tasks`.
+
+`codexspec init` instala os recursos de revisão compartilhados pelo Claude Code e Codex em `.codexspec/review-code/`. `--force` atualiza recursos distribuídos e preserva arquivos de extensão com outros caminhos. Instalar apenas a CLI não cria arquivos de projeto. Com apenas o plugin, se o projeto não tiver a árvore instalada, a revisão usa os mesmos recursos da raiz resolvida pelo host.
+
 <!-- REVIEW-CODE-AUDIT -->
 
 #### Auditoria de qualidade por caminho

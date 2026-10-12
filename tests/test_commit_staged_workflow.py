@@ -20,7 +20,7 @@ def test_commit_analysis_owns_no_staging_and_requires_reanalysis():
     content = (ROOT / "commit-staged.md").read_text()
     assert "selected runtime with `snapshot`" in content
     assert "selected runtime with `commit`" in content
-    assert "${CLAUDE_PLUGIN_ROOT}/commit-staged-helper.py" in content
+    assert "${CLAUDE_PLUGIN_ROOT}/.claude/commands/codexspec/commit-staged-helper.py" in content
     assert ".codexspec/scripts/commit-staged-helper.py" in content
     assert "codexspec _commit-staged-helper" in content
     assert "caller" in content

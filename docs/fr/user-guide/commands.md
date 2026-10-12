@@ -1082,6 +1082,12 @@ AI:  ## Verdict
      **PASS** — les revues et vérifications obligatoires sont terminées sans défaut.
 ```
 
+**Critères applicables et maintenance.** Chaque revue lit les règles communes et le mode choisi, évalue les sept dimensions, puis charge les détails pertinents pour le comportement, le contrat ou les dépendances. Les dépendances inchangées découvertes pendant le suivi peuvent aussi activer les listes propres aux langages ou frameworks. Une proposition de maintenance exige des preuves d’un problème actuel et une amélioration locale compatible avec le comportement existant. Une complexité future hypothétique ou un seuil de style seul ne justifie pas de correction. Le résultat des défauts conserve la version 3 ; un `<review-code-maintenance>` distinct de version 1 rapporte les propositions liées à la même empreinte cible. La revue autonome ne fait que les signaler. `implement-tasks` les vérifie et les applique selon `workflow.auto_maintenance` (par défaut `true`). Les corrections se poursuivent tant qu’elles produisent des progrès substantiels et respectent les conditions d’arrêt existantes. Il n’y a pas de limite fixe de cycles ; la validation finale exige une nouvelle revue complète.
+
+`codexspec config --auto-maintenance on|off` enregistre `workflow.auto_maintenance` comme booléen YAML dans `.codexspec/config.yml` ; une clé absente vaut `true`. Les deux options acceptent `on/true/1/yes` et `off/false/0/no` sans distinction de casse. `implement-tasks` lit ce réglage lors des corrections automatiques : `on` inclut les améliorations progressives de maintenance étayées ; `off` continue de les signaler. Les défauts réels et les vérifications nécessaires restent obligatoires. Ce réglage est indépendant d’`auto-next` et n’est pas un paramètre d’appel d’`implement-tasks`.
+
+`codexspec init` installe les ressources de revue communes à Claude Code et Codex dans `.codexspec/review-code/`. `--force` actualise les ressources distribuées et préserve les extensions ayant d’autres chemins. L’installation de la CLI seule ne crée aucun fichier de projet. Avec le plugin seul, sans arborescence installée dans le projet, la revue utilise les mêmes ressources depuis la racine résolue par l’hôte.
+
 <!-- REVIEW-CODE-AUDIT -->
 
 #### Audit de qualité par chemin

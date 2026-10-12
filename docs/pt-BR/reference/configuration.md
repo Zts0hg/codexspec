@@ -21,6 +21,7 @@ project:
   created: "2025-02-15"
 
 workflow:
+  auto_maintenance: true
   auto_next: false       # Avanço automático entre etapas do fluxo (opt-in)
 
 review:
@@ -99,6 +100,10 @@ specify → generate-spec → spec-to-design → design-to-plan → plan-to-task
 - `implement-tasks`: etapa terminal — nada dispara automaticamente depois dela.
 
 Quando o loop de revisão informa `NEEDS_REVISION` ou `BLOCKED`, a cadeia para e o controle volta a você. Antes de cada avanço, o agente emite uma linha de aviso (por exemplo: `auto_next: review passed → invoking /codexspec:design-to-plan`).
+
+### `workflow.auto_maintenance`
+
+`codexspec config --auto-maintenance on|off` salva `workflow.auto_maintenance` como booleano YAML em `.codexspec/config.yml`; se a chave não existir, vale `true`. As duas opções aceitam `on/true/1/yes` e `off/false/0/no` sem diferenciar maiúsculas. `implement-tasks` lê essa configuração ao corrigir automaticamente: `on` inclui melhorias incrementais de manutenção fundamentadas; `off` continua relatando as sugestões. Defeitos reais e verificações necessárias continuam obrigatórios. A configuração é independente de `auto-next` e não é um parâmetro de chamada de `implement-tasks`.
 
 ## Configurações de revisão
 

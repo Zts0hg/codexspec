@@ -1,0 +1,71 @@
+{
+  "schema_version": "1",
+  "id": "upstream-guarantee",
+  "description": "A required name is established at the only public entry before private normalization",
+  "risk_profiles": [],
+  "setup": {
+    "files": {
+      "src/names.py": "def _normalize(request):\n    return request['name'].strip()\n\ndef greet(request):\n    if not isinstance(request, dict) or not isinstance(request.get('name'), str):\n        raise ValueError('name must be a string')\n    return 'Hello ' + _normalize(request)\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\n\n## Confirmed behavior\n\nThe only supported public entry is greet. It rejects absent or non-string name before calling the private normalizer.\n",
+      "spec.md": "# Spec\n\nThe only supported public entry is greet. It rejects absent or non-string name before calling the private normalizer.\n",
+      "plan.md": "# Plan\n\nPreserve the confirmed public behavior and wire contract.\n",
+      "tasks.md": "# Tasks\n\n- [x] Implement the selected behavior and review the actual paths.\n"
+    }
+  },
+  "expect": {
+    "verdict": "PASS",
+    "require_profiles": false,
+    "require_maintenance": true,
+    "maximum_maintenance": 0,
+    "minimum_findings": [],
+    "required_contract_trace": {
+      "producers": [
+        [
+          "greet",
+          "request"
+        ]
+      ],
+      "propagation": [
+        [
+          "validat",
+          "guard"
+        ]
+      ],
+      "consumers": [
+        [
+          "_normalize"
+        ]
+      ],
+      "entry_surfaces": [
+        [
+          "greet"
+        ]
+      ],
+      "scenarios": [
+        [
+          "missing",
+          "invalid"
+        ]
+      ]
+    },
+    "required_evidence_terms": [
+      [
+        "name"
+      ],
+      [
+        "guard",
+        "validation"
+      ],
+      [
+        "before",
+        "upstream"
+      ]
+    ],
+    "forbidden_findings": [
+      "hypothetical future provider",
+      "generic style violation"
+    ]
+  }
+}

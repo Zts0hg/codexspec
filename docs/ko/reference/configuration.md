@@ -21,6 +21,7 @@ project:
   created: "2025-02-15"
 
 workflow:
+  auto_maintenance: true
   auto_next: false       # 워크플로우 단계 간 자동 진행 (옵트인)
 
 review:
@@ -99,6 +100,10 @@ specify → generate-spec → spec-to-design → design-to-plan → plan-to-task
 - `implement-tasks`: 종착 단계 — 이후에 자동으로 발동하는 것은 없습니다.
 
 리뷰 루프가 `NEEDS_REVISION` 또는 `BLOCKED`를 보고하면 체인은 멈추고 제어가 사용자에게 돌아갑니다. 각 진행 전에 에이전트는 알림 한 줄을 출력합니다(예: `auto_next: review passed → invoking /codexspec:design-to-plan`).
+
+### `workflow.auto_maintenance`
+
+`codexspec config --auto-maintenance on|off`는 `.codexspec/config.yml`의 `workflow.auto_maintenance`를 YAML 불리언으로 저장합니다. 키가 없으면 `true`로 처리합니다. 두 워크플로 스위치는 대소문자를 구분하지 않는 `on/true/1/yes`와 `off/false/0/no`를 지원합니다. `implement-tasks`는 자동 수정 시 이 설정을 읽습니다. `on`이면 근거가 있는 점진적 유지보수 개선을 적용하고, `off`여도 제안은 보고합니다. 실제 결함과 필수 검증은 계속 처리해야 합니다. `auto-next`와 독립적이며 `implement-tasks` 호출 인자가 아닙니다.
 
 ## 검토 설정
 

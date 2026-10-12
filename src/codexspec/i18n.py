@@ -207,6 +207,11 @@ language:
 project:
   ai: "claude"
   created: "{created}"
+
+# Automatically apply substantiated incremental maintenance during repairs.
+# Independent of workflow.auto_next, which controls stage advancement.
+workflow:
+  auto_maintenance: true
 """
 
 

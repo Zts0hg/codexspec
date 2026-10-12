@@ -21,6 +21,7 @@ project:
   created: "2025-02-15"
 
 workflow:
+  auto_maintenance: true
   auto_next: false       # 在工作流各阶段之间自动推进（opt-in）
 
 review:
@@ -99,6 +100,10 @@ specify → generate-spec → spec-to-design → design-to-plan → plan-to-task
 - `implement-tasks`：终端阶段——其后不会自动触发任何内容。
 
 当评审闭环报告 `NEEDS_REVISION` 或 `BLOCKED` 时，链路停下并把控制权交还给你。每次推进之前，agent 会输出一条提示行（例如：`auto_next: review passed → invoking /codexspec:design-to-plan`）。
+
+### `workflow.auto_maintenance`
+
+`codexspec config --auto-maintenance on|off` 将 `workflow.auto_maintenance` 作为 YAML 布尔值持久化到 `.codexspec/config.yml`；未配置时按 `true` 处理。两个工作流开关都接受不区分大小写的 `on/true/1/yes` 和 `off/false/0/no`。`implement-tasks` 自动修复审查问题时读取此配置：`on` 将有依据的增量维护改进纳入修复，`off` 仍会报告这些建议。实际缺陷与必要验证仍必须处理。它与 `auto-next` 独立，也不是 `implement-tasks` 的调用参数。
 
 ## 审查设置
 

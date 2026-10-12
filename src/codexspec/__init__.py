@@ -64,6 +64,8 @@ from .i18n import (
 )
 from .integrations import get_integrations
 from .profile import ensure_profile_scaffold, inject_profile_block
+from .review_maintenance import read_auto_maintenance, write_auto_maintenance
+from .review_standards import install_review_standards
 from .specs_context import inject_specs_context
 from .translator import SUPPORTED_LANGUAGES, translate
 from .worktrees import (
@@ -637,6 +639,7 @@ _AUTO_NEXT_ACCEPTED = "on/off, true/false, 1/0, yes/no"
 # (opt-out): only the literal ``false`` disables it. Reuses the auto_next token
 # sets for parsing; a distinct sentinel keeps the bare-toggle rewrites separate.
 _AUTO_DISTILL_SENTINEL = "__toggle_distill__"
+_AUTO_MAINTENANCE_SENTINEL = "__toggle_maintenance__"
 
 # review.decided_by: who decides about a review-code finding whose trigger lies
 # outside the project's real operating context. ``reviewer`` (default) keeps
@@ -704,6 +707,11 @@ def config(
         "--auto-distill",
         help="Toggle workflow.auto_distill (bare), or set it (on/off|true/false|1/0|yes/no).",
     ),
+    auto_maintenance: Optional[str] = typer.Option(
+        None,
+        "--auto-maintenance",
+        help="Set automatic incremental maintenance (on/off; default on), or toggle with the bare option.",
+    ),
     worktrees: Optional[str] = typer.Option(
         None, "--worktrees", help="Toggle checkout-local worktree isolation (default on), or set on/off."
     ),
@@ -752,6 +760,7 @@ def config(
     for value, sentinel, option in (
         (auto_next, _AUTO_NEXT_SENTINEL, "--auto-next"),
         (auto_distill, _AUTO_DISTILL_SENTINEL, "--auto-distill"),
+        (auto_maintenance, _AUTO_MAINTENANCE_SENTINEL, "--auto-maintenance"),
         (worktrees, "__toggle_worktrees__", "--worktrees"),
     ):
         if value is not None and value != sentinel:
@@ -772,6 +781,7 @@ def config(
         for value in (
             auto_next,
             auto_distill,
+            auto_maintenance,
             worktrees,
             decided_by,
             set_lang,
@@ -816,6 +826,21 @@ def config(
         else:
             console.print("[red]Failed to update review.decided_by[/red]")
             raise typer.Exit(1)
+        return
+
+    # Maintenance is an independent repair policy, never a stage-advance switch.
+    if auto_maintenance is not None:
+        try:
+            target = (
+                not read_auto_maintenance(config_file)
+                if auto_maintenance == _AUTO_MAINTENANCE_SENTINEL
+                else parse_auto_next_value(auto_maintenance)
+            )
+            write_auto_maintenance(config_file, target)
+        except (AutomationError, OSError, ValueError) as exc:
+            console.print(str(exc), markup=False)
+            raise typer.Exit(1) from exc
+        console.print(f"workflow.auto_maintenance = {str(target).lower()}")
         return
 
     # Handle auto-next toggle/set
@@ -997,6 +1022,11 @@ def config(
         return
 
     # Display current configuration
+    try:
+        policy = str(read_auto_maintenance(config_file)).lower()
+    except (AutomationError, OSError) as exc:
+        policy = f"invalid ({exc})"
+    console.print(f"Effective workflow.auto_maintenance: {policy}", markup=False)
     console.print(f"Effective workflow.worktrees: {str(read_worktrees(config_file)).lower()}")
     stored_mode = _read_review_decided_by(config_file)
     if stored_mode in _DECIDED_BY_VALUES:
@@ -1328,6 +1358,7 @@ def init(
         )
         raise typer.Exit(1)
 
+    refresh_review_standards = force
     if "claude" in integration_keys:
         # Create .claude/commands directory for slash commands
         claude_dir = target_dir / ".claude"
@@ -1361,6 +1392,7 @@ def init(
         if migration_happened:
             # Migration moved files, ask if user wants to update/translate them
             if force or Confirm.ask(translate("cli.init.update_confirm", normalized_lang), default=True):
+                refresh_review_standards = True
                 count = install_commands_to_subdir(
                     codexspec_commands_dir, templates_dir, force=True, language=normalized_lang
                 )
@@ -1368,6 +1400,7 @@ def init(
         elif should_update_commands(codexspec_dir):
             console.print()
             if force or Confirm.ask(translate("cli.init.update_confirm", normalized_lang), default=True):
+                refresh_review_standards = True
                 count = install_commands_to_subdir(
                     codexspec_commands_dir, templates_dir, force=True, language=normalized_lang
                 )
@@ -1386,6 +1419,13 @@ def init(
             f"[green]{translate('cli.init.commands_installed', normalized_lang, count=count, path='.agents/skills/')}"
             "[/green]"
         )
+
+    # Shared resources are installed once, outside platform-specific branches.
+    try:
+        install_review_standards(get_templates_dir() / "review-code", target_dir, force=refresh_review_standards)
+    except (AutomationError, OSError) as exc:
+        console.print(str(exc), markup=False)
+        raise typer.Exit(1) from exc
 
     # Create constitution template
     constitution_file = codexspec_dir / "memory" / "constitution.md"
@@ -2314,6 +2354,8 @@ def main() -> None:
         sys.argv = _normalize_auto_next_argv(sys.argv)
     if "--auto-distill" in sys.argv:
         sys.argv = _normalize_auto_distill_argv(sys.argv)
+    if "--auto-maintenance" in sys.argv:
+        sys.argv = _normalize_optional_value_argv(sys.argv, "--auto-maintenance", _AUTO_MAINTENANCE_SENTINEL)
     if "--worktrees" in sys.argv:
         sys.argv = _normalize_optional_value_argv(sys.argv, "--worktrees", "__toggle_worktrees__")
     app()

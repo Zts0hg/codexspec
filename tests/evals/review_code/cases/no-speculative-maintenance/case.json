@@ -1,0 +1,58 @@
+{
+  "schema_version": "1",
+  "id": "no-speculative-maintenance",
+  "description": "A direct current formatter does not need hypothetical future provider abstractions",
+  "risk_profiles": [],
+  "setup": {
+    "files": {
+      "src/policy.py": "def format_name(mode, name):\n    return 'name:' + name.strip()\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\n\n## Confirmed behavior\n\nformat_name always returns 'name:' plus stripped name for every mode. The mode parameter is retained for compatibility. No provider registry, plugins, future behavior or abstraction is required.\n",
+      "spec.md": "# Spec\n\nformat_name always returns 'name:' plus stripped name for every mode. The mode parameter is retained for compatibility. No provider registry, plugins, future behavior or abstraction is required.\n",
+      "plan.md": "# Plan\n\nPreserve the confirmed public behavior and wire contract.\n",
+      "tasks.md": "# Tasks\n\n- [x] Implement the selected behavior and review the actual paths.\n"
+    }
+  },
+  "expect": {
+    "verdict": "PASS",
+    "require_profiles": false,
+    "require_maintenance": true,
+    "maximum_maintenance": 0,
+    "minimum_findings": [],
+    "required_contract_trace": {
+      "producers": [
+        [
+          "format_name",
+          "name"
+        ]
+      ],
+      "propagation": [
+        [
+          "strip"
+        ]
+      ],
+      "consumers": [
+        [
+          "return",
+          "format"
+        ]
+      ],
+      "entry_surfaces": [
+        [
+          "format_name"
+        ]
+      ],
+      "scenarios": [
+        [
+          "mode",
+          "normal"
+        ]
+      ]
+    },
+    "forbidden_findings": [
+      "hypothetical future provider",
+      "generic style violation"
+    ]
+  }
+}

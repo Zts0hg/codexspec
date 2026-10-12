@@ -68,6 +68,8 @@ codexspec init my-project \
   --interaction-lang zh-CN --document-lang en --commit-lang en
 ```
 
+`codexspec init` は Claude Code と Codex 共通のレビュー資源を `.codexspec/review-code/` に配置します。`--force` は配布資源を更新し、別パスの拡張ファイルを保持します。CLI のインストールだけではプロジェクトファイルを作りません。プラグインのみの場合、プロジェクトに資源ツリーがなければ、ホストが解決したプラグインルートから同じ資源を読みます。
+
 ---
 
 ### `codexspec check`
@@ -108,6 +110,14 @@ codexspec config [OPTIONS]
 | `--set-commit-lang` | `-c` | コミットメッセージの言語を設定 |
 | `--list-langs` | | サポートされているすべての言語を一覧表示 |
 | `--auto-next` | | `workflow.auto_next` の切り替え/設定 (フラグ単独でトグル、on/off も可) |
+| `--auto-maintenance` |  | `workflow.auto_maintenance` を切り替え/設定（既定は on、値なしで切り替え、または on/off） |
 | `--decided-by` | | `review.decided_by` を `reviewer` (既定) または `ask` に設定 |
 
 各 `--set-*-lang` は [言語の次元](../user-guide/i18n.md) のいずれかを更新します。設定しなかった次元は `output` に、さらに `en` にフォールバックします。
+
+`codexspec config --auto-maintenance on|off` は `.codexspec/config.yml` の `workflow.auto_maintenance` を YAML の真偽値として保存します。キーがない場合は `true` です。両方のワークフロー設定は、大文字小文字を区別せず `on/true/1/yes` と `off/false/0/no` を受け付けます。`implement-tasks` は自動修正時にこの設定を読み、`on` では根拠のある小規模な保守改善も適用し、`off` でも提案は報告します。実際の欠陥と必要な検証は引き続き必須です。`auto-next` とは独立しており、`implement-tasks` の呼び出し引数ではありません。
+
+```bash
+codexspec config --auto-maintenance on
+codexspec config --auto-maintenance off
+```

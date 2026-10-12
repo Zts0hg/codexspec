@@ -511,6 +511,7 @@ claude
 | `--set-commit-lang`, `-c`  | 设置提交信息语言                                  |
 | `--list-langs`             | 列出所有支持的语言                                |
 | `--auto-next`              | 切换或设置 `workflow.auto_next`（不带值即切换；或 on/off） |
+| `--auto-maintenance` | 切换或设置 `workflow.auto_maintenance`（默认开启；不带值即切换；或 on/off） |
 | `--auto-distill`           | 切换或设置 `workflow.auto_distill`（默认开启；不带值即切换；或 on/off） |
 
 </details>
@@ -656,6 +657,8 @@ codexspec config --set-document-lang en
 codexspec config --set-commit-lang en
 codexspec config --auto-next
 ```
+
+`codexspec config --auto-maintenance on|off` 将 `workflow.auto_maintenance` 作为 YAML 布尔值持久化到 `.codexspec/config.yml`；未配置时按 `true` 处理。两个工作流开关都接受不区分大小写的 `on/true/1/yes` 和 `off/false/0/no`。`implement-tasks` 自动修复审查问题时读取此配置：`on` 将有依据的增量维护改进纳入修复，`off` 仍会报告这些建议。实际缺陷与必要验证仍必须处理。它与 `auto-next` 独立，也不是 `implement-tasks` 的调用参数。
 
 ### 支持的语言
 
