@@ -164,15 +164,26 @@ def test_c02_caller_consumes_policy_and_companion_without_forwarding():
 
 
 def test_c02_plugin_root_contains_resources_and_commands():
+    assert (ROOT / ".claude/commands/codexspec").is_dir()
+    assert (ROOT / ".claude/commands/codexspec/hooks/hooks.json").is_file()
+    assert (ROOT / "templates/review-code/index.md").is_file()
+
+
+def test_marketplace_layout_matches_selected_release():
     import json
 
     entry = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text(encoding="utf-8"))["plugins"][0]
-    assert "path" not in entry["source"]  # GitHub repository root, no subdirectory package.
-    assert entry["commands"] == ["./.claude/commands/codexspec/"]
-    for path in entry["commands"]:
-        target = (ROOT / path).resolve()
-        assert target.is_relative_to(ROOT.resolve()) and target.is_dir()
-    assert (ROOT / "templates/review-code/index.md").is_file()
+    assert entry["source"]["ref"] == f"v{entry['version']}"
+    if entry["source"]["ref"] == "v0.7.23":
+        # This immutable release's command resolves its helper at the plugin
+        # root, so changing only the root while retaining this tag breaks it.
+        assert entry["source"].get("path") == ".claude/commands/codexspec"
+        assert entry["commands"] == "./"
+        assert entry.get("hooks") in (None, "./hooks/hooks.json")
+    else:
+        assert "path" not in entry["source"]
+        assert entry["commands"] == ["./.claude/commands/codexspec/"]
+        assert entry["hooks"] == "./.claude/commands/codexspec/hooks/hooks.json"
 
 
 @pytest.mark.parametrize("force", [False, True])

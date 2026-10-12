@@ -22,13 +22,13 @@ def test_session_start_emits_commit_rule_without_cli(tmp_path, installation, rep
 
     plugin = tmp_path / "plugin cache ' $ space"
     if installation == "plugin":
-        manifest = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text(encoding="utf-8"))
-        entry = manifest["plugins"][0]
-        source = ROOT / entry["source"].get("path", ".")
-        commands = Path(entry["commands"][0])
+        # The development bundle uses the repository root; the published
+        # marketplace continues selecting the preceding tag until release.
+        source = ROOT
+        commands = Path(".claude/commands/codexspec")
         shutil.copytree(source / commands, plugin / commands)
         assert (plugin / commands / "commit-staged.md").is_file()
-        hook_file = plugin / entry["hooks"]
+        hook_file = plugin / commands / "hooks/hooks.json"
     else:
         install_commands_to_subdir(plugin, ROOT / "templates/commands", force=True)
         hook_file = plugin / "hooks/hooks.json"

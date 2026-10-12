@@ -1,12 +1,12 @@
 ### P-2026-1011-105126-3: Plugin root changes must cover every component path
 
-- claim: When changing a plugin package root, revalidate explicit component discovery and every plugin-root-relative runtime/resource reference together.
+- claim: When changing a plugin package root, revalidate component discovery and root-relative references against the same released source tree.
 - type: pitfall
 - scope/when: changing marketplace source roots, component paths, or plugin resource layout
-- root-cause: A root-relative helper reference and an implicit hook location can remain valid in the old component directory while becoming unavailable under a repository-level plugin root.
-- workaround: Declare the contained command and hook paths; resolve runtime and review-resource references from that same root. Exercise startup and standalone runtime behavior from a plugin cache outside the consuming project, without requiring the CLI.
-- lesson: Moving a package root changes the meaning of every relative path, including paths declared by another feature.
-- evidence.facts: Integrating the shared review tree with the existing commit plugin produced two expected regression failures: the documented helper path did not exist in the declared root and the command contract retained the old path. After the command reference and explicit hook declaration were synchronized, 118 targeted integration checks passed, including CLI-free guarded commits and SessionStart behavior.
-- evidence.state: Outcome verified during feature 2026-1011-105126-review-code-standards integration. The generalized lesson has not been separately endorsed by a human.
+- root-cause: A root-relative helper and an implicit hook location can become unavailable when the root moves. Keeping an older source tag while changing its root also loads older commands whose references still require the older layout.
+- workaround: Exercise current bundle startup and standalone runtime behavior from an external plugin cache without the CLI. Publish the new tag first, then update source root, component paths, ref and version together; inspect referenced paths in that immutable tag rather than substituting the development checkout.
+- lesson: Relative-path meaning depends on both the package root and the selected source version; publication must preserve their compatibility throughout the transition.
+- evidence.facts: Two integration regressions preceded the synchronized helper reference and explicit hook declaration; 118 checks then passed. A subsequent raw Git probe showed that moving the root while retaining v0.7.23 made its command's helper reference unavailable. The release-layout regression failed before the preceding tag's metadata was restored.
+- evidence.state: The source-tag incompatibility was independently reproduced during feature delivery. Development bundle and published-entry checks are distinct; native plugin-host execution is not claimed. The generalized lesson has not been separately endorsed by a human.
 - provenance: distill during PR preparation, 2026-10-12; derivation: inferred; confidence: high
 - status: candidate

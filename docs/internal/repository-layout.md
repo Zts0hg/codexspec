@@ -114,9 +114,13 @@ allowlist is widened and nothing under `scripts/python/` is included.
 
 Claude command installation also derives `hooks/hooks.json` inside
 `.claude/commands/codexspec/` from `src/codexspec/commit_guidance.py`. The repository
-is the marketplace plugin root: the entry explicitly declares that command
-directory and its `hooks/hooks.json`, while the commit command resolves its bundled
-helper below the same directory and review resources below `templates/review-code/`.
+is the plugin root for the shared review-resource release: its marketplace entry
+declares that command directory and its `hooks/hooks.json`, while the commit command
+resolves its bundled helper below the same directory and review resources below
+`templates/review-code/`. Publish the new tag before updating the marketplace source
+root, components, ref and version together. Until then, marketplace metadata retains
+the preceding release's root and component layout; development bundle tests exercise
+the new repository-root layout separately from that published entry.
 The hook emits the same commit rule as installed project context without requiring
 project initialization or a persistent CLI.
 The distribution check includes this generated JSON; no maintainer runtime or
