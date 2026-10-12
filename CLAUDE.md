@@ -335,7 +335,7 @@ The shipped `review-code` entry coordinates separately loaded runtime standards.
 
 `workflow.auto_maintenance` defaults to `true` and is configured by `codexspec config --auto-maintenance on|off`, independently of stage advancement. Repair callers consume it; they do not expose another invocation flag. Substantiated current maintenance suggestions are always reported in a separate version-1 companion validated by `src/codexspec/review_maintenance.py`; version-3 defect findings remain mandatory. Enabled maintenance repairs need independently verified current benefit, compatible behavior, applicable checks, and bounded convergence. Disabled advice is reported without blocking the defect gate.
 
-The marketplace downloads the repository root and explicitly selects the command directory, so plugin-only reviewers can load `templates/review-code/` through host-resolved `${CLAUDE_PLUGIN_ROOT}` Markdown substitution. The placeholder is not a Bash environment variable. Keep plugin command and resource paths inside that root.
+The development plugin bundle uses the repository root and explicitly selects `.claude/commands/codexspec/`, so plugin-only reviewers can load `templates/review-code/` through host-resolved `${CLAUDE_PLUGIN_ROOT}` Markdown substitution. Publish the new tag before updating the marketplace root, component paths, ref and version together; until then, the published entry retains the preceding tag's root and component layout. See `docs/internal/repository-layout.md` for both layouts. The placeholder is not a Bash environment variable. Keep plugin command and resource paths inside the selected root.
 
 ### Codebase Onboarding: onboard
 

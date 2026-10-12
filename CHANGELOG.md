@@ -5,6 +5,43 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.24] - 2026-10-12
+
+### Added
+
+- Review standards now live in shared resources with a compact index, common rules,
+  seven review dimensions, and language/framework checklists loaded when relevant.
+  Reviews can expand coverage as actual behavior reveals unchanged dependencies or
+  cross-language boundaries.
+- Added default-on `workflow.auto_maintenance` and
+  `codexspec config --auto-maintenance on|off`. The setting controls automatic
+  implementation of substantiated maintenance suggestions independently of
+  `auto_next`; suggestions remain visible when automatic implementation is off.
+
+### Changed
+
+- Selected-change reviews follow five passes through scope, contracts, behavior,
+  risks and verification. Defect admission requires reachable triggers, attributable
+  changes and concrete impact, and checks upstream guarantees and contrary evidence
+  to avoid speculative defensive fixes.
+- Repair workflows independently verify maintenance benefit and behavioral
+  compatibility, retain unfinished work, and require a fresh complete review.
+  Strict defect gates and whole-code quality assessment scoring are preserved.
+- Codex and Claude share `.codexspec/review-code/`. Installation preserves project
+  edits and extensions unless replacement is requested, validates the destination
+  group before copying, and ships complete byte-identical resources.
+
+### For contributors
+
+- Mapped all 87 source-checklist items to general or conditional language checks;
+  added configuration, report, installation, package and six offline evidence cases.
+  The offline cases do not measure live-model review reliability.
+- Updated eight-language user references, synchronized command installations and
+  documented plugin root/component paths and the tag-first marketplace transition.
+- Made Windows plugin fixtures explicitly read UTF-8 and compare symbolic-link
+  targets using their observed before/after state.
+- Updated marketplace metadata for the preceding v0.7.23 release.
+
 ## [0.7.23] - 2026-10-11
 
 ### Added

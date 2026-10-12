@@ -7,6 +7,6 @@
 - workaround: Capture `readlink()` after fixture creation, verify the intended readable/unreadable behavior, then compare the post-operation link target with the captured value. Keep the separate symlink-type and target-content preservation assertions.
 - lesson: An immutability assertion compares actual before/after state; fixture construction syntax is not necessarily the filesystem's stored representation.
 - evidence.facts: CI run 38192250056 at PR head 82ef10a failed four policy link preservation assertions on Windows with `//?/C:/...` versus `C:/...`; policy behavior assertions had already passed. Both representations are unequal as `PureWindowsPath` values.
-- evidence.state: The affected policy and plugin runtime/guidance suites pass locally (54 tests); native Windows confirmation remains pending in the updated PR checks.
+- evidence.state: The affected policy and plugin runtime/guidance suites pass locally (54 tests). CI run 38196483598 at PR head cc5247bef2e8eadc1b1deb83b2d3aec5331b8783 passed both native Windows Python 3.11/3.12 jobs and the complete six-platform matrix on 2026-10-12.
 - provenance: distill @PR CI investigation, 2026-10-12, derivation: inferred, confidence: high
 - status: candidate
