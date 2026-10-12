@@ -210,7 +210,13 @@ def test_built_archives_contain_resolvers_and_all_current_command_templates() ->
         _assert_internal_authoring_absent(members)
         packaged_review = _archive_member(members, "/templates/commands/review-code.md")
         assert b"strict defect gate" in packaged_review
-        assert b"review-code --audit {paths}" in packaged_review
+        assert b"quality-assessment.md" in packaged_review
+        resources = ROOT / "templates/review-code"
+        expected_resources = {str(path.relative_to(resources)): path.read_bytes() for path in resources.rglob("*.md")}
+        marker = "/templates/review-code/"
+        packaged_resources = {name.split(marker, 1)[1]: data for name, data in members.items() if marker in name}
+        assert packaged_resources == expected_resources
+        assert b"review-code --audit {paths}" in packaged_resources["quality-assessment.md"]
 
 
 def test_s034_installed_worktree_runtime_and_templates(tmp_path: Path) -> None:

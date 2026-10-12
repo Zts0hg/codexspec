@@ -21,6 +21,7 @@ project:
   created: "2025-02-15"
 
 workflow:
+  auto_maintenance: true
   auto_next: false       # Auto-advance between workflow stages (opt-in)
   worktrees: true        # Isolate writes in Git worktrees (default on)
 
@@ -100,6 +101,10 @@ specify → generate-spec → spec-to-design → design-to-plan → plan-to-task
 - `implement-tasks`: terminal stage — nothing auto-fires after it.
 
 When the review loop reports `NEEDS_REVISION` or `BLOCKED`, the chain halts and control returns to you. Before each advance the agent emits one notice line (for example: `auto_next: review passed → invoking /codexspec:design-to-plan`).
+
+### `workflow.auto_maintenance`
+
+`codexspec config --auto-maintenance on|off` persists `workflow.auto_maintenance` as a YAML boolean in `.codexspec/config.yml`; an absent key means `true`. Both workflow switches accept case-insensitive `on/true/1/yes` and `off/false/0/no`. `implement-tasks` reads this setting when it automatically repairs reviewed code: `on` includes substantiated incremental maintenance improvements; `off` still reports them. Actual defects and required verification remain mandatory. This setting is independent of `auto-next` and is not an `implement-tasks` invocation parameter.
 
 ### `workflow.worktrees`
 

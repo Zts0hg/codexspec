@@ -1082,6 +1082,12 @@ AI:  ## Verdict
      **PASS** — all required review and verification completed with no findings.
 ```
 
+**Applicable standards and maintenance.** Every review reads the shared rules and the selected mode, assesses all seven dimensions, and loads detailed checks only when the actual behavior, contract, or dependency makes them relevant. Language and framework checks can also be activated by unchanged dependencies discovered during tracing. Current maintenance problems need concrete evidence and a compatible, local improvement; speculative future complexity and style thresholds alone do not justify repairs. The existing defect envelope remains version 3; a separate `<review-code-maintenance>` version 1 companion reports suggestions bound to the same target fingerprint. Standalone review only reports them. `implement-tasks` verifies and applies them according to `workflow.auto_maintenance` (default `true`). Repairs continue while substantive progress occurs and obey the existing stop guards. There is no fixed round cap; final acceptance requires a fresh complete review.
+
+`codexspec config --auto-maintenance on|off` persists `workflow.auto_maintenance` as a YAML boolean in `.codexspec/config.yml`; an absent key means `true`. Both workflow switches accept case-insensitive `on/true/1/yes` and `off/false/0/no`. `implement-tasks` reads this setting when it automatically repairs reviewed code: `on` includes substantiated incremental maintenance improvements; `off` still reports them. Actual defects and required verification remain mandatory. This setting is independent of `auto-next` and is not an `implement-tasks` invocation parameter.
+
+`codexspec init` installs shared review resources into `.codexspec/review-code/` for Claude Code and Codex. `--force` refreshes shipped resources while preserving extension files with different paths. Installing the CLI alone does not create project files. Plugin-only review uses the same resources from the host-resolved plugin root when the project has no installed resource tree.
+
 <!-- REVIEW-CODE-AUDIT -->
 
 #### Path quality audit

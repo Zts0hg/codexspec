@@ -21,6 +21,7 @@ project:
   created: "2025-02-15"
 
 workflow:
+  auto_maintenance: true
   auto_next: false       # ワークフローステージ間の自動進行 (オプトイン)
 
 review:
@@ -99,6 +100,10 @@ specify → generate-spec → spec-to-design → design-to-plan → plan-to-task
 - `implement-tasks`: 終端ステージであり、後に自動で発火するものはありません。
 
 レビューループが `NEEDS_REVISION` または `BLOCKED` を報告した場合、チェーンは止まり、あなたに制御が戻ります。各進行の前に、エージェントは 1 行の通知を出します (例: `auto_next: review passed → invoking /codexspec:design-to-plan`)。
+
+### `workflow.auto_maintenance`
+
+`codexspec config --auto-maintenance on|off` は `.codexspec/config.yml` の `workflow.auto_maintenance` を YAML の真偽値として保存します。キーがない場合は `true` です。両方のワークフロー設定は、大文字小文字を区別せず `on/true/1/yes` と `off/false/0/no` を受け付けます。`implement-tasks` は自動修正時にこの設定を読み、`on` では根拠のある小規模な保守改善も適用し、`off` でも提案は報告します。実際の欠陥と必要な検証は引き続き必須です。`auto-next` とは独立しており、`implement-tasks` の呼び出し引数ではありません。
 
 ## レビュー設定
 

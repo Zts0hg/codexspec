@@ -33,3 +33,11 @@ partition scopes; related findings must occur in one completed, evidenced
 root-cause search whose scope, methods, and checked locations include the
 fixture's defective and clean sibling paths; and an incomplete case requires a
 blocking gap tied to its declared uninspectable surface.
+
+The applicability corpus adds paired upstream-guarantee and reachable-bypass cases,
+a required but absent authorization check, an unchanged Go decoder reached by a
+Python change, and current versus speculative maintenance. These cases require
+the separate version-1 `<review-code-maintenance>` companion, target alignment,
+and concrete contract evidence. Positive and mutated negative recorded responses
+exercise the evaluator; they do not represent measured live-model recall.
+Only an authenticated live-host run measures reviewer behavior on this corpus.

@@ -68,6 +68,8 @@ codexspec init my-project \
   --interaction-lang zh-CN --document-lang en --commit-lang en
 ```
 
+`codexspec init` installs shared review resources into `.codexspec/review-code/` for Claude Code and Codex. `--force` refreshes shipped resources while preserving extension files with different paths. Installing the CLI alone does not create project files. Plugin-only review uses the same resources from the host-resolved plugin root when the project has no installed resource tree.
+
 ---
 
 ### `codexspec check`
@@ -108,6 +110,14 @@ codexspec config [OPTIONS]
 | `--set-commit-lang` | `-c` | Set the commit-message language |
 | `--list-langs` | | List all supported languages |
 | `--auto-next` | | Toggle/set `workflow.auto_next` (bare toggles; or on/off) |
+| `--auto-maintenance` |  | Toggle/set `workflow.auto_maintenance` (default on; bare toggles; or on/off) |
 | `--decided-by` | | Set `review.decided_by` to `reviewer` (default) or `ask` |
 
 Each `--set-*-lang` updates one [language dimension](../user-guide/i18n.md); any dimension you do not set falls back to `output`, then `en`.
+
+`codexspec config --auto-maintenance on|off` persists `workflow.auto_maintenance` as a YAML boolean in `.codexspec/config.yml`; an absent key means `true`. Both workflow switches accept case-insensitive `on/true/1/yes` and `off/false/0/no`. `implement-tasks` reads this setting when it automatically repairs reviewed code: `on` includes substantiated incremental maintenance improvements; `off` still reports them. Actual defects and required verification remain mandatory. This setting is independent of `auto-next` and is not an `implement-tasks` invocation parameter.
+
+```bash
+codexspec config --auto-maintenance on
+codexspec config --auto-maintenance off
+```

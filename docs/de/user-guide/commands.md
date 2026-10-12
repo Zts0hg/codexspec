@@ -1082,6 +1082,12 @@ AI:  ## Verdict
      **PASS** — alle erforderlichen Prüfungen wurden ohne Befund abgeschlossen.
 ```
 
+**Anwendbare Standards und Wartung.** Jede Prüfung liest die gemeinsamen Regeln und den gewählten Modus, bewertet alle sieben Dimensionen und lädt Details nur bei Relevanz für Verhalten, Vertrag oder Abhängigkeiten. Auch unveränderte Abhängigkeiten können beim Nachverfolgen Sprach- oder Framework-Prüfungen aktivieren. Wartungsvorschläge brauchen Belege für ein gegenwärtiges Problem und eine lokale, verhaltenskompatible Verbesserung. Vermutete künftige Komplexität oder reine Stilgrenzwerte rechtfertigen keine Reparatur. Das Defektergebnis bleibt bei Version 3; ein separates `<review-code-maintenance>` in Version 1 meldet Vorschläge mit demselben Zielfingerabdruck. Die eigenständige Prüfung meldet sie nur. `implement-tasks` prüft und bearbeitet sie gemäß `workflow.auto_maintenance` (Standard `true`). Korrekturen werden fortgesetzt, solange sie substanzielle Fortschritte erzielen; die bestehenden Abbruchbedingungen gelten weiterhin. Es gibt keine feste Obergrenze für die Anzahl der Runden. Die abschließende Abnahme erfordert eine neue vollständige Prüfung.
+
+`codexspec config --auto-maintenance on|off` speichert `workflow.auto_maintenance` als YAML-Booleschen Wert in `.codexspec/config.yml`; fehlt der Schlüssel, gilt `true`. Beide Workflow-Schalter akzeptieren ohne Beachtung der Großschreibung `on/true/1/yes` und `off/false/0/no`. `implement-tasks` liest diese Einstellung bei automatischen Korrekturen: Mit `on` werden belegte, schrittweise Wartungsverbesserungen umgesetzt; mit `off` werden sie weiterhin gemeldet. Tatsächliche Defekte und notwendige Prüfungen bleiben verpflichtend. Die Einstellung ist unabhängig von `auto-next` und kein Aufrufparameter von `implement-tasks`.
+
+`codexspec init` installiert die gemeinsamen Prüfdaten für Claude Code und Codex unter `.codexspec/review-code/`. `--force` aktualisiert ausgelieferte Daten und behält Erweiterungsdateien mit anderen Pfaden. Die reine CLI-Installation erstellt keine Projektdateien. Bei ausschließlicher Plugin-Nutzung ohne installierten Projektbaum werden dieselben Daten aus dem vom Host aufgelösten Plugin-Stamm geladen.
+
 <!-- REVIEW-CODE-AUDIT -->
 
 #### Pfad-Qualitätsaudit

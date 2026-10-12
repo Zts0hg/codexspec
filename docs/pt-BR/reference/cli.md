@@ -68,6 +68,8 @@ codexspec init my-project \
   --interaction-lang zh-CN --document-lang en --commit-lang en
 ```
 
+`codexspec init` instala os recursos de revisão compartilhados pelo Claude Code e Codex em `.codexspec/review-code/`. `--force` atualiza recursos distribuídos e preserva arquivos de extensão com outros caminhos. Instalar apenas a CLI não cria arquivos de projeto. Com apenas o plugin, se o projeto não tiver a árvore instalada, a revisão usa os mesmos recursos da raiz resolvida pelo host.
+
 ---
 
 ### `codexspec check`
@@ -108,6 +110,14 @@ codexspec config [OPTIONS]
 | `--set-commit-lang` | `-c` | Define o idioma das mensagens de commit |
 | `--list-langs` | | Lista todos os idiomas suportados |
 | `--auto-next` | | Alterna/define `workflow.auto_next` (a flag isolada alterna; ou on/off) |
+| `--auto-maintenance` |  | Alterna/define `workflow.auto_maintenance` (on por padrão; sem valor alterna; ou on/off) |
 | `--decided-by` | | Define `review.decided_by` como `reviewer` (padrão) ou `ask` |
 
 Cada `--set-*-lang` atualiza uma [dimensão de idioma](../user-guide/i18n.md); qualquer dimensão que você não definir recai sobre `output` e depois sobre `en`.
+
+`codexspec config --auto-maintenance on|off` salva `workflow.auto_maintenance` como booleano YAML em `.codexspec/config.yml`; se a chave não existir, vale `true`. As duas opções aceitam `on/true/1/yes` e `off/false/0/no` sem diferenciar maiúsculas. `implement-tasks` lê essa configuração ao corrigir automaticamente: `on` inclui melhorias incrementais de manutenção fundamentadas; `off` continua relatando as sugestões. Defeitos reais e verificações necessárias continuam obrigatórios. A configuração é independente de `auto-next` e não é um parâmetro de chamada de `implement-tasks`.
+
+```bash
+codexspec config --auto-maintenance on
+codexspec config --auto-maintenance off
+```

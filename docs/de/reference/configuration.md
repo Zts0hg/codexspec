@@ -21,6 +21,7 @@ project:
   created: "2025-02-15"
 
 workflow:
+  auto_maintenance: true
   auto_next: false       # Automatisches Weiterschalten zwischen Workflow-Stufen (opt-in)
 
 review:
@@ -99,6 +100,10 @@ specify → generate-spec → spec-to-design → design-to-plan → plan-to-task
 - `implement-tasks`: terminale Stufe – danach wird nichts automatisch ausgelöst.
 
 Wenn die Review-Schleife `NEEDS_REVISION` oder `BLOCKED` meldet, hält die Kette an und die Kontrolle geht an Sie zurück. Vor jedem Weiterschalten gibt der Agent eine Notice-Zeile aus (zum Beispiel: `auto_next: review passed → invoking /codexspec:design-to-plan`).
+
+### `workflow.auto_maintenance`
+
+`codexspec config --auto-maintenance on|off` speichert `workflow.auto_maintenance` als YAML-Booleschen Wert in `.codexspec/config.yml`; fehlt der Schlüssel, gilt `true`. Beide Workflow-Schalter akzeptieren ohne Beachtung der Großschreibung `on/true/1/yes` und `off/false/0/no`. `implement-tasks` liest diese Einstellung bei automatischen Korrekturen: Mit `on` werden belegte, schrittweise Wartungsverbesserungen umgesetzt; mit `off` werden sie weiterhin gemeldet. Tatsächliche Defekte und notwendige Prüfungen bleiben verpflichtend. Die Einstellung ist unabhängig von `auto-next` und kein Aufrufparameter von `implement-tasks`.
 
 ## Review-Einstellungen
 

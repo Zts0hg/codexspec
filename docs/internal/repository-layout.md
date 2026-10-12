@@ -16,7 +16,9 @@ Keeping the two physically separated — and enforcing the boundary via explicit
 | Path | Audience | In wheel/sdist? | Copied by `init`? | Notes |
 |---|---|---|---|---|
 | `src/codexspec/` | USER | wheel (=the package) + sdist | — | CLI implementation |
-| `templates/` | USER | wheel + sdist | yes (commands/docs) | Complete slash-command distribution templates; direct source for commands not opted into maintainer fragments |
+| `templates/` | USER | wheel + sdist | yes (commands/docs/review resources) | Complete slash-command distribution templates; direct source for commands not opted into maintainer fragments |
+| `templates/review-code/` | USER | wheel + sdist | yes (shared by both hosts) | Runtime index, common/mode rules, and conditional checklists; authored here |
+| `.codexspec/review-code/` | **derived** | — | — | Installed review resources; update shipped files upstream |
 | `scripts/bash/*.sh` | USER | wheel + sdist | yes (mac/linux) | The ONLY scripts `init` copies on unix |
 | `scripts/powershell/*.ps1` | USER | wheel + sdist | yes (windows) | The ONLY scripts `init` copies on windows |
 | `scripts/python/` | **MAINTAINER** | ❌ excluded | ❌ | Claude Code automation; contains `.env` (secrets), `.venv/`, `logs/` |
@@ -58,7 +60,7 @@ The fragment mechanism is repository-maintenance tooling, not an installation fe
 - `internal/command_template_fragments.py --write` synchronizes complete outputs; `--check-distribution` validates sources, outputs, and tracked Claude/Codex self-bootstrap artifacts without writing.
 - Commands with no internal source remain directly authored in `templates/commands/`.
 - The pre-existing plugin-only `.claude` commands `review-python-code.md` and `review-react-code.md` remain compatibility artifacts: fragment tooling neither derives, rewrites, nor removes them.
-- Only complete `templates/commands/` files cross the packaging boundary. Internal sources, fragments, and renderer code remain excluded from wheel and sdist contents, and `codexspec init` has no fragment awareness.
+- Complete `templates/commands/` files and the separately loaded `templates/review-code/` resources cross the packaging boundary. Internal sources, fragments, and renderer code remain excluded from wheel and sdist contents, and `codexspec init` has no fragment awareness.
 
 **Verification** — run before any packaging change, confirm the result shows ONLY `bash/` and `powershell/`:
 

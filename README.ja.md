@@ -511,6 +511,7 @@ claude
 | `--set-commit-lang`, `-c`  | コミットメッセージの言語を設定                         |
 | `--list-langs`             | サポートされているすべての言語を一覧表示               |
 | `--auto-next`              | `workflow.auto_next` を切り替え/設定（値なしでトグル、または on/off） |
+| `--auto-maintenance` | `workflow.auto_maintenance` を切り替え/設定（既定は on、値なしで切り替え、または on/off） |
 | `--auto-distill`           | `workflow.auto_distill` を切り替え/設定（デフォルト有効、値なしでトグル、または on/off） |
 
 </details>
@@ -652,6 +653,8 @@ codexspec config --set-document-lang en
 codexspec config --set-commit-lang en
 codexspec config --auto-next
 ```
+
+`codexspec config --auto-maintenance on|off` は `.codexspec/config.yml` の `workflow.auto_maintenance` を YAML の真偽値として保存します。キーがない場合は `true` です。両方のワークフロー設定は、大文字小文字を区別せず `on/true/1/yes` と `off/false/0/no` を受け付けます。`implement-tasks` は自動修正時にこの設定を読み、`on` では根拠のある小規模な保守改善も適用し、`off` でも提案は報告します。実際の欠陥と必要な検証は引き続き必須です。`auto-next` とは独立しており、`implement-tasks` の呼び出し引数ではありません。
 
 ### サポートされている言語
 

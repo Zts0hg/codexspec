@@ -329,6 +329,14 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
 
 **Implementation**: Edit `internal/command_templates/sources/{review-code,implement-tasks,debug,config}.md`, render with `uv run python internal/command_template_fragments.py --write`, regenerate the tracked `.claude/commands/codexspec/` and `.agents/skills/` copies, and confirm `--check-distribution`. The `review-code` `argument-hint` is localized in `templates/translations/*.json`. The config helpers live in `src/codexspec/__init__.py` and write through the shared surgical writer `write_config_scalar` in `src/codexspec/worktrees.py` (also used by `workflow.worktrees`).
 
+### Applicable Review Standards and Maintenance
+
+The shipped `review-code` entry coordinates separately loaded runtime standards. Author shared/mode rules and checklists in `templates/review-code/`; `init` copies them to `.codexspec/review-code/` once for both hosts. The default gate and whole-code quality assessment share applicability and evidence discipline; their completion/reporting policies remain separate. The index stays lightweight, dimensions contain general checks, and each language/framework has one initial file with topic sections. Do not flatten these resources back into command fragments or split every topic into a file.
+
+`workflow.auto_maintenance` defaults to `true` and is configured by `codexspec config --auto-maintenance on|off`, independently of stage advancement. Repair callers consume it; they do not expose another invocation flag. Substantiated current maintenance suggestions are always reported in a separate version-1 companion validated by `src/codexspec/review_maintenance.py`; version-3 defect findings remain mandatory. Enabled maintenance repairs need independently verified current benefit, compatible behavior, applicable checks, and bounded convergence. Disabled advice is reported without blocking the defect gate.
+
+The marketplace downloads the repository root and explicitly selects the command directory, so plugin-only reviewers can load `templates/review-code/` through host-resolved `${CLAUDE_PLUGIN_ROOT}` Markdown substitution. The placeholder is not a Bash environment variable. Keep plugin command and resource paths inside that root.
+
 ### Codebase Onboarding: onboard
 
 **Feature**: The **cold-start / bulk counterpart to `distill`** — a standalone `/codexspec:onboard [path]` command that scans an existing codebase once and batch-writes reusable knowledge into the shared `.codexspec/profile/` store, so a brownfield project's profile is grounded immediately instead of only after enough work has flowed through `distill`.
@@ -402,10 +410,10 @@ Also togglable via `/codexspec:config` or `codexspec config --auto-distill on|of
       "source": {
         "source": "github",
         "repo": "Zts0hg/codexspec",
-        "ref": "v0.5.11",
-        "path": ".claude/commands/codexspec"
+        "ref": "v0.5.11"
       },
       "version": "0.5.11",
+      "commands": ["./.claude/commands/codexspec/"],
       "strict": false
     }
   ]

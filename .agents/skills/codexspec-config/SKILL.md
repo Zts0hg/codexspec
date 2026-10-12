@@ -191,6 +191,7 @@ Display the configuration as in Step 2, then exit.
       {"label": "Commit language", "description": "Language for commit messages (currently: {current value})"},
       {"label": "Auto-next chain", "description": "Auto-advance the SDD pipeline once a stage passes (workflow.auto_next) (currently: {current value})"},
       {"label": "Auto-distill", "description": "Run $codexspec:distill on completion of wrap-up commands to capture reusable knowledge (workflow.auto_distill) (currently: {current value})"},
+      {"label": "Auto-maintenance", "description": "Automatically apply substantiated incremental maintenance during repairs (workflow.auto_maintenance; default on), independently of stage advancement"},
       {"label": "Review decision mode", "description": "Who decides about review-code findings whose trigger lies outside the project's real operating context (review.decided_by) (currently: {current value})"},
       {"label": "Back", "description": "Return to main menu"}
     ]
@@ -284,6 +285,19 @@ Display the configuration as in Step 2, then exit.
    neither `reviewer` nor `ask`, report it as invalid (review-code rejects it as an argument error) and
    offer to correct it.
 
+3d. For "Auto-maintenance", offer on (default), off, or Back. Persist
+   `workflow.auto_maintenance` as an unquoted YAML boolean true/false, preserving
+   all unrelated values, comments and line endings. Missing means enabled; an
+   explicit non-boolean or unreadable existing configuration is invalid and must
+   be corrected rather than guessed. CLI users can set it with
+   `codexspec config --auto-maintenance on|off`; bare use toggles the destination
+   checkout's value, using the same on/true/1/yes and off/false/0/no aliases,
+   case/whitespace handling as other switches. Help/examples use on/off.
+   Repair callers read this persistent setting; implementation commands do not
+   receive this setter option or a per-run override. Review still reports
+   maintenance when off; actual defects and required verification remain mandatory.
+   `auto_next` controls stage advancement separately.
+
 4. Update the configuration file with the new value
 5. Display the updated configuration
 6. Exit
@@ -316,6 +330,8 @@ language:
 project:
   ai: "claude"
   created: "{current_date}"
+workflow:
+  auto_maintenance: true
 ```
 
 3. Display confirmation and exit
@@ -381,6 +397,8 @@ language:
 project:
   ai: "claude"
   created: "{current_date}"
+workflow:
+  auto_maintenance: true
 ```
 
 5. Save to `.codexspec/config.yml`
@@ -413,6 +431,8 @@ language:
 project:
   ai: "claude"
   created: "{current_date}"
+workflow:
+  auto_maintenance: true
 ```
 
 ## Supported Languages

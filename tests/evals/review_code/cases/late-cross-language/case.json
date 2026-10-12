@@ -1,0 +1,94 @@
+{
+  "schema_version": "1",
+  "id": "late-cross-language",
+  "description": "A Python client's new limit representation crosses an unchanged Go decoder contract",
+  "risk_profiles": [
+    "network/provider behavior"
+  ],
+  "setup": {
+    "files": {
+      "src/client.py": "import json\n\ndef request_body(limit):\n    return json.dumps({'limit': str(limit)})\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\n\n## Confirmed behavior\n\nThe Python request_body output is consumed by the unchanged Go decoder in service/limit.go; limit must remain an integer in the JSON wire contract.\n",
+      "spec.md": "# Spec\n\nThe Python request_body output is consumed by the unchanged Go decoder in service/limit.go; limit must remain an integer in the JSON wire contract.\n",
+      "plan.md": "# Plan\n\nPreserve the confirmed public behavior and wire contract.\n",
+      "tasks.md": "# Tasks\n\n- [x] Implement the selected behavior and review the actual paths.\n"
+    },
+    "baseline_files": {
+      "service/limit.go": "package service\n\nimport \"encoding/json\"\n\ntype Request struct { Limit int `json:\"limit\"` }\n\nfunc Decode(raw []byte) (Request, error) {\n    var result Request\n    err := json.Unmarshal(raw, &result)\n    return result, err\n}\n"
+    }
+  },
+  "expect": {
+    "verdict": "FAIL",
+    "require_profiles": true,
+    "require_maintenance": true,
+    "minimum_findings": [
+      {
+        "priority": "P2",
+        "contains": "limit",
+        "aliases": [
+          "decode",
+          "string",
+          "integer"
+        ]
+      }
+    ],
+    "required_contract_trace": {
+      "producers": [
+        [
+          "python",
+          "client"
+        ]
+      ],
+      "propagation": [
+        [
+          "json",
+          "request"
+        ]
+      ],
+      "consumers": [
+        [
+          "go",
+          "decoder"
+        ]
+      ],
+      "entry_surfaces": [
+        [
+          "request_body"
+        ]
+      ],
+      "scenarios": [
+        [
+          "numeric",
+          "integer",
+          "limit"
+        ]
+      ]
+    },
+    "required_evidence_terms": [
+      [
+        "limit"
+      ],
+      [
+        "string"
+      ],
+      [
+        "decode",
+        "integer"
+      ]
+    ],
+    "required_scope_terms": [
+      [
+        "LANG-PYTHON"
+      ],
+      [
+        "LANG-GO"
+      ]
+    ],
+    "forbidden_findings": [
+      "hypothetical future provider",
+      "generic style violation"
+    ]
+  }
+}

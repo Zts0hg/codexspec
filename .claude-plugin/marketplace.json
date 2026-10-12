@@ -12,8 +12,7 @@
       "source": {
         "source": "github",
         "repo": "Zts0hg/codexspec",
-        "ref": "v0.7.20",
-        "path": ".claude/commands/codexspec"
+        "ref": "v0.7.20"
       },
       "version": "0.7.20",
       "author": {
@@ -23,8 +22,21 @@
       "repository": "https://github.com/Zts0hg/codexspec",
       "license": "MIT",
       "category": "development",
-      "keywords": ["requirements-first", "spec-driven", "development", "ai", "claude", "sdd", "specification", "planning", "tdd"],
-      "strict": false
+      "keywords": [
+        "requirements-first",
+        "spec-driven",
+        "development",
+        "ai",
+        "claude",
+        "sdd",
+        "specification",
+        "planning",
+        "tdd"
+      ],
+      "strict": false,
+      "commands": [
+        "./.claude/commands/codexspec/"
+      ]
     }
   ]
 }

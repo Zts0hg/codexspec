@@ -18,6 +18,10 @@ def read_template() -> str:
 def split_template() -> tuple[dict[str, object], str]:
     content = read_template()
     _, raw_frontmatter, body = content.split("---", 2)
+    # Inspect the reachable contracts offline without re-inlining runtime detail.
+    resources = ROOT / "templates" / "review-code"
+    body += "\n" + (resources / "change-review.md").read_text(encoding="utf-8")
+    body += "\n" + (resources / "quality-assessment.md").read_text(encoding="utf-8")
     return yaml.safe_load(raw_frontmatter), body
 
 

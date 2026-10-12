@@ -1081,6 +1081,12 @@ AI:  ## Verdict
      **PASS** — 必需的审查与验证全部完成，且没有发现缺陷。
 ```
 
+**适用规则与维护建议。** 每次审查读取共享规则和所选模式，评估全部七个审查维度，再依据实际行为、契约和依赖按需加载详细清单。追踪中发现的未修改依赖也可以触发语言或框架子清单。维护建议须指出当前存在的问题，并给出有依据、兼容现有行为的局部改进；假想的未来复杂度和单独的风格阈值不足以支持修复。现有缺陷结果继续使用版本 3，另以版本 1 的 `<review-code-maintenance>` 附加结果报告建议，并绑定相同的目标指纹。独立审查只报告建议；`implement-tasks` 根据 `workflow.auto_maintenance`（默认 `true`）核验并实施。修复在持续取得实质进展时继续，同时遵守现有停止条件；不设固定轮次上限，最终验收要求全新的完整复审。
+
+`codexspec config --auto-maintenance on|off` 将 `workflow.auto_maintenance` 作为 YAML 布尔值持久化到 `.codexspec/config.yml`；未配置时按 `true` 处理。两个工作流开关都接受不区分大小写的 `on/true/1/yes` 和 `off/false/0/no`。`implement-tasks` 自动修复审查问题时读取此配置：`on` 将有依据的增量维护改进纳入修复，`off` 仍会报告这些建议。实际缺陷与必要验证仍必须处理。它与 `auto-next` 独立，也不是 `implement-tasks` 的调用参数。
+
+`codexspec init` 将 Claude Code 与 Codex 共享的审查资源安装到 `.codexspec/review-code/`。`--force` 更新随工具提供的资源，并保留路径不同的扩展文件。仅安装 CLI 不会创建项目文件。仅使用插件时，若项目没有已安装的资源目录，审查会读取宿主解析的插件根目录中的同一套资源。
+
 <!-- REVIEW-CODE-AUDIT -->
 
 #### 路径质量审计

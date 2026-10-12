@@ -1,0 +1,61 @@
+{
+  "schema_version": "1",
+  "id": "incremental-maintenance",
+  "description": "Equivalent current branches obscure the one formatting decision",
+  "risk_profiles": [],
+  "setup": {
+    "files": {
+      "src/policy.py": "def format_name(mode, name):\n    if mode == 'external':\n        value = 'name:' + name.strip()\n        return value\n    elif mode == 'internal':\n        value = 'name:' + name.strip()\n        return value\n    else:\n        value = 'name:' + name.strip()\n        return value\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\n\n## Confirmed behavior\n\nformat_name always returns 'name:' plus stripped name for every mode. Keep this public behavior. Current equivalent branches are appropriate incremental maintenance; no new mode behavior is required.\n",
+      "spec.md": "# Spec\n\nformat_name always returns 'name:' plus stripped name for every mode. Keep this public behavior. Current equivalent branches are appropriate incremental maintenance; no new mode behavior is required.\n",
+      "plan.md": "# Plan\n\nPreserve the confirmed public behavior and wire contract.\n",
+      "tasks.md": "# Tasks\n\n- [x] Implement the selected behavior and review the actual paths.\n"
+    }
+  },
+  "expect": {
+    "verdict": "PASS",
+    "require_profiles": false,
+    "require_maintenance": true,
+    "minimum_findings": [],
+    "minimum_maintenance": {
+      "location": "src/policy.py",
+      "problem": [
+        [
+          "branch",
+          "repeat",
+          "duplicat"
+        ]
+      ],
+      "improvement": [
+        [
+          "consolidat",
+          "single",
+          "one"
+        ]
+      ],
+      "benefit": [
+        [
+          "read",
+          "compreh",
+          "maintain"
+        ]
+      ],
+      "evidence": [
+        [
+          "format_name"
+        ],
+        [
+          "same",
+          "equivalent",
+          "identical"
+        ]
+      ]
+    },
+    "forbidden_findings": [
+      "hypothetical future provider",
+      "generic style violation"
+    ]
+  }
+}

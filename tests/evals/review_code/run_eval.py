@@ -17,6 +17,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+from codexspec.review_maintenance import parse_maintenance_result
+
 RESULT_RE = re.compile(r"<review-code-result>\s*(.*?)\s*</review-code-result>", re.DOTALL)
 REQUIRED_RESULT_KEYS = {
     "schema_version",
@@ -193,6 +195,23 @@ def _validate_case(data: dict[str, Any], source: Path) -> None:
         raise ValueError(f"{source}: expect.all_partitions_terminal must be a boolean")
     if "blocking_coverage_gap" in expect and not isinstance(expect["blocking_coverage_gap"], bool):
         raise ValueError(f"{source}: expect.blocking_coverage_gap must be a boolean")
+    if "require_maintenance" in expect and type(expect["require_maintenance"]) is not bool:
+        raise ValueError(f"{source}: expect.require_maintenance must be a boolean")
+    maximum = expect.get("maximum_maintenance")
+    if maximum is not None and (type(maximum) is not int or maximum < 0):
+        raise ValueError(f"{source}: expect.maximum_maintenance must be a nonnegative integer")
+    for field in ("required_evidence_terms", "required_scope_terms"):
+        if field in expect:
+            _validate_term_groups(expect[field], f"{source}: expect.{field}")
+    maintenance = expect.get("minimum_maintenance")
+    if maintenance is not None:
+        required = {"location", "problem", "improvement", "benefit", "evidence"}
+        if not isinstance(maintenance, dict) or set(maintenance) != required:
+            raise ValueError(f"{source}: expect.minimum_maintenance must define {sorted(required)}")
+        if not isinstance(maintenance["location"], str) or not maintenance["location"].strip():
+            raise ValueError(f"{source}: maintenance location must be nonempty")
+        for field in required - {"location"}:
+            _validate_term_groups(maintenance[field], f"{source}: maintenance.{field}")
     contract_trace = expect.get("required_contract_trace")
     if contract_trace is not None:
         allowed_fields = {"producers", "propagation", "consumers", "entry_surfaces", "scenarios"}
@@ -827,6 +846,13 @@ def parse_review_result(output: str) -> dict[str, Any]:
     _validate_gaps_and_reviewers(result)
     _validate_scope_and_decisions(result)
     _validate_verdict_consistency(result)
+    # Older recorded schema-v3 fixtures may lack the new companion. New
+    # maintenance cases require it explicitly; present companions are always strict.
+    if "<review-code-maintenance>" in output or "</review-code-maintenance>" in output:
+        try:
+            result["_maintenance"] = parse_maintenance_result(output, target["fingerprint"])
+        except ValueError as exc:
+            raise ResultParseError(str(exc)) from exc
     result["_output_text"] = output
     return result
 
@@ -977,6 +1003,39 @@ def evaluate_result(case: Case, result: dict[str, Any]) -> Evaluation:
     ):
         failures.append("expected a blocking coverage gap tied to the declared fixture premise")
 
+    maintenance = result.get("_maintenance")
+    if expected.get("require_maintenance") and maintenance is None:
+        failures.append("required maintenance companion missing")
+    suggestions = maintenance["suggestions"] if maintenance is not None else []
+    maximum = expected.get("maximum_maintenance")
+    if maximum is not None and len(suggestions) > maximum:
+        failures.append("unexpected speculative maintenance suggestions")
+    required_maintenance = expected.get("minimum_maintenance")
+    if required_maintenance and not any(
+        required_maintenance["location"] in item["location"]
+        and all(
+            _matches_term_groups(
+                "\n".join(item[field]) if isinstance(item[field], list) else item[field],
+                groups,
+            )
+            for field, groups in required_maintenance.items()
+            if field != "location"
+        )
+        for item in suggestions
+    ):
+        failures.append("maintenance lacks the declared current problem, improvement, benefit or evidence")
+    evidence_terms = expected.get("required_evidence_terms")
+    if evidence_terms and not any(
+        _matches_term_groups("\n".join(contract["evidence"]), evidence_terms) for contract in coverage["contracts"]
+    ):
+        failures.append("contract evidence does not establish the declared trigger or guarantee")
+    scope_terms = expected.get("required_scope_terms")
+    if scope_terms:
+        scope = re.search(
+            r"^## Scope\s*\n(.*?)(?=^## |\Z)", str(result.get("_output_text", "")), re.MULTILINE | re.DOTALL
+        )
+        if scope is None or not _matches_term_groups(scope.group(1), scope_terms):
+            failures.append("Scope does not record the required standard selection")
     return Evaluation(passed=not failures, failures=failures)
 
 

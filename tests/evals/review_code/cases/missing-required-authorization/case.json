@@ -1,0 +1,86 @@
+{
+  "schema_version": "1",
+  "id": "missing-required-authorization",
+  "description": "A binding protected operation lacks authorization even though no auth code exists",
+  "risk_profiles": [
+    "authorization/trust"
+  ],
+  "setup": {
+    "files": {
+      "src/delete.py": "def delete_record(store, record_id, caller):\n    return store.delete(record_id)\n"
+    },
+    "feature_artifacts": {
+      "requirements.md": "# Requirements\n\n## Confirmed behavior\n\ndelete_record is a protected operation. It must authorize caller for the record under store.can_delete(caller, record_id) and deny before mutation. Implement this in the selected change.\n",
+      "spec.md": "# Spec\n\ndelete_record is a protected operation. It must authorize caller for the record under store.can_delete(caller, record_id) and deny before mutation. Implement this in the selected change.\n",
+      "plan.md": "# Plan\n\nPreserve the confirmed public behavior and wire contract.\n",
+      "tasks.md": "# Tasks\n\n- [x] Implement the selected behavior and review the actual paths.\n"
+    }
+  },
+  "expect": {
+    "verdict": "FAIL",
+    "require_profiles": true,
+    "require_maintenance": true,
+    "minimum_findings": [
+      {
+        "priority": "P1",
+        "priorities": [
+          "P1",
+          "P2"
+        ],
+        "contains": "authorization",
+        "aliases": [
+          "permission",
+          "unauthorized"
+        ]
+      }
+    ],
+    "required_contract_trace": {
+      "producers": [
+        [
+          "caller"
+        ]
+      ],
+      "propagation": [
+        [
+          "authoriz",
+          "permission",
+          "missing"
+        ]
+      ],
+      "consumers": [
+        [
+          "delete",
+          "store"
+        ]
+      ],
+      "entry_surfaces": [
+        [
+          "delete_record"
+        ]
+      ],
+      "scenarios": [
+        [
+          "denial",
+          "unauthorized",
+          "permission"
+        ]
+      ]
+    },
+    "required_evidence_terms": [
+      [
+        "caller"
+      ],
+      [
+        "delete"
+      ],
+      [
+        "missing",
+        "absent"
+      ]
+    ],
+    "forbidden_findings": [
+      "hypothetical future provider",
+      "generic style violation"
+    ]
+  }
+}
