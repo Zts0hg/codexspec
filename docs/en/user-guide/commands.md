@@ -46,7 +46,7 @@ Grouped by category, mirroring the README catalog. Within each group, commands a
 
 | Command | Purpose |
 |---------|---------|
-| `/codexspec:commit-staged` | Generate commit message from staged changes (session-context aware) |
+| `/codexspec:commit-staged` | Generate commit messages strictly from staged changes |
 | `/codexspec:pr` | Generate PR/MR description from git diff (auto-detects platform) |
 
 ### Code Review Commands
@@ -970,7 +970,19 @@ Auto-distill remains non-interactive and non-blocking: it never opens the page, 
 
 ### `/codexspec:commit-staged`
 
-Generate a Conventional Commits compliant commit message based on staged git changes with session context awareness. This command understands your development session to generate meaningful commit messages.
+Generate an accurate Conventional Commits message strictly from staged changes. Agents invoke this command before authorized direct, auto-dev, and blueprint commits. The caller prepares staging; the command never chooses or stages files.
+
+The agent uses the shared helper shipped with the plugin or copied by init to
+`.codexspec/scripts/commit-staged-helper.py`. This supports one-time uvx
+initialization without retaining a CodexSpec executable. Python 3.11+ and Git are
+required; the helper does not call an LLM. It preserves Git hooks and rejects
+changed staged content. Existing CLI prerequisites for worktree routing,
+blueprint and auto-dev still apply.
+
+Merge commits also use staged analysis: synchronization and divergent workspace
+preparation stop before commit creation. A merge whose file tree is unchanged
+retains Git's default message while validating its content and parents.
+Fast-forward integration creates no commit and needs no message generation.
 
 **Syntax:**
 
@@ -987,9 +999,9 @@ Generate a Conventional Commits compliant commit message based on staged git cha
 **What it does:**
 
 - Executes `git diff --staged` to retrieve staged changes
-- Analyzes changes and session context for intent understanding
+- Analyzes the staged diff only, with a body when needed to cover material changes
 - Follows Conventional Commits specification
-- In execute mode (default): commits directly after generating message
+- In execute mode (default): commits through content verification while preserving Git hooks
 - In preview mode (`-p`): displays message without committing
 - Reports error if no staged changes exist
 
@@ -1035,7 +1047,8 @@ AI:  Preview mode - no commit will be executed
 
 - Stage changes first with `git add`
 - Only analyzes staged content - respects Git's two-stage commit workflow
-- Considers session context for meaningful commit messages
+- If content changes, prepare staging and analyze again before committing
+- Helper workflows use preview against their explicit prepared index and finalize with the full message
 - Use `-p` flag to preview before committing
 - Follows Conventional Commits specification by default
 

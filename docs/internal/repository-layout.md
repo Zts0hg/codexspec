@@ -15,7 +15,7 @@ Keeping the two physically separated — and enforcing the boundary via explicit
 
 | Path | Audience | In wheel/sdist? | Copied by `init`? | Notes |
 |---|---|---|---|---|
-| `src/codexspec/` | USER | wheel (=the package) + sdist | — | CLI implementation |
+| `src/codexspec/` | USER | wheel (=the package) + sdist | commit runtime only | CLI implementation; standalone commit helper |
 | `templates/` | USER | wheel + sdist | yes (commands/docs/review resources) | Complete slash-command distribution templates; direct source for commands not opted into maintainer fragments |
 | `templates/review-code/` | USER | wheel + sdist | yes (shared by both hosts) | Runtime index, common/mode rules, and conditional checklists; authored here |
 | `.codexspec/review-code/` | **derived** | — | — | Installed review resources; update shipped files upstream |
@@ -102,3 +102,22 @@ Ask: **"Will an end user of `codexspec` need this at runtime?"**
 ---
 
 *This document is the authority on repository layout and the user/maintainer packaging boundary. Keep it updated whenever top-level paths or `pyproject.toml` includes change.*
+
+## Standalone commit helper
+
+`src/codexspec/commit_runtime.py` is the shared, complete standard-library-only
+runtime. Init copies it as `.codexspec/scripts/commit-staged-helper.py` on every
+platform. Claude command installation also copies it beside the command Markdown
+files so the marketplace plugin root contains its runtime. These are derived
+copies: regenerate through init and verify with distribution tests. No packaging
+allowlist is widened and nothing under `scripts/python/` is included.
+
+Claude command installation also derives `hooks/hooks.json` inside
+`.claude/commands/codexspec/` from `src/codexspec/commit_guidance.py`. The repository
+is the marketplace plugin root: the entry explicitly declares that command
+directory and its `hooks/hooks.json`, while the commit command resolves its bundled
+helper below the same directory and review resources below `templates/review-code/`.
+The hook emits the same commit rule as installed project context without requiring
+project initialization or a persistent CLI.
+The distribution check includes this generated JSON; no maintainer runtime or
+additional top-level scripts directory is shipped.

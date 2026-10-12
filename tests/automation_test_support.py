@@ -34,7 +34,7 @@ def _git_local_environment_variables() -> frozenset[str]:
         ["git", "rev-parse", "--local-env-vars"],
         check=False,
         capture_output=True,
-        text=True,
+        encoding="utf-8",
         env=discovery_environment,
     )
     reported = set(result.stdout.split()) if result.returncode == 0 else set()
@@ -54,7 +54,7 @@ def git(repo: Path, *args: str, check: bool = True) -> subprocess.CompletedProce
         ["git", "-C", str(repo), *args],
         check=check,
         capture_output=True,
-        text=True,
+        encoding="utf-8",
         env=sanitized_git_env(),
     )
 

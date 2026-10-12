@@ -314,7 +314,7 @@
 
 ```
 [2026-04-16 10:00:12] 🔒 安全策略判定 toolu_01DEF
-    └─ tool: Edit | file: /Users/xiaoming/code/myproject/src/main.py | 判定: ALLOW (项目内路径)
+    └─ tool: Edit | file: /Users/user/code/myproject/src/main.py | 判定: ALLOW (项目内路径)
 ```
 
 ```

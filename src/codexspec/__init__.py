@@ -30,7 +30,6 @@ from .automation import (
     AutomationError,
     BlueprintStore,
     OwnershipError,
-    WorkspaceContext,
     ensure_dedicated_workspace,
     locate_dedicated_workspace,
     locate_repository,
@@ -46,6 +45,7 @@ from .commands.installer import (
     should_update_commands,
     update_installed_command_frontmatter,
 )
+from .commit_guidance import inject_commit_guidance
 from .distill_review.domain import ReviewError, ReviewService
 from .distill_review.lease import ActiveSessionError, ReviewLease
 from .distill_review.server import create_server
@@ -66,6 +66,7 @@ from .integrations import get_integrations
 from .profile import ensure_profile_scaffold, inject_profile_block
 from .review_maintenance import read_auto_maintenance, write_auto_maintenance
 from .review_standards import install_review_standards
+from .specs_context import inject_specs_context
 from .translator import SUPPORTED_LANGUAGES, translate
 from .worktrees import (
     MAINTENANCE_NAME,
@@ -79,7 +80,7 @@ from .worktrees import (
 )
 
 # Version info
-__version__ = "0.7.20"
+__version__ = "0.7.23"
 __author__ = "CodexSpec Team"
 
 # Constitution file path constants
@@ -111,6 +112,12 @@ def worktree_helper(
         root = checkout_root(Path.cwd())
         if action == "setting":
             result = {"enabled": read_worktrees(root / ".codexspec/config.yml")}
+        elif action == "finish-initial" and verification:
+            from .automation import finish_initial_workspace
+
+            result = finish_initial_workspace(
+                locate_repository(root), json.loads(verification.read_text(encoding="utf-8"))
+            )
         elif action == "route":
             result = {"status": "ready", "workspace": str(write_destination(root))}
         elif action == "create" and not read_worktrees(root / ".codexspec/config.yml"):
@@ -390,8 +397,28 @@ def _stdin_json() -> dict:
 
 
 def _automation_failure(exc: Exception) -> None:
+    if isinstance(exc, AutomationError) and exc.code == "initial_merge_requires_verification":
+        _machine_json(json.loads(str(exc).split(": ", 1)[1]))
+        raise typer.Exit(3)
     typer.echo(str(exc), err=True)
     raise typer.Exit(1)
+
+
+def _analysis_request(body: dict[str, Any], *, token: bool = False) -> None:
+    keys = {"preparation_id", "analyzed_tree", "message"} | ({"token"} if token else set())
+    if set(body) != keys or not all(isinstance(body[key], str) for key in keys):
+        raise AutomationError("analysis_required", "prepare staging and use commit-staged -p before finalizing")
+
+
+@app.command("_commit-staged-helper", hidden=True)
+def commit_staged_helper(action: str = typer.Argument(...)) -> None:
+    """Snapshot or commit the original index without staging files."""
+    from .commit_runtime import dispatch
+
+    try:
+        _machine_json(dispatch(action, _stdin_json() if action == "commit" else None))
+    except (AutomationError, OSError, ValueError) as exc:
+        _automation_failure(exc)
 
 
 @app.command("_blueprint-helper", hidden=True)
@@ -420,13 +447,84 @@ def blueprint_helper(
                 }
             )
             return
+        if action == "prepare":
+            _machine_json(store.prepare(sys.stdin.buffer.read(), owner_token=auto_dev_token))
+            return
         if action == "apply":
-            response = store.apply_and_commit(sys.stdin.buffer.read(), owner_token=auto_dev_token)
-            _machine_json(response)
+            body = _stdin_json()
+            _analysis_request(body)
+            _machine_json(
+                store.apply_and_commit(
+                    body["preparation_id"],
+                    body["analyzed_tree"],
+                    body["message"],
+                    owner_token=auto_dev_token,
+                )
+            )
+            return
+        if action == "discard":
+            from .staged_commits import PreparedCommits
+
+            body = _stdin_json()
+            if set(body) != {"preparation_id"} or not isinstance(body["preparation_id"], str):
+                raise AutomationError("invalid_preparation")
+            if auto_dev_token is not None:
+                AutoDevOwnership(context).assert_owner(auto_dev_token)
+            PreparedCommits(workspace).discard(body["preparation_id"], kind="blueprint", token=auto_dev_token)
+            _machine_json({"state": "discarded"})
             return
         raise AutomationError("unsupported_blueprint_helper_action", action)
     except (AutomationError, OwnershipError, OSError, UnicodeError, ValueError) as exc:
         _automation_failure(exc)
+
+
+def _validate_auto_dev_request(action: str, body: dict[str, Any]) -> None:
+    """Reject malformed requests before ownership or workspace mutations."""
+    if action == "acquire":
+        if body:
+            raise AutomationError("unexpected_fields")
+        return
+    token_only = {"renew", "assert-owner", "release", "sync-default", "abort-sync"}
+    if action not in token_only | {
+        "prepare-sync-verification",
+        "continue-sync",
+        "prepare-feature",
+        "commit-feature",
+        "discard-feature",
+    }:
+        raise AutomationError("unsupported_auto_dev_helper_action", action)
+    if not isinstance(body.get("token"), str):
+        raise AutomationError("missing_token")
+    if action in token_only:
+        if set(body) != {"token"}:
+            raise AutomationError("unexpected_fields")
+    elif action == "prepare-sync-verification":
+        if (
+            set(body) != {"token", "resolved_paths"}
+            or not isinstance(body["resolved_paths"], list)
+            or not body["resolved_paths"]
+            or not all(isinstance(path, str) for path in body["resolved_paths"])
+        ):
+            raise AutomationError("invalid_prepare_sync_request")
+    elif action == "continue-sync":
+        if set(body) not in (
+            {"token", "checks_passed"},
+            {"token", "checks_passed", "analysis", "message"},
+        ) or not isinstance(body.get("checks_passed"), bool):
+            raise AutomationError("invalid_continue_sync_request")
+    elif action == "prepare-feature":
+        if (
+            set(body) != {"token", "feature_id", "paths"}
+            or not isinstance(body["feature_id"], str)
+            or not isinstance(body["paths"], list)
+            or not all(isinstance(path, str) for path in body["paths"])
+        ):
+            raise AutomationError("invalid_prepare_feature_request")
+    elif action == "commit-feature":
+        _analysis_request(body, token=True)
+    elif action == "discard-feature":
+        if set(body) != {"token", "preparation_id"} or not isinstance(body["preparation_id"], str):
+            raise AutomationError("invalid_preparation")
 
 
 @app.command("_auto-dev-helper", hidden=True)
@@ -434,21 +532,14 @@ def auto_dev_helper(action: str = typer.Argument(..., help="Internal helper acti
     """Internal machine interface for auto-dev ownership and Git writes."""
     try:
         body = _stdin_json()
+        _validate_auto_dev_request(action, body)
         context = locate_repository(Path.cwd())
         ownership = AutoDevOwnership(context)
-        workspace: WorkspaceContext | None = None
-        service: AutoDevGit | None = None
-        if action != "acquire":
-            # Every non-acquire action legitimately waits behind the active run.
-            workspace = ensure_dedicated_workspace(context)
-            service = AutoDevGit(workspace, ownership)
         if action == "acquire":
-            if body:
-                raise AutomationError("unexpected_fields")
             token = ownership.acquire()
-            workspace = ensure_dedicated_workspace(context)
-            service = AutoDevGit(workspace, ownership)
             try:
+                workspace = ensure_dedicated_workspace(context)
+                service = AutoDevGit(workspace, ownership)
                 merge_recovery = service.recover_merge_ownership(token)
                 if merge_recovery["state"] == "none":
                     BlueprintStore(workspace).recover_pending_transaction(owner_token=token)
@@ -467,44 +558,45 @@ def auto_dev_helper(action: str = typer.Argument(..., help="Internal helper acti
                 }
             )
             return
-        if set(body) < {"token"} or not isinstance(body.get("token"), str):
-            raise AutomationError("missing_token")
         token = body["token"]
-        if action in {"renew", "assert-owner", "release", "sync-default", "abort-sync"} and set(body) != {"token"}:
-            raise AutomationError("unexpected_fields")
+        # Ownership operations must remain usable even if the worktree is missing.
         if action == "renew":
             ownership.renew(token)
-            result = {"state": "renewed"}
-        elif action == "assert-owner":
+            _machine_json({"state": "renewed"})
+            return
+        if action == "assert-owner":
             ownership.assert_owner(token)
-            result = {"state": "owner"}
-        elif action == "release":
+            _machine_json({"state": "owner"})
+            return
+        if action == "release":
             ownership.release(token)
-            result = {"state": "released"}
-        elif action == "sync-default":
+            _machine_json({"state": "released"})
+            return
+
+        # Only acquire may initialize a workspace; follow-up actions must not repair
+        # missing state or fetch/merge history before their operation is validated.
+        workspace = locate_dedicated_workspace(context)
+        service = AutoDevGit(workspace, ownership)
+        if action == "sync-default":
             result = service.sync_default(token)
         elif action == "prepare-sync-verification":
-            if set(body) != {"token", "resolved_paths"} or not isinstance(body["resolved_paths"], list):
-                raise AutomationError("invalid_prepare_sync_request")
-            if not body["resolved_paths"] or not all(isinstance(path, str) for path in body["resolved_paths"]):
-                raise AutomationError("invalid_prepare_sync_request")
             result = service.prepare_sync_verification(token, body["resolved_paths"])
         elif action == "abort-sync":
             result = service.abort_sync(token)
         elif action == "continue-sync":
-            if set(body) != {"token", "checks_passed"} or not isinstance(body["checks_passed"], bool):
-                raise AutomationError("invalid_continue_sync_request")
-            result = service.continue_sync(token, checks_passed=body["checks_passed"])
-        elif action == "commit-feature":
-            if set(body) != {"token", "feature_id", "commit_type", "description", "paths"}:
-                raise AutomationError("invalid_commit_feature_request")
-            if not all(isinstance(body[key], str) for key in ("feature_id", "commit_type", "description")):
-                raise AutomationError("invalid_commit_feature_request")
-            if not isinstance(body["paths"], list) or not all(isinstance(item, str) for item in body["paths"]):
-                raise AutomationError("invalid_commit_feature_request")
-            result = service.commit_feature(
-                token, body["feature_id"], body["commit_type"], body["description"], body["paths"]
+            result = service.continue_sync(
+                token, checks_passed=body["checks_passed"], analysis=body.get("analysis"), message=body.get("message")
             )
+        elif action == "prepare-feature":
+            result = service.prepare_feature(token, body["feature_id"], body["paths"])
+        elif action == "commit-feature":
+            result = service.commit_feature(token, body["preparation_id"], body["analyzed_tree"], body["message"])
+        elif action == "discard-feature":
+            from .staged_commits import PreparedCommits
+
+            ownership.assert_owner(token)
+            PreparedCommits(workspace).discard(body["preparation_id"], kind="feature", token=token)
+            result = {"state": "discarded"}
         else:
             raise AutomationError("unsupported_auto_dev_helper_action", action)
         _machine_json(result)
@@ -1216,6 +1308,10 @@ def init(
     ensure_profile_scaffold(target_dir)
     ensure_runtime_ignored(target_dir, install_managed_file=True)
 
+    from .commit_runtime import install_helper
+
+    install_helper(codexspec_dir / "scripts")
+
     # Copy helper scripts based on platform
     scripts_source_dir = get_scripts_dir()
     if scripts_source_dir.exists():
@@ -1407,6 +1503,8 @@ def init(
         # Inject the profile block AFTER creation/compliance so it never clobbers
         # the compliance @import or the user's body (bounded, idempotent).
         inject_profile_block(claude_md)
+        inject_commit_guidance(claude_md, "/codexspec:commit-staged")
+        inject_specs_context(claude_md)
 
     # Initialize git if requested
     if not no_git and not (target_dir / ".git").exists():

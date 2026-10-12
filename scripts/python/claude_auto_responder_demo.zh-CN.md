@@ -30,28 +30,30 @@
 
 ## 启动命令
 
+以下路径使用示例用户名 `user`，请替换为你的实际项目和会话路径。
+
 ### 1. 在 tmux 中启动 Claude Code
 
 ```bash
 tmux attach -t 0
-cd /Users/xiaoming/code/codexspec
+cd /Users/user/code/codexspec
 claude
 ```
 
 ### 2. 找到新 session 的 jsonl 文件
 
 ```bash
-ls -lt ~/.claude/projects/-Users-xiaoming-code-codexspec/*.jsonl | head -1
+ls -lt ~/.claude/projects/-Users-user-code-codexspec/*.jsonl | head -1
 ```
 
 ### 3. 在 iTerm2 中启动 auto-responder
 
 ```bash
-cd /Users/xiaoming/code/codexspec
+cd /Users/user/code/codexspec
 python scripts/python/claude_auto_responder.py \
-    --jsonl ~/.claude/projects/-Users-xiaoming-code-codexspec/<session-id>.jsonl \
+    --jsonl ~/.claude/projects/-Users-user-code-codexspec/<session-id>.jsonl \
     --tmux-pane 0:0.0 \
-    --project-root /Users/xiaoming/code/codexspec \
+    --project-root /Users/user/code/codexspec \
     --log-file /tmp/auto-responder-demo.log \
     --poll-interval 2.0
 ```

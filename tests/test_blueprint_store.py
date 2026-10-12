@@ -33,13 +33,25 @@ def append_request(expected_hash: str) -> bytes:
     ).encode()
 
 
+def _apply_with_analysis(store, request_bytes, **kwargs):
+    prepared = store.prepare(request_bytes, **kwargs)
+    if prepared.get("state") != "prepared":
+        return prepared
+    return store.apply_and_commit(
+        prepared["preparation_id"],
+        prepared["tree"],
+        "docs(blueprint): update confirmed requirements\n\nRecord the staged blueprint changes.\n",
+        owner_token=kwargs.get("owner_token"),
+    )
+
+
 def test_store_commits_only_blueprint_and_preserves_unrelated_index(tmp_path: Path) -> None:
     repo = make_repo(tmp_path / "project")
     workspace = ensure_dedicated_workspace(locate_repository(repo))
     (workspace.path / "staged.txt").write_text("staged\n")
     git(workspace.path, "add", "staged.txt")
     store = BlueprintStore(workspace)
-    response = store.apply_and_commit(append_request(blueprint_hash(b"")), feature_id_factory=lambda: FEATURE_ID)
+    response = _apply_with_analysis(store, append_request(blueprint_hash(b"")), feature_id_factory=lambda: FEATURE_ID)
     assert response["result"] == "applied"
     changed = git(workspace.path, "show", "--name-only", "--pretty=format:", "HEAD").stdout.splitlines()
     assert changed == [".codexspec/blueprint.md"]
@@ -50,9 +62,9 @@ def test_store_returns_conflict_for_stale_request_without_commit(tmp_path: Path)
     repo = make_repo(tmp_path / "project")
     workspace = ensure_dedicated_workspace(locate_repository(repo))
     store = BlueprintStore(workspace)
-    first = store.apply_and_commit(append_request(blueprint_hash(b"")), feature_id_factory=lambda: FEATURE_ID)
+    first = _apply_with_analysis(store, append_request(blueprint_hash(b"")), feature_id_factory=lambda: FEATURE_ID)
     head = git(workspace.path, "rev-parse", "HEAD").stdout.strip()
-    second = store.apply_and_commit(append_request(blueprint_hash(b"")))
+    second = _apply_with_analysis(store, append_request(blueprint_hash(b"")))
     assert first["result"] == "applied"
     assert second["result"] == "conflict"
     assert git(workspace.path, "rev-parse", "HEAD").stdout.strip() == head
@@ -80,7 +92,7 @@ def test_store_recovers_replacement_interrupted_before_commit(tmp_path: Path) ->
             }
         )
     )
-    store.apply_and_commit(append_request(blueprint_hash(old)), feature_id_factory=lambda: FEATURE_ID)
+    _apply_with_analysis(store, append_request(blueprint_hash(old)), feature_id_factory=lambda: FEATURE_ID)
     assert not store.recovery_path.exists()
     assert workspace.blueprint_path.exists()
 
@@ -109,7 +121,7 @@ def test_store_recognizes_commit_interrupted_before_record_cleanup(tmp_path: Pat
             }
         )
     )
-    stale = store.apply_and_commit(append_request(blueprint_hash(old)))
+    stale = _apply_with_analysis(store, append_request(blueprint_hash(old)))
     assert stale["result"] == "conflict"
     assert workspace.blueprint_path.read_bytes() == replacement
     assert not store.recovery_path.exists()
@@ -136,7 +148,7 @@ def test_store_fails_closed_for_unknown_recovery_state(tmp_path: Path) -> None:
         )
     )
     with pytest.raises(AutomationError, match="unknown_blueprint_transaction"):
-        store.apply_and_commit(append_request(blueprint_hash(b"")))
+        _apply_with_analysis(store, append_request(blueprint_hash(b"")))
     assert workspace.blueprint_path.read_text() == "unrelated\n"
 
 
@@ -148,7 +160,7 @@ def test_store_rejects_write_while_sync_merge_is_owned(tmp_path: Path) -> None:
     merge_record.parent.mkdir(parents=True, exist_ok=True)
     merge_record.write_text('{"token":"active"}\n')
     with pytest.raises(AutomationError, match="merge_in_progress"):
-        store.apply_and_commit(append_request(blueprint_hash(b"")))
+        _apply_with_analysis(store, append_request(blueprint_hash(b"")))
     assert not workspace.blueprint_path.exists()
 
 
@@ -171,12 +183,12 @@ def test_status_update_requires_current_auto_dev_token(tmp_path: Path) -> None:
     )
 
     with pytest.raises(AutomationError, match="auto_dev_token_required"):
-        store.apply_and_commit(status_request)
+        _apply_with_analysis(store, status_request)
     owner = AutoDevOwnership(context)
     token = owner.acquire()
     with pytest.raises(Exception, match="lost_ownership"):
-        store.apply_and_commit(status_request, owner_token="wrong")
-    assert store.apply_and_commit(status_request, owner_token=token)["result"] == "applied"
+        _apply_with_analysis(store, status_request, owner_token="wrong")
+    assert _apply_with_analysis(store, status_request, owner_token=token)["result"] == "applied"
     owner.release(token)
 
 
@@ -219,7 +231,7 @@ def test_atomic_replacement_preserves_and_chooses_sane_file_modes(tmp_path: Path
     workspace = ensure_dedicated_workspace(context)
     store = BlueprintStore(workspace)
 
-    first = store.apply_and_commit(append_request(blueprint_hash(b"")))
+    first = _apply_with_analysis(store, append_request(blueprint_hash(b"")))
     assert first["result"] == "applied"
     blueprint = workspace.blueprint_path
     assert (blueprint.stat().st_mode & 0o777) == 0o644
@@ -239,7 +251,7 @@ def test_atomic_replacement_preserves_and_chooses_sane_file_modes(tmp_path: Path
             },
         }
     ).encode()
-    assert store.apply_and_commit(replace)["result"] == "applied"
+    assert _apply_with_analysis(store, replace)["result"] == "applied"
     assert (blueprint.stat().st_mode & 0o777) == 0o640
 
 
@@ -249,7 +261,7 @@ def test_noop_operation_applies_without_creating_a_commit(tmp_path: Path) -> Non
     workspace = ensure_dedicated_workspace(context)
     store = BlueprintStore(workspace)
 
-    assert store.apply_and_commit(append_request(blueprint_hash(b"")))["result"] == "applied"
+    assert _apply_with_analysis(store, append_request(blueprint_hash(b"")))["result"] == "applied"
     blueprint = workspace.blueprint_path
     current_hash = blueprint_hash(blueprint.read_bytes())
     head_before = git(workspace.path, "rev-parse", "HEAD").stdout.strip()
@@ -264,8 +276,101 @@ def test_noop_operation_applies_without_creating_a_commit(tmp_path: Path) -> Non
             "payload": {"position": "first_pending"},
         }
     ).encode()
-    outcome = store.apply_and_commit(noop)
+    outcome = _apply_with_analysis(store, noop)
     assert outcome["result"] == "applied"
     assert outcome["blueprint_hash"] == current_hash
     assert git(workspace.path, "rev-parse", "HEAD").stdout.strip() == head_before
     assert not store.recovery_path.exists()
+
+
+def test_blueprint_analysis_precedes_publication_and_preserves_message(tmp_path):
+    repo = make_repo(tmp_path / "project")
+    workspace = ensure_dedicated_workspace(locate_repository(repo))
+    store = BlueprintStore(workspace)
+    prepared = store.prepare(append_request(blueprint_hash(b"")), feature_id_factory=lambda: FEATURE_ID)
+    assert prepared["state"] == "prepared"
+    assert not workspace.blueprint_path.exists()
+    message = "docs(blueprint): add authentication requirements\n\nRecord the confirmed login behavior.\n"
+    result = store.apply_and_commit(prepared["preparation_id"], prepared["tree"], message)
+    assert result["result"] == "applied"
+    assert result["feature_id"] == FEATURE_ID
+    assert git(workspace.path, "rev-parse", "HEAD^{tree}").stdout.strip() == prepared["tree"]
+    assert "Record the confirmed login behavior." in git(workspace.path, "log", "-1", "--format=%B").stdout
+
+
+def test_blueprint_stale_analysis_never_publishes(tmp_path):
+    repo = make_repo(tmp_path / "project")
+    workspace = ensure_dedicated_workspace(locate_repository(repo))
+    store = BlueprintStore(workspace)
+    prepared = store.prepare(append_request(blueprint_hash(b"")))
+    with pytest.raises(AutomationError, match="stale_analysis"):
+        store.apply_and_commit(prepared["preparation_id"], "0" * 40, "docs(blueprint): add requirements")
+    assert not workspace.blueprint_path.exists()
+    git(workspace.path, "commit", "--allow-empty", "-m", "chore: advance")
+    with pytest.raises(AutomationError, match="stale_analysis"):
+        store.apply_and_commit(prepared["preparation_id"], prepared["tree"], "docs(blueprint): add requirements")
+    assert not workspace.blueprint_path.exists()
+
+
+@pytest.mark.skipif(os.name == "nt", reason="Git executable mode is platform dependent")
+def test_blueprint_prepared_mode_matches_existing_executable_file(tmp_path):
+    repo = make_repo(tmp_path / "project")
+    workspace = ensure_dedicated_workspace(locate_repository(repo))
+    store = BlueprintStore(workspace)
+    _apply_with_analysis(store, append_request(blueprint_hash(b"")))
+    workspace.blueprint_path.chmod(0o755)
+    git(workspace.path, "add", ".codexspec/blueprint.md")
+    git(workspace.path, "commit", "-m", "chore: preserve executable mode")
+    result = _apply_with_analysis(store, append_request(blueprint_hash(workspace.blueprint_path.read_bytes())))
+    assert result["result"] == "applied"
+    assert git(workspace.path, "ls-tree", "HEAD", ".codexspec/blueprint.md").stdout.startswith("100755")
+
+
+def test_blueprint_preparation_applies_path_clean_filter(tmp_path):
+    repo = make_repo(tmp_path / "project")
+    (repo / ".gitattributes").write_text(".codexspec/blueprint.md filter=canonical\n")
+    git(repo, "config", "filter.canonical.clean", "sed s/securely/safely/g")
+    git(repo, "add", ".gitattributes")
+    git(repo, "commit", "-m", "chore: configure clean filter")
+    workspace = ensure_dedicated_workspace(locate_repository(repo))
+    store = BlueprintStore(workspace)
+    prepared = store.prepare(append_request(blueprint_hash(b"")), feature_id_factory=lambda: FEATURE_ID)
+    preview = git(workspace.path, "show", f"{prepared['tree']}:.codexspec/blueprint.md").stdout
+    assert "safely" in preview
+    assert "securely" not in preview
+    assert not workspace.blueprint_path.exists()
+    result = store.apply_and_commit(
+        prepared["preparation_id"], prepared["tree"], "docs(blueprint): add authentication requirement"
+    )
+    assert result["result"] == "applied"
+    assert git(workspace.path, "rev-parse", "HEAD^{tree}").stdout.strip() == prepared["tree"]
+    assert git(workspace.path, "show", "HEAD:.codexspec/blueprint.md").stdout == preview
+
+
+def test_blueprint_post_commit_failure_preserves_published_file_and_recovery(tmp_path):
+    repo = make_repo(tmp_path / "project")
+    workspace = ensure_dedicated_workspace(locate_repository(repo))
+    store = BlueprintStore(workspace)
+    hook = repo / ".git/hooks/post-commit"
+    hook.write_text(
+        "#!/bin/sh\n"
+        'printf "updated\\n" > version.txt\n'
+        "git add version.txt\n"
+        "tree=$(git write-tree) || exit 1\n"
+        "parent=$(git rev-parse HEAD) || exit 1\n"
+        'commit=$(printf "chore: generated version\\n" | git commit-tree "$tree" -p "$parent") || exit 1\n'
+        'git update-ref HEAD "$commit" "$parent"\n'
+    )
+    hook.chmod(0o755)
+    prepared = store.prepare(append_request(blueprint_hash(b"")), feature_id_factory=lambda: FEATURE_ID)
+    with pytest.raises(AutomationError, match="committed_tree_mismatch"):
+        store.apply_and_commit(prepared["preparation_id"], prepared["tree"], "docs(blueprint): add requirement")
+    committed = git(workspace.path, "show", "HEAD:.codexspec/blueprint.md").stdout
+    assert workspace.blueprint_path.exists()
+    assert workspace.blueprint_path.read_text() == committed
+    assert store.recovery_path.exists()
+    assert not git(workspace.path, "diff", "--name-only", "--", ".codexspec/blueprint.md").stdout
+    with pytest.raises(AutomationError, match="unknown_blueprint_transaction"):
+        store.prepare(append_request(blueprint_hash(workspace.blueprint_path.read_bytes())))
+    assert store.recovery_path.exists()
+    assert workspace.blueprint_path.read_text() == committed

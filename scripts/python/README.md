@@ -24,7 +24,7 @@ uv pip install "codexspec[monitor]"
 python claude_monitor.py
 
 # 指定项目目录
-python claude_monitor.py -p ~/.claude/projects/-Users-xiaoming-code-myproject
+python claude_monitor.py -p ~/.claude/projects/-Users-user-code-myproject
 
 # 静默模式（用于脚本集成）
 python claude_monitor.py -q
@@ -78,7 +78,7 @@ monitor.start()
 ```
 ~/.claude/
 ├── projects/
-│   └── -Users-xiaoming-code-[project]/
+│   └── -Users-user-code-[project]/
 │       ├── [session-id].jsonl      # Session 日志
 │       └── sessions-index.json      # Session 索引
 ├── tasks/[session-id]/              # 任务数据

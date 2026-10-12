@@ -5,6 +5,81 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.23] - 2026-10-11
+
+### Added
+
+- Codex and Claude now receive guidance to recall relevant `.codexspec/specs/`
+  history before substantive decisions and questions, in ordinary conversation
+  and SDD workflows. Claude plugin startup provides the same guidance without
+  requiring project initialization or a persistent CodexSpec CLI.
+- Historical recall distinguishes unchanged requirements, later additions, and
+  explicit changes while always honoring the user's latest explicit decision.
+  Reading depth follows the task; sufficient background is reused to reduce
+  repeated questions and unnecessary searches.
+
+### For contributors
+
+- Added context installation, policy, plugin, and package coverage, plus the
+  feature's requirements, design, planning, and verification records. Validation
+  distinguishes instruction delivery from measured autonomous-agent effectiveness.
+- Replaced machine-specific usernames and paths in documentation examples with
+  generic placeholders.
+- Updated marketplace metadata for the preceding v0.7.22 release.
+
+## [0.7.22] - 2026-10-11
+
+### Fixed
+
+- Invalid auto-dev helper requests no longer create the shared branch or worktree.
+  Request validation now runs before ownership or workspace mutations.
+- Auto-dev follow-up operations require the existing workspace instead of silently
+  recreating it. Ownership renewal, assertion and release work without initializing
+  a workspace; acquisition still creates one when needed.
+
+### For contributors
+
+- Added 24 regression cases covering invalid requests, ownership operations,
+  missing workspaces and successful acquisition.
+- Updated marketplace metadata for the preceding v0.7.21 release and documented
+  the release procedure using guarded commits.
+
+## [0.7.21] - 2026-10-11
+
+### Added
+
+- Codex and Claude project context, plus Claude plugin startup, now explicitly
+  route authorized commits through `commit-staged` for complete messages based
+  on the exact staging area.
+- A shared commit guard ships with initialized projects and the Claude plugin.
+  Direct commits require Git and Python 3.11+, without a persistent CodexSpec CLI.
+
+### Changed
+
+- Auto-dev feature commits and blueprint updates prepare their own indexes before
+  staged analysis and pass complete messages to finalization. Existing ownership,
+  path, locking and recovery protections remain in force.
+- Contentful automatic merges wait for staged analysis and verification.
+  History-only merges retain Git's default message while validating content and
+  parents; fast-forwards create no commit. Hooks, signing and signoff are preserved.
+- **Breaking for custom helper clients:** hidden commit and merge protocols now
+  require analyzed snapshots or preparation IDs and complete messages. Refresh
+  command installations together with the runtime. Changed staged content requires
+  fresh preparation and analysis, including after hook modifications.
+
+### Fixed
+
+- Git stdin preserves exact UTF-8 bytes on Windows, preventing newline translation
+  from changing prepared blueprint content or commit messages.
+
+### For contributors
+
+- Added regression coverage for staging isolation, stale analysis, native hook and
+  signing behavior, merge options, recovery, CLI-free installation and UTF-8 transport.
+- Synchronized command installations and documentation, and recorded the confirmed
+  requirements and verification evidence.
+- Updated plugin marketplace metadata for the preceding v0.7.20 release.
+
 ## [0.7.20] - 2026-10-10
 
 ### Changed

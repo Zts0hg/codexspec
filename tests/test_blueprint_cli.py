@@ -118,7 +118,20 @@ def test_hidden_inspect_and_apply_use_machine_json(project: tuple[Path, Path], r
             "requirements_markdown": unmanaged_requirements("Release notes"),
         },
     }
-    applied = runner.invoke(app, ["_blueprint-helper", "apply"], input=json.dumps(request))
+    preparation = runner.invoke(app, ["_blueprint-helper", "prepare"], input=json.dumps(request))
+    assert preparation.exit_code == 0, preparation.output
+    prepared = json.loads(preparation.stdout)
+    applied = runner.invoke(
+        app,
+        ["_blueprint-helper", "apply"],
+        input=json.dumps(
+            {
+                "preparation_id": prepared["preparation_id"],
+                "analyzed_tree": prepared["tree"],
+                "message": "docs(blueprint): add release note requirements",
+            }
+        ),
+    )
     assert applied.exit_code == 0
     assert json.loads(applied.stdout)["result"] == "applied"
 
@@ -189,13 +202,31 @@ def test_concurrent_blueprint_helpers_apply_once_and_conflict_once(
         }
     )
     processes = [
-        _start_cli(repo, "_blueprint-helper", "apply", input_text=request),
-        _start_cli(repo, "_blueprint-helper", "apply", input_text=request),
+        _start_cli(repo, "_blueprint-helper", "prepare", input_text=request),
+        _start_cli(repo, "_blueprint-helper", "prepare", input_text=request),
+    ]
+    prepared_results = [_finish_cli(process) for process in processes]
+    assert [code for code, _, _ in prepared_results] == [0, 0]
+    preparations = [json.loads(stdout) for _, stdout, _ in prepared_results]
+    processes = [
+        _start_cli(
+            repo,
+            "_blueprint-helper",
+            "apply",
+            input_text=json.dumps(
+                {
+                    "preparation_id": item["preparation_id"],
+                    "analyzed_tree": item["tree"],
+                    "message": "docs(blueprint): add release notes requirements",
+                }
+            ),
+        )
+        for item in preparations
     ]
     results = [_finish_cli(process) for process in processes]
-    assert [code for code, _, _ in results] == [0, 0]
-    outcomes = sorted(json.loads(stdout)["result"] for _, stdout, _ in results)
-    assert outcomes == ["applied", "conflict"]
+    assert sorted(code for code, _, _ in results) == [0, 1]
+    assert next(json.loads(stdout)["result"] for code, stdout, _ in results if code == 0) == "applied"
+    assert "stale_analysis" in next(stderr for code, _, stderr in results if code != 0)
 
 
 def test_concurrent_auto_dev_acquire_has_exactly_one_owner(project: tuple[Path, Path]) -> None:
@@ -214,3 +245,97 @@ def test_concurrent_auto_dev_acquire_has_exactly_one_owner(project: tuple[Path, 
         input_text=json.dumps({"token": winner["token"]}),
     )
     assert _finish_cli(released)[0] == 0
+
+
+@pytest.mark.parametrize(
+    ("action", "body", "error"),
+    [
+        ("unknown", {}, "unsupported_auto_dev_helper_action"),
+        ("unknown", {"token": "invalid"}, "unsupported_auto_dev_helper_action"),
+        ("acquire", {"extra": True}, "unexpected_fields"),
+        ("release", {}, "missing_token"),
+        ("renew", {"token": None}, "missing_token"),
+        ("assert-owner", {"token": "invalid", "extra": True}, "unexpected_fields"),
+        ("sync-default", {"token": "invalid", "extra": True}, "unexpected_fields"),
+        ("abort-sync", {"token": "invalid", "extra": True}, "unexpected_fields"),
+        ("prepare-sync-verification", {"token": "invalid", "resolved_paths": []}, "invalid_prepare_sync_request"),
+        ("continue-sync", {"token": "invalid", "checks_passed": "yes"}, "invalid_continue_sync_request"),
+        ("prepare-feature", {"token": "invalid", "feature_id": "x", "paths": "x"}, "invalid_prepare_feature_request"),
+        ("commit-feature", {"token": "invalid"}, "analysis_required"),
+        ("discard-feature", {"token": "invalid"}, "invalid_preparation"),
+    ],
+)
+def test_invalid_auto_dev_request_has_no_workspace_side_effects(tmp_path, monkeypatch, runner, action, body, error):
+    repo = make_repo(tmp_path / "project")
+    monkeypatch.chdir(repo)
+    context = locate_repository(repo)
+    before = git(repo, "worktree", "list", "--porcelain").stdout
+    result = runner.invoke(app, ["_auto-dev-helper", action], input=json.dumps(body))
+    assert result.exit_code == 1
+    assert error in result.stderr
+    assert git(repo, "worktree", "list", "--porcelain").stdout == before
+    assert not context.worktree_path.parent.exists()
+    assert not context.coordination_dir.exists()
+    assert git(repo, "show-ref", "--verify", "refs/heads/codexspec/auto-dev", check=False).returncode != 0
+
+
+@pytest.mark.parametrize("action", ["renew", "assert-owner", "release"])
+def test_auto_dev_owner_actions_do_not_require_a_workspace(tmp_path, monkeypatch, runner, action):
+    from codexspec.automation import AutoDevOwnership
+
+    repo = make_repo(tmp_path / "project")
+    monkeypatch.chdir(repo)
+    context = locate_repository(repo)
+    ownership = AutoDevOwnership(context)
+    token = ownership.acquire()
+    try:
+        result = runner.invoke(app, ["_auto-dev-helper", action], input=json.dumps({"token": token}))
+        assert result.exit_code == 0, result.output
+        assert not context.worktree_path.parent.exists()
+        assert git(repo, "show-ref", "--verify", "refs/heads/codexspec/auto-dev", check=False).returncode != 0
+    finally:
+        if ownership.record_path.exists():
+            ownership.release(token)
+
+
+@pytest.mark.parametrize(
+    ("action", "body"),
+    [
+        ("sync-default", {}),
+        ("abort-sync", {}),
+        ("prepare-sync-verification", {"resolved_paths": ["README.md"]}),
+        ("continue-sync", {"checks_passed": True}),
+        ("prepare-feature", {"feature_id": "2026-1011-1234ab", "paths": ["README.md"]}),
+        ("commit-feature", {"preparation_id": "missing", "analyzed_tree": "missing", "message": "feat: test"}),
+        ("discard-feature", {"preparation_id": "missing"}),
+    ],
+)
+def test_auto_dev_followup_does_not_recreate_missing_workspace(tmp_path, monkeypatch, runner, action, body):
+    from codexspec.automation import AutoDevOwnership
+
+    repo = make_repo(tmp_path / "project")
+    monkeypatch.chdir(repo)
+    context = locate_repository(repo)
+    workspace = ensure_dedicated_workspace(context)
+    git(repo, "worktree", "remove", str(workspace.path))
+    ownership = AutoDevOwnership(context)
+    token = ownership.acquire()
+    try:
+        result = runner.invoke(app, ["_auto-dev-helper", action], input=json.dumps({"token": token, **body}))
+        assert result.exit_code == 1
+        assert "missing_fixed_worktree" in result.stderr
+        assert not workspace.path.exists()
+        assert str(workspace.path) not in git(repo, "worktree", "list", "--porcelain").stdout
+    finally:
+        ownership.release(token)
+
+
+def test_auto_dev_acquire_still_creates_missing_workspace(tmp_path, monkeypatch, runner):
+    repo = make_repo(tmp_path / "project")
+    monkeypatch.chdir(repo)
+    acquired = runner.invoke(app, ["_auto-dev-helper", "acquire"], input="{}")
+    assert acquired.exit_code == 0, acquired.output
+    body = json.loads(acquired.stdout)
+    assert Path(body["worktree_path"]).is_dir()
+    released = runner.invoke(app, ["_auto-dev-helper", "release"], input=json.dumps({"token": body["token"]}))
+    assert released.exit_code == 0, released.output

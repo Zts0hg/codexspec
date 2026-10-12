@@ -20,6 +20,8 @@ clear, standard software-development terminology; do not invent abbreviations to
 
 <!-- CODEXSPEC:INCLUDE workspace-routing.md -->
 
+<!-- CODEXSPEC:INCLUDE specs-recall.md -->
+
 ## User Input
 
 `$ARGUMENTS`
@@ -75,7 +77,7 @@ unambiguous permanent Feature ID and explicit confirmation of the exact deletion
 
 ## Exact Helper Requests
 
-Send exactly one JSON object to `codexspec _blueprint-helper apply` on stdin. Use protocol version
+Send exactly one JSON object to `codexspec _blueprint-helper prepare` on stdin. Use protocol version
 `1`, the inspected hash, and no unlisted keys.
 
 Append omits top-level `feature_id`:
@@ -109,6 +111,28 @@ Use these payloads only with the `move_pending_requirement` operation and the ta
 `feature_id`.
 
 `blueprint` must never send `update_status`.
+
+## Analyze and Finalize a Blueprint Preparation
+
+A `state: prepared` response is not an applied mutation. It supplies
+`preparation_id`, `workspace`, `index_file`, `head`, `tree`, and `required_scope`.
+Invoke `/codexspec:commit-staged -p` with that exact workspace and prepared index,
+explicitly setting `GIT_INDEX_FILE` for its Git reads. Retain the validated tree
+and the full generated message, including its body when present. Then send:
+
+```json
+{"preparation_id":"<prepared id>","analyzed_tree":"<validated tree>","message":"<full generated message>"}
+```
+
+Send this to `codexspec _blueprint-helper apply`, adding the same
+`--auto-dev-token <token>` when the preparation belongs to auto-dev. Report an
+applied mutation only after this finalization succeeds. A no-op or rejected
+prepare result needs no message or commit. On stale analysis, inspect, prepare,
+and analyze again; never replace analysis with a fixed operation-name message.
+To abandon a preparation, send `{"preparation_id":"<prepared id>"}` to
+`codexspec _blueprint-helper discard`, with the same token option when applicable.
+This removes only helper-owned preparation files, not caller staging or blueprint
+content. Keep auto-dev heartbeat renewal active across the analysis step.
 
 ## Result Handling
 

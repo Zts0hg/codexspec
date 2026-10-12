@@ -46,7 +46,7 @@
 
 | 命令 | 用途 |
 |---------|---------|
-| `/codexspec:commit-staged` | 从暂存改动生成提交信息（感知会话上下文） |
+| `/codexspec:commit-staged` | 严格依据暂存改动生成提交信息 |
 | `/codexspec:pr` | 从 git diff 生成 PR/MR 描述（自动识别平台） |
 
 ### 代码评审命令
@@ -969,7 +969,17 @@ AI:  正在将任务转换为 GitHub issues...
 
 ### `/codexspec:commit-staged`
 
-基于暂存的 git 改动生成符合 Conventional Commits 的提交信息，并感知会话上下文。这条命令理解你的开发会话，从而生成有意义的提交信息。
+严格依据暂存的 Git 改动生成准确完整的提交信息。Agent 在执行已获授权的直接提交、自动开发提交和蓝图提交前调用此命令。调用方负责准备暂存区，命令不会自行挑选或暂存文件。
+
+插件自带共享 helper，init 也会将它复制到
+`.codexspec/scripts/commit-staged-helper.py`，因此 uvx 一次性初始化后无需保留
+CodexSpec 可执行文件。运行需要 Python 3.11+ 与 Git；helper 不调用 LLM，负责保留
+Git hooks 并拒绝提交与分析时不一致的暂存内容。工作树路由、blueprint 和 auto-dev
+仍遵循原有 CLI 前提。
+
+合并提交也接入暂存区分析：同步分支和初始化分叉工作区时，会在创建提交前停下。
+若合并前后的文件内容相同，则保留 Git 默认消息，同时校验提交内容和父提交。
+Fast-forward 不创建新提交，因此不需要生成消息。
 
 **语法：**
 
@@ -986,7 +996,7 @@ AI:  正在将任务转换为 GitHub issues...
 **功能：**
 
 - 执行 `git diff --staged` 获取暂存改动
-- 分析改动与会话上下文以理解意图
+- 只分析暂存 diff，必要时用正文完整描述重要变更
 - 遵循 Conventional Commits 规范
 - 执行模式（默认）：生成信息后直接提交
 - 预览模式（`-p`）：只显示信息不提交
@@ -1034,7 +1044,8 @@ AI:  预览模式 - 不会执行提交
 
 - 先用 `git add` 暂存改动
 - 只分析已暂存的内容——尊重 Git 的两阶段提交工作流
-- 综合会话上下文以生成有意义的提交信息
+- 暂存内容变化后，重新分析再提交
+- helper 使用明确指定的暂存区调用预览分析，并携带完整消息完成提交
 - 用 `-p` 标志在提交前预览
 - 默认遵循 Conventional Commits 规范
 

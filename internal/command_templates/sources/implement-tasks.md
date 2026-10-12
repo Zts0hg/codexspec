@@ -21,6 +21,8 @@ Converse in the interaction language and author artifacts in the document langua
 
 <!-- CODEXSPEC:INCLUDE workspace-routing.md -->
 
+<!-- CODEXSPEC:INCLUDE specs-recall.md -->
+
 ## Feature Resolution
 
 Resolve the feature in this order:
@@ -127,7 +129,10 @@ Implement directly and verify correctness. Task types that typically don't need 
 - When encountering blockers:
   - Record the issue in `issues.md` (task ID, error, attempted solutions, status)
   - Continue to the next independent task
-- Commit code after completing significant tasks or phases
+- For an authorized commit after significant tasks or phases, prepare its staging
+  in the calling workflow and invoke `/codexspec:commit-staged`. Under auto-dev,
+  use auto-dev's prepared-index preview/finalization protocol instead of direct
+  Git execution; commit-staged does not choose or stage files.
 - Update progress in `tasks.md` as tasks are completed
 
 ### 5. Issue Recording
@@ -477,7 +482,8 @@ later stage or blueprint transition; do not inspect or invoke `workflow.auto_nex
   the exact blocking evidence.
 - Commits remain outside verdict logic. If the surrounding workflow calls for
   a commit, create it only after the applicable checks are green; a commit must
-  never alter, replace, or imply the review verdict.
+  never alter, replace, or imply the review verdict. Generate its full message
+  through `/codexspec:commit-staged`; changed content requires fresh analysis.
 
 ## Systematic Debugging Escalation
 

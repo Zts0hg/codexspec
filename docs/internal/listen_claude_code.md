@@ -12,7 +12,7 @@ Claude Code 状态管理机制
 
 ~/.claude/
 ├── projects/
-│   └── -Users-xiaoming-code-[project]/
+│   └── -Users-user-code-[project]/
 │       ├── [session-id].jsonl      # Session 日志 (JSONL 格式)
 │       └── sessions-index.json      # Session 索引
 ├── tasks/[session-id]/              # 任务数据
@@ -241,7 +241,7 @@ python claude_monitor.py
 
 # 指定项目目录
 
-python claude_monitor.py --project ~/.claude/projects/-Users-xiaoming-code-myproject
+python claude_monitor.py --project ~/.claude/projects/-Users-user-code-myproject
 
 # 静默模式（可用于管道）
 
