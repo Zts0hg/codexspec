@@ -150,6 +150,8 @@ This systematic review process ensures:
 
 ## 🚀 30-Second Quick Start
 
+Using the Codex desktop app? [Ask Codex to install and initialize your project](#install-with-the-codex-desktop-app).
+
 ```bash
 # 1. Install
 uv tool install codexspec
@@ -177,6 +179,41 @@ That's it! Read on for the complete workflow.
 ---
 
 ## Installation
+
+### Install with the Codex Desktop App
+
+You can ask Codex to install CodexSpec and set up your project directly from the desktop app.
+
+1. Add a local project in the Codex desktop app and select the folder where you want to work.
+2. Start a chat in that project and paste the prompt below.
+3. If the app requests permission to download or install dependencies, approve the requested action to continue.
+
+```text
+Please install and initialize CodexSpec in the current project.
+Project: https://github.com/Zts0hg/codexspec
+
+Complete the setup directly instead of asking me to run terminal commands.
+
+Check the environment. If uv or Python 3.11+ is missing, install the required
+tools in my user directory using their official installation instructions.
+Install the latest stable release of CodexSpec.
+
+For a new setup, initialize the current project for Codex in English:
+codexspec init . --ai codex --lang en
+
+If CodexSpec is already configured, check its version and configuration before
+updating. Preserve existing requirements, project principles, user files,
+and configuration settings.
+
+Verify that the CLI works and that AGENTS.md and the CodexSpec skill files
+under .agents/skills/ are installed. Explain the result and how to start
+describing my requirements in plain English. If the skills are not yet
+available in this chat, tell me whether to start a new chat or restart the app.
+```
+
+For Chinese replies and documents, replace `--lang en` with `--lang zh-CN` and ask Codex to explain the result in Chinese.
+
+Codex installs the same CLI and project skills used by the manual setup below. You can start using them with a prompt such as `$codexspec:specify I want to build a todo application`. See [OpenAI's skills guide](https://learn.chatgpt.com/docs/build-skills) for local skill discovery and refresh behavior.
 
 ### Prerequisites
 
