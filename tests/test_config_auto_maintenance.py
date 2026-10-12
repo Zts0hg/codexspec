@@ -142,9 +142,10 @@ def test_p06_present_unreadable_link_refuses_policy(tmp_path, kind):
     except OSError:
         pytest.skip("symlinks unavailable on this host")
     assert config.is_symlink() and not config.exists()
+    link_before = config.readlink()
     with pytest.raises(AutomationError):
         read_auto_maintenance(config)
-    assert config.is_symlink() and config.readlink() == target
+    assert config.is_symlink() and config.readlink() == link_before
 
 
 @pytest.mark.parametrize("value", [True, False])
@@ -156,6 +157,7 @@ def test_p06_readable_link_preserves_explicit_policy(tmp_path, value):
     except OSError:
         pytest.skip("symlinks unavailable on this host")
     before = target.read_bytes()
+    link_before = config.readlink()
     assert read_auto_maintenance(config) is value
     assert target.read_bytes() == before
-    assert config.is_symlink() and config.readlink() == target
+    assert config.is_symlink() and config.readlink() == link_before

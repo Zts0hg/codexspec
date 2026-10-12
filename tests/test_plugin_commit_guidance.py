@@ -22,7 +22,7 @@ def test_session_start_emits_commit_rule_without_cli(tmp_path, installation, rep
 
     plugin = tmp_path / "plugin cache ' $ space"
     if installation == "plugin":
-        manifest = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text())
+        manifest = json.loads((ROOT / ".claude-plugin/marketplace.json").read_text(encoding="utf-8"))
         entry = manifest["plugins"][0]
         source = ROOT / entry["source"].get("path", ".")
         commands = Path(entry["commands"][0])
