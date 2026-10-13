@@ -491,14 +491,27 @@ The development plugin bundle uses the repository root and explicitly selects `.
 
 ### Internal Maintenance Commands (NOT distributed to users)
 
-These commands exist **only** in `.claude/commands/codexspec/` and are intentionally absent from `templates/commands/`. They are tightly coupled to CodexSpec's own documentation site (MkDocs i18n, fixed `docs/{lang}/` structure, CodexSpec-specific glossary) and are used by CodexSpec maintainers and the `docs-i18n.yml` CI workflow. **They are not installed by `codexspec init` and are not user-facing features.**
+The two documentation maintenance tools are repository-only Claude commands
+and native Codex skills. They serve root README synchronization and the existing
+docs/en site workflow with docs/i18n/glossary.yml. They are not installed into
+user projects by codexspec init, and remain outside the 28 distributed commands.
 
-| Command                           | Description                                                          |
-| --------------------------------- | -------------------------------------------------------------------- |
-| `/codexspec:translate-docs`       | Translate CodexSpec's own docs from `docs/en/` to 7 target languages |
-| `/codexspec:check-i18n-semantics` | Verify semantic consistency of CodexSpec's own translated docs       |
+| Operation | Claude Code | Codex |
+|-----------|-------------|-------|
+| Translate README/site docs | `/codexspec:translate-docs` | `$codexspec:translate-docs` |
+| Check translation fidelity | `/codexspec:check-i18n-semantics` | `$codexspec:check-i18n-semantics` |
 
-Both commands read the project glossary at `docs/i18n/glossary.yml` (canonical, repo-only path). The path `.codexspec/i18n/glossary.yml` is **not** used and should not be referenced in any artifact.
+Use --readme --lang all for the seven root README variants. Default site mode
+remains docs/en with docs/zh, ja, ko, es, fr, de and pt-BR destinations. Shared
+selection, translation, navigation and semantic rules live in
+internal/references/doc-translation.md.
+
+Authored entry sources are the two .claude/commands/codexspec/ Markdown files.
+Generate their native .agents/skills/codexspec-*/SKILL.md counterparts with
+python -m internal.maintainer_doc_skills --write; check with --check.
+The existing --check-distribution gate also compares these exact derived entries.
+Never hand-edit generated Codex copies or add these commands to public templates.
+Current sessions must load the selected checkout's actual command/skill files.
 
 ### Git Workflow Commands
 
@@ -601,8 +614,8 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec:commit-staged`   | ✅ Template | Generate commit from staged changes strictly from the staged diff             |
 | `/codexspec:pr`              | ✅ Template | Generate PR/MR descriptions                                                   |
 | `/codexspec:review-code` | ✅ Template | Review code in any language for idiomatic clarity, correctness, robustness, architecture, and constitution alignment |
-| `/codexspec:translate-docs`  | ✅ Internal | Maintainer-only — lives only in `.claude/commands/codexspec/`, not distributed via `init` |
-| `/codexspec:check-i18n-semantics` | ✅ Internal | Maintainer-only — lives only in `.claude/commands/codexspec/`, not distributed via `init` |
+| `/codexspec:translate-docs`  | ✅ Internal | Maintainer-only Claude/Codex entries; not distributed via `init` |
+| `/codexspec:check-i18n-semantics` | ✅ Internal | Maintainer-only Claude/Codex entries; not distributed via `init` |
 
 ### Constitution Compliance Feature
 
@@ -742,7 +755,14 @@ def get_templates_dir() -> Path:
   2. Publish a new CodexSpec version (`publish.sh`)
   3. Re-run `codexspec init` (or `uv tool install --force .`) to sync `.claude/commands/codexspec/` from the updated templates
 
-**The exceptions** are the internal maintenance commands (`/codexspec:translate-docs`, `/codexspec:check-i18n-semantics`) and the pre-existing plugin-only compatibility artifacts (`review-python-code.md`, `review-react-code.md`). They intentionally have no counterpart in `templates/commands/`; fragment tooling must not derive, rewrite, or remove them. See `.codexspec/memory/constitution.md` → "Slash Command Template Modification Rules" for the full policy.
+**The authored exceptions** are translate-docs and check-i18n-semantics in
+.claude/commands/codexspec/. Their shared instructions are internal, and their
+Codex entries are derived by internal.maintainer_doc_skills. They have no public
+templates counterpart. Fragment synchronization preserves these authored files;
+distribution checks validate their native counterparts. The pre-existing
+review-python-code.md and review-react-code.md compatibility artifacts likewise
+remain outside fragment rewriting. See the project constitution's internal
+maintenance exception for the authoring and verification rules.
 
 **When auditing or analyzing the project**: treat `.claude/commands/codexspec/<distributed-command>.md` as a derived file, the same way you would treat a compiled artifact or a lockfile — read it to observe the installed state, but make fixes upstream in `templates/commands/`.
 

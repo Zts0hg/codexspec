@@ -30,6 +30,20 @@ The full maintainer development guide lives in **`CLAUDE.md`**: architecture and
 
 Read `CLAUDE.md` and `docs/internal/repository-layout.md` before changing templates, packaging, or `init` behavior.
 
+### Repository Documentation Maintenance
+
+The repo-only Codex skills `$codexspec:translate-docs` and
+`$codexspec:check-i18n-semantics` maintain root README translations and site docs.
+Use `--readme --lang all` for all seven root README variants. Their shared rules
+live in `internal/references/doc-translation.md`.
+
+Author the two existing Claude maintenance commands in
+`.claude/commands/codexspec/`, then derive native skills with
+`python -m internal.maintainer_doc_skills --write`. Use `--check` and the existing
+distribution check to verify them. Generated Codex entries are not hand-edited.
+These tools stay outside public templates, package installation and `codexspec init`.
+Explicitly load the selected worktree's entry files during a main-launched session.
+
 <!-- CODEXSPEC PROFILE START -->
 ## CodexSpec Project Profile
 

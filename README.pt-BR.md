@@ -19,771 +19,910 @@
 </p>
 
 <p align="center">
-  <strong>Um toolkit de SDD Requirements-First para o Claude Code</strong>
+  <strong>Um conjunto de ferramentas de SDD com requisitos em primeiro lugar para Claude Code e OpenAI Codex</strong>
 </p>
 
-O CodexSpec ajuda você a construir software de alta qualidade por meio do **Requirements-First Spec-Driven Development (SDD)** — requisitos confirmados vêm primeiro, e nada é definitivo até você confirmar explicitamente.
-Em vez de pular direto para o código, você confirma **o que** construir e **por que**, antes de decidir **como** construir.
+O CodexSpec transforma requisitos confirmados em especificações, projetos técnicos,
+planos, tarefas e implementações rastreáveis. Você decide **o que** construir e
+**por quê**; o agente desenvolve **como** dentro desses requisitos confirmados,
+com pontos de revisão e conhecimento persistente do projeto.
 
-[📖 Documentação](https://zts0hg.github.io/codexspec/pt-BR/) | [Documentation](https://zts0hg.github.io/codexspec/) | [中文文档](https://zts0hg.github.io/codexspec/zh/) | [日本語ドキュメント](https://zts0hg.github.io/codexspec/ja/) | [한국어 문서](https://zts0hg.github.io/codexspec/ko/) | [Documentación](https://zts0hg.github.io/codexspec/es/) | [Documentation](https://zts0hg.github.io/codexspec/fr/) | [Dokumentation](https://zts0hg.github.io/codexspec/de/)
+Use-o por meio de comandos de barra do Claude Code, skills do Codex ou ambos.
+Por padrão, funcionalidades comuns usam worktrees Git separados, e um blueprint
+compartilhado opcional permite que o agente desenvolva uma fila de requisitos
+confirmados de forma autônoma.
 
----
+[📖 Documentação](https://zts0hg.github.io/codexspec/) | [中文文档](https://zts0hg.github.io/codexspec/zh/) | [日本語ドキュメント](https://zts0hg.github.io/codexspec/ja/) | [한국어 문서](https://zts0hg.github.io/codexspec/ko/) | [Documentación](https://zts0hg.github.io/codexspec/es/) | [Documentation](https://zts0hg.github.io/codexspec/fr/) | [Dokumentation](https://zts0hg.github.io/codexspec/de/) | [Documentação](https://zts0hg.github.io/codexspec/pt-BR/)
 
-## Tabela de Conteúdo
+## Índice
 
 - [Por que escolher o CodexSpec?](#por-que-escolher-o-codexspec)
-- [O que é o SDD Requirements-First?](#o-que-é-o-sdd-requirements-first)
-- [Filosofia de Design: Colaboração entre Humano e AI](#filosofia-de-design-colaboração-entre-humano-e-ai)
-- [Início Rápido em 30 Segundos](#-início-rápido-em-30-segundos)
+- [Início rápido em 30 segundos](#início-rápido-em-30-segundos)
 - [Instalação](#instalação)
-- [Fluxo de Trabalho Central](#fluxo-de-trabalho-central)
-- [Comandos Disponíveis](#comandos-disponíveis)
-- [Comparação com o spec-kit](#comparação-com-o-spec-kit)
-- [Internacionalização (i18n)](#internacionalização-i18n)
-- [Contribuindo e Licença](#contribuindo)
-
----
+- [Fluxo de trabalho principal](#fluxo-de-trabalho-principal)
+- [Blueprint compartilhado e desenvolvimento autônomo](#blueprint-compartilhado-e-desenvolvimento-autônomo)
+- [Desenvolvimento com worktrees](#desenvolvimento-com-worktrees)
+- [Trabalhar com código existente](#trabalhar-com-código-existente)
+- [Revisão e depuração](#revisão-e-depuração)
+- [Conhecimento do projeto](#conhecimento-do-projeto)
+- [Fluxo de trabalho Git](#fluxo-de-trabalho-git)
+- [Comandos disponíveis](#comandos-disponíveis)
+- [Configuração e internacionalização](#configuração-e-internacionalização)
+- [Estrutura do projeto](#estrutura-do-projeto)
+- [Materiais para extensões](#materiais-para-extensões)
+- [Desenvolvimento](#desenvolvimento)
+- [Contribuir](#contribuir)
+- [Licença](#licença)
 
 ## Por que escolher o CodexSpec?
 
-Por que adicionar o CodexSpec ao Claude Code? Veja a comparação:
+| Necessidade | O que o CodexSpec oferece |
+|------|-------------------------|
+| Intenção clara do produto | Confirmação explícita e um `requirements.md` persistente antes da especificação |
+| Desenvolvimento rastreável | Referências às fontes ao longo de requisitos → especificação → projeto técnico → plano → tarefas |
+| Decisões que podem ser revisadas | Quatro comandos de revisão de artefatos, análise entre artefatos e uma verificação separada de defeitos no código como critério de aprovação |
+| Continuidade entre sessões e no trabalho em equipe | Registros de funcionalidades, princípios do projeto, conhecimento reutilizável e decisões históricas relevantes |
+| Várias funcionalidades em andamento | Um worktree Git por funcionalidade comum, com reutilização estável do espaço de trabalho |
+| Mais automação | Avanço opcional entre etapas e desenvolvimento autônomo de requisitos confirmados do blueprint |
+| Preferências de idioma da equipe | Idiomas independentes para interação, documentos e commits |
 
-| Aspecto | Apenas Claude Code | CodexSpec + Claude Code |
-|---------|--------------------|--------------------------|
-| **Suporte multilíngue** | Interação em inglês por padrão | Configure o idioma da equipe para colaboração e revisões mais fluidas |
-| **Rastreabilidade** | Difícil rastrear decisões após o fim da sessão | Todos os specs, planos e tarefas ficam salvos em `.codexspec/specs/` |
-| **Recuperação de sessão** | Interrupções do modo plan são difíceis de recuperar | Divisão em múltiplos comandos + documentos persistentes = recuperação fácil |
-| **Governança da equipe** | Sem princípios unificados, estilos inconsistentes | `constitution.md` impõe padrões e qualidade da equipe |
+### O que é SDD com requisitos em primeiro lugar?
 
----
+O desenvolvimento orientado a especificações com requisitos em primeiro lugar
+torna os **requisitos confirmados a autoridade máxima da funcionalidade**. O agente
+registra objetivos, restrições, decisões, exclusões, perguntas em aberto e evidências
+de confirmação antes de derivar os artefatos de implementação.
 
-## O que é o SDD Requirements-First?
-
-O **Requirements-First SDD** é a metodologia de Spec-Driven Development (SDD) com um aprimoramento: **requisitos confirmados são a autoridade de maior prioridade**. Você define e confirma *o que* construir e *por que*, antes de decidir *como* — e nada é definitivo até você confirmar explicitamente.
-
-```
-Tradicional:  Ideia → Código → Debug → Reescrever
-SDD:          Ideia → Requisitos Confirmados → Spec → Plano → Tarefas → Código
-```
-
-**Por que usar Requirements-First SDD?**
-
-| Problema                 | Solução do Requirements-First SDD                                |
-| ------------------------ | ---------------------------------------------------------------- |
-| Mal-entendidos da IA     | Requisitos confirmados dizem à IA "o que construir"; a IA para de adivinhar |
-| Requisitos ausentes      | Clarificação interativa + um portão de confirmação revelam casos de borda |
-| Deriva de arquitetura    | Pontos de verificação de revisão garantem a direção correta      |
-| Retrabalho desperdiçado  | Problemas são encontrados e confirmados antes de o código ser escrito |
-
-<details>
-<summary>✨ Recursos Principais</summary>
-
-### Fluxo de Trabalho Central
-
-- **Desenvolvimento baseado em Constituição** — Estabeleça princípios de projeto que orientam todas as decisões
-- **Captura persistente de requisitos** — `/specify` registra a discussão confirmada em `requirements.md` antes da geração de documentos
-- **Revisões automáticas** — Todo artefato gerado (spec, plano e tarefa) inclui verificações de qualidade embutidas
-- **Tarefas rastreáveis** — A decomposição de tarefas preserva a cobertura de requisitos e do plano, aplicando test-first apenas onde necessário
-
-### Colaboração entre Humano e AI
-
-- **Comandos de revisão** — Comandos dedicados de revisão para spec, plano e tarefas
-- **Clarificação interativa** — Refinamento de requisitos orientado por perguntas e respostas
-- **Análise cross-artefato** — Detecte inconsistências antes da implementação
-
-### Experiência do Desenvolvedor
-
-- **Integração nativa com Claude Code** — Slash commands funcionam de forma fluida
-- **Suporte multilíngue** — 13+ idiomas via tradução dinâmica por LLM
-- **Multiplataforma** — Scripts Bash e PowerShell inclusos
-- **Extensível** — Arquitetura de plugins para comandos personalizados
-
-</details>
-
----
-
-## Filosofia de Design: Colaboração entre Humano e AI
-
-O CodexSpec parte do princípio de que **o desenvolvimento efetivo assistido por IA exige participação humana ativa em cada etapa**.
-
-### Por que a supervisão humana importa
-
-| Sem revisões                       | Com revisões                              |
-| ---------------------------------- | ----------------------------------------- |
-| A IA faz suposições incorretas     | Humanos capturam mal-entendidos cedo      |
-| Requisitos incompletos se propagam | Lacunas identificadas antes da implementação |
-| A arquitetura se afasta da intenção | Alinhamento verificado em cada etapa     |
-| Tarefas perdem funcionalidades críticas | Validação sistemática de cobertura    |
-| **Resultado: retrabalho, esforço desperdiçado** | **Resultado: acertar de primeira** |
-
-### A Abordagem CodexSpec
-
-O CodexSpec estrutura o desenvolvimento em **pontos de verificação revisáveis**:
-
-```
-Ideia → /specify → requirements.md → /generate-spec → spec.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
-                                                   │                         │                            │
-                                              Revisar spec             Revisar plano                Revisar tarefas
+```text
+Idea → Confirmed Requirements → Spec → Design → Plan → Tasks → Code
 ```
 
-Os requisitos confirmados são a autoridade máxima sobre a funcionalidade. Os artefatos derivados carregam links explícitos para suas fontes, de modo que conflitos podem ser rastreados até a origem em vez de propagados silenciosamente.
+A colaboração humana estabelece e altera a intenção do produto. Revisões
+automáticas verificam os artefatos derivados em relação a essa intenção. Ativar a
+automação faz o trabalho avançar pelas etapas aprovadas; isso não permite que o
+agente substitua requisitos confirmados silenciosamente.
 
-**Cada artefato gerado tem um comando de revisão correspondente:**
+## Início rápido em 30 segundos
 
-- `spec.md` → `/codexspec:review-spec`
-- `plan.md` → `/codexspec:review-plan`
-- `tasks.md` → `/codexspec:review-tasks`
-- Todos os artefatos → `/codexspec:analyze`
-
-Esse processo sistemático de revisão garante:
-
-- **Detecção precoce de erros**: capturar mal-entendidos antes de o código ser escrito
-- **Verificação de alinhamento**: confirmar que a interpretação da IA corresponde à sua intenção
-- **Portões de qualidade**: validar completude, clareza e viabilidade em cada etapa
-- **Menos retrabalho**: investir minutos em revisão para economizar horas de reimplementação
-
----
-
-## 🚀 Início Rápido em 30 Segundos
+Instale o CodexSpec e inicialize o projeto para o assistente que você usa:
 
 ```bash
-# 1. Instalar
 uv tool install codexspec
 
-# 2. Inicializar o projeto
-#    Opção A: Criar um novo projeto
-codexspec init my-project && cd my-project
+# Create a new project for Claude Code
+codexspec init my-project --ai claude
 
-#    Opção B: Inicializar em um projeto existente
-cd your-existing-project && codexspec init .
+# Or initialize an existing project for Codex
+cd your-existing-project
+codexspec init . --ai codex
 
-# 3. Usar no Claude Code
-claude
-> /codexspec:constitution Criar princípios focados em qualidade de código e testes
-> /codexspec:specify Quero construir um aplicativo de tarefas
-> /codexspec:generate-spec
-> /codexspec:design-to-plan
-> /codexspec:plan-to-tasks
-> /codexspec:implement-tasks
+# Use --ai both when you want both integrations
 ```
 
-Pronto! Continue a leitura para o fluxo de trabalho completo.
+Inicie seu assistente instalado no projeto inicializado. O mesmo fluxo de trabalho
+usa estas duas formas de invocação:
 
----
+| Assistente | Iniciar a descoberta de requisitos |
+|-----------|------------------------------|
+| Claude Code (`claude`) | `/codexspec:specify I want to build a todo application` |
+| Codex (`codex`) | `$codexspec:specify I want to build a todo application` |
+
+Personalize os princípios do projeto com `constitution` quando necessário.
+Confirme o resumo final dos requisitos e continue usando o diretório da
+funcionalidade e o espaço de trabalho retornados. Consulte o
+[Fluxo de trabalho principal](#fluxo-de-trabalho-principal) para conhecer os demais comandos.
+
+Está usando o aplicativo desktop do Codex? [Peça ao Codex para instalar e inicializar seu projeto](#instalar-com-o-aplicativo-desktop-do-codex).
 
 ## Instalação
+
+### Instalar com o aplicativo desktop do Codex
+
+Você pode pedir ao Codex para instalar o CodexSpec e configurar seu projeto diretamente pelo aplicativo desktop.
+
+1. Adicione um projeto local no aplicativo desktop do Codex e selecione a pasta em que deseja trabalhar.
+2. Inicie uma conversa nesse projeto e cole a solicitação abaixo.
+3. Se o aplicativo pedir permissão para baixar ou instalar dependências, aprove a ação solicitada para continuar.
+
+```text
+Please install and initialize CodexSpec in the current project.
+Project: https://github.com/Zts0hg/codexspec
+
+Complete the setup directly instead of asking me to run terminal commands.
+
+Check the environment. If uv or Python 3.11+ is missing, install the required
+tools in my user directory using their official installation instructions.
+Install the latest stable release of CodexSpec.
+
+For a new setup, initialize the current project for Codex in English:
+codexspec init . --ai codex --lang en
+
+If CodexSpec is already configured, check its version and configuration before
+updating. Preserve existing requirements, project principles, user files,
+and configuration settings.
+
+Verify that the CLI works and that AGENTS.md and the CodexSpec skill files
+under .agents/skills/ are installed. Explain the result and how to start
+describing my requirements in plain English. If the skills are not yet
+available in this chat, tell me whether to start a new chat or restart the app.
+```
+
+Para respostas e documentos em chinês, substitua `--lang en` por `--lang zh-CN` e peça ao Codex para explicar o resultado em chinês.
+
+O Codex instala a mesma CLI e as mesmas skills de projeto usadas na configuração manual abaixo. Você pode começar a usá-las com uma solicitação como `$codexspec:specify I want to build a todo application`. Consulte o [guia de skills da OpenAI](https://learn.chatgpt.com/docs/build-skills) para entender como as skills locais são descobertas e atualizadas.
 
 ### Pré-requisitos
 
 - Python 3.11+
 - [uv](https://docs.astral.sh/uv/) (recomendado) ou pip
+- O assistente que você pretende usar: Claude Code ou Codex
+- Git para desenvolvimento com worktrees e fluxos de trabalho Git
 
-### Instalação recomendada
+### Instalação da CLI
 
 ```bash
-# Usando uv (recomendado)
 uv tool install codexspec
 
-# Ou usando pip
+# Or use pip
 pip install codexspec
+
+# Verify the CLI and inspect available commands
+codexspec version
+codexspec --help
+codexspec list-commands
 ```
 
-### Verificar a instalação
-
-```bash
-codexspec --version
-```
+Inicialize um novo projeto com `codexspec init my-project --ai claude` ou o
+diretório atual com `codexspec init . --ai codex`. Use `--ai both` para ambas as
+integrações. A seleção padrão do assistente é `claude`; escolha o valor
+explicitamente para Codex ou ambos.
 
 <details>
-<summary>📦 Métodos alternativos de instalação</summary>
+<summary>Métodos alternativos de instalação</summary>
 
-#### Uso único (sem instalação)
+#### Inicialização de uso único
 
 ```bash
-# Criar um novo projeto
-uvx codexspec init my-project
-
-# Inicializar em um projeto existente
-cd your-existing-project
-uvx codexspec init . --ai claude
-
-# Inicializar para o Codex CLI
+uvx codexspec init my-project --ai claude
 uvx codexspec init . --ai codex
 ```
 
-#### Instalar versão de desenvolvimento a partir do GitHub
+A inicialização de uso único instala os comandos do projeto e o ambiente de
+execução independente de commits. O roteamento de worktrees, blueprint/auto-dev
+e a revisão manual do perfil ainda invocam a CLI do CodexSpec; disponibilize-a
+para esses fluxos de trabalho.
+
+#### Versões de desenvolvimento
 
 ```bash
-# Usando uv
 uv tool install git+https://github.com/Zts0hg/codexspec.git
-
-# Especificar branch ou tag
 uv tool install git+https://github.com/Zts0hg/codexspec.git@main
-uv tool install git+https://github.com/Zts0hg/codexspec.git@v0.5.6
+
+# Replace <tag> with the version you want
+uv tool install git+https://github.com/Zts0hg/codexspec.git@<tag>
 ```
 
 </details>
 
 <details>
-<summary>🪟 Observações para usuários Windows</summary>
+<summary>Instalação no Windows</summary>
 
-**Recomendado: usar o PowerShell**
+Use o PowerShell:
 
 ```powershell
-# 1. Instalar o uv (se ainda não estiver instalado)
 powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
-
-# 2. Reiniciar o PowerShell e depois instalar o codexspec
+# Restart PowerShell, then:
 uv tool install codexspec
-
-# 3. Verificar a instalação
-codexspec --version
+codexspec version
 ```
 
-**Solução de problemas no CMD**
-
-Se você encontrar erros de "Acesso negado":
-
-1. Feche todas as janelas do CMD e reabra
-2. Ou atualize o PATH manualmente: `set PATH=%PATH%;%USERPROFILE%\.local\bin`
-3. Ou use o caminho completo: `%USERPROFILE%\.local\bin\codexspec.exe --version`
-
-Para detalhes completos, consulte o [Guia de solução de problemas do Windows](docs/WINDOWS-TROUBLESHOOTING.md) (em inglês).
+Consulte o [Guia de solução de problemas no Windows](docs/en/WINDOWS-TROUBLESHOOTING.md)
+para resolver problemas de PATH e instalação.
 
 </details>
 
-### Atualizar
+### Atualizar o CodexSpec e renovar a instalação de um projeto
+
+Atualizar a CLI e renovar os comandos instalados de um projeto são etapas distintas:
 
 ```bash
-# Usando uv
 uv tool install codexspec --upgrade
+# Or: pip install --upgrade codexspec
 
-# Usando pip
-pip install --upgrade codexspec
+# In the project you want to refresh; select its desired integration(s)
+codexspec init . --force --ai both
 ```
 
-### Instalação pelo Marketplace de Plugins (alternativa)
+Use `--ai claude` ou `--ai codex` quando quiser apenas essa integração.
+`--force` regenera os comandos/scripts distribuídos e atualiza os recursos de
+revisão; também confirma automaticamente as solicitações de migração, atualização
+de comandos e conformidade com a Constituição do Projeto. Os requisitos e
+princípios existentes do projeto são mantidos, os corpos dos arquivos de contexto
+existentes são preservados enquanto as orientações gerenciadas são atualizadas,
+e as chaves de configuração que você não definiu explicitamente são mantidas.
 
-O CodexSpec também está disponível como um plugin do Claude Code. Esse método é ideal se você quer usar os comandos do CodexSpec diretamente no Claude Code, sem a ferramenta CLI.
+O comando de planejamento é `design-to-plan`; atualizações da instalação retiram
+a entrada antiga `spec-to-plan` sem criar um alias.
 
-#### Passos de instalação
+### Instalação pelo marketplace de plugins
+
+Para Claude Code, instale o plugin pelo marketplace:
+
+```text
+/plugin marketplace add Zts0hg/codexspec
+/plugin install codexspec@codexspec-market
+/codexspec:config
+```
+
+O plugin fornece comandos e orientações no início da sessão para análise de
+commits preparados e consulta a requisitos históricos, inclusive em sessões
+retomadas. A instalação do plugin não inicializa um projeto. Use
+`/codexspec:config` para criar ou modificar configurações de idioma, fluxo de
+trabalho e revisão; use a inicialização pela CLI quando precisar da estrutura
+completa do projeto.
+
+A prévia direta de commits e os commits autorizados no diretório de trabalho
+atual podem usar o ambiente de execução incluído com Python 3.11+ e Git, sem uma
+CLI do CodexSpec instalada de forma persistente. O roteamento de worktrees,
+blueprint/auto-dev e a revisão manual do perfil mantêm seus requisitos de CLI.
+O hook de inicialização do plugin requer Git no PATH e uma versão do Claude Code
+que aceite `args` em hooks de comando (forma exec). Suas orientações são para o
+agente; ele não intercepta comandos Git manuais.
+
+Consulte [Instalação](docs/en/getting-started/installation.md) para os detalhes da configuração.
+
+## Fluxo de trabalho principal
+
+O fluxo de trabalho padrão de uma funcionalidade preserva uma cadeia vinculada às fontes:
+
+```text
+/specify          → requirements.md
+/generate-spec    → spec.md       → review-spec
+/spec-to-design   → design.md     → review-design
+/design-to-plan   → plan.md       → review-plan
+/plan-to-tasks    → tasks.md      → review-tasks → analyze
+/implement-tasks  → implementation and complete-feature code review
+```
+
+Os exemplos abaixo usam o prefixo `/codexspec:` do Claude. No Codex, use
+`$codexspec:` com o mesmo nome de comando e os mesmos argumentos.
+
+| Etapa | Comando | Finalidade e saída |
+|------|---------|--------------------|
+| Princípios do projeto | `/codexspec:constitution` | Criar/atualizar `constitution.md` e validar os artefatos afetados |
+| Requisitos | `/codexspec:specify <idea>` | Discutir a intenção, confirmar um resumo final e persistir `requirements.md` |
+| Especificação | `/codexspec:generate-spec <feature-dir>` | Compilar requisitos confirmados em `spec.md` com referências às fontes |
+| Projeto técnico do sistema | `/codexspec:spec-to-design <feature-dir>` | Produzir `design.md`: componentes, interfaces e decisões centrais do projeto técnico |
+| Plano de implementação | `/codexspec:design-to-plan <feature-dir>` | Produzir `plan.md`: fases, ordem e verificação |
+| Tarefas | `/codexspec:plan-to-tasks <feature-dir>` | Produzir `tasks.md` rastreável e verificável; executar a análise entre artefatos |
+| Implementação | `/codexspec:implement-tasks <feature-dir>` | Executar tarefas, verificar resultados e corrigir os achados da revisão verificados de forma independente |
+
+Substitua `<feature-dir>` pelo diretório da funcionalidade retornado durante a
+descoberta. Continue no worktree dela ou passe seu caminho explícito; isso mantém
+a mesma identidade da funcionalidade entre comandos e sessões.
+
+### specify, clarify e analyze
+
+- **specify** inicia ou retoma a descoberta de requisitos. Somente a confirmação
+  explícita torna o resumo dos requisitos vinculante.
+- **clarify** resolve ambiguidades nos requisitos/especificação existentes:
+  até cinco perguntas por execução, distribuídas em quatro categorias. Ele
+  atualiza `requirements.md` primeiro e depois sincroniza `spec.md`.
+- **analyze** verifica a cadeia completa de requisitos → especificação → projeto
+  técnico → plano → tarefas. Ele aplica automaticamente correções determinísticas
+  aos artefatos posteriores quando a correção decorre da autoridade dos artefatos
+  anteriores; nunca edita `requirements.md`. Os achados não resolvidos são
+  relatados. Ele é executado automaticamente após uma revisão de tarefas aprovada
+  e é informativo, em vez de ser um critério de aprovação da implementação.
+
+```text
+/codexspec:clarify <feature-dir>
+/codexspec:analyze <feature-dir>
+```
+
+### Pequenas alterações com Quick
+
+Use `quick` para uma alteração pequena e bem delimitada, como uma correção pontual:
+
+```text
+/codexspec:quick Fix the empty-state message on the task list
+```
+
+O Quick confirma e persiste um resumo compacto dos requisitos e depois coordena
+especificação, planejamento, tarefas e implementação com as revisões dos comandos
+de geração. Alterações amplas ou escolhas de produto/projeto técnico ainda não
+resolvidas exigem o fluxo de trabalho padrão; o Quick pausa quando precisa de uma
+nova decisão.
+
+### Automação do fluxo de trabalho
+
+O padrão de `workflow.auto_next` é **false**. Quando ele é `true` na configuração
+do espaço de trabalho ativo, a confirmação final dos requisitos avança para a
+especificação. Cada etapa de geração avança após `PASS` ou `PASS_WITH_WARNINGS`;
+`NEEDS_REVISION` ou `BLOCKED` interrompe a cadeia. `implement-tasks` é a etapa final.
+
+A correção automática de artefatos se limita a defeitos verificados cuja correção
+decorre de evidências anteriores, com no máximo duas rodadas de correção e revisão.
+As recomendações ficam separadas. O ciclo de revisão/correção da implementação tem
+suas próprias regras de conclusão, descritas abaixo.
+
+Consulte o [guia do fluxo de trabalho](docs/en/user-guide/workflow.md) para os contratos detalhados.
+
+## Blueprint compartilhado e desenvolvimento autônomo
+
+Use `blueprint` quando quiser preparar vários requisitos confirmados antes do
+desenvolvimento, e `auto-dev` para desenvolver essa fila:
+
+```text
+/codexspec:blueprint Add a confirmed requirement for task reminders
+/codexspec:auto-dev
+```
+
+A descoberta do blueprint resolve a direção, as escolhas e as restrições que
+cabem ao usuário antes que um requisito entre na fila. O arquivo compartilhado
+`.codexspec/blueprint.md` usa os estados `pending`, `in_progress` e `completed`.
+Você pode acrescentar, substituir, excluir ou reordenar requisitos pendentes;
+entradas ativas e concluídas são somente leitura para a manutenção do blueprint.
+
+O Auto-dev segue a ordem do documento, retoma uma funcionalidade em andamento
+antes de iniciar outra e relê a fila após cada conclusão, para que novos itens
+pendentes acrescentados possam entrar na execução. Ele realiza as etapas de SDD,
+implementação, verificação, revisão e correção dentro dos requisitos confirmados.
+Invocar `auto-dev` ativa sua automação independentemente de `workflow.auto_next`
+e não altera essa configuração.
+
+Ambos os comandos compartilham `worktree-for-codexspec-auto-dev` no branch
+`codexspec/auto-dev`. Eles podem operar simultaneamente sob as proteções
+compartilhadas de titularidade e escrita; os requisitos são desenvolvidos
+sequencialmente nesse espaço de trabalho. Decisões de produto que não podem ser
+resolvidas a partir dos requisitos confirmados interrompem a execução com
+evidências, em vez de gerar perguntas durante a execução autônoma normal.
+
+Inspecione o blueprint compartilhado atual sem alterá-lo:
 
 ```bash
-# No Claude Code, adicionar o marketplace
-> /plugin marketplace add Zts0hg/codexspec
-
-# Instalar o plugin
-> /plugin install codexspec@codexspec-market
+codexspec show-blueprint
 ```
 
-#### Configuração de idioma para usuários do plugin
+## Desenvolvimento com worktrees
 
-Após instalar pelo Marketplace de Plugins, configure seu idioma preferido usando o comando `/codexspec:config`:
+Um worktree Git é outro diretório de trabalho do mesmo repositório, com seu próprio
+branch em checkout. Por padrão, o CodexSpec usa um por funcionalidade comum,
+criando-o antes da primeira gravação de requisitos e mantendo juntos os
+documentos, a implementação, os testes e as correções dessa funcionalidade.
 
-```bash
-# Iniciar a configuração interativa
-> /codexspec:config
-
-# Ou visualizar a configuração atual
-> /codexspec:config --view
+```text
+projects/
+├── my-project/
+└── my-project-codexspec-worktrees/
+    ├── <feature-id>-task-reminders/
+    ├── <feature-id>-search/
+    ├── worktree-for-codexspec-maintenance/
+    └── worktree-for-codexspec-auto-dev/
 ```
 
-O comando config vai guiá-lo por:
+Continuar uma funcionalidade reutiliza seu espaço de trabalho. Alterações
+independentes de configuração, Constituição do Projeto e perfil usam o worktree
+de manutenção; alterações feitas em uma funcionalidade ativa permanecem ali.
+A configuração é **local a cada checkout**: uma configuração alterada em um
+worktree selecionado pelo roteamento entra em vigor ali primeiro e chega aos
+demais checkouts por meio da integração Git. Execute comandos da CLI e
+verificações no espaço de trabalho retornado.
 
-1. Selecionar o idioma de saída (para documentos gerados)
-2. Selecionar o idioma das mensagens de commit
-3. Criar o arquivo `.codexspec/config.yml`
+As bases de novas funcionalidades comparam o histórico local com commits e o
+histórico remoto obtido do branch principal pela ancestralidade Git. Históricos
+divergentes são mesclados dentro do novo worktree e exigem verificação. Uma falha
+no fetch gera um aviso e permite referências disponíveis localmente; falhas na
+criação não levam à gravação no checkout principal como alternativa.
 
-**Comparação dos métodos de instalação**
+O padrão de `workflow.worktrees` é **true**; somente o valor YAML literal `false`
+desativa o isolamento de funcionalidades comuns e da manutenção.
+Blueprint/auto-dev mantêm seu worktree compartilhado fixo em ambos os casos.
+A inicialização e as atualizações de instalação operam no checkout que você
+seleciona explicitamente. Worktrees concluídos são mantidos; a conclusão não
+os mescla nem os exclui automaticamente.
 
-| Método | Ideal para | Recursos |
-|--------|------------|----------|
-| **Instalação CLI** (`uv tool install`) | Fluxo de desenvolvimento completo | Comandos CLI (`init`, `check`, `config`) + slash commands |
-| **Marketplace de Plugins** | Início rápido, projetos existentes | Apenas slash commands (use `/codexspec:config` para configurar o idioma) |
+Consulte [Desenvolvimento com worktrees](docs/en/user-guide/workflow.md#worktree-development)
+e [configuração](docs/en/reference/configuration.md#workflowworktrees).
 
-**Observação**: o plugin usa o modo `strict: false` e reaproveita o suporte multilíngue existente por meio da tradução dinâmica via LLM.
+## Trabalhar com código existente
 
----
+Dois pontos de entrada atendem a objetivos diferentes:
 
-## Fluxo de Trabalho Central
+| Comando | Use para | Saída/limite |
+|---------|-----------|-----------------|
+| `onboard [path]` | Iniciar o conhecimento reutilizável do projeto a partir de uma base de código existente | Convenções candidatas e restrições com evidências específicas no perfil; o código permanece somente leitura |
+| `reverse-spec [path]` | Entender a arquitetura existente ou comparar o código com a intenção confirmada | Artefatos em rascunho ou um relatório de divergências; o código permanece somente leitura |
 
-O CodexSpec decompõe o desenvolvimento em **pontos de verificação revisáveis**:
-
-```
-Ideia → /specify → requirements.md → /generate-spec → spec.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
-                                                   │                         │                            │
-                                              Revisar spec             Revisar plano                Revisar tarefas
-```
-
-### Etapas do fluxo de trabalho
-
-| Etapa                       | Comando                      | Saída                       | Verificação humana |
-| --------------------------- | ---------------------------- | --------------------------- | ------------------ |
-| 1. Princípios do projeto    | `/codexspec:constitution`    | `constitution.md`           | ✅                  |
-| 2. Clarificação de requisitos | `/codexspec:specify`       | `requirements.md`           | ✅                  |
-| 3. Gerar spec               | `/codexspec:generate-spec`   | `spec.md` + auto-revisão    | ✅                  |
-| 4. Planejamento técnico     | `/codexspec:design-to-plan`    | `plan.md` + auto-revisão    | ✅                  |
-| 5. Decomposição de tarefas  | `/codexspec:plan-to-tasks`   | `tasks.md` + auto-revisão   | ✅                  |
-| 6. Análise cross-artefato   | `/codexspec:analyze`         | Relatório de análise        | ✅                  |
-| 7. Implementação            | `/codexspec:implement-tasks` | Código                      | -                  |
-
-### specify vs clarify: quando usar qual?
-
-| Aspecto | `/codexspec:specify` | `/codexspec:clarify` |
-|---------|----------------------|----------------------|
-| **Objetivo** | Exploração e confirmação inicial de requisitos | Refinar requisitos confirmados ou o spec derivado |
-| **Quando usar** | Ao começar uma funcionalidade | Quando requisitos ou spec precisam de esclarecimento |
-| **Saída** | Cria/atualiza `requirements.md` | Atualiza primeiro `requirements.md` e depois sincroniza `spec.md` |
-| **Método** | Q&A aberta | Varredura estruturada (4 categorias) |
-| **Perguntas** | Sem limite | No máximo 5 por execução |
-
-### Conceito-chave: loop iterativo de qualidade
-
-Cada comando de geração inclui **revisão automática**. Defeitos verificados podem ser corrigidos e revisados novamente por até duas rodadas; sugestões consultivas permanecem separadas e nunca acionam mudanças automáticas.
-
-1. Revise o relatório
-2. Descreva em linguagem natural os problemas a corrigir
-3. O sistema atualiza automaticamente os specs e os relatórios de revisão
-
-```mermaid
-%%{init: {
-  'theme': 'base',
-  'themeVariables': {
-    'lineColor': '#888888',
-    'primaryColor': '#2d2d2d',
-    'primaryTextColor': '#ffffff',
-    'primaryBorderColor': '#666666'
-  },
-  'flowchart': {
-    'curve': 'stepBefore',
-    'nodeSpacing': 50,
-    'rankSpacing': 40
-  }
-}}%%
-flowchart TB
-    classDef rectStyle fill:#2d2d2d,stroke:#666,stroke-width:1px,color:#fff,width:220px;
-    classDef diamondStyle fill:#3d3d3d,stroke:#888,stroke-width:2px,color:#fff;
-
-    A["Gerar Spec/Plano/Tarefas"]:::rectStyle --> B["Revisão automática"]:::rectStyle
-    B --> C{"Problemas encontrados?"}:::diamondStyle
-
-    C -->|Defeito verificado| D["Corrigir com evidência"]:::rectStyle
-    D --> E["Atualizar artefato + relatório de revisão"]:::rectStyle
-
-    E --> B
-
-    C -->|Não| F["Continuar para a próxima etapa"]:::rectStyle
-
-    linkStyle 2,4 stroke:#aaa,stroke-width:1px;
+```text
+/codexspec:onboard src/
+/codexspec:reverse-spec
+/codexspec:reverse-spec src/auth
 ```
 
-<details>
-<summary>📖 Descrição detalhada do fluxo de trabalho</summary>
+O Onboard infere convenções a partir do código observável e propõe restrições
+somente a partir de proibições explícitas. Convenções candidatas têm efeito local
+imediato; restrições candidatas exigem uma decisão na sessão para persistir,
+editar ou descartar. Ele preserva o conhecimento existente e não inventa
+justificativas de decisões passadas nem armadilhas vivenciadas a partir de uma
+análise inicial do código.
 
-### 1. Inicializar o projeto
+O Reverse-spec tem três modos:
 
-```bash
-codexspec init my-awesome-project
-cd my-awesome-project
-claude
+- **Visão geral**: sem caminho, ou com a raiz do repositório, produz um
+  `design.md` conciso de arquitetura e `slices.md` para escolher módulos a inspecionar.
+- **Geração**: um caminho de módulo sem uma base confirmada produz rascunhos
+  de `spec.md`, `design.md` e requisitos em aberto/inferidos.
+- **Reconciliação**: um módulo com uma base confirmada produz `reconcile.md`,
+  relatando comportamento não documentado, especificações não implementadas e
+  diferenças semânticas em relação à especificação/projeto técnico confirmados,
+  com os requisitos determinando a intenção.
+
+Rascunhos inferidos exigem confirmação humana antes de se tornarem uma base.
+A reconciliação informa a direção proposta — corrigir o código, atualizar
+documentos ou decidir a intenção — e não a aplica automaticamente.
+
+## Revisão e depuração
+
+Quatro revisores de artefatos verificam fidelidade, cobertura, viabilidade e
+qualidade interna: `review-spec`, `review-design`, `review-plan` e `review-tasks`.
+Eles são executados automaticamente após a geração e também podem ser invocados
+manualmente. Os relatórios distinguem defeitos verificados de recomendações de
+risco que não bloqueiam a aprovação e oportunidades de projeto técnico, com
+uma pontuação de compatibilidade.
+
+O `review-code` oferece uma verificação separada de defeitos limitada às alterações
+como critério de aprovação (gate de defeitos) e uma avaliação explícita da qualidade do código completo:
+
+```text
+/codexspec:review-code --feature <feature-dir>
+/codexspec:review-code --uncommitted
+/codexspec:review-code --audit src/
 ```
 
-### 2. Estabelecer os princípios do projeto
+A revisão padrão cobre todas as diferenças do branch da funcionalidade, incluindo
+alterações com commit, preparadas, não preparadas e não rastreadas que não estejam
+ignoradas. Você pode selecionar explicitamente evidências com commit, sem commit
+ou de um único commit. `--feature` acrescenta o contexto dos requisitos sem reduzir
+o escopo Git. `--audit` avalia os caminhos indicados e produz uma avaliação consultiva
+em vez de um veredito de conclusão.
 
-```
-/codexspec:constitution Criar princípios focados em qualidade de código, padrões de teste e arquitetura limpa
-```
+As revisões carregam padrões compartilhados de `.codexspec/review-code/`,
+selecionando dimensões de comportamento relevantes e verificações de linguagem/
+framework. Os achados exigem evidências concretas, gatilhos alcançáveis,
+atribuição à alteração selecionada e impacto. O revisor relata defeitos e
+sugestões de manutenção fundamentadas sem editar arquivos; quem invoca a
+correção as verifica de forma independente.
 
-### 3. Clarificar os requisitos
+A implementação usa testes primeiro para tarefas de código e implementação
+direta com verificações adequadas para documentação/configuração. Após as
+correções, uma revisão incremental pode reutilizar a cobertura não afetada;
+a aceitação final exige um novo `PASS` para a funcionalidade completa, cobertura
+e verificação concluídas e nenhum defeito P0–P3 admitido. Sugestões de manutenção
+fundamentadas são relatadas separadamente.
 
-```
-/codexspec:specify Quero construir um aplicativo de gerenciamento de tarefas
-```
+O padrão de `workflow.auto_maintenance` é **true** e controla se quem invoca as
+correções também aplica melhorias de manutenção verificadas e compatíveis.
+Desativá-lo mantém o relato dessas sugestões e não dispensa defeitos nem
+verificações obrigatórias. Ele é independente do avanço entre etapas e não é
+um argumento de `implement-tasks`.
 
-Esse comando vai:
+Para depuração com investigação da causa raiz primeiro:
 
-- Fazer perguntas de esclarecimento para entender sua ideia
-- Explorar casos de borda que você pode não ter considerado
-- Pedir que você confirme o resumo final dos requisitos
-- Persistir necessidades, restrições, decisões, exclusões e questões em aberto confirmadas em `requirements.md`
-
-### 4. Gerar o documento de especificação
-
-Após os requisitos estarem esclarecidos:
-
-```
-/codexspec:generate-spec
-```
-
-Esse comando:
-
-- Compila as entradas confirmadas de `requirements.md` em uma especificação estruturada
-- Adiciona referências de origem para rastreabilidade dos requisitos
-- **Automaticamente** executa a revisão e gera `review-spec.md`
-
-### 5. Criar o plano técnico
-
-```
-/codexspec:spec-to-design Usar Python FastAPI no backend, PostgreSQL no banco de dados e React no frontend
-/codexspec:design-to-plan
+```text
+/codexspec:debug Investigate intermittent failures when saving a task
 ```
 
-Usa apenas as seções relevantes de planejamento, registra links `Covers` para os requisitos da especificação e verifica os princípios aplicáveis do projeto.
+O Debug segue investigação → análise de padrões → verificação de uma única
+hipótese → correção precedida por um teste que falha. A implementação escala
+a investigação quando as correções ficam travadas, um defeito não trivial que
+afeta a correção do comportamento precisa ser rastreado ou a mesma classe de causa raiz reaparece entre
+rodadas de revisão. Três correções malsucedidas acionam uma reavaliação da arquitetura.
 
-### 6. Gerar as tarefas
+Use `checklist` para avaliar clareza, completude e consistência dos requisitos:
 
-```
-/codexspec:plan-to-tasks
-```
-
-As tarefas são organizadas em torno de resultados verificáveis:
-
-- **Testes condicionais**: a ordenação test-first é usada quando necessária, conforme exigido pelo plano, pela constituição ou pelo risco da tarefa
-- **Marcadores paralelos `[P]`**: usados apenas para tarefas genuinamente independentes
-- **Especificação de caminhos de arquivo**: entregáveis claros por tarefa
-- **Rastreabilidade**: cada tarefa vincula-se ao plano e aos requisitos que cobre
-
-### 7. Análise cross-artefato (opcional, mas recomendada)
-
-```
-/codexspec:analyze
+```text
+/codexspec:checklist Check the authentication requirements for completeness
 ```
 
-Detecta problemas entre requisitos, spec, plano e tarefas:
+Consulte a [referência de comandos](docs/en/user-guide/commands.md) para seletores
+de revisão, argumentos e procedimentos detalhados.
 
-- Lacunas de cobertura (requisitos sem tarefas)
-- Duplicações e inconsistências
-- Violações da constituição
-- Itens subespecificados
+## Conhecimento do projeto
 
-### 8. Implementação
+O perfil do projeto armazena conhecimento reutilizável em `.codexspec/profile/`:
 
+| Categoria | Conteúdo |
+|----------|----------|
+| `constraints/` | Proibições explícitas e limites rígidos, lidos primeiro |
+| `conventions/` | Padrões, nomenclatura e orientações entre funcionalidades |
+| `pitfalls/` | Armadilhas vivenciadas, causas, soluções alternativas e lições |
+| `decisions/` | Decisões reutilizáveis de arquitetura e entre funcionalidades |
+| `strategies/` | Sinais que exigem uma abordagem de trabalho diferente |
+| `runbooks/` | Procedimentos ordenados e recuperação de falhas |
+
+O `distill` captura conhecimento reutilizável do trabalho; a intenção específica
+de uma funcionalidade permanece nos requisitos/projeto técnico/plano dela.
+O Init instala orientações em CLAUDE.md e/ou AGENTS.md para ler todas as
+restrições e o conhecimento relevante antes de trabalhos substanciais.
+Conhecimento acrescentado depois pode ter efeito sem reinicialização.
+Registros candidatos são usados com cautela; registros validados exigem
+verificação dos resultados e aprovação humana.
+
+```text
+/codexspec:distill Capture the reusable lessons from this work
+/codexspec:distill review
+/codexspec:evolve
 ```
-/codexspec:implement-tasks
+
+Um `distill review` manual, ou um `distill` direto sem novo material para capturar,
+abre um espaço de trabalho local e offline no navegador. Você pode revisar,
+validar, descartar, adiar e consolidar registros, visualizar o Markdown final e
+selecionar **Aplicar tudo**. As decisões permanecem em um rascunho recuperável
+até a aplicação; verificações de conflito impedem a aplicação parcial ou a
+sobrescrita silenciosa. Uma alternativa explícita em texto está disponível para
+ambientes sem navegador.
+
+O padrão de `workflow.auto_distill` é **true** e controla três hooks de encerramento:
+`implement-tasks` bem-sucedido, commits executados por `commit-staged` e geração
+por `pr`. A prévia de commit não aciona a captura.
+
+As orientações instaladas no projeto também pedem que os agentes capturem
+conhecimento reutilizável conforme ele surge em conversas comuns, correções
+fora de SDD e durante execuções longas de `implement-tasks`. Essas orientações
+se aplicam independentemente da configuração de encerramento; a captura ao
+final da tarefa fornece uma última salvaguarda.
+
+Dentro de uma sessão, gatilhos repetidos processam somente material novo.
+Entre sessões, `distill` lê o perfil e ignora conhecimento já coberto. A captura
+encerra sem gravar quando não resta nada reutilizável. A captura automática
+nunca abre a revisão manual, espera por uma pessoa ou bloqueia o fluxo de
+trabalho que a invocou.
+
+O `evolve` seleciona somente conhecimento validado que seja útil além do projeto,
+compila um rascunho de comando/skill e obtém aprovação explícita antes de fazer
+push ou abrir um PR de contribuição para revisão humana.
+
+Consulte [Conhecimento do projeto](docs/en/user-guide/commands.md#codexspecdistill)
+para orientações detalhadas.
+
+### Reutilizar decisões históricas
+
+O histórico relevante em `.codexspec/specs/` também é consultado antes de
+julgamentos substanciais sobre requisitos, projeto técnico, implementação,
+depuração ou revisão — tanto em conversas comuns quanto em fluxos de trabalho
+SDD. Os agentes reconstroem decisões inalteradas, acréscimos posteriores e
+substituições explícitas antes de perguntar ao usuário.
+
+Requisitos antigos inalterados continuam aplicáveis. A decisão explícita mais
+recente do usuário sempre prevalece; propostas em aberto não são tratadas como
+intenção confirmada. A consulta é limitada à tarefa e o contexto já suficiente
+é reutilizado. Renove instalações existentes do projeto para receber essas orientações.
+
+## Fluxo de trabalho Git
+
+```text
+/codexspec:commit-staged -p
+/codexspec:pr --spec <feature-dir>/spec.md
+/codexspec:release-notes --from <ref> --to HEAD
+/codexspec:tasks-to-issues <feature-dir>
 ```
 
-A implementação segue o **fluxo de TDD condicional**:
+- **commit-staged** analisa a área de preparação exata e gera uma mensagem
+  Conventional Commits; `-p` exibe uma prévia sem criar um commit. O fluxo de
+  trabalho que o invoca escolhe e prepara os arquivos. A execução autorizada
+  usa o ambiente de execução protegido, verificando novamente se o conteúdo
+  incluído no commit corresponde à análise. As orientações de commit para
+  agentes se aplicam a conversas comuns e fluxos de trabalho SDD, blueprint e
+  auto-dev; a disponibilidade do comando por si só não o invoca nem autoriza um commit.
+- **pr** gera uma descrição estruturada de PR do GitHub ou MR do GitLab a
+  partir das diferenças. `--spec` acrescenta opcionalmente contexto da
+  funcionalidade a partir do caminho de um arquivo `spec.md`, ou de um nome
+  ou prefixo de diretório de funcionalidade resolvido para esse arquivo.
+  A saída padrão é texto para uso na plataforma de hospedagem.
+- **release-notes** deriva uma entrada Keep a Changelog e um texto de
+  lançamento a partir do histórico Git. A seção padrão é `[Unreleased]`;
+  `--version` usa um rótulo fornecido. Ele não prepara arquivos, cria commits,
+  incrementa versões, cria tags, publica nem cria um lançamento.
+- **tasks-to-issues** cria issues do GitHub a partir de tarefas existentes,
+  incluindo dependências e critérios de aceitação. Requer uma CLI do GitHub
+  autenticada e verifica se o repositório das issues corresponde ao remoto configurado.
 
-- Tarefas de código: test-first (Red → Green → Verify → Refactor)
-- Tarefas não testáveis (documentação, configuração): implementação direta
+A prévia direta de commits e os commits autorizados no diretório de trabalho
+atual requerem Python 3.11+ e Git; o ambiente de execução é instalado com
+projetos CLI e incluído no plugin do Claude. Mesclagens criadas pelo agente com
+alterações de conteúdo também usam a análise da área de preparação. Mesclagens
+apenas de histórico mantêm a mensagem padrão do Git enquanto validam a árvore
+e os commits pais; fast-forwards não criam commit.
 
-</details>
+## Comandos disponíveis
 
----
+A CLI tem seis comandos públicos. As integrações de agentes distribuem 28
+comandos: Claude usa `/codexspec:<name>`, e Codex usa `$codexspec:<name>`.
+As tabelas abaixo usam a forma do Claude para facilitar a leitura.
 
-## Comandos Disponíveis
+### Comandos da CLI
 
-### Comandos CLI
+| Comando | Finalidade |
+|---------|---------|
+| `codexspec init` | Inicializar ou renovar um projeto para Claude, Codex ou ambos |
+| `codexspec check` | Verificar ferramentas e dependências instaladas |
+| `codexspec version` | Exibir informações de versão e sistema |
+| `codexspec config` | Visualizar ou modificar a configuração do projeto |
+| `codexspec list-commands` | Listar comandos de agentes disponíveis por categoria |
+| `codexspec show-blueprint` | Exibir o blueprint do worktree compartilhado sem alterá-lo |
 
-| Comando             | Descrição                       |
-| ------------------- | ------------------------------- |
-| `codexspec init`    | Inicializa um novo projeto      |
-| `codexspec check`   | Verifica as ferramentas instaladas |
-| `codexspec version` | Exibe informações de versão     |
-| `codexspec config`  | Visualiza ou altera a configuração |
+### Comandos do fluxo de trabalho principal
 
-<details>
-<summary>📋 Opções do init</summary>
+| Comando | Finalidade |
+|---------|---------|
+| `/codexspec:constitution` | Criar/atualizar princípios do projeto com validação entre artefatos |
+| `/codexspec:specify` | Discutir, confirmar e persistir requisitos da funcionalidade |
+| `/codexspec:blueprint` | Preparar ou manter requisitos pendentes confirmados do blueprint |
+| `/codexspec:generate-spec` | Compilar requisitos confirmados em uma especificação rastreável; revisão automática |
+| `/codexspec:spec-to-design` | Definir arquitetura, componentes, interfaces e decisões; revisão automática |
+| `/codexspec:design-to-plan` | Planejar fases, ordem e verificação da implementação; revisão automática |
+| `/codexspec:plan-to-tasks` | Produzir tarefas verificáveis com cobertura dos artefatos anteriores; revisão automática e analyze |
+| `/codexspec:implement-tasks` | Executar tarefas, verificar resultados, revisar e corrigir |
+| `/codexspec:auto-dev` | Desenvolver requisitos confirmados do blueprint de forma autônoma na ordem do documento |
 
-| Opção                | Descrição                                                        |
-| -------------------- | ---------------------------------------------------------------- |
-| `PROJECT_NAME`       | Nome do diretório do projeto (`.` ou `--here` para o diretório atual) |
-| `--here`, `-h`       | Inicializa no diretório atual                                    |
-| `--ai`, `-a`         | Assistente de IA a usar: `claude`, `codex` ou `both` (padrão: claude) |
-| `--lang`, `-l`       | Idioma (base) de saída; interaction/document/commit recaem sobre ele (ex.: en, zh-CN, ja) |
-| `--interaction-lang` | Idioma de interação (diálogo com o LLM + saída do CLI); sobrescreve `--lang` |
-| `--document-lang`    | Idioma dos documentos (spec/plan/tasks gerados); sobrescreve `--lang` |
-| `--commit-lang`      | Idioma das mensagens de commit; sobrescreve `--lang`             |
-| `--force`, `-f`      | Sobrescreve arquivos + confirma prompts automaticamente; nunca regenera `config.yml` |
-| `--no-git`           | Pula a inicialização do repositório git                          |
-| `--debug`, `-d`      | Habilita a saída de debug                                        |
+### Comandos de revisão de artefatos
 
-</details>
+| Comando | Finalidade |
+|---------|---------|
+| `/codexspec:review-spec` | Verificar fidelidade e qualidade interna da especificação |
+| `/codexspec:review-design` | Verificar fidelidade, viabilidade e prontidão do projeto técnico para planejamento |
+| `/codexspec:review-plan` | Verificar fidelidade, viabilidade e prontidão do plano para implementação |
+| `/codexspec:review-tasks` | Verificar fidelidade, dependências, executabilidade e verificação das tarefas |
 
-<details>
-<summary>📋 Opções do config</summary>
+### Requisitos, código existente e depuração
 
-| Opção                     | Descrição                                                  |
-| ------------------------- | ---------------------------------------------------------- |
-| `--set-lang`, `-l`        | Define o idioma (base) de saída                            |
-| `--set-interaction-lang`  | Define o idioma de interação                               |
-| `--set-document-lang`     | Define o idioma dos documentos                             |
-| `--set-commit-lang`, `-c` | Define o idioma das mensagens de commit                    |
-| `--list-langs`            | Lista todos os idiomas suportados                          |
-| `--auto-next`             | Alterna/define `workflow.auto_next` (sem valor alterna; ou on/off) |
-| `--auto-maintenance` | Alterna/define `workflow.auto_maintenance` (on por padrão; sem valor alterna; ou on/off) |
-| `--auto-distill`           | Alterna/define `workflow.auto_distill` (ativado por padrão; sem valor alterna; ou on/off) |
+| Comando | Finalidade |
+|---------|---------|
+| `/codexspec:clarify` | Resolver ambiguidades de requisitos, atualizando os requisitos antes da especificação |
+| `/codexspec:analyze` | Verificar rastreabilidade de ponta a ponta e adequar artefatos posteriores à autoridade |
+| `/codexspec:checklist` | Gerar uma lista de verificação da qualidade dos requisitos |
+| `/codexspec:tasks-to-issues` | Converter tarefas existentes em issues do GitHub prontas para execução |
+| `/codexspec:debug` | Investigar causas raiz antes de aplicar uma correção |
+| `/codexspec:reverse-spec` | Examinar a arquitetura existente, criar rascunhos de artefatos de módulos ou relatar divergências em relação à base |
 
-</details>
+### Comandos de conhecimento do projeto
 
-### Slash Commands
+| Comando | Finalidade |
+|---------|---------|
+| `/codexspec:distill` | Capturar conhecimento reutilizável ou revisar candidatos no espaço de trabalho local |
+| `/codexspec:evolve` | Compilar conhecimento validado em um rascunho de contribuição upstream |
+| `/codexspec:onboard` | Iniciar convenções candidatas e restrições fundamentadas a partir do código existente |
 
-#### Comandos do fluxo de trabalho central
+### Comandos de Git e revisão de código
 
-| Comando                       | Descrição                                                          |
-| ----------------------------- | ------------------------------------------------------------------ |
-| `/codexspec:constitution`     | Cria/atualiza a constituição do projeto com validação cross-artefato |
-| `/codexspec:specify`          | Esclarece, confirma e persiste requisitos em `requirements.md`     |
-| `/codexspec:blueprint`        | Discute e mantém requisitos confirmados no blueprint compartilhado |
-| `/codexspec:generate-spec`    | Gera o documento `spec.md` ★ Auto-revisão                          |
-| `/codexspec:spec-to-design`   | Gera `design.md` (arquitetura/componentes/decisões) ★ Auto-revisão |
-| `/codexspec:design-to-plan`     | Converte o spec em plano técnico ★ Auto-revisão                    |
-| `/codexspec:plan-to-tasks`    | Decompõe o plano em tarefas rastreáveis e verificáveis ★ Auto-revisão |
-| `/codexspec:implement-tasks`  | Executa as tarefas (TDD condicional)                               |
-| `/codexspec:auto-dev`         | Desenvolve em ordem todos os requisitos pendentes do blueprint     |
+| Comando | Finalidade |
+|---------|---------|
+| `/codexspec:commit-staged` | Gerar mensagens a partir de alterações preparadas; exibir prévia ou executar um commit autorizado |
+| `/codexspec:pr` | Gerar uma descrição estruturada de PR/MR |
+| `/codexspec:release-notes` | Manter uma entrada no changelog e gerar um texto de lançamento a partir do histórico Git |
+| `/codexspec:review-code` | Revisar alterações selecionadas como gate de defeitos, detectando defeitos que impedem a aprovação; usar `--audit` para a qualidade dos caminhos |
 
-#### Comandos de revisão (portões de qualidade)
+### Comandos utilitários
 
-| Comando                   | Descrição                                |
-| ------------------------- | ---------------------------------------- |
-| `/codexspec:review-spec`  | Revisa a especificação (automática ou manual) |
-| `/codexspec:review-design` | Revisa o design (automático ou manual) |
-| `/codexspec:review-plan`  | Revisa o plano técnico (automática ou manual) |
-| `/codexspec:review-tasks` | Revisa a decomposição de tarefas (automática ou manual) |
+| Comando | Finalidade |
+|---------|---------|
+| `/codexspec:config` | Criar/visualizar/modificar/redefinir a configuração do projeto de forma interativa |
+| `/codexspec:quick` | Executar um fluxo de trabalho SDD compacto com requisitos em primeiro lugar para pequenas alterações |
 
-#### Comandos de aprimoramento
+## Configuração e internacionalização
 
-| Comando                       | Descrição                                                          |
-| ----------------------------- | ----------------------------------------------------------------- |
-| `/codexspec:config`           | Gerencia a configuração do projeto (criar/ver/modificar/redefinir) |
-| `/codexspec:clarify`          | Varre o spec em busca de ambiguidades (4 categorias, máx. 5 perguntas) |
-| `/codexspec:analyze`          | Análise de consistência cross-artefato (com correção automática, por severidade) |
-| `/codexspec:checklist`        | Gera checklist de qualidade dos requisitos                         |
-| `/codexspec:tasks-to-issues`  | Converte tarefas em GitHub Issues                                  |
-| `/codexspec:debug`            | Depuração sistemática de causa raiz (4 fases; independente ou escalada a partir de implement-tasks) |
-| `/codexspec:reverse-spec`     | Derivar spec/design a partir de código existente e reconciliar o código com a linha de base confirmada (apenas relata, não altera) |
-
-#### Comandos de autoevolução
-
-| Command | Description |
-| --- | --- |
-| `/codexspec:distill` | Destilar conhecimento reutilizável entre funcionalidades em `.codexspec/profile/` |
-| `/codexspec:evolve` | Compilar o conhecimento do profile em um comando/skill e contribuí-lo upstream via PR revisado |
-| `/codexspec:onboard` | Varre o código existente para dar cold-start ao perfil do projeto (conventions + constraints) |
-
-#### Comandos do fluxo de trabalho Git
-
-| Comando                    | Descrição                                            |
-| -------------------------- | ---------------------------------------------------- |
-| `/codexspec:commit-staged` | Gera mensagem de commit a partir das alterações em stage |
-| `/codexspec:pr`            | Gera descrição de PR/MR (detecta a plataforma automaticamente) |
-| `/codexspec:release-notes` | Gera notas de versão a partir do histórico do git (mantém CHANGELOG.md + corpo)|
-
-#### Comandos de revisão de código
-
-| Comando                  | Descrição                                                                                   |
-| ------------------------ | ------------------------------------------------------------------------------------------- |
-| `/codexspec:review-code` | Gate de defeitos por alteração; pontuação por caminho com `--audit`                        |
-
----
-
-## Comparação com o spec-kit
-
-O CodexSpec é inspirado no spec-kit do GitHub, com diferenças importantes:
-
-| Recurso                | spec-kit                       | CodexSpec                                              |
-| ---------------------- | ------------------------------ | ------------------------------------------------------ |
-| Filosofia central      | Spec-driven development        | Requirements-First SDD + colaboração entre humano e AI |
-| Nome do CLI            | `specify`                      | `codexspec`                                            |
-| IA principal           | Suporte multiagente            | Focado no Claude Code                                  |
-| Sistema de constituição| Básico                         | Constituição completa + validação cross-artefato       |
-| Spec em duas fases     | Não                            | Sim (clarificar + gerar)                               |
-| Comandos de revisão    | Opcional                       | 3 comandos dedicados de revisão + pontuação            |
-| Comando clarify        | Sim                            | 4 categorias de foco, integrado à revisão              |
-| Comando analyze        | Sim                            | Com correção automática, por severidade, ciente da constituição |
-| TDD nas tarefas        | Opcional                       | Condicional a requisitos, risco e política             |
-| Implementação          | Padrão                         | TDD condicional (código vs. docs/config)               |
-| Sistema de extensões   | Sim                            | Sim                                                    |
-| Scripts PowerShell     | Sim                            | Sim                                                    |
-| Suporte a i18n         | Não                            | Sim (13+ idiomas via tradução por LLM)                 |
-
-### Principais diferenciadores
-
-1. **Cultura review-first**: cada artefato principal tem um comando de revisão dedicado
-2. **Governança por Constituição**: os princípios são validados, não apenas documentados
-3. **Revisão baseada em evidência**: defeitos exigem evidência concreta; sugestões consultivas de design não afetam a aceitação
-4. **Portão de confirmação**: requisitos, specs, planos e tarefas só se tornam vinculativos após confirmação humana explícita
-
----
-
-## Internacionalização (i18n)
-
-O CodexSpec suporta múltiplos idiomas por meio de **tradução dinâmica via LLM**. Não há templates de tradução para manter — o Claude traduz o conteúdo em tempo de execução, com base na sua configuração de idioma.
+A configuração fica em `.codexspec/config.yml`. Os modelos permanecem em inglês;
+os agentes escrevem o texto de interação e os artefatos gerados nos idiomas
+configurados. Os 13 códigos de idioma padrão são `en`, `zh-CN`, `zh-TW`, `ja`,
+`ko`, `es`, `fr`, `de`, `pt`, `ru`, `it`, `ar` e `hi`.
+O código da CLI para português é `pt`; a documentação localizada e os catálogos
+de tradução usam `pt-BR`.
 
 ### Dimensões de idioma
 
-O CodexSpec divide o idioma em quatro dimensões configuráveis de forma independente. `output` é a base; as demais a sobrescrevem e recaem sobre ela (e depois sobre `en`) quando deixadas em branco — assim você pode conversar com o Claude em um idioma enquanto mantém os artefatos gerados ou as mensagens de commit em outro.
+| Dimensão | Chave de configuração | Na inicialização | Definir depois | Controla |
+|-----------|------------|-------------------|-----------|----------|
+| Saída/base | `language.output` | `--lang` | `config --set-lang` | Idioma de fallback das demais dimensões de idioma |
+| Interação | `language.interaction` | `--interaction-lang` | `config --set-interaction-lang` | Conversa e saída da CLI |
+| Documento | `language.document` | `--document-lang` | `config --set-document-lang` | Requisitos, especificações, projetos técnicos, planos e tarefas |
+| Commit | `language.commit` | `--commit-lang` | `config --set-commit-lang` | Mensagens de commit e conteúdo de entrega via Git |
 
-| Dimensão        | Chave do `config.yml` | Definir no init       | Definir depois               | Controla                            | Recai sobre          |
-|-----------------|------------------------|-----------------------|------------------------------|-------------------------------------|----------------------|
-| Saída (base)    | `output`               | `--lang`              | `config --set-lang`          | base para as outras três            | `en`                 |
-| Interação       | `interaction`          | `--interaction-lang`  | `config --set-interaction-lang` | diálogo com o LLM + saída do CLI   | output → `en`        |
-| Documento       | `document`             | `--document-lang`     | `config --set-document-lang` | spec/plan/tasks gerados             | output → `en`        |
-| Commit          | `commit`               | `--commit-lang`       | `config --set-commit-lang`   | mensagens de commit do git          | output → `en`        |
-| Templates       | `templates`            | —                     | —                            | origem dos modelos (sempre `en`)    | —                    |
-
-### Definir o idioma
-
-**Durante a inicialização:**
+Cada idioma específico usa como fallback, de forma independente,
+`language.output` e depois `en`. `language.templates` permanece `en`.
 
 ```bash
-# Saída em chinês (define a base de output)
-codexspec init my-project --lang zh-CN
-
-# Totalmente não interativo: base zh-CN, mensagens de commit em inglês
-codexspec init my-project --lang zh-CN --commit-lang en
-
-# Definir cada dimensão explicitamente (scriptável, sem prompts)
-codexspec init my-project \
+codexspec init my-project --ai both \
   --interaction-lang zh-CN --document-lang en --commit-lang en
-```
 
-A primeira execução do `init` em um TTY sem `--lang` (e sem as três flags de dimensão) solicita um idioma base; em um ambiente não-TTY (CI/scripts) o padrão é `en`. Executar `init` novamente preserva qualquer chave de idioma que você não tenha especificado.
-
-**Após a inicialização:**
-
-```bash
-# Visualizar a configuração atual
 codexspec config
-
-# Alterar uma única dimensão
-codexspec config --set-lang zh-CN
-codexspec config --set-interaction-lang zh-CN
 codexspec config --set-document-lang en
-codexspec config --set-commit-lang en
-codexspec config --auto-next
+codexspec config --list-langs
 ```
 
-`codexspec config --auto-maintenance on|off` salva `workflow.auto_maintenance` como booleano YAML em `.codexspec/config.yml`; se a chave não existir, vale `true`. As duas opções aceitam `on/true/1/yes` e `off/false/0/no` sem diferenciar maiúsculas. `implement-tasks` lê essa configuração ao corrigir automaticamente: `on` inclui melhorias incrementais de manutenção fundamentadas; `off` continua relatando as sugestões. Defeitos reais e verificações necessárias continuam obrigatórios. A configuração é independente de `auto-next` e não é um parâmetro de chamada de `implement-tasks`.
+A inicialização TTY pela primeira vez solicita o idioma base, a menos que você
+forneça `--lang` ou todas as três opções específicas de idioma. `--force` confirma
+automaticamente outras solicitações de inicialização; ele não suprime essa seleção
+de idioma. A inicialização sem TTY usa inglês por padrão. A reinicialização
+preserva as chaves de idioma que você não definiu explicitamente.
 
-### Idiomas suportados
+### Configurações de fluxo de trabalho e revisão
 
-| Código  | Idioma                  |
-| ------- | ----------------------- |
-| `en`    | English (padrão)        |
-| `zh-CN` | 简体中文                 |
-| `zh-TW` | 繁體中文                 |
-| `ja`    | 日本語                  |
-| `ko`    | 한국어                  |
-| `es`    | Español                 |
-| `fr`    | Français                |
-| `de`    | Deutsch                 |
-| `pt-BR` | Português               |
-| `ru`    | Русский                 |
-| `it`    | Italiano                |
-| `ar`    | العربية                 |
-| `hi`    | हिन्दी                  |
+| Configuração | Padrão | Efeito | Controle pela CLI |
+|---------|---------|--------|-------------|
+| `workflow.auto_next` | `false` | Avançar etapas comuns de SDD aprovadas | `config --auto-next on\|off` |
+| `workflow.auto_distill` | `true` | Capturar conhecimento sem interação após um encerramento bem-sucedido | `config --auto-distill on\|off` |
+| `workflow.auto_maintenance` | `true` | Aplicar manutenção incremental verificada durante correções automáticas | `config --auto-maintenance on\|off` |
+| `workflow.worktrees` | `true` | Isolar funcionalidades comuns e manutenção independente | `config --worktrees on\|off` |
+| `review.decided_by` | `reviewer` | Quem decide sobre achados acionados fora do contexto operacional do projeto | `config --decided-by reviewer\|ask` |
+
+Opções booleanas da CLI aceitam `on/true/1/yes` e `off/false/0/no` sem distinguir
+maiúsculas de minúsculas, incluindo espaços em branco ao redor. Uma opção
+booleana sem valor alterna o valor atual do checkout de destino; os valores
+armazenados em YAML são booleanos.
+
+Com `review.decided_by: reviewer`, o revisor decide a admissão de defeitos.
+Com `ask`, um gatilho fora de contexto se torna uma decisão de cenário pendente:
+o usuário decide uma vez se deve corrigir o defeito ou excluir esse cenário,
+e a decisão confirmada é mantida para rodadas posteriores. Decisões pendentes
+bloqueiam a conclusão. Uma execução individual de `review-code` pode substituir
+o modo configurado com `--decided-by`.
+
+As gravações de configuração seguem o roteamento de worktrees. Uma alteração
+independente a partir do checkout principal é feita no worktree de manutenção
+e não altera imediatamente a configuração efetiva do principal; alterações
+em um worktree de funcionalidade entram em vigor ali.
 
 <details>
-<summary>⚙️ Exemplo de arquivo de configuração</summary>
+<summary>Opções de inicialização da CLI</summary>
 
-`.codexspec/config.yml`:
+| Opção | Significado |
+|--------|---------|
+| `PROJECT_NAME` | Nome do novo diretório; use `.` para o diretório atual |
+| `--here`, `-h` | Inicializar o diretório atual |
+| `--ai`, `-a` | `claude`, `codex` ou `both`; padrão `claude` |
+| `--lang`, `-l` | Definir o idioma base da saída |
+| `--interaction-lang` | Definir o idioma de interação |
+| `--document-lang` | Definir o idioma dos documentos |
+| `--commit-lang` | Definir o idioma das mensagens de commit |
+| `--force`, `-f` | Regenerar artefatos instalados e confirmar automaticamente solicitações de migração/atualização/conformidade; preservar o contexto escrito para o projeto e as configurações não relacionadas |
+| `--no-git` | Pular a inicialização do repositório Git |
+| `--debug`, `-d` | Exibir saída detalhada de depuração |
+
+</details>
+
+<details>
+<summary>Opções de configuração da CLI</summary>
+
+| Opção | Significado |
+|--------|---------|
+| `--set-lang`, `-l` | Definir o idioma base da saída |
+| `--set-interaction-lang` | Definir o idioma de interação |
+| `--set-document-lang` | Definir o idioma dos documentos |
+| `--set-commit-lang`, `-c` | Definir o idioma das mensagens de commit |
+| `--list-langs` | Listar códigos de idioma aceitos |
+| `--auto-next` | Alternar/definir o avanço automático entre etapas |
+| `--auto-distill` | Alternar/definir a captura automática de conhecimento |
+| `--auto-maintenance` | Alternar/definir a manutenção incremental automática |
+| `--worktrees` | Alternar/definir o isolamento por worktree local a cada checkout |
+| `--decided-by` | Definir o modo de decisão da revisão como `reviewer` ou `ask` |
+
+</details>
+
+<details>
+<summary>Exemplo de configuração</summary>
 
 ```yaml
 version: "1.0"
 
 language:
-  output: "zh-CN"        # Idioma base; os três abaixo recaem sobre ele, depois sobre "en"
-  interaction: "zh-CN"   # Diálogo com o LLM + saída do CLI codexspec (opcional → padrão: output)
-  document: "en"         # requirements/spec/plan/tasks gerados (opcional → padrão: output)
-  commit: "en"           # Mensagens de commit do git (opcional → padrão: output)
-  templates: "en"        # Manter como "en"
+  output: "en"
+  interaction: "zh-CN"
+  document: "en"
+  commit: "en"
+  templates: "en"
 
 project:
-  ai: "claude"
-  created: "2025-02-15"
+  ai: "both"
+
+workflow:
+  auto_next: false
+  auto_distill: true
+  auto_maintenance: true
+  worktrees: true
+
+review:
+  decided_by: reviewer
 ```
 
 </details>
 
----
+Consulte [Configuração](docs/en/reference/configuration.md) e
+[Internacionalização](docs/en/user-guide/i18n.md) para detalhes do comportamento
+de idiomas e configurações.
 
-## Estrutura do Projeto
+## Estrutura do projeto
 
-Estrutura do projeto após a inicialização:
+A inicialização instala recursos comuns e a integração do assistente selecionado:
 
-```
+```text
 my-project/
 ├── .codexspec/
+│   ├── config.yml
 │   ├── memory/
-│   │   └── constitution.md    # Constituição do projeto
+│   │   └── constitution.md
+│   ├── profile/
+│   │   ├── constraints/
+│   │   ├── conventions/
+│   │   ├── pitfalls/
+│   │   ├── decisions/
+│   │   ├── strategies/
+│   │   └── runbooks/
+│   ├── review-code/              # Shared review standards
 │   ├── specs/
-│   │   └── {feature-id}/
-│   │       ├── spec.md        # Especificação da funcionalidade
-│   │       ├── plan.md        # Plano técnico
-│   │       ├── tasks.md       # Decomposição de tarefas
-│   │       └── checklists/    # Checklists de qualidade
-│   ├── templates/             # Templates personalizados
-│   ├── scripts/               # Scripts de apoio
-│   └── extensions/            # Extensões personalizadas
-├── .claude/
-│   └── commands/              # Slash commands do Claude Code
-├── .agents/
-│   └── skills/                # Skills do Codex (quando inicializado com --ai codex ou both)
-├── CLAUDE.md                  # Contexto do Claude Code
-└── AGENTS.md                  # Contexto do Codex
+│   │   └── <feature-id>-<name>/   # Added by feature workflows
+│   │       ├── requirements.md
+│   │       ├── spec.md
+│   │       ├── design.md
+│   │       ├── plan.md
+│   │       ├── tasks.md
+│   │       ├── review-*.md
+│   │       └── checklists/       # When requested
+│   ├── templates/docs/
+│   └── scripts/                 # Platform helpers and commit runtime
+├── .claude/commands/codexspec/   # --ai claude or both
+├── .agents/skills/              # --ai codex or both
+├── CLAUDE.md                    # Claude project context
+└── AGENTS.md                    # Codex project context
 ```
 
----
+O blueprint compartilhado fica no worktree dedicado de auto-dev, em vez de ser
+uma cópia editável separada em cada checkout comum. Rascunhos de revisão manual
+do conhecimento são excluídos do Git.
 
-## Sistema de Extensões
+## Materiais para extensões
 
-O CodexSpec oferece uma arquitetura de plugins para adicionar comandos personalizados:
-
-```
-my-extension/
-├── extension.yml          # Manifesto da extensão
-├── commands/              # Slash commands personalizados
-│   └── command.md
-└── README.md
-```
-
-Consulte `extensions/EXTENSION-DEVELOPMENT-GUIDE.md` para detalhes.
-
----
+O repositório inclui um modelo de manifesto de extensão, um comando de exemplo
+e o [Guia de desenvolvimento de extensões](extensions/EXTENSION-DEVELOPMENT-GUIDE.md).
+São materiais de autoria. A CLI atual não tem comandos para instalar/listar/remover
+extensões e não carrega automaticamente comandos ou hooks de `extension.yml`.
+Os recursos compartilhados de revisão aceitam acréscimos específicos do projeto
+em `.codexspec/review-code/`; a inicialização preserva edições existentes dos
+recursos e arquivos adicionais, a menos que a substituição seja solicitada.
 
 ## Desenvolvimento
 
-### Pré-requisitos
-
-- Python 3.11+
-- Gerenciador de pacotes uv
-- Git
-
-### Desenvolvimento local
-
 ```bash
-# Clonar o repositório
 git clone https://github.com/Zts0hg/codexspec.git
 cd codexspec
 
-# Instalar dependências de desenvolvimento
-uv sync --dev
+# Development tools are an optional dependency extra
+uv sync --extra dev
+# For documentation builds too: uv sync --extra dev --extra docs
 
-# Executar localmente
 uv run codexspec --help
-
-# Executar os testes
 uv run pytest
-
-# Verificar o código com o linter
 uv run ruff check src/
-
-# Compilar o pacote
 uv build
 ```
 
----
+Leia [CLAUDE.md](CLAUDE.md), [AGENTS.md](AGENTS.md) e a
+[Estrutura do repositório](docs/internal/repository-layout.md) antes de alterar
+modelos, empacotamento ou inicialização. Cópias de comandos e skills distribuídos
+são artefatos de instalação gerados; edite suas fontes oficiais e regenere-os.
 
-## Contribuindo
+## Contribuir
 
-Contribuições são bem-vindas! Por favor, leia as diretrizes de contribuição antes de enviar um pull request.
+Consulte o [guia de contribuição](docs/en/development/contributing.md) para
+orientações de configuração local e contribuição. As contribuições devem
+preservar os requisitos confirmados, a rastreabilidade das fontes e o limite de
+empacotamento entre usuários e mantenedores.
 
 ## Licença
 
-Licença MIT — consulte [LICENSE](LICENSE) para detalhes.
+MIT — consulte [LICENSE](LICENSE).
 
 ## Agradecimentos
 
-- Inspirado pelo [GitHub spec-kit](https://github.com/github/spec-kit)
-- Construído para o [Claude Code](https://claude.ai/code)
+Inspirado no [GitHub spec-kit](https://github.com/github/spec-kit).
+Integra-se com Claude Code e OpenAI Codex.

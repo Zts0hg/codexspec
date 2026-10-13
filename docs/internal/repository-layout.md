@@ -125,3 +125,23 @@ The hook emits the same commit rule as installed project context without requiri
 project initialization or a persistent CLI.
 The distribution check includes this generated JSON; no maintainer runtime or
 additional top-level scripts directory is shipped.
+
+## Repository-only documentation maintenance entries
+
+The authored .claude/commands/codexspec/translate-docs.md and
+check-i18n-semantics.md are maintenance-source exceptions, rather than installed
+copies of public templates. They use shared instructions in
+internal/references/doc-translation.md for root README and site documentation.
+
+internal/maintainer_doc_skills.py derives their native Codex SKILL.md counterparts
+under .agents/skills/codexspec-translate-docs/ and
+.agents/skills/codexspec-check-i18n-semantics/. Generate with
+python -m internal.maintainer_doc_skills --write and verify with --check.
+The existing command --check-distribution gate verifies the same source-derived
+bytes and retains rejection of unknown artifacts. Do not hand-edit these Codex
+copies or move these tools into public command templates.
+
+internal/doc_translation.py provides read-only inventory and Markdown checks;
+translation and semantic assessment remain agent work. Neither helper, shared
+instructions nor host entries is packaged or installed into user projects.
+The existing public command set and package allowlists remain unchanged.
