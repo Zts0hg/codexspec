@@ -24,9 +24,9 @@ outside Git in the shared review cache; this baseline does not claim a gate verd
 
 | Check | Outcome |
 |-------|---------|
-| New helper behavior tests | 87 passed, 4 skipped; 91 collected |
-| New and directly related fragment tests | 206 passed, 5 skipped; including README contracts: 222 passed, 5 skipped |
-| Complete suite, every one of 86 test files | 2,434 passed, 58 skipped; 2,492 collected/accounted; all three groups exit 0 |
+| New helper behavior tests | 96 passed, 5 skipped; 101 collected |
+| New and directly related fragment tests | 215 passed, 6 skipped; including README contracts: 231 passed, 6 skipped |
+| Complete suite, every one of 86 test files | 2,443 passed, 59 skipped; 2,502 collected/accounted; all three groups exit 0 |
 | Ruff over src, tests and affected internal Python | Passed; project-pinned Ruff 0.9.10 format --check passes all five selected Python files |
 | Native maintainer --check | Exit 0; changed [] |
 | Legacy direct --check-distribution | Exit 0 |
@@ -61,19 +61,19 @@ unfiltered target.
 
 The full-suite runner collected the entire tests tree, then partitioned its 86
 files into three disjoint groups. Their union equals the complete file set;
-all 2,492 collected tests are accounted for. Pytest caches were disabled and
+all 2,502 collected tests are accounted for. Pytest caches were disabled and
 all fixtures/logs were placed under physical /private/tmp directories outside
 Git. No group was skipped or stopped early.
 
 Final manifest:
-`/private/tmp/codexspec-docs-maintenance-suite-71bp4l49/manifest.json`.
+`/private/tmp/codexspec-docs-maintenance-suite-4epbysjg/manifest.json`.
 
 | Group | Passed | Skipped | Exit |
 |-------|--------|---------|------|
 | 0 | 947 | 14 | 0 |
 | 1 | 610 | 13 | 0 |
-| 2 | 877 | 31 | 0 |
-| Total | 2,434 | 58 | 0 |
+| 2 | 886 | 32 | 0 |
+| Total | 2,443 | 59 | 0 |
 
 An earlier complete run yielded 2,374 passed, 54 skipped and three failures.
 Its manifest remains at
@@ -297,28 +297,38 @@ spelling. Real fixture witnesses outside the selected fixture checkout establish
 leaf, parent, empty-parent and Unicode-normalization aliases; eight regression
 cases first failed in ordinary/incremental modes, four compatibility controls
 passed and two native distinct-destination controls skipped. The uniform target
-key applies normalized folded names only when a real namespace alias establishes
-case folding; a namespace that preserves spelling retains distinct target names.
+key proves canonical normalization and case-fold transformations separately
+against admitted source components. An ASCII case alias alone does not establish
+Unicode normalization or full-casefold equivalence; genuinely distinct destination
+names retain their original resource strings.
 The complete output set is checked before any timestamp omission. Target source
 inode overlap, path/type/link refusal and original resource path spelling remain
 covered by the existing tests.
 
 | Scenario | Additional covering function | Expected outcome asserted |
 |----------|------------------------------|---------------------------|
-| TS-006 | test_ts006_prospective_destination_aliases_are_rejected_before_any_write | Eight real alias cases refuse through API/CLI before output creation, preserve all source bytes and cover ordinary/incremental selection |
-| TS-006 | test_ts006_case_sensitive_prospective_destinations_remain_distinct | Distinct leaf/Unicode names retain two mappings and separate eventual output inodes where the native namespace supports them; both skip on this volume |
+| TS-006 | test_ts006_prospective_destination_aliases_are_rejected_before_any_write | Real leaf, parent, empty-parent, Unicode and casefold-expansion alias cases refuse through API/CLI before output creation, preserve all source bytes and cover ordinary/incremental selection |
+| TS-006 | test_ts006_case_sensitive_prospective_destinations_remain_distinct | Distinct leaf/Unicode/casefold-expansion names retain two mappings and separate eventual output inodes where the native namespace supports them; all three skip on this volume |
 | TS-006 | test_ts006_case_sensitive_destination_namespace_policy_preserves_spelling | Modeled namespace policy retains exact target spellings using real source I/O without claiming native case-sensitive platform execution |
 | TS-006 | test_ts006_disjoint_prospective_destinations_remain_supported | Ordinary and incremental selection retain separate supported outputs with unchanged bytes |
 
 Targeted evidence: /private/tmp/codexspec-docs-output-red.log (8 failed, 4 passed,
 2 skipped) and /private/tmp/codexspec-docs-output-green.log (222 passed, 5 skipped).
-The helper has 91 collected cases: 87 pass and four native distinct-name controls
-skip on this case-insensitive volume. All earlier tests remain green. Pinned
-formatting preserves Python ASTs; evidence is
-/private/tmp/codexspec-docs-output-format-evidence.json. The current complete
-86-file baseline is 2,434 passed and 58 skipped, all 2,492 collected tests
-accounted for with three successful groups. The final manifest above retains
-exact commands, group membership and raw outcomes. No package-included bytes or
-README source/translation hashes changed. The new neutral output-uniqueness
-obligation remains subject to fresh independent verification; this document does
-not claim the mandatory subsequent complete-review verdict.
+The current helper has 101 collected cases: 96 pass and five native
+distinct-name controls skip on this case-insensitive volume. All earlier tests
+remain green. Pinned Ruff 0.9.10 formatting/lint passes and formatting preserves
+Python ASTs. The current complete 86-file baseline is 2,443 passed and 59 skipped,
+all 2,502 collected tests accounted for with three successful groups. The final
+manifest above retains exact commands, group membership and raw outcomes. No
+package-included bytes or README source/translation hashes changed. This report
+records executable verification; it does not claim a subsequent review verdict.
+
+Native Windows Python 3.11 and 3.12 CI exposed two portability defects in the
+original PR head: a test fixture relied on the default text encoding, and ASCII
+case folding was treated as proof of canonical Unicode equivalence. The fixture
+now explicitly uses UTF-8; projected output keys use only demonstrated name
+transformations. Ordinary/incremental namespace regressions cover normalization
+independently of case folding, and full-casefold expansion controls preserve
+distinct names. The helper/fragment suite also passes with an externally forced
+cp1252 default: 215 passed, 6 skipped. [PR #71](https://github.com/Zts0hg/codexspec/pull/71)
+tracks the native-platform CI results required before merging.

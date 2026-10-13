@@ -174,7 +174,7 @@ def test_ts006_site_relative_mapping_and_incremental(tmp_path: Path) -> None:
     ]
     target = root / pairs[0]["target"]
     target.parent.mkdir(parents=True)
-    target.write_text("# 安装\n")
+    target.write_text("# 安装\n", encoding="utf-8")
     os.utime(source, (100, 100))
     os.utime(target, (200, 200))
     assert doc_translation.inventory(root, languages="zh", incremental=True) == []
@@ -639,6 +639,7 @@ def prospective_destination_fixture(tmp_path: Path, variant: str) -> tuple[Path,
         "parent": ("GUIDE/page.md", "guide/page.md"),
         "empty_parent": ("GUIDE/page.md", "guide/page.md"),
         "unicode": ("café.md", "cafe\u0301.md"),
+        "casefold_expansion": ("Straße.md", "STRASSE.md"),
     }
     first, second = names[variant]
     for relative, text in [
@@ -653,7 +654,7 @@ def prospective_destination_fixture(tmp_path: Path, variant: str) -> tuple[Path,
     return root, [f"docs/ja/{first}", f"docs/ja/{second}"]
 
 
-@pytest.mark.parametrize("variant", ["leaf", "parent", "empty_parent", "unicode"])
+@pytest.mark.parametrize("variant", ["leaf", "parent", "empty_parent", "unicode", "casefold_expansion"])
 @pytest.mark.parametrize("incremental", [False, True])
 def test_ts006_prospective_destination_aliases_are_rejected_before_any_write(
     tmp_path: Path, capsys: pytest.CaptureFixture[str], variant: str, incremental: bool
@@ -679,7 +680,7 @@ def test_ts006_prospective_destination_aliases_are_rejected_before_any_write(
     assert all(not (root / target).exists() for target in targets)
 
 
-@pytest.mark.parametrize("variant", ["leaf", "unicode"])
+@pytest.mark.parametrize("variant", ["leaf", "unicode", "casefold_expansion"])
 def test_ts006_case_sensitive_prospective_destinations_remain_distinct(tmp_path: Path, variant: str) -> None:
     root, targets = prospective_destination_fixture(tmp_path, variant)
     witness = tmp_path.resolve() / "namespace-witness"
@@ -699,13 +700,14 @@ def test_ts006_case_sensitive_prospective_destinations_remain_distinct(tmp_path:
     assert not (root / pairs[0]["target"]).samefile(root / pairs[1]["target"])
 
 
-@pytest.mark.parametrize("variant", ["leaf", "unicode"])
+@pytest.mark.parametrize("variant", ["leaf", "unicode", "casefold_expansion"])
 def test_ts006_case_sensitive_destination_namespace_policy_preserves_spelling(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, variant: str
 ) -> None:
     root, targets = prospective_destination_fixture(tmp_path, variant)
     # Model namespace policy only; real source I/O does not claim a native case-sensitive run.
     monkeypatch.setattr(doc_translation, "namespace_folds_case", lambda _: False)
+    monkeypatch.setattr(doc_translation, "source_name_alias", lambda path, name: path.name == name, raising=False)
     before = files(root)
     pairs = doc_translation.inventory(root, source="docs", languages="ja")
     assert len(pairs) == 2 and {pair["target"] for pair in pairs} == set(targets)
@@ -722,3 +724,41 @@ def test_ts006_disjoint_prospective_destinations_remain_supported(tmp_path: Path
     assert len(pairs) == 2
     assert {pair["target"] for pair in pairs} == {"docs/ja/Other.md", "docs/ja/page.md"}
     assert files(root) == before
+
+
+@pytest.mark.parametrize("variant", ["unicode", "casefold_expansion"])
+@pytest.mark.parametrize("incremental", [False, True])
+def test_ts006_case_folding_does_not_imply_other_name_equivalence(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, variant: str, incremental: bool
+) -> None:
+    root, targets = prospective_destination_fixture(tmp_path, variant)
+    # Model Windows-like case folding without canonical normalization or full Unicode folding.
+    monkeypatch.setattr(doc_translation, "namespace_folds_case", lambda _: True)
+    monkeypatch.setattr(
+        doc_translation, "source_name_alias", lambda path, name: path.name.lower() == name.lower(), raising=False
+    )
+    before = files(root)
+    pairs = doc_translation.inventory(root, source="docs", languages="ja", incremental=incremental)
+    assert len(pairs) == 2 and {pair["target"] for pair in pairs} == set(targets)
+    assert files(root) == before
+
+
+@pytest.mark.parametrize("incremental", [False, True])
+def test_ts006_canonical_aliases_are_rejected_independently_of_case_folding(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, incremental: bool
+) -> None:
+    from unicodedata import normalize
+
+    root, targets = prospective_destination_fixture(tmp_path, "unicode")
+    # Model a case-sensitive volume that aliases canonical Unicode spellings.
+    monkeypatch.setattr(doc_translation, "namespace_folds_case", lambda _: False)
+    monkeypatch.setattr(
+        doc_translation,
+        "source_name_alias",
+        lambda path, name: normalize("NFC", path.name) == normalize("NFC", name),
+        raising=False,
+    )
+    before = files(root)
+    with pytest.raises(doc_translation.TranslationError, match="multiple sources"):
+        doc_translation.inventory(root, source="docs", languages="ja", incremental=incremental)
+    assert files(root) == before and all(not (root / target).exists() for target in targets)

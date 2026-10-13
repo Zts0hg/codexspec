@@ -98,6 +98,25 @@ def namespace_folds_case(root: Path) -> bool:
     return namespace.is_dir() and alias.is_dir() and not alias.is_symlink() and namespace.samefile(alias)
 
 
+def source_name_alias(path: Path, name: str) -> bool:
+    """Prove a name transformation against an existing admitted component."""
+    alias = path.with_name(name)
+    return alias.exists() and not alias.is_symlink() and alias.samefile(path)
+
+
+def destination_component_key(path: Path, folds_case: bool) -> str:
+    """Use only name equivalences demonstrated by the selected filesystem."""
+    name = path.name
+    canonical = normalize("NFC", name)
+    if canonical != name and source_name_alias(path, canonical):
+        name = canonical
+    if folds_case:
+        for folded in (name.casefold(), name.lower()):
+            if folded == name or source_name_alias(path, folded):
+                return folded
+    return name
+
+
 def normalize_languages(value: str) -> list[str]:
     if value.strip().lower() == "all":
         return list(LANGUAGES)
@@ -193,10 +212,15 @@ def inventory(
                 metadata = destination.stat()
                 if (metadata.st_dev, metadata.st_ino) in source_identities:
                     raise TranslationError(f"Translation target overlaps a selected source: {destination}")
-            destination_key = tuple(
-                normalize("NFC", part).casefold() if destination_folds_case else part
-                for part in destination.relative_to(root).parts
-            )
+            if readme:
+                destination_key = target.parts
+            else:
+                source_components = list(reversed([path, *path.parents][: len(relative.parts)]))
+                destination_key = (
+                    "docs",
+                    language,
+                    *(destination_component_key(component, destination_folds_case) for component in source_components),
+                )
             if destination_key in destinations:
                 raise TranslationError(f"Translation target has multiple sources: {destination}")
             destinations.add(destination_key)
