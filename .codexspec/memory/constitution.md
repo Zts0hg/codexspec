@@ -1,21 +1,22 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version: unversioned -> 1.0.0
-Bump Rationale: INITIAL VERSIONING with a material communication principle added
+Version: 1.0.0 -> 1.1.0
+Bump Rationale: MINOR: extend repository-only documentation maintenance to Codex
 
 Changes:
-- Modified: Core Principles
-- Added: Clear and Standard Terminology; explicit version and amendment metadata
+- Modified: Internal Maintenance Commands exception and maintenance workflow
+- Added: Derived native Codex entry generation/check rule
 - Removed: None
 
 Template Consistency Check:
-- .codexspec/templates/docs/plan-template-*.md: aligned
-- .codexspec/templates/docs/spec-template-*.md: aligned
-- .codexspec/templates/docs/tasks-template-*.md: aligned
-- .claude/commands/*.md: aligned
-- README.md: aligned
-- CLAUDE.md: aligned
+- .codexspec/templates/docs/plan-template-*.md: aligned; generic principles
+- .codexspec/templates/docs/spec-template-*.md: aligned; no host-only restrictions
+- .codexspec/templates/docs/tasks-template-*.md: aligned; test policy unchanged
+- .claude/commands/codexspec/: internal sources retained; shared guide updated
+- README.md: aligned; public distribution remains unchanged
+- CLAUDE.md / AGENTS.md / repository-layout.md: aligned; dual-host maintainer
+  entries retain their authored/derived and non-distribution boundaries
 
 Deferred TODOs:
 - None
@@ -38,9 +39,9 @@ Deferred TODOs:
 
 This document defines the governing principles and development guidelines for this project.
 
-- **Version**: 1.0.0
+- **Version**: 1.1.0
 - **Ratified**: 2026-04-10
-- **Last Amended**: 2026-09-06
+- **Last Amended**: 2026-10-13
 
 ## Core Principles
 
@@ -142,12 +143,25 @@ precise language reduces ambiguity and prevents terminology from obstructing req
 
 ### Internal Maintenance Commands (Exception)
 
-The following commands are **intentionally absent from `templates/commands/`** because they are tightly coupled to CodexSpec's own repository (MkDocs i18n, fixed `docs/{lang}/` structure, project-specific glossary). They live **only** in `.claude/commands/codexspec/`, are not shipped to user projects via `codexspec init`, and must be edited there directly:
+The following commands are **intentionally absent from templates/commands/**.
+They serve CodexSpec maintainers, using root README variants, the documentation
+site layout and docs/i18n/glossary.yml. Both Claude commands and native Codex
+skills MUST remain outside user-project installation through codexspec init.
 
-- `/codexspec:translate-docs` — translates CodexSpec's own documentation
-- `/codexspec:check-i18n-semantics` — verifies CodexSpec's own translated docs
+- translate-docs translates selected root README or site documentation.
+- check-i18n-semantics reviews the corresponding translations' fidelity.
 
-Both reference `docs/i18n/glossary.yml` (the canonical, repo-only glossary). The path `.codexspec/i18n/glossary.yml` is **deprecated** and must not be reintroduced.
+The authored entries remain .claude/commands/codexspec/{translate-docs,
+check-i18n-semantics}.md and MUST be edited there. Shared rules live in
+internal/references/doc-translation.md. Native Codex entries under
+.agents/skills/codexspec-{translate-docs,check-i18n-semantics}/SKILL.md MUST be
+derived with python -m internal.maintainer_doc_skills --write, never hand-edited.
+The helper's --check mode and the repository's --check-distribution gate MUST
+detect missing/stale maintainer entries. No public command/template registration
+or packaging allowlist is widened for these tools.
+
+The canonical repo glossary remains docs/i18n/glossary.yml; the deprecated
+.codexspec/i18n/glossary.yml path MUST NOT be reintroduced.
 
 The pre-existing plugin-only `review-python-code.md` and `review-react-code.md` files are separate compatibility artifacts. They also have no `templates/commands/` counterpart and must be preserved unchanged by fragment synchronization and distribution checks; they are not fragment-authoring sources.
 
@@ -163,10 +177,12 @@ The pre-existing plugin-only `review-python-code.md` and `review-react-code.md` 
 
 **For internal maintenance commands** (the two listed above):
 
-1. Modify files in `.claude/commands/codexspec/` directly
-2. Verify the corresponding template does NOT exist in `templates/commands/`
-3. Verify the corresponding fallback function does NOT exist in `src/codexspec/__init__.py`
-4. Commit changes to `.claude/commands/codexspec/`
+1. Edit the authored Claude entries and shared internal documentation rules.
+2. Generate native Codex entries with `python -m internal.maintainer_doc_skills --write`.
+3. Pass maintainer `--check`, distribution consistency and relevant tests.
+4. Verify no corresponding public template or CLI fallback was introduced.
+5. For an authorized commit, include the authored/internal sources and their
+   changed generated Codex entries together.
 
 ## Decision Guidelines
 

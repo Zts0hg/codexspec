@@ -729,6 +729,12 @@ def check_self_bootstrap(root: Path, *, language: str) -> None:
 
     actual_claude = _claude_artifacts(root / ".claude" / "commands" / "codexspec", boundary=root)
     actual_codex = _codex_artifacts(root / ".agents" / "skills", boundary=root)
+    for name in sorted(INTERNAL_CLAUDE_COMMANDS):
+        if name in actual_claude:
+            command_name = Path(name).stem
+            expected_codex[f"codexspec-{command_name}"] = (
+                CodexIntegration().render_skill(command_name, actual_claude[name].decode("utf-8")).encode("utf-8")
+            )
     failures = _compare_artifacts(
         "Claude",
         expected_claude,
