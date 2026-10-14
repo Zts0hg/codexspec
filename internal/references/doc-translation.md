@@ -38,7 +38,8 @@ Parse the supplied arguments:
   before generating or writing translations.
 - Semantic review accepts --strict: report any semantic drift as a failing
   review. Without it, minor optional prose improvements can remain advisories;
-  omissions, changed behavior and broken navigation remain defects.
+  omissions, changed behavior, broken navigation and clear unnatural expression
+  remain defects in either mode.
 
 | Resource language | Accepted aliases | Root README | Site directory |
 |-------------------|------------------|-------------|----------------|
@@ -73,19 +74,28 @@ rules by meaning. If unavailable, disclose it and use established technical
 terminology; never invent glossary decisions. Before a complete rewrite, inspect
 relevant existing localized guides and documentation-contract tests for established
 terms not recorded in the glossary; retain those terms while preserving meaning.
+Use an explicitly approved target-language sample as a style reference, and retain
+approved wording for its corresponding passage unless the user requests a change.
+Existing localized prose and glossary defaults do not override that explicit choice.
 
 Translate propositions, not individual words. Preserve actors, conditions,
 ordering, must/may/never distinctions, defaults, exclusions and consequences.
-Prefer normal native technical writing and a consistent term for each concept.
-Keep English names when they are the established searchable term.
+Write as if the document were originally authored in the target language for
+software developers. Use its normal syntax, idiomatic collocations, technical
+register and punctuation; do not mirror English word order or map phrases
+word-for-word. Split or join sentences and reorder clauses when that reads
+naturally, while preserving every proposition and technical constraint. Use a
+consistent established term for each concept. Keep English names when they are
+the established searchable term. Natural expression is required, not a preference.
 
 Preserve fenced and indented code examples, command names/arguments, inline
 technical spans, environment-variable spellings, paths, external URLs and YAML
 frontmatter. Translate prose, headings, table text, notices and summary labels.
 Code comments inside protected examples remain unchanged.
 
-Preserve heading hierarchy and source section order, complete paragraphs,
-table rows and lists. Do not copy an older target's missing/stale sections or
+Preserve heading hierarchy, source section order, the complete meaning of each
+paragraph, table rows and lists. Sentence boundaries and clause order need not
+match the source. Do not copy an older target's missing/stale sections or
 add capabilities absent from the English source.
 
 Preserve logos and branding. In root READMEs, keep all eight language destinations,
@@ -101,7 +111,10 @@ references, resolve anchors against their actual destination document.
    stops here. Verify all destinations before writing any target.
 2. Read each complete source, including its setup, workflow, command, configuration
    and boundary descriptions. Translate the full selected document using the
-   shared rules; write only the listed targets in OUTPUT_ROOT.
+   shared rules; write only the listed targets in OUTPUT_ROOT. Reread each
+   complete target on its own as technical documentation, correcting awkward
+   syntax, unnatural collocations and unnecessary translationese before checking
+   it against the source again for lost or added meaning.
 3. Recheck the source hash before and after writing. If source bytes changed,
    stop and establish a new selected baseline rather than blending revisions.
 4. Run the read-only mechanical verification and declared Markdown lint for the
@@ -122,9 +135,14 @@ Do not stage, commit, merge, push or publish as part of these commands.
 2. Compare section-by-section source propositions: purpose, actors, inputs,
    conditions, defaults, ordering, state transitions, exclusions and consequences.
    Check source capabilities and command/options examples are all represented.
-3. Assess glossary consistency and whether prose reads naturally in its target
-   language. Treat changed or omitted meaning as a defect; distinguish optional
-   wording preferences from substantive problems.
+3. Assess fidelity and natural expression separately. Read the complete target
+   as a target-language document, checking syntax, collocations, register,
+   headings and punctuation, then compare its meaning with the source. Changed
+   or omitted meaning, clear grammatical errors, non-idiomatic phrasing and
+   obvious source-language calques are defects even when mechanically valid
+   and semantically recoverable. Only a preference between equally natural,
+   accurate phrasings is an optional advisory; do not downgrade translationese
+   to a wording preference.
 4. Check heading hierarchy, tables/lists, warnings, examples, language navigation
    and links. Run the selected mechanical verification:
 
@@ -133,12 +151,14 @@ Do not stage, commit, merge, push or publish as part of these commands.
    ```
 
 5. Report each language with source/target paths and source hash, assessed
-   sections/propositions, actual mechanical outcomes, findings with source/target
-   evidence, and optional advisories. When a report file is requested, write it
+   sections/propositions, separate fidelity and natural-expression outcomes,
+   actual mechanical outcomes, findings with source/target evidence, repairs
+   where applicable, and optional advisories. When a report file is requested, write it
    only to the authorized feature/report destination; otherwise print the report.
 6. Semantic review is read-only. Return repairs to the translator/calling workflow.
    A strict passing result needs all selected pairs assessed, no semantic drift,
-   no unresolved substantive finding and passing applicable mechanical checks.
+   no unresolved fidelity or natural-expression defect and passing applicable
+   mechanical checks.
 
 Mechanical checks cover examples, inline tokens, structure and navigation. They
 cannot determine whether translated prose has the same meaning; numeric agreement

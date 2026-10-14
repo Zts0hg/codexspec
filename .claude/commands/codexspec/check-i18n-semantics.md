@@ -25,7 +25,10 @@ assess meaning; mechanical agreement is not semantic evidence.
 
 Use --readme or an explicit README.md source for root README variants. Default
 selection remains site documentation. Report missing content, changed meaning,
-terminology, readability and navigation findings with concrete evidence.
+terminology, readability and navigation findings with concrete evidence. Assess
+fidelity and natural expression separately; grammatical errors, unnatural
+collocations and obvious source-language calques are defects even when the
+meaning is recoverable. Only equally natural wording alternatives are optional.
 Review is read-only; send repairs to the translator/calling workflow.
 
 ```text
