@@ -1,5 +1,7 @@
 # CodexSpec Case Study: Adding a PR Description Generator to the Project
 
+> Historical case study: the conversation, intermediate decisions, command sequence, and review scores below record the workflow at that time. They are not the current command contract. The current standard flow includes a separate design stage and `review-design`; `clarify` updates confirmed requirements before the specification. See the [current workflow](../user-guide/workflow.md) and [PR command reference](../user-guide/commands.md#codexspecpr).
+
 > This document records the complete process of using the CodexSpec toolchain to add a new feature to the CodexSpec project itself, demonstrating Spec-Driven Development (SDD) in practice.
 
 ## Overview

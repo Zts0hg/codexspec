@@ -9,34 +9,34 @@
 ## Desarrollo local
 
 ```bash
-# Clonar el repositorio
+# Clone the repository
 git clone https://github.com/Zts0hg/codexspec.git
 cd codexspec
 
-# Instalar las dependencias de desarrollo
-uv sync --dev
+# Install development dependencies
+uv sync --extra dev
 
-# Ejecutar en local
+# Run locally
 uv run codexspec --help
 
-# Ejecutar las pruebas
+# Run tests
 uv run pytest
 
-# Hacer lint del código
+# Lint code
 uv run ruff check src/
 ```
 
 ## Documentación
 
 ```bash
-# Instalar las dependencias de documentación
-uv sync --extra docs
+# Install docs dependencies
+uv sync --extra dev --extra docs
 
-# Previsualizar la documentación en local
+# Preview documentation locally
 uv run mkdocs serve
 
-# Construir la documentación
-uv run mkdocs build
+# Build documentation
+uv run mkdocs build --strict
 ```
 
 ## Build
@@ -58,3 +58,9 @@ uv build
 - Longitud de línea: máximo 120 caracteres
 - Sigue PEP 8
 - Usa type hints en las funciones públicas
+
+Antes de modificar las plantillas, el empaquetado o la inicialización, lee
+[CLAUDE.md](https://github.com/Zts0hg/codexspec/blob/main/CLAUDE.md), [AGENTS.md](https://github.com/Zts0hg/codexspec/blob/main/AGENTS.md) y
+[Distribución del repositorio](https://github.com/Zts0hg/codexspec/blob/main/docs/internal/repository-layout.md). Las copias
+distribuidas de los comandos y las habilidades son artefactos de instalación
+generados; modifica sus fuentes autorizadas y vuelve a generarlas.

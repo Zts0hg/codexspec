@@ -1,117 +1,137 @@
-# Configuração
+<a id="configuration-and-internationalization"></a>
 
-## Localização do arquivo de configuração
+# Configuração e internacionalização
 
-`.codexspec/config.yml`
+A configuração fica em `.codexspec/config.yml`. Os modelos continuam em inglês;
+os agentes escrevem as interações e os artefatos gerados nos idiomas configurados.
+Os 13 códigos de idioma padrão são `en`, `zh-CN`, `zh-TW`, `ja`, `ko`, `es`,
+`fr`, `de`, `pt`, `ru`, `it`, `ar` e `hi`.
+O código da CLI para português é `pt`; a documentação localizada e os catálogos
+de tradução usam `pt-BR`.
 
-## Schema de configuração
+<a id="language-dimensions"></a>
+
+## Dimensões de idioma
+
+| Dimensão | Chave de configuração | Na inicialização | Definir depois | Controla |
+|-----------|------------|-------------------|-----------|----------|
+| Saída/base | `language.output` | `--lang` | `config --set-lang` | Idioma usado quando as demais dimensões não têm configuração própria |
+| Interação | `language.interaction` | `--interaction-lang` | `config --set-interaction-lang` | Conversas e saída da CLI |
+| Documento | `language.document` | `--document-lang` | `config --set-document-lang` | Requisitos, especificações, projetos técnicos, planos e tarefas |
+| Commit | `language.commit` | `--commit-lang` | `config --set-commit-lang` | Mensagens de commit e textos gerados nos fluxos de trabalho com Git |
+
+Quando uma dimensão não tem um idioma próprio configurado, ela usa
+`language.output`, independentemente das outras dimensões. Se esse valor também
+não estiver definido, usa `en`. `language.templates` continua sendo `en`.
+
+```bash
+codexspec init my-project --ai both \
+  --interaction-lang zh-CN --document-lang en --commit-lang en
+
+codexspec config
+codexspec config --set-document-lang en
+codexspec config --list-langs
+```
+
+Na primeira inicialização com TTY, o idioma base é solicitado, a menos que você
+informe `--lang` ou as três opções específicas de idioma. `--force` confirma
+automaticamente as outras solicitações de inicialização, mas não elimina essa
+escolha de idioma. Sem TTY, o padrão é inglês. Ao inicializar novamente, as chaves
+de idioma que você não definir explicitamente são preservadas.
+
+<a id="workflow-and-review-settings"></a>
+
+## Configurações de fluxo de trabalho e revisão
+
+| Configuração | Padrão | Efeito | Controle pela CLI |
+|---------|---------|--------|-------------|
+| `workflow.auto_next` | `false` | Avançar pelas etapas aprovadas do fluxo comum de SDD | `config --auto-next on\|off` |
+| `workflow.auto_distill` | `true` | Capturar conhecimento sem interação após um encerramento bem-sucedido | `config --auto-distill on\|off` |
+| `workflow.auto_maintenance` | `true` | Aplicar manutenção incremental verificada durante correções automáticas | `config --auto-maintenance on\|off` |
+| `workflow.worktrees` | `true` | Isolar as funcionalidades do fluxo comum e a manutenção independente | `config --worktrees on\|off` |
+| `review.decided_by` | `reviewer` | Definir quem decide sobre achados com condições de ocorrência fora do contexto operacional do projeto | `config --decided-by reviewer\|ask` |
+
+As opções booleanas da CLI aceitam `on/true/1/yes` e `off/false/0/no`, sem distinguir
+maiúsculas de minúsculas e permitindo espaços em branco ao redor. Uma opção
+booleana sem valor alterna o valor atual do checkout de destino. Os valores
+armazenados em YAML são booleanos.
+
+Com `review.decided_by: reviewer`, o revisor decide quais achados são admitidos
+como defeitos. Com `ask`, uma condição de ocorrência fora do contexto gera uma
+decisão de cenário pendente. O usuário decide uma vez se o defeito deve ser
+corrigido ou se o cenário deve ser excluído; a decisão confirmada é mantida para
+as rodadas seguintes. Decisões pendentes bloqueiam a conclusão. Uma execução
+individual de `review-code` pode substituir o modo configurado com `--decided-by`.
+
+As alterações de configuração seguem o roteamento de worktrees. Uma alteração
+independente iniciada no checkout principal é feita no worktree de manutenção
+e não muda imediatamente a configuração efetiva do checkout principal.
+Alterações em um worktree de funcionalidade entram em vigor ali.
+
+<details>
+<summary>Opções de inicialização da CLI</summary>
+
+| Opção | Significado |
+|--------|---------|
+| `PROJECT_NAME` | Nome do novo diretório; use `.` para o diretório atual |
+| `--here`, `-h` | Inicializar o diretório atual |
+| `--ai`, `-a` | `claude`, `codex` ou `both`; o padrão é `claude` |
+| `--lang`, `-l` | Definir o idioma base da saída |
+| `--interaction-lang` | Definir o idioma de interação |
+| `--document-lang` | Definir o idioma dos documentos |
+| `--commit-lang` | Definir o idioma das mensagens de commit |
+| `--force`, `-f` | Regenerar os artefatos instalados e confirmar automaticamente solicitações de migração, atualização e conformidade; preservar o contexto escrito para o projeto e as configurações não relacionadas |
+| `--no-git` | Pular a inicialização do repositório Git |
+| `--debug`, `-d` | Exibir informações detalhadas de depuração |
+
+</details>
+
+<details>
+<summary>Opções de configuração da CLI</summary>
+
+| Opção | Significado |
+|--------|---------|
+| `--set-lang`, `-l` | Definir o idioma base da saída |
+| `--set-interaction-lang` | Definir o idioma de interação |
+| `--set-document-lang` | Definir o idioma dos documentos |
+| `--set-commit-lang`, `-c` | Definir o idioma das mensagens de commit |
+| `--list-langs` | Listar os códigos de idioma aceitos |
+| `--auto-next` | Alternar ou definir o avanço automático entre etapas |
+| `--auto-distill` | Alternar ou definir a captura automática de conhecimento |
+| `--auto-maintenance` | Alternar ou definir a manutenção incremental automática |
+| `--worktrees` | Alternar ou definir o isolamento por worktree local a cada checkout |
+| `--decided-by` | Definir o modo de decisão da revisão como `reviewer` ou `ask` |
+
+</details>
+
+<details>
+<summary>Exemplo de configuração</summary>
 
 ```yaml
 version: "1.0"
 
 language:
-  output: "zh-CN"        # Idioma base; os três abaixo recaem sobre ele, depois sobre "en"
-  interaction: "zh-CN"   # Diálogo com o LLM + saída do CLI codexspec (opcional → padrão: output)
-  document: "en"         # Requisitos/spec/plan/tasks gerados (opcional → padrão: output)
-  commit: "en"           # Mensagens de commit do git (opcional → padrão: output)
-  templates: "en"        # Mantenha como "en"
+  output: "en"
+  interaction: "zh-CN"
+  document: "en"
+  commit: "en"
+  templates: "en"
 
 project:
-  ai: "claude"
-  created: "2025-02-15"
+  ai: "both"
 
 workflow:
+  auto_next: false
+  auto_distill: true
   auto_maintenance: true
-  auto_next: false       # Avanço automático entre etapas do fluxo (opt-in)
+  worktrees: true
 
 review:
-  decided_by: reviewer   # Quem decide achados fora do contexto real de uso: reviewer (padrão) ou ask
+  decided_by: reviewer
 ```
 
-## Configurações de idioma
+</details>
 
-O CodexSpec divide o idioma em quatro dimensões configuráveis de forma independente. `output` é a base; `interaction`, `document` e `commit` a sobrescrevem e recaem sobre ela (e depois sobre `en`) quando não definidas. Isso permite, por exemplo, conversar com o Claude em um idioma enquanto mantém os artefatos gerados ou as mensagens de commit em outro.
-
-| Dimensão | Chave | Definir no init | Definir depois | Controla | Recai sobre |
-|-----------|-------|-----------------|----------------|----------|-------------|
-| Saída (base) | `output` | `--lang` | `config --set-lang` | base para as outras três | `en` |
-| Interação | `interaction` | `--interaction-lang` | `config --set-interaction-lang` | diálogo com o LLM + saída da CLI | output → `en` |
-| Documento | `document` | `--document-lang` | `config --set-document-lang` | spec/plan/tasks gerados | output → `en` |
-| Commit | `commit` | `--commit-lang` | `config --set-commit-lang` | mensagens de commit do git | output → `en` |
-| Templates | `templates` | — | — | origem dos templates de comando (sempre `en`) | — |
-
-**Valores suportados:** veja [Internacionalização](../user-guide/i18n.md#supported-languages)
-
-### `language.output`
-
-O idioma base de saída. As demais dimensões recaem sobre ele quando não definidas explicitamente.
-
-### `language.interaction`
-
-Idioma da conversa entre você e o LLM, além da saída no terminal da CLI `codexspec`. Opcional — o padrão é `output`.
-
-### `language.document`
-
-Idioma dos arquivos de artefatos gerados (requisitos/spec/plan/tasks). Opcional — o padrão é `output`.
-
-### `language.commit`
-
-Idioma das mensagens de commit do git. Opcional — o padrão é `output`.
-
-### `language.templates`
-
-Idioma dos templates. Deve permanecer como `"en"` para compatibilidade.
-
-## Configurações do projeto
-
-### `project.ai`
-
-O assistente de IA em uso. Controla quais arquivos de contexto de agente o `codexspec init` cria:
-
-- `claude` (padrão) — cria `CLAUDE.md` (e `.claude/commands/`).
-- `codex` — cria `AGENTS.md` e `.agents/skills/` em vez disso.
-- `both` — cria todos os anteriores, deixando o projeto pronto tanto para Claude Code quanto para Codex CLI.
-
-O `CLAUDE.md` é sempre criado (para que o projeto continue utilizável pelo Claude Code); `AGENTS.md` e `.agents/skills/` são criados apenas quando `project.ai` é `codex` ou `both`.
-
-### `project.created`
-
-Data em que o projeto foi inicializado.
-
-## Configurações de fluxo de trabalho
-
-### `workflow.auto_next`
-
-Controla se o pipeline de Requirements-First SDD **avança automaticamente** para a próxima etapa do fluxo assim que a etapa atual é aprovada, em vez de exigir que você dispare o próximo comando manualmente.
-
-- **Padrão:** `false` (opt-in). Apenas o valor literal `true` habilita o avanço automático.
-- **Alternar / definir com:** `codexspec config --auto-next` (a flag isolada alterna o valor atual; passe `on`/`off` para defini-lo explicitamente).
-
-**Cadeia:**
-
-```
-specify → generate-spec → spec-to-design → design-to-plan → plan-to-tasks → implement-tasks
-```
-
-**Critério de aprovação:**
-
-- `generate-spec`, `spec-to-design`, `design-to-plan`, `plan-to-tasks`: o loop de revisão embutido no comando precisa informar um Overall Status de `PASS` ou `PASS_WITH_WARNINGS`.
-- `specify`: não há loop de revisão, então o critério é a sua confirmação explícita de que a descoberta de requisitos terminou (o resumo **final** da etapa, e não cada resumo intermediário).
-- `implement-tasks`: etapa terminal — nada dispara automaticamente depois dela.
-
-Quando o loop de revisão informa `NEEDS_REVISION` ou `BLOCKED`, a cadeia para e o controle volta a você. Antes de cada avanço, o agente emite uma linha de aviso (por exemplo: `auto_next: review passed → invoking /codexspec:design-to-plan`).
-
-### `workflow.auto_maintenance`
-
-`codexspec config --auto-maintenance on|off` salva `workflow.auto_maintenance` como booleano YAML em `.codexspec/config.yml`; se a chave não existir, vale `true`. As duas opções aceitam `on/true/1/yes` e `off/false/0/no` sem diferenciar maiúsculas. `implement-tasks` lê essa configuração ao corrigir automaticamente: `on` inclui melhorias incrementais de manutenção fundamentadas; `off` continua relatando as sugestões. Defeitos reais e verificações necessárias continuam obrigatórios. A configuração é independente de `auto-next` e não é um parâmetro de chamada de `implement-tasks`.
-
-## Configurações de revisão
-
-### `review.decided_by`
-
-Define quem decide sobre um achado do `/codexspec:review-code` cujo gatilho depende de entradas ou ambientes fora do contexto real de uso do projeto.
-
-- **Padrão:** `reviewer`, inclusive quando a chave ou a seção está ausente. O revisor decide cada achado, exatamente como antes.
-- **`ask`:** a revisão relata esse item como uma decisão de cenário pendente em vez de falhar por ele. O `implement-tasks` pergunta a você uma única vez se deve corrigi-lo ou aceitar que o cenário está fora do escopo, e registra sua resposta em `requirements.md` como uma entrada `CON` ou `OUT` confirmada. As rodadas de revisão seguintes respeitam essa entrada.
-- **Defina com:** `codexspec config --decided-by reviewer|ask` ou `/codexspec:config`. Uma única execução de `review-code` pode substituí-lo com `--decided-by`.
-- Qualquer outro valor é inválido: o `codexspec config` o informa e o `review-code` para com um erro de argumento até que seja corrigido.
+Veja os detalhes sobre idiomas e configurações em
+[Configuração](configuration.md) e
+[Internacionalização](../user-guide/i18n.md).

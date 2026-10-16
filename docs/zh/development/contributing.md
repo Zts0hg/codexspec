@@ -9,34 +9,34 @@
 ## 本地开发
 
 ```bash
-# 克隆仓库
+# Clone the repository
 git clone https://github.com/Zts0hg/codexspec.git
 cd codexspec
 
-# 安装开发依赖
-uv sync --dev
+# Install development dependencies
+uv sync --extra dev
 
-# 本地运行
+# Run locally
 uv run codexspec --help
 
-# 运行测试
+# Run tests
 uv run pytest
 
-# 代码检查
+# Lint code
 uv run ruff check src/
 ```
 
 ## 文档
 
 ```bash
-# 安装文档依赖
-uv sync --extra docs
+# Install docs dependencies
+uv sync --extra dev --extra docs
 
-# 本地预览文档
+# Preview documentation locally
 uv run mkdocs serve
 
-# 构建文档
-uv run mkdocs build
+# Build documentation
+uv run mkdocs build --strict
 ```
 
 ## 构建
@@ -58,3 +58,5 @@ uv build
 - 行长度：最大 120 个字符
 - 遵循 PEP 8
 - 为公共函数使用类型提示
+
+修改模板、打包或初始化行为前，请先阅读 [CLAUDE.md](https://github.com/Zts0hg/codexspec/blob/main/CLAUDE.md)、[AGENTS.md](https://github.com/Zts0hg/codexspec/blob/main/AGENTS.md) 和[仓库布局](https://github.com/Zts0hg/codexspec/blob/main/docs/internal/repository-layout.md)。分发的命令和技能副本由源文件生成，属于安装产物；修改时应编辑对应的源文件，再重新生成副本。

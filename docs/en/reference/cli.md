@@ -1,8 +1,146 @@
 # CLI Reference
 
-## Commands
+<a id="cli-commands"></a>
 
-### `codexspec show-blueprint`
+## CLI Commands
+
+| Command | Purpose |
+|---------|---------|
+| `codexspec init` | Initialize or refresh a project for Claude, Codex, or both |
+| `codexspec check` | Check installed tools and dependencies |
+| `codexspec version` | Display version and system information |
+| `codexspec config` | View or modify project configuration |
+| `codexspec list-commands` | List available agent commands by category |
+| `codexspec show-blueprint` | Print the shared worktree's blueprint without changing it |
+
+<a id="cli-installation"></a>
+
+## CLI Installation
+
+```bash
+uv tool install codexspec
+
+# Or use pip
+pip install codexspec
+
+# Verify the CLI and inspect available commands
+codexspec version
+codexspec --help
+codexspec list-commands
+```
+
+Initialize a new project with `codexspec init my-project --ai claude`,
+or the current directory with `codexspec init . --ai codex`. Use `--ai both`
+for both integrations. The assistant selection defaults to `claude`; choose
+the value explicitly for Codex or both.
+
+<details>
+<summary>Alternative installation methods</summary>
+
+<a id="one-time-initialization"></a>
+
+### One-time initialization
+
+```bash
+uvx codexspec init my-project --ai claude
+uvx codexspec init . --ai codex
+```
+
+One-time initialization installs project commands and the standalone commit
+runtime. Worktree routing, blueprint/auto-dev, and manual profile review still
+invoke the CodexSpec CLI; make it available for those workflows.
+
+<a id="development-versions"></a>
+
+### Development versions
+
+```bash
+uv tool install git+https://github.com/Zts0hg/codexspec.git
+uv tool install git+https://github.com/Zts0hg/codexspec.git@main
+
+# Replace <tag> with the version you want
+uv tool install git+https://github.com/Zts0hg/codexspec.git@<tag>
+```
+
+</details>
+
+<details>
+<summary>Windows installation</summary>
+
+Use PowerShell:
+
+```powershell
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+# Restart PowerShell, then:
+uv tool install codexspec
+codexspec version
+```
+
+See the [Windows Troubleshooting Guide](../WINDOWS-TROUBLESHOOTING.md)
+for PATH and installation troubleshooting.
+
+</details>
+
+<a id="upgrade-and-refresh-a-project"></a>
+
+## Upgrade and Refresh a Project
+
+Updating the CLI and refreshing a project's installed commands are separate steps:
+
+```bash
+uv tool install codexspec --upgrade
+# Or: pip install --upgrade codexspec
+
+# In the project you want to refresh; select its desired integration(s)
+codexspec init . --force --ai both
+```
+
+Use `--ai claude` or `--ai codex` when only that integration is wanted.
+`--force` regenerates distributed commands/scripts and refreshes review resources;
+it also auto-confirms migration, command-update, and constitution-compliance prompts. Existing requirements and project
+principles are retained, existing context-file bodies are preserved while managed
+guidance is updated, and configuration keys you did not explicitly set are kept.
+
+The planning command is `design-to-plan`; installation updates retire the old
+`spec-to-plan` entry without an alias.
+
+<details>
+<summary>CLI initialization options</summary>
+
+| Option | Meaning |
+|--------|---------|
+| `PROJECT_NAME` | New directory name; use `.` for the current directory |
+| `--here`, `-h` | Initialize the current directory |
+| `--ai`, `-a` | `claude`, `codex`, or `both`; default `claude` |
+| `--lang`, `-l` | Set the base output language |
+| `--interaction-lang` | Set interaction language |
+| `--document-lang` | Set document language |
+| `--commit-lang` | Set commit-message language |
+| `--force`, `-f` | Regenerate installed artifacts and auto-confirm migration/update/compliance prompts; preserve project-authored context and unrelated configuration |
+| `--no-git` | Skip Git repository initialization |
+| `--debug`, `-d` | Show detailed debug output |
+
+</details>
+
+<details>
+<summary>CLI configuration options</summary>
+
+| Option | Meaning |
+|--------|---------|
+| `--set-lang`, `-l` | Set the base output language |
+| `--set-interaction-lang` | Set interaction language |
+| `--set-document-lang` | Set document language |
+| `--set-commit-lang`, `-c` | Set commit-message language |
+| `--list-langs` | List supported language codes |
+| `--auto-next` | Toggle/set automatic stage advancement |
+| `--auto-distill` | Toggle/set automatic knowledge capture |
+| `--auto-maintenance` | Toggle/set automatic incremental maintenance |
+| `--worktrees` | Toggle/set checkout-local worktree isolation |
+| `--decided-by` | Set `reviewer` or `ask` review decision mode |
+
+</details>
+
+## `codexspec show-blueprint`
 
 Print the complete `.codexspec/blueprint.md` from the fixed `codexspec/auto-dev` branch and
 `worktree-for-codexspec-auto-dev`. Output is raw file content on standard output. Missing repository,
@@ -11,113 +149,4 @@ command is read-only and performs no fetch, merge, write, or lock operation.
 
 ```bash
 codexspec show-blueprint
-```
-
----
-
-### `codexspec init`
-
-Initialize a new CodexSpec project.
-
-```bash
-codexspec init [PROJECT_NAME] [OPTIONS]
-```
-
-**Arguments:**
-
-| Argument | Description |
-|----------|-------------|
-| `PROJECT_NAME` | Name for your new project directory (use `.` or `--here` for the current dir) |
-
-**Options:**
-
-| Option | Short | Description |
-|--------|-------|-------------|
-| `--here` | `-h` | Initialize in the current directory |
-| `--ai` | `-a` | AI assistant to use: `claude`, `codex`, or `both` (default: claude) |
-| `--lang` | `-l` | Output (base) language; interaction/document/commit fall back to it (e.g., en, zh-CN, ja) |
-| `--interaction-lang` | | Interaction language (LLM dialogue + `codexspec` CLI output); overrides `--lang` |
-| `--document-lang` | | Document language (generated requirements/spec/plan/tasks); overrides `--lang` |
-| `--commit-lang` | | Commit-message language; overrides `--lang` |
-| `--force` | `-f` | Overwrite existing files and auto-confirm prompts; never regenerates `config.yml` |
-| `--no-git` | | Skip git repository initialization |
-| `--debug` | `-d` | Enable debug output |
-
-`--lang` sets the `output` base language; `--interaction-lang`, `--document-lang`, and `--commit-lang` override it for their dimension (each falls back to `output`, then `en`). See [Internationalization](../user-guide/i18n.md) for the full model.
-
-First-time init in a TTY without `--lang` (and without all three dimension flags) prompts for a base language; in a non-TTY (CI/scripts) it defaults to `en` — **fully non-interactive**. Re-running `init` preserves any language key you did not specify; `--force` never regenerates `config.yml`.
-
-**Examples:**
-
-```bash
-# Create new project
-codexspec init my-project
-
-# Initialize in current directory
-codexspec init . --ai claude
-
-# One-time usage (no installation) — initialize for Codex CLI or both
-uvx codexspec init . --ai codex
-uvx codexspec init . --ai both
-
-# Fully non-interactive: zh-CN base, English commit messages
-codexspec init my-project --lang zh-CN --commit-lang en
-
-# Set every dimension explicitly (scriptable, no prompts)
-codexspec init my-project \
-  --interaction-lang zh-CN --document-lang en --commit-lang en
-```
-
-`codexspec init` installs shared review resources into `.codexspec/review-code/` for Claude Code and Codex. `--force` refreshes shipped resources while preserving extension files with different paths. Installing the CLI alone does not create project files. Plugin-only review uses the same resources from the host-resolved plugin root when the project has no installed resource tree.
-
----
-
-### `codexspec check`
-
-Check for installed tools.
-
-```bash
-codexspec check
-```
-
----
-
-### `codexspec version`
-
-Display version information.
-
-```bash
-codexspec version
-```
-
----
-
-### `codexspec config`
-
-View or modify project configuration.
-
-```bash
-codexspec config [OPTIONS]
-```
-
-**Options:**
-
-| Option | Short | Description |
-|--------|-------|-------------|
-| `--set-lang` | `-l` | Set the output (base) language |
-| `--set-interaction-lang` | | Set the interaction language (LLM dialogue + CLI output) |
-| `--set-document-lang` | | Set the document language (generated spec/plan/tasks) |
-| `--set-commit-lang` | `-c` | Set the commit-message language |
-| `--list-langs` | | List all supported languages |
-| `--auto-next` | | Toggle/set `workflow.auto_next` (bare toggles; or on/off) |
-| `--auto-maintenance` |  | Toggle/set `workflow.auto_maintenance` (default on; bare toggles; or on/off) |
-| `--decided-by` | | Set `review.decided_by` to `reviewer` (default) or `ask` |
-
-Each `--set-*-lang` updates one [language dimension](../user-guide/i18n.md); any dimension you do not set falls back to `output`, then `en`.
-
-`codexspec config --auto-maintenance on|off` persists `workflow.auto_maintenance` as a YAML boolean in `.codexspec/config.yml`; an absent key means `true`. Both workflow switches accept case-insensitive `on/true/1/yes` and `off/false/0/no`. `implement-tasks` reads this setting when it automatically repairs reviewed code: `on` includes substantiated incremental maintenance improvements; `off` still reports them. Actual defects and required verification remain mandatory. This setting is independent of `auto-next` and is not an `implement-tasks` invocation parameter.
-
-```bash
-codexspec config --auto-maintenance on
-codexspec config --auto-maintenance off
 ```

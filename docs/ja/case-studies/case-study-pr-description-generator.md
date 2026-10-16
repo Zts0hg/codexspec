@@ -1,10 +1,12 @@
 # CodexSpec の使用事例: プロジェクトに PR 記述生成機能を追加する
 
+> 過去の事例：以下の会話、途中の判断、コマンド順序、レビュー点数は当時のワークフローの記録であり、現在のコマンド仕様ではありません。現在の標準フローには独立した設計段階と `review-design` があり、`clarify` は確認済み要件を先に更新してから仕様に反映します。[現在のワークフロー](../user-guide/workflow.md)と [PR コマンドのリファレンス](../user-guide/commands.md#codexspecpr)を参照してください。
+
 > このドキュメントは、CodexSpec プロジェクト自体に新機能を追加するために CodexSpec ツールチェーンを使った完全なプロセスを記録したもので、Spec-Driven Development (SDD) の実践例を示しています。
 
 ## 概要
 
-**対象となる機能**: `/codexspec:pr` コマンドの追加。構造化された GitHub PR / GitLab MR の説明を生成します。(出荷されたコマンドのユーザー向け概要は、[README の `/codexspec:pr` の項目](https://github.com/Zts0hg/codexspec/blob/main/README.md) を参照してください。)
+**対象となる機能**: `/codexspec:pr` コマンドの追加。構造化された GitHub PR / GitLab MR の説明を生成します。(公開済みコマンドのユーザー向け概要は、[README の `/codexspec:pr` の項目](https://github.com/Zts0hg/codexspec/blob/main/README.md) を参照してください。)
 
 **開発フロー**: `specify → generate-spec → review-spec → clarify → design-to-plan`
 
@@ -17,18 +19,18 @@
 ### 初期のユーザー入力
 
 ```
-プロジェクトに機能を追加したい。Git 関連の新コマンドで、正確で詳細かつ標準に準拠した GitHub PR の説明 (GitLab の場合は MR の説明) を生成する。参考までに、他のプロジェクトで使っていた 2 つの PR コマンドを以下に示す。
+I want to add a feature to the project: a new Git-related command that generates accurate, detailed, and standards-compliant GitHub PR descriptions (or MR descriptions, for GitLab). Below are two PR commands I have used in other projects, provided for reference.
 
-[参考例 1 - 構造化された説明]
-ここまでに行ったすべての作業を踏まえ、プロジェクトメンテナーとして、この投稿に対する明確なプルリクエストの説明を書いてください。
-PR の説明はチームの他のレビュアー向けとし、次のセクションを含めること:
+[Reference Example 1 - Structured Description]
+Now, acting as a project maintainer, based on all the work we have done so far, write a clear Pull Request description for this submission.
+The PR description should be aimed at the other reviewers on the team and include the following sections:
 1. Context
 2. Implementation
 3. Testing
 4. How to Verify
 
-[参考例 2 - シンプルな説明]
-現在のブランチと origin/main とのコード差分をもとに、Git の慣例に従った Markdown でマージリクエストのタイトルと説明を作成してください。(中国語で記述すること。)
+[Reference Example 2 - Simple Description]
+Based on the code diff between the current branch and origin/main, use Markdown to produce a Merge Request title and description that comply with Git conventions. (Describe in Chinese.)
 ```
 
 ### 明確化のプロセス
@@ -93,7 +95,7 @@ PR の説明はチームの他のレビュアー向けとし、次のセクシ�
 **更新後の要件サマリ**:
 
 ```
-言語の優先順位: language.commit > language.output > 英語 (デフォルト)
+Language priority: language.commit > language.output > English (default)
 ```
 
 ---
@@ -154,7 +156,7 @@ The command shall determine output language in the following priority order:
 
 `.codexspec/specs/2026-0613-1200ab-pr-description-generator/review-spec.md`
 
-これは **証拠に基づくレビュー** です。上記の警告と提案はそれぞれ spec 内の具体的で特定可能なギャップに紐付き、助言項目 (あると嬉い) は受け入れ判断に影響せず、自動変更もトリガーしません。
+これは **証拠に基づくレビュー** です。上記の警告と提案はそれぞれ spec 内の具体的で特定可能なギャップに紐付き、助言項目 (あると嬉しい) は受け入れ判断に影響せず、自動変更もトリガーしません。
 
 ---
 
@@ -258,11 +260,11 @@ The command shall determine output language in the following priority order:
 ### 主要な変更: パラメータロジックの反転
 
 ```
-当初の設計: --no-spec (spec をスキップ)
-新しい設計: --spec (spec を有効化、オプトイン)
+Original design: --no-spec (skip spec)
+New design:      --spec (enable spec, opt-in)
 ```
 
-この反転は、本ケーススタディにおける Confirmation Gateのもっとも明快な実例です。当初「確定」していた (つまり spec をデフォルトでオンにするという) デフォルト `--no-spec` が、ユーザーがそれを壊すような現実のワークフローを持ち出したことで、再検討され、反転し、オプトインとして再確認されました。
+この変更は、本事例で Confirmation Gate が働いたことを最も明確に示しています。当初は spec をデフォルトで使い、不要な場合に `--no-spec` で無効にする方針でした。しかし、ユーザーがその方針では支障をきたす実際のワークフローを示したため、方針を見直し、明示的に指定した場合だけ spec を使う方式へ変更して再確認しました。
 
 ---
 
@@ -317,59 +319,57 @@ The command shall determine output language in the following priority order:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                   CodexSpec SDD 開発フロー                               │
+│                   CodexSpec SDD Development Flow                        │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:specify                                                     │
-│  ├─ Q&A で要件を明確化                                                   │
-│  ├─ ユーザーが参考例を提供                                                │
-│  └─ 言語・プラットフォーム・内容・パラメータなどを網羅する 10 の質問      │
+│  ├─ Clarify requirements through Q&A                                    │
+│  ├─ User provides reference examples                                    │
+│  └─ 10 questions covering language, platform, content, parameters, etc. │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:generate-spec                                               │
-│  ├─ 完全な spec.md を生成                                                │
-│  ├─ ユーザーストーリー 4 つ、機能要件 8 つ、テストケース 10 個            │
-│  └─ .codexspec/specs/2026-0613-1200ab-pr-description-generator/spec.md  │
-│     に保存                                                               │
+│  ├─ Generate a complete spec.md                                         │
+│  ├─ 4 user stories, 8 functional requirements, 10 test cases            │
+│  └─ Saved to .codexspec/specs/2026-0613-1200ab-pr-description-generator/spec.md │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:review-spec                                                 │
-│  ├─ 品質スコア: 92/100                                                   │
-│  ├─ 警告を 2 件検出 (テストファイル検出、複数 spec の取り扱い)           │
-│  └─ ステータス: Pass、計画に進める                                       │
+│  ├─ Quality score: 92/100                                               │
+│  ├─ Found 2 warnings (test-file discovery, multi-spec handling)         │
+│  └─ Status: Pass, can proceed to planning                               │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec:clarify  (重要な調整)                                        │
-│  ├─ ユーザーが現実の利用上の問題を提示                                    │
-│  ├─ 明確化の質問 5 つ、すべて回答                                        │
-│  ├─ 主要な変更: --no-spec → --spec (オプトイン)                          │
-│  └─ 要件を 5 つ追加 (REQ-005b, 006b, 008a, 010、007 を更新)              │
+│  /codexspec:clarify  (Critical adjustment)                              │
+│  ├─ User surfaces a real-world usage issue                              │
+│  ├─ 5 clarification questions, all answered                             │
+│  ├─ Key change: --no-spec → --spec (opt-in)                             │
+│  └─ Added 5 requirements (REQ-005b, 006b, 008a, 010, updated 007)       │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:design-to-plan                                                │
-│  ├─ 技術実装計画を更新                                                   │
-│  ├─ 技術意思決定 9 つ、うち新規は 5 つ                                   │
-│  ├─ 実装フェーズ 5 つ                                                    │
-│  └─ .codexspec/specs/2026-0613-1200ab-pr-description-generator/plan.md  │
-│     に保存                                                               │
+│  ├─ Update the technical implementation plan                            │
+│  ├─ 9 technical decisions, including 5 new ones                         │
+│  ├─ 5 implementation phases                                             │
+│  └─ Saved to .codexspec/specs/2026-0613-1200ab-pr-description-generator/plan.md │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  後続ステップ (このセッションでは未完了)                                  │
-│  ├─ /codexspec:review-plan - 計画の品質を検証                            │
-│  ├─ /codexspec:plan-to-tasks - 実行可能なタスクに分割                    │
-│  └─ /codexspec:implement-tasks - 実装を実行                              │
+│  Subsequent steps (not completed in this session)                       │
+│  ├─ /codexspec:review-plan - Validate plan quality                      │
+│  ├─ /codexspec:plan-to-tasks - Break down into executable tasks         │
+│  └─ /codexspec:implement-tasks - Execute the implementation             │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -381,7 +381,7 @@ The command shall determine output language in the following priority order:
 
 この事例は `clarify` コマンドの極めて重要な役割を示しています。
 
-- **ユーザーが使用中に現実の問題を発見** ― 小さな変更场景で spec.md を誤用するリスク
+- **ユーザーが使用中に現実の問題を発見** ― 小規模な変更の場面で spec.md を誤用するリスク
 - **明確化の Q&A を通じて設計上の欠陥を解決** ― 自動検出からオプトインへの移行
 - **要件変更が体系的に記録される** ― すべての変更は spec.md の Clarifications セクションに保存
 
@@ -394,11 +394,11 @@ The command shall determine output language in the following priority order:
 ### 3. パラメータ設計の進化
 
 ```
-当初の設計:
-  --no-spec: spec.md をスキップ (デフォルトで使用)
+Initial design:
+  --no-spec: skip spec.md (used by default)
 
-最終設計:
-  --spec: spec.md を有効化 (デフォルトでは使用しない)
+Final design:
+  --spec: enable spec.md (not used by default)
 ```
 
 この変更は「デフォルトで SDD ワークフロー」から「非 SDD ワークフローもサポート」への設計上のシフトを反映しており、ツールをより汎用的にしています。
@@ -417,28 +417,28 @@ The command shall determine output language in the following priority order:
 ## 付録: コマンドクイックリファレンス
 
 ```bash
-# 1. 初期要件の明確化
+# 1. Initial requirement clarification
 /codexspec:specify
 
-# 2. 仕様書ドキュメントの生成
+# 2. Generate the specification document
 /codexspec:generate-spec
 
-# 3. 仕様の品質レビュー
+# 3. Review the specification quality
 /codexspec:review-spec
 
-# 4. 要件の明確化・調整 (任意、問題を発見した場合に使用)
+# 4. Clarify/adjust requirements (optional; use when an issue is found)
 /codexspec:clarify [issue description]
 
-# 5. 技術計画の生成
+# 5. Generate the technical plan
 /codexspec:design-to-plan
 
-# 6. 計画の品質レビュー (任意)
+# 6. Review the plan quality (optional)
 /codexspec:review-plan
 
-# 7. タスクへの分割
+# 7. Break down into tasks
 /codexspec:plan-to-tasks
 
-# 8. 実装の実行
+# 8. Execute the implementation
 /codexspec:implement-tasks
 ```
 

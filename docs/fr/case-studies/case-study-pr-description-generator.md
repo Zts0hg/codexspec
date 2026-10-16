@@ -1,5 +1,7 @@
 # Étude de cas CodexSpec : ajouter un générateur de descriptions de PR au projet
 
+> Cas historique : la conversation, les décisions intermédiaires, la suite de commandes et les scores ci-dessous retracent le workflow de l’époque, pas le contrat actuel des commandes. Le flux standard comporte désormais une étape de conception distincte et `review-design` ; `clarify` met à jour les exigences confirmées avant la spécification. Consultez le [workflow actuel](../user-guide/workflow.md) et la [référence de la commande PR](../user-guide/commands.md#codexspecpr).
+
 > Ce document retrace le processus complet d'utilisation de la chaîne d'outils CodexSpec pour ajouter une nouvelle fonctionnalité au projet CodexSpec lui-même, et illustre le Spec-Driven Development (SDD) en pratique.
 
 ## Vue d'ensemble
@@ -93,7 +95,7 @@ Based on the code diff between the current branch and origin/main, use Markdown 
 **Résumé des exigences mis à jour** :
 
 ```
-Priorité de langue : language.commit > language.output > English (par défaut)
+Language priority: language.commit > language.output > English (default)
 ```
 
 ---
@@ -163,7 +165,7 @@ Il s'agit d'une **revue fondée sur des preuves** : chaque avertissement et sugg
 ### Problème découvert
 
 **Retour utilisateur** :
-> I realized there is a problem with the use of spec.md. For example, the user may in fact be making a very small change, so they did not follow CodexSpec's standardized flow of specify → plan → tasks → implement. Instead they made changes directly through conversation or Claude Code's built-in plan mode, and after finishing the changes they want to invoke a CodexSpec command separately to generate a standards-compliant PR description. In this case, defaulting to the most recently modified spec.md may pull in content from a previous spec.md that has nothing to do with this change.
+> Je me suis rendu compte d’un problème dans l’utilisation de spec.md. Un utilisateur peut, par exemple, effectuer une modification très limitée sans suivre le flux standard de CodexSpec, specify → plan → tasks → implement. Il peut avoir travaillé directement par conversation ou avec le mode plan intégré à Claude Code, puis vouloir appeler séparément une commande CodexSpec pour produire une description de PR conforme aux conventions. Dans ce cas, choisir par défaut le fichier spec.md modifié le plus récemment risque d’intégrer le contenu d’une ancienne spécification sans rapport avec la modification en cours.
 
 C'est la **Confirmation Gate** en action : la décision antérieure (« par défaut, le spec.md le plus récemment modifié ») avait été enregistrée, mais elle n'était pas définitive au sens d'irréversible — l'utilisateur l'a rouverte au point de contrôle clarify avec une nouvelle information sur un cas d'usage réel, et la valeur par défaut précédemment acceptée a été inversée.
 
@@ -258,8 +260,8 @@ C'est la **Confirmation Gate** en action : la décision antérieure (« par déf
 ### Changement clé : inversion de la logique des paramètres
 
 ```
-Conception initiale : --no-spec (sauter spec)
-Nouvelle conception  : --spec (activer spec, opt-in)
+Original design: --no-spec (skip spec)
+New design:      --spec (enable spec, opt-in)
 ```
 
 Cette inversion est l'illustration la plus claire de la Confirmation Gate dans cette étude de cas : une valeur par défaut à l'origine « engageante » (`--no-spec`, i.e. spec activée par défaut) a été rouverte, inversée et re-confirmée comme opt-in une fois que l'utilisateur a fait émerger un flux de travail réel qu'elle aurait cassé.
@@ -317,57 +319,57 @@ Cette inversion est l'illustration la plus claire de la Confirmation Gate dans c
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                   Flux de développement SDD CodexSpec                   │
+│                   CodexSpec SDD Development Flow                        │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:specify                                                     │
-│  ├─ Clarifier les exigences via Q&R                                     │
-│  ├─ L'utilisateur fournit des exemples de référence                     │
-│  └─ 10 questions couvrant langue, plateforme, contenu, paramètres, etc. │
+│  ├─ Clarify requirements through Q&A                                    │
+│  ├─ User provides reference examples                                    │
+│  └─ 10 questions covering language, platform, content, parameters, etc. │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:generate-spec                                               │
-│  ├─ Génère un spec.md complet                                           │
-│  ├─ 4 récits utilisateur, 8 exigences fonctionnelles, 10 cas de test    │
-│  └─ Sauvegardé dans .codexspec/specs/2026-0613-1200ab-pr-description-generator/spec.md │
+│  ├─ Generate a complete spec.md                                         │
+│  ├─ 4 user stories, 8 functional requirements, 10 test cases            │
+│  └─ Saved to .codexspec/specs/2026-0613-1200ab-pr-description-generator/spec.md │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:review-spec                                                 │
-│  ├─ Score qualité : 92/100                                              │
-│  ├─ 2 avertissements détectés (découverte tests, gestion multi-spec)    │
-│  └─ Statut : Pass, peut passer à la planification                       │
+│  ├─ Quality score: 92/100                                               │
+│  ├─ Found 2 warnings (test-file discovery, multi-spec handling)         │
+│  └─ Status: Pass, can proceed to planning                               │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec:clarify  (Ajustement critique)                              │
-│  ├─ L'utilisateur fait émerger un problème d'usage réel                 │
-│  ├─ 5 questions de clarification, toutes résolues                       │
-│  ├─ Changement clé : --no-spec → --spec (opt-in)                        │
-│  └─ 5 nouvelles exigences (REQ-005b, 006b, 008a, 010, mise à jour 007)  │
+│  /codexspec:clarify  (Critical adjustment)                              │
+│  ├─ User surfaces a real-world usage issue                              │
+│  ├─ 5 clarification questions, all answered                             │
+│  ├─ Key change: --no-spec → --spec (opt-in)                             │
+│  └─ Added 5 requirements (REQ-005b, 006b, 008a, 010, updated 007)       │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:design-to-plan                                                │
-│  ├─ Met à jour le plan d'implémentation technique                       │
-│  ├─ 9 décisions techniques, dont 5 nouvelles                            │
-│  ├─ 5 phases d'implémentation                                           │
-│  └─ Sauvegardé dans .codexspec/specs/2026-0613-1200ab-pr-description-generator/plan.md │
+│  ├─ Update the technical implementation plan                            │
+│  ├─ 9 technical decisions, including 5 new ones                         │
+│  ├─ 5 implementation phases                                             │
+│  └─ Saved to .codexspec/specs/2026-0613-1200ab-pr-description-generator/plan.md │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  Étapes suivantes (non effectuées dans cette session)                   │
-│  ├─ /codexspec:review-plan - valider la qualité du plan                 │
-│  ├─ /codexspec:plan-to-tasks - décomposer en tâches exécutables         │
-│  └─ /codexspec:implement-tasks - exécuter l'implémentation              │
+│  Subsequent steps (not completed in this session)                       │
+│  ├─ /codexspec:review-plan - Validate plan quality                      │
+│  ├─ /codexspec:plan-to-tasks - Break down into executable tasks         │
+│  └─ /codexspec:implement-tasks - Execute the implementation             │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -392,11 +394,11 @@ Ce cas montre le rôle pivot de la commande `clarify` :
 ### 3. Évolution de la conception des paramètres
 
 ```
-Conception initiale :
-  --no-spec : sauter spec.md (utilisé par défaut)
+Initial design:
+  --no-spec: skip spec.md (used by default)
 
-Conception finale :
-  --spec : activer spec.md (non utilisé par défaut)
+Final design:
+  --spec: enable spec.md (not used by default)
 ```
 
 Ce changement reflète un recentrage de la conception, passant d'un « flux SDD par défaut » à un dispositif qui « prend aussi en charge les flux non-SDD », rendant l'outil plus généraliste.
@@ -415,28 +417,28 @@ Ce changement reflète un recentrage de la conception, passant d'un « flux SDD 
 ## Annexe : aide-mémoire des commandes
 
 ```bash
-# 1. Clarification initiale des exigences
+# 1. Initial requirement clarification
 /codexspec:specify
 
-# 2. Générer le document de spécification
+# 2. Generate the specification document
 /codexspec:generate-spec
 
-# 3. Reverifier la qualité de la spécification
+# 3. Review the specification quality
 /codexspec:review-spec
 
-# 4. Clarifier/ajuster les exigences (optionnel ; à utiliser en cas de problème détecté)
-/codexspec:clarify [description du problème]
+# 4. Clarify/adjust requirements (optional; use when an issue is found)
+/codexspec:clarify [issue description]
 
-# 5. Générer le plan technique
+# 5. Generate the technical plan
 /codexspec:design-to-plan
 
-# 6. Reverifier la qualité du plan (optionnel)
+# 6. Review the plan quality (optional)
 /codexspec:review-plan
 
-# 7. Décomposer en tâches
+# 7. Break down into tasks
 /codexspec:plan-to-tasks
 
-# 8. Exécuter l'implémentation
+# 8. Execute the implementation
 /codexspec:implement-tasks
 ```
 

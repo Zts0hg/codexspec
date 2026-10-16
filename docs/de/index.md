@@ -1,93 +1,97 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/images/codexspec-logo-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/images/codexspec-logo-light.svg">
-  <img alt="CodexSpec Logo" src="assets/images/codexspec-logo-light.svg" width="420">
-</picture>
+# CodexSpec
 
-# Willkommen bei CodexSpec
+![CodexSpec](assets/images/codexspec-logo-light.svg#only-light){ width="420" }
 
-[![PyPI version](https://img.shields.io/pypi/v/codexspec.svg)](https://pypi.org/project/codexspec/)
-[![Python](https://img.shields.io/pypi/pyversions/codexspec.svg)](https://pypi.org/project/codexspec/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![CodexSpec](assets/images/codexspec-logo-dark.svg#only-dark){ width="420" }
 
-**Ein Requirements-First-SDD-Toolkit für Claude Code**
+**Ein Toolkit für Requirements-First SDD mit Claude Code und OpenAI Codex**
 
-CodexSpec hilft Ihnen, hochwertige Software durch **Requirements-First Spec-Driven Development (SDD)** zu bauen – bestätigte Anforderungen sind die höchstrangige Autorität, und nichts ist verbindlich, bis Sie es ausdrücklich bestätigen. Anstatt sofort Code zu schreiben, legen Sie fest und bestätigen **was** Sie bauen und **warum**, bevor Sie entscheiden, **wie** es gebaut wird.
+CodexSpec erstellt aus bestätigten Anforderungen Spezifikationen, Entwürfe, Pläne,
+Aufgaben und Implementierungen, die sich auf ihre Quellen zurückführen lassen.
+Sie entscheiden, **was** entwickelt werden soll und **warum**. Der Agent erarbeitet
+innerhalb dieser bestätigten Anforderungen das **Wie** und nutzt dabei
+Review-Prüfpunkte und dauerhaft gespeichertes Projektwissen.
+
+Nutzen Sie CodexSpec mit den Slash-Befehlen von Claude Code, mit Codex-Skills oder
+mit beiden. Für reguläre Features werden standardmäßig separate Git-Worktrees
+verwendet. Mit einem optionalen gemeinsamen Blueprint kann der Agent eine Liste
+bestätigter Anforderungen autonom abarbeiten.
+
+<a id="why-choose-codexspec"></a>
 
 ## Warum CodexSpec?
 
-Warum CodexSpec zusätzlich zu Claude Code verwenden? Hier der Vergleich:
+| Bedarf | Was CodexSpec bietet |
+|------|-------------------------|
+| Klarer Zweck des Produkts | Explizite Bestätigung und dauerhaft gespeicherte Anforderungen in `requirements.md` vor der Spezifikation |
+| Nachvollziehbare Entwicklung | Quellenverweise entlang der Kette Anforderungen → Spezifikation → Entwurf → Plan → Aufgaben |
+| Überprüfbare Entscheidungen | Vier Befehle zur Prüfung von Artefakten, eine artefaktübergreifende Analyse und eine separate Codeprüfung, bei der Fehler die Freigabe verhindern |
+| Kontinuität zwischen Sitzungen und im Team | Feature-Aufzeichnungen, Projektprinzipien, wiederverwendbares Wissen und relevante frühere Entscheidungen |
+| Mehrere Features gleichzeitig | Ein Git-Worktree pro regulärem Feature; der zugehörige Arbeitsbereich wird zuverlässig wiederverwendet |
+| Mehr Automatisierung | Optionaler automatischer Übergang zwischen Phasen und autonome Entwicklung bestätigter Blueprint-Anforderungen |
+| Sprachpräferenzen im Team | Unabhängig wählbare Sprachen für Interaktion, Dokumente und Commits |
 
-| Aspekt | Nur Claude Code | CodexSpec + Claude Code |
-|--------|------------------|-------------------------|
-| **Mehrsprachige Unterstützung** | Standardmäßig englische Interaktion | Team-Sprache konfigurieren für reibungslosere Zusammenarbeit und Reviews |
-| **Nachvollziehbarkeit** | Entscheidungen nach Session-Ende schwer nachzuvollziehen | Alle Specs, Pläne und Aufgaben gespeichert in `.codexspec/specs/` |
-| **Session-Wiederherstellung** | Unterbrochene Plan-Modus-Sessions lassen sich schwer wiederherstellen | Aufteilung auf mehrere Befehle + persistente Dokumente = einfache Wiederherstellung |
-| **Team-Governance** | Keine einheitlichen Prinzipien, inkonsistente Stile | `constitution.md` setzt Team-Standards und Qualität durch |
+<a id="what-is-requirements-first-sdd"></a>
 
 ### Was ist Requirements-First SDD?
 
-**Requirements-First SDD** ist die Spec-Driven-Development-Methodik (SDD) mit einer Erweiterung: **Bestätigte Anforderungen sind die höchstrangige Autorität**. Sie definieren und bestätigen *was* gebaut wird und *warum*, bevor Sie entscheiden *wie* – und nichts wird verbindlich, bevor Sie es ausdrücklich bestätigen.
+Bei Requirements-First Spec-Driven Development sind **bestätigte Anforderungen
+für ein Feature die maßgebliche Grundlage mit der höchsten Priorität**. Bevor der
+Agent daraus Implementierungsartefakte ableitet, hält er Ziele, Einschränkungen,
+Entscheidungen, Ausschlüsse, offene Fragen und die Belege für die Bestätigung fest.
 
+```text
+Idea → Confirmed Requirements →     Spec    →     Design    →     Plan    →    Tasks     →     Code
+                 ↓                   ↓              ↓              ↓             ↓              ↓
+         User confirmation      review-spec   review-design   review-plan   review-tasks   review-code
 ```
-Traditionell:  Idee → Code → Debuggen → Neuschreiben
-SDD:           Idee → Bestätigte Anforderungen → Spec → Plan → Aufgaben → Code
-```
 
-### Hauptmerkmale
+Sie bestätigen die Anforderungen. Jedes daraus abgeleitete Artefakt wird eigens
+geprüft – von der Spezifikation bis zum Code.
 
-- **Verfassungsbasierte Entwicklung** – Projektprinzipien festlegen, die alle Entscheidungen leiten
-- **Persistente Anforderungen-Erfassung** – `/specify` speichert bestätigte Diskussionen in `requirements.md`, bevor Dokumente erzeugt werden
-- **Automatische Reviews** – Jedes erzeugte Spec-, Plan- und Aufgaben-Artefakt enthält eingebaute Qualitätsprüfungen
-- **Interaktive Klärung** – Q&A-basierte Anforderungsverfeinerung
-- **Artefaktübergreifende Analyse** – Inkonsistenzen vor der Implementierung erkennen
-- **Nachvollziehbare Aufgaben** – Aufgaben-Aufteilungen bewahren Anforderungs- und Planabdeckung und wenden **Conditional TDD** an (test-first-Reihenfolge nur dort, wo Plan, Verfassung oder Risiko es erfordern; nicht-testbare Aufgaben wie Doku/Konfiguration werden direkt implementiert)
-- **Native Claude-Code-Integration** – Slash-Befehle funktionieren nahtlos
-- **Mehrsprachige Unterstützung** – 13+ Sprachen über dynamische LLM-Übersetzung
-- **Plattformübergreifend** – Bash- und PowerShell-Skripte inklusive
-- **Erweiterbar** – Plugin-Architektur für eigene Befehle
+In der Zusammenarbeit mit Menschen wird festgelegt und geändert, was das Produkt
+leisten soll. Automatische Reviews prüfen die abgeleiteten Artefakte anhand dieser
+Vorgaben. Wird die Automatisierung aktiviert, setzt sie die Arbeit nach erfolgreich
+geprüften Phasen fort. Sie berechtigt den Agenten nicht, bestätigte Anforderungen
+stillschweigend zu ersetzen.
 
-## Schnellstart
+[![CodexSpec: anforderungsorientierte Entwicklung, Reviews je Phase und Wiederverwendung von Erfahrungen](../../assets/workflow/workflow-de-light.png#only-light)](../../assets/workflow/workflow-de-light.png#only-light)
+
+[![CodexSpec: anforderungsorientierte Entwicklung, Reviews je Phase und Wiederverwendung von Erfahrungen](../../assets/workflow/workflow-de-dark.png#only-dark)](../../assets/workflow/workflow-de-dark.png#only-dark)
+
+Diagramm in voller Größe öffnen: [☀️](../../assets/workflow/workflow-de-light.png) · [🌙](../../assets/workflow/workflow-de-dark.png)
+
+<a id="30-second-quick-start"></a>
+
+## Schnellstart in 30 Sekunden
+
+Installieren Sie CodexSpec und initialisieren Sie das Projekt für den Assistenten,
+den Sie verwenden:
 
 ```bash
-# Installieren
 uv tool install codexspec
 
-# Neues Projekt erstellen
-codexspec init my-project
+# Create a new project for Claude Code
+codexspec init my-project --ai claude
 
-# Oder in bestehendem Projekt initialisieren
-codexspec init . --ai claude
+# Or initialize an existing project for Codex
+cd your-existing-project
+codexspec init . --ai codex
+
+# Use --ai both when you want both integrations
 ```
 
-[Vollständige Installationsanleitung](getting-started/installation.md)
+Starten Sie den installierten Assistenten im initialisierten Projekt. Je nach
+Assistent wird derselbe Workflow auf eine der folgenden Arten aufgerufen:
 
-## Workflow-Überblick
+| Assistent | Anforderungsermittlung starten |
+|-----------|------------------------------|
+| Claude Code (`claude`) | `/codexspec:specify I want to build a todo application` |
+| Codex (`codex`) | `$codexspec:specify I want to build a todo application` |
 
-CodexSpec gliedert die Entwicklung in **überprüfbare Checkpoints**. Bestätigte Anforderungen fließen über Specs, Pläne und Aufgaben in den Code, mit einem Review an jedem Schritt.
+Passen Sie die Projektprinzipien bei Bedarf mit `constitution` an. Bestätigen Sie
+die abschließende Zusammenfassung der Anforderungen. Arbeiten Sie anschließend
+im zurückgegebenen Feature-Verzeichnis und Arbeitsbereich weiter. Die weiteren
+Befehle finden Sie unter [Kern-Workflow](user-guide/workflow.md#core-workflow).
 
-```
-Idee → Bestätigte Anforderungen → Spec → Plan → Aufgaben → Code
-```
-
-Jedes Artefakt wird von einem dedizierten Befehl erzeugt und validiert, bevor die nächste Stufe beginnt:
-
-```
-Idee → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
-                                                   │                         │                            │
-                                              Spec reviewen              Plan reviewen               Aufgaben reviewen
-```
-
-### Das Confirmation Gate
-
-Das zentrale Abgrenzungsmerkmal ist das **Confirmation Gate**: Anforderungen, Specs, Pläne und Aufgaben werden erst nach Ihrer ausdrücklichen menschlichen Bestätigung verbindlich. Bestätigte Anforderungen sind die höchstrangige Feature-Autorität, sodass die AI Entscheidungen nicht stillschweigend festnageln kann – abgeleitete Artefakte tragen explizite Quellverweise, und Konflikte werden zurückverfolgt statt weitergetragen.
-
-### Iterative Qualitätsschleife
-
-Jeder Generierungsbefehl enthält ein **automatisches, evidenzbasiertes Review**: Mängel erfordern konkrete Beweise, empfehlende Hinweise lösen nie automatische Änderungen aus, und verifizierte Mängel dürfen behoben und für höchstens zwei Runden erneut geprüft werden. Diese Schleife hebt die Qualität, ohne dass Sie jedes Detail überwachen müssen.
-
-[Workflow kennenlernen](user-guide/workflow.md)
-
-## Lizenz
-
-MIT-Lizenz – siehe [LICENSE](https://github.com/Zts0hg/codexspec/blob/main/LICENSE) für Details.
+Wenn Sie die Codex-Desktop-App verwenden, können Sie [Codex mit der Installation und Initialisierung Ihres Projekts beauftragen](getting-started/installation.md#install-with-the-codex-desktop-app).

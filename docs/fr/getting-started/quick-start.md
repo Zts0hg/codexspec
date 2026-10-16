@@ -1,146 +1,156 @@
 # Démarrage rapide
 
-Cette page parcourt le flux **Requirements-First SDD** complet en huit étapes.
-Les exigences confirmées sont l'autorité de priorité la plus haute, et rien n'est définitif tant que vous ne l'avez pas explicitement confirmé — chaque étape se termine par une **Confirmation Gate** que vous contrôlez.
+<a id="30-second-quick-start"></a>
 
-Pour des changements petits et bien délimités, vous pouvez sauter la walkthrough complète et lancer `/codexspec:quick` à la place.
+## Démarrage rapide en 30 secondes
 
-## 1. Initialiser un projet
-
-Après l'installation, créez ou initialisez votre projet :
+Installez CodexSpec et initialisez le projet pour l'assistant que vous utilisez :
 
 ```bash
-# Créer un nouveau projet
-codexspec init my-awesome-project
+uv tool install codexspec
 
-# Ou initialiser dans le répertoire courant
-codexspec init . --ai claude
+# Create a new project for Claude Code
+codexspec init my-project --ai claude
 
-# Avec une sortie en chinois (définit la base de sortie)
-codexspec init my-project --lang zh-CN
+# Or initialize an existing project for Codex
+cd your-existing-project
+codexspec init . --ai codex
 
-# Entièrement non interactif (CI/scripts) : base zh-CN, messages de commit en anglais
-codexspec init my-project --lang zh-CN --commit-lang en
-
-# Définir chaque dimension linguistique explicitement (scriptable, sans invite)
-codexspec init my-project \
-  --interaction-lang zh-CN --document-lang en --commit-lang en
+# Use --ai both when you want both integrations
 ```
 
-Ensuite, placez-vous dans le projet et lancez Claude Code :
+Lancez l'assistant installé dans le projet que vous venez d'initialiser. Le
+flux de travail est le même ; seule la forme des commandes change :
 
-```bash
-cd my-awesome-project
-claude
+| Assistant | Commencer à définir les exigences |
+|-----------|------------------------------|
+| Claude Code (`claude`) | `/codexspec:specify I want to build a todo application` |
+| Codex (`codex`) | `$codexspec:specify I want to build a todo application` |
+
+Si nécessaire, adaptez les principes du projet avec `constitution`. Confirmez
+le résumé final des exigences, puis poursuivez dans le dossier de la
+fonctionnalité et l'espace de travail indiqués par la commande. Les étapes
+suivantes sont décrites dans [Flux de travail principal](../user-guide/workflow.md#core-workflow).
+
+Vous utilisez l'application de bureau Codex ? [Demandez à Codex d'installer et d'initialiser votre projet](installation.md#install-with-the-codex-desktop-app).
+
+<a id="core-workflow"></a>
+
+## Flux de travail principal
+
+Dans le flux standard, les artefacts de chaque fonctionnalité conservent des références à leurs sources :
+
+```text
+/specify          → requirements.md
+/generate-spec    → spec.md       → review-spec
+/spec-to-design   → design.md     → review-design
+/design-to-plan   → plan.md       → review-plan
+/plan-to-tasks    → tasks.md      → review-tasks → analyze
+/implement-tasks  → implementation and complete-feature code review
 ```
 
-## 2. Établir les principes du projet
+Les exemples suivants utilisent le préfixe `/codexspec:` de Claude. Dans
+Codex, utilisez `$codexspec:` avec le même nom de commande et les mêmes arguments.
 
-Utilisez la commande constitution pour fixer les standards auxquels tous les artefacts ultérieurs seront confrontés :
+| Étape | Commande | Objectif et résultat |
+|------|---------|--------------------|
+| Principes du projet | `/codexspec:constitution` | Créer ou mettre à jour `constitution.md` et valider les artefacts concernés |
+| Exigences | `/codexspec:specify <idea>` | Discuter de l'intention, confirmer le résumé final et enregistrer `requirements.md` |
+| Spécification | `/codexspec:generate-spec <feature-dir>` | Élaborer `spec.md` à partir des exigences confirmées, avec des références aux sources |
+| Conception du système | `/codexspec:spec-to-design <feature-dir>` | Élaborer `design.md` avec les composants, les interfaces et les principales décisions de conception |
+| Plan d'implémentation | `/codexspec:design-to-plan <feature-dir>` | Élaborer `plan.md` avec les phases, leur ordre et les vérifications |
+| Tâches | `/codexspec:plan-to-tasks <feature-dir>` | Élaborer un `tasks.md` traçable et vérifiable, puis analyser la cohérence entre les artefacts |
+| Implémentation | `/codexspec:implement-tasks <feature-dir>` | Exécuter les tâches, vérifier les résultats et corriger les constats de revue vérifiés de façon indépendante |
 
-```
-/codexspec:constitution Create principles focused on code quality and testing
-```
+Remplacez `<feature-dir>` par le dossier de la fonctionnalité indiqué lors de
+la définition des exigences. Poursuivez dans son worktree ou fournissez son
+chemin explicite pour conserver la même identité de fonctionnalité d'une
+commande ou d'une session à l'autre.
 
-## 3. Clarifier les exigences
+<a id="specify-clarify-and-analyze"></a>
 
-Utilisez `/codexspec:specify` pour explorer les exigences :
+### specify, clarify et analyze
 
-```
-/codexspec:specify I want to build a task management application
-```
+- **specify** lance ou reprend la définition des exigences. Le résumé ne devient contraignant qu'après confirmation explicite.
+- **clarify** résout les ambiguïtés des exigences ou de la spécification existantes : jusqu'à cinq questions par exécution, réparties entre quatre catégories. Il met d'abord à jour `requirements.md`, puis synchronise `spec.md`.
+- **analyze** vérifie toute la chaîne : exigences → spécification → conception → plan → tâches. Il applique automatiquement des corrections déterministes aux artefacts dérivés lorsque ces corrections découlent des sources qui font autorité ; il ne modifie jamais `requirements.md`. Les constats non résolus sont signalés. Il s'exécute automatiquement après une revue des tâches validée et reste informatif, sans bloquer l'implémentation.
 
-Cette commande pose des questions de clarification, fait émerger les cas limites, et vous demande de confirmer un résumé final des exigences qui est persisté dans `requirements.md`.
-
-> **Confirmation Gate** : `/codexspec:specify` n'écrit que les entrées que vous confirmez explicitement. Le résumé des exigences qu'il présente n'est **pas** définitif tant que vous ne l'acceptez pas — refusez, modifiez ou rouvrez n'importe quel élément avant de dire oui. Rien en aval ne peut outrepasser ce que vous confirmez ici.
-
-## 4. Générer la spécification
-
-Une fois le résumé des exigences confirmé, générez le document de spécification :
-
-```
-/codexspec:generate-spec
-```
-
-`generate-spec` compile les entrées confirmées en un `spec.md` structuré avec des références aux sources pour la traçabilité, puis lance une revue automatique (les défauts nécessitent des preuves concrètes ; les suggestions consultatives ne déclenchent jamais de modifications automatiques ; les défauts vérifiés peuvent être corrigés puis soumis à une nouvelle revue pendant deux tours au maximum).
-
-## 5. Valider et revérifier
-
-**Recommandé** : validez la spec avant de poursuivre :
-
-```
-/codexspec:review-spec
+```text
+/codexspec:clarify <feature-dir>
+/codexspec:analyze <feature-dir>
 ```
 
-Il s'agit d'une **revue fondée sur des preuves** : chaque défaut signalé cite une preuve concrète, et les avis de conception restent séparés de l'acceptation.
+<a id="small-changes-with-quick"></a>
 
-## 6. Créer le plan technique
+### Petits changements avec Quick
 
-```
-/codexspec:spec-to-design Use Python FastAPI for backend
-/codexspec:design-to-plan
-```
+Utilisez `quick` pour un changement limité et bien défini, comme une correction locale :
 
-Le plan enregistre les liens `Covers` vers les exigences de la spécification et vérifie les principes applicables de la constitution.
-
-## 7. Générer les tâches
-
-```
-/codexspec:plan-to-tasks
+```text
+/codexspec:quick Fix the empty-state message on the task list
 ```
 
-Les tâches sont organisées autour de résultats vérifiables, avec des liens de traçabilité vers le plan et les exigences. L'ordonnancement test-first est appliqué **conditionnellement** — uniquement lorsque le plan, la constitution ou le risque de la tâche l'exige. Les tâches non testables (doc, configuration) sont implémentées directement.
+Quick confirme et enregistre un résumé bref des exigences, puis coordonne
+la spécification, la planification, les tâches et l'implémentation avec les
+revues des commandes de génération. Les changements de grande ampleur et les
+choix de produit ou de conception encore en suspens nécessitent le flux standard.
+Quick s'arrête lorsqu'une nouvelle décision est nécessaire.
 
-## 8. Implémenter
+<a id="workflow-automation"></a>
 
-```
-/codexspec:implement-tasks
-```
+### Automatisation du flux de travail
 
-L'implémentation suit le **TDD conditionnel** : les tâches de code utilisent le cycle Red → Green → Verify → Refactor lorsque c'est requis ; les tâches de documentation et de configuration sont implémentées directement.
+La valeur par défaut de `workflow.auto_next` est **false**. Si elle est `true`
+dans la configuration de l'espace de travail actif, la confirmation finale des
+exigences lance l'étape de spécification. Chaque étape de génération avance
+après un résultat `PASS` ou `PASS_WITH_WARNINGS` ; un résultat `NEEDS_REVISION`
+ou `BLOCKED` arrête la chaîne. `implement-tasks` est la dernière étape.
 
-## Petits changements : `/codexspec:quick`
+La correction automatique des artefacts ne porte que sur les défauts vérifiés
+dont la solution découle des éléments établis dans les artefacts en amont,
+avec un maximum de deux cycles de correction et de revue. Les recommandations
+sont traitées séparément. La revue et la correction de l'implémentation ont
+leurs propres règles d'achèvement, décrites plus loin.
 
-Pour un petit changement bien délimité, vous n'avez pas besoin de la walkthrough complète en huit étapes. `/codexspec:quick` exécute un flux Requirements-First SDD compact en une seule commande :
+Le [guide du flux de travail](../user-guide/workflow.md) détaille les règles de chaque étape.
 
-```
-/codexspec:quick Add a "remember me" checkbox to the login form
-```
-
-Quick respecte les mêmes garde-fous que le flux complet :
-
-- Il crée un espace de travail pour la fonctionnalité et un `requirements.md` en utilisant la même convention d'horodatage que `/codexspec:specify`.
-- Il présente un résumé concis des exigences confirmées (`NEED-*`, `CON-*`/`DEC-*` pertinentes, `OUT-*`, `OPEN-*` non résolus) et attend votre confirmation explicite — la **Confirmation Gate** s'applique toujours.
-- Il enchaîne ensuite `/codexspec:generate-spec` → `/codexspec:design-to-plan` → `/codexspec:plan-to-tasks` → `/codexspec:implement-tasks` sur ce répertoire de fonctionnalité, chaque commande de génération ayant sa propre boucle de revue automatique.
-
-Si le changement se révèle large ou qu'il a plusieurs résultats indépendants, Quick s'interrompt et recommande le flux standard à la place.
+<a id="project-structure"></a>
 
 ## Structure du projet
 
-Après l'initialisation :
+L'initialisation installe les ressources communes et l'intégration de l'assistant sélectionné :
 
-```
+```text
 my-project/
 ├── .codexspec/
+│   ├── config.yml
 │   ├── memory/
-│   │   └── constitution.md    # Constitution du projet
+│   │   └── constitution.md
+│   ├── profile/
+│   │   ├── constraints/
+│   │   ├── conventions/
+│   │   ├── pitfalls/
+│   │   ├── decisions/
+│   │   ├── strategies/
+│   │   └── runbooks/
+│   ├── review-code/              # Shared review standards
 │   ├── specs/
-│   │   └── {feature-id}/
-│   │       ├── spec.md        # Spécification de la fonctionnalité
-│   │       ├── plan.md        # Plan technique
-│   │       ├── tasks.md       # Décomposition en tâches
-│   │       └── checklists/    # Checklists qualité
-│   ├── templates/             # Modèles personnalisés
-│   ├── scripts/               # Scripts utilitaires
-│   └── extensions/            # Extensions personnalisées
-├── .claude/
-│   └── commands/              # Slash commands Claude Code
-├── .agents/
-│   └── skills/                # Skills Codex (si initialisé avec --ai codex ou both)
-├── CLAUDE.md                  # Contexte Claude Code
-└── AGENTS.md                  # Contexte Codex
+│   │   └── <feature-id>-<name>/   # Added by feature workflows
+│   │       ├── requirements.md
+│   │       ├── spec.md
+│   │       ├── design.md
+│   │       ├── plan.md
+│   │       ├── tasks.md
+│   │       ├── review-*.md
+│   │       └── checklists/       # When requested
+│   ├── templates/docs/
+│   └── scripts/                 # Platform helpers and commit runtime
+├── .claude/commands/codexspec/   # --ai claude or both
+├── .agents/skills/              # --ai codex or both
+├── CLAUDE.md                    # Claude project context
+└── AGENTS.md                    # Codex project context
 ```
 
-## Prochaines étapes
-
-[Guide complet du flux de travail](../user-guide/workflow.md)
+Le blueprint partagé est conservé dans le worktree dédié à auto-dev. Il n'en
+existe pas de copie modifiable distincte dans chaque checkout du flux standard.
+Les brouillons de revue manuelle des connaissances sont exclus de Git.

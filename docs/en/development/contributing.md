@@ -14,7 +14,7 @@ git clone https://github.com/Zts0hg/codexspec.git
 cd codexspec
 
 # Install development dependencies
-uv sync --dev
+uv sync --extra dev
 
 # Run locally
 uv run codexspec --help
@@ -30,13 +30,13 @@ uv run ruff check src/
 
 ```bash
 # Install docs dependencies
-uv sync --extra docs
+uv sync --extra dev --extra docs
 
 # Preview documentation locally
 uv run mkdocs serve
 
 # Build documentation
-uv run mkdocs build
+uv run mkdocs build --strict
 ```
 
 ## Building
@@ -58,3 +58,8 @@ uv build
 - Line length: 120 characters max
 - Follow PEP 8
 - Use type hints for public functions
+
+Read [CLAUDE.md](https://github.com/Zts0hg/codexspec/blob/main/CLAUDE.md), [AGENTS.md](https://github.com/Zts0hg/codexspec/blob/main/AGENTS.md), and
+[Repository Layout](https://github.com/Zts0hg/codexspec/blob/main/docs/internal/repository-layout.md) before changing templates,
+packaging, or initialization. Distributed command and skill copies are generated
+installation artifacts; edit their authoritative sources and regenerate them.

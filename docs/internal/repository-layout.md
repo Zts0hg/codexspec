@@ -155,6 +155,8 @@ The existing public command set and package allowlists remain unchanged.
 `internal/workflow_diagrams/` are maintainer-only authoring, translation,
 generation and validation resources. Generated editable draw.io files remain
 under the internal directory; the 16 display PNGs live in `assets/workflow/`.
-Root READMEs use locale-specific theme-aware links. Neither these tools nor
+Root READMEs use locale-specific theme-aware links. The site build registers
+these same PNGs with `hooks/workflow_assets.py` and publishes them under
+`assets/workflow/`, without maintaining copies in `docs/`. Neither these tools nor
 assets enter the package or user-project initialization; packaging allowlists
 remain unchanged. See `internal/workflow_diagrams/README.md` for maintenance.

@@ -1,5 +1,7 @@
 # CodexSpec 使用案例：为项目添加 PR 描述信息生成功能
 
+> 历史案例：下文保留了当时的对话、阶段性决策、命令顺序和审查评分，不代表当前命令约定。现在的标准流程包含独立设计阶段及 `review-design`；`clarify` 会先更新已确认需求，再同步规格。当前用法见[工作流](../user-guide/workflow.md)和 [PR 命令参考](../user-guide/commands.md#codexspecpr)。
+
 > 本文档记录了使用 CodexSpec 工具链为 CodexSpec 项目本身添加新功能的完整过程，展示了 Spec-Driven Development (SDD) 的实际应用。
 
 ## 概述
@@ -17,18 +19,18 @@
 ### 用户初始输入
 
 ```
-我希望为项目增加一个功能：提供一个新的 Git 相关的指令用来生成准确详细且符合规范的 GitHub PR 信息（或者 MR 信息，针对 GitLab）。以下是我在其他项目中使用过的两个 PR 指令内容，提供给你参考。
+I want to add a feature to the project: a new Git-related command that generates accurate, detailed, and standards-compliant GitHub PR descriptions (or MR descriptions, for GitLab). Below are two PR commands I have used in other projects, provided for reference.
 
-[参考示例 1 - 结构化描述]
-现在，请扮演项目维护者的角色，基于我们到目前为止的所有工作，为这次提交撰写一份清晰的Pull Request描述。
-PR描述需要面向团队的其他审查者，包含以下几个部分：
-1. 背景（Context）
-2. 实现方案（Implementation）
-3. 测试（Testing）
-4. 如何手动验证（How to Verify）
+[Reference Example 1 - Structured Description]
+Now, acting as a project maintainer, based on all the work we have done so far, write a clear Pull Request description for this submission.
+The PR description should be aimed at the other reviewers on the team and include the following sections:
+1. Context
+2. Implementation
+3. Testing
+4. How to Verify
 
-[参考示例 2 - 简单描述]
-请你根据当前分支与 origin/main 分支的代码差异，使用 Markdown 格式整理一份符合 Git 规范的 Merge Request 的 title 和 description。（使用中文描述）
+[Reference Example 2 - Simple Description]
+Based on the code diff between the current branch and origin/main, use Markdown to produce a Merge Request title and description that comply with Git conventions. (Describe in Chinese.)
 ```
 
 ### 澄清过程
@@ -93,7 +95,7 @@ PR描述需要面向团队的其他审查者，包含以下几个部分：
 **更新后的需求摘要**:
 
 ```
-语言优先级: language.commit > language.output > English (默认)
+Language priority: language.commit > language.output > English (default)
 ```
 
 ---
@@ -258,8 +260,8 @@ The command shall determine output language in the following priority order:
 ### 关键变更: 参数逻辑反转
 
 ```
-原设计: --no-spec (跳过 spec)
-新设计: --spec (启用 spec，opt-in)
+Original design: --no-spec (skip spec)
+New design:      --spec (enable spec, opt-in)
 ```
 
 这一反转是本案中最清晰的确认门示例：原本"绑定"的默认（`--no-spec`，即默认启用 spec）被重新打开、反转，并在用户抛出一个它本会破坏的真实工作流后，重新确认为 opt-in。
@@ -317,57 +319,57 @@ The command shall determine output language in the following priority order:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                         CodexSpec SDD 开发流程                           │
+│                   CodexSpec SDD Development Flow                        │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec:specify                                                      │
-│  ├─ 通过问答澄清需求                                                     │
-│  ├─ 用户提供了参考示例                                                   │
-│  └─ 10 个问题，覆盖语言、平台、内容、参数等                              │
+│  /codexspec:specify                                                     │
+│  ├─ Clarify requirements through Q&A                                    │
+│  ├─ User provides reference examples                                    │
+│  └─ 10 questions covering language, platform, content, parameters, etc. │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec:generate-spec                                                │
-│  ├─ 生成完整的 spec.md                                                   │
-│  ├─ 4 个用户故事，8 个功能需求，10 个测试用例                             │
-│  └─ 保存到 .codexspec/specs/2026-0613-1200ab-pr-description-generator/spec.md         │
+│  /codexspec:generate-spec                                               │
+│  ├─ Generate a complete spec.md                                         │
+│  ├─ 4 user stories, 8 functional requirements, 10 test cases            │
+│  └─ Saved to .codexspec/specs/2026-0613-1200ab-pr-description-generator/spec.md │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec:review-spec                                                  │
-│  ├─ 质量评分: 92/100                                                     │
-│  ├─ 发现 2 个警告 (测试文件发现、多 spec 处理)                            │
-│  └─ 状态: 通过，可进入规划阶段                                           │
+│  /codexspec:review-spec                                                 │
+│  ├─ Quality score: 92/100                                               │
+│  ├─ Found 2 warnings (test-file discovery, multi-spec handling)         │
+│  └─ Status: Pass, can proceed to planning                               │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec:clarify  ⚠️ 关键调整                                        │
-│  ├─ 用户发现实际使用场景问题                                             │
-│  ├─ 5 个澄清问题，全部得到回答                                           │
-│  ├─ 关键变更: --no-spec → --spec (opt-in)                                │
-│  └─ 新增 5 个需求 (REQ-005b, 006b, 008a, 010, 更新 007)                  │
+│  /codexspec:clarify  (Critical adjustment)                              │
+│  ├─ User surfaces a real-world usage issue                              │
+│  ├─ 5 clarification questions, all answered                             │
+│  ├─ Key change: --no-spec → --spec (opt-in)                             │
+│  └─ Added 5 requirements (REQ-005b, 006b, 008a, 010, updated 007)       │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec:design-to-plan                                                 │
-│  ├─ 更新技术实现计划                                                     │
-│  ├─ 9 个技术决策，包含 5 个新增决策                                      │
-│  ├─ 5 个实现阶段                                                         │
-│  └─ 保存到 .codexspec/specs/2026-0613-1200ab-pr-description-generator/plan.md         │
+│  /codexspec:design-to-plan                                                │
+│  ├─ Update the technical implementation plan                            │
+│  ├─ 9 technical decisions, including 5 new ones                         │
+│  ├─ 5 implementation phases                                             │
+│  └─ Saved to .codexspec/specs/2026-0613-1200ab-pr-description-generator/plan.md │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  后续步骤 (未在本 session 完成)                                          │
-│  ├─ /codexspec:review-plan - 验证计划质量                                │
-│  ├─ /codexspec:plan-to-tasks - 分解为可执行任务                          │
-│  └─ /codexspec:implement-tasks - 执行实现                                │
+│  Subsequent steps (not completed in this session)                       │
+│  ├─ /codexspec:review-plan - Validate plan quality                      │
+│  ├─ /codexspec:plan-to-tasks - Break down into executable tasks         │
+│  └─ /codexspec:implement-tasks - Execute the implementation             │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -392,11 +394,11 @@ The command shall determine output language in the following priority order:
 ### 3. 参数设计的演变
 
 ```
-初始设计:
-  --no-spec: 跳过 spec.md (默认使用)
+Initial design:
+  --no-spec: skip spec.md (used by default)
 
-最终设计:
-  --spec: 启用 spec.md (默认不使用)
+Final design:
+  --spec: enable spec.md (not used by default)
 ```
 
 这个变化反映了从"默认 SDD 工作流"到"支持非 SDD 工作流"的设计转变，使工具更加通用。
@@ -415,28 +417,28 @@ The command shall determine output language in the following priority order:
 ## 附录: 命令使用速查
 
 ```bash
-# 1. 初始需求澄清
+# 1. Initial requirement clarification
 /codexspec:specify
 
-# 2. 生成规格文档
+# 2. Generate the specification document
 /codexspec:generate-spec
 
-# 3. 审查规格质量
+# 3. Review the specification quality
 /codexspec:review-spec
 
-# 4. 澄清/调整需求 (可选，发现问题后使用)
-/codexspec:clarify [问题描述]
+# 4. Clarify/adjust requirements (optional; use when an issue is found)
+/codexspec:clarify [issue description]
 
-# 5. 生成技术计划
+# 5. Generate the technical plan
 /codexspec:design-to-plan
 
-# 6. 审查计划质量 (可选)
+# 6. Review the plan quality (optional)
 /codexspec:review-plan
 
-# 7. 分解为任务
+# 7. Break down into tasks
 /codexspec:plan-to-tasks
 
-# 8. 执行实现
+# 8. Execute the implementation
 /codexspec:implement-tasks
 ```
 

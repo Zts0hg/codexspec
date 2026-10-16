@@ -1,146 +1,150 @@
 # クイックスタート
 
-このページでは、完全な **Requirements-First SDD** の流れを 8 ステップで説明します。
-確認された要件が最優先の権威であり、あなたが明示的に確認するまでは何も確定しません ― 各段階はあなたが制御する **Confirmation Gate** で終わります。
+<a id="30-second-quick-start"></a>
 
-小さく範囲が明確な変更であれば、完全なウォークスルーを省いて [`/codexspec:quick`](#小さな変更-codexspecquick) を実行することもできます。
+## 30 秒クイックスタート
 
-## 1. プロジェクトを初期化する
-
-インストールが終わったら、プロジェクトを作成または初期化します。
+CodexSpec をインストールし、使うアシスタントに合わせてプロジェクトを初期化します。
 
 ```bash
-# 新規プロジェクトを作成
-codexspec init my-awesome-project
+uv tool install codexspec
 
-# またはカレントディレクトリで初期化
-codexspec init . --ai claude
+# Create a new project for Claude Code
+codexspec init my-project --ai claude
 
-# 中国語で出力 (出力のベースを設定)
-codexspec init my-project --lang zh-CN
+# Or initialize an existing project for Codex
+cd your-existing-project
+codexspec init . --ai codex
 
-# 完全非対話 (CI/スクリプト向け): 出力ベースを zh-CN、コミットメッセージを英語
-codexspec init my-project --lang zh-CN --commit-lang en
-
-# すべての言語次元を明示的に指定 (スクリプト可能、プロンプトなし)
-codexspec init my-project \
-  --interaction-lang zh-CN --document-lang en --commit-lang en
+# Use --ai both when you want both integrations
 ```
 
-その後、プロジェクトに移動して Claude Code を起動します。
+初期化したプロジェクトで、インストール済みのアシスタントを起動してください。
+ワークフローは共通ですが、呼び出し方は次のように異なります。
 
-```bash
-cd my-awesome-project
-claude
+| アシスタント | 要件の検討を始めるコマンド |
+|-----------|------------------------------|
+| Claude Code (`claude`) | `/codexspec:specify I want to build a todo application` |
+| Codex (`codex`) | `$codexspec:specify I want to build a todo application` |
+
+必要に応じて `constitution` でプロジェクト原則を調整してください。
+最終的な要件サマリーを確認したら、返された機能ディレクトリとワークスペースで作業を続けます。
+以降のコマンドについては、[基本ワークフロー](../user-guide/workflow.md#core-workflow)を参照してください。
+
+Codex デスクトップアプリをお使いの場合は、[Codex にインストールとプロジェクトの初期化を依頼できます](installation.md#install-with-the-codex-desktop-app)。
+
+<a id="core-workflow"></a>
+
+## 基本ワークフロー
+
+標準的な機能開発では、各成果物を出典と結び付け、次の流れで進めます。
+
+```text
+/specify          → requirements.md
+/generate-spec    → spec.md       → review-spec
+/spec-to-design   → design.md     → review-design
+/design-to-plan   → plan.md       → review-plan
+/plan-to-tasks    → tasks.md      → review-tasks → analyze
+/implement-tasks  → implementation and complete-feature code review
 ```
 
-## 2. プロジェクト原則を定める
+以下の例は、Claude の `/codexspec:` プレフィックスを使っています。
+Codex では、コマンド名と引数はそのままに、`$codexspec:` を使ってください。
 
-constitution コマンドを使って、後続のすべての成果物が照らし合わせる基準を設定します。
+| ステップ | コマンド | 目的と出力 |
+|------|---------|--------------------|
+| プロジェクト原則 | `/codexspec:constitution` | `constitution.md` を作成・更新し、影響を受ける成果物を検証 |
+| 要件 | `/codexspec:specify <idea>` | 意図を話し合い、最終サマリーを確認して `requirements.md` に保存 |
+| 仕様書 | `/codexspec:generate-spec <feature-dir>` | 確認済み要件をもとに、出典参照付きの `spec.md` を作成 |
+| システム設計 | `/codexspec:spec-to-design <feature-dir>` | コンポーネント、インターフェース、主要な設計判断を記した `design.md` を作成 |
+| 実装計画 | `/codexspec:design-to-plan <feature-dir>` | フェーズ、実行順序、検証方法を記した `plan.md` を作成 |
+| タスク | `/codexspec:plan-to-tasks <feature-dir>` | 追跡・検証可能な `tasks.md` を作成し、成果物間の分析を実行 |
+| 実装 | `/codexspec:implement-tasks <feature-dir>` | タスクを実行し、結果を検証して、独立した検証を経たレビュー指摘を修正 |
 
-```
-/codexspec:constitution Create principles focused on code quality and testing
-```
+`<feature-dir>` は、要件の検討時に返された機能ディレクトリに置き換えてください。
+その worktree で作業を続けるか、明示的なパスを渡すことで、コマンドやセッションが変わっても同じ機能として扱われます。
 
-## 3. 要件を明確化する
+<a id="specify-clarify-and-analyze"></a>
 
-`/codexspec:specify` を使って要件を探索します。
+### specify、clarify、analyze
 
-```
-/codexspec:specify I want to build a task management application
-```
+- **specify** は要件の検討を開始、または再開します。要件サマリーが正式な判断基準になるのは、明示的な確認を得た場合だけです。
+- **clarify** は既存の要件や仕様の曖昧さを解消します。1 回の実行で 4 つのカテゴリにわたり、最大 5 つの質問をします。
+  まず `requirements.md` を更新し、その後 `spec.md` を同期します。
+- **analyze** は要件 → 仕様 → 設計 → 計画 → タスクの流れ全体を確認します。
+  上位の判断基準から修正内容が一意に決まる場合は、下位成果物を自動で修正します。`requirements.md` は一切編集しません。
+  未解決の指摘は報告します。タスクレビューの合格後に自動実行されますが、情報提供を目的としており、実装の合否は判定しません。
 
-このコマンドは明確化の質問を投げかけ、エッジケースを浮かび上がらせ、最終的な要件サマリを確認に渡します。確認されたサマリは `requirements.md` に永続化されます。
-
-> **Confirmation Gate**: `/codexspec:specify` は、あなたが明示的に確認した項目だけを書き込みます。提示される要件サマリは、あなたが受け入れるまでは確定**しません**。yes と言う前であれば、どの項目でも却下・修正・再検討できます。ここであなたが確認した内容は、下流のどのコマンドでも覆せません。
-
-## 4. 仕様書を生成する
-
-要件サマリが確認されたら、spec ドキュメントを生成します。
-
-```
-/codexspec:generate-spec
-```
-
-`generate-spec` は、確認された項目を構造化された `spec.md` にまとめ直します。トレーサビリティのためのソース参照を付与した上で、自動レビューを実行します (欠陥には具体的証拠が必要、助言的提案は自動変更をトリガーしない、検証された欠陥は最大 2 ラウンドまで修正と再レビューが可能)。
-
-## 5. レビュー・検証する
-
-**推奨:** 次に進む前に spec を検証します。
-
-```
-/codexspec:review-spec
+```text
+/codexspec:clarify <feature-dir>
+/codexspec:analyze <feature-dir>
 ```
 
-これは **証拠に基づくレビュー** です。報告される欠陥はすべて具体的な証拠を引用し、設計の助言は受け入れ判断から切り離して扱われます。
+<a id="small-changes-with-quick"></a>
 
-## 6. 技術計画を作成する
+### Quick による小さな変更
 
-```
-/codexspec:spec-to-design Use Python FastAPI for backend
-/codexspec:design-to-plan
-```
+局所的な修正など、範囲が明確で小さな変更には `quick` を使います。
 
-計画は仕様の要件への `Covers` リンクを記録し、該当する憲法原則を検証します。
-
-## 7. タスクを生成する
-
-```
-/codexspec:plan-to-tasks
+```text
+/codexspec:quick Fix the empty-state message on the task list
 ```
 
-タスクは検証可能な結果を中心に構成され、計画と要件へのトレーサビリティリンクを持ちます。テストファーストの順序は**条件付き**で適用されます ― plan・憲法・タスクのリスクで要求される場合のみです。ドキュメントや設定など検証不可能なタスクは直接実装されます。
+Quick は簡潔な要件サマリーを確認して保存した後、仕様作成、計画、タスク化、実装を順に進めます。
+各生成コマンドによるレビューも行います。広範な変更や、製品・設計上の選択が未解決の場合は、標準ワークフローを使ってください。
+Quick は新しい判断が必要になると一時停止します。
 
-## 8. 実装する
+<a id="workflow-automation"></a>
 
-```
-/codexspec:implement-tasks
-```
+### ワークフローの自動化
 
-実装は **conditional TDD** に従います。コードのタスクは要求された場合に Red → Green → Verify → Refactor のサイクルを使い、ドキュメントや設定のタスクは直接実装されます。
+`workflow.auto_next` のデフォルトは **false** です。
+作業中のワークスペースの設定で `true` にすると、最終的な要件確認後に仕様作成へ進みます。
+各生成ステージは `PASS` または `PASS_WITH_WARNINGS` で次へ進み、`NEEDS_REVISION` または `BLOCKED` で停止します。
+`implement-tasks` が最終ステージです。
 
-## 小さな変更: `/codexspec:quick`
+成果物の自動修正は、検証済みの欠陥のうち、上位の根拠から修正内容を導けるものに限られます。
+修正とレビューは最大 2 ラウンドまで行います。助言は別に扱います。
+実装のレビュー・修正ループには、後述する独自の完了条件があります。
 
-小さく範囲が明確な変更であれば、8 ステップの完全なウォークスルーは不要です。`/codexspec:quick` は単一のコマンドでコンパクトな Requirements-First SDD フローを実行します。
+詳しい動作と条件は、[ワークフローガイド](../user-guide/workflow.md)を参照してください。
 
-```
-/codexspec:quick Add a "remember me" checkbox to the login form
-```
+<a id="project-structure"></a>
 
-Quick は完全なフローと同じガードレールを守ります。
+## プロジェクト構成
 
-- `/codexspec:specify` と同じタイムスタンプ規約で、機能ワークスペースと `requirements.md` を作成します。
-- 簡潔な確認済み要件サマリ (`NEED-*`、関連する `CON-*`/`DEC-*`、`OUT-*`、未解決の `OPEN-*`) を提示し、あなたの明示的な確認を待ちます ― **Confirmation Gate** は引き続き適用されます。
-- その後、`/codexspec:generate-spec` → `/codexspec:design-to-plan` → `/codexspec:plan-to-tasks` → `/codexspec:implement-tasks` をその機能ディレクトリに対して連鎖実行します。各生成コマンドは自身の自動レビューループを持ちます。
+初期化では、共通リソースと、選択したアシスタントとの連携に必要なファイルをインストールします。
 
-変更が広範になったり複数の独立した結果を持つことが分かった場合、Quick は一旦止まり、標準フローへの切り替えを勧めます。
-
-## プロジェクト構造
-
-初期化後の構造は次のとおりです。
-
-```
+```text
 my-project/
 ├── .codexspec/
+│   ├── config.yml
 │   ├── memory/
-│   │   └── constitution.md    # プロジェクト憲法
+│   │   └── constitution.md
+│   ├── profile/
+│   │   ├── constraints/
+│   │   ├── conventions/
+│   │   ├── pitfalls/
+│   │   ├── decisions/
+│   │   ├── strategies/
+│   │   └── runbooks/
+│   ├── review-code/              # Shared review standards
 │   ├── specs/
-│   │   └── {feature-id}/
-│   │       ├── spec.md        # 機能仕様書
-│   │       ├── plan.md        # 技術計画
-│   │       ├── tasks.md       # タスク分割
-│   │       └── checklists/    # 品質チェックリスト
-│   ├── templates/             # カスタムテンプレート
-│   ├── scripts/               # ヘルパースクリプト
-│   └── extensions/            # カスタム拡張
-├── .claude/
-│   └── commands/              # Claude Code スラッシュコマンド
-├── .agents/
-│   └── skills/                # Codex スキル (--ai codex または both で初期化した場合)
-├── CLAUDE.md                  # Claude Code コンテキスト
-└── AGENTS.md                  # Codex コンテキスト
+│   │   └── <feature-id>-<name>/   # Added by feature workflows
+│   │       ├── requirements.md
+│   │       ├── spec.md
+│   │       ├── design.md
+│   │       ├── plan.md
+│   │       ├── tasks.md
+│   │       ├── review-*.md
+│   │       └── checklists/       # When requested
+│   ├── templates/docs/
+│   └── scripts/                 # Platform helpers and commit runtime
+├── .claude/commands/codexspec/   # --ai claude or both
+├── .agents/skills/              # --ai codex or both
+├── CLAUDE.md                    # Claude project context
+└── AGENTS.md                    # Codex project context
 ```
 
-## 次のステップ
-
-[完全なワークフローガイド](../user-guide/workflow.md)
+共有ブループリントは専用の auto-dev worktree に置きます。通常のチェックアウトごとに編集可能な別コピーを用意することはありません。
+手動の知識レビューで使う草案は Git の管理対象から除外されます。

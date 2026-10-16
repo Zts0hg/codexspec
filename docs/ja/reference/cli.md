@@ -1,8 +1,143 @@
 # CLI リファレンス
 
-## コマンド
+<a id="cli-commands"></a>
 
-### `codexspec show-blueprint`
+## CLI コマンド
+
+| コマンド | 目的 |
+|---------|---------|
+| `codexspec init` | Claude、Codex、または両方に合わせてプロジェクトを初期化・更新 |
+| `codexspec check` | インストール済みのツールと依存関係を確認 |
+| `codexspec version` | バージョンとシステム情報を表示 |
+| `codexspec config` | プロジェクト設定を表示・変更 |
+| `codexspec list-commands` | 利用可能なエージェントコマンドをカテゴリ別に表示 |
+| `codexspec show-blueprint` | 共有 worktree のブループリントを変更せずに出力 |
+
+<a id="cli-installation"></a>
+
+## CLI のインストール
+
+```bash
+uv tool install codexspec
+
+# Or use pip
+pip install codexspec
+
+# Verify the CLI and inspect available commands
+codexspec version
+codexspec --help
+codexspec list-commands
+```
+
+新しいプロジェクトは `codexspec init my-project --ai claude`、現在のディレクトリは
+`codexspec init . --ai codex` で初期化します。両方の連携を使う場合は `--ai both` を指定してください。
+アシスタントのデフォルトは `claude` です。Codex または両方を使う場合は、値を明示的に指定します。
+
+<details>
+<summary>その他のインストール方法</summary>
+
+<a id="one-time-initialization"></a>
+
+### 一度だけ実行する初期化
+
+```bash
+uvx codexspec init my-project --ai claude
+uvx codexspec init . --ai codex
+```
+
+この方法では、プロジェクトコマンドと単独で動作するコミット実行環境がインストールされます。
+worktree の作業先選択、blueprint/auto-dev、手動のプロファイルレビューは引き続き CodexSpec CLI を呼び出すため、
+これらのワークフローを使う場合は CLI も利用できるようにしておいてください。
+
+<a id="development-versions"></a>
+
+### 開発版
+
+```bash
+uv tool install git+https://github.com/Zts0hg/codexspec.git
+uv tool install git+https://github.com/Zts0hg/codexspec.git@main
+
+# Replace <tag> with the version you want
+uv tool install git+https://github.com/Zts0hg/codexspec.git@<tag>
+```
+
+</details>
+
+<details>
+<summary>Windows でのインストール</summary>
+
+PowerShell で実行します。
+
+```powershell
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+# Restart PowerShell, then:
+uv tool install codexspec
+codexspec version
+```
+
+PATH やインストールに関する問題への対処は、[Windows トラブルシューティングガイド](../WINDOWS-TROUBLESHOOTING.md)を参照してください。
+
+</details>
+
+<a id="upgrade-and-refresh-a-project"></a>
+
+## アップグレードとプロジェクトの更新
+
+CLI の更新と、プロジェクトにインストール済みのコマンドの更新は、それぞれ別に行います。
+
+```bash
+uv tool install codexspec --upgrade
+# Or: pip install --upgrade codexspec
+
+# In the project you want to refresh; select its desired integration(s)
+codexspec init . --force --ai both
+```
+
+片方の連携だけが必要な場合は、`--ai claude` または `--ai codex` を指定してください。
+`--force` は配布コマンドとスクリプトを再生成し、レビューリソースを更新します。
+移行、コマンド更新、プロジェクト憲法への準拠に関する確認も自動で承認します。
+既存の要件とプロジェクト原則は維持されます。コンテキストファイルも既存の本文を残したまま、管理対象のガイダンスだけを更新します。
+明示的に設定していない設定キーは、そのまま保持されます。
+
+計画作成には `design-to-plan` を使います。インストールの更新時に旧 `spec-to-plan` エントリは廃止され、エイリアスも残りません。
+
+<details>
+<summary>CLI 初期化オプション</summary>
+
+| オプション | 意味 |
+|--------|---------|
+| `PROJECT_NAME` | 新しいディレクトリの名前。現在のディレクトリには `.` を使用 |
+| `--here`, `-h` | 現在のディレクトリを初期化 |
+| `--ai`, `-a` | `claude`、`codex`、`both` から選択。デフォルトは `claude` |
+| `--lang`, `-l` | 基本となる出力言語を設定 |
+| `--interaction-lang` | 対話言語を設定 |
+| `--document-lang` | ドキュメント言語を設定 |
+| `--commit-lang` | コミットメッセージの言語を設定 |
+| `--force`, `-f` | インストール済み成果物を再生成し、移行・更新・準拠に関する確認を自動承認。プロジェクトで作成したコンテキストと、指定に関係のない設定は保持 |
+| `--no-git` | Git リポジトリの初期化を省略 |
+| `--debug`, `-d` | 詳細なデバッグ情報を表示 |
+
+</details>
+
+<details>
+<summary>CLI 設定オプション</summary>
+
+| オプション | 意味 |
+|--------|---------|
+| `--set-lang`, `-l` | 基本となる出力言語を設定 |
+| `--set-interaction-lang` | 対話言語を設定 |
+| `--set-document-lang` | ドキュメント言語を設定 |
+| `--set-commit-lang`, `-c` | コミットメッセージの言語を設定 |
+| `--list-langs` | サポートする言語コードを一覧表示 |
+| `--auto-next` | ステージの自動進行を切り替え・設定 |
+| `--auto-distill` | 知識の自動抽出を切り替え・設定 |
+| `--auto-maintenance` | 段階的な保守改善の自動適用を切り替え・設定 |
+| `--worktrees` | チェックアウトごとの worktree 分離を切り替え・設定 |
+| `--decided-by` | レビューの判断モードを `reviewer` または `ask` に設定 |
+
+</details>
+
+## `codexspec show-blueprint`
 
 固定ブランチ `codexspec/auto-dev` と `worktree-for-codexspec-auto-dev` にある完全な
 `.codexspec/blueprint.md` を標準出力へそのまま表示します。リポジトリ、ブランチ、worktree、
@@ -11,113 +146,4 @@ fetch、merge、書き込み、ロックは実行しません。
 
 ```bash
 codexspec show-blueprint
-```
-
----
-
-### `codexspec init`
-
-新しい CodexSpec プロジェクトを初期化します。
-
-```bash
-codexspec init [PROJECT_NAME] [OPTIONS]
-```
-
-**引数:**
-
-| 引数 | 説明 |
-|----------|-------------|
-| `PROJECT_NAME` | 新しいプロジェクトディレクトリの名前 (カレントディレクトリには `.` または `--here` を使用) |
-
-**オプション:**
-
-| オプション | 短縮形 | 説明 |
-|--------|-------|-------------|
-| `--here` | `-h` | カレントディレクトリに初期化 |
-| `--ai` | `-a` | 使用する AI アシスタント: `claude`, `codex`, `both` (デフォルト: claude) |
-| `--lang` | `-l` | 出力 (ベース) 言語。interaction/document/commit はこれにフォールバック (例: en, zh-CN, ja) |
-| `--interaction-lang` | | 対話言語 (LLM の対話 + `codexspec` CLI 出力)。`--lang` を上書き |
-| `--document-lang` | | ドキュメント言語 (生成される requirements/spec/plan/tasks)。`--lang` を上書き |
-| `--commit-lang` | | コミットメッセージの言語。`--lang` を上書き |
-| `--force` | `-f` | 既存ファイルを上書きしプロンプトを自動承認。`config.yml` は再生成しない |
-| `--no-git` | | git リポジトリの初期化をスキップ |
-| `--debug` | `-d` | デバッグ出力を有効化 |
-
-`--lang` は `output` のベース言語を設定します。`--interaction-lang`、`--document-lang`、`--commit-lang` は自身の次元についてこれを上書きします (各々は `output` に、さらに `en` にフォールバック)。モデル全体は [国際化](../user-guide/i18n.md) を参照してください。
-
-TTY 環境で `--lang` を付けずに (かつ 3 つの次元フラグもすべて付けずに) 初めて init を実行するとベース言語のプロンプトが出ます。非 TTY (CI/スクリプト) では `en` がデフォルトとなり、**完全に非対話** です。init を再実行しても、指定しなかった言語キーは保持されます。`--force` は `config.yml` を再生成しません。
-
-**例:**
-
-```bash
-# 新規プロジェクトを作成
-codexspec init my-project
-
-# カレントディレクトリに初期化
-codexspec init . --ai claude
-
-# 一度だけの実行 (インストールなし) ― Codex CLI や両方向けに初期化
-uvx codexspec init . --ai codex
-uvx codexspec init . --ai both
-
-# 完全非対話: 出力ベースを zh-CN、コミットメッセージを英語
-codexspec init my-project --lang zh-CN --commit-lang en
-
-# すべての次元を明示的に指定 (スクリプト可能、プロンプトなし)
-codexspec init my-project \
-  --interaction-lang zh-CN --document-lang en --commit-lang en
-```
-
-`codexspec init` は Claude Code と Codex 共通のレビュー資源を `.codexspec/review-code/` に配置します。`--force` は配布資源を更新し、別パスの拡張ファイルを保持します。CLI のインストールだけではプロジェクトファイルを作りません。プラグインのみの場合、プロジェクトに資源ツリーがなければ、ホストが解決したプラグインルートから同じ資源を読みます。
-
----
-
-### `codexspec check`
-
-インストール済みのツールを確認します。
-
-```bash
-codexspec check
-```
-
----
-
-### `codexspec version`
-
-バージョン情報を表示します。
-
-```bash
-codexspec version
-```
-
----
-
-### `codexspec config`
-
-プロジェクト設定を表示・変更します。
-
-```bash
-codexspec config [OPTIONS]
-```
-
-**オプション:**
-
-| オプション | 短縮形 | 説明 |
-|--------|-------|-------------|
-| `--set-lang` | `-l` | 出力 (ベース) 言語を設定 |
-| `--set-interaction-lang` | | 対話言語 (LLM の対話 + CLI 出力) を設定 |
-| `--set-document-lang` | | ドキュメント言語 (生成される spec/plan/tasks) を設定 |
-| `--set-commit-lang` | `-c` | コミットメッセージの言語を設定 |
-| `--list-langs` | | サポートされているすべての言語を一覧表示 |
-| `--auto-next` | | `workflow.auto_next` の切り替え/設定 (フラグ単独でトグル、on/off も可) |
-| `--auto-maintenance` |  | `workflow.auto_maintenance` を切り替え/設定（既定は on、値なしで切り替え、または on/off） |
-| `--decided-by` | | `review.decided_by` を `reviewer` (既定) または `ask` に設定 |
-
-各 `--set-*-lang` は [言語の次元](../user-guide/i18n.md) のいずれかを更新します。設定しなかった次元は `output` に、さらに `en` にフォールバックします。
-
-`codexspec config --auto-maintenance on|off` は `.codexspec/config.yml` の `workflow.auto_maintenance` を YAML の真偽値として保存します。キーがない場合は `true` です。両方のワークフロー設定は、大文字小文字を区別せず `on/true/1/yes` と `off/false/0/no` を受け付けます。`implement-tasks` は自動修正時にこの設定を読み、`on` では根拠のある小規模な保守改善も適用し、`off` でも提案は報告します。実際の欠陥と必要な検証は引き続き必須です。`auto-next` とは独立しており、`implement-tasks` の呼び出し引数ではありません。
-
-```bash
-codexspec config --auto-maintenance on
-codexspec config --auto-maintenance off
 ```

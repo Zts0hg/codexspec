@@ -1,5 +1,5 @@
 site_name: CodexSpec
-site_description: A Spec-Driven Development (SDD) toolkit for Claude Code
+site_description: A Requirements-First SDD toolkit for Claude Code and OpenAI Codex
 site_url: https://zts0hg.github.io/codexspec/
 repo_url: https://github.com/Zts0hg/codexspec
 repo_name: Zts0hg/codexspec
@@ -102,27 +102,147 @@ plugins:
         - locale: zh
           name: 中文简体
           build: true
+          nav_translations:
+            Home: 首页
+            Getting Started: 开始使用
+            Installation: 安装
+            Quick Start: 快速入门
+            User Guide: 用户指南
+            Workflow: 工作流
+            Commands: 命令
+            Internationalization: 国际化
+            Case Studies: 案例
+            PR Description Generator: PR 描述生成器
+            Reference: 参考
+            CLI: CLI
+            Configuration: 配置
+            Development: 开发
+            Contributing: 贡献指南
+            Scripts Architecture: 脚本与安装架构
         - locale: ja
           name: 日本語
           build: true
+          nav_translations:
+            Home: ホーム
+            Getting Started: はじめに
+            Installation: インストール
+            Quick Start: クイックスタート
+            User Guide: ユーザーガイド
+            Workflow: ワークフロー
+            Commands: コマンド
+            Internationalization: 国際化
+            Case Studies: 事例
+            PR Description Generator: PR 説明ジェネレーター
+            Reference: リファレンス
+            CLI: CLI
+            Configuration: 設定
+            Development: 開発
+            Contributing: 貢献ガイド
+            Scripts Architecture: スクリプトとインストールの構成
         - locale: ko
           name: 한국어
           build: true
+          nav_translations:
+            Home: 홈
+            Getting Started: 시작하기
+            Installation: 설치
+            Quick Start: 빠른 시작
+            User Guide: 사용자 가이드
+            Workflow: 워크플로
+            Commands: 명령어
+            Internationalization: 국제화
+            Case Studies: 사례
+            PR Description Generator: PR 설명 생성기
+            Reference: 참조
+            CLI: CLI
+            Configuration: 설정
+            Development: 개발
+            Contributing: 기여 안내
+            Scripts Architecture: 스크립트 및 설치 구조
         - locale: es
           name: Español
           build: true
+          nav_translations:
+            Home: Inicio
+            Getting Started: Primeros pasos
+            Installation: Instalación
+            Quick Start: Inicio rápido
+            User Guide: Guía de usuario
+            Workflow: Flujo de trabajo
+            Commands: Comandos
+            Internationalization: Internacionalización
+            Case Studies: Casos prácticos
+            PR Description Generator: Generador de descripciones de PR
+            Reference: Referencia
+            CLI: CLI
+            Configuration: Configuración
+            Development: Desarrollo
+            Contributing: Contribuir
+            Scripts Architecture: Arquitectura de scripts e instalación
         - locale: fr
           name: Français
           build: true
+          nav_translations:
+            Home: Accueil
+            Getting Started: Démarrage
+            Installation: Installation
+            Quick Start: Démarrage rapide
+            User Guide: Guide utilisateur
+            Workflow: Flux de travail
+            Commands: Commandes
+            Internationalization: Internationalisation
+            Case Studies: Études de cas
+            PR Description Generator: Générateur de descriptions de PR
+            Reference: Référence
+            CLI: CLI
+            Configuration: Configuration
+            Development: Développement
+            Contributing: Contribuer
+            Scripts Architecture: Architecture des scripts et de l’installation
         - locale: de
           name: Deutsch
           build: true
+          nav_translations:
+            Home: Startseite
+            Getting Started: Erste Schritte
+            Installation: Installation
+            Quick Start: Schnellstart
+            User Guide: Benutzerhandbuch
+            Workflow: Workflow
+            Commands: Befehle
+            Internationalization: Internationalisierung
+            Case Studies: Fallstudien
+            PR Description Generator: PR-Beschreibungsgenerator
+            Reference: Referenz
+            CLI: CLI
+            Configuration: Konfiguration
+            Development: Entwicklung
+            Contributing: Mitwirken
+            Scripts Architecture: Skript- und Installationsarchitektur
         - locale: pt-BR
           name: Português (Brasil)
           build: true
+          nav_translations:
+            Home: Início
+            Getting Started: Primeiros passos
+            Installation: Instalação
+            Quick Start: Início rápido
+            User Guide: Guia do usuário
+            Workflow: Fluxo de trabalho
+            Commands: Comandos
+            Internationalization: Internacionalização
+            Case Studies: Estudos de caso
+            PR Description Generator: Gerador de descrições de PR
+            Reference: Referência
+            CLI: CLI
+            Configuration: Configuração
+            Development: Desenvolvimento
+            Contributing: Contribuir
+            Scripts Architecture: Arquitetura de scripts e instalação
 
 hooks:
   - hooks/post_build.py
+  - hooks/workflow_assets.py
 
 extra:
   social:

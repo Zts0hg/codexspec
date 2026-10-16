@@ -1,93 +1,91 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/images/codexspec-logo-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/images/codexspec-logo-light.svg">
-  <img alt="CodexSpec Logo" src="assets/images/codexspec-logo-light.svg" width="420">
-</picture>
+# CodexSpec
 
-# Welcome to CodexSpec
+![CodexSpec](assets/images/codexspec-logo-light.svg#only-light){ width="420" }
 
-[![PyPI version](https://img.shields.io/pypi/v/codexspec.svg)](https://pypi.org/project/codexspec/)
-[![Python](https://img.shields.io/pypi/pyversions/codexspec.svg)](https://pypi.org/project/codexspec/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![CodexSpec](assets/images/codexspec-logo-dark.svg#only-dark){ width="420" }
 
-**A Requirements-First SDD toolkit for Claude Code**
+**A Requirements-First SDD toolkit for Claude Code and OpenAI Codex**
 
-CodexSpec helps you build high-quality software through **Requirements-First Spec-Driven Development (SDD)** — confirmed requirements are the highest-priority authority, and nothing is binding until you explicitly confirm it. Instead of jumping straight to code, you confirm **what** to build and **why** before deciding **how** to build it.
+CodexSpec turns confirmed requirements into traceable specifications, designs,
+plans, tasks, and implementations. You decide **what** to build and **why**;
+the agent develops **how** within those confirmed requirements, using review
+checkpoints and persistent project knowledge.
 
-## Why CodexSpec?
+Use it through Claude Code slash commands, Codex skills, or both. Ordinary
+features use separate Git worktrees by default, and an optional shared blueprint
+lets the agent develop a queue of confirmed requirements autonomously.
 
-Why use CodexSpec on top of Claude Code? Here's the comparison:
+<a id="why-choose-codexspec"></a>
 
-| Aspect | Claude Code Only | CodexSpec + Claude Code |
-|--------|------------------|-------------------------|
-| **Multi-language Support** | Default English interaction | Configure team language for smoother collaboration and reviews |
-| **Traceability** | Hard to trace decisions after session ends | All specs, plans, and tasks saved in `.codexspec/specs/` |
-| **Session Recovery** | Plan mode interruptions are hard to recover from | Multi-command split + persisted docs = easy recovery |
-| **Team Governance** | No unified principles, inconsistent styles | `constitution.md` enforces team standards and quality |
+## Why Choose CodexSpec?
+
+| Need | What CodexSpec provides |
+|------|-------------------------|
+| Clear product intent | Explicit confirmation and a persistent `requirements.md` before specification |
+| Traceable development | Source links through requirements → spec → design → plan → tasks |
+| Reviewable decisions | Four artifact review commands, cross-artifact analysis, and a separate code defect gate |
+| Session and team continuity | Feature records, project principles, reusable knowledge, and relevant historical decisions |
+| Multiple features in progress | One Git worktree per ordinary feature, with stable workspace reuse |
+| More automation | Optional stage advancement and autonomous development of confirmed blueprint requirements |
+| Team language preferences | Independent interaction, document, and commit languages |
+
+<a id="what-is-requirements-first-sdd"></a>
 
 ### What is Requirements-First SDD?
 
-**Requirements-First SDD** is the Spec-Driven Development (SDD) methodology with one upgrade: **confirmed requirements are the highest-priority authority**. You define and confirm *what* to build and *why* before deciding *how* — and nothing becomes binding until you explicitly confirm it.
+Requirements-First Spec-Driven Development makes **confirmed requirements the
+highest-priority feature authority**. The agent records goals, constraints,
+decisions, exclusions, open questions, and confirmation evidence before deriving
+the implementation artifacts.
 
+```text
+Idea → Confirmed Requirements →     Spec    →     Design    →     Plan    →    Tasks     →     Code
+                 ↓                   ↓              ↓              ↓             ↓              ↓
+         User confirmation      review-spec   review-design   review-plan   review-tasks   review-code
 ```
-Traditional:  Idea → Code → Debug → Rewrite
-SDD:          Idea → Confirmed Requirements → Spec → Plan → Tasks → Code
-```
 
-### Key Features
+You confirm the requirements; each derived artifact has its own review, from
+specification through code.
 
-- **Constitution-Based Development** - Establish project principles that guide all decisions
-- **Persistent Requirement Capture** - `/specify` records confirmed discussion in `requirements.md` before document generation
-- **Automatic Reviews** - Every generated spec, plan, and task artifact includes built-in quality checks
-- **Interactive Clarification** - Q&A-based requirement refinement
-- **Cross-Artifact Analysis** - Detect inconsistencies before implementation
-- **Traceable Tasks** - Task breakdowns preserve requirement and plan coverage, applying **Conditional TDD** (test-first ordering only where plan, constitution, or risk requires; non-testable tasks like docs/config are implemented directly)
-- **Native Claude Code Integration** - Slash commands work seamlessly
-- **Multi-Language Support** - 13+ languages via LLM dynamic translation
-- **Cross-Platform** - Bash and PowerShell scripts included
-- **Extensible** - Plugin architecture for custom commands
+Human collaboration establishes and changes product intent. Automatic reviews
+check derived artifacts against it. Enabling automation advances work through
+passing stages; it does not let the agent silently replace confirmed requirements.
 
-## Quick Start
+[![CodexSpec: requirements-first development, stage reviews and the experience feedback loop](../../assets/workflow/workflow-en-light.png#only-light)](../../assets/workflow/workflow-en-light.png#only-light)
+
+[![CodexSpec: requirements-first development, stage reviews and the experience feedback loop](../../assets/workflow/workflow-en-dark.png#only-dark)](../../assets/workflow/workflow-en-dark.png#only-dark)
+
+Open the diagram at full size: [☀️](../../assets/workflow/workflow-en-light.png) · [🌙](../../assets/workflow/workflow-en-dark.png)
+
+<a id="30-second-quick-start"></a>
+
+## 30-Second Quick Start
+
+Install CodexSpec and initialize for the assistant you use:
 
 ```bash
-# Install
 uv tool install codexspec
 
-# Create a new project
-codexspec init my-project
+# Create a new project for Claude Code
+codexspec init my-project --ai claude
 
-# Or initialize in existing project
-codexspec init . --ai claude
+# Or initialize an existing project for Codex
+cd your-existing-project
+codexspec init . --ai codex
+
+# Use --ai both when you want both integrations
 ```
 
-[Full Installation Guide](getting-started/installation.md)
+Start your installed assistant in the initialized project. The same workflow
+uses these two invocation forms:
 
-## Workflow Overview
+| Assistant | Start requirements discovery |
+|-----------|------------------------------|
+| Claude Code (`claude`) | `/codexspec:specify I want to build a todo application` |
+| Codex (`codex`) | `$codexspec:specify I want to build a todo application` |
 
-CodexSpec structures development into **reviewable checkpoints**. Confirmed requirements flow through specs, plans, and tasks into code, with a review at every stage.
+Customize project principles with `constitution` when needed. Confirm the final
+requirements summary, then continue using the returned feature directory and
+workspace. See [Core Workflow](user-guide/workflow.md#core-workflow) for the remaining commands.
 
-```
-Idea → Confirmed Requirements → Spec → Plan → Tasks → Code
-```
-
-Every artifact is produced by a dedicated command and validated before the next stage begins:
-
-```
-Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
-                                                   │                         │                            │
-                                              Review spec               Review plan                  Review tasks
-```
-
-### The Confirmation Gate
-
-The defining differentiator is the **Confirmation Gate**: requirements, specs, plans, and tasks become binding only after your explicit human confirmation. Confirmed requirements are the highest-priority feature authority, so AI cannot silently lock in decisions — derived artifacts carry explicit source links, and conflicts get traced back instead of propagated.
-
-### Iterative Quality Loop
-
-Every generation command includes an **automatic, evidence-based review**: defects require concrete evidence, advisory suggestions never trigger automatic changes, and verified defects may be fixed and re-reviewed for at most two rounds. This loop keeps quality rising without you babysitting every detail.
-
-[Learn the Workflow](user-guide/workflow.md)
-
-## License
-
-MIT License - see [LICENSE](https://github.com/Zts0hg/codexspec/blob/main/LICENSE) for details.
+Using the Codex desktop app? [Ask Codex to install and initialize your project](getting-started/installation.md#install-with-the-codex-desktop-app).

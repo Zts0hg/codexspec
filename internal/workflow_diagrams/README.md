@@ -184,6 +184,12 @@ The source graphic can be read in full detail through those links. Check both th
 selection and the light fallback. Do not broaden package/init allowlists for these
 sources, scripts, fonts or images.
 
+The documentation site reuses these same PNG files through
+`hooks/workflow_assets.py`; do not copy another source set into `docs/`.
+After updating assets, run `uv run mkdocs build --strict` and preview all eight
+home pages in both themes. The site uses Material theme-specific image links,
+so test its manual theme toggle as well as initial theme selection.
+
 ## Troubleshooting and completion
 
 | Check or observation | Recovery |

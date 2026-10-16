@@ -9,34 +9,34 @@
 ## 로컬 개발
 
 ```bash
-# 저장소 복제
+# Clone the repository
 git clone https://github.com/Zts0hg/codexspec.git
 cd codexspec
 
-# 개발 의존성 설치
-uv sync --dev
+# Install development dependencies
+uv sync --extra dev
 
-# 로컬에서 실행
+# Run locally
 uv run codexspec --help
 
-# 테스트 실행
+# Run tests
 uv run pytest
 
-# 코드 린트
+# Lint code
 uv run ruff check src/
 ```
 
 ## 문서화
 
 ```bash
-# 문서 의존성 설치
-uv sync --extra docs
+# Install docs dependencies
+uv sync --extra dev --extra docs
 
-# 로컬에서 문서 미리보기
+# Preview documentation locally
 uv run mkdocs serve
 
-# 문서 빌드
-uv run mkdocs build
+# Build documentation
+uv run mkdocs build --strict
 ```
 
 ## 빌드
@@ -58,3 +58,7 @@ uv build
 - 줄 길이: 최대 120자
 - PEP 8 따르기
 - 공개 함수에 타입 힌트 사용
+
+템플릿, 패키징, 초기화를 변경하기 전에 [CLAUDE.md](https://github.com/Zts0hg/codexspec/blob/main/CLAUDE.md), [AGENTS.md](https://github.com/Zts0hg/codexspec/blob/main/AGENTS.md),
+[리포지토리 구조](https://github.com/Zts0hg/codexspec/blob/main/docs/internal/repository-layout.md)를 읽으세요.
+배포 명령어와 스킬의 복사본은 자동 생성된 설치 산출물입니다. 기준이 되는 원본을 편집하고 다시 생성하세요.

@@ -1,8 +1,143 @@
 # CLI 참조
 
-## 명령어
+<a id="cli-commands"></a>
 
-### `codexspec show-blueprint`
+## CLI 명령어
+
+| 명령어 | 목적 |
+|---------|---------|
+| `codexspec init` | Claude, Codex 또는 둘 모두에 맞게 프로젝트 초기화·갱신 |
+| `codexspec check` | 설치된 도구와 의존성 확인 |
+| `codexspec version` | 버전과 시스템 정보 표시 |
+| `codexspec config` | 프로젝트 설정 조회·수정 |
+| `codexspec list-commands` | 사용할 수 있는 에이전트 명령어를 범주별로 표시 |
+| `codexspec show-blueprint` | 공유 worktree의 블루프린트를 변경하지 않고 출력 |
+
+<a id="cli-installation"></a>
+
+## CLI 설치
+
+```bash
+uv tool install codexspec
+
+# Or use pip
+pip install codexspec
+
+# Verify the CLI and inspect available commands
+codexspec version
+codexspec --help
+codexspec list-commands
+```
+
+새 프로젝트는 `codexspec init my-project --ai claude`로, 현재 디렉터리는
+`codexspec init . --ai codex`로 초기화합니다. 두 연동을 모두 사용하려면 `--ai both`를 지정하세요.
+어시스턴트의 기본값은 `claude`입니다. Codex 또는 두 가지를 모두 사용하려면 값을 명시적으로 지정해야 합니다.
+
+<details>
+<summary>다른 설치 방법</summary>
+
+<a id="one-time-initialization"></a>
+
+### 일회성 초기화
+
+```bash
+uvx codexspec init my-project --ai claude
+uvx codexspec init . --ai codex
+```
+
+일회성 초기화는 프로젝트 명령어와 독립 실행형 커밋 런타임을 설치합니다.
+worktree 작업 위치 선택, blueprint/auto-dev, 수동 프로파일 리뷰는 여전히 CodexSpec CLI를 호출합니다.
+이 워크플로우를 사용하려면 CLI도 사용할 수 있도록 준비하세요.
+
+<a id="development-versions"></a>
+
+### 개발 버전
+
+```bash
+uv tool install git+https://github.com/Zts0hg/codexspec.git
+uv tool install git+https://github.com/Zts0hg/codexspec.git@main
+
+# Replace <tag> with the version you want
+uv tool install git+https://github.com/Zts0hg/codexspec.git@<tag>
+```
+
+</details>
+
+<details>
+<summary>Windows 설치</summary>
+
+PowerShell에서 실행합니다.
+
+```powershell
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+# Restart PowerShell, then:
+uv tool install codexspec
+codexspec version
+```
+
+PATH와 설치 문제를 해결하는 방법은 [Windows 문제 해결 가이드](../WINDOWS-TROUBLESHOOTING.md)를 참고하세요.
+
+</details>
+
+<a id="upgrade-and-refresh-a-project"></a>
+
+## 업그레이드와 프로젝트 갱신
+
+CLI 업데이트와 프로젝트에 설치된 명령어 갱신은 각각 따로 진행해야 합니다.
+
+```bash
+uv tool install codexspec --upgrade
+# Or: pip install --upgrade codexspec
+
+# In the project you want to refresh; select its desired integration(s)
+codexspec init . --force --ai both
+```
+
+한 가지 연동만 필요하면 `--ai claude` 또는 `--ai codex`를 지정하세요.
+`--force`는 배포 명령어와 스크립트를 다시 생성하고 리뷰 리소스를 갱신합니다.
+마이그레이션, 명령어 업데이트, 프로젝트 헌법 준수에 관한 확인도 자동으로 승인합니다.
+기존 요구사항과 프로젝트 원칙은 유지합니다. 컨텍스트 파일은 기존 본문을 보존하면서 관리 대상 지침만 업데이트합니다.
+명시적으로 설정하지 않은 설정 키도 그대로 유지합니다.
+
+계획을 작성하는 명령어는 `design-to-plan`입니다. 설치를 업데이트하면 기존 `spec-to-plan` 항목이 제거되며 별칭도 남기지 않습니다.
+
+<details>
+<summary>CLI 초기화 옵션</summary>
+
+| 옵션 | 의미 |
+|--------|---------|
+| `PROJECT_NAME` | 새 디렉터리 이름. 현재 디렉터리에는 `.` 사용 |
+| `--here`, `-h` | 현재 디렉터리 초기화 |
+| `--ai`, `-a` | `claude`, `codex`, `both` 중 선택. 기본값은 `claude` |
+| `--lang`, `-l` | 기본 출력 언어 설정 |
+| `--interaction-lang` | 대화 언어 설정 |
+| `--document-lang` | 문서 언어 설정 |
+| `--commit-lang` | 커밋 메시지 언어 설정 |
+| `--force`, `-f` | 설치된 산출물을 다시 생성하고 마이그레이션·업데이트·준수 확인을 자동 승인. 프로젝트에서 작성한 컨텍스트와 지정한 옵션에 관계없는 설정은 보존 |
+| `--no-git` | Git 리포지토리 초기화 생략 |
+| `--debug`, `-d` | 자세한 디버그 정보 표시 |
+
+</details>
+
+<details>
+<summary>CLI 설정 옵션</summary>
+
+| 옵션 | 의미 |
+|--------|---------|
+| `--set-lang`, `-l` | 기본 출력 언어 설정 |
+| `--set-interaction-lang` | 대화 언어 설정 |
+| `--set-document-lang` | 문서 언어 설정 |
+| `--set-commit-lang`, `-c` | 커밋 메시지 언어 설정 |
+| `--list-langs` | 지원하는 언어 코드 목록 표시 |
+| `--auto-next` | 자동 단계 진행 전환·설정 |
+| `--auto-distill` | 자동 지식 추출 전환·설정 |
+| `--auto-maintenance` | 점진적 유지보수 개선 자동 적용 전환·설정 |
+| `--worktrees` | 체크아웃별 worktree 격리 전환·설정 |
+| `--decided-by` | 리뷰 판단 모드를 `reviewer` 또는 `ask`로 설정 |
+
+</details>
+
+## `codexspec show-blueprint`
 
 고정 브랜치 `codexspec/auto-dev`와 `worktree-for-codexspec-auto-dev`의 전체
 `.codexspec/blueprint.md`를 표준 출력에 원문 그대로 표시합니다. 저장소, 브랜치, worktree 또는
@@ -11,113 +146,4 @@ merge, 쓰기 또는 잠금을 수행하지 않습니다.
 
 ```bash
 codexspec show-blueprint
-```
-
----
-
-### `codexspec init`
-
-새 CodexSpec 프로젝트를 초기화합니다.
-
-```bash
-codexspec init [PROJECT_NAME] [OPTIONS]
-```
-
-**인자:**
-
-| 인자 | 설명 |
-|----------|-------------|
-| `PROJECT_NAME` | 새 프로젝트 디렉토리의 이름(현재 디렉토리는 `.` 또는 `--here` 사용) |
-
-**옵션:**
-
-| 옵션 | 단축 | 설명 |
-|--------|-------|-------------|
-| `--here` | `-h` | 현재 디렉토리에서 초기화 |
-| `--ai` | `-a` | 사용할 AI 어시스턴트: `claude`, `codex`, 또는 `both` (기본값: claude) |
-| `--lang` | `-l` | 출력(기반) 언어; interaction/document/commit이 여기로 폴백 (예: en, zh-CN, ja) |
-| `--interaction-lang` | | 상호작용 언어(LLM 대화 + `codexspec` CLI 출력); `--lang`을 덮어씀 |
-| `--document-lang` | | 문서 언어(생성된 requirements/spec/plan/tasks); `--lang`을 덮어씀 |
-| `--commit-lang` | | 커밋 메시지 언어; `--lang`을 덮어씀 |
-| `--force` | `-f` | 기존 파일을 덮어쓰고 프롬프트를 자동 확정; `config.yml`은 재생성하지 않음 |
-| `--no-git` | | git 리포지토리 초기화 건너뛰기 |
-| `--debug` | `-d` | 디버그 출력 활성화 |
-
-`--lang`은 `output` 기반 언어를 설정하며, `--interaction-lang`, `--document-lang`, `--commit-lang`은 각자의 차원에서 이를 덮어씁니다(각각 `output` → `en` 순으로 폴백). 전체 모델은 [국제화](../user-guide/i18n.md)를 참조하세요.
-
-TTY 환경에서 `--lang`(그리고 세 차원 플래그 모두) 없이 처음 init을 실행하면 기반 언어를 묻습니다. non-TTY(CI/스크립트)에서는 `en`이 기본값이 되며 **완전히 비대화형**으로 동작합니다. `init`을 다시 실행할 때 지정하지 않은 언어 키는 보존되며, `--force`는 절대 `config.yml`을 재생성하지 않습니다.
-
-**예제:**
-
-```bash
-# 새 프로젝트 생성
-codexspec init my-project
-
-# 현재 디렉토리에서 초기화
-codexspec init . --ai claude
-
-# 일회성 실행(설치 없음) — Codex CLI 또는 both 로 초기화
-uvx codexspec init . --ai codex
-uvx codexspec init . --ai both
-
-# 완전한 비대화형: zh-CN 기반, 영어 커밋 메시지
-codexspec init my-project --lang zh-CN --commit-lang en
-
-# 모든 차원을 명시적으로 설정(스크립트용, 프롬프트 없음)
-codexspec init my-project \
-  --interaction-lang zh-CN --document-lang en --commit-lang en
-```
-
-`codexspec init`은 Claude Code와 Codex가 공유하는 리뷰 리소스를 `.codexspec/review-code/`에 설치합니다. `--force`는 배포 리소스를 갱신하고 다른 경로의 확장 파일은 보존합니다. CLI 설치만으로 프로젝트 파일을 만들지는 않습니다. 플러그인만 사용할 때 프로젝트에 리소스 트리가 없으면 호스트가 해석한 플러그인 루트에서 같은 리소스를 읽습니다.
-
----
-
-### `codexspec check`
-
-설치된 도구를 확인합니다.
-
-```bash
-codexspec check
-```
-
----
-
-### `codexspec version`
-
-버전 정보를 표시합니다.
-
-```bash
-codexspec version
-```
-
----
-
-### `codexspec config`
-
-프로젝트 설정을 보거나 수정합니다.
-
-```bash
-codexspec config [OPTIONS]
-```
-
-**옵션:**
-
-| 옵션 | 단축 | 설명 |
-|--------|-------|-------------|
-| `--set-lang` | `-l` | 출력(기반) 언어 설정 |
-| `--set-interaction-lang` | | 상호작용 언어 설정(LLM 대화 + CLI 출력) |
-| `--set-document-lang` | | 문서 언어 설정(생성된 spec/plan/tasks) |
-| `--set-commit-lang` | `-c` | 커밋 메시지 언어 설정 |
-| `--list-langs` | | 지원하는 모든 언어 나열 |
-| `--auto-next` | | `workflow.auto_next` 토글/설정(플래그만 쓰면 토글, 또는 on/off 명시) |
-| `--auto-maintenance` |  | `workflow.auto_maintenance` 토글/설정(기본 on, 값 없으면 토글, 또는 on/off) |
-| `--decided-by` | | `review.decided_by`를 `reviewer`(기본값) 또는 `ask`로 설정 |
-
-각 `--set-*-lang`은 하나의 [언어 차원](../user-guide/i18n.md)을 업데이트합니다. 설정하지 않은 차원은 `output` → `en` 순으로 폴백합니다.
-
-`codexspec config --auto-maintenance on|off`는 `.codexspec/config.yml`의 `workflow.auto_maintenance`를 YAML 불리언으로 저장합니다. 키가 없으면 `true`로 처리합니다. 두 워크플로 스위치는 대소문자를 구분하지 않는 `on/true/1/yes`와 `off/false/0/no`를 지원합니다. `implement-tasks`는 자동 수정 시 이 설정을 읽습니다. `on`이면 근거가 있는 점진적 유지보수 개선을 적용하고, `off`여도 제안은 보고합니다. 실제 결함과 필수 검증은 계속 처리해야 합니다. `auto-next`와 독립적이며 `implement-tasks` 호출 인자가 아닙니다.
-
-```bash
-codexspec config --auto-maintenance on
-codexspec config --auto-maintenance off
 ```

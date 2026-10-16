@@ -1,139 +1,133 @@
-# Configuration
+<a id="configuration-and-internationalization"></a>
 
-## Config File Location
+# Configuration and Internationalization
 
-`.codexspec/config.yml`
+Configuration lives in `.codexspec/config.yml`. Templates stay in English;
+agents write interaction text and generated artifacts in the configured languages.
+The 13 standard language codes are `en`, `zh-CN`, `zh-TW`, `ja`, `ko`,
+`es`, `fr`, `de`, `pt`, `ru`, `it`, `ar`, and `hi`.
+The Portuguese CLI code is `pt`; localized documentation and translation
+catalogs use `pt-BR`.
 
-## Configuration Schema
+<a id="language-dimensions"></a>
+
+## Language Dimensions
+
+| Dimension | Config key | At initialization | Set later | Controls |
+|-----------|------------|-------------------|-----------|----------|
+| Output/base | `language.output` | `--lang` | `config --set-lang` | Fallback for the other language dimensions |
+| Interaction | `language.interaction` | `--interaction-lang` | `config --set-interaction-lang` | Conversation and CLI output |
+| Document | `language.document` | `--document-lang` | `config --set-document-lang` | Requirements, specifications, designs, plans, tasks |
+| Commit | `language.commit` | `--commit-lang` | `config --set-commit-lang` | Commit messages and Git-delivery content |
+
+Each specific language falls back independently to `language.output`, then `en`.
+`language.templates` remains `en`.
+
+```bash
+codexspec init my-project --ai both \
+  --interaction-lang zh-CN --document-lang en --commit-lang en
+
+codexspec config
+codexspec config --set-document-lang en
+codexspec config --list-langs
+```
+
+First-time TTY initialization prompts for the base language unless you supply
+`--lang` or all three specific language options. `--force` auto-confirms other
+initialization prompts; it does not suppress this language selection.
+Non-TTY initialization defaults to English. Re-initialization preserves language
+keys you did not explicitly set.
+
+<a id="workflow-and-review-settings"></a>
+
+## Workflow and Review Settings
+
+| Setting | Default | Effect | CLI control |
+|---------|---------|--------|-------------|
+| `workflow.auto_next` | `false` | Advance passing ordinary SDD stages | `config --auto-next on\|off` |
+| `workflow.auto_distill` | `true` | Non-interactive knowledge capture after successful wrap-up | `config --auto-distill on\|off` |
+| `workflow.auto_maintenance` | `true` | Apply verified incremental maintenance during automatic repairs | `config --auto-maintenance on\|off` |
+| `workflow.worktrees` | `true` | Isolate ordinary features and standalone maintenance | `config --worktrees on\|off` |
+| `review.decided_by` | `reviewer` | Who decides findings triggered outside the project's operating context | `config --decided-by reviewer\|ask` |
+
+Boolean CLI switches accept case-insensitive `on/true/1/yes` and
+`off/false/0/no`, including surrounding whitespace. A bare boolean switch toggles
+the destination checkout's current value; stored YAML values are booleans.
+
+With `review.decided_by: reviewer`, the reviewer decides defect admission.
+With `ask`, an out-of-context trigger becomes a pending scenario decision: the
+user decides once whether to fix it or exclude that scenario, and the confirmed
+decision is retained for later rounds. Pending decisions block completion.
+A single `review-code` run can override the configured mode with `--decided-by`.
+
+Configuration writes follow worktree routing. A standalone change from the main
+checkout is made in the maintenance worktree and does not immediately change
+main's effective setting; changes in a feature worktree take effect there.
+
+<details>
+<summary>CLI initialization options</summary>
+
+| Option | Meaning |
+|--------|---------|
+| `PROJECT_NAME` | New directory name; use `.` for the current directory |
+| `--here`, `-h` | Initialize the current directory |
+| `--ai`, `-a` | `claude`, `codex`, or `both`; default `claude` |
+| `--lang`, `-l` | Set the base output language |
+| `--interaction-lang` | Set interaction language |
+| `--document-lang` | Set document language |
+| `--commit-lang` | Set commit-message language |
+| `--force`, `-f` | Regenerate installed artifacts and auto-confirm migration/update/compliance prompts; preserve project-authored context and unrelated configuration |
+| `--no-git` | Skip Git repository initialization |
+| `--debug`, `-d` | Show detailed debug output |
+
+</details>
+
+<details>
+<summary>CLI configuration options</summary>
+
+| Option | Meaning |
+|--------|---------|
+| `--set-lang`, `-l` | Set the base output language |
+| `--set-interaction-lang` | Set interaction language |
+| `--set-document-lang` | Set document language |
+| `--set-commit-lang`, `-c` | Set commit-message language |
+| `--list-langs` | List supported language codes |
+| `--auto-next` | Toggle/set automatic stage advancement |
+| `--auto-distill` | Toggle/set automatic knowledge capture |
+| `--auto-maintenance` | Toggle/set automatic incremental maintenance |
+| `--worktrees` | Toggle/set checkout-local worktree isolation |
+| `--decided-by` | Set `reviewer` or `ask` review decision mode |
+
+</details>
+
+<details>
+<summary>Configuration example</summary>
 
 ```yaml
 version: "1.0"
 
 language:
-  output: "zh-CN"        # Base language; the three below fall back to it, then "en"
-  interaction: "zh-CN"   # LLM dialogue + codexspec CLI output (optional → defaults to output)
-  document: "en"         # Generated requirements/spec/plan/tasks (optional → defaults to output)
-  commit: "en"           # Git commit messages (optional → defaults to output)
-  templates: "en"        # Keep as "en"
+  output: "en"
+  interaction: "zh-CN"
+  document: "en"
+  commit: "en"
+  templates: "en"
 
 project:
-  ai: "claude"
-  created: "2025-02-15"
+  ai: "both"
 
 workflow:
+  auto_next: false
+  auto_distill: true
   auto_maintenance: true
-  auto_next: false       # Auto-advance between workflow stages (opt-in)
-  worktrees: true        # Isolate writes in Git worktrees (default on)
+  worktrees: true
 
 review:
-  decided_by: reviewer   # Who decides out-of-context review findings: reviewer (default) or ask
+  decided_by: reviewer
 ```
 
-## Language Settings
+</details>
 
-CodexSpec splits language into four independently-configurable dimensions. `output` is the base; `interaction`, `document`, and `commit` override it and fall back to it (then `en`) when unset. This lets you, for example, converse with Claude in one language while keeping generated artifacts or commit messages in another.
-
-| Dimension | Key | Set at init | Set later | Controls | Falls back to |
-|-----------|-----|-------------|-----------|----------|---------------|
-| Output (base) | `output` | `--lang` | `config --set-lang` | base for the other three | `en` |
-| Interaction | `interaction` | `--interaction-lang` | `config --set-interaction-lang` | LLM dialogue + CLI output | output → `en` |
-| Document | `document` | `--document-lang` | `config --set-document-lang` | generated spec/plan/tasks | output → `en` |
-| Commit | `commit` | `--commit-lang` | `config --set-commit-lang` | git commit messages | output → `en` |
-| Templates | `templates` | — | — | command template source (always `en`) | — |
-
-**Supported values:** See [Internationalization](../user-guide/i18n.md#supported-languages)
-
-### `language.output`
-
-The base output language. The other dimensions fall back to it when they are not set explicitly.
-
-### `language.interaction`
-
-Language for the conversation between you and the LLM, plus `codexspec` CLI terminal output. Optional — defaults to `output`.
-
-### `language.document`
-
-Language for generated artifact files (requirements/spec/plan/tasks). Optional — defaults to `output`.
-
-### `language.commit`
-
-Language for git commit messages. Optional — defaults to `output`.
-
-### `language.templates`
-
-Template language. Should remain as `"en"` for compatibility.
-
-## Project Settings
-
-### `project.ai`
-
-The AI assistant being used. Controls which agent context files `codexspec init` lays down:
-
-- `claude` (default) — writes `CLAUDE.md` (and `.claude/commands/`).
-- `codex` — writes `AGENTS.md` and `.agents/skills/` instead.
-- `both` — writes all of the above so the project is ready for both Claude Code and Codex CLI.
-
-`CLAUDE.md` is always created (so the project stays usable from Claude Code); `AGENTS.md` and `.agents/skills/` are created only when `project.ai` is `codex` or `both`.
-
-### `project.created`
-
-Date when the project was initialized.
-
-## Workflow Settings
-
-### `workflow.auto_next`
-
-Controls whether the Requirements-First SDD pipeline **auto-advances** to the next workflow stage once the current stage passes, instead of requiring you to manually trigger the next command.
-
-- **Default:** `false` (opt-in). Only the literal value `true` enables auto-advance.
-- **Toggle / set with:** `codexspec config --auto-next` (bare flag toggles the current value; pass `on`/`off` to set it explicitly).
-
-**Chain:**
-
-```
-specify → generate-spec → spec-to-design → design-to-plan → plan-to-tasks → implement-tasks
-```
-
-**Pass gate:**
-
-- `generate-spec`, `spec-to-design`, `design-to-plan`, `plan-to-tasks`: the command's built-in review loop must report an Overall Status of `PASS` or `PASS_WITH_WARNINGS`.
-- `specify`: there is no review loop, so the gate is your explicit confirmation that requirements discovery is complete (the **final** stage summary, not each intermediate one).
-- `implement-tasks`: terminal stage — nothing auto-fires after it.
-
-When the review loop reports `NEEDS_REVISION` or `BLOCKED`, the chain halts and control returns to you. Before each advance the agent emits one notice line (for example: `auto_next: review passed → invoking /codexspec:design-to-plan`).
-
-### `workflow.auto_maintenance`
-
-`codexspec config --auto-maintenance on|off` persists `workflow.auto_maintenance` as a YAML boolean in `.codexspec/config.yml`; an absent key means `true`. Both workflow switches accept case-insensitive `on/true/1/yes` and `off/false/0/no`. `implement-tasks` reads this setting when it automatically repairs reviewed code: `on` includes substantiated incremental maintenance improvements; `off` still reports them. Actual defects and required verification remain mandatory. This setting is independent of `auto-next` and is not an `implement-tasks` invocation parameter.
-
-### `workflow.worktrees`
-
-Defaults to **on**, including when the key or file is absent. Only the literal YAML
-boolean `false` disables ordinary worktree isolation. Display effective settings with
-`codexspec config`; use `codexspec config --worktrees on`, `--worktrees off`, or the bare
-`--worktrees` flag to toggle the destination checkout's current value.
-
-Settings are **checkout-local**. Routing uses the source checkout's setting. With isolation
-on, a configuration edit from main writes to the dedicated maintenance worktree; an edit
-from an active feature writes there. The CLI prints the exact destination config path.
-For example, disabling from main disables the maintenance checkout first: main continues
-to read its unchanged configuration until that change is integrated through Git. There
-is no repository-wide immediate override. Other language and workflow settings follow
-the same routing.
-
-With isolation off, ordinary feature and project-level writes use the selected checkout.
-`blueprint` and `auto-dev` always retain their fixed shared worktree. First-time and update
-`codexspec init` operations always write to the explicitly selected checkout, regardless
-of this setting. See [worktree development](../user-guide/workflow.md#worktree-development)
-for directory layout, baseline selection, and continuation.
-
-## Review Settings
-
-### `review.decided_by`
-
-Decides who rules on a `/codexspec:review-code` finding whose trigger depends on inputs or environments outside the project's real operating context.
-
-- **Default:** `reviewer`, including when the key or section is absent. The reviewer decides every finding, exactly as before.
-- **`ask`:** the review reports such an item as a pending scenario decision instead of failing on it. `implement-tasks` asks you once to fix it or accept that the scenario is out of scope, and records your answer in `requirements.md` as a confirmed `CON` or `OUT` entry. Later review rounds follow that entry.
-- **Set with:** `codexspec config --decided-by reviewer|ask` or `/codexspec:config`. A single `review-code` run can override it with `--decided-by`.
-- Any other value is invalid: `codexspec config` reports it, and `review-code` stops with an argument error until it is corrected.
+See [Configuration](configuration.md) and
+[Internationalization](../user-guide/i18n.md) for detailed language and
+setting behavior.

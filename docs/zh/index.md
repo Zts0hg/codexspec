@@ -1,93 +1,77 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/images/codexspec-logo-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/images/codexspec-logo-light.svg">
-  <img alt="CodexSpec Logo" src="assets/images/codexspec-logo-light.svg" width="420">
-</picture>
+# CodexSpec
 
-# 欢迎使用 CodexSpec
+![CodexSpec](assets/images/codexspec-logo-light.svg#only-light){ width="420" }
 
-[![PyPI version](https://img.shields.io/pypi/v/codexspec.svg)](https://pypi.org/project/codexspec/)
-[![Python](https://img.shields.io/pypi/pyversions/codexspec.svg)](https://pypi.org/project/codexspec/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![CodexSpec](assets/images/codexspec-logo-dark.svg#only-dark){ width="420" }
 
-**一款面向 Claude Code 的 Requirements-First SDD 工具包**
+**面向 Claude Code 和 OpenAI Codex 的需求优先 SDD 工具包**
 
-CodexSpec 通过**需求优先的规格驱动开发（Requirements-First SDD）**帮助你交付高质量软件——已确认的需求拥有最高优先级的权威地位，在你显式确认之前，没有任何内容会被视为约束。它不急于写代码，而是先与你确认要构建**什么**以及**为什么**，再决定**如何**实现。
+CodexSpec 将已确认的需求逐步转化为可追溯的规格说明、设计、计划、任务和具体实现。你来决定做什么、为什么做；智能体则在这些需求的约束下制定实现方案，通过阶段审查把关，并结合长期保存的项目知识推进开发。
+
+你可以通过 Claude Code 的斜杠命令或 Codex 技能使用 CodexSpec，也可以将两种方式配合使用。常规功能开发默认在各自独立的 Git worktree 中进行。如果需要，还可以使用共享蓝图，让智能体按顺序自主推进已确认需求的开发。
+
+<a id="why-choose-codexspec"></a>
 
 ## 为什么选择 CodexSpec？
 
-为什么要基于 Claude Code 使用 CodexSpec？对比如下：
+| 需求 | CodexSpec 提供的支持 |
+|------|-------------------------|
+| 明确要做什么 | 先确认需求，再编写规格；已确认需求保存在 `requirements.md` 中 |
+| 让开发过程有据可查 | 需求 → 规格 → 设计 → 计划 → 任务，每一步都引用其依据 |
+| 检查开发中的决策 | 四个文档审查命令、跨文档一致性分析，以及独立的代码缺陷门禁 |
+| 换个会话或接手人也能继续 | 保留功能记录、项目原则、可复用知识和相关历史决策 |
+| 同时推进多个功能 | 每个常规功能使用独立的 Git worktree，后续开发继续复用同一工作区 |
+| 减少手动推进 | 可选择自动衔接开发阶段，或让智能体自主开发蓝图中已确认的需求 |
+| 团队语言偏好 | 独立设置交互、文档和提交语言 |
 
-| 维度 | 仅使用 Claude Code | CodexSpec + Claude Code |
-|------|--------------------|-------------------------|
-| **多语言支持** | 默认以英文交互 | 可为团队设定工作语言，协作与评审更顺畅 |
-| **可追溯性** | 会话结束后决策难以追溯 | 所有 spec、plan、tasks 均保存在 `.codexspec/specs/` |
-| **会话恢复** | Plan 模式被打断后难以恢复 | 多命令拆分 + 持久化文档，恢复轻松 |
-| **团队治理** | 缺乏统一原则、风格不一致 | `constitution.md` 强制执行团队标准与质量底线 |
+<a id="what-is-requirements-first-sdd"></a>
 
-### 什么是 Requirements-First SDD？
+### 什么是需求优先 SDD？
 
-**Requirements-First SDD** 是规格驱动开发（SDD）方法论的一次升级：**已确认的需求拥有最高优先级的权威地位**。在决定*如何*实现之前，你先定义并确认要做什么以及为什么——在你显式确认之前，没有任何内容会成为约束。
+需求优先的规格驱动开发（Requirements-First Spec-Driven Development）以**已确认的需求作为功能开发的最高依据**。智能体先记录目标、约束、决策、不做的事项、待解决的问题以及用户确认的依据，再据此编写后续文档并实现功能。
 
+```text
+Idea → Confirmed Requirements →     Spec    →     Design    →     Plan    →    Tasks     →     Code
+                 ↓                   ↓              ↓              ↓             ↓              ↓
+         User confirmation      review-spec   review-design   review-plan   review-tasks   review-code
 ```
-传统方式:    想法 → 代码 → 调试 → 重写
-SDD:        想法 → 已确认需求 → 规格文档 → 计划 → 任务 → 代码
-```
 
-### 核心特性
+需求由你确认；从规格到代码，后续各项产物都有对应的审查环节。
 
-- **基于宪法（Constitution）的开发** - 建立项目原则，让其指导后续所有决策
-- **持久化的需求捕获** - `/specify` 在生成正式文档之前，先把已确认的讨论固化为 `requirements.md`
-- **自动评审** - 每个生成的 spec、plan、tasks 工件都内置质量检查
-- **交互式澄清** - 通过 Q&A 不断打磨需求
-- **跨工件分析** - 在进入实现之前发现不一致
-- **可追溯的任务** - 任务拆解保留对需求与计划的覆盖，并应用**条件式 TDD**（仅当计划、宪法或风险有要求时才采用测试先行；文档/配置等不可测任务直接实现）
-- **原生 Claude Code 集成** - 斜杠命令无缝衔接
-- **多语言支持** - 通过 LLM 动态翻译覆盖 13+ 种语言
-- **跨平台** - 同时提供 Bash 与 PowerShell 脚本
-- **可扩展** - 通过插件架构支持自定义命令
+产品要做什么、为什么做，由人与智能体协作讨论和调整；自动审查负责检查后续产物是否符合这些决定。启用自动化后，通过审查的阶段会继续向下推进，但智能体仍不能擅自改写已确认的需求。
 
-## 快速开始
+[![CodexSpec：需求优先开发流程、阶段审查与经验迭代循环](../../assets/workflow/workflow-zh-CN-light.png#only-light)](../../assets/workflow/workflow-zh-CN-light.png#only-light)
+
+[![CodexSpec：需求优先开发流程、阶段审查与经验迭代循环](../../assets/workflow/workflow-zh-CN-dark.png#only-dark)](../../assets/workflow/workflow-zh-CN-dark.png#only-dark)
+
+打开完整尺寸的流程图： [☀️](../../assets/workflow/workflow-zh-CN-light.png) · [🌙](../../assets/workflow/workflow-zh-CN-dark.png)
+
+<a id="30-second-quick-start"></a>
+
+## 30 秒快速入门
+
+安装 CodexSpec，并为你使用的助手初始化项目：
 
 ```bash
-# 安装
 uv tool install codexspec
 
-# 创建新项目
-codexspec init my-project
+# Create a new project for Claude Code
+codexspec init my-project --ai claude
 
-# 或在已有项目中初始化
-codexspec init . --ai claude
+# Or initialize an existing project for Codex
+cd your-existing-project
+codexspec init . --ai codex
+
+# Use --ai both when you want both integrations
 ```
 
-[完整安装指南](getting-started/installation.md)
+完成初始化后，在项目目录中启动你已安装的助手。两种助手使用相同的工作流，调用方式分别为：
 
-## 工作流概览
+| 助手 | 开始需求讨论 |
+|-----------|------------------------------|
+| Claude Code (`claude`) | `/codexspec:specify I want to build a todo application` |
+| Codex (`codex`) | `$codexspec:specify I want to build a todo application` |
 
-CodexSpec 把开发过程拆解为一系列**可评审的检查点**。已确认的需求沿着 spec、plan、tasks 一路流转到代码，每个阶段都附带评审。
+如需定制项目原则，可以使用 `constitution`。确认最终需求摘要后，在命令返回的功能目录和工作区中继续开发。后续步骤见[核心工作流](user-guide/workflow.md#core-workflow)。
 
-```
-想法 → 已确认需求 → 规格文档 → 计划 → 任务 → 代码
-```
-
-每个工件都由专属命令产出，并在进入下一阶段之前完成校验：
-
-```
-想法 → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
-                                                  │                          │                           │
-                                             评审 spec                   评审 plan                    评审 tasks
-```
-
-### 确认门（Confirmation Gate）
-
-最关键的差异化设计是**确认门（Confirmation Gate）**：需求、spec、plan、tasks 只有在你显式确认之后才会成为约束。已确认需求拥有最高优先级的特性权威，因此 AI 无法悄悄锁定决策——派生出的工件都带显式的来源链接，冲突会被回溯定位而不是被传播扩散。
-
-### 迭代式质量环
-
-每个生成命令都内置**自动化、基于证据的评审**：缺陷必须有具体证据，建议性意见绝不会触发自动改动；经过验证的缺陷可被修复并最多再审两轮。这个闭环让质量持续上升，而无需你逐项盯防每一个细节。
-
-[了解完整工作流](user-guide/workflow.md)
-
-## 许可证
-
-MIT License - 详情见 [LICENSE](https://github.com/Zts0hg/codexspec/blob/main/LICENSE)。
+使用 Codex 桌面应用？可以[让 Codex 安装并初始化你的项目](getting-started/installation.md#install-with-the-codex-desktop-app)。

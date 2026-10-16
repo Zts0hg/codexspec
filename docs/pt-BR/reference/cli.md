@@ -1,123 +1,155 @@
 # Referência da CLI
 
-## Comandos
+<a id="cli-commands"></a>
 
-### `codexspec show-blueprint`
+## Comandos da CLI
+
+| Comando | Finalidade |
+|---------|---------|
+| `codexspec init` | Inicializar ou atualizar um projeto para Claude, Codex ou ambos |
+| `codexspec check` | Verificar ferramentas e dependências instaladas |
+| `codexspec version` | Exibir informações de versão e sistema |
+| `codexspec config` | Consultar ou alterar a configuração do projeto |
+| `codexspec list-commands` | Listar os comandos de agentes disponíveis por categoria |
+| `codexspec show-blueprint` | Exibir o blueprint do worktree compartilhado sem alterá-lo |
+
+<a id="cli-installation"></a>
+
+## Instalação da CLI
+
+```bash
+uv tool install codexspec
+
+# Or use pip
+pip install codexspec
+
+# Verify the CLI and inspect available commands
+codexspec version
+codexspec --help
+codexspec list-commands
+```
+
+Inicialize um novo projeto com `codexspec init my-project --ai claude` ou o
+diretório atual com `codexspec init . --ai codex`. Use `--ai both` para as duas
+integrações. O assistente padrão é `claude`; para usar Codex ou ambos, informe
+essa escolha explicitamente.
+
+<details>
+<summary>Métodos alternativos de instalação</summary>
+
+<a id="one-time-initialization"></a>
+
+### Inicialização em uma única execução
+
+```bash
+uvx codexspec init my-project --ai claude
+uvx codexspec init . --ai codex
+```
+
+A inicialização em uma única execução instala os comandos do projeto e o ambiente
+independente de execução de commits. O roteamento de worktrees, blueprint/auto-dev
+e a revisão manual do perfil continuam usando a CLI do CodexSpec. Deixe essa CLI
+disponível para esses fluxos de trabalho.
+
+<a id="development-versions"></a>
+
+### Versões de desenvolvimento
+
+```bash
+uv tool install git+https://github.com/Zts0hg/codexspec.git
+uv tool install git+https://github.com/Zts0hg/codexspec.git@main
+
+# Replace <tag> with the version you want
+uv tool install git+https://github.com/Zts0hg/codexspec.git@<tag>
+```
+
+</details>
+
+<details>
+<summary>Instalação no Windows</summary>
+
+Use o PowerShell:
+
+```powershell
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+# Restart PowerShell, then:
+uv tool install codexspec
+codexspec version
+```
+
+Consulte o [Guia de solução de problemas no Windows](../WINDOWS-TROUBLESHOOTING.md)
+para resolver problemas com PATH e instalação.
+
+</details>
+
+<a id="upgrade-and-refresh-a-project"></a>
+
+## Atualizar a CLI e os comandos de um projeto
+
+Atualizar a CLI e atualizar os comandos instalados em um projeto são duas etapas distintas:
+
+```bash
+uv tool install codexspec --upgrade
+# Or: pip install --upgrade codexspec
+
+# In the project you want to refresh; select its desired integration(s)
+codexspec init . --force --ai both
+```
+
+Use `--ai claude` ou `--ai codex` se quiser apenas essa integração. `--force`
+regenera os comandos e scripts distribuídos e atualiza os recursos de revisão.
+Também confirma automaticamente as solicitações de migração, atualização de
+comandos e conformidade com a Constituição do Projeto. Os requisitos e princípios
+existentes são mantidos. Nos arquivos de contexto existentes, as orientações
+gerenciadas são atualizadas e o restante do conteúdo é preservado. As chaves de
+configuração que você não definir explicitamente também são mantidas.
+
+O comando de planejamento é `design-to-plan`. As atualizações da instalação
+removem a entrada antiga `spec-to-plan`, sem manter um alias.
+
+<details>
+<summary>Opções de inicialização da CLI</summary>
+
+| Opção | Significado |
+|--------|---------|
+| `PROJECT_NAME` | Nome do novo diretório; use `.` para o diretório atual |
+| `--here`, `-h` | Inicializar o diretório atual |
+| `--ai`, `-a` | `claude`, `codex` ou `both`; o padrão é `claude` |
+| `--lang`, `-l` | Definir o idioma base da saída |
+| `--interaction-lang` | Definir o idioma de interação |
+| `--document-lang` | Definir o idioma dos documentos |
+| `--commit-lang` | Definir o idioma das mensagens de commit |
+| `--force`, `-f` | Regenerar os artefatos instalados e confirmar automaticamente solicitações de migração, atualização e conformidade; preservar o contexto escrito para o projeto e as configurações não relacionadas |
+| `--no-git` | Pular a inicialização do repositório Git |
+| `--debug`, `-d` | Exibir informações detalhadas de depuração |
+
+</details>
+
+<details>
+<summary>Opções de configuração da CLI</summary>
+
+| Opção | Significado |
+|--------|---------|
+| `--set-lang`, `-l` | Definir o idioma base da saída |
+| `--set-interaction-lang` | Definir o idioma de interação |
+| `--set-document-lang` | Definir o idioma dos documentos |
+| `--set-commit-lang`, `-c` | Definir o idioma das mensagens de commit |
+| `--list-langs` | Listar os códigos de idioma aceitos |
+| `--auto-next` | Alternar ou definir o avanço automático entre etapas |
+| `--auto-distill` | Alternar ou definir a captura automática de conhecimento |
+| `--auto-maintenance` | Alternar ou definir a manutenção incremental automática |
+| `--worktrees` | Alternar ou definir o isolamento por worktree local a cada checkout |
+| `--decided-by` | Definir o modo de decisão da revisão como `reviewer` ou `ask` |
+
+</details>
+
+## `codexspec show-blueprint`
 
 Imprime o `.codexspec/blueprint.md` completo da branch fixa `codexspec/auto-dev` e de
-`worktree-for-codexspec-auto-dev` como conteúdo bruto na saída padrão. Pré-requisitos ausentes são
-informados no erro padrão com status diferente de zero. O comando é somente leitura e não executa
+`worktree-for-codexspec-auto-dev` como conteúdo bruto na saída padrão. Se o repositório, a branch, o worktree ou o arquivo estiver ausente, a saída de erro padrão
+recebe um diagnóstico e o comando termina com um código diferente de zero. O comando é somente leitura e não executa
 fetch, merge, escrita ou bloqueio.
 
 ```bash
 codexspec show-blueprint
-```
-
----
-
-### `codexspec init`
-
-Inicializa um novo projeto CodexSpec.
-
-```bash
-codexspec init [PROJECT_NAME] [OPTIONS]
-```
-
-**Argumentos:**
-
-| Argumento | Descrição |
-|----------|-----------|
-| `PROJECT_NAME` | Nome do novo diretório do projeto (use `.` ou `--here` para o diretório atual) |
-
-**Opções:**
-
-| Opção | Abrev. | Descrição |
-|-------|--------|-----------|
-| `--here` | `-h` | Inicializa no diretório atual |
-| `--ai` | `-a` | Assistente de IA a usar: `claude`, `codex` ou `both` (padrão: claude) |
-| `--lang` | `-l` | Idioma (base) de saída; interaction/document/commit recaem sobre ele (ex.: en, zh-CN, ja) |
-| `--interaction-lang` | | Idioma de interação (diálogo com o LLM + saída da CLI `codexspec`); sobrescreve `--lang` |
-| `--document-lang` | | Idioma dos documentos (requisitos/spec/plan/tasks gerados); sobrescreve `--lang` |
-| `--commit-lang` | | Idioma das mensagens de commit; sobrescreve `--lang` |
-| `--force` | `-f` | Sobrescreve arquivos existentes e confirma prompts automaticamente; nunca regenera o `config.yml` |
-| `--no-git` | | Pula a inicialização do repositório git |
-| `--debug` | `-d` | Habilita a saída de debug |
-
-`--lang` define o idioma base de `output`; `--interaction-lang`, `--document-lang` e `--commit-lang` o sobrescrevem para a sua dimensão (cada um recai sobre `output` e depois sobre `en`). Veja [Internacionalização](../user-guide/i18n.md) para o modelo completo.
-
-A primeira execução do `init` em um TTY sem `--lang` (e sem as três flags de dimensão) solicita um idioma base; em um ambiente não-TTY (CI/scripts) o padrão é `en` — **totalmente não interativo**. Executar o `init` novamente preserva qualquer chave de idioma que você não tenha especificado; `--force` nunca regenera o `config.yml`.
-
-**Exemplos:**
-
-```bash
-# Criar novo projeto
-codexspec init my-project
-
-# Inicializar no diretório atual
-codexspec init . --ai claude
-
-# Uso único (sem instalação) — inicializar para Codex CLI ou both
-uvx codexspec init . --ai codex
-uvx codexspec init . --ai both
-
-# Totalmente não interativo: base em zh-CN, mensagens de commit em inglês
-codexspec init my-project --lang zh-CN --commit-lang en
-
-# Definir cada dimensão explicitamente (scriptável, sem prompts)
-codexspec init my-project \
-  --interaction-lang zh-CN --document-lang en --commit-lang en
-```
-
-`codexspec init` instala os recursos de revisão compartilhados pelo Claude Code e Codex em `.codexspec/review-code/`. `--force` atualiza recursos distribuídos e preserva arquivos de extensão com outros caminhos. Instalar apenas a CLI não cria arquivos de projeto. Com apenas o plugin, se o projeto não tiver a árvore instalada, a revisão usa os mesmos recursos da raiz resolvida pelo host.
-
----
-
-### `codexspec check`
-
-Verifica as ferramentas instaladas.
-
-```bash
-codexspec check
-```
-
----
-
-### `codexspec version`
-
-Exibe informações de versão.
-
-```bash
-codexspec version
-```
-
----
-
-### `codexspec config`
-
-Exibe ou modifica a configuração do projeto.
-
-```bash
-codexspec config [OPTIONS]
-```
-
-**Opções:**
-
-| Opção | Abrev. | Descrição |
-|-------|--------|-----------|
-| `--set-lang` | `-l` | Define o idioma (base) de saída |
-| `--set-interaction-lang` | | Define o idioma de interação (diálogo com o LLM + saída da CLI) |
-| `--set-document-lang` | | Define o idioma dos documentos (spec/plan/tasks gerados) |
-| `--set-commit-lang` | `-c` | Define o idioma das mensagens de commit |
-| `--list-langs` | | Lista todos os idiomas suportados |
-| `--auto-next` | | Alterna/define `workflow.auto_next` (a flag isolada alterna; ou on/off) |
-| `--auto-maintenance` |  | Alterna/define `workflow.auto_maintenance` (on por padrão; sem valor alterna; ou on/off) |
-| `--decided-by` | | Define `review.decided_by` como `reviewer` (padrão) ou `ask` |
-
-Cada `--set-*-lang` atualiza uma [dimensão de idioma](../user-guide/i18n.md); qualquer dimensão que você não definir recai sobre `output` e depois sobre `en`.
-
-`codexspec config --auto-maintenance on|off` salva `workflow.auto_maintenance` como booleano YAML em `.codexspec/config.yml`; se a chave não existir, vale `true`. As duas opções aceitam `on/true/1/yes` e `off/false/0/no` sem diferenciar maiúsculas. `implement-tasks` lê essa configuração ao corrigir automaticamente: `on` inclui melhorias incrementais de manutenção fundamentadas; `off` continua relatando as sugestões. Defeitos reais e verificações necessárias continuam obrigatórios. A configuração é independente de `auto-next` e não é um parâmetro de chamada de `implement-tasks`.
-
-```bash
-codexspec config --auto-maintenance on
-codexspec config --auto-maintenance off
 ```

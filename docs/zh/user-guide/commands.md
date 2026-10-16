@@ -1,97 +1,93 @@
-# 命令
+<a id="available-commands"></a>
 
-这是 CodexSpec 斜杠命令的参考文档。这些命令在 Claude Code 的聊天界面中调用。
+# 可用命令
 
-关于工作流模式以及何时使用每个命令，请参阅[工作流](workflow.md)。关于 CLI 命令，请参阅 [CLI](../reference/cli.md)。
+CLI 提供六个公共命令；助手集成提供 28 个命令，Claude 中使用 `/codexspec:<name>`，Codex 中使用 `$codexspec:<name>`。为便于阅读，下表统一使用 Claude 的调用方式。
 
-## 快速参考
+<a id="cli-commands"></a>
 
-按类别分组，与 README 中的目录一致。每一组内命令按工作流顺序排列。
-
-### 核心工作流命令
+## CLI 命令
 
 | 命令 | 用途 |
 |---------|---------|
-| `/codexspec:constitution` | 创建或更新项目宪法，带跨工件校验 |
-| `/codexspec:specify` | 澄清、确认需求并持久化到 `requirements.md` |
-| `/codexspec:blueprint` | 讨论并维护共享 blueprint 中已确认的需求 |
-| `/codexspec:generate-spec` | 从已澄清的需求生成 `spec.md` 文档（★ 自动评审） |
-| `/codexspec:design-to-plan` | 将已确认的设计转换为可追溯的实现计划 ★ |
-| `/codexspec:plan-to-tasks` | 将计划拆解为可追溯、可验证的任务（★ 自动评审） |
-| `/codexspec:implement-tasks` | 使用条件 TDD 工作流执行任务 |
-| `/codexspec:auto-dev` | 按文档顺序自主开发 blueprint 中所有待实现需求 |
+| `codexspec init` | 为 Claude、Codex 或两者初始化或刷新项目 |
+| `codexspec check` | 检查已安装的工具和依赖 |
+| `codexspec version` | 显示版本和系统信息 |
+| `codexspec config` | 查看或修改项目配置 |
+| `codexspec list-commands` | 按类别列出可用智能体命令 |
+| `codexspec show-blueprint` | 显示共享工作区中的蓝图，不作修改 |
 
-### 评审命令（质量关卡）
+<a id="core-workflow-commands"></a>
 
-| 命令 | 用途 |
-|---------|---------|
-| `/codexspec:review-spec` | 校验规格的完整性与质量 |
-| `/codexspec:review-plan` | 评审技术计划的可行性与对齐情况 |
-| `/codexspec:review-tasks` | 校验任务的覆盖、顺序与可行性 |
-
-### 增强命令
+## 核心工作流命令
 
 | 命令 | 用途 |
 |---------|---------|
-| `/codexspec:config` | 交互式管理项目配置（创建/查看/修改/重置） |
-| `/codexspec:clarify` | 扫描已有规格中的歧义（4 个类别，最多 5 个问题） |
-| `/codexspec:analyze` | 跨工件一致性分析（自动修复，按严重级别分类） |
+| `/codexspec:constitution` | 创建/更新项目原则，并进行跨产物验证 |
+| `/codexspec:specify` | 讨论、确认并持久保存功能需求 |
+| `/codexspec:blueprint` | 准备或维护已确认的待处理蓝图需求 |
+| `/codexspec:generate-spec` | 根据已确认需求编写可追溯的规格文档，并自动审查 |
+| `/codexspec:spec-to-design` | 定义架构、组件、接口和决策；自动审查 |
+| `/codexspec:design-to-plan` | 规划实现阶段、顺序和验证；自动审查 |
+| `/codexspec:plan-to-tasks` | 生成覆盖上游要求的可验证任务，并自动审查和分析 |
+| `/codexspec:implement-tasks` | 执行任务、验证结果、审查并修复 |
+| `/codexspec:auto-dev` | 按文档顺序自主开发已确认的蓝图需求 |
+
+<a id="artifact-review-commands"></a>
+
+## 产物审查命令
+
+| 命令 | 用途 |
+|---------|---------|
+| `/codexspec:review-spec` | 检查规格忠实度和内部质量 |
+| `/codexspec:review-design` | 检查设计是否符合规格、是否可行，以及能否据此制定计划 |
+| `/codexspec:review-plan` | 检查计划是否符合设计、是否可行，以及能否据此开始实现 |
+| `/codexspec:review-tasks` | 检查任务忠实度、依赖、可执行性和验证 |
+
+<a id="requirements-existing-code-and-debugging"></a>
+
+## 需求、既有代码与调试
+
+| 命令 | 用途 |
+|---------|---------|
+| `/codexspec:clarify` | 解决需求歧义，先更新需求，再更新规格 |
+| `/codexspec:analyze` | 检查整个开发链路是否可追溯，并让下游文档符合上游依据 |
 | `/codexspec:checklist` | 生成需求质量检查清单 |
-| `/codexspec:tasks-to-issues` | 把任务转换为 GitHub Issues |
-| `/codexspec:distill` | 沉淀可复用的项目知识；在本地 HTML 工作区审核候选记录 |
-| `/codexspec:evolve` | 把已定稿的项目知识整理成向上游贡献的草稿 |
-| `/codexspec:onboard` | 从既有代码库冷启动 profile 中的候选知识 |
+| `/codexspec:tasks-to-issues` | 将已有任务转为可操作的 GitHub issues |
+| `/codexspec:debug` | 调查根因后再修复 |
+| `/codexspec:reverse-spec` | 概览现有架构、生成模块草案，或报告相对于基线的偏差 |
 
-### Git 工作流命令
+<a id="project-knowledge-commands"></a>
 
-| 命令 | 用途 |
-|---------|---------|
-| `/codexspec:commit-staged` | 严格依据暂存改动生成提交信息 |
-| `/codexspec:pr` | 从 git diff 生成 PR/MR 描述（自动识别平台） |
-
-### 代码评审命令
+## 项目知识命令
 
 | 命令 | 用途 |
 |---------|---------|
-| `/codexspec:review-code` | 变更范围缺陷门禁；路径质量评分请使用 `--audit` |
-| `/codexspec:review-python-code` | 评审 Python 代码（PEP 8、类型安全、健壮性、宪法一致性） |
-| `/codexspec:review-react-code` | 评审 React/TypeScript 代码（组件架构、Hooks 规范、状态、性能） |
+| `/codexspec:distill` | 提炼可复用知识，或在本地界面中审阅候选记录 |
+| `/codexspec:evolve` | 将已认可的知识整理为向上游贡献的草案 |
+| `/codexspec:onboard` | 初始化候选惯例和有证据支持的约束 |
 
-### 快速通道
+<a id="git-and-code-review-commands"></a>
+
+## Git 与代码审查命令
 
 | 命令 | 用途 |
 |---------|---------|
-| `/codexspec:quick` | 为小型改动运行精简的 Requirements-First SDD 流程 |
+| `/codexspec:commit-staged` | 根据暂存变更生成信息；预览或执行获授权的提交 |
+| `/codexspec:pr` | 生成结构化 PR/MR 描述 |
+| `/codexspec:release-notes` | 维护 changelog 条目，并生成发布正文 |
+| `/codexspec:review-code` | 以缺陷门禁审查所选变更；使用 `--audit` 评估路径质量 |
 
----
+<a id="utility-commands"></a>
 
-## 命令分类
+## 实用命令
 
-### 核心工作流命令
+| 命令 | 用途 |
+|---------|---------|
+| `/codexspec:config` | 交互式创建/查看/修改/重置项目配置 |
+| `/codexspec:quick` | 为小型变更运行简明的需求优先 SDD 工作流 |
 
-用于主要 Requirements-First SDD 工作流的命令：宪法 → 已确认需求 → 规格 → 计划 → 任务 → 实现。在这里，已确认的需求拥有最高优先级的特性权威——在确认门处显式确认之前，链路中的任何内容都不具约束力。
-
-### 评审命令（质量关卡）
-
-在每个工作流阶段对工件进行校验的命令，遵循**基于证据的评审**契约：每个缺陷都必须给出具体的 `Evidence`、`Location`、`Mismatch`、`Impact` 与 `Remediation`。建议性的设计意见单独报告，既不改变状态也不触发自动改动。已核实的缺陷最多可修复并再审两轮；建议项始终可选。
-
-### 增强命令
-
-用于迭代细化、跨工件校验、配置以及项目管理集成的命令。
-
-### Git 工作流命令
-
-把已完成的工作转化为可分享工件的命令：从暂存 diff 生成提交信息，从分支 diff 生成结构化的 PR/MR 描述。
-
-### 代码评审命令
-
-评审源代码（任意语言、Python 专属、React/TypeScript 专属）以检查地道表达、正确性、健壮性、架构以及宪法一致性。发现沿用与工件评审相同的严重级别纪律：CRITICAL/HIGH 问题必须给出具体证据；LOW 建议仅供参考。
-
-### 快速通道
-
-一条针对规模小、边界清晰的改动，端到端运行 Requirements-First SDD 流程的精简命令。
-
----
+旧的 Python／React 审查入口是插件兼容工件，不属于初始化安装的 28 个命令。请使用 `review-code`，它会按需加载语言与框架标准；评估指定路径时使用 `--audit`。
 
 ## 命令参考
 
@@ -102,14 +98,14 @@
 **语法：**
 
 ```
-/codexspec:constitution [原则描述]
+/codexspec:constitution [principles description]
 ```
 
 **参数：**
 
 | 参数 | 必需 | 描述 |
 |----------|----------|-------------|
-| `原则描述` | 否 | 要纳入的原则描述（未提供时会提示输入） |
+| `principles description` | 否 | 要纳入的原则描述（未提供时会提示输入） |
 
 **功能：**
 
@@ -124,30 +120,30 @@
 ```
 .codexspec/
 └── memory/
-    └── constitution.md    # 项目治理文档
+    └── constitution.md    # Project governance document
 ```
 
 **示例：**
 
 ```text
-你: /codexspec:constitution 聚焦代码质量、测试标准与整洁架构
+You: /codexspec:constitution Focus on code quality, testing standards, and clean architecture
 
-AI:  正在创建宪法...
+AI:  Creating constitution...
 
-     ✓ 已创建 .codexspec/memory/constitution.md
-     版本: 1.0.0
+     ✓ Created .codexspec/memory/constitution.md
+     Version: 1.0.0
 
-     同步影响报告:
-     - plan-template-*.md: ✅ 已对齐
-     - spec-template-*.md: ✅ 已对齐
-     - tasks-template-*.md: ✅ 已对齐
+     Sync Impact Report:
+     - plan-template-*.md: ✅ aligned
+     - spec-template-*.md: ✅ aligned
+     - tasks-template-*.md: ✅ aligned
 
-     核心原则:
-     1. 代码质量优先
-     2. 测试驱动开发
-     3. 整洁架构
+     Core Principles:
+     1. Code Quality First
+     2. Test-Driven Development
+     3. Clean Architecture
 
-     建议提交: docs: create constitution v1.0.0
+     Suggested commit: docs: create constitution v1.0.0
 ```
 
 **提示：**
@@ -166,14 +162,14 @@ AI:  正在创建宪法...
 **语法：**
 
 ```
-/codexspec:specify [你的想法或需求]
+/codexspec:specify [your idea or requirement]
 ```
 
 **参数：**
 
 | 参数 | 必需 | 描述 |
 |----------|----------|-------------|
-| `你的想法或需求` | 否 | 想构建内容的初始描述（未提供时会提示输入） |
+| `your idea or requirement` | 否 | 想构建内容的初始描述（未提供时会提示输入） |
 
 **功能：**
 
@@ -196,35 +192,35 @@ AI:  正在创建宪法...
 **示例：**
 
 ```text
-你: /codexspec:specify 我想构建一个任务管理应用
+You: /codexspec:specify I want to build a task management app
 
-AI:  好的！让我帮你澄清需求。
+AI:  Great! Let me help you clarify the requirements.
 
-     首先，这个应用的目标用户是谁？
-     - 个人专业人士
-     - 小团队
-     - 企业组织
-     - 以上全部
+     First, who are the target users for this app?
+     - Individual professionals
+     - Small teams
+     - Enterprise organizations
+     - All of the above
 
-你: 小团队，主要是软件开发团队
+You: Small teams, mainly software development teams
 
-AI:  明白了。对于小型开发团队：
-     - 需要实时协作功能吗？
-     - 任务要支持子任务还是只用扁平列表？
-     - 有任何集成需求吗（GitHub、Slack 等）？
+AI:  Got it. For small dev teams:
+     - Do you need real-time collaboration features?
+     - Should tasks support sub-tasks or just flat lists?
+     - Any integration requirements (GitHub, Slack, etc.)?
 
-你: 实时很重要。子任务要。GitHub 集成就好了。
+You: Real-time is important. Sub-tasks yes. GitHub integration would be nice.
 
-AI:  [继续探索需求...]
+AI:  [Continues exploring requirements...]
 
-     已澄清的需求摘要：
-     - 目标：小型开发团队（5-20 人）
-     - 核心：带子任务的任务、实时更新
-     - 集成：GitHub（可选）
-     - 优先级：实时协作 > 子任务 > GitHub
+     Summary of clarified requirements:
+     - Target: Small dev teams (5-20 people)
+     - Core: Tasks with sub-tasks, real-time updates
+     - Integration: GitHub (optional)
+     - Priority: Real-time collaboration > Sub-tasks > GitHub
 
-     准备好生成规格文档了吗？
-     用 /codexspec:generate-spec 创建 spec.md
+     Ready to generate the spec document?
+     Use /codexspec:generate-spec to create spec.md
 ```
 
 **提示：**
@@ -236,9 +232,32 @@ AI:  [继续探索需求...]
 
 ---
 
+### `/codexspec:blueprint`
+
+如果希望先把多条需求讨论并确认，再逐项开发，可以用 `blueprint` 整理需求，用 `auto-dev` 推进这组需求的开发：
+
+```text
+/codexspec:blueprint Add a confirmed requirement for task reminders
+/codexspec:auto-dev
+```
+
+需求进入开发队列前，蓝图讨论会先明确需要由用户决定的方向、方案选择和约束。共享蓝图 `.codexspec/blueprint.md` 使用 `pending`、`in_progress` 和 `completed` 标记状态。待处理需求可以追加、替换、删除或调整顺序；正在开发和已完成的条目只允许查看，不能通过蓝图维护操作修改。
+
+Auto-dev 按蓝图中的顺序开发需求。如果已有功能正在进行，会先接着完成它，再开始下一个。每完成一项，都会重新读取队列，因此运行期间新追加的待处理需求也能接着开发。整个过程在已确认的需求范围内完成 SDD 各阶段、实现、验证、审查和修复。调用 `auto-dev` 本身就会启用这一自动化流程，不受 `workflow.auto_next` 控制，也不会修改该设置。
+
+这两个命令共用 `codexspec/auto-dev` 分支和 `worktree-for-codexspec-auto-dev` 工作区。它们可以同时运行，由共享机制协调工作区的使用并保护写入操作；需求开发则仍在该工作区内按顺序进行。自主执行中若遇到无法依据已确认需求作出的产品决定，会停止运行并说明依据，而不会在正常执行过程中发起询问。
+
+只读查看当前共享蓝图：
+
+```bash
+codexspec show-blueprint
+```
+
+---
+
 ### `/codexspec:generate-spec`
 
-从已澄清的需求生成 `spec.md` 文档。这条命令相当于一台"需求编译器"，把已澄清的需求转换为结构化的规格。
+根据已确认需求编写可追溯的规格文档，并自动审查。
 
 **语法：**
 
@@ -279,101 +298,34 @@ AI:  [继续探索需求...]
 **示例：**
 
 ```text
-你: /codexspec:generate-spec
+You: /codexspec:generate-spec
 
-AI:  正在生成规格...
+AI:  Generating specification...
 
-     ✓ 已创建 .codexspec/specs/2026-0613-1200ab-task-management/spec.md
+     ✓ Created .codexspec/specs/2026-0613-1200ab-task-management/spec.md
 
-     包含的章节：
-     - 概述：面向小型开发团队的任务管理
-     - 4 个带验收标准的用户故事
-     - 12 个功能需求（REQ-001 到 REQ-012）
-     - 3 个非功能需求（NFR-001 到 NFR-003）
-     - 5 个记录的边界情况
-     - 范围外：移动应用、企业 SSO
+     Sections included:
+     - Overview: Task management for small dev teams
+     - 4 User Stories with acceptance criteria
+     - 12 Functional Requirements (REQ-001 to REQ-012)
+     - 3 Non-Functional Requirements (NFR-001 to NFR-003)
+     - 5 Edge Cases documented
+     - Out of Scope: Mobile apps, Enterprise SSO
 
-     下一步：
-     - 用 /codexspec:review-spec 评审规格
-     - 或继续 /codexspec:design-to-plan
+     Next steps:
+     - Review the spec with /codexspec:review-spec
+     - Or proceed to /codexspec:spec-to-design
 ```
-
-**提示：**
-
-- 在 `/codexspec:specify` 澄清需求后运行
-- 继续之前先评审生成的规格
-- 用 `/codexspec:review-spec` 做质量校验
-- 如需微调可直接编辑 spec.md
 
 ---
 
-### `/codexspec:clarify`
+### `/codexspec:spec-to-design`
 
-扫描已有规格中的歧义与缺口。用于初始规格创建后的迭代细化。
-
-**语法：**
-
-```
-/codexspec:clarify [path_to_spec.md]
-```
-
-**参数：**
-
-| 参数 | 必需 | 描述 |
-|----------|----------|-------------|
-| `path_to_spec.md` | 否 | 规格文件路径（未提供时自动检测） |
-
-**功能：**
-
-- 用聚焦的歧义类别扫描需求与规格
-- 提出有针对性的澄清问题（最多 5 个）
-- 用户确认后先更新 `requirements.md`，再同步 `spec.md`
-- 如可用，与 review-spec 的发现整合
-
-**歧义类别：**
-
-| 类别 | 检测内容 |
-|----------|-----------------|
-| **完整性缺口** | 缺失章节、空白内容、缺少验收标准 |
-| **具体性问题** | 模糊措辞（"快速"、"可扩展"）、未定义的约束 |
-| **行为清晰度** | 错误处理缺口、未定义的状态转换 |
-| **可衡量性问题** | 缺少指标的非功能需求 |
-
-**示例：**
+读取已确认的 `requirements.md`、`spec.md`、项目原则和相关仓库事实，生成 `design.md`，说明组件、接口、数据流、备选方案和设计决策，并关联上游需求。生成后自动运行 `review-design`。如果设计选择会改变已确认的意图，或需要用户作出新决定，就暂停推进。
 
 ```text
-你: /codexspec:clarify
-
-AI:  正在扫描 spec.md 中的歧义...
-
-     在 3 个类别中发现问题。
-
-     ## 问题 1/5：具体性
-
-     **上下文**：NFR-001 写道"系统应快速响应"
-
-     **问题**：目标响应时间是多少？
-
-     | 选项 | 描述 | 影响 |
-     |--------|-------------|--------|
-     | A | 所有操作 < 100ms | 高性能要求 |
-     | B | 读取 < 500ms，写入 < 1s | 平衡方案 |
-     | 自定义 | 提供不同答案 | - |
-
-     **推荐**：选项 B——适合典型 Web 应用
-
-你: B
-
-AI:  ✓ 已更新 NFR-001：响应时间 读取 < 500ms，写入 < 1s
-     已添加到 spec.md 的 Clarifications 章节
+/codexspec:spec-to-design <feature-dir>
 ```
-
-**提示：**
-
-- 当 spec.md 已存在但需要细化时使用
-- 与 `/codexspec:review-spec` 的发现整合
-- 每个会话最多 5 个问题
-- 对复杂规格可多次运行
 
 ---
 
@@ -405,7 +357,7 @@ AI:  ✓ 已更新 NFR-001：响应时间 读取 < 500ms，写入 < 1s
 
 | 参数 | 必需 | 描述 |
 |----------|----------|-------------|
-| `路径` | 否 | 规格与计划的路径（未提供时自动检测） |
+| `paths` | 否 | 规格与计划的路径（未提供时自动检测） |
 
 **功能：**
 
@@ -421,16 +373,16 @@ AI:  ✓ 已更新 NFR-001：响应时间 读取 < 500ms，写入 < 1s
 .codexspec/
 └── specs/
     └── 2026-0613-1200ab-task-management/
-        └── tasks.md    # 任务拆解
+        └── tasks.md    # Task breakdown
 ```
 
 **任务结构：**
 
 ```markdown
-### Task 2.1: 编写实体 A 的测试 [P]
+### Task 2.1: Write Tests for Entity A [P]
 - **Type**: Testing
 - **Files**: `tests/test_entity_a.py`
-- **Description**: 为实体 A 编写单元测试
+- **Description**: Write unit tests for Entity A
 - **Dependencies**: Task 1.3
 - **Est. Complexity**: Low
 ```
@@ -438,24 +390,24 @@ AI:  ✓ 已更新 NFR-001：响应时间 读取 < 500ms，写入 < 1s
 **示例：**
 
 ```text
-你: /codexspec:plan-to-tasks
+You: /codexspec:plan-to-tasks
 
-AI:  正在将计划拆解为任务...
+AI:  Breaking down plan into tasks...
 
-     ✓ 已创建 tasks.md
-     总计：24 个任务
-     可并行：8 个任务（33%）
+     ✓ Created tasks.md
+     Total: 24 tasks
+     Parallelizable: 8 tasks (33%)
 
-     阶段 1：基础（4 个任务）
-     阶段 2：核心实现 - TDD（10 个任务）
-     阶段 3：集成（4 个任务）
-     阶段 4：接口层（3 个任务）
-     阶段 5：测试与文档（3 个任务）
+     Phase 1: Foundation (4 tasks)
+     Phase 2: Core Implementation - TDD (10 tasks)
+     Phase 3: Integration (4 tasks)
+     Phase 4: Interface Layer (3 tasks)
+     Phase 5: Testing & Documentation (3 tasks)
 
-     执行顺序：
-     阶段 1 → [阶段 2 任务按并行分组] → 阶段 3 → 阶段 4 → 阶段 5
+     Execution Order:
+     Phase 1 → [Phase 2 tasks in parallel groups] → Phase 3 → Phase 4 → Phase 5
 
-     在每个阶段边界都定义了检查点。
+     Checkpoints defined at each phase boundary.
 ```
 
 **提示：**
@@ -465,96 +417,63 @@ AI:  正在将计划拆解为任务...
 - `[P]` 标记真正独立、可并行的任务
 - 实现前先评审依赖关系
 
+任务生成后运行 `review-tasks`。结果为 `PASS` 或 `PASS_WITH_WARNINGS` 时，运行一次 `analyze`；分析不会增加完成门禁。任务覆盖范围包括已确认需求、规格、设计和计划。
+
 ---
 
 ### `/codexspec:implement-tasks`
 
-用条件 TDD 工作流执行实现任务，系统地走完任务列表。
-
-**语法：**
-
-```
-/codexspec:implement-tasks [tasks_path]
-/codexspec:implement-tasks [spec_path plan_path tasks_path]
-```
-
-**参数：**
-
-| 参数 | 必需 | 描述 |
-|----------|----------|-------------|
-| `tasks_path` | 否 | tasks.md 的路径（未提供时自动检测） |
-| `spec_path plan_path tasks_path` | 否 | 三份文档的显式路径 |
-
-**文件解析：**
-
-- **无参数**：从 `.codexspec/specs/` 自动检测
-- **一个参数**：当作 `tasks.md` 路径，其余从同目录推导
-- **三个参数**：spec.md、plan.md、tasks.md 的显式路径
-
-**功能：**
-
-- 读取 tasks.md 并识别未完成任务
-- 对代码任务应用 TDD 工作流：
-  - **Red**：先写失败的测试
-  - **Green**：实现以通过测试
-  - **Verify**：运行所有测试
-  - **Refactor**：在不破坏测试的前提下改进
-- 对不可测任务（文档、配置）直接实现
-- 随进展更新任务复选框
-- 遇到阻塞时记录到 issues.md
-
-**代码任务的 TDD 工作流：**
-
-```
-Red → Green → Verify → Refactor → 标记完成
-```
-
-**不可测任务的直接实现：**
-
-- 文档文件
-- 配置文件
-- 静态资源
-- 基础设施文件
-
-**示例：**
+执行任务、验证结果、审查并修复.
 
 ```text
-你: /codexspec:implement-tasks
-
-AI:  开始实现...
-
-     加载上下文：
-     - spec.md ✓
-     - plan.md ✓
-     - tasks.md ✓
-     - constitution.md ✓
-
-     技术栈：Python 3.11+ / FastAPI / PostgreSQL / pytest
-
-     处理任务 1.1：搭建项目结构
-     ✓ 已创建 src/taskman/__init__.py
-     ✓ 已创建 pyproject.toml
-     [x] 任务 1.1 完成
-
-     处理任务 2.1：编写任务实体测试 [P]
-     ✓ 已创建 tests/test_task.py
-     运行测试... 5 通过（均为预期失败）
-     [x] 任务 2.1 完成
-
-     处理任务 2.2：实现任务实体
-     ✓ 已创建 src/taskman/models/task.py
-     运行测试... 5 通过
-     [x] 任务 2.2 完成
-
-     ...
+/codexspec:implement-tasks <feature-dir>
 ```
 
-**提示：**
+`review-spec`、`review-design`、`review-plan` 和 `review-tasks` 这四个文档审查命令，会检查文档是否忠于上游依据、覆盖是否完整、方案是否可行，以及文档自身的质量。生成文档后会自动审查，也可以手动调用。报告会区分已经验证的缺陷、不会阻止流程继续的风险建议和可改进的设计，并给出兼容性评分。
 
-- 中断后可以从上次停下的位置恢复
-- 阻塞问题记录在 issues.md
-- 在重要任务/阶段后会提交
-- 先运行 `/codexspec:review-tasks` 做校验
+`review-code` 提供独立的代码缺陷门禁，审查范围由所选变更决定；也可以明确选择对完整代码进行质量评估：
+
+```text
+/codexspec:review-code --feature <feature-dir>
+/codexspec:review-code --uncommitted
+/codexspec:review-code --audit src/
+```
+
+默认审查会检查功能分支上的全部变更，包括已提交、已暂存、未暂存，以及未被忽略的未跟踪内容。也可以明确限定为已提交变更、尚未提交的变更，或某一次提交。`--feature` 用于提供功能需求背景，不会缩小 Git 变更范围。`--audit` 则评估指定路径的代码质量，给出建议性评分，不作出功能是否完成的判定。
+
+审查会从 `.codexspec/review-code/` 读取共享标准，并选择与当前行为、语言和框架有关的检查项。每个问题都必须说明具体证据、触发条件、为何由所选变更引入，以及会造成什么影响。审查者只报告缺陷和有依据的维护建议，不修改文件；负责修复的工作流还需独立核实这些问题。
+
+实现代码任务时，先写测试再实现；文档和配置任务则直接修改，并进行相应检查。修复后的增量审查可以复用未受影响部分的已有检查结果。最终验收仍须重新审查整个功能并得到 `PASS`，完成全部覆盖与验证，且没有尚未解决的已纳入 P0–P3 缺陷。有依据的维护建议另行报告。
+
+`workflow.auto_maintenance` 默认为 **true**，用于控制修复工作流是否一并实施已经验证、且与现有要求兼容的维护改进。关闭后仍会报告这些建议，也仍需修复缺陷、完成必要检查。该设置与阶段自动推进相互独立，不是 `implement-tasks` 的命令参数。
+
+需要先查明根因再修复时，可以使用：
+
+```text
+/codexspec:debug Investigate intermittent failures when saving a task
+```
+
+Debug 先调查问题，再对照已有模式分析原因，验证一个明确假设，最后编写能复现问题的失败测试并修复。在实现阶段，如果修复迟迟没有进展、需要追查较复杂的正确性问题，或多轮审查反复发现同一类根因，就会转入这一调试流程。三次修复失败后，必须重新评估架构。
+
+使用 `checklist` 评估需求清晰度、完整性和一致性：
+
+```text
+/codexspec:checklist Check the authentication requirements for completeness
+```
+
+如何选择审查范围、传入参数以及执行详细流程，见[命令参考](commands.md)。
+
+---
+
+### `/codexspec:auto-dev`
+
+按文档顺序自主开发已确认的蓝图需求.
+
+参见 [`blueprint`](#codexspecblueprint).
+
+```text
+/codexspec:auto-dev
+```
 
 ---
 
@@ -596,17 +515,18 @@ AI:  开始实现...
 **示例：**
 
 ```text
-你: /codexspec:review-spec
+You: /codexspec:review-spec
 
 AI:  Overall Status: NEEDS_REVISION
      Compatibility Score: 79/100
 
      Warning SPEC-001
-     Evidence: CON-002 要求一个可衡量的响应时间上限。
+     Evidence: CON-002 requires a measurable response-time limit.
      Location: spec.md, REQ-006
-     Mismatch: "快速响应"没有可衡量的阈值。
-     Impact: 验收结果无法验证。
-     Remediation: 请用户确认阈值，更新 requirements.md，再同步 REQ-006。
+     Mismatch: "Respond quickly" has no measurable threshold.
+     Impact: Acceptance cannot be verified.
+     Remediation: Ask the user to confirm a threshold, update requirements.md,
+                  then synchronize REQ-006.
 
      Risk Advisories / Design Opportunities:
      - None
@@ -614,10 +534,20 @@ AI:  Overall Status: NEEDS_REVISION
 
 **提示：**
 
-- 在 `/codexspec:design-to-plan` 之前运行
+- 在 `/codexspec:spec-to-design` 之前运行
 - 把 `BLOCKED` 与 `NEEDS_REVISION` 视为尚未就绪
 - 不要把建议项提升为需求
 - 修复后重新运行
+
+---
+
+### `/codexspec:review-design`
+
+对照已确认需求与规格，检查 `design.md` 是否忠实、可行，以及是否已具备进入计划阶段的条件。报告应区分有证据支持的缺陷与可选的设计改进，并沿用其他工件审查的状态与有限修复规则。
+
+```text
+/codexspec:review-design <feature-dir>
+```
 
 ---
 
@@ -649,15 +579,15 @@ AI:  Overall Status: NEEDS_REVISION
 **示例：**
 
 ```text
-你: /codexspec:review-plan
+You: /codexspec:review-plan
 
 AI:  Overall Status: PASS
      Compatibility Score: 100/100
      Verified defects: none
 
      Risk Advisories / Design Opportunities:
-     - 如果生产测量超过已确认的延迟目标，缓存层可能有用。
-       当前计划并不要求实现它。
+     - A caching layer may become useful if production measurements exceed
+       the confirmed latency target. It is not required by the current plan.
 ```
 
 **提示：**
@@ -666,6 +596,8 @@ AI:  Overall Status: PASS
 - 生成任务前先解决有证据支持的缺陷
 - 推测性的架构想法留在建议区域
 - 校验技术栈与团队技能相匹配
+
+计划用于落实已确认的 `design.md`，不会重新决定架构方案。审查既检查需求覆盖，也检查计划对设计的引用是否正确。
 
 ---
 
@@ -700,17 +632,17 @@ AI:  Overall Status: PASS
 **示例：**
 
 ```text
-你: /codexspec:review-tasks
+You: /codexspec:review-tasks
 
 AI:  Overall Status: NEEDS_REVISION
      Compatibility Score: 79/100
 
      Warning TASK-001
-     Evidence: 任务 2.5 声明依赖任务 2.4。
-     Location: tasks.md, 任务 2.5
-     Mismatch: 任务 2.5 同时标记了 [P]。
-     Impact: 并行执行可能在前置完成前就开始。
-     Remediation: 移除 [P]；若计划能证明独立则移除依赖。
+     Evidence: Task 2.5 declares a dependency on Task 2.4.
+     Location: tasks.md, Task 2.5
+     Mismatch: Task 2.5 is also marked [P].
+     Impact: Parallel execution can start before its prerequisite completes.
+     Remediation: Remove [P] or remove the dependency if the plan proves independence.
 ```
 
 **提示：**
@@ -722,84 +654,88 @@ AI:  Overall Status: NEEDS_REVISION
 
 ---
 
-### `/codexspec:analyze`
+### `/codexspec:clarify`
 
-对 requirements.md、spec.md、plan.md 与 tasks.md 执行一致性分析，并将 spec.md/plan.md/tasks.md 向 requirements.md 对齐以自动修复确定性不一致（绝不修改 requirements.md），识别权威冲突、可追溯缺口、重复以及覆盖遗漏。
+扫描已有规格中的歧义与缺口。用于初始规格创建后的迭代细化。
 
 **语法：**
 
 ```
-/codexspec:analyze
+/codexspec:clarify [path_to_spec.md]
 ```
 
 **参数：**
 
 | 参数 | 必需 | 描述 |
 |----------|----------|-------------|
-| 无 | - | 分析当前功能的工件 |
+| `path_to_spec.md` | 否 | 规格文件路径（未提供时自动检测） |
 
 **功能：**
 
-- 检测跨工件的重复
-- 识别缺乏可衡量标准的歧义
-- 发现规格不足的条目
-- 检查宪法对齐
-- 把需求覆盖映射到任务
-- 报告术语与顺序上的不一致
+- 用聚焦的歧义类别扫描需求与规格
+- 提出有针对性的澄清问题（最多 5 个）
+- 用户确认后先更新 `requirements.md`，再同步 `spec.md`
+- 如可用，与 review-spec 的发现整合
 
-**严重级别：**
+**歧义类别：**
 
-| 级别 | 定义 |
-|-------|------------|
-| **CRITICAL** | 宪法违规、缺失核心工件、零覆盖 |
-| **HIGH** | 重复/冲突的需求、模糊的安全属性 |
-| **MEDIUM** | 术语漂移、缺失非功能覆盖 |
-| **LOW** | 风格/措辞改进 |
+| 类别 | 检测内容 |
+|----------|-----------------|
+| **完整性缺口** | 缺失章节、空白内容、缺少验收标准 |
+| **具体性问题** | 模糊措辞（"快速"、"可扩展"）、未定义的约束 |
+| **行为清晰度** | 错误处理缺口、未定义的状态转换 |
+| **可衡量性问题** | 缺少指标的非功能需求 |
 
 **示例：**
 
 ```text
-你: /codexspec:analyze
+You: /codexspec:clarify
 
-AI:  正在分析工件...
+AI:  Scanning spec.md for ambiguities...
 
-     # Specification Analysis Report
+     Found issues in 3 categories.
 
-     ## Coverage Summary
-     | Requirement Key | Has Task? | Task IDs |
-     |-----------------|-----------|----------|
-     | REQ-001 | ✅ | 2.1, 2.2 |
-     | REQ-002 | ✅ | 2.3, 2.4 |
-     | REQ-003 | ❌ | None |
+     ## Question 1/5: Specificity
 
-     ## Issues Found
+     **Context**: NFR-001 states "System should respond quickly"
 
-     | ID | Category | Severity | Summary |
-     |----|----------|----------|---------|
-     | A1 | Coverage | CRITICAL | REQ-003 无任务覆盖 |
-     | A2 | Duplication | HIGH | REQ-005 与 REQ-008 重叠 |
-     | A3 | Ambiguity | MEDIUM | NFR-002 "secure" 未定义 |
+     **Question**: What is the target response time?
 
-     ## Metrics
-     - Total Requirements: 12
-     - Total Tasks: 24
-     - Coverage: 92% (11/12 requirements)
-     - Critical Issues: 1
+     | Option | Description | Impact |
+     |--------|-------------|--------|
+     | A | < 100ms for all operations | High performance requirement |
+     | B | < 500ms for reads, < 1s for writes | Balanced approach |
+     | Custom | Provide a different answer | - |
 
-     ## Next Actions
-     1. 为 REQ-003 补充任务 (CRITICAL)
-     2. 考虑合并 REQ-005 与 REQ-008
-     3. 在 NFR-002 中定义 "secure"
+     **Recommendation**: Option B - balanced for typical web app
 
-     在 /codexspec:implement-tasks 之前解决 CRITICAL 问题
+You: B
+
+AI:  ✓ Updated NFR-001: Response time < 500ms reads, < 1s writes
+     Added to Clarifications section in spec.md
 ```
 
 **提示：**
 
-- 在 `/codexspec:plan-to-tasks` 之后、实现之前运行
-- CRITICAL 问题应阻断实现
-- 只读分析——不修改任何文件
-- 用发现来提升工件质量
+- 当 spec.md 已存在但需要细化时使用
+- 与 `/codexspec:review-spec` 的发现整合
+- 每次运行最多 5 个问题
+- 对复杂规格可多次运行
+
+---
+
+### `/codexspec:analyze`
+
+- **specify** 用于开始需求讨论，也可重新讨论已有需求。需求摘要只有经用户明确确认后，才成为后续工作的依据。
+- **clarify** 用于澄清已有需求和规格中的歧义。每次最多提出五个问题，检查范围涵盖四类问题；先更新 `requirements.md`，再同步修改 `spec.md`。
+- **analyze** 检查需求 → 规格 → 设计 → 计划 → 任务的完整链路。如果根据上游依据能够确定下游文档应如何修正，就会自动修正；它绝不修改 `requirements.md`，无法解决的问题会明确报告。任务审查通过后会自动运行，结果供后续参考，不作为阻止实现的门禁。
+
+```text
+/codexspec:clarify <feature-dir>
+/codexspec:analyze <feature-dir>
+```
+
+历史功能缺少 `requirements.md` 时，分析从 `spec.md` 开始，明确说明缺少原始讨论证据，只报告问题，不修改工件。历史功能缺少 `design.md` 也不妨碍分析。
 
 ---
 
@@ -846,23 +782,23 @@ AI:  正在分析工件...
 **示例：**
 
 ```text
-你: /codexspec:checklist security
+You: /codexspec:checklist security
 
-AI:  正在生成安全清单...
+AI:  Generating security checklist...
 
-     ✓ 已创建 .codexspec/specs/2026-0613-1200ab-task-management/checklists/security.md
+     ✓ Created .codexspec/specs/2026-0613-1200ab-task-management/checklists/security.md
 
      ## Security Requirements Quality Checklist
 
      ### Authentication Requirements
-     - [ ] CHK001 - 是否为所有受保护端点都定义了认证需求？ [Completeness]
-     - [ ] CHK002 - 是否显式指定了密码复杂度？ [Clarity]
-     - [ ] CHK003 - 是否量化了会话超时需求？ [Measurability]
+     - [ ] CHK001 - Are authentication requirements defined for all protected endpoints? [Completeness]
+     - [ ] CHK002 - Is password complexity explicitly specified? [Clarity]
+     - [ ] CHK003 - Are session timeout requirements quantified? [Measurability]
 
      ### Data Protection
-     - [ ] CHK004 - 是否写明了静态数据加密需求？ [Completeness]
-     - [ ] CHK005 - 是否写明了传输中数据加密需求？ [Completeness]
-     - [ ] CHK006 - PII 处理是否已显式文档化？ [Clarity]
+     - [ ] CHK004 - Are data encryption requirements specified at rest? [Completeness]
+     - [ ] CHK005 - Are data encryption requirements specified in transit? [Completeness]
+     - [ ] CHK006 - Is PII handling explicitly documented? [Clarity]
 
      Total: 15 items across 4 categories
 ```
@@ -909,16 +845,16 @@ AI:  正在生成安全清单...
 **示例：**
 
 ```text
-你: /codexspec:tasks-to-issues
+You: /codexspec:tasks-to-issues
 
-AI:  正在将任务转换为 GitHub issues...
+AI:  Converting tasks to GitHub issues...
 
      Repository: github.com/example/taskman
 
      Creating issues:
-     ✓ #42: Task 1.1 - 搭建项目结构 (setup)
-     ✓ #43: Task 2.1 - 编写任务实体测试 (testing)
-     ✓ #44: Task 2.2 - 实现任务实体 (implementation)
+     ✓ #42: Task 1.1 - Setup Project Structure (setup)
+     ✓ #43: Task 2.1 - Write Tests for Task Entity (testing)
+     ✓ #44: Task 2.2 - Implement Task Entity (implementation)
      ...
 
      Summary:
@@ -936,6 +872,47 @@ AI:  正在将任务转换为 GitHub issues...
 - 在仓库的默认配置下创建 issues
 - 运行前先检查重复
 
+创建 issue 前，必须根据远端核实目标仓库，并获得明确授权。生成任务清单本身并不代表可以发布。
+
+---
+
+### `/codexspec:debug`
+
+调查根因后再修复.
+
+参见 [工作流](workflow.md#review-and-debugging).
+
+```text
+/codexspec:debug Investigate intermittent failures when saving a task
+```
+
+---
+
+### `/codexspec:reverse-spec`
+
+针对已有代码，可以按目的选择以下入口：
+
+| 命令 | 用途 | 产物/边界 |
+|---------|-----------|-----------------|
+| `onboard [path]` | 从已有代码库提取可复用的项目知识 | 在项目知识库中建立候选惯例和有明确证据的约束；不修改代码 |
+| `reverse-spec [path]` | 理解现有架构，或检查代码是否符合已确认的意图 | 生成文档草案或偏差报告；不修改代码 |
+
+```text
+/codexspec:onboard src/
+/codexspec:reverse-spec
+/codexspec:reverse-spec src/auth
+```
+
+Onboard 根据实际代码推断项目惯例，只有发现明确禁令时才会提出约束。候选惯例会立即在本地生效；候选约束则需要在当前会话中由用户决定保留、修改还是丢弃。已有知识会保留；仅凭一次初始扫描，不会编造过去的决策理由，也不会把未经经历的问题写成经验教训。
+
+Reverse-spec 有三种模式：
+
+- **概览**：不指定路径，或指定仓库根目录时，生成简要的架构说明 `design.md` 和模块划分文件 `slices.md`，帮助选择接下来要检查的模块。
+- **生成**：指定的模块没有已确认基线时，生成 `spec.md`、`design.md` 草案，以及尚待确认或根据代码推断的需求。
+- **核对**：模块已有确认过的基线时，生成 `reconcile.md`，列出尚未记录的行为、规格中尚未实现的内容，以及代码与已确认规格和设计之间的语义差异；判断产品意图时，以需求为准。
+
+根据代码推断的草案，必须经人工确认才能作为后续基线。核对报告会建议下一步是修复代码、更新文档，还是先明确产品意图，但不会自动执行这些修改。
+
 ---
 
 ### `/codexspec:distill`
@@ -945,7 +922,7 @@ AI:  正在将任务转换为 GitHub issues...
 **语法：**
 
 ```text
-/codexspec:distill [交互片段]
+/codexspec:distill [interaction segment]
 /codexspec:distill review
 ```
 
@@ -967,381 +944,45 @@ AI:  正在将任务转换为 GitHub issues...
 
 ---
 
+### `/codexspec:evolve`
+
+`evolve` 只采用已经认可、且对其他项目也有价值的知识，将其整理为命令或技能草案。推送变更或创建供人工审查的上游贡献 PR 前，必须获得明确批准。
+
+```text
+/codexspec:evolve
+```
+
+---
+
+### `/codexspec:onboard`
+
+初始化候选惯例和有证据支持的约束.
+
+参见 [`reverse-spec`](#codexspecreverse-spec).
+
+```text
+/codexspec:onboard src/
+```
+
+---
+
 ### `/codexspec:commit-staged`
 
-严格依据暂存的 Git 改动生成准确完整的提交信息。Agent 在执行已获授权的直接提交、自动开发提交和蓝图提交前调用此命令。调用方负责准备暂存区，命令不会自行挑选或暂存文件。
-
-插件自带共享 helper，init 也会将它复制到
-`.codexspec/scripts/commit-staged-helper.py`，因此 uvx 一次性初始化后无需保留
-CodexSpec 可执行文件。运行需要 Python 3.11+ 与 Git；helper 不调用 LLM，负责保留
-Git hooks 并拒绝提交与分析时不一致的暂存内容。工作树路由、blueprint 和 auto-dev
-仍遵循原有 CLI 前提。
-
-合并提交也接入暂存区分析：同步分支和初始化分叉工作区时，会在创建提交前停下。
-若合并前后的文件内容相同，则保留 Git 默认消息，同时校验提交内容和父提交。
-Fast-forward 不创建新提交，因此不需要生成消息。
-
-**语法：**
-
-```
-/codexspec:commit-staged [-p]
-```
-
-**参数：**
-
-| 参数 | 必需 | 描述 |
-|----------|----------|-------------|
-| `-p` | 否 | 预览模式——只显示信息不提交 |
-
-**功能：**
-
-- 执行 `git diff --staged` 获取暂存改动
-- 只分析暂存 diff，必要时用正文完整描述重要变更
-- 遵循 Conventional Commits 规范
-- 执行模式（默认）：生成信息后直接提交
-- 预览模式（`-p`）：只显示信息不提交
-- 若没有暂存改动则报错
-
-**示例：**
-
 ```text
-你: /codexspec:commit-staged
-
-AI:  正在分析暂存的改动...
-
-     Files staged:
-     - src/auth/service.py
-     - tests/test_auth.py
-
-     Generated commit message:
-     feat(auth): 实现令牌刷新逻辑
-
-     - 新增刷新令牌的生成
-     - 处理令牌过期
-     - 为刷新流程补充测试
-
-     正在执行提交...
-
-     ✓ Committed: def5678
+/codexspec:commit-staged -p
+/codexspec:pr --spec <feature-dir>/spec.md
+/codexspec:release-notes --from <ref> --to HEAD
+/codexspec:tasks-to-issues <feature-dir>
 ```
 
-**预览模式示例：**
+- **commit-staged** 只分析当前暂存内容，并据此生成 Conventional Commits 提交信息；`-p` 只预览，不提交。文件由调用它的工作流选择并暂存。执行已获授权的提交时，提交辅助程序会再次检查实际提交内容是否与分析一致。智能体提交指引适用于普通对话、SDD、蓝图和 auto-dev 工作流；命令已安装不等于已经调用，也不代表用户授权了提交。
+- **pr** 根据 diff 生成结构化的 GitHub PR 或 GitLab MR 说明。可通过 `--spec` 附加功能背景：既可以传入 `spec.md` 的路径，也可以传入能定位到该文件的功能目录名或前缀。默认输出可直接用于代码托管平台。
+- **release-notes** 根据 Git 历史编写 Keep a Changelog 条目和发布说明正文。默认写入 `[Unreleased]` 章节；传入 `--version` 时使用指定的标签。该命令只编写说明，不会暂存、提交、修改版本号、打标签、发布或创建 release。
+- **tasks-to-issues** 根据已有任务创建 GitHub issues，并附上任务依赖和验收标准。需要已经登录的 GitHub CLI；创建前会检查目标仓库是否与配置的远端一致。
 
-```text
-你: /codexspec:commit-staged -p
+预览提交，或在当前工作区执行已获授权的提交，需要 Python 3.11+ 和 Git。提交运行时随 CLI 项目安装，也内置于 Claude 插件。智能体创建包含内容变更的合并提交时，同样须先分析暂存内容。仅用于连接提交历史的合并会保留 Git 的默认提交信息，并检查提交树和父提交；快进合并不创建新提交。
 
-AI:  预览模式 - 不会执行提交
-
-     Suggested commit message:
-     feat(auth): 实现令牌刷新逻辑
-
-     - 新增刷新令牌的生成
-     - 处理令牌过期
-     - 为刷新流程补充测试
-```
-
-**提示：**
-
-- 先用 `git add` 暂存改动
-- 只分析已暂存的内容——尊重 Git 的两阶段提交工作流
-- 暂存内容变化后，重新分析再提交
-- helper 使用明确指定的暂存区调用预览分析，并携带完整消息完成提交
-- 用 `-p` 标志在提交前预览
-- 默认遵循 Conventional Commits 规范
-
----
-
-### `/codexspec:review-code`
-
-将选定的 Git 变更作为合并前的严格缺陷门禁进行审查。默认目标包含完整特性差异；显式选择器可审查已提交、未提交或单个提交的证据，但不接受路径过滤。
-
-<!-- REVIEW-CODE-BREAKING: DEFAULT-GATE -->
-<!-- REVIEW-CODE-BREAKING: PATH-AUDIT -->
-
-**下一版本的破坏性变更：**
-
-- 默认命令现在是变更范围缺陷门禁，不再是宽泛的质量评分审计。
-- 不再接受位置路径参数。需要按路径执行建议性质的质量评分时，请显式使用 `--audit`。
-
-**缺陷门禁语法：**
-
-```text
-/codexspec:review-code
-/codexspec:review-code --committed [--base <branch>] [--feature <feature-dir>] [--focus <instructions>]
-/codexspec:review-code --uncommitted [--feature <feature-dir>] [--focus <instructions>]
-/codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
-/codexspec:review-code [--committed] --incremental-from <fingerprint> [--feature <feature-dir>]
-```
-
-每种缺陷门禁形式都可以附加 `--decided-by reviewer|ask`，用于在本次运行中覆盖 `review.decided_by`。
-
-<!-- REVIEW-CODE-SYSTEM-CONTRACT -->
-<!-- REVIEW-CODE-VARIANT-SEARCH -->
-<!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
-
-门禁会清点目标中的全部工件、评估适用需求，并依次执行五个阶段：Scope、System Contract、Behavior、Risk 和 Verification。它会记录有来源依据的跨模块契约和按行为划分的审查分区；每个已确认且可重复出现的根因都会在本轮结束前触发一次有明确边界的同类问题搜索。六个报告段落之后会附带一个使用 `schema_version: "3"` 的机器可读 `<review-code-result>` envelope。该 envelope 包含目标标识、覆盖记录和修复后需要重新核实的客观事项；调用方保留这些中立事项并交给新的完整审查，但不会传递修复思路或之前的正确性结论。结果只能是 `PASS`、`FAIL` 或 `INCONCLUSIVE`：任何 P0-P3 缺陷都会得到 `FAIL`，缺少强制证据或覆盖不完整时得到 `INCONCLUSIVE`。
-
-**增量复审。** 修复之后，`--incremental-from <fingerprint>` 只复审自那次结果以来的变化：改动过的文件、它们触及的审查分区和契约，以及遗留的待核实事项。未改动且未受影响的文件沿用之前的覆盖结果，审查员在其他位置发现的缺陷仍会照常报告。增量 `PASS` 永远不代表功能完成：`implement-tasks` 先做一次完整审查，每次修复后做增量审查，最后再做一次全新的完整审查作为最终验收。审查记录写在仓库之外的用户缓存目录（`~/.cache/codexspec/review/` 或 `%LOCALAPPDATA%\codexspec\review\`），对话中只出现报告和 envelope。
-
-**判定模式。** `.codexspec/config.yml` 中的 `review.decided_by` 决定：当某个缺陷的触发条件超出项目实际使用场景（例如项目根本不会接收的输入）时，由谁来判定。默认值 `reviewer` 下，审查行为与之前完全一致。设为 `ask` 时，审查会把这类问题报告为待决的场景判定，而不是据此判定失败；`implement-tasks` 会就此询问你一次：修复，还是确认该场景不在范围内。你的回答会以已确认的 `CON` 或 `OUT` 条目写入 `requirements.md`，后续轮次不会再次提出。
-
-```text
-你: /codexspec:review-code --feature .codexspec/specs/2026-0714-example
-
-AI:  ## Verdict
-     **PASS** — 必需的审查与验证全部完成，且没有发现缺陷。
-```
-
-**适用规则与维护建议。** 每次审查读取共享规则和所选模式，评估全部七个审查维度，再依据实际行为、契约和依赖按需加载详细清单。追踪中发现的未修改依赖也可以触发语言或框架子清单。维护建议须指出当前存在的问题，并给出有依据、兼容现有行为的局部改进；假想的未来复杂度和单独的风格阈值不足以支持修复。现有缺陷结果继续使用版本 3，另以版本 1 的 `<review-code-maintenance>` 附加结果报告建议，并绑定相同的目标指纹。独立审查只报告建议；`implement-tasks` 根据 `workflow.auto_maintenance`（默认 `true`）核验并实施。修复在持续取得实质进展时继续，同时遵守现有停止条件；不设固定轮次上限，最终验收要求全新的完整复审。
-
-`codexspec config --auto-maintenance on|off` 将 `workflow.auto_maintenance` 作为 YAML 布尔值持久化到 `.codexspec/config.yml`；未配置时按 `true` 处理。两个工作流开关都接受不区分大小写的 `on/true/1/yes` 和 `off/false/0/no`。`implement-tasks` 自动修复审查问题时读取此配置：`on` 将有依据的增量维护改进纳入修复，`off` 仍会报告这些建议。实际缺陷与必要验证仍必须处理。它与 `auto-next` 独立，也不是 `implement-tasks` 的调用参数。
-
-`codexspec init` 将 Claude Code 与 Codex 共享的审查资源安装到 `.codexspec/review-code/`。`--force` 更新随工具提供的资源，并保留路径不同的扩展文件。仅安装 CLI 不会创建项目文件。仅使用插件时，若项目没有已安装的资源目录，审查会读取宿主解析的插件根目录中的同一套资源。
-
-<!-- REVIEW-CODE-AUDIT -->
-
-#### 路径质量审计
-
-显式 audit 分支按路径检查当前文件的完整内容，评估地道表达、正确性、健壮性、架构和宪法对齐情况。该评分仅供参考，不能作为 `implement-tasks` 的完成门禁。
-
-**语法：**
-
-```
-/codexspec:review-code --audit [paths...]
-```
-
-**参数：**
-
-| 参数 | 必需 | 描述 |
-|----------|----------|-------------|
-| `path...` | 否 | 一个或多个待评审的源文件或目录（空格分隔）。省略时默认为 `src/` |
-
-**功能：**
-
-- 按文件扩展名识别主语言，并对混合语言目标按语言分别跑一遍
-- 当存在静态分析工具的配置时运行它们（`ruff`/`mypy`、`eslint`/`tsc`、`go vet`/`gofmt`、`cargo check`/`cargo clippy`、`shellcheck`）；否则优雅跳过并报告覆盖降级
-- 为四个维度打分：地道表达与简洁、正确性与显式契约、运行时健壮性与资源纪律、架构与设计完整性
-- 为检测到的框架注入必检子节（例如 React 的 Hooks Compliance、Rust 的 Ownership & Borrowing、Go 的 Goroutine & Context Discipline、C/C++ 的 Memory & Lifetime Safety、Shell 的 Execution Safety）
-- 当存在 `.codexspec/memory/constitution.md` 时与之交叉对照；不存在时则丢弃宪法轴并重新分配其权重
-- 按严重级别归类发现：CRITICAL、HIGH、MEDIUM、LOW（LOW 建议最多扣 5 分）
-
-**示例：**
-
-```text
-你: /codexspec:review-code --audit src/
-
-AI:  # Code Review Report
-
-     ## Summary
-     - Overall Status: Needs Work
-     - Quality Score: 78/100
-     - Detected Language: Python
-
-     ## Static Analysis Results
-     | Tool   | Status | Issues | Details                |
-     |--------|--------|--------|------------------------|
-     | ruff   | Warn   | 3      | 未用导入、行长超限 |
-     | mypy   | Pass   | 0      | 无类型错误            |
-
-     ## Detailed Findings
-     ### Critical Issues (CRITICAL)
-     - [ ] [CODE-001] src/auth/service.py:42 - 裸 `except Exception:` 吞掉了原始原因
-       Impact: 调试时原始错误上下文丢失。
-       Suggestion: 收窄异常并用 `raise ... from err` 重新抛出。
-
-     ### Suggestions (LOW)
-     - [ ] [CODE-004] src/auth/service.py:120 - 用手写循环的地方其实可以用推导式
-
-     ## Recommendations
-     1. Priority 1: 合并前修复 CODE-001。
-     2. Priority 2: 视情况采纳 LOW 建议。
-```
-
-**提示：**
-
-- 传入多个路径以聚焦评审某个切片，例如 `src/ tests/`
-- 分数仅供参考；CRITICAL/HIGH 才是可操作的信号
-- 对纯 Python 或纯 React 项目，优先使用专门的 `/codexspec:review-python-code` 或 `/codexspec:review-react-code`，可获得更深度的语言专属检查
-- 修复后重跑，确认分数回升（CRITICAL/HIGH 解决后期望 ≥ 95）
-
----
-
-### `/codexspec:review-python-code`
-
-评审 Python 代码的 PEP 8 合规性、类型安全、工程健壮性，以及宪法一致性。
-
-**语法：**
-
-```
-/codexspec:review-python-code [path...]
-```
-
-**参数：**
-
-| 参数 | 必需 | 描述 |
-|----------|----------|-------------|
-| `path...` | 否 | 一个或多个待评审的 Python 文件或目录（空格分隔）。省略时默认为 `src/` |
-
-**功能：**
-
-- 运行 `ruff check` 取得 PEP 8 / lint 结果，运行 `mypy` 取得类型检查结果
-- 评审四个 Python 专属维度：Pythonic 与 KISS 原则、类型安全与显式性、工程健壮性、宪法对齐
-- 检查类型注解完整性、宽泛异常处理，以及 `raise ... from err` 上下文保留
-- 校验资源管理（`with` 上下文管理器）、async/await 正确性，以及结构化 `logging` 纪律
-- 当存在 `.codexspec/memory/constitution.md` 时，对照其 MUST/SHOULD 原则交叉检查
-- 按严重级别归类发现：CRITICAL（宪法 MUST 违规、逻辑 bug、安全漏洞）、HIGH（类型安全缺口、ruff/mypy 错误、资源泄漏）、MEDIUM（设计/重构机会、缺失注解）、LOW（可读性、Pythonic 用法）
-
-**示例：**
-
-```text
-你: /codexspec:review-python-code src/codexspec/
-
-AI:  # Python Code Review Report
-
-     ## Static Analysis
-     | Tool  | Status | Issues |
-     |-------|--------|--------|
-     | ruff  | Pass   | 0      |
-     | mypy  | Pass   | 0      |
-
-     ## Findings
-     ### Warnings (HIGH)
-     - [ ] [CODE-002] src/codexspec/__init__.py:218 - 公开函数缺少返回类型注解
-       Suggestion: 加上返回类型并用 mypy 校验。
-
-     ### Suggestions (LOW)
-     - [ ] [CODE-004] src/codexspec/cli.py:140 - 用 `pathlib.Path` 替代 `os.path` 字符串拼接
-```
-
-**提示：**
-
-- 当目标是纯 Python 且需要 PEP 8 / 类型安全的深度时，用它替代 `/codexspec:review-code`
-- 要获得完整覆盖，目标项目必须安装并配置好 `ruff` 与 `mypy`；缺失时命令会报告覆盖降级
-- 宪法的 MUST 原则参与打分；没有宪法时则应用语言无关的元原则（可测试性、简洁性）
-
----
-
-### `/codexspec:review-react-code`
-
-评审 React/TypeScript 代码的组件架构、Hooks 规范、状态管理、性能，以及宪法一致性。
-
-**语法：**
-
-```
-/codexspec:review-react-code [path...]
-```
-
-**参数：**
-
-| 参数 | 必需 | 描述 |
-|----------|----------|-------------|
-| `path...` | 否 | 一个或多个待评审的 React/TypeScript 文件或目录（空格分隔；接受 `.tsx`、`.ts`、`.jsx`、`.js`）。省略时默认为 `src/` |
-
-**功能：**
-
-- 当存在 ESLint 配置时运行 `npx eslint`，当存在 `tsconfig.json` 时运行 `npx tsc --noEmit`
-- 评审四个 React 专属维度：组件原子性与单一职责、Hooks 合规与副作用管理、状态管理与数据流、性能与健壮性
-- 校验 `useEffect` 依赖数组是否完备，检测把派生数据当作 state 的误用，并标出不必要的影响
-- 检查闭包陈旧风险、缺失的 effect 清理、prop 透传、未 memo 的高昂渲染，以及缺失的 loading/error 状态
-- 当存在 `.codexspec/memory/constitution.md` 时与之交叉对照
-- 按严重级别归类发现：CRITICAL（违反 Hooks 规则、竞态条件）、HIGH（缺失清理、未处理的 promise 拒绝）、MEDIUM（重构候选）、LOW（可读性）
-
-**示例：**
-
-```text
-你: /codexspec:review-react-code src/components/
-
-AI:  # React Code Review Report
-
-     ## Static Analysis
-     | Tool  | Status | Issues |
-     |-------|--------|--------|
-     | eslint| Warn   | 2      |
-     | tsc   | Pass   | 0      |
-
-     ## Findings
-     ### Critical Issues (CRITICAL)
-     - [ ] [CODE-001] src/components/UserProfile.tsx:38 - `useEffect` 依赖数组缺少 `userId`
-       Impact: 闭包陈旧，导航后会取到错误的用户。
-       Suggestion: 把 `userId` 加入依赖数组，或抽成自定义 hook。
-
-     ### Suggestions (LOW)
-     - [ ] [CODE-004] src/components/Button.tsx:12 - 改用推导值而非 `useState`
-```
-
-**提示：**
-
-- 当目标是纯 React/TypeScript 且需要 Hooks / 组件架构深度时，用它替代 `/codexspec:review-code`
-- 要获得完整覆盖，应同时具备 ESLint 与 `tsconfig.json`；缺失时命令会报告覆盖降级
-- React 的发现叠加在基础 TypeScript 检查之上，因此类型安全问题仍会被报告
-
----
-
-### `/codexspec:quick`
-
-为小型改动运行精简的 Requirements-First SDD 流程。
-
-**语法：**
-
-```
-/codexspec:quick [描述一个小需求]
-```
-
-**参数：**
-
-| 参数 | 必需 | 描述 |
-|----------|----------|-------------|
-| `描述一个小需求` | 否 | 对这条规模小、边界清晰的改动的简短描述（未提供时会提示输入） |
-
-**功能：**
-
-- 评估范围（触及的文件、模块跨度、新增依赖、未决的产品决策）；若改动很广或包含多个独立结果，则建议改用标准流程
-- 用与 `/codexspec:specify` 相同的时间戳约定创建功能工作区与 `requirements.md`
-- 只解决会实质改变实现的歧义；呈现精简的已确认摘要（`NEED-*`、相关的 `CON-*`/`DEC-*`、`OUT-*`、未解决的 `OPEN-*`）
-- 停在确认门：在你确认摘要之前不会生成任何内容
-- 在新建的功能目录上链式调用生成命令：`/codexspec:generate-spec`、`/codexspec:design-to-plan`、`/codexspec:plan-to-tasks`、`/codexspec:implement-tasks`
-- 把评审交给各生成命令自带的自动评审闭环；若某次评审需要新的产品或架构决策，则暂停并向用户提问
-- 分别报告功能目录、工件路径、评审结果、实现验证情况，以及未决的建议项
-
-**生成的文件：**
-
-```text
-.codexspec/specs/{timestamp}-{feature-name}/
-├── requirements.md
-├── spec.md
-├── plan.md
-└── tasks.md
-```
-
-**示例：**
-
-```text
-你: /codexspec:quick 给登录表单加一个"记住我"复选框
-
-AI:  范围检查：1 个组件、1 个表单字段、无新依赖。Quick 适用。
-
-     Confirmed requirements:
-     - NEED-1: 登录表单上的"记住我"复选框（默认不勾选）
-     - DEC-1: 仅在勾选时才持久化一个长效刷新令牌
-     OUT-1: SSO / 社交登录（保持不变）
-
-     确认此摘要以启动自动化流程。[y/N]
-
-你: y
-
-AI:  运行 generate-spec → design-to-plan → plan-to-tasks → implement-tasks ...
-
-     ✓ Feature dir: .codexspec/specs/2026-0713-0915ab-remember-me/
-     ✓ 所有评审为 PASS_WITH_WARNINGS 或更高
-     ✓ 实现已验证
-     Open advisories: none
-```
-
-**提示：**
-
-- 把 Quick 留给真正小型、单一结果的改动；否则运行 `/codexspec:specify` 走标准流程
-- 仍需确认——Quick 绝不为了让自动化继续推进而替你推断产品决策
-- 若任一生成评审返回 `NEEDS_REVISION`/`BLOCKED`，Quick 会停下并把控制权交还给你
+共享辅助程序位于 `.codexspec/scripts/commit-staged-helper.py`，也可使用插件自带的副本。它需要 Python 3.11+ 和 Git，不调用 LLM，保留 Git hooks，并拒绝提交分析后发生变化的暂存内容。一次性初始化会安装此运行时；工作区路由、blueprint 和 auto-dev 仍需要 CLI。
 
 ---
 
@@ -1376,21 +1017,21 @@ AI:  运行 generate-spec → design-to-plan → plan-to-tasks → implement-tas
 **示例：**
 
 ```text
-你: /codexspec:pr --spec 2026-0613-1200ab-task-management
+You: /codexspec:pr --spec 2026-0613-1200ab-task-management
 
-AI:  正在生成 Pull Request 描述...
+AI:  Generating Pull Request description...
 
      Platform: GitHub (github.com/example/taskman)
      Branch:   feature/task-management  →  origin/main
      Commits:  8 ahead
 
-     ## Pull Request: 面向小型开发团队的任务管理
+     ## Pull Request: Task management for small dev teams
 
      ### Context
-     - 取自 spec.md 的用户故事与 REQ-*
+     - User stories and REQ-* pulled from spec.md
 
      ### Summary
-     - 新增任务 CRUD、子任务与实时更新
+     - Adds task CRUD, sub-tasks, and real-time updates
 
      ### Changes
      - src/taskman/models/task.py (new)
@@ -1407,6 +1048,147 @@ AI:  正在生成 Pull Request 描述...
 - 对于没有正式规格的小修复或改动，跳过 `--spec`
 - 与 `/codexspec:commit-staged` 配合，可基于同一份工作同时产出提交信息与 PR 描述
 - 这条命令的端到端实战案例（包括 spec.md 上下文如何接入）见 [PR 描述生成器案例研究](../case-studies/case-study-pr-description-generator.md)
+
+---
+
+### `/codexspec:release-notes`
+
+```text
+/codexspec:commit-staged -p
+/codexspec:pr --spec <feature-dir>/spec.md
+/codexspec:release-notes --from <ref> --to HEAD
+/codexspec:tasks-to-issues <feature-dir>
+```
+
+- **commit-staged** 只分析当前暂存内容，并据此生成 Conventional Commits 提交信息；`-p` 只预览，不提交。文件由调用它的工作流选择并暂存。执行已获授权的提交时，提交辅助程序会再次检查实际提交内容是否与分析一致。智能体提交指引适用于普通对话、SDD、蓝图和 auto-dev 工作流；命令已安装不等于已经调用，也不代表用户授权了提交。
+- **pr** 根据 diff 生成结构化的 GitHub PR 或 GitLab MR 说明。可通过 `--spec` 附加功能背景：既可以传入 `spec.md` 的路径，也可以传入能定位到该文件的功能目录名或前缀。默认输出可直接用于代码托管平台。
+- **release-notes** 根据 Git 历史编写 Keep a Changelog 条目和发布说明正文。默认写入 `[Unreleased]` 章节；传入 `--version` 时使用指定的标签。该命令只编写说明，不会暂存、提交、修改版本号、打标签、发布或创建 release。
+- **tasks-to-issues** 根据已有任务创建 GitHub issues，并附上任务依赖和验收标准。需要已经登录的 GitHub CLI；创建前会检查目标仓库是否与配置的远端一致。
+
+预览提交，或在当前工作区执行已获授权的提交，需要 Python 3.11+ 和 Git。提交运行时随 CLI 项目安装，也内置于 Claude 插件。智能体创建包含内容变更的合并提交时，同样须先分析暂存内容。仅用于连接提交历史的合并会保留 Git 的默认提交信息，并检查提交树和父提交；快进合并不创建新提交。
+
+#### 发布说明参数
+
+| 命令 | 参考 |
+|---|---|
+| `--version <X.Y.Z>` | 采用提供的版本标签；未提供时使用 `[Unreleased]` |
+| `--from <ref>` | 起始引用；默认依次尝试最近可达标签、可定位的变更日志版本、完整历史 |
+| `--to <ref>` | 结束引用，默认为 `HEAD` |
+| `--output <file>` | 将发布正文写入此文件；默认输出到终端 |
+| `--spec <feature>` | 可选的功能上下文；无法解析功能时会报告，并继续依据 Git 生成 |
+
+---
+
+### `/codexspec:review-code`
+
+将选定的 Git 变更作为合并前的严格缺陷门禁进行审查。默认目标包含完整特性差异；显式选择器可审查已提交、未提交或单个提交的证据，但不接受路径过滤。
+
+<!-- REVIEW-CODE-BREAKING: DEFAULT-GATE -->
+<!-- REVIEW-CODE-BREAKING: PATH-AUDIT -->
+
+**默认审查模式：**
+
+- 默认命令现在是变更范围缺陷门禁，不再是宽泛的质量评分审计。
+- 不再接受位置路径参数。需要按路径执行建议性质的质量评分时，请显式使用 `--audit`。
+
+**缺陷门禁语法：**
+
+```text
+/codexspec:review-code
+/codexspec:review-code --committed [--base <branch>] [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code --uncommitted [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code [--committed] --incremental-from <fingerprint> [--feature <feature-dir>]
+```
+
+每种缺陷门禁形式都可以附加 `--decided-by reviewer|ask`，用于在本次运行中覆盖 `review.decided_by`。
+
+<!-- REVIEW-CODE-SYSTEM-CONTRACT -->
+<!-- REVIEW-CODE-VARIANT-SEARCH -->
+<!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
+
+门禁会清点目标中的全部工件、评估适用需求，并依次执行五个阶段：Scope、System Contract、Behavior、Risk 和 Verification。它会记录有来源依据的跨模块契约和按行为划分的审查分区；每个已确认且可重复出现的根因都会在本轮结束前触发一次有明确边界的同类问题搜索。六个报告段落之后会附带一个使用 `schema_version: "3"` 的机器可读 `<review-code-result>` 结果块。该结果块 包含目标标识、覆盖记录和修复后需要重新核实的客观事项；调用方保留这些中立事项并交给新的完整审查，但不会传递修复思路或之前的正确性结论。结果只能是 `PASS`、`FAIL` 或 `INCONCLUSIVE`：任何 P0-P3 缺陷都会得到 `FAIL`，缺少强制证据或覆盖不完整时得到 `INCONCLUSIVE`。
+
+**增量复审。** 修复之后，`--incremental-from <fingerprint>` 只复审自那次结果以来的变化：改动过的文件、它们触及的审查分区和契约，以及遗留的待核实事项。未改动且未受影响的文件沿用之前的覆盖结果，审查员在其他位置发现的缺陷仍会照常报告。增量 `PASS` 永远不代表功能完成：`implement-tasks` 先做一次完整审查，每次修复后做增量审查，最后再做一次全新的完整审查作为最终验收。审查记录写在仓库之外的用户缓存目录（`~/.cache/codexspec/review/` 或 `%LOCALAPPDATA%\codexspec\review\`），对话中只出现报告和 结果块。
+
+**判定模式。** `.codexspec/config.yml` 中的 `review.decided_by` 决定：当某个缺陷的触发条件超出项目实际使用场景（例如项目根本不会接收的输入）时，由谁来判定。默认值 `reviewer` 下，审查行为与之前完全一致。设为 `ask` 时，审查会把这类问题报告为待决的场景判定，而不是据此判定失败；`implement-tasks` 会就此询问你一次：修复，还是确认该场景不在范围内。你的回答会以已确认的 `CON` 或 `OUT` 条目写入 `requirements.md`，后续轮次不会再次提出。
+
+```text
+You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example
+
+AI:  ## Verdict
+     **PASS** — all required review and verification completed with no findings.
+```
+
+**适用规则与维护建议。** 每次审查读取共享规则和所选模式，评估全部七个审查维度，再依据实际行为、契约和依赖按需加载详细清单。追踪中发现的未修改依赖也可以触发语言或框架子清单。维护建议须指出当前存在的问题，并给出有依据、兼容现有行为的局部改进；假想的未来复杂度和单独的风格阈值不足以支持修复。现有缺陷结果继续使用版本 3，另以版本 1 的 `<review-code-maintenance>` 附加结果报告建议，并绑定相同的目标指纹。独立审查只报告建议；`implement-tasks` 根据 `workflow.auto_maintenance`（默认 `true`）核验并实施。修复在持续取得实质进展时继续，同时遵守现有停止条件；不设固定轮次上限，最终验收要求全新的完整复审。
+
+布尔类型的 CLI 开关可以使用 `on/true/1/yes` 或 `off/false/0/no`，不区分大小写，也允许值的前后带空白。不传值时，会切换目标 checkout 中的当前设置；写入 YAML 的值始终是布尔值。
+
+`codexspec init` 将 Claude Code 与 Codex 共享的审查资源安装到 `.codexspec/review-code/`。`--force` 更新随工具提供的资源，并保留路径不同的扩展文件。仅安装 CLI 不会创建项目文件。仅使用插件时，若项目没有已安装的资源目录，审查会读取宿主解析的插件根目录中的同一套资源。
+
+<!-- REVIEW-CODE-AUDIT -->
+
+#### 路径质量审计
+
+显式 audit 分支按路径检查当前文件的完整内容，评估符合语言惯例的清晰表达、正确性、健壮性、架构和宪法对齐情况。该评分仅供参考，不能作为 `implement-tasks` 的完成门禁。
+
+**语法：**
+
+```
+/codexspec:review-code --audit [paths...]
+```
+
+**参数：**
+
+| 参数 | 必需 | 描述 |
+|----------|----------|-------------|
+| `path...` | 否 | 一个或多个待评审的源文件或目录（空格分隔）。省略时默认为 `src/` |
+
+**功能：**
+
+- 按文件扩展名识别主语言，并对混合语言目标按语言分别跑一遍
+- 当存在静态分析工具的配置时运行它们（`ruff`/`mypy`、`eslint`/`tsc`、`go vet`/`gofmt`、`cargo check`/`cargo clippy`、`shellcheck`）；否则跳过相应检查，并说明检查覆盖范围有所减少
+- 为四个维度打分：符合语言惯例的清晰表达与简洁、正确性与显式契约、运行时健壮性与资源管理规范、架构与设计完整性
+- 为检测到的框架注入必检子节（例如 React 的 Hooks Compliance、Rust 的 Ownership & Borrowing、Go 的 Goroutine & Context Discipline、C/C++ 的 Memory & Lifetime Safety、Shell 的 Execution Safety）
+- 当存在 `.codexspec/memory/constitution.md` 时与之交叉对照；不存在时则丢弃宪法轴并重新分配其权重
+- 按严重级别归类发现：CRITICAL、HIGH、MEDIUM、LOW（LOW 建议最多扣 5 分）
+
+**示例：**
+
+```text
+You: /codexspec:review-code --audit src/
+
+AI:  # Code Review Report
+
+     ## Summary
+     - Overall Status: Needs Work
+     - Quality Score: 78/100
+     - Detected Language: Python
+
+     ## Static Analysis Results
+     | Tool   | Status | Issues | Details                |
+     |--------|--------|--------|------------------------|
+     | ruff   | Warn   | 3      | Unused imports, line length |
+     | mypy   | Pass   | 0      | No type errors         |
+
+     ## Detailed Findings
+     ### Critical Issues (CRITICAL)
+     - [ ] [CODE-001] src/auth/service.py:42 - bare `except Exception:` swallows the original cause
+       Impact: Original error context is lost during debugging.
+       Suggestion: narrow the exception and re-raise with `raise ... from err`.
+
+     ### Suggestions (LOW)
+     - [ ] [CODE-004] src/auth/service.py:120 - manual loop where a comprehension suffices
+
+     ## Recommendations
+     1. Priority 1: Fix CODE-001 before merge.
+     2. Priority 2: Apply LOW suggestions opportunistically.
+```
+
+**提示：**
+
+- 传入多个路径以聚焦评审某个范围，例如 `src/ tests/`
+- 分数仅供参考；CRITICAL/HIGH 才是可操作的信号
 
 ---
 
@@ -1443,105 +1225,110 @@ AI:  正在生成 Pull Request 描述...
 **示例：**
 
 ```text
-你: /codexspec:config
+You: /codexspec:config
 
 AI:  ## Configuration Manager
 
-     在 .codexspec/config.yml 找到配置文件。
-     你想做什么？
+     Configuration file found at .codexspec/config.yml.
+     What would you like to do?
      - View current config
      - Modify config
      - Reset to defaults
      - Cancel
 
-你: Modify config
+You: Modify config
 
-AI:  选择要更改的维度：
+AI:  Select a dimension to change:
      - Output language (base)
      - Interaction language
      - Document language
      - Commit-message language
      - workflow.auto_next
+     - workflow.auto_distill
+     - workflow.auto_maintenance
+     - workflow.worktrees (default on; checkout-local)
+     - review.decided_by
 
-你: Output language (base) → zh-CN
+You: Output language (base) → zh-CN
 
 AI:  ✓ Updated language.output: "zh-CN"
-     (interaction 与 document 会回退到 output，再到 en。)
+     (interaction and document fall back to output, then en.)
 ```
 
 **提示：**
 
 - 改动前先用 `/codexspec:config --view` 查看当前状态
-- 全新或重置后的配置只写入 `output`；仅当 interaction/document 应当与 output 不同时才显式设置
+- 全新或重置后的配置只写入 `output`；仅当 `interaction`/`document` 应当与 `output` 不同时才显式设置
 - 终端里的脚本化修改请优先使用 `codexspec config` CLI（`--set-lang`、`--set-interaction-lang`、`--set-document-lang`、`--set-commit-lang`、`--auto-next`）
 
+交互菜单还可管理 `workflow.auto_distill`、`workflow.auto_maintenance`、`workflow.worktrees` 和 `review.decided_by`。配置修改遵循各检出目录独立生效的 worktree 路由规则。
+
 ---
 
-## 工作流概览
+### `/codexspec:quick`
 
-```text
-想法 → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
-                                                  │                          │                           │
-                                             评审 spec                   评审 plan                    评审 tasks
+为小型改动运行精简的 Requirements-First SDD 流程。
+
+**语法：**
+
+```
+/codexspec:quick [describe a small requirement]
 ```
 
-每次评审都是一个人工检查点，用有证据支持的发现校验忠实度与内在质量。可选的设计建议始终单独处理，从不阻断推进。已核实的缺陷最多可修复并再审两轮。
+**参数：**
+
+| 参数 | 必需 | 描述 |
+|----------|----------|-------------|
+| `describe a small requirement` | 否 | 对这条规模小、边界清晰的改动的简短描述（未提供时会提示输入） |
+
+**功能：**
+
+- 评估范围（触及的文件、模块跨度、新增依赖、未决的产品决策）；若改动很广或包含多个独立结果，则建议改用标准流程
+- 用与 `/codexspec:specify` 相同的时间戳约定创建功能工作区与 `requirements.md`
+- 只解决会实质改变实现的歧义；呈现精简的已确认摘要（`NEED-*`、相关的 `CON-*`/`DEC-*`、`OUT-*`、未解决的 `OPEN-*`）
+- 停在确认门：在你确认摘要之前不会生成任何内容
+- 在新建的功能目录上链式调用生成命令：`/codexspec:generate-spec`、`/codexspec:design-to-plan`、`/codexspec:plan-to-tasks`、`/codexspec:implement-tasks`
+- 把评审交给各生成命令自带的自动评审闭环；若某次评审需要新的产品或架构决策，则暂停并向用户提问
+- 分别报告功能目录、工件路径、评审结果、实现验证情况，以及未决的建议项
+
+**生成的文件：**
+
+```text
+.codexspec/specs/{timestamp}-{feature-name}/
+├── requirements.md
+├── spec.md
+├── plan.md
+└── tasks.md
+```
+
+**示例：**
+
+```text
+You: /codexspec:quick Add a "remember me" checkbox to the login form
+
+AI:  Scope check: 1 component, 1 form field, no new dependencies. Quick is appropriate.
+
+     Confirmed requirements:
+     - NEED-1: "Remember me" checkbox on the login form (default unchecked)
+     - DEC-1: Persist a long-lived refresh token only when checked
+     OUT-1: SSO / social login (unchanged)
+
+     Confirm this summary to start the automated flow. [y/N]
+
+You: y
+
+AI:  Running generate-spec → design-to-plan → plan-to-tasks → implement-tasks ...
+
+     ✓ Feature dir: .codexspec/specs/2026-0713-0915ab-remember-me/
+     ✓ All reviews PASS_WITH_WARNINGS or higher
+     ✓ Implementation verified
+     Open advisories: none
+```
+
+**提示：**
+
+- 把 Quick 留给真正小型、单一结果的改动；否则运行 `/codexspec:specify` 走标准流程
+- 仍需确认——Quick 绝不为了让自动化继续推进而替你推断产品决策
+- 若任一生成评审返回 `NEEDS_REVISION`/`BLOCKED`，Quick 会停下并把控制权交还给你
 
 ---
-
-## 故障排除
-
-### "Feature directory not found"
-
-命令找不到功能目录。
-
-**解决方案：**
-
-- 先运行 `codexspec init` 初始化项目
-- 检查 `.codexspec/specs/` 目录是否存在
-- 确认你处于正确的项目目录
-- 当存在多个候选时，传入显式的功能目录或工件路径
-
-### "No spec.md found"
-
-规格文件尚不存在。
-
-**解决方案：**
-
-- 先运行 `/codexspec:specify` 澄清需求
-- 然后运行 `/codexspec:generate-spec` 创建 spec.md
-
-### "Constitution not found"
-
-尚不存在项目宪法。
-
-**解决方案：**
-
-- 运行 `/codexspec:constitution` 创建一份
-- 宪法是可选的，但为了一致的决策建议使用
-
-### "Tasks file not found"
-
-任务拆解尚不存在。
-
-**解决方案：**
-
-- 确保先运行过 `/codexspec:design-to-plan`
-- 然后运行 `/codexspec:plan-to-tasks` 创建 tasks.md
-
-### "GitHub CLI not authenticated"
-
-`/codexspec:tasks-to-issues` 命令需要 GitHub 认证。
-
-**解决方案：**
-
-- 安装 GitHub CLI：`brew install gh`（macOS）或等效命令
-- 认证：`gh auth login`
-- 验证：`gh auth status`
-
----
-
-## 下一步
-
-- [工作流](workflow.md) - 常见模式与何时使用各条命令
-- [CLI](../reference/cli.md) - 用于项目初始化的终端命令

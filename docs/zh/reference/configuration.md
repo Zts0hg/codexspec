@@ -1,117 +1,113 @@
-# 配置
+<a id="configuration-and-internationalization"></a>
 
-## 配置文件位置
+# 配置与国际化
 
-`.codexspec/config.yml`
+配置保存在 `.codexspec/config.yml` 中。模板始终使用英文，智能体交流和生成文档时，则使用配置中指定的语言。支持的 13 个标准语言代码为 `en`、`zh-CN`、`zh-TW`、`ja`、`ko`、`es`、`fr`、`de`、`pt`、`ru`、`it`、`ar` 和 `hi`。葡萄牙语在 CLI 中使用 `pt`，在本地化文档和翻译目录中使用 `pt-BR`。
 
-## 配置 Schema
+<a id="language-dimensions"></a>
+
+## 语言维度
+
+| 维度 | 配置键 | 初始化时 | 后续设置 | 控制范围 |
+|-----------|------------|-------------------|-----------|----------|
+| 输出/基础 | `language.output` | `--lang` | `config --set-lang` | 其他语言选项未设置时使用的语言 |
+| 交互 | `language.interaction` | `--interaction-lang` | `config --set-interaction-lang` | 对话和 CLI 输出 |
+| 文档 | `language.document` | `--document-lang` | `config --set-document-lang` | 需求、规格、设计、计划、任务 |
+| 提交 | `language.commit` | `--commit-lang` | `config --set-commit-lang` | 提交信息及 Git 工作流生成的文本 |
+
+每项语言设置都独立生效：未指定时先使用 `language.output`，它也未指定时再使用 `en`。`language.templates` 始终为 `en`。
+
+```bash
+codexspec init my-project --ai both \
+  --interaction-lang zh-CN --document-lang en --commit-lang en
+
+codexspec config
+codexspec config --set-document-lang en
+codexspec config --list-langs
+```
+
+首次在交互式终端（TTY）中初始化时，如果没有指定 `--lang`，也没有完整指定三个具体语言选项，程序会询问基础语言。`--force` 会自动确认其他初始化提示，但仍会要求选择语言。在非 TTY 环境中初始化时，默认使用英文。重新初始化时，没有明确修改的语言设置会保留。
+
+<a id="workflow-and-review-settings"></a>
+
+## 工作流与审查设置
+
+| 设置 | 默认值 | 作用 | CLI 控制 |
+|---------|---------|--------|-------------|
+| `workflow.auto_next` | `false` | 常规 SDD 阶段通过审查后自动进入下一阶段 | `config --auto-next on\|off` |
+| `workflow.auto_distill` | `true` | 成功执行收尾步骤后自动提炼知识，无需交互 | `config --auto-distill on\|off` |
+| `workflow.auto_maintenance` | `true` | 自动修复时一并实施已验证的增量维护改进 | `config --auto-maintenance on\|off` |
+| `workflow.worktrees` | `true` | 为常规功能和独立维护工作隔离工作区 | `config --worktrees on\|off` |
+| `review.decided_by` | `reviewer` | 问题只在项目实际运行范围之外触发时，由谁决定是否处理 | `config --decided-by reviewer\|ask` |
+
+布尔类型的 CLI 开关可以使用 `on/true/1/yes` 或 `off/false/0/no`，不区分大小写，也允许值的前后带空白。不传值时，会切换目标 checkout 中的当前设置；写入 YAML 的值始终是布尔值。
+
+如果设置为 `review.decided_by: reviewer`，由审查者决定是否将问题纳入缺陷。设置为 `ask` 时，只在实际运行范围之外触发的问题，会作为待用户确认的场景：用户决定修复该问题，还是排除该场景；确认后的决定会沿用到后续轮次。仍有待定决定时，不能宣告完成。单次调用 `review-code` 时，可以用 `--decided-by` 覆盖配置中的模式。
+
+修改配置时，同样遵循 worktree 路由规则。从主 checkout 单独修改配置，会写入维护 worktree，不会立即改变 main 使用的设置；在功能 worktree 中修改，则先在该工作区生效。
+
+<details>
+<summary>CLI 初始化选项</summary>
+
+| 选项 | 含义 |
+|--------|---------|
+| `PROJECT_NAME` | 新目录名；使用 `.` 表示当前目录 |
+| `--here`, `-h` | 初始化当前目录 |
+| `--ai`, `-a` | `claude`、`codex` 或 `both`；默认为 `claude` |
+| `--lang`, `-l` | 设置基础输出语言 |
+| `--interaction-lang` | 设置交互语言 |
+| `--document-lang` | 设置文档语言 |
+| `--commit-lang` | 设置提交信息语言 |
+| `--force`, `-f` | 重新生成安装资源并自动确认迁移、更新和合规提示；保留项目自行编写的上下文及无关配置 |
+| `--no-git` | 跳过 Git 仓库初始化 |
+| `--debug`, `-d` | 显示详细调试输出 |
+
+</details>
+
+<details>
+<summary>CLI 配置选项</summary>
+
+| 选项 | 含义 |
+|--------|---------|
+| `--set-lang`, `-l` | 设置基础输出语言 |
+| `--set-interaction-lang` | 设置交互语言 |
+| `--set-document-lang` | 设置文档语言 |
+| `--set-commit-lang`, `-c` | 设置提交信息语言 |
+| `--list-langs` | 列出支持的语言代码 |
+| `--auto-next` | 切换/设置阶段自动推进 |
+| `--auto-distill` | 切换/设置自动知识捕获 |
+| `--auto-maintenance` | 切换/设置自动增量维护 |
+| `--worktrees` | 切换或设置当前 checkout 的 worktree 隔离方式 |
+| `--decided-by` | 选择由 `reviewer` 判断，还是用 `ask` 询问用户 |
+
+</details>
+
+<details>
+<summary>配置示例</summary>
 
 ```yaml
 version: "1.0"
 
 language:
-  output: "zh-CN"        # 基础语言；以下三项回退到它，再到 "en"
-  interaction: "zh-CN"   # LLM 对话 + codexspec CLI 输出（可选 → 默认为 output）
-  document: "en"         # 生成的 requirements/spec/plan/tasks（可选 → 默认为 output）
-  commit: "en"           # git 提交信息（可选 → 默认为 output）
-  templates: "en"        # 保持为 "en"
+  output: "en"
+  interaction: "zh-CN"
+  document: "en"
+  commit: "en"
+  templates: "en"
 
 project:
-  ai: "claude"
-  created: "2025-02-15"
+  ai: "both"
 
 workflow:
+  auto_next: false
+  auto_distill: true
   auto_maintenance: true
-  auto_next: false       # 在工作流各阶段之间自动推进（opt-in）
+  worktrees: true
 
 review:
-  decided_by: reviewer   # 超出实际使用场景的缺陷由谁判定：reviewer（默认）或 ask
+  decided_by: reviewer
 ```
 
-## 语言设置
+</details>
 
-CodexSpec 把语言拆分为四个可独立配置的维度。`output` 是基础；`interaction`、`document` 与 `commit` 覆盖它，并在未设置时回退到它（再到 `en`）。这样你就可以，比如用一种语言与 Claude 对话，而把生成的工件或提交信息保留在另一种语言里。
-
-| 维度 | 键 | 初始化时设置 | 之后设置 | 控制 | 回退到 |
-|------|----|-------------|-----------|------|--------|
-| Output（基础） | `output` | `--lang` | `config --set-lang` | 其他三项的基础 | `en` |
-| Interaction | `interaction` | `--interaction-lang` | `config --set-interaction-lang` | LLM 对话 + CLI 输出 | output → `en` |
-| Document | `document` | `--document-lang` | `config --set-document-lang` | 生成的 spec/plan/tasks | output → `en` |
-| Commit | `commit` | `--commit-lang` | `config --set-commit-lang` | git 提交信息 | output → `en` |
-| Templates | `templates` | — | — | 命令模板来源（始终为 `en`） | — |
-
-**支持的取值：** 见[国际化](../user-guide/i18n.md#supported-languages)
-
-### `language.output`
-
-基础输出语言。其他维度在未显式设置时回退到它。
-
-### `language.interaction`
-
-你与 LLM 对话所用的语言，以及 `codexspec` CLI 终端输出所用的语言。可选——默认为 `output`。
-
-### `language.document`
-
-生成的工件文件（requirements/spec/plan/tasks）所用的语言。可选——默认为 `output`。
-
-### `language.commit`
-
-git 提交信息所用的语言。可选——默认为 `output`。
-
-### `language.templates`
-
-模板语言。为兼容性应保持为 `"en"`。
-
-## 项目设置
-
-### `project.ai`
-
-正在使用的 AI 助手。决定 `codexspec init` 会落盘哪些 agent 上下文文件：
-
-- `claude`（默认）——写入 `CLAUDE.md`（以及 `.claude/commands/`）。
-- `codex`——改为写入 `AGENTS.md` 和 `.agents/skills/`。
-- `both`——写入上述全部内容，让项目同时适配 Claude Code 与 Codex CLI。
-
-`CLAUDE.md` 始终会被创建（这样项目仍可从 Claude Code 使用）；`AGENTS.md` 与 `.agents/skills/` 仅在 `project.ai` 为 `codex` 或 `both` 时创建。
-
-### `project.created`
-
-项目初始化的日期。
-
-## 工作流设置
-
-### `workflow.auto_next`
-
-控制 Requirements-First SDD 流水线是否在当前阶段通过之后**自动推进**到下一个工作流阶段，而不需要你手动触发下一条命令。
-
-- **默认：** `false`（opt-in）。只有字面值 `true` 才会启用自动推进。
-- **切换 / 设置：** `codexspec config --auto-next`（裸标志切换当前值；传入 `on`/`off` 显式设置）。
-
-**链路：**
-
-```
-specify → generate-spec → spec-to-design → design-to-plan → plan-to-tasks → implement-tasks
-```
-
-**通过门：**
-
-- `generate-spec`、`design-to-plan`、`plan-to-tasks`：命令内置的评审闭环需报告 Overall Status 为 `PASS` 或 `PASS_WITH_WARNINGS`。
-- `specify`：没有评审闭环，因此通过门是你对需求探索已完成的显式确认（指**最终**的阶段摘要，而不是每一次中间摘要）。
-- `implement-tasks`：终端阶段——其后不会自动触发任何内容。
-
-当评审闭环报告 `NEEDS_REVISION` 或 `BLOCKED` 时，链路停下并把控制权交还给你。每次推进之前，agent 会输出一条提示行（例如：`auto_next: review passed → invoking /codexspec:design-to-plan`）。
-
-### `workflow.auto_maintenance`
-
-`codexspec config --auto-maintenance on|off` 将 `workflow.auto_maintenance` 作为 YAML 布尔值持久化到 `.codexspec/config.yml`；未配置时按 `true` 处理。两个工作流开关都接受不区分大小写的 `on/true/1/yes` 和 `off/false/0/no`。`implement-tasks` 自动修复审查问题时读取此配置：`on` 将有依据的增量维护改进纳入修复，`off` 仍会报告这些建议。实际缺陷与必要验证仍必须处理。它与 `auto-next` 独立，也不是 `implement-tasks` 的调用参数。
-
-## 审查设置
-
-### `review.decided_by`
-
-决定当 `/codexspec:review-code` 发现的缺陷，其触发条件依赖项目实际使用场景之外的输入或环境时，由谁来判定。
-
-- **默认值：** `reviewer`（键或分组缺失时同样如此）。由审查员判定每一个缺陷，行为与之前完全一致。
-- **`ask`：** 审查会把这类问题报告为待决的场景判定，而不是据此判定失败。`implement-tasks` 会询问你一次：修复，还是确认该场景不在范围内，并把你的回答以已确认的 `CON` 或 `OUT` 条目写入 `requirements.md`。后续审查轮次会遵循该条目。
-- **设置方式：** `codexspec config --decided-by reviewer|ask` 或 `/codexspec:config`。单次 `review-code` 运行可以用 `--decided-by` 覆盖。
-- 其他任何值都无效：`codexspec config` 会报告该问题，`review-code` 会以参数错误停止，直到修正为止。
+各项设置和语言选项的详细说明，见[配置](configuration.md)和[国际化](../user-guide/i18n.md)。

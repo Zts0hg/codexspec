@@ -1,5 +1,7 @@
 # Caso de estudio de CodexSpec: añadir un generador de descripciones de PR al proyecto
 
+> Caso histórico: la conversación, las decisiones intermedias, la secuencia de comandos y las puntuaciones siguientes reflejan el flujo de aquella época, no el contrato actual. El flujo estándar actual incluye una etapa de diseño independiente y `review-design`; `clarify` actualiza los requisitos confirmados antes que la especificación. Consulta el [flujo actual](../user-guide/workflow.md) y la [referencia del comando PR](../user-guide/commands.md#codexspecpr).
+
 > Este documento recoge el proceso completo de usar la cadena de herramientas de CodexSpec para añadir una nueva funcionalidad al propio CodexSpec, mostrando Spec-Driven Development (SDD) en la práctica.
 
 ## Resumen
@@ -17,18 +19,18 @@
 ### Entrada inicial del usuario
 
 ```
-Quiero añadir al proyecto una funcionalidad: un nuevo comando relacionado con Git que genere descripciones de PR de GitHub precisas, detalladas y conformes a los estándares (o descripciones de MR, en el caso de GitLab). A continuación incluyo dos comandos de PR que he usado en otros proyectos como referencia.
+I want to add a feature to the project: a new Git-related command that generates accurate, detailed, and standards-compliant GitHub PR descriptions (or MR descriptions, for GitLab). Below are two PR commands I have used in other projects, provided for reference.
 
-[Ejemplo de referencia 1 - Descripción estructurada]
-Ahora, actuando como mantenedor del proyecto y con base en todo el trabajo realizado hasta el momento, redacta una descripción clara de Pull Request para este envío.
-La descripción del PR debe ir dirigida al resto de revisores del equipo e incluir las secciones siguientes:
-1. Contexto (Context)
-2. Implementación (Implementation)
-3. Pruebas (Testing)
-4. Cómo verificar (How to Verify)
+[Reference Example 1 - Structured Description]
+Now, acting as a project maintainer, based on all the work we have done so far, write a clear Pull Request description for this submission.
+The PR description should be aimed at the other reviewers on the team and include the following sections:
+1. Context
+2. Implementation
+3. Testing
+4. How to Verify
 
-[Ejemplo de referencia 2 - Descripción simple]
-A partir del diff de código entre la rama actual y origin/main, redacta en Markdown un título y una descripción de Merge Request que cumplan las convenciones de Git. (Descríbelo en chino.)
+[Reference Example 2 - Simple Description]
+Based on the code diff between the current branch and origin/main, use Markdown to produce a Merge Request title and description that comply with Git conventions. (Describe in Chinese.)
 ```
 
 ### Proceso de clarificación
@@ -50,7 +52,7 @@ A partir del diff de código entre la rama actual y origin/main, redacta en Mark
 
 **P4: Condición de disparo**
 
-- Opciones: Rama actual frente a origin/main / Commits no pusheados / Rama objetivo configurable
+- Opciones: Rama actual frente a origin/main / Commits aún no enviados al remoto / Rama objetivo configurable
 - **Elección del usuario**: Rama objetivo configurable
 
 **P5: Fuente de la especificación**
@@ -93,7 +95,7 @@ A partir del diff de código entre la rama actual y origin/main, redacta en Mark
 **Resumen de requisitos actualizado**:
 
 ```
-Prioridad de idioma: language.commit > language.output > Inglés (predeterminado)
+Language priority: language.commit > language.output > English (default)
 ```
 
 ---
@@ -120,11 +122,11 @@ El `spec.md` generado contiene las siguientes secciones:
 ### Extracto de un requisito clave
 
 ```markdown
-### REQ-003: Configuración de idioma
-El comando determinará el idioma de salida en este orden de prioridad:
-1. `language.commit` en `.codexspec/config.yml` (máxima prioridad)
-2. `language.output` en `.codexspec/config.yml` (fallback)
-3. Inglés (predeterminado si no hay configuración)
+### REQ-003: Language Configuration
+The command shall determine output language in the following priority order:
+1. `language.commit` in `.codexspec/config.yml` (highest priority)
+2. `language.output` in `.codexspec/config.yml` (fallback)
+3. English (default if no configuration)
 ```
 
 ---
@@ -226,7 +228,7 @@ Aquí opera el **Confirmation Gate**: la decisión anterior ("usar por defecto e
 | C | Sintetizar (git diff + nombre de rama + mensajes de commit) |
 
 **Elección del usuario**: opción C
-**Motivo del usuario**: el primer commit puede representar solo una porción pequeña del cambio, y los nombres de rama asumen una disciplina fuerte de naming. Con información sustancial de git y cambios de código disponibles como referencia, un análisis sintetizado es más preciso.
+**Motivo del usuario**: el primer commit puede representar solo una porción pequeña del cambio, y los nombres de rama asumen una normas de nomenclatura estrictas. Con información sustancial de git y cambios de código disponibles como referencia, un análisis sintetizado es más preciso.
 
 ---
 
@@ -258,11 +260,11 @@ Aquí opera el **Confirmation Gate**: la decisión anterior ("usar por defecto e
 ### Cambio clave: inversión de la lógica del parámetro
 
 ```
-Diseño original: --no-spec (omitir spec)
-Diseño nuevo:    --spec (activar spec, opt-in)
+Original design: --no-spec (skip spec)
+New design:      --spec (enable spec, opt-in)
 ```
 
-Esta inversión es la ilustración más nítida del Confirmation Gate en este caso de estudio: un valor por defecto originalmente "vinculante" (`--no-spec`, es decir, spec activado por defecto) se reabrió, invirtió y se reconfirmó como opt-in en cuanto el usuario sacó a la luz un flujo de trabajo real que habría roto.
+Esta inversión es la ilustración más nítida del Confirmation Gate en este caso de estudio: un valor por defecto originalmente "vinculante" (`--no-spec`, es decir, spec activado por defecto) se reabrió, invirtió y se reconfirmó como opt-in en cuanto el usuario sacó a la luz un flujo de trabajo real que ese valor por defecto habría perjudicado.
 
 ---
 
@@ -317,57 +319,57 @@ Esta inversión es la ilustración más nítida del Confirmation Gate en este ca
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                   Flujo de desarrollo SDD de CodexSpec                   │
+│                   CodexSpec SDD Development Flow                        │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:specify                                                     │
-│  ├─ Clarificar requisitos mediante Q&A                                  │
-│  ├─ El usuario aporta ejemplos de referencia                            │
-│  └─ 10 preguntas cubren idioma, plataforma, contenido, parámetros, etc. │
+│  ├─ Clarify requirements through Q&A                                    │
+│  ├─ User provides reference examples                                    │
+│  └─ 10 questions covering language, platform, content, parameters, etc. │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:generate-spec                                               │
-│  ├─ Genera un spec.md completo                                          │
-│  ├─ 4 historias de usuario, 8 requisitos funcionales, 10 casos de prueba│
-│  └─ Guardado en .codexspec/specs/2026-0613-1200ab-pr-description-generator/spec.md │
+│  ├─ Generate a complete spec.md                                         │
+│  ├─ 4 user stories, 8 functional requirements, 10 test cases            │
+│  └─ Saved to .codexspec/specs/2026-0613-1200ab-pr-description-generator/spec.md │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:review-spec                                                 │
-│  ├─ Puntuación de calidad: 92/100                                       │
-│  ├─ 2 advertencias encontradas (descubrimiento de pruebas, multi-spec)  │
-│  └─ Estado: PASS, puede pasar a planificación                           │
+│  ├─ Quality score: 92/100                                               │
+│  ├─ Found 2 warnings (test-file discovery, multi-spec handling)         │
+│  └─ Status: Pass, can proceed to planning                               │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec:clarify  (ajuste crítico)                                   │
-│  ├─ El usuario saca a la luz un problema de uso real                    │
-│  ├─ 5 preguntas de clarificación, todas respondidas                     │
-│  ├─ Cambio clave: --no-spec → --spec (opt-in)                           │
-│  └─ Añadidas 5 requisitos (REQ-005b, 006b, 008a, 010, actualizado 007)  │
+│  /codexspec:clarify  (Critical adjustment)                              │
+│  ├─ User surfaces a real-world usage issue                              │
+│  ├─ 5 clarification questions, all answered                             │
+│  ├─ Key change: --no-spec → --spec (opt-in)                             │
+│  └─ Added 5 requirements (REQ-005b, 006b, 008a, 010, updated 007)       │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:design-to-plan                                                │
-│  ├─ Actualiza el plan técnico de implementación                         │
-│  ├─ 9 decisiones técnicas, incluidas 5 nuevas                           │
-│  ├─ 5 fases de implementación                                           │
-│  └─ Guardado en .codexspec/specs/2026-0613-1200ab-pr-description-generator/plan.md │
+│  ├─ Update the technical implementation plan                            │
+│  ├─ 9 technical decisions, including 5 new ones                         │
+│  ├─ 5 implementation phases                                             │
+│  └─ Saved to .codexspec/specs/2026-0613-1200ab-pr-description-generator/plan.md │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  Pasos posteriores (no completados en esta sesión)                      │
-│  ├─ /codexspec:review-plan - Validar la calidad del plan                │
-│  ├─ /codexspec:plan-to-tasks - Desglosar en tareas ejecutables          │
-│  └─ /codexspec:implement-tasks - Ejecutar la implementación             │
+│  Subsequent steps (not completed in this session)                       │
+│  ├─ /codexspec:review-plan - Validate plan quality                      │
+│  ├─ /codexspec:plan-to-tasks - Break down into executable tasks         │
+│  └─ /codexspec:implement-tasks - Execute the implementation             │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -392,11 +394,11 @@ Este caso muestra el papel decisivo del comando `clarify`:
 ### 3. Evolución del diseño del parámetro
 
 ```
-Diseño inicial:
-  --no-spec: omitir spec.md (usado por defecto)
+Initial design:
+  --no-spec: skip spec.md (used by default)
 
-Diseño final:
-  --spec: activar spec.md (no usado por defecto)
+Final design:
+  --spec: enable spec.md (not used by default)
 ```
 
 Este cambio refleja un giro de "flujo SDD por defecto" a "soportar también flujos no SDD", haciendo la herramienta más general.
@@ -415,28 +417,28 @@ Este cambio refleja un giro de "flujo SDD por defecto" a "soportar también fluj
 ## Apéndice: referencia rápida de comandos
 
 ```bash
-# 1. Clarificación inicial de requisitos
+# 1. Initial requirement clarification
 /codexspec:specify
 
-# 2. Generar el documento de especificación
+# 2. Generate the specification document
 /codexspec:generate-spec
 
-# 3. Revisar la calidad de la especificación
+# 3. Review the specification quality
 /codexspec:review-spec
 
-# 4. Clarificar/ajustar requisitos (opcional; úsalo cuando se detecte un problema)
-/codexspec:clarify [descripción del problema]
+# 4. Clarify/adjust requirements (optional; use when an issue is found)
+/codexspec:clarify [issue description]
 
-# 5. Generar el plan técnico
+# 5. Generate the technical plan
 /codexspec:design-to-plan
 
-# 6. Revisar la calidad del plan (opcional)
+# 6. Review the plan quality (optional)
 /codexspec:review-plan
 
-# 7. Desglosar en tareas
+# 7. Break down into tasks
 /codexspec:plan-to-tasks
 
-# 8. Ejecutar la implementación
+# 8. Execute the implementation
 /codexspec:implement-tasks
 ```
 

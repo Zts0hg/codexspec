@@ -1,93 +1,87 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/images/codexspec-logo-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/images/codexspec-logo-light.svg">
-  <img alt="CodexSpec Logo" src="assets/images/codexspec-logo-light.svg" width="420">
-</picture>
+# CodexSpec
 
-# CodexSpec へようこそ
+![CodexSpec](assets/images/codexspec-logo-light.svg#only-light){ width="420" }
 
-[![PyPI version](https://img.shields.io/pypi/v/codexspec.svg)](https://pypi.org/project/codexspec/)
-[![Python](https://img.shields.io/pypi/pyversions/codexspec.svg)](https://pypi.org/project/codexspec/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![CodexSpec](assets/images/codexspec-logo-dark.svg#only-dark){ width="420" }
 
-**Claude Code 向けの Requirements-First SDD ツールキット**
+**Claude Code と OpenAI Codex 向けの要件優先 SDD ツールキット**
 
-CodexSpec は、**Requirements-First Spec-Driven Development (SDD)** を通じて高品質なソフトウェアの構築を支援します。確認された要件が最優先の権威であり、あなたが明示的に確認するまでは何も確定しません。すぐにコードに取り掛かるのではなく、**何を**・**なぜ**作るかを先に確定し、それから**どうやって**作るかを決めます。
+CodexSpec は、確認済みの要件をもとに、仕様書、設計、計画、タスク、実装を作成し、それぞれのつながりを追跡できるようにします。
+**何を**作るか、**なぜ**作るかはユーザーが決めます。エージェントはその要件の範囲内で、
+レビューの節目とプロジェクトに保存した知識を活用しながら、**どのように**実現するかを具体化します。
 
-## なぜ CodexSpec を使うのか？
+Claude Code のスラッシュコマンド、Codex のスキル、または両方から利用できます。
+通常の機能開発には、デフォルトで機能ごとに独立した Git worktree を使います。
+共有ブループリントを利用すると、確認済み要件のキューをエージェントに自律的に開発させることもできます。
 
-Claude Code に CodexSpec を上乗せする理由とは何か？ 比較をご覧ください。
+<a id="why-choose-codexspec"></a>
 
-| 観点 | Claude Code 単体 | CodexSpec + Claude Code |
-|--------|------------------|-------------------------|
-| **多言語サポート** | デフォルトは英語での対話 | チームの言語を設定でき、協業とレビューがより円滑に |
-| **トレーサビリティ** | セッション終了後の意思決定の追跡が困難 | すべての spec・plan・task が `.codexspec/specs/` に保存される |
-| **セッションの再開** | plan モードの中断から復帰しにくい | 複数コマンドへの分割と永続化されたドキュメントにより容易に復帰 |
-| **チームガバナンス** | 統一原則がなくスタイルが一貫しない | `constitution.md` がチームの基準と品質を強制 |
+## CodexSpec を選ぶ理由
 
-### Requirements-First SDD とは？
+| 必要なこと | CodexSpec でできること |
+|------|-------------------------|
+| 製品として何を実現するかを明確にする | 仕様書を作成する前に要件を明示的に確認し、`requirements.md` に保存 |
+| 開発の経緯を追跡する | 要件 → 仕様 → 設計 → 計画 → タスクを、出典へのリンクで結び付ける |
+| 判断の妥当性をレビューする | 4 つの成果物レビューコマンド、成果物間の分析、独立したコード欠陥ゲート |
+| セッションや担当者が変わっても作業を引き継ぐ | 機能ごとの記録、プロジェクト原則、再利用できる知識、関連する過去の判断 |
+| 複数の機能を並行して開発する | 通常の機能ごとに Git worktree を用意し、同じワークスペースを継続して再利用 |
+| 作業をさらに自動化する | 設定に応じたステージの自動進行と、確認済みブループリント要件の自律開発 |
+| チームに合った言語で作業する | 対話、ドキュメント、コミットの言語を個別に設定 |
 
-**Requirements-First SDD** は、Spec-Driven Development (SDD) の手法に一点のアップグレードを加えたものです。**確認された要件が最優先の権威**になります。*何を*作り*なぜ*作るかを、*どうやって*作るかの前に定義して確認し、あなたが明示的に確認するまでは何も確定しません。
+<a id="what-is-requirements-first-sdd"></a>
 
+### 要件優先 SDD とは
+
+要件優先の仕様駆動開発では、**確認済み要件を、その機能について最優先の判断基準**とします。
+エージェントは実装に向けた成果物を作成する前に、目標、制約、判断、除外事項、未解決の質問、確認の根拠を記録します。
+
+```text
+Idea → Confirmed Requirements →     Spec    →     Design    →     Plan    →    Tasks     →     Code
+                 ↓                   ↓              ↓              ↓             ↓              ↓
+         User confirmation      review-spec   review-design   review-plan   review-tasks   review-code
 ```
-Traditional:  Idea → Code → Debug → Rewrite
-SDD:          Idea → Confirmed Requirements → Spec → Plan → Tasks → Code
-```
 
-### 主な特徴
+要件を確認するのはユーザーです。仕様からコードまで、そこから作成される各成果物には、それぞれ対応するレビューがあります。
 
-- **憲法に基づく開発** - すべての意思決定を導くプロジェクト原則を確立
-- **要件の永続的な記録** - `/specify` はドキュメント生成前に、確認された議論の内容を `requirements.md` に記録
-- **自動レビュー** - 生成された spec・plan・task の各成果物すべてに組み込みの品質チェックを同梱
-- **対話型の明確化** - Q&A による要件の洗練
-- **成果物間の分析** - 実装前に不整合を検出
-- **トレーサブルなタスク** - タスク分割は要件と計画のカバレッジを保持し、**Conditional TDD** を適用（plan・憲法・リスクで要求される場合のみテストファーストの順序を採用。ドキュメントや設定など検証不可能なタスクは直接実装）
-- **Claude Code とのネイティブ連携** - スラッシュコマンドがシームレスに動作
-- **多言語サポート** - LLM による動的翻訳で 13 以上の言語に対応
-- **クロスプラットフォーム** - Bash と PowerShell のスクリプトを同梱
-- **拡張可能** - カスタムコマンド向けのプラグインアーキテクチャ
+製品として何を実現するかは、人との協働を通じて定め、変更します。
+自動レビューでは、作成した成果物がその意図に沿っているかを確認します。
+自動化を有効にすると、合格したステージから次へ進みます。エージェントが確認済み要件を無断で置き換えることはありません。
 
-## クイックスタート
+[![CodexSpec：要件優先の開発フロー、各段階のレビューと経験を次に生かす循環](../../assets/workflow/workflow-ja-light.png#only-light)](../../assets/workflow/workflow-ja-light.png#only-light)
+
+[![CodexSpec：要件優先の開発フロー、各段階のレビューと経験を次に生かす循環](../../assets/workflow/workflow-ja-dark.png#only-dark)](../../assets/workflow/workflow-ja-dark.png#only-dark)
+
+図を原寸で開く： [☀️](../../assets/workflow/workflow-ja-light.png) · [🌙](../../assets/workflow/workflow-ja-dark.png)
+
+<a id="30-second-quick-start"></a>
+
+## 30 秒クイックスタート
+
+CodexSpec をインストールし、使うアシスタントに合わせてプロジェクトを初期化します。
 
 ```bash
-# インストール
 uv tool install codexspec
 
-# 新規プロジェクトを作成
-codexspec init my-project
+# Create a new project for Claude Code
+codexspec init my-project --ai claude
 
-# または既存プロジェクトで初期化
-codexspec init . --ai claude
+# Or initialize an existing project for Codex
+cd your-existing-project
+codexspec init . --ai codex
+
+# Use --ai both when you want both integrations
 ```
 
-[完全なインストールガイド](getting-started/installation.md)
+初期化したプロジェクトで、インストール済みのアシスタントを起動してください。
+ワークフローは共通ですが、呼び出し方は次のように異なります。
 
-## ワークフローの概要
+| アシスタント | 要件の検討を始めるコマンド |
+|-----------|------------------------------|
+| Claude Code (`claude`) | `/codexspec:specify I want to build a todo application` |
+| Codex (`codex`) | `$codexspec:specify I want to build a todo application` |
 
-CodexSpec は開発を **レビュー可能なチェックポイント** として構造化します。確認された要件は、各段階でのレビューを経て spec・plan・task を通じてコードへと流れていきます。
+必要に応じて `constitution` でプロジェクト原則を調整してください。
+最終的な要件サマリーを確認したら、返された機能ディレクトリとワークスペースで作業を続けます。
+以降のコマンドについては、[基本ワークフロー](user-guide/workflow.md#core-workflow)を参照してください。
 
-```
-Idea → Confirmed Requirements → Spec → Plan → Tasks → Code
-```
-
-各成果物は専用のコマンドで生成され、次の段階に進む前に検証されます。
-
-```
-Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
-                                                   │                         │                            │
-                                              Review spec               Review plan                  Review tasks
-```
-
-### 確認ゲート (Confirmation Gate)
-
-決定的な差別化要因となるのが **Confirmation Gate** です。要件・spec・plan・task は、あなたが人間として明示的に確認した後にのみ確定されます。確認された要件は最優先の機能権威であるため、AI が暗黙に意思決定を固定することはありません。派生した成果物には明示的なソースリンクが付き、矛盾は伝播されずに逆追跡されます。
-
-### 反復型の品質ループ
-
-すべての生成コマンドには **自動的かつ証拠に基づくレビュー** が備わっています。欠陥には具体的な証拠が必要で、助言的な提案は自動変更をトリガーせず、検証された欠陥は最大 2 ラウンドまで修正と再レビューを行えます。このループにより、あなたが細部までいちいち世話を焼かなくても品質が上がり続けます。
-
-[ワークフローを学ぶ](user-guide/workflow.md)
-
-## ライセンス
-
-MIT License - 詳細は [LICENSE](https://github.com/Zts0hg/codexspec/blob/main/LICENSE) を参照してください。
+Codex デスクトップアプリをお使いの場合は、[Codex にインストールとプロジェクトの初期化を依頼できます](getting-started/installation.md#install-with-the-codex-desktop-app)。

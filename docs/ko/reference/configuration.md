@@ -1,117 +1,125 @@
-# 설정
+<a id="configuration-and-internationalization"></a>
 
-## 설정 파일 위치
+# 설정과 국제화
 
-`.codexspec/config.yml`
+설정은 `.codexspec/config.yml`에 저장합니다. 템플릿은 영어로 유지하지만,
+에이전트는 설정된 언어로 대화와 산출물을 작성합니다.
+표준 언어 코드는 13개입니다: `en`, `zh-CN`, `zh-TW`, `ja`, `ko`, `es`, `fr`, `de`, `pt`, `ru`, `it`, `ar`, `hi`.
+포르투갈어 CLI 코드는 `pt`이며, 현지화된 문서와 번역 카탈로그는 `pt-BR`을 사용합니다.
 
-## 설정 스키마
+<a id="language-dimensions"></a>
+
+## 언어별 설정
+
+| 구분 | 설정 키 | 초기화 시 | 나중에 설정 | 적용 대상 |
+|-----------|------------|-------------------|-----------|----------|
+| 출력·기본 언어 | `language.output` | `--lang` | `config --set-lang` | 다른 언어 설정이 없을 때 사용할 기본 언어 |
+| 대화 | `language.interaction` | `--interaction-lang` | `config --set-interaction-lang` | 대화와 CLI 출력 |
+| 문서 | `language.document` | `--document-lang` | `config --set-document-lang` | 요구사항, 명세서, 설계, 계획, 태스크 |
+| 커밋 | `language.commit` | `--commit-lang` | `config --set-commit-lang` | 커밋 메시지와 Git 워크플로우에서 생성하는 텍스트 |
+
+각 언어 설정은 독립적으로 `language.output`, 그다음 `en`을 기본값으로 사용합니다.
+`language.templates`는 `en`으로 유지합니다.
+
+```bash
+codexspec init my-project --ai both \
+  --interaction-lang zh-CN --document-lang en --commit-lang en
+
+codexspec config
+codexspec config --set-document-lang en
+codexspec config --list-langs
+```
+
+첫 TTY 초기화에서는 `--lang` 또는 세 가지 개별 언어 옵션을 모두 지정하지 않으면 기본 언어를 선택하라는 메시지가 표시됩니다.
+`--force`는 다른 초기화 확인을 자동 승인하지만 이 언어 선택은 생략하지 않습니다.
+비 TTY 초기화에서는 기본적으로 영어를 사용합니다. 재초기화할 때도 명시적으로 설정하지 않은 언어 키는 유지합니다.
+
+<a id="workflow-and-review-settings"></a>
+
+## 워크플로우와 리뷰 설정
+
+| 설정 | 기본값 | 동작 | CLI 제어 |
+|---------|---------|--------|-------------|
+| `workflow.auto_next` | `false` | 통과한 일반 SDD 단계에서 다음 단계로 진행 | `config --auto-next on\|off` |
+| `workflow.auto_distill` | `true` | 마무리 작업 성공 후 사용자와의 대화 없이 지식 추출 | `config --auto-distill on\|off` |
+| `workflow.auto_maintenance` | `true` | 자동 수정 중 검증된 유지보수 개선을 점진적으로 적용 | `config --auto-maintenance on\|off` |
+| `workflow.worktrees` | `true` | 일반 기능과 독립적인 유지보수 작업을 별도 worktree로 격리 | `config --worktrees on\|off` |
+| `review.decided_by` | `reviewer` | 프로젝트의 운영 범위 밖에서 발생하는 지적을 누가 판단할지 지정 | `config --decided-by reviewer\|ask` |
+
+불리언 CLI 스위치는 대소문자를 구분하지 않고 `on/true/1/yes`와 `off/false/0/no`를 받으며, 앞뒤 공백도 허용합니다.
+값을 지정하지 않고 사용하면 대상 체크아웃의 현재 값을 전환합니다. YAML에는 불리언 값으로 저장합니다.
+
+`review.decided_by: reviewer`에서는 리뷰어가 결함으로 인정할지 판단합니다.
+`ask`에서는 운영 범위 밖의 발생 조건을 사용자 판단을 기다리는 시나리오로 처리합니다.
+사용자는 수정할지 해당 시나리오를 제외할지 한 번 결정하며, 확정된 결정은 이후 라운드에서도 사용할 수 있도록 보존합니다.
+판단을 기다리는 항목이 있으면 완료할 수 없습니다. 한 번의 `review-code` 실행에 한해 `--decided-by`로 설정된 모드를 재정의할 수 있습니다.
+
+설정을 쓸 때도 worktree 작업 위치 선택 규칙을 따릅니다.
+main 체크아웃에서 독립적인 변경을 요청하면 유지보수 worktree에 기록하며, main에서 적용 중인 설정이 즉시 바뀌지는 않습니다.
+기능 worktree 안에서 변경한 설정은 그곳에서 적용됩니다.
+
+<details>
+<summary>CLI 초기화 옵션</summary>
+
+| 옵션 | 의미 |
+|--------|---------|
+| `PROJECT_NAME` | 새 디렉터리 이름. 현재 디렉터리에는 `.` 사용 |
+| `--here`, `-h` | 현재 디렉터리 초기화 |
+| `--ai`, `-a` | `claude`, `codex`, `both` 중 선택. 기본값은 `claude` |
+| `--lang`, `-l` | 기본 출력 언어 설정 |
+| `--interaction-lang` | 대화 언어 설정 |
+| `--document-lang` | 문서 언어 설정 |
+| `--commit-lang` | 커밋 메시지 언어 설정 |
+| `--force`, `-f` | 설치된 산출물을 다시 생성하고 마이그레이션·업데이트·준수 확인을 자동 승인. 프로젝트에서 작성한 컨텍스트와 지정한 옵션에 관계없는 설정은 보존 |
+| `--no-git` | Git 리포지토리 초기화 생략 |
+| `--debug`, `-d` | 자세한 디버그 정보 표시 |
+
+</details>
+
+<details>
+<summary>CLI 설정 옵션</summary>
+
+| 옵션 | 의미 |
+|--------|---------|
+| `--set-lang`, `-l` | 기본 출력 언어 설정 |
+| `--set-interaction-lang` | 대화 언어 설정 |
+| `--set-document-lang` | 문서 언어 설정 |
+| `--set-commit-lang`, `-c` | 커밋 메시지 언어 설정 |
+| `--list-langs` | 지원하는 언어 코드 목록 표시 |
+| `--auto-next` | 자동 단계 진행 전환·설정 |
+| `--auto-distill` | 자동 지식 추출 전환·설정 |
+| `--auto-maintenance` | 점진적 유지보수 개선 자동 적용 전환·설정 |
+| `--worktrees` | 체크아웃별 worktree 격리 전환·설정 |
+| `--decided-by` | 리뷰 판단 모드를 `reviewer` 또는 `ask`로 설정 |
+
+</details>
+
+<details>
+<summary>설정 예시</summary>
 
 ```yaml
 version: "1.0"
 
 language:
-  output: "ko-KR"        # 기반 언어; 아래 세 가지는 여기로, 그 다음 "en"으로 폴백
-  interaction: "ko-KR"   # LLM 대화 + codexspec CLI 출력 (선택 → 기본값은 output)
-  document: "en"         # 생성된 requirements/spec/plan/tasks (선택 → 기본값은 output)
-  commit: "en"           # git 커밋 메시지 (선택 → 기본값은 output)
-  templates: "en"        # "en"으로 유지
+  output: "en"
+  interaction: "zh-CN"
+  document: "en"
+  commit: "en"
+  templates: "en"
 
 project:
-  ai: "claude"
-  created: "2025-02-15"
+  ai: "both"
 
 workflow:
+  auto_next: false
+  auto_distill: true
   auto_maintenance: true
-  auto_next: false       # 워크플로우 단계 간 자동 진행 (옵트인)
+  worktrees: true
 
 review:
-  decided_by: reviewer   # 실제 사용 범위 밖 결함의 판정 주체: reviewer(기본값) 또는 ask
+  decided_by: reviewer
 ```
 
-## 언어 설정
+</details>
 
-CodexSpec은 언어를 개별적으로 설정 가능한 네 가지 차원으로 나눕니다. `output`이 기반이며, `interaction`, `document`, `commit`은 이를 덮어쓰되 설정되지 않았을 때 이 언어(그 다음 `en`)로 폴백합니다. 이를 통해 예컨대 Claude와는 한 언어로 대화하면서 생성되는 산출물이나 커밋 메시지는 다른 언어로 유지할 수 있습니다.
-
-| 차원 | 키 | init 시 설정 | 이후 설정 | 제어 대상 | 폴백 |
-|-----------|-----|-------------|-----------|----------|---------------|
-| 출력 (기반) | `output` | `--lang` | `config --set-lang` | 나머지 세 가지의 기반 | `en` |
-| 상호작용 | `interaction` | `--interaction-lang` | `config --set-interaction-lang` | LLM 대화 + CLI 출력 | output → `en` |
-| 문서 | `document` | `--document-lang` | `config --set-document-lang` | 생성된 spec/plan/tasks | output → `en` |
-| 커밋 | `commit` | `--commit-lang` | `config --set-commit-lang` | git 커밋 메시지 | output → `en` |
-| 템플릿 | `templates` | — | — | 명령어 템플릿 소스(항상 `en`) | — |
-
-**지원 값:** [국제화](../user-guide/i18n.md#supported-languages) 참조
-
-### `language.output`
-
-기반 출력 언어입니다. 다른 차원이 명시적으로 설정되지 않았을 때 여기로 폴백합니다.
-
-### `language.interaction`
-
-사용자와 LLM 사이의 대화, 그리고 `codexspec` CLI 터미널 출력의 언어입니다. 선택 사항이며, 기본값은 `output`입니다.
-
-### `language.document`
-
-생성되는 산출물 파일(requirements/spec/plan/tasks)의 언어입니다. 선택 사항이며, 기본값은 `output`입니다.
-
-### `language.commit`
-
-git 커밋 메시지의 언어입니다. 선택 사항이며, 기본값은 `output`입니다.
-
-### `language.templates`
-
-템플릿 언어입니다. 호환성을 위해 `"en"`으로 유지해야 합니다.
-
-## 프로젝트 설정
-
-### `project.ai`
-
-사용 중인 AI 어시스턴트입니다. `codexspec init`이 어떤 에이전트 컨텍스트 파일을 내려놓을지 결정합니다:
-
-- `claude` (기본값) — `CLAUDE.md`(및 `.claude/commands/`)를 작성합니다.
-- `codex` — 대신 `AGENTS.md`와 `.agents/skills/`를 작성합니다.
-- `both` — 위의 모두를 작성하여 프로젝트가 Claude Code 와 Codex CLI 모두에 대비하게 합니다.
-
-`CLAUDE.md`는 항상 생성되어(Claude Code 에서도 프로젝트를 계속 쓸 수 있도록), `AGENTS.md` 와 `.agents/skills/`는 `project.ai`가 `codex` 또는 `both`일 때만 생성됩니다.
-
-### `project.created`
-
-프로젝트가 초기화된 날짜입니다.
-
-## 워크플로우 설정
-
-### `workflow.auto_next`
-
-Requirements-First SDD 파이프라인이 현재 단계를 통과하면 **자동으로 다음 워크플로우 단계로 진행** 할지를 결정합니다. 매번 다음 명령을 수동으로 호출할 필요가 없어집니다.
-
-- **기본값:** `false` (옵트인). 리터럴 값 `true`일 때만 자동 진행이 활성화됩니다.
-- **토글 / 설정:** `codexspec config --auto-next` (플래그만 쓰면 현재 값을 토글, `on`/`off`를 명시해 설정 가능).
-
-**체인:**
-
-```
-specify → generate-spec → spec-to-design → design-to-plan → plan-to-tasks → implement-tasks
-```
-
-**통과 게이트:**
-
-- `generate-spec`, `spec-to-design`, `design-to-plan`, `plan-to-tasks`: 명령어에 내장된 리뷰 루프가 Overall Status로 `PASS` 또는 `PASS_WITH_WARNINGS`를 보고해야 합니다.
-- `specify`: 리뷰 루프가 없으므로 게이트는 사용자가 요구사항 탐색이 끝났음을 명시적으로 확인하는 것입니다(각 중간 단계 요약이 아니라 **최종** 단계 요약).
-- `implement-tasks`: 종착 단계 — 이후에 자동으로 발동하는 것은 없습니다.
-
-리뷰 루프가 `NEEDS_REVISION` 또는 `BLOCKED`를 보고하면 체인은 멈추고 제어가 사용자에게 돌아갑니다. 각 진행 전에 에이전트는 알림 한 줄을 출력합니다(예: `auto_next: review passed → invoking /codexspec:design-to-plan`).
-
-### `workflow.auto_maintenance`
-
-`codexspec config --auto-maintenance on|off`는 `.codexspec/config.yml`의 `workflow.auto_maintenance`를 YAML 불리언으로 저장합니다. 키가 없으면 `true`로 처리합니다. 두 워크플로 스위치는 대소문자를 구분하지 않는 `on/true/1/yes`와 `off/false/0/no`를 지원합니다. `implement-tasks`는 자동 수정 시 이 설정을 읽습니다. `on`이면 근거가 있는 점진적 유지보수 개선을 적용하고, `off`여도 제안은 보고합니다. 실제 결함과 필수 검증은 계속 처리해야 합니다. `auto-next`와 독립적이며 `implement-tasks` 호출 인자가 아닙니다.
-
-## 검토 설정
-
-### `review.decided_by`
-
-`/codexspec:review-code`가 찾은 결함 중 트리거가 프로젝트의 실제 사용 범위 밖의 입력이나 환경에 의존하는 결함을 누가 판정할지 정합니다.
-
-- **기본값:** `reviewer`(키나 섹션이 없을 때도 동일). 검토자가 모든 결함을 판정하며 이전과 똑같이 동작합니다.
-- **`ask`:** 검토는 이런 항목으로 실패 처리하지 않고 보류 중인 시나리오 판정으로 보고합니다. `implement-tasks`가 수정할지, 아니면 해당 시나리오를 범위 밖으로 받아들일지 한 번 묻고, 답변을 확정된 `CON` 또는 `OUT` 항목으로 `requirements.md`에 기록합니다. 이후 검토 라운드는 그 항목을 따릅니다.
-- **설정 방법:** `codexspec config --decided-by reviewer|ask` 또는 `/codexspec:config`. 한 번의 `review-code` 실행에서는 `--decided-by`로 재정의할 수 있습니다.
-- 그 밖의 값은 유효하지 않습니다. `codexspec config`가 이를 보고하고, `review-code`는 수정될 때까지 인수 오류로 중단합니다.
+언어와 설정의 자세한 동작은 [설정](configuration.md)과 [국제화](../user-guide/i18n.md)를 참고하세요.

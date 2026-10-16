@@ -1,93 +1,98 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/images/codexspec-logo-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/images/codexspec-logo-light.svg">
-  <img alt="CodexSpec Logo" src="assets/images/codexspec-logo-light.svg" width="420">
-</picture>
+# CodexSpec
 
-# Bienvenido a CodexSpec
+![CodexSpec](assets/images/codexspec-logo-light.svg#only-light){ width="420" }
 
-[![PyPI version](https://img.shields.io/pypi/v/codexspec.svg)](https://pypi.org/project/codexspec/)
-[![Python](https://img.shields.io/pypi/pyversions/codexspec.svg)](https://pypi.org/project/codexspec/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![CodexSpec](assets/images/codexspec-logo-dark.svg#only-dark){ width="420" }
 
-**Un toolkit de SDD Requirements-First para Claude Code**
+**Herramientas SDD con prioridad en los requisitos para Claude Code y OpenAI Codex**
 
-CodexSpec te ayuda a construir software de alta calidad mediante **Spec-Driven Development (SDD) Requirements-First**: los requisitos confirmados son la autoridad de máxima prioridad, y nada es vinculante hasta que tú lo confirmes de forma explícita. En lugar de saltar directamente al código, confirmas **qué** construir y **por qué** antes de decidir **cómo** construirlo.
+CodexSpec transforma los requisitos confirmados en especificaciones, diseños,
+planes, tareas e implementaciones con trazabilidad. Tú decides **qué** construir
+y **por qué**; el agente se encarga de definir **cómo** hacerlo, siempre dentro
+de los requisitos que hayas confirmado y con el apoyo de revisiones y del
+conocimiento que el proyecto conserva entre sesiones.
 
-## ¿Por qué CodexSpec?
+Puedes usar los comandos con barra de Claude Code, las habilidades de Codex o
+ambas integraciones. De forma predeterminada, las funcionalidades del flujo
+estándar se desarrollan en worktrees de Git separados. También puedes utilizar
+un blueprint compartido para que el agente desarrolle de forma autónoma una
+cola de requisitos confirmados.
 
-¿Por qué usar CodexSpec sobre Claude Code? Aquí la comparativa:
+<a id="why-choose-codexspec"></a>
 
-| Aspecto | Solo Claude Code | CodexSpec + Claude Code |
-|--------|------------------|-------------------------|
-| **Soporte multilingüe** | Interacción por defecto en inglés | Configura el idioma del equipo para una colaboración y revisión más fluidas |
-| **Trazabilidad** | Difícil rastrear decisiones tras cerrar la sesión | Todas las especificaciones, planes y tareas se guardan en `.codexspec/specs/` |
-| **Recuperación de sesión** | Las interrupciones del modo plan son difíciles de recuperar | División entre comandos + documentación persistente = recuperación sencilla |
-| **Gobernanza del equipo** | Sin principios unificados, estilos inconsistentes | `constitution.md` impone estándares y calidad al equipo |
+## ¿Por qué elegir CodexSpec?
 
-### ¿Qué es Requirements-First SDD?
+| Necesidad | Qué ofrece CodexSpec |
+|------|-------------------------|
+| Definir con claridad la intención del producto | Confirmación explícita y registro persistente en `requirements.md` antes de elaborar la especificación |
+| Mantener la trazabilidad del desarrollo | Referencias a las fuentes en toda la cadena: requisitos → especificación → diseño → plan → tareas |
+| Poder revisar las decisiones | Cuatro comandos de revisión de artefactos, análisis entre artefactos y una puerta de defectos independiente para el código |
+| Dar continuidad al trabajo entre sesiones y equipos | Registros de funcionalidades, principios del proyecto, conocimiento reutilizable y decisiones históricas pertinentes |
+| Trabajar en varias funcionalidades a la vez | Un worktree de Git por funcionalidad del flujo estándar, reutilizando siempre el mismo espacio de trabajo |
+| Automatizar más tareas | Avance opcional entre etapas y desarrollo autónomo de los requisitos confirmados del blueprint |
+| Respetar los idiomas de trabajo del equipo | Idiomas independientes para la interacción, los documentos y los commits |
 
-**Requirements-First SDD** es la metodología Spec-Driven Development (SDD) con una mejora: **los requisitos confirmados son la autoridad de máxima prioridad**. Defines y confirmas *qué* construir y *por qué* antes de decidir *cómo*, y nada se vuelve vinculante hasta que lo confirmas explícitamente.
+<a id="what-is-requirements-first-sdd"></a>
 
+### ¿En qué consiste SDD con prioridad en los requisitos?
+
+En el desarrollo guiado por especificaciones con prioridad en los requisitos,
+**los requisitos confirmados tienen la máxima autoridad sobre la funcionalidad**.
+Antes de elaborar los artefactos de implementación, el agente registra los
+objetivos, las restricciones, las decisiones, las exclusiones, las preguntas
+pendientes y las pruebas de que los requisitos se han confirmado.
+
+```text
+Idea → Confirmed Requirements →     Spec    →     Design    →     Plan    →    Tasks     →     Code
+                 ↓                   ↓              ↓              ↓             ↓              ↓
+         User confirmation      review-spec   review-design   review-plan   review-tasks   review-code
 ```
-Tradicional:   Idea → Código → Depurar → Reescribir
-SDD:           Idea → Requisitos Confirmados → Especificación → Plan → Tareas → Código
-```
 
-### Características principales
+Tú confirmas los requisitos; cada artefacto derivado tiene su propia revisión,
+desde la especificación hasta el código.
 
-- **Desarrollo basado en Constitución**: establece principios de proyecto que guían todas las decisiones
-- **Captura persistente de requisitos**: `/specify` registra la discusión confirmada en `requirements.md` antes de generar documentación
-- **Revisiones automáticas**: toda especificación, plan y tarea generados incluyen comprobaciones de calidad integradas
-- **Clarificación interactiva**: refinamiento de requisitos mediante preguntas y respuestas
-- **Análisis entre artefactos**: detecta inconsistencias antes de la implementación
-- **Tareas trazables**: el desglose de tareas conserva la cobertura de requisitos y plan, aplicando **Conditional TDD** (orden test-first únicamente donde el plan, la constitución o el riesgo lo exigen; las tareas no testeables como docs/config se implementan directamente)
-- **Integración nativa con Claude Code**: los slash commands funcionan de forma transparente
-- **Soporte multilingüe**: más de 13 idiomas mediante traducción dinámica con LLM
-- **Multiplataforma**: incluye scripts en Bash y PowerShell
-- **Extensible**: arquitectura de plugins para comandos personalizados
+La intención del producto se define y se modifica mediante la colaboración
+humana. Las revisiones automáticas comprueban que los artefactos derivados
+respeten esa intención. Al activar la automatización, el trabajo avanza por las
+etapas que superan la revisión; el agente no puede sustituir los requisitos
+confirmados sin avisar.
 
-## Inicio rápido
+[![CodexSpec: desarrollo guiado por requisitos, revisiones por etapa y reutilización de la experiencia](../../assets/workflow/workflow-es-light.png#only-light)](../../assets/workflow/workflow-es-light.png#only-light)
+
+[![CodexSpec: desarrollo guiado por requisitos, revisiones por etapa y reutilización de la experiencia](../../assets/workflow/workflow-es-dark.png#only-dark)](../../assets/workflow/workflow-es-dark.png#only-dark)
+
+Abrir el diagrama a tamaño completo: [☀️](../../assets/workflow/workflow-es-light.png) · [🌙](../../assets/workflow/workflow-es-dark.png)
+
+<a id="30-second-quick-start"></a>
+
+## Inicio rápido en 30 segundos
+
+Instala CodexSpec e inicializa el proyecto para el asistente que utilices:
 
 ```bash
-# Instalar
 uv tool install codexspec
 
-# Crear un nuevo proyecto
-codexspec init my-project
+# Create a new project for Claude Code
+codexspec init my-project --ai claude
 
-# O inicializar en un proyecto existente
-codexspec init . --ai claude
+# Or initialize an existing project for Codex
+cd your-existing-project
+codexspec init . --ai codex
+
+# Use --ai both when you want both integrations
 ```
 
-[Guía completa de instalación](getting-started/installation.md)
+Inicia el asistente instalado en el proyecto que acabas de inicializar. El
+flujo de trabajo es el mismo; cambia la forma de invocar los comandos:
 
-## Visión general del flujo de trabajo
+| Asistente | Empezar a definir los requisitos |
+|-----------|------------------------------|
+| Claude Code (`claude`) | `/codexspec:specify I want to build a todo application` |
+| Codex (`codex`) | `$codexspec:specify I want to build a todo application` |
 
-CodexSpec estructura el desarrollo en **puntos de control revisables**. Los requisitos confirmados fluyen a través de especificaciones, planes y tareas hasta llegar al código, con una revisión en cada etapa.
+Si hace falta, adapta los principios del proyecto con `constitution`. Confirma
+el resumen final de requisitos y continúa en el directorio de la funcionalidad
+y el espacio de trabajo que indique el comando. Los siguientes pasos se explican
+en [Flujo de trabajo principal](user-guide/workflow.md#core-workflow).
 
-```
-Idea → Requisitos Confirmados → Especificación → Plan → Tareas → Código
-```
-
-Cada artefacto se produce mediante un comando dedicado y se valida antes de iniciar la etapa siguiente:
-
-```
-Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
-                                                   │                         │                            │
-                                         Revisar especificación        Revisar plan                Revisar tareas
-```
-
-### El Confirmation Gate
-
-El diferenciador definitorio es el **Confirmation Gate**: los requisitos, especificaciones, planes y tareas se vuelven vinculantes solo tras tu confirmación humana explícita. Los requisitos confirmados son la autoridad de máxima prioridad sobre las funcionalidades, de modo que la IA no puede bloquear decisiones en silencio: los artefactos derivados incluyen enlaces explícitos a su origen, y los conflictos se rastrean hacia atrás en lugar de propagarse.
-
-### Bucle iterativo de calidad
-
-Cada comando de generación incluye una **revisión automática basada en evidencia**: los defectos requieren evidencia concreta, las sugerencias consultivas nunca disparan cambios automáticos, y los defectos verificados pueden corregirse y volverse a revisar como máximo dos rondas. Este bucle mantiene la calidad en ascenso sin que tengas que vigilar cada detalle.
-
-[Conoce el flujo de trabajo](user-guide/workflow.md)
-
-## Licencia
-
-Licencia MIT: consulta [LICENSE](https://github.com/Zts0hg/codexspec/blob/main/LICENSE) para más detalles.
+¿Usas la aplicación de escritorio de Codex? [Pide a Codex que instale e inicialice tu proyecto](getting-started/installation.md#install-with-the-codex-desktop-app).

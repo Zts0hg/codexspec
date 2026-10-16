@@ -1,93 +1,87 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/images/codexspec-logo-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/images/codexspec-logo-light.svg">
-  <img alt="CodexSpec Logo" src="assets/images/codexspec-logo-light.svg" width="420">
-</picture>
+# CodexSpec
 
-# CodexSpec에 오신 것을 환영합니다
+![CodexSpec](assets/images/codexspec-logo-light.svg#only-light){ width="420" }
 
-[![PyPI version](https://img.shields.io/pypi/v/codexspec.svg)](https://pypi.org/project/codexspec/)
-[![Python](https://img.shields.io/pypi/pyversions/codexspec.svg)](https://pypi.org/project/codexspec/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![CodexSpec](assets/images/codexspec-logo-dark.svg#only-dark){ width="420" }
 
-**Claude Code를 위한 Requirements-First SDD 툴킷**
+**Claude Code와 OpenAI Codex를 위한 요구사항 우선 SDD 도구 모음**
 
-CodexSpec은 **Requirements-First SDD(요구사항 우선 명세 기반 개발)** 를 통해 고품질 소프트웨어를 구축하도록 돕습니다. 핵심은 **확정된 요구사항이 가장 높은 우선순위의 권위**를 가지며, 명시적으로 확인하기 전에는 그 무엇도 확정으로 간주하지 않는다는 점입니다. 곧바로 코드로 넘어가는 대신, **무엇을** 만들고 **왜** 만들지를 먼저 확정한 뒤에 **어떻게** 구현할지를 결정합니다.
+CodexSpec은 확정된 요구사항을 바탕으로 명세서, 설계, 계획, 태스크, 구현을 만들고, 각 단계의 근거를 추적할 수 있게 합니다.
+**무엇을** 만들고 **왜** 만드는지는 사용자가 결정합니다. 에이전트는 그 요구사항의 범위 안에서
+단계별 리뷰와 프로젝트에 저장된 지식을 활용해 **어떻게** 구현할지 구체화합니다.
 
-## 왜 CodexSpec인가요?
+Claude Code의 슬래시 명령어, Codex 스킬 또는 두 가지를 함께 사용할 수 있습니다.
+일반적인 기능 개발에는 기본적으로 별도의 Git worktree를 사용합니다.
+공유 블루프린트를 사용하면 확정된 요구사항의 대기열을 에이전트가 자율적으로 개발하도록 할 수도 있습니다.
 
-Claude Code 위에서 왜 CodexSpec을 써야 할까요? 두 환경을 비교해 보면:
+<a id="why-choose-codexspec"></a>
 
-| 측면 | Claude Code만 사용 | CodexSpec + Claude Code |
-|------|-------------------|-------------------------|
-| **다국어 지원** | 기본적으로 영어로 상호작용 | 팀 언어를 설정해 협업과 리뷰를 더 매끄럽게 진행 |
-| **추적 가능성** | 세션이 끝나면 의사결정을 거슬러 따라가기 어려움 | 모든 명세, 계획, 태스크가 `.codexspec/specs/`에 저장 |
-| **세션 복구** | 플랜 모드가 중간에 끊기면 복구가 어려움 | 여러 명령으로 분할 + 문서가 영속적으로 저장되어 쉽게 복구 |
-| **팀 거버넌스** | 통일된 원칙이 없고 스타일이 들쭉날쭉 | `constitution.md`가 팀 표준과 품질을 강제 |
+## CodexSpec을 선택하는 이유
 
-### Requirements-First SDD란?
+| 필요한 것 | CodexSpec이 제공하는 기능 |
+|------|-------------------------|
+| 제품의 목표와 의도를 명확히 정하기 | 명세서 작성 전에 요구사항을 명시적으로 확인하고 `requirements.md`에 저장 |
+| 개발 과정의 근거 추적하기 | 요구사항 → 명세 → 설계 → 계획 → 태스크를 연결하는 출처 링크 |
+| 결정의 타당성 검토하기 | 네 가지 산출물 리뷰 명령어, 산출물 간 분석, 별도의 코드 결함 게이트 |
+| 세션이나 담당자가 바뀌어도 작업 이어가기 | 기능 기록, 프로젝트 원칙, 재사용할 수 있는 지식, 관련된 과거 결정 |
+| 여러 기능을 동시에 개발하기 | 일반 기능마다 Git worktree를 하나씩 만들고 같은 작업 공간을 계속 재사용 |
+| 더 많은 작업 자동화하기 | 선택적으로 켤 수 있는 단계 자동 진행과 확정된 블루프린트 요구사항의 자율 개발 |
+| 팀에 맞는 언어로 작업하기 | 대화, 문서, 커밋 언어를 각각 설정 |
 
-**Requirements-First SDD** 는 명세 기반 개발(SDD) 방법론에 핵심적인 업그레이드 하나를 더한 것입니다. 바로 **확정된 요구사항이 가장 높은 우선순위의 권위**를 갖는다는 원칙입니다. *무엇을* 만들고 *왜* 만들지를 먼저 정의하고 확정한 다음에야 *어떻게* 만들지를 결정하며, 명시적으로 확인하기 전에는 그 어떤 것도 확정되지 않습니다.
+<a id="what-is-requirements-first-sdd"></a>
 
+### 요구사항 우선 SDD란?
+
+요구사항 우선 명세 주도 개발은 **확정된 요구사항을 해당 기능의 최우선 판단 기준**으로 삼습니다.
+에이전트는 구현을 위한 산출물을 만들기 전에 목표, 제약, 결정, 제외 사항, 미해결 질문, 확인 근거를 기록합니다.
+
+```text
+Idea → Confirmed Requirements →     Spec    →     Design    →     Plan    →    Tasks     →     Code
+                 ↓                   ↓              ↓              ↓             ↓              ↓
+         User confirmation      review-spec   review-design   review-plan   review-tasks   review-code
 ```
-전통적 방식:  아이디어 → 코드 → 디버그 → 다시 작성
-SDD:          아이디어 → 확정된 요구사항 → 명세 → 계획 → 태스크 → 코드
-```
 
-### 주요 기능
+요구사항은 사용자가 확정합니다. 명세부터 코드까지, 이를 바탕으로 만들어지는 각 산출물에는 해당하는 리뷰가 있습니다.
 
-- **헌법(Constitution) 기반 개발** - 모든 결정을 이끄는 프로젝트 원칙을 확립
-- **요구사항의 영속적 캡처** - `/specify`가 문서 생성 전에 확정된 논의를 `requirements.md`로 기록
-- **자동 리뷰** - 생성된 모든 명세, 계획, 태스크 산출물에 품질 검사가 내장
-- **대화형 명확화** - Q&A 기반 요구사항 정제
-- **교차 산출물 분석** - 구현 전 불일치를 조기에 발견
-- **추적 가능한 태스크** - 태스크 분해가 요구사항과 계획의 커버리지를 보존하며, **조건부 TDD(Conditional TDD)** 를 적용합니다(계획·헌법·리스크가 요구하는 곳에서만 테스트 우선 순서를 적용하고, 문서/설정 등 테스트 불가능한 태스크는 직접 구현)
-- **네이티브 Claude Code 연동** - 슬래시 명령어가 자연스럽게 동작
-- **다국어 지원** - LLM 동적 번역으로 13개 이상 언어 지원
-- **크로스 플랫폼** - Bash와 PowerShell 스크립트를 함께 제공
-- **확장 가능** - 커스텀 명령어를 위한 플러그인 아키텍처
+제품의 목표와 의도는 사람과의 협업을 통해 정하고 변경합니다.
+자동 리뷰는 만들어진 산출물이 그 의도에 부합하는지 확인합니다.
+자동화를 켜면 통과한 단계에서 다음 단계로 진행합니다. 에이전트가 확정된 요구사항을 알리지 않고 바꿀 수는 없습니다.
 
-## 빠른 시작
+[![CodexSpec: 요구사항 우선 개발 절차, 단계별 검토와 경험을 다음 개발에 반영하는 순환](../../assets/workflow/workflow-ko-light.png#only-light)](../../assets/workflow/workflow-ko-light.png#only-light)
+
+[![CodexSpec: 요구사항 우선 개발 절차, 단계별 검토와 경험을 다음 개발에 반영하는 순환](../../assets/workflow/workflow-ko-dark.png#only-dark)](../../assets/workflow/workflow-ko-dark.png#only-dark)
+
+전체 크기로 그림 열기: [☀️](../../assets/workflow/workflow-ko-light.png) · [🌙](../../assets/workflow/workflow-ko-dark.png)
+
+<a id="30-second-quick-start"></a>
+
+## 30초 빠른 시작
+
+CodexSpec을 설치하고 사용할 어시스턴트에 맞게 프로젝트를 초기화합니다.
 
 ```bash
-# 설치
 uv tool install codexspec
 
-# 새 프로젝트 생성
-codexspec init my-project
+# Create a new project for Claude Code
+codexspec init my-project --ai claude
 
-# 또는 기존 프로젝트에서 초기화
-codexspec init . --ai claude
+# Or initialize an existing project for Codex
+cd your-existing-project
+codexspec init . --ai codex
+
+# Use --ai both when you want both integrations
 ```
 
-[전체 설치 가이드](getting-started/installation.md)
+초기화한 프로젝트에서 설치된 어시스턴트를 실행하세요.
+워크플로우는 같지만 어시스턴트에 따라 호출 형식이 다릅니다.
 
-## 워크플로우 개요
+| 어시스턴트 | 요구사항 논의를 시작하는 명령어 |
+|-----------|------------------------------|
+| Claude Code (`claude`) | `/codexspec:specify I want to build a todo application` |
+| Codex (`codex`) | `$codexspec:specify I want to build a todo application` |
 
-CodexSpec은 개발을 **검토 가능한 체크포인트** 로 구성합니다. 확정된 요구사항이 명세, 계획, 태스크를 거쳐 코드로 흘러가며, 매 단계마다 리뷰가 이루어집니다.
+필요하면 `constitution`으로 프로젝트 원칙을 조정하세요.
+최종 요구사항 요약을 확인한 다음, 반환된 기능 디렉터리와 작업 공간에서 계속 진행합니다.
+이후에 사용할 명령어는 [핵심 워크플로우](user-guide/workflow.md#core-workflow)를 참고하세요.
 
-```
-아이디어 → 확정된 요구사항 → 명세 → 계획 → 태스크 → 코드
-```
-
-모든 산출물은 전용 명령어가 생성하며, 다음 단계로 넘어가기 전에 검증됩니다:
-
-```
-아이디어 → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
-                                                       │                        │                           │
-                                                  명세 리뷰                계획 리뷰                  태스크 리뷰
-```
-
-### 컨펌 게이트(Confirmation Gate)
-
-결정적인 차별점은 **컨펌 게이트(Confirmation Gate)** 입니다. 요구사항, 명세, 계획, 태스크는 사용자가 명시적으로 확인한 이후에만 확정 사항이 됩니다. 확정된 요구사항이 가장 높은 우선순위의 기능 권위이므로, AI가 몰래 결정을 고정할 수 없습니다. 파생 산출물은 명시적인 소스 링크를 담고 있으며, 충돌이 전파되는 대신 원천까지 거슬러 추적됩니다.
-
-### 반복적 품질 루프
-
-모든 생성 명령에는 **자동화된, 증거 기반 리뷰** 가 포함됩니다. 결함은 구체적인 증거를 요구하고, 권고 제안은 자동 변경을 트리거하지 않으며, 검증된 결함은 최대 두 라운드까지 수정 및 재리뷰될 수 있습니다. 이 루프가 세세한 부분까지 일일이 챙기지 않아도 품질을 계속 끌어올려 줍니다.
-
-[워크플로우 알아보기](user-guide/workflow.md)
-
-## 라이선스
-
-MIT 라이선스 - 자세한 내용은 [LICENSE](https://github.com/Zts0hg/codexspec/blob/main/LICENSE)를 참조하세요.
+Codex 데스크톱 앱에서는 [Codex에 설치와 프로젝트 초기화를 요청할 수 있습니다](getting-started/installation.md#install-with-the-codex-desktop-app).

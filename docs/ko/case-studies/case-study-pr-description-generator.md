@@ -1,10 +1,12 @@
 # CodexSpec 사례 연구: 프로젝트에 PR 설명 생성기 추가
 
+> 과거 개발 사례입니다. 아래 대화, 중간 결정, 명령 순서, 검토 점수는 당시의 워크플로를 기록한 것으로 현재 명령 규칙을 뜻하지는 않습니다. 현재 표준 흐름에는 별도의 설계 단계와 `review-design`이 있으며, `clarify`는 확인된 요구사항을 먼저 갱신한 뒤 명세에 반영합니다. [현재 워크플로](../user-guide/workflow.md)와 [PR 명령 참조](../user-guide/commands.md#codexspecpr)를 참고하세요.
+
 > 이 문서는 CodexSpec 도구 체인으로 CodexSpec 프로젝트 자체에 새 기능을 추가하는 전 과정을 기록한 것으로, 명세 기반 개발(SDD)을 실전에서 보여 줍니다.
 
 ## 개요
 
-**대상 기능**: 구조화된 GitHub PR / GitLab MR 설명을 생성하는 `/codexspec:pr` 명령어 추가. (출하된 명령어의 사용자용 요약은 프로젝트 [README 의 `/codexspec:pr` 항목](https://github.com/Zts0hg/codexspec/blob/main/README.md)을 참조하세요.)
+**대상 기능**: 구조화된 GitHub PR / GitLab MR 설명을 생성하는 `/codexspec:pr` 명령어 추가. (공개된 명령어의 사용자용 요약은 프로젝트 [README 의 `/codexspec:pr` 항목](https://github.com/Zts0hg/codexspec/blob/main/README.md)을 참조하세요.)
 
 **개발 흐름**: `specify → generate-spec → review-spec → clarify → design-to-plan`
 
@@ -17,18 +19,18 @@
 ### 사용자 초기 입력
 
 ```
-프로젝트에 새 기능을 추가하고 싶습니다. 정확하고 상세하며 규범에 맞는 GitHub PR 설명(또는 GitLab 의 MR 설명)을 생성해 주는 새 Git 관련 명령어입니다. 참고용으로, 다른 프로젝트에서 써 본 두 가지 PR 명령어를 아래에 첨부합니다.
+I want to add a feature to the project: a new Git-related command that generates accurate, detailed, and standards-compliant GitHub PR descriptions (or MR descriptions, for GitLab). Below are two PR commands I have used in other projects, provided for reference.
 
-[참고 예시 1 - 구조화된 설명]
-이제 프로젝트 메인테이너 역할을 맡아, 지금까지의 모든 작업을 바탕으로 이번 제출에 대한 명확한 Pull Request 설명을 작성해 주세요.
-PR 설명은 팀의 다른 리뷰어를 독자로 하며 다음 섹션을 포함해야 합니다:
-1. 배경(Context)
-2. 구현(Implementation)
-3. 테스트(Testing)
-4. 검증 방법(How to Verify)
+[Reference Example 1 - Structured Description]
+Now, acting as a project maintainer, based on all the work we have done so far, write a clear Pull Request description for this submission.
+The PR description should be aimed at the other reviewers on the team and include the following sections:
+1. Context
+2. Implementation
+3. Testing
+4. How to Verify
 
-[참고 예시 2 - 간단한 설명]
-현재 브랜치와 origin/main 사이의 코드 diff 를 바탕으로, Git 관례를 따르는 Merge Request 제목과 설명을 Markdown 으로 작성해 주세요. (중국어로 작성)
+[Reference Example 2 - Simple Description]
+Based on the code diff between the current branch and origin/main, use Markdown to produce a Merge Request title and description that comply with Git conventions. (Describe in Chinese.)
 ```
 
 ### 명확화 과정
@@ -88,12 +90,12 @@ PR 설명은 팀의 다른 리뷰어를 독자로 하며 다음 섹션을 포함
 
 ### 언어 설정 정정
 
-**사용자 피드백**: 언어 동작은 `/codexspec:commit-staged` 명령어와 같아야 합니다. 즉 `config.yml`의 `language.commit`을 먼저 따르고, `language.commit`이 설정되지 않았을 때만 `language.output`으로 폴백.
+**사용자 피드백**: 언어 동작은 `/commit-staged` 명령어와 같아야 합니다. 즉 `config.yml`의 `language.commit`을 먼저 따르고, `language.commit`이 설정되지 않았을 때만 `language.output`으로 폴백.
 
 **수정된 요구사항 요약**:
 
 ```
-언어 우선순위: language.commit > language.output > English(기본값)
+Language priority: language.commit > language.output > English (default)
 ```
 
 ---
@@ -154,7 +156,7 @@ The command shall determine output language in the following priority order:
 
 `.codexspec/specs/2026-0613-1200ab-pr-description-generator/review-spec.md`
 
-이것은 **증거 기반 리뷰**입니다. 위의 모든 경고와 제안은 spec 안의 구체적이고 식별 가능한 빈틀에 연결되어 있으며, 권고 항목(Nice to Have)은 수용 여부에 영향을 주지도, 자동 변경을 트리거하지도 않습니다.
+이것은 **증거 기반 리뷰**입니다. 위의 모든 경고와 제안은 spec 안의 구체적으로 확인할 수 있는 누락 사항에 연결되어 있으며, 권고 항목(Nice to Have)은 수용 여부에 영향을 주지도, 자동 변경을 트리거하지도 않습니다.
 
 ---
 
@@ -211,7 +213,7 @@ The command shall determine output language in the following priority order:
 | C | 능동적 발견은 하지 않고 커밋 메시지에서만 추론 |
 
 **사용자 선택**: 옵션 B
-**이유**: 여러 언어의 다양한 프로젝트 구조를 두루 덮습니다.
+**이유**: 여러 언어의 다양한 프로젝트 구조에 대응합니다.
 
 ---
 
@@ -258,11 +260,11 @@ The command shall determine output language in the following priority order:
 ### 핵심 변경: 매개변수 논리의 반전
 
 ```
-원래 설계: --no-spec(spec 건너뜀)
-새 설계:   --spec(spec 활성화, 옵트인)
+Original design: --no-spec (skip spec)
+New design:      --spec (enable spec, opt-in)
 ```
 
-이 반전이 본 사례에서 컨펌 게이트가 가장 선명하게 드러나는 부분입니다. 원래 "확정"이었던 기본값(`--no-spec`, 즉 spec 이 기본 켜짐)이, 사용자가 그것을 망가뜨릴 실제 워크플로우를 발견하면서 다시 열리고, 뒤집히고, 옵트인으로 재확정되었습니다.
+이 반전이 본 사례에서 컨펌 게이트가 가장 선명하게 드러나는 부분입니다. 원래 "확정"이었던 기본값(`--no-spec`, 즉 spec 이 기본 켜짐)이, 사용자가 그 기본값 때문에 문제가 생길 실제 워크플로우를 제시하면서 다시 열리고, 뒤집히고, 옵트인으로 재확정되었습니다.
 
 ---
 
@@ -270,7 +272,7 @@ The command shall determine output language in the following priority order:
 
 ### 계획 개요
 
-**구현 방식**: Markdown 템플릿 파일(`/codexspec:commit-staged`와 일관되게)
+**구현 방식**: Markdown 템플릿 파일(`/commit-staged`와 일관되게)
 
 **새 의존성 없음** — 슬래시 명령어 템플릿 하나로 기능을 전달하며 Python 코드는 필요하지 않습니다.
 
@@ -317,57 +319,57 @@ The command shall determine output language in the following priority order:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                   CodexSpec SDD 개발 흐름                                │
+│                   CodexSpec SDD Development Flow                        │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:specify                                                     │
-│  ├─ Q&A 로 요구사항 명확화                                               │
-│  ├─ 사용자가 참고 예시 제공                                              │
-│  └─ 언어·플랫폼·내용·매개변수 등를 다루는 10개 질문                       │
+│  ├─ Clarify requirements through Q&A                                    │
+│  ├─ User provides reference examples                                    │
+│  └─ 10 questions covering language, platform, content, parameters, etc. │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:generate-spec                                               │
-│  ├─ 완전한 spec.md 생성                                                  │
-│  ├─ 사용자 스토리 4개, 기능 요구사항 8개, 테스트 케이스 10개              │
-│  └─ .codexspec/specs/2026-0613-1200ab-pr-description-generator/spec.md 에 저장 │
+│  ├─ Generate a complete spec.md                                         │
+│  ├─ 4 user stories, 8 functional requirements, 10 test cases            │
+│  └─ Saved to .codexspec/specs/2026-0613-1200ab-pr-description-generator/spec.md │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:review-spec                                                 │
-│  ├─ 품질 점수: 92/100                                                   │
-│  ├─ 경고 2개 발견(테스트 파일 발견, 다중 spec 처리)                       │
-│  └─ 상태: Pass, 계획 단계로 진행 가능                                   │
+│  ├─ Quality score: 92/100                                               │
+│  ├─ Found 2 warnings (test-file discovery, multi-spec handling)         │
+│  └─ Status: Pass, can proceed to planning                               │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  /codexspec:clarify  (결정적 조정)                                       │
-│  ├─ 사용자가 실사용 이슈를 발견                                          │
-│  ├─ 명확화 질문 5개, 모두 답변                                          │
-│  ├─ 핵심 변경: --no-spec → --spec(옵트인)                                │
-│  └─ 요구사항 5개 추가(REQ-005b, 006b, 008a, 010, 007 갱신)               │
+│  /codexspec:clarify  (Critical adjustment)                              │
+│  ├─ User surfaces a real-world usage issue                              │
+│  ├─ 5 clarification questions, all answered                             │
+│  ├─ Key change: --no-spec → --spec (opt-in)                             │
+│  └─ Added 5 requirements (REQ-005b, 006b, 008a, 010, updated 007)       │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  /codexspec:design-to-plan                                                │
-│  ├─ 기술 구현 계획 갱신                                                  │
-│  ├─ 기술 결정 9개, 새로운 결정 5개 포함                                  │
-│  ├─ 구현 단계 5개                                                        │
-│  └─ .codexspec/specs/2026-0613-1200ab-pr-description-generator/plan.md 에 저장 │
+│  ├─ Update the technical implementation plan                            │
+│  ├─ 9 technical decisions, including 5 new ones                         │
+│  ├─ 5 implementation phases                                             │
+│  └─ Saved to .codexspec/specs/2026-0613-1200ab-pr-description-generator/plan.md │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  후속 단계(이번 세션에서는 완료하지 않음)                                 │
-│  ├─ /codexspec:review-plan - 계획 품질 검증                              │
-│  ├─ /codexspec:plan-to-tasks - 실행 가능한 태스크로 분해                  │
-│  └─ /codexspec:implement-tasks - 구현 실행                                │
+│  Subsequent steps (not completed in this session)                       │
+│  ├─ /codexspec:review-plan - Validate plan quality                      │
+│  ├─ /codexspec:plan-to-tasks - Break down into executable tasks         │
+│  └─ /codexspec:implement-tasks - Execute the implementation             │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -392,11 +394,11 @@ The command shall determine output language in the following priority order:
 ### 3. 매개변수 설계의 진화
 
 ```
-초기 설계:
-  --no-spec: spec.md 건너뜀(기본으로 사용)
+Initial design:
+  --no-spec: skip spec.md (used by default)
 
-최종 설계:
-  --spec: spec.md 활성화(기본으로 사용하지 않음)
+Final design:
+  --spec: enable spec.md (not used by default)
 ```
 
 이 변화는 "기본 SDD 워크플로우"에서 "비-SDD 워크플로우도 함께 지원"으로의 설계 전환을 반영하며, 도구를 더 범용으로 만듭니다.
@@ -415,28 +417,28 @@ The command shall determine output language in the following priority order:
 ## 부록: 명령어 빠른 참조
 
 ```bash
-# 1. 초기 요구사항 명확화
+# 1. Initial requirement clarification
 /codexspec:specify
 
-# 2. 명세 문서 생성
+# 2. Generate the specification document
 /codexspec:generate-spec
 
-# 3. 명세 품질 리뷰
+# 3. Review the specification quality
 /codexspec:review-spec
 
-# 4. 요구사항 명확화/조정(선택, 이슈를 발견했을 때 사용)
-/codexspec:clarify [이슈 설명]
+# 4. Clarify/adjust requirements (optional; use when an issue is found)
+/codexspec:clarify [issue description]
 
-# 5. 기술 계획 생성
+# 5. Generate the technical plan
 /codexspec:design-to-plan
 
-# 6. 계획 품질 리뷰(선택)
+# 6. Review the plan quality (optional)
 /codexspec:review-plan
 
-# 7. 태스크로 분해
+# 7. Break down into tasks
 /codexspec:plan-to-tasks
 
-# 8. 구현 실행
+# 8. Execute the implementation
 /codexspec:implement-tasks
 ```
 

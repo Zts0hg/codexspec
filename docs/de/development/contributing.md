@@ -9,34 +9,34 @@
 ## Lokale Entwicklung
 
 ```bash
-# Repository klonen
+# Clone the repository
 git clone https://github.com/Zts0hg/codexspec.git
 cd codexspec
 
-# Entwicklungsabhängigkeiten installieren
-uv sync --dev
+# Install development dependencies
+uv sync --extra dev
 
-# Lokal ausführen
+# Run locally
 uv run codexspec --help
 
-# Tests ausführen
+# Run tests
 uv run pytest
 
-# Code linten
+# Lint code
 uv run ruff check src/
 ```
 
 ## Dokumentation
 
 ```bash
-# Doku-Abhängigkeiten installieren
-uv sync --extra docs
+# Install docs dependencies
+uv sync --extra dev --extra docs
 
-# Dokumentation lokal vorschauen
+# Preview documentation locally
 uv run mkdocs serve
 
-# Dokumentation bauen
-uv run mkdocs build
+# Build documentation
+uv run mkdocs build --strict
 ```
 
 ## Bauen
@@ -58,3 +58,9 @@ uv build
 - Zeilenlänge: maximal 120 Zeichen
 - PEP 8 befolgen
 - Type-Hints für öffentliche Funktionen verwenden
+
+Lesen Sie [CLAUDE.md](https://github.com/Zts0hg/codexspec/blob/main/CLAUDE.md), [AGENTS.md](https://github.com/Zts0hg/codexspec/blob/main/AGENTS.md) und
+[Repository-Struktur](https://github.com/Zts0hg/codexspec/blob/main/docs/internal/repository-layout.md), bevor Sie Vorlagen,
+Paketierung oder Initialisierung ändern. Ausgelieferte Kopien von Befehlen und
+Skills sind generierte Installationsartefakte. Bearbeiten Sie ihre maßgeblichen
+Quellen und erzeugen Sie die Kopien erneut.

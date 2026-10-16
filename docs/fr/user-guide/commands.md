@@ -1,97 +1,95 @@
-# Commandes
+<a id="available-commands"></a>
 
-Il s'agit de la référence des slash commands de CodexSpec. Ces commandes sont invoquées dans l'interface de chat de Claude Code.
+# Commandes disponibles
 
-Pour les motifs de flux de travail et savoir quand utiliser chaque commande, consultez [Flux de travail](workflow.md). Pour les commandes CLI, voir [CLI](../reference/cli.md).
+La CLI possède six commandes publiques. Les intégrations d'agents distribuent
+28 commandes : Claude utilise `/codexspec:<name>` et Codex, `$codexspec:<name>`.
+Les tableaux suivants présentent la notation de Claude pour faciliter la lecture.
 
-## Référence rapide
+<a id="cli-commands"></a>
 
-Regroupées par catégorie, en miroir du catalogue du README. Au sein de chaque groupe, les commandes apparaissent dans l'ordre du flux de travail.
-
-### Commandes du flux de travail principal
-
-| Commande | Objectif |
-|----------|----------|
-| `/codexspec:constitution` | Créer ou mettre à jour la constitution du projet avec validation inter-artifacts |
-| `/codexspec:specify` | Clarifier, confirmer et persister les exigences dans `requirements.md` |
-| `/codexspec:blueprint` | Discuter et gérer les exigences confirmées du blueprint partagé |
-| `/codexspec:generate-spec` | Générer le document `spec.md` à partir des exigences clarifiées (★ Auto-review) |
-| `/codexspec:design-to-plan` | Convertir une conception confirmée en un plan d'implémentation traçable ★ |
-| `/codexspec:plan-to-tasks` | Découper le plan en tâches traçables et vérifiables (★ Auto-review) |
-| `/codexspec:implement-tasks` | Exécuter les tâches avec un flux de travail TDD conditionnel |
-| `/codexspec:auto-dev` | Développer automatiquement les exigences en attente dans l'ordre du document |
-
-### Commandes de revue (portes qualité)
+## Commandes CLI
 
 | Commande | Objectif |
-|----------|----------|
-| `/codexspec:review-spec` | Valider la spécification en termes de complétude et de qualité |
-| `/codexspec:review-plan` | Examiner le plan technique sous l'angle de la faisabilité et de l'alignement |
-| `/codexspec:review-tasks` | Valider la couverture, l'ordonnancement et la faisabilité des tâches |
+|---------|---------|
+| `codexspec init` | Initialiser ou actualiser un projet pour Claude, Codex ou les deux |
+| `codexspec check` | Vérifier les outils et dépendances installés |
+| `codexspec version` | Afficher la version et les informations système |
+| `codexspec config` | Consulter ou modifier la configuration du projet |
+| `codexspec list-commands` | Afficher les commandes d'agent disponibles par catégorie |
+| `codexspec show-blueprint` | Afficher le blueprint du worktree partagé sans le modifier |
 
-### Commandes d'enrichissement
+<a id="core-workflow-commands"></a>
 
-| Commande | Objectif |
-|----------|----------|
-| `/codexspec:config` | Gérer la configuration du projet de façon interactive (créer/consulter/modifier/réinitialiser) |
-| `/codexspec:clarify` | Scanner une spec existante pour détecter les ambiguïtés (4 catégories, 5 questions max) |
-| `/codexspec:analyze` | Analyse de cohérence inter-artifacts (avec correction automatique, fondée sur la sévérité) |
-| `/codexspec:checklist` | Générer des checklists de qualité des exigences |
-| `/codexspec:tasks-to-issues` | Convertir les tâches en issues GitHub |
-| `/codexspec:distill` | Capturer les connaissances réutilisables du projet ; passer en revue les candidats dans un espace de travail HTML local |
-| `/codexspec:evolve` | Transformer les connaissances validées du projet en une proposition de contribution en amont |
-| `/codexspec:onboard` | Amorcer le profil avec des connaissances candidates issues d'une base de code existante |
-
-### Commandes de flux Git
+## Commandes du flux de travail principal
 
 | Commande | Objectif |
-|----------|----------|
-| `/codexspec:commit-staged` | Générer un message de commit à partir des changements stagés (sensible au contexte de session) |
-| `/codexspec:pr` | Générer une description de PR/MR à partir du diff git (détection auto de la plateforme) |
+|---------|---------|
+| `/codexspec:constitution` | Créer ou mettre à jour les principes du projet et les valider entre artefacts |
+| `/codexspec:specify` | Discuter des exigences d'une fonctionnalité, les confirmer et les enregistrer |
+| `/codexspec:blueprint` | Préparer ou maintenir les exigences confirmées en attente du blueprint |
+| `/codexspec:generate-spec` | Élaborer une spécification traçable à partir des exigences confirmées, avec revue automatique |
+| `/codexspec:spec-to-design` | Définir l'architecture, les composants, les interfaces et les décisions, avec revue automatique |
+| `/codexspec:design-to-plan` | Planifier les phases d'implémentation, leur ordre et leur vérification, avec revue automatique |
+| `/codexspec:plan-to-tasks` | Élaborer des tâches vérifiables couvrant les artefacts en amont, avec revue automatique et analyze |
+| `/codexspec:implement-tasks` | Exécuter les tâches, vérifier les résultats, effectuer les revues et les corrections |
+| `/codexspec:auto-dev` | Développer de façon autonome les exigences confirmées du blueprint dans l'ordre du document |
 
-### Commandes de revue de code
+<a id="artifact-review-commands"></a>
+
+## Commandes de revue des artefacts
 
 | Commande | Objectif |
-|----------|----------|
-| `/codexspec:review-code` | Contrôle de défauts limité au changement ; score par chemin avec `--audit` |
-| `/codexspec:review-python-code` | Examiner du code Python (PEP 8, sécurité des types, robustesse, cohérence avec la constitution) |
-| `/codexspec:review-react-code` | Examiner du code React/TypeScript (architecture des composants, règles des Hooks, état, performance) |
+|---------|---------|
+| `/codexspec:review-spec` | Vérifier la fidélité et la qualité interne de la spécification |
+| `/codexspec:review-design` | Vérifier la fidélité et la faisabilité de la conception, ainsi que sa préparation à la planification |
+| `/codexspec:review-plan` | Vérifier la fidélité et la faisabilité du plan, ainsi que sa préparation à l'implémentation |
+| `/codexspec:review-tasks` | Vérifier la fidélité, les dépendances, le caractère exécutable et la vérification des tâches |
 
-### Voie rapide
+<a id="requirements-existing-code-and-debugging"></a>
+
+## Exigences, code existant et débogage
 
 | Commande | Objectif |
-|----------|----------|
-| `/codexspec:quick` | Exécuter un flux Requirements-First SDD allégé pour les petits changements |
+|---------|---------|
+| `/codexspec:clarify` | Résoudre les ambiguïtés des exigences en les mettant à jour avant la spécification |
+| `/codexspec:analyze` | Vérifier la traçabilité de bout en bout et aligner les artefacts dérivés sur les sources qui font autorité |
+| `/codexspec:checklist` | Générer une liste de contrôle de la qualité des exigences |
+| `/codexspec:tasks-to-issues` | Convertir les tâches existantes en issues GitHub avec des actions concrètes |
+| `/codexspec:debug` | Rechercher la cause racine avant d'appliquer une correction |
+| `/codexspec:reverse-spec` | Examiner l'architecture existante, rédiger des brouillons d'artefacts de modules ou signaler une dérive par rapport à la base confirmée |
 
----
+<a id="project-knowledge-commands"></a>
 
-## Catégories de commandes
+## Commandes de gestion des connaissances du projet
 
-### Commandes du flux de travail principal
+| Commande | Objectif |
+|---------|---------|
+| `/codexspec:distill` | Recueillir des connaissances réutilisables ou examiner les entrées candidates dans l'espace de travail local |
+| `/codexspec:evolve` | Élaborer un brouillon de contribution au projet amont à partir de connaissances validées |
+| `/codexspec:onboard` | Déduire des conventions candidates et des contraintes étayées du code existant |
 
-Les commandes du flux Requirements-First SDD principal : Constitution → Exigences confirmées → Spécification → Plan → Tâches → Implémentation. Les exigences confirmées constituent ici l'autorité de plus haute priorité — rien dans la chaîne n'engage tant que vous ne le confirmez pas explicitement à la Confirmation Gate.
+<a id="git-and-code-review-commands"></a>
 
-### Commandes de revue (portes qualité)
+## Commandes Git et de revue du code
 
-Des commandes qui valident les artifacts à chaque étape du flux selon un contrat de **revue fondée sur les preuves** : chaque défaut doit contenir un `Evidence`, une `Location`, un `Mismatch`, un `Impact` et une `Remediation` concrets. Les suggestions de conception consultatives sont rapportées séparément et ne modifient jamais le statut ni ne déclenchent de changement automatique. Les défauts vérifiés peuvent être corrigés puis ré-examinés pendant deux tours au maximum ; les avis restent facultatifs tout au long du processus.
+| Commande | Objectif |
+|---------|---------|
+| `/codexspec:commit-staged` | Générer des messages à partir des changements indexés ; prévisualiser ou exécuter un commit autorisé |
+| `/codexspec:pr` | Générer une description structurée de PR/MR |
+| `/codexspec:release-notes` | Maintenir une entrée du journal des changements et produire le texte d'une publication à partir de l'historique Git |
+| `/codexspec:review-code` | Examiner les changements sélectionnés comme contrôle de défauts ; utiliser `--audit` pour évaluer la qualité dans les chemins indiqués |
 
-### Commandes d'enrichissement
+<a id="utility-commands"></a>
 
-Des commandes pour l'affinage itératif, la validation inter-artifacts, la configuration et l'intégration avec la gestion de projet.
+## Commandes utilitaires
 
-### Commandes de flux Git
+| Commande | Objectif |
+|---------|---------|
+| `/codexspec:config` | Créer, consulter, modifier ou réinitialiser la configuration du projet de façon interactive |
+| `/codexspec:quick` | Exécuter un flux SDD bref avec priorité aux exigences pour les petits changements |
 
-Des commandes qui transforment le travail achevé en artifacts partageables : des messages de commit tirés du diff stagé et des descriptions structurées de PR/MR tirées du diff de branche.
-
-### Commandes de revue de code
-
-Des commandes qui examinent le code source (tout langage, spécifique à Python, spécifique à React/TypeScript) sous l'angle de la clarté idiomatique, de la correction, de la robustesse, de l'architecture et de l'alignement avec la constitution. Les constats appliquent la même discipline de sévérité que les revues d'artifacts : les problèmes CRITICAL/HIGH doivent citer des preuves concrètes ; les suggestions LOW restent purement consultatives.
-
-### Voie rapide
-
-Une commande allégée qui exécute le flux Requirements-First SDD de bout en bout pour des changements petits et bien délimités.
-
----
+Les anciennes entrées de revue Python/React sont conservées pour la compatibilité du plugin et ne font pas partie des 28 commandes installées. Utilisez `review-code`, qui charge les critères pertinents du langage ou du framework, et `--audit` pour évaluer des chemins.
 
 ## Référence des commandes
 
@@ -102,20 +100,20 @@ Crée ou met à jour la constitution du projet. La constitution définit les pri
 **Syntaxe :**
 
 ```
-/codexspec:constitution [description des principes]
+/codexspec:constitution [principles description]
 ```
 
 **Arguments :**
 
 | Argument | Requis | Description |
 |----------|--------|-------------|
-| `description des principes` | Non | Description des principes à inclure (vous serez sollicité si non fournie) |
+| `principles description` | Non | Description des principes à inclure (vous serez sollicité si non fournie) |
 
 **Ce qu'elle fait :**
 
 - Crée `.codexspec/memory/constitution.md` s'il n'existe pas
 - Met à jour la constitution existante avec les nouveaux principes
-- Valide la cohérence inter-artifacts avec les templates
+- Valide la cohérence entre artefacts avec les templates
 - Génère un rapport d'impact de synchronisation montrant les changements et les fichiers affectés
 - Inclut une revue de constitutionnalité pour les templates dépendants
 
@@ -124,7 +122,7 @@ Crée ou met à jour la constitution du projet. La constitution définit les pri
 ```
 .codexspec/
 └── memory/
-    └── constitution.md    # Document de gouvernance du projet
+    └── constitution.md    # Project governance document
 ```
 
 **Exemple :**
@@ -155,25 +153,25 @@ AI:  Creating constitution...
 - Définissez les principes tôt dans le projet pour des décisions cohérentes
 - Incluez à la fois des principes techniques et de processus
 - Revoyez la constitution avant toute fonctionnalité majeure
-- Les changements de constitution déclenchent une validation inter-artifacts
+- Les changements de constitution déclenchent une validation entre artefacts
 
 ---
 
 ### `/codexspec:specify`
 
-Clarifie les exigences via un échange interactif de questions/réponses, confirme le résumé qui en résulte et le persiste pour les sessions ultérieures.
+Clarifie les exigences via un échange interactif de questions/réponses, confirme le résumé qui en résulte et le conserve pour les sessions suivantes.
 
 **Syntaxe :**
 
 ```
-/codexspec:specify [votre idée ou exigence]
+/codexspec:specify [your idea or requirement]
 ```
 
 **Arguments :**
 
 | Argument | Requis | Description |
 |----------|--------|-------------|
-| `votre idée ou exigence` | Non | Description initiale de ce que vous souhaitez construire (vous serez sollicité si non fournie) |
+| `your idea or requirement` | Non | Description initiale de ce que vous souhaitez construire (vous serez sollicité si non fournie) |
 
 **Ce qu'elle fait :**
 
@@ -191,7 +189,7 @@ Clarifie les exigences via un échange interactif de questions/réponses, confir
 .codexspec/specs/{feature-id}-{feature-name}/requirements.md
 ```
 
-Seuls les éléments confirmés deviennent des exigences authentiques. Les questions ouvertes restent explicitement ouvertes. Il s'agit de la Confirmation Gate pour les exigences : rien n'engage tant que vous n'avez pas explicitement confirmé le résumé final.
+Seuls les éléments confirmés deviennent des exigences faisant autorité. Les questions ouvertes restent explicitement ouvertes. Il s'agit de la Confirmation Gate pour les exigences : rien n'engage tant que vous n'avez pas explicitement confirmé le résumé final.
 
 **Exemple :**
 
@@ -236,9 +234,50 @@ AI:  [Continues exploring requirements...]
 
 ---
 
+### `/codexspec:blueprint`
+
+Utilisez `blueprint` pour préparer plusieurs exigences confirmées avant le
+développement, puis `auto-dev` pour développer cette file :
+
+```text
+/codexspec:blueprint Add a confirmed requirement for task reminders
+/codexspec:auto-dev
+```
+
+Avant qu'une exigence soit ajoutée à la file du blueprint, les orientations,
+les choix et les contraintes qui relèvent de l'utilisateur sont résolus.
+Le fichier partagé `.codexspec/blueprint.md` utilise les états `pending`,
+`in_progress` et `completed`. Vous pouvez ajouter, remplacer, supprimer ou
+réordonner les exigences en attente. Lors de la maintenance du blueprint,
+les entrées en cours et terminées restent en lecture seule.
+
+Auto-dev développe les exigences dans l'ordre du document. Il reprend la
+fonctionnalité en cours avant d'en commencer une autre et relit la file après
+chaque achèvement, ce qui permet aux nouvelles exigences en attente de rejoindre
+l'exécution. Il réalise les étapes SDD, l'implémentation, la vérification, la
+revue et les corrections dans le cadre des exigences confirmées. L'appel à
+`auto-dev` active son automatisation indépendamment de `workflow.auto_next`,
+sans modifier ce paramètre.
+
+Les deux commandes partagent `worktree-for-codexspec-auto-dev`, sur la branche
+`codexspec/auto-dev`. Elles peuvent s'exécuter simultanément grâce aux mécanismes
+communs qui contrôlent l'attribution de l'espace de travail et protègent les
+écritures ; les exigences y sont développées une à une. Si un choix de produit ne peut pas être résolu à
+partir des exigences confirmées, l'exécution s'arrête en présentant les éléments
+qui le justifient, au lieu de poser des questions pendant le fonctionnement
+autonome normal.
+
+Pour consulter le blueprint partagé sans le modifier :
+
+```bash
+codexspec show-blueprint
+```
+
+---
+
 ### `/codexspec:generate-spec`
 
-Génère le document `spec.md` à partir des exigences clarifiées. Cette commande agit comme un « compilateur d'exigences » qui transforme vos exigences clarifiées en une spécification structurée.
+Élaborer une spécification traçable à partir des exigences confirmées, avec revue automatique.
 
 **Syntaxe :**
 
@@ -295,15 +334,378 @@ AI:  Generating specification...
 
      Next steps:
      - Review the spec with /codexspec:review-spec
-     - Or proceed to /codexspec:design-to-plan
+     - Or proceed to /codexspec:spec-to-design
+```
+
+---
+
+### `/codexspec:spec-to-design`
+
+Lit les fichiers `requirements.md` et `spec.md` confirmés, les principes du projet et les faits pertinents du dépôt. Produit un `design.md` décrivant composants, interfaces, flux de données, alternatives et décisions, avec des liens vers les exigences en amont. Lance automatiquement `review-design`. Le travail s’arrête si un choix modifie l’intention confirmée ou exige une nouvelle décision de l’utilisateur.
+
+```text
+/codexspec:spec-to-design <feature-dir>
+```
+
+---
+
+### `/codexspec:design-to-plan`
+
+Transforme la conception confirmée en plan de mise en œuvre. Exécutez d’abord `spec-to-design` pour définir l’architecture, les composants, les interfaces et les choix technologiques.
+
+```text
+/codexspec:design-to-plan [design.md | spec.md | feature-directory]
+```
+
+Lit `requirements.md`, `spec.md`, `design.md` et la constitution. Planifie les phases, leur ordre et la vérification en s’appuyant sur la conception, sans redéfinir le système. Chaque composant du plan porte `Covers: REQ-xxx; Design: <design component>`.
+
+Produit `plan.md` et lance `review-plan`. Si `auto_next` est activé, une revue réussie déclenche `plan-to-tasks`. Toute décision modifiant l’intention confirmée exige une confirmation. Un chemin explicite prime sur la branche de fonctionnalité courante ; toute ambiguïté exige une sélection. Les anciennes fonctionnalités sans `design.md` peuvent toujours être planifiées à partir de `spec.md`.
+
+---
+
+### `/codexspec:plan-to-tasks`
+
+Découpe le plan technique en tâches actionnables avec une couverture explicite et des résultats vérifiables.
+
+**Syntaxe :**
+
+```
+/codexspec:plan-to-tasks [path_to_spec.md path_to_plan.md]
+```
+
+**Arguments :**
+
+| Argument | Requis | Description |
+|----------|--------|-------------|
+| `paths` | Non | Chemins vers spec et plan (détectés automatiquement si non fournis) |
+
+**Ce qu'elle fait :**
+
+- Crée des tâches avec un résultat vérifiable unique ; une tâche peut toucher plusieurs fichiers liés
+- N'utilise un ordre test-first que lorsque le plan, la constitution, les besoins confirmés ou le risque l'exigent
+- Marque les tâches `[P]` uniquement lorsqu'elles sont réellement indépendantes
+- Spécifie les chemins exacts des fichiers pour chaque tâche
+- Ajoute des liens `Covers` vers le plan et les identifiants d'exigence
+
+**Ce qu'elle crée :**
+
+```
+.codexspec/
+└── specs/
+    └── 2026-0613-1200ab-task-management/
+        └── tasks.md    # Task breakdown
+```
+
+**Structure des tâches :**
+
+```markdown
+### Task 2.1: Write Tests for Entity A [P]
+- **Type**: Testing
+- **Files**: `tests/test_entity_a.py`
+- **Description**: Write unit tests for Entity A
+- **Dependencies**: Task 1.3
+- **Est. Complexity**: Low
+```
+
+**Exemple :**
+
+```text
+You: /codexspec:plan-to-tasks
+
+AI:  Breaking down plan into tasks...
+
+     ✓ Created tasks.md
+     Total: 24 tasks
+     Parallelizable: 8 tasks (33%)
+
+     Phase 1: Foundation (4 tasks)
+     Phase 2: Core Implementation - TDD (10 tasks)
+     Phase 3: Integration (4 tasks)
+     Phase 4: Interface Layer (3 tasks)
+     Phase 5: Testing & Documentation (3 tasks)
+
+     Execution Order:
+     Phase 1 → [Phase 2 tasks in parallel groups] → Phase 3 → Phase 4 → Phase 5
+
+     Checkpoints defined at each phase boundary.
 ```
 
 **Conseils :**
 
-- Lancez-la après que `/codexspec:specify` a clarifié les exigences
-- Revoyez la spec générée avant de continuer
-- Utilisez `/codexspec:review-spec` pour une validation qualité
-- Éditez spec.md directement si de petits ajustements sont nécessaires
+- Chaque tâche doit produire un résultat vérifiable unique et peut toucher des fichiers étroitement liés
+- Les tâches de test précèdent l'implémentation uniquement lorsque le test-first est requis
+- `[P]` marque les tâches réellement indépendantes et parallélisables
+- Revoyez les dépendances avant l'implémentation
+
+Après la rédaction des tâches, `review-tasks` est exécuté. Un résultat `PASS` ou `PASS_WITH_WARNINGS` déclenche `analyze` une seule fois ; cette analyse n’ajoute pas de condition bloquante à l’achèvement. Les tâches couvrent les exigences confirmées, la spécification, la conception et le plan.
+
+---
+
+### `/codexspec:implement-tasks`
+
+Exécuter les tâches, vérifier les résultats, effectuer les revues et les corrections.
+
+```text
+/codexspec:implement-tasks <feature-dir>
+```
+
+Les quatre revues d'artefacts — `review-spec`, `review-design`, `review-plan`
+et `review-tasks` — vérifient la fidélité, la couverture, la faisabilité et la
+qualité interne. Elles s'exécutent automatiquement après la génération et
+peuvent aussi être lancées manuellement. Les rapports distinguent les défauts
+vérifiés des avertissements sur les risques qui ne bloquent pas la progression
+et des possibilités de conception ; ils incluent un score de compatibilité.
+
+`review-code` propose un contrôle de défauts distinct portant sur les changements,
+ainsi qu'une évaluation explicite de la qualité du code dans son ensemble :
+
+```text
+/codexspec:review-code --feature <feature-dir>
+/codexspec:review-code --uncommitted
+/codexspec:review-code --audit src/
+```
+
+La revue par défaut couvre tous les changements de la branche de la
+fonctionnalité : ceux déjà committés, ceux indexés, ceux non indexés et les
+fichiers non suivis qui ne sont pas ignorés. Vous pouvez sélectionner
+explicitement les changements committés, non committés ou ceux d'un seul commit.
+`--feature` ajoute le contexte des exigences sans réduire le périmètre Git.
+`--audit` évalue les chemins indiqués et produit une grille indicative de qualité
+plutôt qu'un verdict d'achèvement.
+
+Les revues chargent les normes communes depuis `.codexspec/review-code/` et
+sélectionnent les dimensions de comportement ainsi que les vérifications de
+langage ou de framework pertinentes. Chaque constat doit être étayé par des
+éléments concrets, une condition qui peut se produire, un lien démontré avec
+les changements sélectionnés et un impact. L'agent de revue signale les défauts
+et les suggestions de maintenance étayées sans modifier les fichiers ; le
+processus chargé des corrections les vérifie de façon indépendante.
+
+Pour les tâches de code, l'implémentation commence par les tests. La documentation
+et la configuration sont modifiées directement, avec les vérifications adaptées.
+Après une correction, la revue incrémentale peut réutiliser la couverture qui
+n'a pas été affectée. L'acceptation finale exige une nouvelle revue de toute
+la fonctionnalité avec un résultat `PASS`, une couverture et une vérification
+complètes, et aucun défaut P0–P3 admis. Les suggestions de maintenance étayées
+sont présentées séparément.
+
+La valeur par défaut de `workflow.auto_maintenance` est **true**. Ce paramètre
+détermine si les processus de correction appliquent aussi des améliorations de
+maintenance vérifiées et compatibles. Si vous le désactivez, ces suggestions
+restent signalées et les corrections des défauts ainsi que les vérifications
+requises restent obligatoires. Ce paramètre est indépendant du passage à
+l'étape suivante et n'est pas un argument de `implement-tasks`.
+
+Pour commencer le débogage par la recherche de la cause racine :
+
+```text
+/codexspec:debug Investigate intermittent failures when saving a task
+```
+
+Debug suit cette séquence : investigation → analyse des motifs récurrents →
+vérification d'une seule hypothèse → correction précédée d'un test en échec.
+Pendant l'implémentation, ce processus est utilisé lorsque les corrections
+n'aboutissent pas, qu'un défaut de fonctionnement non trivial doit être retracé
+ou que le même type de cause racine réapparaît au fil des revues. Trois tentatives
+de correction infructueuses déclenchent une réévaluation de l'architecture.
+
+Utilisez `checklist` pour évaluer la clarté, l'exhaustivité et la cohérence des exigences :
+
+```text
+/codexspec:checklist Check the authentication requirements for completeness
+```
+
+La [référence des commandes](commands.md) détaille les
+sélecteurs de revue, les arguments et les procédures.
+
+---
+
+### `/codexspec:auto-dev`
+
+Développer de façon autonome les exigences confirmées du blueprint dans l'ordre du document.
+
+Voir [`blueprint`](#codexspecblueprint).
+
+```text
+/codexspec:auto-dev
+```
+
+---
+
+### `/codexspec:review-spec`
+
+Valide la spécification vis-à-vis des exigences confirmées et de sa propre qualité interne.
+
+**Syntaxe :**
+
+```
+/codexspec:review-spec [path_to_spec.md]
+```
+
+**Arguments :**
+
+| Argument | Requis | Description |
+|----------|--------|-------------|
+| `path_to_spec.md` | Non | Chemin vers le fichier spec (détecté automatiquement si non fourni) |
+
+**Ce qu'elle fait :**
+
+- Vérifie la fidélité aux entrées confirmées de `requirements.md`
+- Contrôle la cohérence interne, la clarté et la vérifiabilité
+- Ne traite l'absence d'une section de template comme un défaut que lorsque le contenu faisant autorité l'exige
+- Exige de chaque défaut qu'il inclue `Evidence`, `Location`, `Mismatch`, `Impact` et `Remediation`
+- Sépare les `Risk Advisories / Design Opportunities` des défauts
+- Génère un statut ainsi qu'un score de compatibilité dérivé des constats classés
+
+**Contrat de revue partagé :**
+
+| Catégorie | Signification |
+|-----------|---------------|
+| Défaut de fidélité | Conflit avec une source faisant autorité ou omission de celle-ci |
+| Défaut intrinsèque | Contradiction interne, infaisabilité ou non-vérifiabilité |
+| Avis consultatif | Amélioration facultative sans preuve d'un défaut actuel |
+
+Le statut est `PASS`, `PASS_WITH_WARNINGS`, `NEEDS_REVISION` ou `BLOCKED`. Les avis ne modifient jamais le statut ni le score.
+
+**Exemple :**
+
+```text
+You: /codexspec:review-spec
+
+AI:  Overall Status: NEEDS_REVISION
+     Compatibility Score: 79/100
+
+     Warning SPEC-001
+     Evidence: CON-002 requires a measurable response-time limit.
+     Location: spec.md, REQ-006
+     Mismatch: "Respond quickly" has no measurable threshold.
+     Impact: Acceptance cannot be verified.
+     Remediation: Ask the user to confirm a threshold, update requirements.md,
+                  then synchronize REQ-006.
+
+     Risk Advisories / Design Opportunities:
+     - None
+```
+
+**Conseils :**
+
+- Lancez-la avant `/codexspec:spec-to-design`
+- Considérez `BLOCKED` et `NEEDS_REVISION` comme non prêts à continuer
+- Ne transformez pas les avis en exigences
+- Relancez après avoir appliqué des correctifs
+
+---
+
+### `/codexspec:review-design`
+
+Vérifie la fidélité et la faisabilité de `design.md`, ainsi que son aptitude à servir de base à la planification, au regard des exigences confirmées et de la spécification. Sépare les défauts étayés des améliorations de conception facultatives et applique les mêmes statuts et limites de correction que les autres revues d’artefacts.
+
+```text
+/codexspec:review-design <feature-dir>
+```
+
+---
+
+### `/codexspec:review-plan`
+
+Examine le plan technique d'implémentation sous l'angle de la fidélité, de la faisabilité et de la justification des décisions techniques.
+
+**Syntaxe :**
+
+```
+/codexspec:review-plan [path_to_plan.md]
+```
+
+**Arguments :**
+
+| Argument | Requis | Description |
+|----------|--------|-------------|
+| `path_to_plan.md` | Non | Chemin vers le fichier plan (détecté automatiquement si non fourni) |
+
+**Ce qu'elle fait :**
+
+- Vérifie les liens `Covers` et la couverture obligatoire de la spec
+- Contrôle les règles de constitution applicables et les faits du dépôt
+- Signale une complexité injustifiée uniquement lorsqu'elle crée un coût ou un conflit concret
+- Exige les champs de preuve pour chaque défaut et fusionne les constats partageant la même cause racine
+- Rapporte les améliorations architecturales facultatives sous forme d'avis
+- Utilise le contrat partagé de statut et de score de compatibilité
+
+**Exemple :**
+
+```text
+You: /codexspec:review-plan
+
+AI:  Overall Status: PASS
+     Compatibility Score: 100/100
+     Verified defects: none
+
+     Risk Advisories / Design Opportunities:
+     - A caching layer may become useful if production measurements exceed
+       the confirmed latency target. It is not required by the current plan.
+```
+
+**Conseils :**
+
+- Lancez-la avant `/codexspec:plan-to-tasks`
+- Résolvez les défauts étayés par des preuves avant la génération des tâches
+- Conservez les idées architecturales spéculatives dans la section des avis
+- Vérifiez que la pile technologique correspond aux compétences de l'équipe
+
+Le plan met en œuvre le `design.md` confirmé, sans rouvrir les choix d’architecture. La revue vérifie ses références à la conception ainsi que la couverture des exigences.
+
+---
+
+### `/codexspec:review-tasks`
+
+Valide le découpage en tâches sous l'angle de la couverture, des résultats vérifiables, de l'ordonnancement correct et de la faisabilité des dépendances.
+
+**Syntaxe :**
+
+```
+/codexspec:review-tasks [path_to_tasks.md]
+```
+
+**Arguments :**
+
+| Argument | Requis | Description |
+|----------|--------|-------------|
+| `path_to_tasks.md` | Non | Chemin vers le fichier tasks (détecté automatiquement si non fourni) |
+
+**Ce qu'elle fait :**
+
+- Vérifie que tous les éléments requis du plan et des exigences disposent d'une couverture par tâche
+- Ne valide l'ordre test-first que lorsqu'une source faisant autorité l'exige
+- Vérifie que chaque tâche a un résultat unique contrôlable
+- Valide les dépendances (pas de cycles, ordre correct)
+- Revoyez les marqueurs de parallélisation
+- Valide les chemins de fichiers
+- Exige les champs de preuve pour chaque défaut
+- Rapporte les affinages de processus facultatifs sous forme d'avis
+- Utilise le contrat partagé de statut et de score de compatibilité
+
+**Exemple :**
+
+```text
+You: /codexspec:review-tasks
+
+AI:  Overall Status: NEEDS_REVISION
+     Compatibility Score: 79/100
+
+     Warning TASK-001
+     Evidence: Task 2.5 declares a dependency on Task 2.4.
+     Location: tasks.md, Task 2.5
+     Mismatch: Task 2.5 is also marked [P].
+     Impact: Parallel execution can start before its prerequisite completes.
+     Remediation: Remove [P] or remove the dependency if the plan proves independence.
+```
+
+**Conseils :**
+
+- Lancez-la avant `/codexspec:implement-tasks`
+- Les constats d'ordre des tests ne sont des défauts que lorsqu'une source faisant autorité requiert le test
+- Vérifiez l'exactitude des marqueurs de parallélisation
+- Contrôlez que les chemins de fichiers correspondent à la structure du projet
 
 ---
 
@@ -314,14 +716,14 @@ Scanne une spécification existante pour détecter les ambiguïtés et les lacun
 **Syntaxe :**
 
 ```
-/codexspec:clarify [chemin_vers_spec.md]
+/codexspec:clarify [path_to_spec.md]
 ```
 
 **Arguments :**
 
 | Argument | Requis | Description |
 |----------|--------|-------------|
-| `chemin_vers_spec.md` | Non | Chemin vers le fichier spec (détecté automatiquement si non fourni) |
+| `path_to_spec.md` | Non | Chemin vers le fichier spec (détecté automatiquement si non fourni) |
 
 **Ce qu'elle fait :**
 
@@ -372,435 +774,23 @@ AI:  ✓ Updated NFR-001: Response time < 500ms reads, < 1s writes
 
 - À utiliser lorsque spec.md existe mais nécessite un affinage
 - S'intègre aux constats de `/codexspec:review-spec`
-- 5 questions maximum par session
+- 5 questions maximum par exécution
 - Lancez-la plusieurs fois pour les spécifications complexes
-
----
-
-### `/codexspec:design-to-plan`
-
-Transforme la conception confirmée en plan de mise en œuvre. Exécutez d’abord `spec-to-design` pour définir l’architecture, les composants, les interfaces et les choix technologiques.
-
-```text
-/codexspec:design-to-plan [design.md | spec.md | feature-directory]
-```
-
-Lit `requirements.md`, `spec.md`, `design.md` et la constitution. Planifie les phases, leur ordre et la vérification en s’appuyant sur la conception, sans redéfinir le système. Chaque composant du plan porte `Covers: REQ-xxx; Design: <design component>`.
-
-Produit `plan.md` et lance `review-plan`. Si `auto_next` est activé, une revue réussie déclenche `plan-to-tasks`. Toute décision modifiant l’intention confirmée exige une confirmation. Un chemin explicite prime sur la branche de fonctionnalité courante ; toute ambiguïté exige une sélection. Les anciennes fonctionnalités sans `design.md` peuvent toujours être planifiées à partir de `spec.md`.
-
----
-
-### `/codexspec:plan-to-tasks`
-
-Découpe le plan technique en tâches actionnables avec une couverture explicite et des résultats vérifiables.
-
-**Syntaxe :**
-
-```
-/codexspec:plan-to-tasks [chemin_vers_spec.md chemin_vers_plan.md]
-```
-
-**Arguments :**
-
-| Argument | Requis | Description |
-|----------|--------|-------------|
-| `chemins` | Non | Chemins vers spec et plan (détectés automatiquement si non fournis) |
-
-**Ce qu'elle fait :**
-
-- Crée des tâches avec un résultat vérifiable unique ; une tâche peut toucher plusieurs fichiers liés
-- N'utilise un ordre test-first que lorsque le plan, la constitution, les besoins confirmés ou le risque l'exigent
-- Marque les tâches `[P]` uniquement lorsqu'elles sont réellement indépendantes
-- Spécifie les chemins exacts des fichiers pour chaque tâche
-- Ajoute des liens `Covers` vers le plan et les identifiants d'exigence
-
-**Ce qu'elle crée :**
-
-```
-.codexspec/
-└── specs/
-    └── 2026-0613-1200ab-task-management/
-        └── tasks.md    # Découpage en tâches
-```
-
-**Structure des tâches :**
-
-```markdown
-### Task 2.1: Write Tests for Entity A [P]
-- **Type**: Testing
-- **Files**: `tests/test_entity_a.py`
-- **Description**: Write unit tests for Entity A
-- **Dependencies**: Task 1.3
-- **Est. Complexity**: Low
-```
-
-**Exemple :**
-
-```text
-You: /codexspec:plan-to-tasks
-
-AI:  Breaking down plan into tasks...
-
-     ✓ Created tasks.md
-     Total: 24 tasks
-     Parallelizable: 8 tasks (33%)
-
-     Phase 1: Foundation (4 tasks)
-     Phase 2: Core Implementation - TDD (10 tasks)
-     Phase 3: Integration (4 tasks)
-     Phase 4: Interface Layer (3 tasks)
-     Phase 5: Testing & Documentation (3 tasks)
-
-     Execution Order:
-     Phase 1 → [Phase 2 tasks in parallel groups] → Phase 3 → Phase 4 → Phase 5
-
-     Checkpoints defined at each phase boundary.
-```
-
-**Conseils :**
-
-- Chaque tâche doit produire un résultat vérifiable unique et peut toucher des fichiers étroitement liés
-- Les tâches de test précèdent l'implémentation uniquement lorsque le test-first est requis
-- `[P]` marque les tâches réellement indépendantes et parallélisables
-- Revoyez les dépendances avant l'implémentation
-
----
-
-### `/codexspec:implement-tasks`
-
-Exécute les tâches d'implémentation avec un flux de travail TDD conditionnel. Parcourt la liste des tâches de façon systématique.
-
-**Syntaxe :**
-
-```
-/codexspec:implement-tasks [chemin_tasks]
-/codexspec:implement-tasks [chemin_spec chemin_plan chemin_tasks]
-```
-
-**Arguments :**
-
-| Argument | Requis | Description |
-|----------|--------|-------------|
-| `chemin_tasks` | Non | Chemin vers tasks.md (détecté automatiquement si non fourni) |
-| `chemin_spec chemin_plan chemin_tasks` | Non | Chemins explicites vers les trois documents |
-
-**Résolution des fichiers :**
-
-- **Aucun argument** : détection auto depuis `.codexspec/specs/`
-- **Un argument** : traité comme chemin vers `tasks.md`, les autres déduits du même répertoire
-- **Trois arguments** : chemins explicites vers spec.md, plan.md et tasks.md
-
-**Ce qu'elle fait :**
-
-- Lit tasks.md et identifie les tâches incomplètes
-- Applique le flux TDD pour les tâches de code :
-  - **Red** : écrire d'abord les tests en échec
-  - **Green** : implémenter pour faire passer les tests
-  - **Verify** : exécuter tous les tests
-  - **Refactor** : améliorer tout en gardant les tests au vert
-- Implémentation directe pour les tâches non testables (docs, config)
-- Met à jour les cases à cocher des tâches au fil de l'avancement
-- Consigne les blocages dans issues.md le cas échéant
-
-**Flux TDD pour les tâches de code :**
-
-```
-Red → Green → Verify → Refactor → Mark Complete
-```
-
-**Implémentation directe pour le non-testable :**
-
-- Fichiers de documentation
-- Fichiers de configuration
-- Assets statiques
-- Fichiers d'infrastructure
-
-**Exemple :**
-
-```text
-You: /codexspec:implement-tasks
-
-AI:  Starting implementation...
-
-     Loading context:
-     - spec.md ✓
-     - plan.md ✓
-     - tasks.md ✓
-     - constitution.md ✓
-
-     Tech Stack: Python 3.11+ / FastAPI / PostgreSQL / pytest
-
-     Working on Task 1.1: Setup Project Structure
-     ✓ Created src/taskman/__init__.py
-     ✓ Created pyproject.toml
-     [x] Task 1.1 Complete
-
-     Working on Task 2.1: Write Tests for Task Entity [P]
-     ✓ Created tests/test_task.py
-     Running tests... 5 passed (all expected failures)
-     [x] Task 2.1 Complete
-
-     Working on Task 2.2: Implement Task Entity
-     ✓ Created src/taskman/models/task.py
-     Running tests... 5 passed
-     [x] Task 2.2 Complete
-
-     ...
-```
-
-**Conseils :**
-
-- Peut reprendre là où elle s'était arrêtée en cas d'interruption
-- Les blocages sont consignés dans issues.md
-- Les commits sont effectués après des tâches/phases significatives
-- Lancez d'abord `/codexspec:review-tasks` pour validation
-
----
-
-### `/codexspec:review-spec`
-
-Valide la spécification vis-à-vis des exigences confirmées et de sa propre qualité interne.
-
-**Syntaxe :**
-
-```
-/codexspec:review-spec [chemin_vers_spec.md]
-```
-
-**Arguments :**
-
-| Argument | Requis | Description |
-|----------|--------|-------------|
-| `chemin_vers_spec.md` | Non | Chemin vers le fichier spec (détecté automatiquement si non fourni) |
-
-**Ce qu'elle fait :**
-
-- Vérifie la fidélité aux entrées confirmées de `requirements.md`
-- Contrôle la cohérence interne, la clarté et la vérifiabilité
-- Ne traite l'absence d'une section de template comme un défaut que lorsque le contenu authentique l'exige
-- Exige de chaque défaut qu'il inclue `Evidence`, `Location`, `Mismatch`, `Impact` et `Remediation`
-- Sépare les `Risk Advisories / Design Opportunities` des défauts
-- Génère un statut ainsi qu'un score de compatibilité dérivé des constats classés
-
-**Contrat de revue partagé :**
-
-| Catégorie | Signification |
-|-----------|---------------|
-| Défaut de fidélité | Conflit avec une source authentique ou omission de celle-ci |
-| Défaut intrinsèque | Contradiction interne, infaisabilité ou non-vérifiabilité |
-| Avis consultatif | Amélioration facultative sans preuve d'un défaut actuel |
-
-Le statut est `PASS`, `PASS_WITH_WARNINGS`, `NEEDS_REVISION` ou `BLOCKED`. Les avis ne modifient jamais le statut ni le score.
-
-**Exemple :**
-
-```text
-You: /codexspec:review-spec
-
-AI:  Overall Status: NEEDS_REVISION
-     Compatibility Score: 79/100
-
-     Warning SPEC-001
-     Evidence: CON-002 requires a measurable response-time limit.
-     Location: spec.md, REQ-006
-     Mismatch: "Respond quickly" has no measurable threshold.
-     Impact: Acceptance cannot be verified.
-     Remediation: Ask the user to confirm a threshold, update requirements.md,
-                  then synchronize REQ-006.
-
-     Risk Advisories / Design Opportunities:
-     - None
-```
-
-**Conseils :**
-
-- Lancez-la avant `/codexspec:design-to-plan`
-- Considérez `BLOCKED` et `NEEDS_REVISION` comme non prêts à continuer
-- Ne transformez pas les avis en exigences
-- Relancez après avoir appliqué des correctifs
-
----
-
-### `/codexspec:review-plan`
-
-Examine le plan technique d'implémentation sous l'angle de la fidélité, de la faisabilité et de la justification des décisions techniques.
-
-**Syntaxe :**
-
-```
-/codexspec:review-plan [chemin_vers_plan.md]
-```
-
-**Arguments :**
-
-| Argument | Requis | Description |
-|----------|--------|-------------|
-| `chemin_vers_plan.md` | Non | Chemin vers le fichier plan (détecté automatiquement si non fourni) |
-
-**Ce qu'elle fait :**
-
-- Vérifie les liens `Covers` et la couverture obligatoire de la spec
-- Contrôle les règles de constitution applicables et les faits du dépôt
-- Signale une complexité injustifiée uniquement lorsqu'elle crée un coût ou un conflit concret
-- Exige les champs de preuve pour chaque défaut et fusionne les constats partageant la même cause racine
-- Rapporte les améliorations architecturales facultatives sous forme d'avis
-- Utilise le contrat partagé de statut et de score de compatibilité
-
-**Exemple :**
-
-```text
-You: /codexspec:review-plan
-
-AI:  Overall Status: PASS
-     Compatibility Score: 100/100
-     Verified defects: none
-
-     Risk Advisories / Design Opportunities:
-     - A caching layer may become useful if production measurements exceed
-       the confirmed latency target. It is not required by the current plan.
-```
-
-**Conseils :**
-
-- Lancez-la avant `/codexspec:plan-to-tasks`
-- Résolvez les défauts étayés par des preuves avant la génération des tâches
-- Conservez les idées architecturales spéculatives dans la section des avis
-- Vérifiez que la pile technologique correspond aux compétences de l'équipe
-
----
-
-### `/codexspec:review-tasks`
-
-Valide le découpage en tâches sous l'angle de la couverture, des résultats vérifiables, de l'ordonnancement correct et de la faisabilité des dépendances.
-
-**Syntaxe :**
-
-```
-/codexspec:review-tasks [chemin_vers_tasks.md]
-```
-
-**Arguments :**
-
-| Argument | Requis | Description |
-|----------|--------|-------------|
-| `chemin_vers_tasks.md` | Non | Chemin vers le fichier tasks (détecté automatiquement si non fourni) |
-
-**Ce qu'elle fait :**
-
-- Vérifie que tous les éléments requis du plan et des exigences disposent d'une couverture par tâche
-- Ne valide l'ordre test-first que lorsqu'une source authentique l'exige
-- Vérifie que chaque tâche a un résultat unique contrôlable
-- Valide les dépendances (pas de cycles, ordre correct)
-- Revoyez les marqueurs de parallélisation
-- Valide les chemins de fichiers
-- Exige les champs de preuve pour chaque défaut
-- Rapporte les affinages de processus facultatifs sous forme d'avis
-- Utilise le contrat partagé de statut et de score de compatibilité
-
-**Exemple :**
-
-```text
-You: /codexspec:review-tasks
-
-AI:  Overall Status: NEEDS_REVISION
-     Compatibility Score: 79/100
-
-     Warning TASK-001
-     Evidence: Task 2.5 declares a dependency on Task 2.4.
-     Location: tasks.md, Task 2.5
-     Mismatch: Task 2.5 is also marked [P].
-     Impact: Parallel execution can start before its prerequisite completes.
-     Remediation: Remove [P] or remove the dependency if the plan proves independence.
-```
-
-**Conseils :**
-
-- Lancez-la avant `/codexspec:implement-tasks`
-- Les constats d'ordre des tests ne sont des défauts que lorsqu'une source authentique requiert le test
-- Vérifiez l'exactitude des marqueurs de parallélisation
-- Contrôlez que les chemins de fichiers correspondent à la structure du projet
 
 ---
 
 ### `/codexspec:analyze`
 
-Effectue une analyse de cohérence entre requirements.md, spec.md, plan.md et tasks.md, puis corrige automatiquement les incohérences déterministes en alignant spec.md/plan.md/tasks.md sur requirements.md (requirements.md n'est jamais modifié). Identifie les conflits d'autorité, les lacunes de traçabilité, les doublons et les couvertures manquantes.
-
-**Syntaxe :**
-
-```
-/codexspec:analyze
-```
-
-**Arguments :**
-
-| Argument | Requis | Description |
-|----------|--------|-------------|
-| Aucun | - | Analyse les artifacts de la fonctionnalité courante |
-
-**Ce qu'elle fait :**
-
-- Détecte les doublons entre artifacts
-- Identifie les ambiguïtés dépourvues de critères mesurables
-- Repère les éléments sous-spécifiés
-- Vérifie l'alignement avec la constitution
-- Cartographie la couverture des exigences vers les tâches
-- Rapporte les incohérences de terminologie et d'ordonnancement
-
-**Niveaux de sévérité :**
-
-| Niveau | Définition |
-|--------|------------|
-| **CRITICAL** | Violation de constitution, artifact central manquant, couverture nulle |
-| **HIGH** | Exigence en doublon/en conflit, attribut de sécurité ambigu |
-| **MEDIUM** | Dérive terminologique, couverture non fonctionnelle manquante |
-| **LOW** | Améliorations de style/formulation |
-
-**Exemple :**
+- **specify** lance ou reprend la définition des exigences. Le résumé ne devient contraignant qu'après confirmation explicite.
+- **clarify** résout les ambiguïtés des exigences ou de la spécification existantes : jusqu'à cinq questions par exécution, réparties entre quatre catégories. Il met d'abord à jour `requirements.md`, puis synchronise `spec.md`.
+- **analyze** vérifie toute la chaîne : exigences → spécification → conception → plan → tâches. Il applique automatiquement des corrections déterministes aux artefacts dérivés lorsque ces corrections découlent des sources qui font autorité ; il ne modifie jamais `requirements.md`. Les constats non résolus sont signalés. Il s'exécute automatiquement après une revue des tâches validée et reste informatif, sans bloquer l'implémentation.
 
 ```text
-You: /codexspec:analyze
-
-AI:  Analyzing artifacts...
-
-     # Specification Analysis Report
-
-     ## Coverage Summary
-     | Requirement Key | Has Task? | Task IDs |
-     |-----------------|-----------|----------|
-     | REQ-001 | ✅ | 2.1, 2.2 |
-     | REQ-002 | ✅ | 2.3, 2.4 |
-     | REQ-003 | ❌ | None |
-
-     ## Issues Found
-
-     | ID | Category | Severity | Summary |
-     |----|----------|----------|---------|
-     | A1 | Coverage | CRITICAL | REQ-003 has no task coverage |
-     | A2 | Duplication | HIGH | REQ-005 and REQ-008 overlap |
-     | A3 | Ambiguity | MEDIUM | NFR-002 "secure" not defined |
-
-     ## Metrics
-     - Total Requirements: 12
-     - Total Tasks: 24
-     - Coverage: 92% (11/12 requirements)
-     - Critical Issues: 1
-
-     ## Next Actions
-     1. Add tasks for REQ-003 (CRITICAL)
-     2. Consider merging REQ-005 and REQ-008
-     3. Define "secure" in NFR-002
-
-     Resolve CRITICAL issues before /codexspec:implement-tasks
+/codexspec:clarify <feature-dir>
+/codexspec:analyze <feature-dir>
 ```
 
-**Conseils :**
-
-- Lancez-la après `/codexspec:plan-to-tasks`, avant l'implémentation
-- Les problèmes CRITICAL doivent bloquer l'implémentation
-- Analyse en lecture seule — aucun fichier n'est modifié
-- Utilisez les constats pour améliorer la qualité des artifacts
+Pour une ancienne fonctionnalité sans `requirements.md`, l’analyse commence à `spec.md`, signale l’absence de preuves de la discussion d’origine et rapporte les constats sans modifier les artefacts. L’absence d’un ancien `design.md` n’empêche pas non plus l’analyse.
 
 ---
 
@@ -811,14 +801,14 @@ Génère des checklists qualité pour valider la complétude, la clarté et la c
 **Syntaxe :**
 
 ```
-/codexspec:checklist [domaine_cible]
+/codexspec:checklist [focus_area]
 ```
 
 **Arguments :**
 
 | Argument | Requis | Description |
 |----------|--------|-------------|
-| `domaine_cible` | Non | Domaine ciblé (par ex. « ux », « api », « security », « performance ») |
+| `focus_area` | Non | Domaine ciblé (par ex. « ux », « api », « security », « performance ») |
 
 **Ce qu'elle fait :**
 
@@ -937,6 +927,56 @@ AI:  Converting tasks to GitHub issues...
 - Crée les issues dans la configuration par défaut du dépôt
 - Vérifiez l'absence de doublons avant exécution
 
+Avant de créer des issues, vérifiez le dépôt cible par rapport à son remote et obtenez une autorisation explicite. La génération d’une liste de tâches n’autorise pas, à elle seule, sa publication.
+
+---
+
+### `/codexspec:debug`
+
+Rechercher la cause racine avant d'appliquer une correction.
+
+Voir [Flux de travail](workflow.md#review-and-debugging).
+
+```text
+/codexspec:debug Investigate intermittent failures when saving a task
+```
+
+---
+
+### `/codexspec:reverse-spec`
+
+Ces deux commandes répondent à des besoins différents :
+
+| Commande | Utilisation | Résultat et limites |
+|---------|-----------|-----------------|
+| `onboard [path]` | Constituer des connaissances réutilisables sur le projet à partir d'une base de code existante | Conventions candidates et contraintes étayées par des éléments précis dans le profil ; le code reste en lecture seule |
+| `reverse-spec [path]` | Comprendre l'architecture existante ou comparer le code à l'intention confirmée | Brouillons d'artefacts ou rapport de dérive ; le code reste en lecture seule |
+
+```text
+/codexspec:onboard src/
+/codexspec:reverse-spec
+/codexspec:reverse-spec src/auth
+```
+
+Onboard déduit des conventions du code observable et ne propose des
+contraintes qu'en présence d'interdictions explicites. Les conventions candidates
+s'appliquent immédiatement dans le projet ; les contraintes candidates exigent
+une décision dans la session pour les enregistrer, les modifier ou les
+abandonner. Les connaissances existantes sont préservées. Un premier examen
+du code ne sert pas à inventer les raisons de décisions passées ou des pièges
+supposément rencontrés par expérience.
+
+Reverse-spec propose trois modes :
+
+- **Vue d'ensemble** : sans chemin, ou avec la racine du dépôt, la commande produit un `design.md` décrivant brièvement l'architecture et un `slices.md` pour choisir les modules à examiner.
+- **Génération** : avec le chemin d'un module sans base confirmée, elle produit des brouillons de `spec.md` et de `design.md`, ainsi que des exigences en suspens ou inférées.
+- **Réconciliation** : si le module dispose d'une base confirmée, elle produit `reconcile.md`. Ce rapport relève les comportements non documentés, les spécifications non implémentées et les divergences sémantiques par rapport aux spécifications et aux documents de conception confirmés ; les exigences font autorité sur l'intention du produit.
+
+Les brouillons inférés doivent être confirmés par une personne avant de devenir
+une base de référence. La réconciliation propose une marche à suivre — corriger
+le code, mettre à jour les documents ou décider de l'intention — sans l'appliquer
+automatiquement.
+
 ---
 
 ### `/codexspec:distill`
@@ -946,7 +986,7 @@ Capture les connaissances réutilisables transverses dans `.codexspec/profile/` 
 **Syntaxe :**
 
 ```text
-/codexspec:distill [segment d'interaction]
+/codexspec:distill [interaction segment]
 /codexspec:distill review
 ```
 
@@ -968,370 +1008,54 @@ La distillation automatique reste non interactive et non bloquante : elle n'ouvr
 
 ---
 
+### `/codexspec:evolve`
+
+`evolve` ne sélectionne que des connaissances validées utiles au-delà du projet,
+élabore un brouillon de commande ou de compétence et obtient une approbation
+explicite avant d’effectuer un push ou d'ouvrir une PR de contribution
+pour revue humaine.
+
+```text
+/codexspec:evolve
+```
+
+---
+
+### `/codexspec:onboard`
+
+Déduire des conventions candidates et des contraintes étayées du code existant.
+
+Voir [`reverse-spec`](#codexspecreverse-spec).
+
+```text
+/codexspec:onboard src/
+```
+
+---
+
 ### `/codexspec:commit-staged`
 
-Génère un message de commit conforme à Conventional Commits à partir des changements git stagés, avec conscience du contexte de session. Cette commande comprend votre session de développement pour produire des messages de commit pertinents.
-
-**Syntaxe :**
-
-```
-/codexspec:commit-staged [-p]
-```
-
-**Arguments :**
-
-| Argument | Requis | Description |
-|----------|--------|-------------|
-| `-p` | Non | Mode aperçu — affiche le message sans committer |
-
-**Ce qu'elle fait :**
-
-- Exécute `git diff --staged` pour récupérer les changements stagés
-- Analyse les changements et le contexte de session pour comprendre l'intention
-- Suit la spécification Conventional Commits
-- En mode exécution (par défaut) : commit directement après génération du message
-- En mode aperçu (`-p`) : affiche le message sans committer
-- Signale une erreur si aucun changement n'est stagé
-
-**Exemple :**
-
 ```text
-You: /codexspec:commit-staged
-
-AI:  Analyzing staged changes...
-
-     Files staged:
-     - src/auth/service.py
-     - tests/test_auth.py
-
-     Generated commit message:
-     feat(auth): implement token refresh logic
-
-     - Add refresh token generation
-     - Include token expiration handling
-     - Add tests for refresh flow
-
-     Executing commit...
-
-     ✓ Committed: def5678
+/codexspec:commit-staged -p
+/codexspec:pr --spec <feature-dir>/spec.md
+/codexspec:release-notes --from <ref> --to HEAD
+/codexspec:tasks-to-issues <feature-dir>
 ```
 
-**Exemple en mode aperçu :**
-
-```text
-You: /codexspec:commit-staged -p
-
-AI:  Preview mode - no commit will be executed
-
-     Suggested commit message:
-     feat(auth): implement token refresh logic
-
-     - Add refresh token generation
-     - Include token expiration handling
-     - Add tests for refresh flow
-```
-
-**Conseils :**
-
-- Stagez d'abord les changements avec `git add`
-- N'analyse que le contenu stagé — respecte le flux de commit en deux étapes de Git
-- Prend en compte le contexte de session pour des messages pertinents
-- Utilisez le flag `-p` pour un aperçu avant de committer
-- Suit la spécification Conventional Commits par défaut
-
----
-
-### `/codexspec:review-code`
-
-Examine la modification Git sélectionnée comme un contrôle de défauts strict avant fusion. La cible par défaut comprend l'écart complet de la fonctionnalité ; les sélecteurs explicites choisissent les changements validés, non validés ou un commit unique, sans accepter de filtre de chemin.
-
-<!-- REVIEW-CODE-BREAKING: DEFAULT-GATE -->
-<!-- REVIEW-CODE-BREAKING: PATH-AUDIT -->
-
-**Changement incompatible dans la prochaine version :**
-
-- La commande par défaut devient un contrôle de défauts limité au changement, et non un score général de qualité.
-- Les chemins positionnels ne sont plus valides. Utilisez explicitement `--audit` pour le score consultatif de qualité par chemin.
-
-**Syntaxe du contrôle de défauts :**
-
-```text
-/codexspec:review-code
-/codexspec:review-code --committed [--base <branch>] [--feature <feature-dir>] [--focus <instructions>]
-/codexspec:review-code --uncommitted [--feature <feature-dir>] [--focus <instructions>]
-/codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
-/codexspec:review-code [--committed] --incremental-from <fingerprint> [--feature <feature-dir>]
-```
-
-Chaque forme du contrôle de défauts accepte aussi `--decided-by reviewer|ask`, qui remplace `review.decided_by` pour cette exécution.
-
-<!-- REVIEW-CODE-SYSTEM-CONTRACT -->
-<!-- REVIEW-CODE-VARIANT-SEARCH -->
-<!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
-
-Le contrôle inventorie tous les artefacts sélectionnés, évalue les exigences applicables et exécute cinq phases dans cet ordre : Scope, System Contract, Behavior, Risk et Verification. Il consigne les contrats intermodules étayés par des preuves et les partitions de revue sémantiques ; chaque cause racine répétable et validée déclenche, avant la fin du passage, une recherche bornée des occurrences apparentées. Les six sections du rapport sont suivies d'un unique envelope `<review-code-result>` lisible par machine avec `schema_version: "3"`. L'envelope transmet l'identité de la cible, la couverture et les obligations objectives à revérifier après réparation. L'appelant conserve ces obligations neutres pour une nouvelle revue complète, sans transmettre le raisonnement de réparation ni les conclusions précédentes sur la correction. Le verdict est `PASS`, `FAIL` ou `INCONCLUSIVE` : tout défaut P0-P3 produit `FAIL` ; l'absence de preuve obligatoire ou une couverture incomplète produit `INCONCLUSIVE`.
-
-**Tours incrémentaux.** Après une correction, `--incremental-from <fingerprint>` ne réexamine que ce qui a changé depuis ce résultat antérieur : les fichiers modifiés, les partitions de revue et les contrats qu'ils touchent, ainsi que les obligations reportées. La couverture des fichiers inchangés et non affectés est réutilisée, et le relecteur signale tout de même chaque défaut qu'il trouve ailleurs. Un `PASS` incrémental ne termine jamais une fonctionnalité : `implement-tasks` lance d'abord une revue complète, puis des revues incrémentales après chaque correction, et enfin une nouvelle revue complète comme acceptation finale. Les enregistrements de revue sont écrits hors du dépôt, dans votre répertoire de cache utilisateur (`~/.cache/codexspec/review/` ou `%LOCALAPPDATA%\codexspec\review\`) ; seuls le rapport et l'envelope apparaissent dans la conversation.
-
-**Mode de décision.** `review.decided_by` dans `.codexspec/config.yml` détermine qui tranche sur un constat dont le déclencheur sort du contexte d'utilisation réel du projet, par exemple une entrée que le projet ne reçoit jamais. Avec la valeur par défaut `reviewer`, la revue se comporte exactement comme avant. Avec `ask`, la revue signale ce point comme une décision de scénario en attente au lieu d'échouer, et `implement-tasks` vous demande une seule fois : le corriger, ou accepter que le scénario est hors périmètre. Votre réponse est consignée dans `requirements.md` comme une entrée `CON` ou `OUT` confirmée, afin que les tours suivants ne la soulèvent plus.
-
-```text
-You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example
-
-AI:  ## Verdict
-     **PASS** — les revues et vérifications obligatoires sont terminées sans défaut.
-```
-
-**Critères applicables et maintenance.** Chaque revue lit les règles communes et le mode choisi, évalue les sept dimensions, puis charge les détails pertinents pour le comportement, le contrat ou les dépendances. Les dépendances inchangées découvertes pendant le suivi peuvent aussi activer les listes propres aux langages ou frameworks. Une proposition de maintenance exige des preuves d’un problème actuel et une amélioration locale compatible avec le comportement existant. Une complexité future hypothétique ou un seuil de style seul ne justifie pas de correction. Le résultat des défauts conserve la version 3 ; un `<review-code-maintenance>` distinct de version 1 rapporte les propositions liées à la même empreinte cible. La revue autonome ne fait que les signaler. `implement-tasks` les vérifie et les applique selon `workflow.auto_maintenance` (par défaut `true`). Les corrections se poursuivent tant qu’elles produisent des progrès substantiels et respectent les conditions d’arrêt existantes. Il n’y a pas de limite fixe de cycles ; la validation finale exige une nouvelle revue complète.
-
-`codexspec config --auto-maintenance on|off` enregistre `workflow.auto_maintenance` comme booléen YAML dans `.codexspec/config.yml` ; une clé absente vaut `true`. Les deux options acceptent `on/true/1/yes` et `off/false/0/no` sans distinction de casse. `implement-tasks` lit ce réglage lors des corrections automatiques : `on` inclut les améliorations progressives de maintenance étayées ; `off` continue de les signaler. Les défauts réels et les vérifications nécessaires restent obligatoires. Ce réglage est indépendant d’`auto-next` et n’est pas un paramètre d’appel d’`implement-tasks`.
-
-`codexspec init` installe les ressources de revue communes à Claude Code et Codex dans `.codexspec/review-code/`. `--force` actualise les ressources distribuées et préserve les extensions ayant d’autres chemins. L’installation de la CLI seule ne crée aucun fichier de projet. Avec le plugin seul, sans arborescence installée dans le projet, la revue utilise les mêmes ressources depuis la racine résolue par l’hôte.
-
-<!-- REVIEW-CODE-AUDIT -->
-
-#### Audit de qualité par chemin
-
-La branche audit explicite examine le contenu actuel complet des fichiers pour la clarté idiomatique, la correction, la robustesse, l'architecture et l'alignement constitutionnel. Ce score est consultatif et ne peut pas terminer `implement-tasks`.
-
-**Syntaxe :**
-
-```
-/codexspec:review-code --audit [paths...]
-```
-
-**Arguments :**
-
-| Argument | Requis | Description |
-|----------|--------|-------------|
-| `chemin...` | Non | Un ou plusieurs fichiers ou répertoires sources à examiner (séparés par des espaces). Par défaut `src/` si omis |
-
-**Ce qu'elle fait :**
-
-- Détecte le ou les langages principaux à partir des extensions de fichiers et exécute un passage par langage pour les cibles multi-langages
-- Lance les outils d'analyse statique lorsque leur config est présente (`ruff`/`mypy`, `eslint`/`tsc`, `go vet`/`gofmt`, `cargo check`/`cargo clippy`, `shellcheck`) ; les ignore gracieusement et signale une couverture dégradée sinon
-- Note quatre dimensions : Clarté et simplicité idiomatiques, Correction et contrats explicites, Robustesse d'exécution et discipline des ressources, Intégrité architecturale et de conception
-- Injecte des sous-sections obligatoires pour les frameworks détectés (par ex. Hooks Compliance pour React, Ownership & Borrowing pour Rust, Goroutine & Context Discipline pour Go, Memory & Lifetime Safety pour C/C++, Execution Safety pour Shell)
-- Recoupe les constats avec `.codexspec/memory/constitution.md` lorsqu'il est présent ; en son absence, l'axe constitution est abandonné et son poids redistribué
-- Classe les constats par sévérité : CRITICAL, HIGH, MEDIUM, LOW (les suggestions LOW sont plafonnées à une déduction totale de 5 points)
-
-**Exemple :**
-
-```text
-You: /codexspec:review-code --audit src/
-
-AI:  # Code Review Report
-
-     ## Summary
-     - Overall Status: Needs Work
-     - Quality Score: 78/100
-     - Detected Language: Python
-
-     ## Static Analysis Results
-     | Tool   | Status | Issues | Details                |
-     |--------|--------|--------|------------------------|
-     | ruff   | Warn   | 3      | Unused imports, line length |
-     | mypy   | Pass   | 0      | No type errors         |
-
-     ## Detailed Findings
-     ### Critical Issues (CRITICAL)
-     - [ ] [CODE-001] src/auth/service.py:42 - bare `except Exception:` swallows the original cause
-       Impact: Original error context is lost during debugging.
-       Suggestion: narrow the exception and re-raise with `raise ... from err`.
-
-     ### Suggestions (LOW)
-     - [ ] [CODE-004] src/auth/service.py:120 - manual loop where a comprehension suffices
-
-     ## Recommendations
-     1. Priority 1: Fix CODE-001 before merge.
-     2. Priority 2: Apply LOW suggestions opportunistically.
-```
-
-**Conseils :**
-
-- Passez plusieurs chemins pour examiner une tranche ciblée, par ex. `src/ tests/`
-- Le score est consultatif ; les constats CRITICAL/HIGH constituent le signal actionnable
-- Pour des projets exclusivement Python ou React, préférez les commandes dédiées `/codexspec:review-python-code` ou `/codexspec:review-react-code` pour des vérifications plus profondes et spécifiques au langage
-- Relancez après corrections pour confirmer la remontée du score (≥ 95 attendu une fois les problèmes CRITICAL/HIGH résolus)
-
----
-
-### `/codexspec:review-python-code`
-
-Examine du code Python sous l'angle de la conformité PEP 8, de la sécurité des types, de la robustesse d'ingénierie et de la cohérence avec la constitution.
-
-**Syntaxe :**
-
-```
-/codexspec:review-python-code [chemin...]
-```
-
-**Arguments :**
-
-| Argument | Requis | Description |
-|----------|--------|-------------|
-| `chemin...` | Non | Un ou plusieurs fichiers ou répertoires Python à examiner (séparés par des espaces). Par défaut `src/` si omis |
-
-**Ce qu'elle fait :**
-
-- Lance `ruff check` pour les résultats PEP 8 / linting et `mypy` pour le contrôle de types
-- Examine quatre dimensions spécifiques à Python : Principe Pythonic & KISS, Sécurité et explicité des types, Robustesse d'ingénierie, Alignement avec la constitution
-- Vérifie la complétude des annotations de type, la gestion large des exceptions et la préservation du contexte via `raise ... from err`
-- Valide la gestion des ressources (`with` context managers), la correction async/await et la discipline du `logging` structuré
-- Recoupe les constats avec les principes MUST/SHOULD de `.codexspec/memory/constitution.md` lorsqu'il est présent
-- Classe les constats par sévérité : CRITICAL (violations MUST de la constitution, bugs de logique, failles de sécurité), HIGH (lacunes de sécurité des types, erreurs ruff/mypy, fuites de ressources), MEDIUM (opportunités de design/refactor, annotations manquantes), LOW (lisibilité, sucre syntaxique Pythonic)
-
-**Exemple :**
-
-```text
-You: /codexspec:review-python-code src/codexspec/
-
-AI:  # Python Code Review Report
-
-     ## Static Analysis
-     | Tool  | Status | Issues |
-     |-------|--------|--------|
-     | ruff  | Pass   | 0      |
-     | mypy  | Pass   | 0      |
-
-     ## Findings
-     ### Warnings (HIGH)
-     - [ ] [CODE-002] src/codexspec/__init__.py:218 - public function missing return type annotation
-       Suggestion: add the return type and verify with mypy.
-
-     ### Suggestions (LOW)
-     - [ ] [CODE-004] src/codexspec/cli.py:140 - use `pathlib.Path` instead of `os.path` string concatenation
-```
-
-**Conseils :**
-
-- À utiliser à la place de `/codexspec:review-code` lorsque la cible est uniquement Python et que vous souhaitez la profondeur PEP 8 / sécurité des types
-- `ruff` et `mypy` doivent être installés et configurés dans le projet cible pour une couverture complète ; la commande signale une couverture dégradée en leur absence
-- Les principes MUST de la constitution sont notés ; les méta-principes agnostiques du langage (testabilité, simplicité) s'appliquent en l'absence de constitution
-
----
-
-### `/codexspec:review-react-code`
-
-Examine du code React/TypeScript sous l'angle de l'architecture des composants, des règles des Hooks, de la gestion d'état, de la performance et de la cohérence avec la constitution.
-
-**Syntaxe :**
-
-```
-/codexspec:review-react-code [chemin...]
-```
-
-**Arguments :**
-
-| Argument | Requis | Description |
-|----------|--------|-------------|
-| `chemin...` | Non | Un ou plusieurs fichiers ou répertoires React/TypeScript à examiner (séparés par des espaces ; attend `.tsx`, `.ts`, `.jsx`, `.js`). Par défaut `src/` si omis |
-
-**Ce qu'elle fait :**
-
-- Lance `npx eslint` (lorsqu'une config ESLint existe) et `npx tsc --noEmit` (lorsqu'un `tsconfig.json` existe)
-- Examine quatre dimensions spécifiques à React : Atomicité et responsabilité unique des composants, Conformité aux Hooks et gestion des effets de bord, Gestion d'état et flux de données, Performance et robustesse
-- Vérifie que les tableaux de dépendances des `useEffect` sont exhaustifs, détecte l'usage abusif d'état dérivé comme état, et signale les effets superflus
-- Détecte les risques de closure périmée, les nettoyages d'effet manquants, le prop drilling, les rendus coûteux non mémoïsés, ainsi que les états de chargement/erreur manquants
-- Recoupe les constats avec `.codexspec/memory/constitution.md` lorsqu'il est présent
-- Classe les constats par sévérité : CRITICAL (violations des règles des Hooks, conditions de course), HIGH (nettoyage manquant, promesses rejetées non gérées), MEDIUM (candidats au refactor), LOW (lisibilité)
-
-**Exemple :**
-
-```text
-You: /codexspec:review-react-code src/components/
-
-AI:  # React Code Review Report
-
-     ## Static Analysis
-     | Tool  | Status | Issues |
-     |-------|--------|--------|
-     | eslint| Warn   | 2      |
-     | tsc   | Pass   | 0      |
-
-     ## Findings
-     ### Critical Issues (CRITICAL)
-     - [ ] [CODE-001] src/components/UserProfile.tsx:38 - `useEffect` missing `userId` in dependency array
-       Impact: stale closure fetches the wrong user after navigation.
-       Suggestion: add `userId` to the dependency array or extract to a custom hook.
-
-     ### Suggestions (LOW)
-     - [ ] [CODE-004] src/components/Button.tsx:12 - extract derived value instead of `useState`
-```
-
-**Conseils :**
-
-- À utiliser à la place de `/codexspec:review-code` lorsque la cible est uniquement React/TypeScript et que vous souhaitez de la profondeur sur les Hooks et l'architecture composant
-- ESLint et un `tsconfig.json` doivent être présents pour une couverture complète ; la commande signale une couverture dégradée en leur absence
-- Les constats React se superposent aux vérifications TypeScript de base, de sorte que les problèmes de sécurité des types restent remontés
-
----
-
-### `/codexspec:quick`
-
-Exécute un flux Requirements-First SDD allégé pour les petits changements.
-
-**Syntaxe :**
-
-```
-/codexspec:quick [décrivez une petite exigence]
-```
-
-**Arguments :**
-
-| Argument | Requis | Description |
-|----------|--------|-------------|
-| `décrivez une petite exigence` | Non | Brève description du petit changement bien délimité (vous serez sollicité si non fournie) |
-
-**Ce qu'elle fait :**
-
-- Évalue le périmètre (fichiers touchés, étendue des modules, nouvelles dépendances, décisions produit non tranchées) et, si le changement est large ou a plusieurs résultats indépendants, recommande le flux standard
-- Crée un espace de travail de fonctionnalité et `requirements.md` en utilisant la même convention d'horodatage que `/codexspec:specify`
-- Résout uniquement les ambiguïtés qui modifient matériellement l'implémentation ; présente un résumé concis des éléments confirmés (`NEED-*`, `CON-*`/`DEC-*` pertinents, `OUT-*`, `OPEN-*` non résolus)
-- S'arrête à la Confirmation Gate : rien n'est généré tant que vous n'avez pas confirmé le résumé
-- Enchaîne les commandes de génération sur le nouveau répertoire de fonctionnalité : `/codexspec:generate-spec`, `/codexspec:design-to-plan`, `/codexspec:plan-to-tasks`, `/codexspec:implement-tasks`
-- S'en remet à la propre boucle d'auto-review de chaque commande de génération ; s'interrompt et demande à l'utilisateur si une revue requiert une nouvelle décision produit ou architecture
-- Rapporte séparément le répertoire de la fonctionnalité, les chemins d'artifacts, les résultats des revues, la vérification de l'implémentation et les avis non résolus
-
-**Ce qu'elle crée :**
-
-```text
-.codexspec/specs/{timestamp}-{feature-name}/
-├── requirements.md
-├── spec.md
-├── plan.md
-└── tasks.md
-```
-
-**Exemple :**
-
-```text
-You: /codexspec:quick Add a "remember me" checkbox to the login form
-
-AI:  Scope check: 1 component, 1 form field, no new dependencies. Quick is appropriate.
-
-     Confirmed requirements:
-     - NEED-1: "Remember me" checkbox on the login form (default unchecked)
-     - DEC-1: Persist a long-lived refresh token only when checked
-     OUT-1: SSO / social login (unchanged)
-
-     Confirm this summary to start the automated flow. [y/N]
-
-You: y
-
-AI:  Running generate-spec → design-to-plan → plan-to-tasks → implement-tasks ...
-
-     ✓ Feature dir: .codexspec/specs/2026-0713-0915ab-remember-me/
-     ✓ All reviews PASS_WITH_WARNINGS or higher
-     ✓ Implementation verified
-     Open advisories: none
-```
-
-**Conseils :**
-
-- Réservez Quick à des changements réellement petits et à résultat unique ; sinon lancez `/codexspec:specify` et le flux standard
-- La confirmation reste obligatoire — Quick ne déduit jamais une décision produit pour faire avancer l'automatisation
-- Si une revue de génération renvoie `NEEDS_REVISION`/`BLOCKED`, Quick s'arrête et vous rend la main
+- **commit-staged** analyse exactement l'index et génère un message Conventional Commits ; `-p` affiche un aperçu sans créer de commit. Le flux qui l'appelle choisit et indexe les fichiers. L'exécution autorisée utilise un environnement protégé qui vérifie à nouveau que le contenu committé correspond à l'analyse. Les consignes de commit destinées à l'agent s'appliquent dans les conversations courantes et les flux SDD, blueprint et auto-dev ; la disponibilité de la commande ne vaut ni invocation ni autorisation de commit.
+- **pr** génère une description structurée de PR GitHub ou de MR GitLab à partir du diff. `--spec` peut ajouter le contexte de la fonctionnalité depuis le chemin d'un fichier `spec.md`, ou depuis un nom ou préfixe de dossier de fonctionnalité résolu vers ce fichier. La sortie par défaut est du texte à utiliser sur la plateforme d'hébergement.
+- **release-notes** produit à partir de l'historique Git une entrée Keep a Changelog et le texte d'une publication. La section par défaut est `[Unreleased]` ; `--version` utilise le libellé fourni. La commande n'indexe rien, ne crée pas de commit, n'incrémente pas les versions, ne crée pas de tag, ne publie rien et ne crée pas de release.
+- **tasks-to-issues** crée des issues GitHub à partir des tâches existantes, avec leurs dépendances et leurs critères d'acceptation. Elle nécessite une CLI GitHub authentifiée et vérifie que le dépôt des issues correspond au dépôt distant configuré.
+
+La prévisualisation directe des commits et les commits autorisés dans le dossier
+courant nécessitent Python 3.11+ et Git. L'environnement d'exécution est installé
+dans les projets initialisés par CLI et fourni avec le plugin Claude. Les
+fusions créées par l'agent qui modifient le contenu passent également par
+l'analyse des changements indexés. Les fusions qui relient seulement les
+historiques conservent le message par défaut de Git tout en validant l'arbre
+et les parents ; les avances rapides ne créent aucun commit.
+
+Le helper partagé `.codexspec/scripts/commit-staged-helper.py` (ou sa copie incluse dans le plugin) nécessite Python 3.11+ et Git. Il n’appelle aucun LLM, conserve les Git hooks et refuse un contenu indexé qui a changé après l’analyse. L’initialisation ponctuelle fournit ce runtime ; le routage des espaces de travail, blueprint et auto-dev nécessitent toujours la CLI.
 
 ---
 
@@ -1342,17 +1066,17 @@ Génère une description structurée de Pull Request GitHub / Merge Request GitL
 **Syntaxe :**
 
 ```
-/codexspec:pr [--target-branch <branche>] [--sections <liste>] [--spec <id-ou-chemin>] [--output <fichier>]
+/codexspec:pr [--target-branch <branch>] [--sections <list>] [--spec <id-or-path>] [--output <file>]
 ```
 
 **Arguments :**
 
 | Argument | Requis | Description |
 |----------|--------|-------------|
-| `--target-branch <branche>` | Non | Branche de comparaison (par défaut : `origin/main`) |
-| `--sections <liste>` | Non | Sous-ensemble séparé par des virgules parmi `summary, changes, testing, verify, checklist, notes` (par défaut : `all`) |
-| `--spec <id-ou-chemin>` | Non | Intégration opt-in de spec : un identifiant de fonctionnalité (par ex. `2025-0321-1430k7-auth`) résolu sous `.codexspec/specs/`, ou un chemin explicite `path/to/spec.md`. Omettre pour générer uniquement depuis git |
-| `--output <fichier>` | Non | Enregistrer la description dans un fichier plutôt que dans le terminal |
+| `--target-branch <branch>` | Non | Branche de comparaison (par défaut : `origin/main`) |
+| `--sections <list>` | Non | Sous-ensemble séparé par des virgules parmi `summary, changes, testing, verify, checklist, notes` (par défaut : `all`) |
+| `--spec <id-or-path>` | Non | Intégration opt-in de spec : un identifiant de fonctionnalité (par ex. `2025-0321-1430k7-auth`) résolu sous `.codexspec/specs/`, ou un chemin explicite `path/to/spec.md`. Omettre pour générer uniquement depuis git |
+| `--output <file>` | Non | Enregistrer la description dans un fichier plutôt que dans le terminal |
 
 **Ce qu'elle fait :**
 
@@ -1396,7 +1120,157 @@ AI:  Generating Pull Request description...
 
 - Omettez `--spec` pour les petits correctifs ou les changements sans spécification formelle
 - Combinez avec `/codexspec:commit-staged` pour produire à la fois un message de commit et une description de PR depuis le même travail
-- Consultez l'[étude de cas du générateur de descriptions de PR](../case-studies/case-study-pr-description-generator.md) pour un exemple complet et bout-en-bout de cette commande (notamment la façon dont le contexte spec.md est câblé)
+- Consultez l'[étude de cas du générateur de descriptions de PR](../case-studies/case-study-pr-description-generator.md) pour un exemple complet et bout-en-bout de cette commande (notamment la façon dont le contexte spec.md est intégré)
+
+---
+
+### `/codexspec:release-notes`
+
+```text
+/codexspec:commit-staged -p
+/codexspec:pr --spec <feature-dir>/spec.md
+/codexspec:release-notes --from <ref> --to HEAD
+/codexspec:tasks-to-issues <feature-dir>
+```
+
+- **commit-staged** analyse exactement l'index et génère un message Conventional Commits ; `-p` affiche un aperçu sans créer de commit. Le flux qui l'appelle choisit et indexe les fichiers. L'exécution autorisée utilise un environnement protégé qui vérifie à nouveau que le contenu committé correspond à l'analyse. Les consignes de commit destinées à l'agent s'appliquent dans les conversations courantes et les flux SDD, blueprint et auto-dev ; la disponibilité de la commande ne vaut ni invocation ni autorisation de commit.
+- **pr** génère une description structurée de PR GitHub ou de MR GitLab à partir du diff. `--spec` peut ajouter le contexte de la fonctionnalité depuis le chemin d'un fichier `spec.md`, ou depuis un nom ou préfixe de dossier de fonctionnalité résolu vers ce fichier. La sortie par défaut est du texte à utiliser sur la plateforme d'hébergement.
+- **release-notes** produit à partir de l'historique Git une entrée Keep a Changelog et le texte d'une publication. La section par défaut est `[Unreleased]` ; `--version` utilise le libellé fourni. La commande n'indexe rien, ne crée pas de commit, n'incrémente pas les versions, ne crée pas de tag, ne publie rien et ne crée pas de release.
+- **tasks-to-issues** crée des issues GitHub à partir des tâches existantes, avec leurs dépendances et leurs critères d'acceptation. Elle nécessite une CLI GitHub authentifiée et vérifie que le dépôt des issues correspond au dépôt distant configuré.
+
+La prévisualisation directe des commits et les commits autorisés dans le dossier
+courant nécessitent Python 3.11+ et Git. L'environnement d'exécution est installé
+dans les projets initialisés par CLI et fourni avec le plugin Claude. Les
+fusions créées par l'agent qui modifient le contenu passent également par
+l'analyse des changements indexés. Les fusions qui relient seulement les
+historiques conservent le message par défaut de Git tout en validant l'arbre
+et les parents ; les avances rapides ne créent aucun commit.
+
+#### Options des notes de version
+
+| Commandes | Référence |
+|---|---|
+| `--version <X.Y.Z>` | Libellé de version fourni ; sinon `[Unreleased]` |
+| `--from <ref>` | Référence de départ ; sinon dernier tag accessible, puis version du changelog pouvant être rattachée à un commit, puis historique complet |
+| `--to <ref>` | Référence de fin ; par défaut `HEAD` |
+| `--output <file>` | Fichier de sortie du texte de publication ; sinon sortie dans le terminal |
+| `--spec <feature>` | Contexte facultatif de la fonctionnalité ; si elle est introuvable, le problème est signalé et la génération continue avec Git |
+
+---
+
+### `/codexspec:review-code`
+
+Examine la modification Git sélectionnée comme un contrôle de défauts strict avant fusion. La cible par défaut comprend l'écart complet de la fonctionnalité ; les sélecteurs explicites choisissent les changements enregistrés dans des commits, changements sans commit ou un commit unique, sans accepter de filtre de chemin.
+
+<!-- REVIEW-CODE-BREAKING: DEFAULT-GATE -->
+<!-- REVIEW-CODE-BREAKING: PATH-AUDIT -->
+
+**Mode de revue par défaut :**
+
+- La commande par défaut est un contrôle de défauts limité au changement, et non un score général de qualité.
+- Les chemins positionnels ne sont plus valides. Utilisez explicitement `--audit` pour le score consultatif de qualité par chemin.
+
+**Syntaxe du contrôle de défauts :**
+
+```text
+/codexspec:review-code
+/codexspec:review-code --committed [--base <branch>] [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code --uncommitted [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code --commit <sha> [--parent <n>] [--feature <feature-dir>] [--focus <instructions>]
+/codexspec:review-code [--committed] --incremental-from <fingerprint> [--feature <feature-dir>]
+```
+
+Chaque forme du contrôle de défauts accepte aussi `--decided-by reviewer|ask`, qui remplace `review.decided_by` pour cette exécution.
+
+<!-- REVIEW-CODE-SYSTEM-CONTRACT -->
+<!-- REVIEW-CODE-VARIANT-SEARCH -->
+<!-- REVIEW-CODE-NEUTRAL-HANDOFF -->
+
+Le contrôle inventorie tous les artefacts sélectionnés, évalue les exigences applicables et exécute cinq phases dans cet ordre : Scope, System Contract, Behavior, Risk et Verification. Il consigne les contrats intermodules étayés par des preuves et les partitions de revue sémantiques ; chaque cause racine répétable et validée déclenche, avant la fin du passage, une recherche bornée des occurrences apparentées. Les six sections du rapport sont suivies d'un bloc de résultat unique `<review-code-result>` lisible par machine avec `schema_version: "3"`. Le bloc de résultat transmet l'identité de la cible, la couverture et les obligations objectives à revérifier après réparation. L'appelant conserve ces obligations neutres pour une nouvelle revue complète, sans transmettre le raisonnement de réparation ni les conclusions précédentes sur la correction. Le verdict est `PASS`, `FAIL` ou `INCONCLUSIVE` : tout défaut P0-P3 produit `FAIL` ; l'absence de preuve obligatoire ou une couverture incomplète produit `INCONCLUSIVE`.
+
+**Tours incrémentaux.** Après une correction, `--incremental-from <fingerprint>` ne réexamine que ce qui a changé depuis ce résultat antérieur : les fichiers modifiés, les partitions de revue et les contrats qu'ils touchent, ainsi que les obligations reportées. La couverture des fichiers inchangés et non affectés est réutilisée, et le relecteur signale tout de même chaque défaut qu'il trouve ailleurs. Un `PASS` incrémental ne termine jamais une fonctionnalité : `implement-tasks` lance d'abord une revue complète, puis des revues incrémentales après chaque correction, et enfin une nouvelle revue complète comme acceptation finale. Les enregistrements de revue sont écrits hors du dépôt, dans votre répertoire de cache utilisateur (`~/.cache/codexspec/review/` ou `%LOCALAPPDATA%\codexspec\review\`) ; seuls le rapport et le bloc de résultat apparaissent dans la conversation.
+
+**Mode de décision.** `review.decided_by` dans `.codexspec/config.yml` détermine qui tranche sur un constat dont le déclencheur sort du contexte d'utilisation réel du projet, par exemple une entrée que le projet ne reçoit jamais. Avec la valeur par défaut `reviewer`, la revue se comporte exactement comme avant. Avec `ask`, la revue signale ce point comme une décision de scénario en attente au lieu d'échouer, et `implement-tasks` vous demande une seule fois : le corriger, ou accepter que le scénario est hors périmètre. Votre réponse est consignée dans `requirements.md` comme une entrée `CON` ou `OUT` confirmée, afin que les tours suivants ne la soulèvent plus.
+
+```text
+You: /codexspec:review-code --feature .codexspec/specs/2026-0714-example
+
+AI:  ## Verdict
+     **PASS** — all required review and verification completed with no findings.
+```
+
+**Critères applicables et maintenance.** Chaque revue lit les règles communes et le mode choisi, évalue les sept dimensions, puis charge les détails pertinents pour le comportement, le contrat ou les dépendances. Les dépendances inchangées découvertes pendant le suivi peuvent aussi activer les listes propres aux langages ou frameworks. Une proposition de maintenance exige des preuves d’un problème actuel et une amélioration locale compatible avec le comportement existant. Une complexité future hypothétique ou un seuil de style seul ne justifie pas de correction. Le résultat des défauts conserve la version 3 ; un `<review-code-maintenance>` distinct de version 1 rapporte les propositions liées à la même empreinte cible. La revue autonome ne fait que les signaler. `implement-tasks` les vérifie et les applique selon `workflow.auto_maintenance` (par défaut `true`). Les corrections se poursuivent tant qu’elles produisent des progrès substantiels et respectent les conditions d’arrêt existantes. Il n’y a pas de limite fixe de cycles ; la validation finale exige une nouvelle revue complète.
+
+Les options booléennes de la CLI acceptent `on/true/1/yes` et `off/false/0/no`,
+sans distinction de casse et avec d'éventuels espaces autour de la valeur.
+Une option booléenne sans valeur inverse la valeur actuelle du checkout de
+destination ; les valeurs sont enregistrées sous forme de booléens dans YAML.
+
+`codexspec init` installe les ressources de revue communes à Claude Code et Codex dans `.codexspec/review-code/`. `--force` actualise les ressources distribuées et préserve les extensions ayant d’autres chemins. L’installation de la CLI seule ne crée aucun fichier de projet. Avec le plugin seul, sans arborescence installée dans le projet, la revue utilise les mêmes ressources depuis la racine résolue par l’hôte.
+
+<!-- REVIEW-CODE-AUDIT -->
+
+#### Audit de qualité par chemin
+
+La branche audit explicite examine le contenu actuel complet des fichiers pour la clarté idiomatique, la correction, la robustesse, l'architecture et l'alignement constitutionnel. Ce score est consultatif et ne peut pas terminer `implement-tasks`.
+
+**Syntaxe :**
+
+```
+/codexspec:review-code --audit [paths...]
+```
+
+**Arguments :**
+
+| Argument | Requis | Description |
+|----------|--------|-------------|
+| `path...` | Non | Un ou plusieurs fichiers ou répertoires sources à examiner (séparés par des espaces). Par défaut `src/` si omis |
+
+**Ce qu'elle fait :**
+
+- Détecte le ou les langages principaux à partir des extensions de fichiers et exécute un passage par langage pour les cibles multi-langages
+- Lance les outils d'analyse statique lorsque leur config est présente (`ruff`/`mypy`, `eslint`/`tsc`, `go vet`/`gofmt`, `cargo check`/`cargo clippy`, `shellcheck`) ; omet ces contrôles et signale une couverture dégradée sinon
+- Note quatre dimensions : Clarté et simplicité idiomatiques, Correction et contrats explicites, Robustesse d'exécution et discipline des ressources, Intégrité architecturale et de conception
+- Injecte des sous-sections obligatoires pour les frameworks détectés (par ex. Hooks Compliance pour React, Ownership & Borrowing pour Rust, Goroutine & Context Discipline pour Go, Memory & Lifetime Safety pour C/C++, Execution Safety pour Shell)
+- Recoupe les constats avec `.codexspec/memory/constitution.md` lorsqu'il est présent ; en son absence, l'axe constitution est abandonné et son poids redistribué
+- Classe les constats par sévérité : CRITICAL, HIGH, MEDIUM, LOW (les suggestions LOW sont plafonnées à une déduction totale de 5 points)
+
+**Exemple :**
+
+```text
+You: /codexspec:review-code --audit src/
+
+AI:  # Code Review Report
+
+     ## Summary
+     - Overall Status: Needs Work
+     - Quality Score: 78/100
+     - Detected Language: Python
+
+     ## Static Analysis Results
+     | Tool   | Status | Issues | Details                |
+     |--------|--------|--------|------------------------|
+     | ruff   | Warn   | 3      | Unused imports, line length |
+     | mypy   | Pass   | 0      | No type errors         |
+
+     ## Detailed Findings
+     ### Critical Issues (CRITICAL)
+     - [ ] [CODE-001] src/auth/service.py:42 - bare `except Exception:` swallows the original cause
+       Impact: Original error context is lost during debugging.
+       Suggestion: narrow the exception and re-raise with `raise ... from err`.
+
+     ### Suggestions (LOW)
+     - [ ] [CODE-004] src/auth/service.py:120 - manual loop where a comprehension suffices
+
+     ## Recommendations
+     1. Priority 1: Fix CODE-001 before merge.
+     2. Priority 2: Apply LOW suggestions opportunistically.
+```
+
+**Conseils :**
+
+- Passez plusieurs chemins pour examiner une partie ciblée, par ex. `src/ tests/`
+- Le score est consultatif ; les constats CRITICAL/HIGH constituent le base pour décider des corrections à apporter
 
 ---
 
@@ -1452,6 +1326,10 @@ AI:  Select a dimension to change:
      - Document language
      - Commit-message language
      - workflow.auto_next
+     - workflow.auto_distill
+     - workflow.auto_maintenance
+     - workflow.worktrees (default on; checkout-local)
+     - review.decided_by
 
 You: Output language (base) → zh-CN
 
@@ -1465,73 +1343,74 @@ AI:  ✓ Updated language.output: "zh-CN"
 - Une config neuve ou réinitialisée n'écrit que `output` ; ne réglez `interaction`/`document` que lorsqu'ils doivent différer de `output`
 - Pour des changements scriptés dans un terminal, préférez le CLI `codexspec config` (`--set-lang`, `--set-interaction-lang`, `--set-document-lang`, `--set-commit-lang`, `--auto-next`)
 
+Le menu interactif gère aussi `workflow.auto_distill`, `workflow.auto_maintenance`, `workflow.worktrees` et `review.decided_by`. Les modifications de configuration suivent le routage des worktrees et prennent effet dans chaque checkout séparément.
+
 ---
 
-## Vue d'ensemble du flux de travail
+### `/codexspec:quick`
 
-```text
-Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
-                                                   │                         │                            │
-                                              Review spec               Review plan                  Review tasks
+Exécute un flux Requirements-First SDD allégé pour les petits changements.
+
+**Syntaxe :**
+
+```
+/codexspec:quick [describe a small requirement]
 ```
 
-Chaque revue est un point de contrôle humain. Elle valide la fidélité et la qualité intrinsèque à l'aide de constats étayés par des preuves. Les suggestions de conception consultatives restent séparées et ne bloquent jamais la progression. Les défauts vérifiés peuvent être corrigés puis ré-examinés pendant deux tours au maximum.
+**Arguments :**
+
+| Argument | Requis | Description |
+|----------|--------|-------------|
+| `describe a small requirement` | Non | Brève description du petit changement bien délimité (vous serez sollicité si non fournie) |
+
+**Ce qu'elle fait :**
+
+- Évalue le périmètre (fichiers touchés, étendue des modules, nouvelles dépendances, décisions produit non tranchées) et, si le changement est large ou a plusieurs résultats indépendants, recommande le flux standard
+- Crée un espace de travail de fonctionnalité et `requirements.md` en utilisant la même convention d'horodatage que `/codexspec:specify`
+- Résout uniquement les ambiguïtés qui ont un effet concret sur l’implémentation ; présente un résumé concis des éléments confirmés (`NEED-*`, `CON-*`/`DEC-*` pertinents, `OUT-*`, `OPEN-*` non résolus)
+- S'arrête à la Confirmation Gate : rien n'est généré tant que vous n'avez pas confirmé le résumé
+- Enchaîne les commandes de génération sur le nouveau répertoire de fonctionnalité : `/codexspec:generate-spec`, `/codexspec:design-to-plan`, `/codexspec:plan-to-tasks`, `/codexspec:implement-tasks`
+- S'en remet à la propre boucle d'auto-review de chaque commande de génération ; s'interrompt et demande à l'utilisateur si une revue requiert une nouvelle décision produit ou architecture
+- Rapporte séparément le répertoire de la fonctionnalité, les chemins des artefacts, les résultats des revues, la vérification de l'implémentation et les avis non résolus
+
+**Ce qu'elle crée :**
+
+```text
+.codexspec/specs/{timestamp}-{feature-name}/
+├── requirements.md
+├── spec.md
+├── plan.md
+└── tasks.md
+```
+
+**Exemple :**
+
+```text
+You: /codexspec:quick Add a "remember me" checkbox to the login form
+
+AI:  Scope check: 1 component, 1 form field, no new dependencies. Quick is appropriate.
+
+     Confirmed requirements:
+     - NEED-1: "Remember me" checkbox on the login form (default unchecked)
+     - DEC-1: Persist a long-lived refresh token only when checked
+     OUT-1: SSO / social login (unchanged)
+
+     Confirm this summary to start the automated flow. [y/N]
+
+You: y
+
+AI:  Running generate-spec → design-to-plan → plan-to-tasks → implement-tasks ...
+
+     ✓ Feature dir: .codexspec/specs/2026-0713-0915ab-remember-me/
+     ✓ All reviews PASS_WITH_WARNINGS or higher
+     ✓ Implementation verified
+     Open advisories: none
+```
+
+**Conseils :**
+
+- Réservez Quick à des changements réellement petits et à résultat unique ; sinon lancez `/codexspec:specify` et le flux standard
+- La confirmation reste obligatoire — Quick ne déduit jamais une décision produit pour faire avancer l'automatisation
+- Si une revue de génération renvoie `NEEDS_REVISION`/`BLOCKED`, Quick s'arrête et vous rend la main
 
 ---
-
-## Dépannage
-
-### « Feature directory not found »
-
-La commande n'a pas pu localiser le répertoire de la fonctionnalité.
-
-**Solutions :**
-
-- Lancez d'abord `codexspec init` pour initialiser le projet
-- Vérifiez que le répertoire `.codexspec/specs/` existe
-- Assurez-vous d'être dans le bon répertoire de projet
-- Passez un répertoire de fonctionnalité explicite ou un chemin d'artifact lorsque plusieurs candidats existent
-
-### « No spec.md found »
-
-Le fichier de spécification n'existe pas encore.
-
-**Solutions :**
-
-- Lancez `/codexspec:specify` pour clarifier d'abord les exigences
-- Puis lancez `/codexspec:generate-spec` pour créer spec.md
-
-### « Constitution not found »
-
-Aucune constitution de projet n'existe.
-
-**Solutions :**
-
-- Lancez `/codexspec:constitution` pour en créer une
-- La constitution est facultative mais recommandée pour des décisions cohérentes
-
-### « Tasks file not found »
-
-Le découpage en tâches n'existe pas.
-
-**Solutions :**
-
-- Assurez-vous d'avoir lancé `/codexspec:design-to-plan` d'abord
-- Puis lancez `/codexspec:plan-to-tasks` pour créer tasks.md
-
-### « GitHub CLI not authenticated »
-
-La commande `/codexspec:tasks-to-issues` requiert l'authentification GitHub.
-
-**Solutions :**
-
-- Installez GitHub CLI : `brew install gh` (macOS) ou équivalent
-- Authentifiez-vous : `gh auth login`
-- Vérifiez : `gh auth status`
-
----
-
-## Prochaines étapes
-
-- [Flux de travail](workflow.md) - Motifs courants et moment d'utiliser chaque commande
-- [CLI](../reference/cli.md) - Commandes terminal pour l'initialisation du projet

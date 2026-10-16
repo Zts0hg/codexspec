@@ -1,97 +1,95 @@
-# Commands
+<a id="available-commands"></a>
 
-This is the reference for CodexSpec's slash commands. These commands are invoked in Claude Code's chat interface.
+# Available Commands
 
-For workflow patterns and when to use each command, see [Workflow](workflow.md). For CLI commands, see [CLI](../reference/cli.md).
+The CLI has six public commands. Agent integrations distribute 28 commands:
+Claude uses `/codexspec:<name>`, and Codex uses `$codexspec:<name>`.
+The tables below use Claude's spelling for readability.
 
-## Quick Reference
+<a id="cli-commands"></a>
 
-Grouped by category, mirroring the README catalog. Within each group, commands appear in workflow order.
-
-### Core Workflow Commands
-
-| Command | Purpose |
-|---------|---------|
-| `/codexspec:constitution` | Create or update project constitution with cross-artifact validation |
-| `/codexspec:specify` | Clarify, confirm, and persist requirements in `requirements.md` |
-| `/codexspec:blueprint` | Discuss and maintain confirmed requirements in the shared blueprint |
-| `/codexspec:generate-spec` | Generate `spec.md` document from clarified requirements (★ Auto-review) |
-| `/codexspec:design-to-plan` | Convert a confirmed design into a traceable implementation plan ★ |
-| `/codexspec:plan-to-tasks` | Break down plan into traceable, verifiable tasks (★ Auto-review) |
-| `/codexspec:implement-tasks` | Execute tasks with conditional TDD workflow |
-| `/codexspec:auto-dev` | Autonomously develop all pending blueprint requirements in document order |
-
-### Review Commands (Quality Gates)
+## CLI Commands
 
 | Command | Purpose |
 |---------|---------|
-| `/codexspec:review-spec` | Validate specification for completeness and quality |
-| `/codexspec:review-plan` | Review technical plan for feasibility and alignment |
-| `/codexspec:review-tasks` | Validate task coverage, ordering, and feasibility |
+| `codexspec init` | Initialize or refresh a project for Claude, Codex, or both |
+| `codexspec check` | Check installed tools and dependencies |
+| `codexspec version` | Display version and system information |
+| `codexspec config` | View or modify project configuration |
+| `codexspec list-commands` | List available agent commands by category |
+| `codexspec show-blueprint` | Print the shared worktree's blueprint without changing it |
 
-### Enhancement Commands
+<a id="core-workflow-commands"></a>
 
-| Command | Purpose |
-|---------|---------|
-| `/codexspec:config` | Manage project configuration interactively (create/view/modify/reset) |
-| `/codexspec:clarify` | Scan existing spec for ambiguities (4 categories, max 5 questions) |
-| `/codexspec:analyze` | Cross-artifact consistency analysis (auto-remediating, severity-based) |
-| `/codexspec:checklist` | Generate requirements quality checklists |
-| `/codexspec:tasks-to-issues` | Convert tasks to GitHub Issues |
-| `/codexspec:distill` | Capture reusable project knowledge; review candidates in a local HTML workspace |
-| `/codexspec:evolve` | Turn vetted project knowledge into an upstream contribution draft |
-| `/codexspec:onboard` | Seed candidate profile knowledge from an existing codebase |
-
-### Git Workflow Commands
+## Core Workflow Commands
 
 | Command | Purpose |
 |---------|---------|
-| `/codexspec:commit-staged` | Generate commit messages strictly from staged changes |
-| `/codexspec:pr` | Generate PR/MR description from git diff (auto-detects platform) |
+| `/codexspec:constitution` | Create/update project principles with cross-artifact validation |
+| `/codexspec:specify` | Discuss, confirm, and persist feature requirements |
+| `/codexspec:blueprint` | Prepare or maintain confirmed pending blueprint requirements |
+| `/codexspec:generate-spec` | Compile confirmed requirements into a traceable specification; auto-review |
+| `/codexspec:spec-to-design` | Define architecture, components, interfaces, and decisions; auto-review |
+| `/codexspec:design-to-plan` | Plan implementation phases, ordering, and verification; auto-review |
+| `/codexspec:plan-to-tasks` | Produce verifiable tasks with upstream coverage; auto-review and analyze |
+| `/codexspec:implement-tasks` | Execute tasks, verify outcomes, review and repair |
+| `/codexspec:auto-dev` | Autonomously develop confirmed blueprint requirements in document order |
 
-### Code Review Commands
+<a id="artifact-review-commands"></a>
+
+## Artifact Review Commands
 
 | Command | Purpose |
 |---------|---------|
-| `/codexspec:review-code` | Change-scoped defect gate; use `--audit` for a path quality scorecard |
-| `/codexspec:review-python-code` | Review Python code (PEP 8, type safety, robustness, constitution consistency) |
-| `/codexspec:review-react-code` | Review React/TypeScript code (component architecture, Hooks rules, state, performance) |
+| `/codexspec:review-spec` | Check specification fidelity and internal quality |
+| `/codexspec:review-design` | Check design fidelity, feasibility, and planning readiness |
+| `/codexspec:review-plan` | Check plan fidelity, feasibility, and implementation readiness |
+| `/codexspec:review-tasks` | Check task fidelity, dependencies, executability, and verification |
 
-### Fast Track
+<a id="requirements-existing-code-and-debugging"></a>
+
+## Requirements, Existing Code, and Debugging
 
 | Command | Purpose |
 |---------|---------|
-| `/codexspec:quick` | Run a streamlined Requirements-First SDD flow for small changes |
+| `/codexspec:clarify` | Resolve requirement ambiguity, updating requirements before the specification |
+| `/codexspec:analyze` | Check end-to-end traceability and conform downstream artifacts to authority |
+| `/codexspec:checklist` | Generate a requirements-quality checklist |
+| `/codexspec:tasks-to-issues` | Convert existing tasks into actionable GitHub issues |
+| `/codexspec:debug` | Investigate root causes before applying a fix |
+| `/codexspec:reverse-spec` | Survey existing architecture, draft module artifacts, or report baseline drift |
 
----
+<a id="project-knowledge-commands"></a>
 
-## Command Categories
+## Project Knowledge Commands
 
-### Core Workflow Commands
+| Command | Purpose |
+|---------|---------|
+| `/codexspec:distill` | Capture reusable knowledge or review candidates in the local workspace |
+| `/codexspec:evolve` | Compile vetted knowledge into an upstream contribution draft |
+| `/codexspec:onboard` | Seed candidate conventions and evidenced constraints from existing code |
 
-Commands for the primary Requirements-First SDD workflow: Constitution → Confirmed Requirements → Specification → Plan → Tasks → Implementation. Confirmed requirements are the highest-priority authority here — nothing in the chain is binding until you explicitly confirm it at the Confirmation Gate.
+<a id="git-and-code-review-commands"></a>
 
-### Review Commands (Quality Gates)
+## Git and Code Review Commands
 
-Commands that validate artifacts at each workflow stage under an **evidence-based review** contract: every defect must include concrete `Evidence`, `Location`, `Mismatch`, `Impact`, and `Remediation`. Advisory design suggestions are reported separately and never change status or trigger automatic changes. Verified defects may be fixed and re-reviewed for at most two rounds; advisories remain optional throughout.
+| Command | Purpose |
+|---------|---------|
+| `/codexspec:commit-staged` | Generate messages from staged changes; preview or execute an authorized commit |
+| `/codexspec:pr` | Generate a structured PR/MR description |
+| `/codexspec:release-notes` | Maintain a changelog entry and generate a release body from Git history |
+| `/codexspec:review-code` | Review selected changes as a defect gate; use `--audit` for path quality |
 
-### Enhancement Commands
+<a id="utility-commands"></a>
 
-Commands for iterative refinement, cross-artifact validation, configuration, and project management integration.
+## Utility Commands
 
-### Git Workflow Commands
+| Command | Purpose |
+|---------|---------|
+| `/codexspec:config` | Interactively create/view/modify/reset project configuration |
+| `/codexspec:quick` | Run a compact Requirements-First SDD workflow for small changes |
 
-Commands that turn finished work into shareable artifacts: commit messages from the staged diff and structured PR/MR descriptions from the branch diff.
-
-### Code Review Commands
-
-Commands that review source code (any language, Python-specific, React/TypeScript-specific) for idiomatic clarity, correctness, robustness, architecture, and constitution alignment. Findings use the same severity discipline as the artifact reviews: CRITICAL/HIGH issues must cite concrete evidence; LOW suggestions are advisory only.
-
-### Fast Track
-
-A streamlined command that runs the Requirements-First SDD flow end-to-end for small, well-bounded changes.
-
----
+The old Python/React review entries are plugin compatibility artifacts, not part of the 28-command installation catalog. Use `review-code` with its applicable language/framework standards; use `--audit` for a path assessment.
 
 ## Command Reference
 
@@ -236,9 +234,45 @@ AI:  [Continues exploring requirements...]
 
 ---
 
+### `/codexspec:blueprint`
+
+Use `blueprint` when you want to prepare several confirmed requirements before
+development, and `auto-dev` to develop that queue:
+
+```text
+/codexspec:blueprint Add a confirmed requirement for task reminders
+/codexspec:auto-dev
+```
+
+Blueprint discovery resolves user-owned direction, choices, and constraints
+before a requirement enters the queue. The shared `.codexspec/blueprint.md`
+uses `pending`, `in_progress`, and `completed` states. You can append,
+replace, delete, or reorder pending requirements; active and completed entries
+are read-only to blueprint maintenance.
+
+Auto-dev follows document order, resumes an in-progress feature before starting
+another, and re-reads the queue after each completion so newly appended pending
+work can join the run. It performs the SDD stages, implementation, verification,
+review, and repair within the confirmed requirements. Calling `auto-dev` enables
+its automation independently of `workflow.auto_next` and does not change that setting.
+
+Both commands share `worktree-for-codexspec-auto-dev` on branch
+`codexspec/auto-dev`. They can operate concurrently under the shared ownership
+and write protections; requirements are developed sequentially in that workspace.
+Product decisions that cannot be resolved from confirmed requirements stop the run
+with evidence rather than prompting during normal autonomous execution.
+
+Inspect the current shared blueprint without changing it:
+
+```bash
+codexspec show-blueprint
+```
+
+---
+
 ### `/codexspec:generate-spec`
 
-Generate the `spec.md` document from clarified requirements. This command acts as a "requirement compiler" that transforms your clarified requirements into a structured specification.
+Compile confirmed requirements into a traceable specification; auto-review.
 
 **Syntax:**
 
@@ -295,85 +329,18 @@ AI:  Generating specification...
 
      Next steps:
      - Review the spec with /codexspec:review-spec
-     - Or proceed to /codexspec:design-to-plan
+     - Or proceed to /codexspec:spec-to-design
 ```
-
-**Tips:**
-
-- Run after `/codexspec:specify` has clarified requirements
-- Review the generated spec before proceeding
-- Use `/codexspec:review-spec` for quality validation
-- Edit spec.md directly if minor adjustments needed
 
 ---
 
-### `/codexspec:clarify`
+### `/codexspec:spec-to-design`
 
-Scan an existing specification for ambiguities and gaps. Use this for iterative refinement after initial spec creation.
-
-**Syntax:**
-
-```
-/codexspec:clarify [path_to_spec.md]
-```
-
-**Arguments:**
-
-| Argument | Required | Description |
-|----------|----------|-------------|
-| `path_to_spec.md` | No | Path to spec file (auto-detected if not provided) |
-
-**What it does:**
-
-- Scans requirements and spec using focused ambiguity categories
-- Asks targeted clarification questions (max 5)
-- Updates `requirements.md` first after user confirmation, then synchronizes `spec.md`
-- Integrates with review-spec findings if available
-
-**Ambiguity Categories:**
-
-| Category | What it Detects |
-|----------|-----------------|
-| **Completeness Gaps** | Missing sections, empty content, absent acceptance criteria |
-| **Specificity Issues** | Vague terms ("fast", "scalable"), undefined constraints |
-| **Behavioral Clarity** | Error handling gaps, undefined state transitions |
-| **Measurability Problems** | Non-functional requirements without metrics |
-
-**Example:**
+Read the confirmed `requirements.md` and `spec.md`, project principles, and relevant repository facts. Produce `design.md` with components, interfaces, data flow, alternatives, and decisions linked to upstream requirements. Run `review-design` automatically. Stop when a design choice would change confirmed intent or requires a new user decision.
 
 ```text
-You: /codexspec:clarify
-
-AI:  Scanning spec.md for ambiguities...
-
-     Found issues in 3 categories.
-
-     ## Question 1/5: Specificity
-
-     **Context**: NFR-001 states "System should respond quickly"
-
-     **Question**: What is the target response time?
-
-     | Option | Description | Impact |
-     |--------|-------------|--------|
-     | A | < 100ms for all operations | High performance requirement |
-     | B | < 500ms for reads, < 1s for writes | Balanced approach |
-     | Custom | Provide a different answer | - |
-
-     **Recommendation**: Option B - balanced for typical web app
-
-You: B
-
-AI:  ✓ Updated NFR-001: Response time < 500ms reads, < 1s writes
-     Added to Clarifications section in spec.md
+/codexspec:spec-to-design <feature-dir>
 ```
-
-**Tips:**
-
-- Use when spec.md exists but needs refinement
-- Integrates with `/codexspec:review-spec` findings
-- Maximum 5 questions per session
-- Run multiple times for complex specifications
 
 ---
 
@@ -465,96 +432,87 @@ AI:  Breaking down plan into tasks...
 - `[P]` marks truly independent parallelizable tasks
 - Review dependencies before implementation
 
+After writing tasks, run `review-tasks`. A `PASS` or `PASS_WITH_WARNINGS` triggers `analyze` once; the analysis does not add a completion gate. Task coverage includes the confirmed requirements, specification, design, and plan.
+
 ---
 
 ### `/codexspec:implement-tasks`
 
-Execute implementation tasks with conditional TDD workflow. Works through the task list systematically.
-
-**Syntax:**
-
-```
-/codexspec:implement-tasks [tasks_path]
-/codexspec:implement-tasks [spec_path plan_path tasks_path]
-```
-
-**Arguments:**
-
-| Argument | Required | Description |
-|----------|----------|-------------|
-| `tasks_path` | No | Path to tasks.md (auto-detected if not provided) |
-| `spec_path plan_path tasks_path` | No | Explicit paths to all three documents |
-
-**File Resolution:**
-
-- **No arguments**: Auto-detect from `.codexspec/specs/`
-- **One argument**: Treat as `tasks.md` path, derive others from same directory
-- **Three arguments**: Explicit paths to spec.md, plan.md, and tasks.md
-
-**What it does:**
-
-- Reads tasks.md and identifies incomplete tasks
-- Applies TDD workflow for code tasks:
-  - **Red**: Write failing tests first
-  - **Green**: Implement to pass tests
-  - **Verify**: Run all tests
-  - **Refactor**: Improve while keeping tests green
-- Direct implementation for non-testable tasks (docs, config)
-- Updates task checkboxes as work progresses
-- Records blockers in issues.md if encountered
-
-**TDD Workflow for Code Tasks:**
-
-```
-Red → Green → Verify → Refactor → Mark Complete
-```
-
-**Direct Implementation for Non-Testable:**
-
-- Documentation files
-- Configuration files
-- Static assets
-- Infrastructure files
-
-**Example:**
+Execute tasks, verify outcomes, review and repair.
 
 ```text
-You: /codexspec:implement-tasks
-
-AI:  Starting implementation...
-
-     Loading context:
-     - spec.md ✓
-     - plan.md ✓
-     - tasks.md ✓
-     - constitution.md ✓
-
-     Tech Stack: Python 3.11+ / FastAPI / PostgreSQL / pytest
-
-     Working on Task 1.1: Setup Project Structure
-     ✓ Created src/taskman/__init__.py
-     ✓ Created pyproject.toml
-     [x] Task 1.1 Complete
-
-     Working on Task 2.1: Write Tests for Task Entity [P]
-     ✓ Created tests/test_task.py
-     Running tests... 5 passed (all expected failures)
-     [x] Task 2.1 Complete
-
-     Working on Task 2.2: Implement Task Entity
-     ✓ Created src/taskman/models/task.py
-     Running tests... 5 passed
-     [x] Task 2.2 Complete
-
-     ...
+/codexspec:implement-tasks <feature-dir>
 ```
 
-**Tips:**
+Four artifact reviewers check fidelity, coverage, feasibility, and internal
+quality: `review-spec`, `review-design`, `review-plan`, and `review-tasks`.
+They run automatically after generation and can also be invoked manually.
+Reports distinguish verified defects from non-gating risk advisories and design
+opportunities, with a compatibility score.
 
-- Can resume where left off if interrupted
-- Blockers are recorded in issues.md
-- Commits are made after significant tasks/phases
-- Run `/codexspec:review-tasks` first for validation
+`review-code` provides a separate change-scoped defect gate and an explicit
+whole-code quality assessment:
+
+```text
+/codexspec:review-code --feature <feature-dir>
+/codexspec:review-code --uncommitted
+/codexspec:review-code --audit src/
+```
+
+Default review covers the complete feature-branch delta, including committed,
+staged, unstaged, and untracked non-ignored changes. You can explicitly select
+committed, uncommitted, or one-commit evidence. `--feature` attaches requirements
+context without narrowing Git scope. `--audit` assesses the named paths and
+produces an advisory scorecard rather than a completion verdict.
+
+Reviews load shared standards from `.codexspec/review-code/`, selecting relevant
+behavior dimensions and language/framework checks. Findings require concrete
+evidence, reachable triggers, selected-change attribution, and impact.
+The reviewer reports defects and substantiated maintenance suggestions without
+editing files; the repair caller independently verifies them.
+
+Implementation uses test-first for code tasks and direct implementation with
+appropriate checks for documentation/configuration. After repairs, incremental
+re-review can reuse unaffected coverage; final acceptance requires a fresh
+complete-feature `PASS`, completed coverage and verification, and zero admitted
+P0–P3 defects. Substantiated maintenance suggestions are reported separately.
+
+`workflow.auto_maintenance` defaults to **true** and controls whether repair
+callers also apply verified, compatible maintenance improvements. Turning it off
+still reports those suggestions and does not waive defects or required checks.
+It is separate from stage advancement and is not an `implement-tasks` argument.
+
+For root-cause-first debugging:
+
+```text
+/codexspec:debug Investigate intermittent failures when saving a task
+```
+
+Debug follows investigation → pattern analysis → single-hypothesis verification
+→ failing-test-first fix. Implementation escalates when repairs are stuck,
+a non-trivial correctness defect needs tracing, or the same root-cause class
+recurs across review rounds. Three failed fixes trigger architectural reassessment.
+
+Use `checklist` to assess requirement clarity, completeness, and consistency:
+
+```text
+/codexspec:checklist Check the authentication requirements for completeness
+```
+
+See the [command reference](commands.md) for review selectors,
+arguments, and detailed procedures.
+
+---
+
+### `/codexspec:auto-dev`
+
+Autonomously develop confirmed blueprint requirements in document order.
+
+See [`blueprint`](#codexspecblueprint).
+
+```text
+/codexspec:auto-dev
+```
 
 ---
 
@@ -615,10 +573,20 @@ AI:  Overall Status: NEEDS_REVISION
 
 **Tips:**
 
-- Run before `/codexspec:design-to-plan`
+- Run before `/codexspec:spec-to-design`
 - Treat `BLOCKED` and `NEEDS_REVISION` as not ready to proceed
 - Do not promote advisories into requirements
 - Re-run after making fixes
+
+---
+
+### `/codexspec:review-design`
+
+Review `design.md` against confirmed requirements and the specification for fidelity, feasibility, and readiness for planning. Report evidence-backed defects separately from optional design opportunities; use the same artifact statuses and bounded repair rules as the other artifact reviewers.
+
+```text
+/codexspec:review-design <feature-dir>
+```
 
 ---
 
@@ -667,6 +635,8 @@ AI:  Overall Status: PASS
 - Resolve evidence-backed defects before task generation
 - Keep speculative architecture ideas in the advisory section
 - Verify tech stack aligns with team skills
+
+Planning implements the confirmed `design.md`; it does not reopen architecture choices. Review checks the plan’s design references as well as its requirements coverage.
 
 ---
 
@@ -723,84 +693,95 @@ AI:  Overall Status: NEEDS_REVISION
 
 ---
 
-### `/codexspec:analyze`
+### `/codexspec:clarify`
 
-Perform a consistency analysis across requirements.md, spec.md, plan.md, and tasks.md, then auto-remediate deterministic inconsistencies by conforming spec.md/plan.md/tasks.md to requirements.md (requirements.md is never modified). Identifies authority conflicts, traceability gaps, duplication, and missing coverage.
+Scan an existing specification for ambiguities and gaps. Use this for iterative refinement after initial spec creation.
 
 **Syntax:**
 
 ```
-/codexspec:analyze
+/codexspec:clarify [path_to_spec.md]
 ```
 
 **Arguments:**
 
 | Argument | Required | Description |
 |----------|----------|-------------|
-| None | - | Analyzes the current feature's artifacts |
+| `path_to_spec.md` | No | Path to spec file (auto-detected if not provided) |
 
 **What it does:**
 
-- Detects duplications across artifacts
-- Identifies ambiguities lacking measurable criteria
-- Finds underspecified items
-- Checks constitution alignment
-- Maps requirement coverage to tasks
-- Reports inconsistencies in terminology and ordering
+- Scans requirements and spec using focused ambiguity categories
+- Asks targeted clarification questions (max 5)
+- Updates `requirements.md` first after user confirmation, then synchronizes `spec.md`
+- Integrates with review-spec findings if available
 
-**Severity Levels:**
+**Ambiguity Categories:**
 
-| Level | Definition |
-|-------|------------|
-| **CRITICAL** | Constitution violation, missing core artifact, zero coverage |
-| **HIGH** | Duplicate/conflicting requirement, ambiguous security attribute |
-| **MEDIUM** | Terminology drift, missing non-functional coverage |
-| **LOW** | Style/wording improvements |
+| Category | What it Detects |
+|----------|-----------------|
+| **Completeness Gaps** | Missing sections, empty content, absent acceptance criteria |
+| **Specificity Issues** | Vague terms ("fast", "scalable"), undefined constraints |
+| **Behavioral Clarity** | Error handling gaps, undefined state transitions |
+| **Measurability Problems** | Non-functional requirements without metrics |
 
 **Example:**
 
 ```text
-You: /codexspec:analyze
+You: /codexspec:clarify
 
-AI:  Analyzing artifacts...
+AI:  Scanning spec.md for ambiguities...
 
-     # Specification Analysis Report
+     Found issues in 3 categories.
 
-     ## Coverage Summary
-     | Requirement Key | Has Task? | Task IDs |
-     |-----------------|-----------|----------|
-     | REQ-001 | ✅ | 2.1, 2.2 |
-     | REQ-002 | ✅ | 2.3, 2.4 |
-     | REQ-003 | ❌ | None |
+     ## Question 1/5: Specificity
 
-     ## Issues Found
+     **Context**: NFR-001 states "System should respond quickly"
 
-     | ID | Category | Severity | Summary |
-     |----|----------|----------|---------|
-     | A1 | Coverage | CRITICAL | REQ-003 has no task coverage |
-     | A2 | Duplication | HIGH | REQ-005 and REQ-008 overlap |
-     | A3 | Ambiguity | MEDIUM | NFR-002 "secure" not defined |
+     **Question**: What is the target response time?
 
-     ## Metrics
-     - Total Requirements: 12
-     - Total Tasks: 24
-     - Coverage: 92% (11/12 requirements)
-     - Critical Issues: 1
+     | Option | Description | Impact |
+     |--------|-------------|--------|
+     | A | < 100ms for all operations | High performance requirement |
+     | B | < 500ms for reads, < 1s for writes | Balanced approach |
+     | Custom | Provide a different answer | - |
 
-     ## Next Actions
-     1. Add tasks for REQ-003 (CRITICAL)
-     2. Consider merging REQ-005 and REQ-008
-     3. Define "secure" in NFR-002
+     **Recommendation**: Option B - balanced for typical web app
 
-     Resolve CRITICAL issues before /codexspec:implement-tasks
+You: B
+
+AI:  ✓ Updated NFR-001: Response time < 500ms reads, < 1s writes
+     Added to Clarifications section in spec.md
 ```
 
 **Tips:**
 
-- Run after `/codexspec:plan-to-tasks`, before implementation
-- CRITICAL issues should block implementation
-- Read-only analysis—no files are modified
-- Use findings to improve artifact quality
+- Use when spec.md exists but needs refinement
+- Integrates with `/codexspec:review-spec` findings
+- Maximum 5 questions per session
+- Run multiple times for complex specifications
+
+---
+
+### `/codexspec:analyze`
+
+- **specify** starts or revisits requirement discovery. Only explicit confirmation
+  makes the requirement summary binding.
+- **clarify** resolves ambiguity in existing requirements/specification: up to five
+  questions per run across four categories. It updates `requirements.md` first,
+  then synchronizes `spec.md`.
+- **analyze** checks the complete requirements → spec → design → plan → tasks
+  chain. It automatically applies deterministic fixes to downstream artifacts
+  when their correction follows from upstream authority; it never edits
+  `requirements.md`. Unresolved findings are reported. It runs automatically after
+  a passing task review and is informational rather than an implementation gate.
+
+```text
+/codexspec:clarify <feature-dir>
+/codexspec:analyze <feature-dir>
+```
+
+Without `requirements.md`, legacy analysis starts at `spec.md`, discloses the missing discussion evidence, and reports findings without modifying artifacts. A missing legacy `design.md` also does not prevent analysis.
 
 ---
 
@@ -937,6 +918,57 @@ AI:  Converting tasks to GitHub issues...
 - Creates issues in the repository's default configuration
 - Check for duplicates before running
 
+Verify the target repository against its remote and obtain explicit authorization before creating issues. A generated task list does not by itself authorize publishing.
+
+---
+
+### `/codexspec:debug`
+
+Investigate root causes before applying a fix.
+
+See [Workflow](workflow.md#review-and-debugging).
+
+```text
+/codexspec:debug Investigate intermittent failures when saving a task
+```
+
+---
+
+### `/codexspec:reverse-spec`
+
+Two entry points serve different goals:
+
+| Command | Use it to | Output/boundary |
+|---------|-----------|-----------------|
+| `onboard [path]` | Seed reusable project knowledge from an existing codebase | Candidate conventions and narrowly evidenced constraints in the profile; code remains read-only |
+| `reverse-spec [path]` | Understand existing architecture or compare code with confirmed intent | Draft artifacts or a drift report; code remains read-only |
+
+```text
+/codexspec:onboard src/
+/codexspec:reverse-spec
+/codexspec:reverse-spec src/auth
+```
+
+Onboard infers conventions from observable code and proposes constraints only
+from explicit prohibitions. Convention candidates take local effect immediately;
+constraint candidates require an in-session persist/edit/drop decision.
+It preserves existing knowledge and does not invent past decision rationale or
+experiential pitfalls from a cold scan.
+
+Reverse-spec has three modes:
+
+- **Overview**: no path, or repository root, produces a thin architecture
+  `design.md` and `slices.md` for choosing modules to inspect.
+- **Generate**: a module path without a confirmed baseline produces draft
+  `spec.md`, `design.md`, and open/inferred requirements.
+- **Reconcile**: a module with a confirmed baseline produces `reconcile.md`,
+  reporting undocumented behavior, unimplemented specifications, and semantic
+  mismatches against confirmed spec/design, with requirements governing intent.
+
+Inferred drafts require human confirmation before becoming a baseline.
+Reconciliation reports the proposed direction—fix code, update documents, or
+decide intent—and does not automatically apply it.
+
 ---
 
 ### `/codexspec:distill`
@@ -968,89 +1000,172 @@ Auto-distill remains non-interactive and non-blocking: it never opens the page, 
 
 ---
 
+### `/codexspec:evolve`
+
+`evolve` selects only vetted knowledge useful beyond the project, compiles a
+command/skill draft, and obtains explicit approval before pushing or opening
+a contribution PR for human review.
+
+```text
+/codexspec:evolve
+```
+
+---
+
+### `/codexspec:onboard`
+
+Seed candidate conventions and evidenced constraints from existing code.
+
+See [`reverse-spec`](#codexspecreverse-spec).
+
+```text
+/codexspec:onboard src/
+```
+
+---
+
 ### `/codexspec:commit-staged`
 
-Generate an accurate Conventional Commits message strictly from staged changes. Agents invoke this command before authorized direct, auto-dev, and blueprint commits. The caller prepares staging; the command never chooses or stages files.
+```text
+/codexspec:commit-staged -p
+/codexspec:pr --spec <feature-dir>/spec.md
+/codexspec:release-notes --from <ref> --to HEAD
+/codexspec:tasks-to-issues <feature-dir>
+```
 
-The agent uses the shared helper shipped with the plugin or copied by init to
-`.codexspec/scripts/commit-staged-helper.py`. This supports one-time uvx
-initialization without retaining a CodexSpec executable. Python 3.11+ and Git are
-required; the helper does not call an LLM. It preserves Git hooks and rejects
-changed staged content. Existing CLI prerequisites for worktree routing,
-blueprint and auto-dev still apply.
+- **commit-staged** analyzes the exact staging area and generates a Conventional
+  Commits message; `-p` previews without committing. The calling workflow chooses
+  and stages files. Authorized execution uses the guarded runtime, rechecking that
+  committed content matches the analysis. Agent commit guidance applies in ordinary
+  conversation, SDD, blueprint, and auto-dev workflows; command availability alone
+  does not invoke it or authorize a commit.
+- **pr** generates a structured GitHub PR or GitLab MR description from the diff.
+  `--spec` optionally adds feature context from a `spec.md` file path, or a
+  feature directory name or prefix resolved to that file. Default output is text
+  for use in the hosting platform.
+- **release-notes** derives a Keep a Changelog entry and release body from Git
+  history. The default section is `[Unreleased]`; `--version` uses a supplied
+  label. It does not stage, commit, bump versions, tag, publish, or create a release.
+- **tasks-to-issues** creates GitHub issues from existing tasks, including
+  dependencies and acceptance criteria. It requires an authenticated GitHub CLI
+  and verifies that the issue repository matches the configured remote.
 
-Merge commits also use staged analysis: synchronization and divergent workspace
-preparation stop before commit creation. A merge whose file tree is unchanged
-retains Git's default message while validating its content and parents.
-Fast-forward integration creates no commit and needs no message generation.
+Direct commit preview and authorized in-place commits require Python 3.11+ and
+Git; the runtime is installed with CLI projects and bundled with the Claude plugin.
+Contentful agent-created merges also use staged analysis. History-only merges
+retain Git's default message while validating the tree and parents; fast-forwards
+create no commit.
+
+The shared helper at `.codexspec/scripts/commit-staged-helper.py` (or the plugin-bundled copy) requires Python 3.11+ and Git, invokes no LLM, preserves Git hooks, and rejects staged content that changed after analysis. One-time initialization supplies this runtime; workspace routing, blueprint, and auto-dev still require the CLI.
+
+---
+
+### `/codexspec:pr`
+
+Generate a structured GitHub Pull Request / GitLab Merge Request description from the git diff. Optionally integrates `spec.md` for SDD-traced context.
 
 **Syntax:**
 
 ```
-/codexspec:commit-staged [-p]
+/codexspec:pr [--target-branch <branch>] [--sections <list>] [--spec <id-or-path>] [--output <file>]
 ```
 
 **Arguments:**
 
 | Argument | Required | Description |
 |----------|----------|-------------|
-| `-p` | No | Preview mode - display message without committing |
+| `--target-branch <branch>` | No | Branch to compare against (default: `origin/main`) |
+| `--sections <list>` | No | Comma-separated subset of `summary, changes, testing, verify, checklist, notes` (default: `all`) |
+| `--spec <id-or-path>` | No | Opt-in spec integration: a feature id (e.g., `2025-0321-1430k7-auth`) resolved under `.codexspec/specs/`, or an explicit `path/to/spec.md`. Omit to generate from git only |
+| `--output <file>` | No | Save the description to a file instead of the terminal |
 
 **What it does:**
 
-- Executes `git diff --staged` to retrieve staged changes
-- Analyzes the staged diff only, with a body when needed to cover material changes
-- Follows Conventional Commits specification
-- In execute mode (default): commits through content verification while preserving Git hooks
-- In preview mode (`-p`): displays message without committing
-- Reports error if no staged changes exist
+- Collects git context (current branch, remote URL, commits ahead, file changes, full diff, commit messages) against the target branch
+- Auto-detects the platform from the remote URL: GitHub → "Pull Request", GitLab → "Merge Request", other/none → defaults to GitHub terminology with a warning
+- Loads `.codexspec/memory/constitution.md` when present and aligns the description with documentation/code-review standards
+- Honors `language.commit` (then `language.output`, then English) for the description language; technical terms (API, JWT, PR, MR) stay in English where appropriate
+- When `--spec` is provided, adds a Context section with user stories and requirements pulled from spec.md; otherwise generates purely from the diff
+- Emits sections per `--sections` (Summary, Changes, Testing, Verification Steps, Pre-merge Checklist, Notes / Breaking Changes)
 
 **Example:**
 
 ```text
-You: /codexspec:commit-staged
+You: /codexspec:pr --spec 2026-0613-1200ab-task-management
 
-AI:  Analyzing staged changes...
+AI:  Generating Pull Request description...
 
-     Files staged:
-     - src/auth/service.py
-     - tests/test_auth.py
+     Platform: GitHub (github.com/example/taskman)
+     Branch:   feature/task-management  →  origin/main
+     Commits:  8 ahead
 
-     Generated commit message:
-     feat(auth): implement token refresh logic
+     ## Pull Request: Task management for small dev teams
 
-     - Add refresh token generation
-     - Include token expiration handling
-     - Add tests for refresh flow
+     ### Context
+     - User stories and REQ-* pulled from spec.md
 
-     Executing commit...
+     ### Summary
+     - Adds task CRUD, sub-tasks, and real-time updates
 
-     ✓ Committed: def5678
-```
+     ### Changes
+     - src/taskman/models/task.py (new)
+     - src/taskman/api/tasks.py (new)
+     - ...
 
-**Preview Mode Example:**
-
-```text
-You: /codexspec:commit-staged -p
-
-AI:  Preview mode - no commit will be executed
-
-     Suggested commit message:
-     feat(auth): implement token refresh logic
-
-     - Add refresh token generation
-     - Include token expiration handling
-     - Add tests for refresh flow
+     ### Verification Steps
+     1. `uv run pytest`
+     2. `uv run codexspec check`
 ```
 
 **Tips:**
 
-- Stage changes first with `git add`
-- Only analyzes staged content - respects Git's two-stage commit workflow
-- If content changes, prepare staging and analyze again before committing
-- Helper workflows use preview against their explicit prepared index and finalize with the full message
-- Use `-p` flag to preview before committing
-- Follows Conventional Commits specification by default
+- Skip `--spec` for small bug fixes or changes with no formal specification
+- Combine with `/codexspec:commit-staged` to produce both a commit message and a PR description from the same work
+- See the [PR description generator case study](../case-studies/case-study-pr-description-generator.md) for a worked, end-to-end example of this command (including how spec.md context is wired in)
+
+---
+
+### `/codexspec:release-notes`
+
+```text
+/codexspec:commit-staged -p
+/codexspec:pr --spec <feature-dir>/spec.md
+/codexspec:release-notes --from <ref> --to HEAD
+/codexspec:tasks-to-issues <feature-dir>
+```
+
+- **commit-staged** analyzes the exact staging area and generates a Conventional
+  Commits message; `-p` previews without committing. The calling workflow chooses
+  and stages files. Authorized execution uses the guarded runtime, rechecking that
+  committed content matches the analysis. Agent commit guidance applies in ordinary
+  conversation, SDD, blueprint, and auto-dev workflows; command availability alone
+  does not invoke it or authorize a commit.
+- **pr** generates a structured GitHub PR or GitLab MR description from the diff.
+  `--spec` optionally adds feature context from a `spec.md` file path, or a
+  feature directory name or prefix resolved to that file. Default output is text
+  for use in the hosting platform.
+- **release-notes** derives a Keep a Changelog entry and release body from Git
+  history. The default section is `[Unreleased]`; `--version` uses a supplied
+  label. It does not stage, commit, bump versions, tag, publish, or create a release.
+- **tasks-to-issues** creates GitHub issues from existing tasks, including
+  dependencies and acceptance criteria. It requires an authenticated GitHub CLI
+  and verifies that the issue repository matches the configured remote.
+
+Direct commit preview and authorized in-place commits require Python 3.11+ and
+Git; the runtime is installed with CLI projects and bundled with the Claude plugin.
+Contentful agent-created merges also use staged analysis. History-only merges
+retain Git's default message while validating the tree and parents; fast-forwards
+create no commit.
+
+#### Release-note options
+
+| Commands | Reference |
+|---|---|
+| `--version <X.Y.Z>` | Supplied version label; otherwise `[Unreleased]` |
+| `--from <ref>` | Start ref; otherwise latest reachable tag, then an anchorable changelog version, then full history |
+| `--to <ref>` | End ref; default `HEAD` |
+| `--output <file>` | Write release body to this file; otherwise terminal output |
+| `--spec <feature>` | Optional feature context; an unresolved feature is reported and generation continues from Git |
 
 ---
 
@@ -1061,7 +1176,7 @@ Review the selected Git change as a strict defect gate before merge. The default
 <!-- REVIEW-CODE-BREAKING: DEFAULT-GATE -->
 <!-- REVIEW-CODE-BREAKING: PATH-AUDIT -->
 
-**Breaking change in the next release:**
+**Default review mode:**
 
 - The default command is now a change-scoped defect gate, not a broad quality scorecard.
 - Positional paths are no longer valid. Use `--audit` when you intentionally want the advisory path scorecard.
@@ -1097,7 +1212,9 @@ AI:  ## Verdict
 
 **Applicable standards and maintenance.** Every review reads the shared rules and the selected mode, assesses all seven dimensions, and loads detailed checks only when the actual behavior, contract, or dependency makes them relevant. Language and framework checks can also be activated by unchanged dependencies discovered during tracing. Current maintenance problems need concrete evidence and a compatible, local improvement; speculative future complexity and style thresholds alone do not justify repairs. The existing defect envelope remains version 3; a separate `<review-code-maintenance>` version 1 companion reports suggestions bound to the same target fingerprint. Standalone review only reports them. `implement-tasks` verifies and applies them according to `workflow.auto_maintenance` (default `true`). Repairs continue while substantive progress occurs and obey the existing stop guards. There is no fixed round cap; final acceptance requires a fresh complete review.
 
-`codexspec config --auto-maintenance on|off` persists `workflow.auto_maintenance` as a YAML boolean in `.codexspec/config.yml`; an absent key means `true`. Both workflow switches accept case-insensitive `on/true/1/yes` and `off/false/0/no`. `implement-tasks` reads this setting when it automatically repairs reviewed code: `on` includes substantiated incremental maintenance improvements; `off` still reports them. Actual defects and required verification remain mandatory. This setting is independent of `auto-next` and is not an `implement-tasks` invocation parameter.
+Boolean CLI switches accept case-insensitive `on/true/1/yes` and
+`off/false/0/no`, including surrounding whitespace. A bare boolean switch toggles
+the destination checkout's current value; stored YAML values are booleans.
 
 `codexspec init` installs shared review resources into `.codexspec/review-code/` for Claude Code and Codex. `--force` refreshes shipped resources while preserving extension files with different paths. Installing the CLI alone does not create project files. Plugin-only review uses the same resources from the host-resolved plugin root when the project has no installed resource tree.
 
@@ -1164,119 +1281,79 @@ AI:  # Code Review Report
 
 - Pass multiple paths to review a focused slice, e.g., `src/ tests/`
 - The score is advisory; CRITICAL/HIGH findings are the actionable signal
-- For Python-only or React-only projects, prefer the dedicated `/codexspec:review-python-code` or `/codexspec:review-react-code` for deeper, language-specific checks
-- Re-run after fixes to confirm the score recovers (≥ 95 expected once CRITICAL/HIGH issues are resolved)
 
 ---
 
-### `/codexspec:review-python-code`
+### `/codexspec:config`
 
-Review Python code for PEP 8 compliance, type safety, engineering robustness, and constitution consistency.
+Manage project configuration interactively (create/view/modify/reset). This is the slash-command counterpart to the `codexspec config` CLI, ideal for Plugin Marketplace installs.
 
 **Syntax:**
 
 ```
-/codexspec:review-python-code [path...]
+/codexspec:config [--view]
 ```
 
 **Arguments:**
 
 | Argument | Required | Description |
 |----------|----------|-------------|
-| `path...` | No | One or more Python files or directories to review (space-separated). Defaults to `src/` if omitted |
+| `--view` | No | Display the current configuration without modifying it. With no arguments, opens the interactive management menu |
 
 **What it does:**
 
-- Runs `ruff check` for PEP 8 / linting results and `mypy` for type-checking results
-- Reviews four Python-specific dimensions: Pythonic & KISS Principle, Type Safety & Explicitness, Engineering Robustness, and Constitution Alignment
-- Checks type-annotation completeness, broad-exception handling, and `raise ... from err` context preservation
-- Validates resource management (`with` context managers), async/await correctness, and structured `logging` discipline
-- Cross-references findings against `.codexspec/memory/constitution.md` MUST/SHOULD principles when present
-- Classifies findings by severity: CRITICAL (constitution MUST violations, logic bugs, security vulnerabilities), HIGH (type-safety gaps, ruff/mypy errors, resource leaks), MEDIUM (design/refactor opportunities, missing annotations), LOW (readability, Pythonic sugar)
+- Targets `.codexspec/config.yml` exclusively
+- `--view` (or the "View current config" menu option) prints the file in a readable format; reports "Configuration Not Found" if absent
+- Interactive mode, when a config exists, offers: View, Modify, Reset to defaults, Cancel
+- If no config exists, runs the creation flow that writes a minimal, `output`-only config (interaction/document/commit resolve to `output`, then `en`, so an `output`-only file is fully functional)
+- Lets you set each language dimension independently (output, interaction, document, commit) and toggle workflow options such as `auto_next`
+
+**What it creates/edits:**
+
+```
+.codexspec/config.yml
+```
 
 **Example:**
 
 ```text
-You: /codexspec:review-python-code src/codexspec/
+You: /codexspec:config
 
-AI:  # Python Code Review Report
+AI:  ## Configuration Manager
 
-     ## Static Analysis
-     | Tool  | Status | Issues |
-     |-------|--------|--------|
-     | ruff  | Pass   | 0      |
-     | mypy  | Pass   | 0      |
+     Configuration file found at .codexspec/config.yml.
+     What would you like to do?
+     - View current config
+     - Modify config
+     - Reset to defaults
+     - Cancel
 
-     ## Findings
-     ### Warnings (HIGH)
-     - [ ] [CODE-002] src/codexspec/__init__.py:218 - public function missing return type annotation
-       Suggestion: add the return type and verify with mypy.
+You: Modify config
 
-     ### Suggestions (LOW)
-     - [ ] [CODE-004] src/codexspec/cli.py:140 - use `pathlib.Path` instead of `os.path` string concatenation
+AI:  Select a dimension to change:
+     - Output language (base)
+     - Interaction language
+     - Document language
+     - Commit-message language
+     - workflow.auto_next
+     - workflow.auto_distill
+     - workflow.auto_maintenance
+     - workflow.worktrees (default on; checkout-local)
+     - review.decided_by
+
+You: Output language (base) → zh-CN
+
+AI:  ✓ Updated language.output: "zh-CN"
+     (interaction and document fall back to output, then en.)
 ```
 
 **Tips:**
 
-- Use instead of `/codexspec:review-code` when the target is Python-only and you want the PEP 8 / type-safety depth
-- Both `ruff` and `mypy` must be installed and configured in the target project for full coverage; the command reports degraded coverage when they are absent
-- Constitution MUST principles are scored; language-agnostic meta-principles (testability, simplicity) apply when no constitution exists
+- Use `/codexspec:config --view` to inspect the current state before changing anything
+- A fresh or reset config writes only `output`; set `interaction`/`document` only when they should differ from `output`
+- For scripted changes in a terminal, prefer the `codexspec config` CLI (`--set-lang`, `--set-interaction-lang`, `--set-document-lang`, `--set-commit-lang`, `--auto-next`)
 
----
-
-### `/codexspec:review-react-code`
-
-Review React/TypeScript code for component architecture, Hooks rules, state management, performance, and constitution consistency.
-
-**Syntax:**
-
-```
-/codexspec:review-react-code [path...]
-```
-
-**Arguments:**
-
-| Argument | Required | Description |
-|----------|----------|-------------|
-| `path...` | No | One or more React/TypeScript files or directories to review (space-separated; expects `.tsx`, `.ts`, `.jsx`, `.js`). Defaults to `src/` if omitted |
-
-**What it does:**
-
-- Runs `npx eslint` (when an ESLint config exists) and `npx tsc --noEmit` (when a `tsconfig.json` exists)
-- Reviews four React-specific dimensions: Component Atomicity & Single Responsibility, Hooks Compliance & Side-Effects Management, State Management & Data Flow, and Performance & Robustness
-- Verifies `useEffect` dependency arrays are exhaustive, detects derived-state-as-state misuse, and flags unnecessary effects
-- Checks for stale-closure risks, missing effect cleanup, prop drilling, unmemoized expensive renders, and missing loading/error states
-- Cross-references findings against `.codexspec/memory/constitution.md` when present
-- Classifies findings by severity: CRITICAL (Hooks-of violations, race conditions), HIGH (missing cleanup, unhandled promise rejections), MEDIUM (refactor candidates), LOW (readability)
-
-**Example:**
-
-```text
-You: /codexspec:review-react-code src/components/
-
-AI:  # React Code Review Report
-
-     ## Static Analysis
-     | Tool  | Status | Issues |
-     |-------|--------|--------|
-     | eslint| Warn   | 2      |
-     | tsc   | Pass   | 0      |
-
-     ## Findings
-     ### Critical Issues (CRITICAL)
-     - [ ] [CODE-001] src/components/UserProfile.tsx:38 - `useEffect` missing `userId` in dependency array
-       Impact: stale closure fetches the wrong user after navigation.
-       Suggestion: add `userId` to the dependency array or extract to a custom hook.
-
-     ### Suggestions (LOW)
-     - [ ] [CODE-004] src/components/Button.tsx:12 - extract derived value instead of `useState`
-```
-
-**Tips:**
-
-- Use instead of `/codexspec:review-code` when the target is React/TypeScript-only and you want Hooks/component-architecture depth
-- Both ESLint and a `tsconfig.json` should be present for full coverage; the command reports degraded coverage when they are absent
-- React findings layer on top of the base TypeScript checks, so type-safety issues are still surfaced
+The interactive menu also manages `workflow.auto_distill`, `workflow.auto_maintenance`, `workflow.worktrees`, and `review.decided_by`. Configuration changes follow checkout-local worktree routing.
 
 ---
 
@@ -1347,210 +1424,3 @@ AI:  Running generate-spec → design-to-plan → plan-to-tasks → implement-ta
 - If any generation review returns `NEEDS_REVISION`/`BLOCKED`, Quick stops and hands control back to you
 
 ---
-
-### `/codexspec:pr`
-
-Generate a structured GitHub Pull Request / GitLab Merge Request description from the git diff. Optionally integrates `spec.md` for SDD-traced context.
-
-**Syntax:**
-
-```
-/codexspec:pr [--target-branch <branch>] [--sections <list>] [--spec <id-or-path>] [--output <file>]
-```
-
-**Arguments:**
-
-| Argument | Required | Description |
-|----------|----------|-------------|
-| `--target-branch <branch>` | No | Branch to compare against (default: `origin/main`) |
-| `--sections <list>` | No | Comma-separated subset of `summary, changes, testing, verify, checklist, notes` (default: `all`) |
-| `--spec <id-or-path>` | No | Opt-in spec integration: a feature id (e.g., `2025-0321-1430k7-auth`) resolved under `.codexspec/specs/`, or an explicit `path/to/spec.md`. Omit to generate from git only |
-| `--output <file>` | No | Save the description to a file instead of the terminal |
-
-**What it does:**
-
-- Collects git context (current branch, remote URL, commits ahead, file changes, full diff, commit messages) against the target branch
-- Auto-detects the platform from the remote URL: GitHub → "Pull Request", GitLab → "Merge Request", other/none → defaults to GitHub terminology with a warning
-- Loads `.codexspec/memory/constitution.md` when present and aligns the description with documentation/code-review standards
-- Honors `language.commit` (then `language.output`, then English) for the description language; technical terms (API, JWT, PR, MR) stay in English where appropriate
-- When `--spec` is provided, adds a Context section with user stories and requirements pulled from spec.md; otherwise generates purely from the diff
-- Emits sections per `--sections` (Summary, Changes, Testing, Verification Steps, Pre-merge Checklist, Notes / Breaking Changes)
-
-**Example:**
-
-```text
-You: /codexspec:pr --spec 2026-0613-1200ab-task-management
-
-AI:  Generating Pull Request description...
-
-     Platform: GitHub (github.com/example/taskman)
-     Branch:   feature/task-management  →  origin/main
-     Commits:  8 ahead
-
-     ## Pull Request: Task management for small dev teams
-
-     ### Context
-     - User stories and REQ-* pulled from spec.md
-
-     ### Summary
-     - Adds task CRUD, sub-tasks, and real-time updates
-
-     ### Changes
-     - src/taskman/models/task.py (new)
-     - src/taskman/api/tasks.py (new)
-     - ...
-
-     ### Verification Steps
-     1. `uv run pytest`
-     2. `uv run codexspec check`
-```
-
-**Tips:**
-
-- Skip `--spec` for small bug fixes or changes with no formal specification
-- Combine with `/codexspec:commit-staged` to produce both a commit message and a PR description from the same work
-- See the [PR description generator case study](../case-studies/case-study-pr-description-generator.md) for a worked, end-to-end example of this command (including how spec.md context is wired in)
-
----
-
-### `/codexspec:config`
-
-Manage project configuration interactively (create/view/modify/reset). This is the slash-command counterpart to the `codexspec config` CLI, ideal for Plugin Marketplace installs.
-
-**Syntax:**
-
-```
-/codexspec:config [--view]
-```
-
-**Arguments:**
-
-| Argument | Required | Description |
-|----------|----------|-------------|
-| `--view` | No | Display the current configuration without modifying it. With no arguments, opens the interactive management menu |
-
-**What it does:**
-
-- Targets `.codexspec/config.yml` exclusively
-- `--view` (or the "View current config" menu option) prints the file in a readable format; reports "Configuration Not Found" if absent
-- Interactive mode, when a config exists, offers: View, Modify, Reset to defaults, Cancel
-- If no config exists, runs the creation flow that writes a minimal, `output`-only config (interaction/document/commit resolve to `output`, then `en`, so an `output`-only file is fully functional)
-- Lets you set each language dimension independently (output, interaction, document, commit) and toggle workflow options such as `auto_next`
-
-**What it creates/edits:**
-
-```
-.codexspec/config.yml
-```
-
-**Example:**
-
-```text
-You: /codexspec:config
-
-AI:  ## Configuration Manager
-
-     Configuration file found at .codexspec/config.yml.
-     What would you like to do?
-     - View current config
-     - Modify config
-     - Reset to defaults
-     - Cancel
-
-You: Modify config
-
-AI:  Select a dimension to change:
-     - Output language (base)
-     - Interaction language
-     - Document language
-     - Commit-message language
-     - workflow.auto_next
-     - workflow.worktrees (default on; checkout-local)
-
-You: Output language (base) → zh-CN
-
-AI:  ✓ Updated language.output: "zh-CN"
-     (interaction and document fall back to output, then en.)
-```
-
-**Tips:**
-
-- Use `/codexspec:config --view` to inspect the current state before changing anything
-- A fresh or reset config writes only `output`; set `interaction`/`document` only when they should differ from `output`
-- For scripted changes in a terminal, prefer the `codexspec config` CLI (`--set-lang`, `--set-interaction-lang`, `--set-document-lang`, `--set-commit-lang`, `--auto-next`)
-
----
-
-## Workflow Overview
-
-```text
-Idea → /specify → requirements.md → /generate-spec → spec.md → /spec-to-design → design.md → /design-to-plan → plan.md → /plan-to-tasks → tasks.md → /implement
-                                                   │                         │                            │
-                                              Review spec               Review plan                  Review tasks
-```
-
-Each review is a human checkpoint. It validates fidelity and intrinsic quality using evidence-backed findings. Advisory design suggestions remain separate and never block progression. Verified defects may be fixed and re-reviewed for at most two rounds.
-
----
-
-## Troubleshooting
-
-### "Feature directory not found"
-
-The command couldn't locate the feature directory.
-
-**Solutions:**
-
-- Run `codexspec init` first to initialize the project
-- Check that `.codexspec/specs/` directory exists
-- Verify you're in the correct project directory
-- Pass an explicit feature directory or artifact path when multiple candidates exist
-
-### "No spec.md found"
-
-The specification file doesn't exist yet.
-
-**Solutions:**
-
-- Run `/codexspec:specify` to clarify requirements first
-- Then run `/codexspec:generate-spec` to create spec.md
-
-### "Constitution not found"
-
-No project constitution exists.
-
-**Solutions:**
-
-- Run `/codexspec:constitution` to create one
-- Constitution is optional but recommended for consistent decisions
-
-### "Tasks file not found"
-
-The tasks breakdown doesn't exist.
-
-**Solutions:**
-
-- Ensure you've run `/codexspec:design-to-plan` first
-- Then run `/codexspec:plan-to-tasks` to create tasks.md
-
-### "GitHub CLI not authenticated"
-
-The `/codexspec:tasks-to-issues` command requires GitHub authentication.
-
-**Solutions:**
-
-- Install GitHub CLI: `brew install gh` (macOS) or equivalent
-- Authenticate: `gh auth login`
-- Verify: `gh auth status`
-
----
-
-## Next Steps
-
-- [Workflow](workflow.md) - Common patterns and when to use each command
-- [CLI](../reference/cli.md) - Terminal commands for project initialization
-
-All mutating commands follow [worktree routing](workflow.md#worktree-development) by
-default. Read-only inspection retains its selected source. Configuration edits report
-the actual checkout they affect; use `codexspec config --worktrees on|off` or a bare
-`--worktrees` toggle to change the setting.
