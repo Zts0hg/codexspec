@@ -91,6 +91,15 @@ respeten esa intención. Al activar la automatización, el trabajo avanza por la
 etapas que superan la revisión; el agente no puede sustituir los requisitos
 confirmados sin avisar.
 
+<!-- workflow-diagram:start -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/workflow/workflow-es-dark.png">
+  <img alt="CodexSpec: desarrollo guiado por requisitos, revisiones por etapa y reutilización de la experiencia" src="assets/workflow/workflow-es-light.png">
+</picture>
+
+Ver a tamaño completo: [☀️](assets/workflow/workflow-es-light.png) · [🌙](assets/workflow/workflow-es-dark.png)
+<!-- workflow-diagram:end -->
+
 ## Inicio rápido en 30 segundos
 
 Instala CodexSpec e inicializa el proyecto para el asistente que utilices:

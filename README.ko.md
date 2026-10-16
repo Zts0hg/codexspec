@@ -81,6 +81,15 @@ Idea → Confirmed Requirements →     Spec    →     Design    →     Plan  
 자동 리뷰는 만들어진 산출물이 그 의도에 부합하는지 확인합니다.
 자동화를 켜면 통과한 단계에서 다음 단계로 진행합니다. 에이전트가 확정된 요구사항을 알리지 않고 바꿀 수는 없습니다.
 
+<!-- workflow-diagram:start -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/workflow/workflow-ko-dark.png">
+  <img alt="CodexSpec: 요구사항 우선 개발 절차, 단계별 검토와 경험을 다음 개발에 반영하는 순환" src="assets/workflow/workflow-ko-light.png">
+</picture>
+
+원본 크기로 보기: [☀️](assets/workflow/workflow-ko-light.png) · [🌙](assets/workflow/workflow-ko-dark.png)
+<!-- workflow-diagram:end -->
+
 ## 30초 빠른 시작
 
 CodexSpec을 설치하고 사용할 어시스턴트에 맞게 프로젝트를 초기화합니다.

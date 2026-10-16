@@ -1,0 +1,2187 @@
+{
+  "wf-title": {
+    "en": "CodexSpec · Standardized AI development and continuous learning",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "CodexSpec · 标准化 AI 开发与经验迭代",
+        "source": "CodexSpec · Standardized AI development and continuous learning"
+      },
+      "ja": {
+        "text": "CodexSpec · AI 開発の標準化と継続的な知識の蓄積",
+        "source": "CodexSpec · Standardized AI development and continuous learning"
+      },
+      "ko": {
+        "text": "CodexSpec · 표준화된 AI 개발과 지속적인 경험 축적",
+        "source": "CodexSpec · Standardized AI development and continuous learning"
+      },
+      "de": {
+        "text": "CodexSpec · Standardisierte KI-Entwicklung und kontinuierliches Lernen",
+        "source": "CodexSpec · Standardized AI development and continuous learning"
+      },
+      "fr": {
+        "text": "CodexSpec · Développement IA standardisé et amélioration par l’expérience",
+        "source": "CodexSpec · Standardized AI development and continuous learning"
+      },
+      "es": {
+        "text": "CodexSpec · Desarrollo con IA estandarizado y aprendizaje continuo",
+        "source": "CodexSpec · Standardized AI development and continuous learning"
+      },
+      "pt-BR": {
+        "text": "CodexSpec · Desenvolvimento com IA padronizado e aprendizado contínuo",
+        "source": "CodexSpec · Standardized AI development and continuous learning"
+      }
+    }
+  },
+  "wf-subtitle": {
+    "en": "You decide what to build and why; the agent develops the approach, implements and verifies it within confirmed requirements.",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "你决定做什么、为什么做；智能体在已确认需求的约束下，细化方案、实施并验证。",
+        "source": "You decide what to build and why; the agent develops the approach, implements and verifies it within confirmed requirements."
+      },
+      "ja": {
+        "text": "何を、なぜ作るかはあなたが決めます。エージェントは確定した要件の範囲内で方針を具体化し、実装と検証を進めます。",
+        "source": "You decide what to build and why; the agent develops the approach, implements and verifies it within confirmed requirements."
+      },
+      "ko": {
+        "text": "무엇을 왜 만들지는 사용자가 결정합니다. 에이전트는 확정된 요구사항 안에서 방안을 구체화하고 구현과 검증을 진행합니다.",
+        "source": "You decide what to build and why; the agent develops the approach, implements and verifies it within confirmed requirements."
+      },
+      "de": {
+        "text": "Sie entscheiden, was entwickelt wird und warum. Der Agent konkretisiert den Lösungsweg, implementiert und prüft ihn innerhalb der bestätigten Anforderungen.",
+        "source": "You decide what to build and why; the agent develops the approach, implements and verifies it within confirmed requirements."
+      },
+      "fr": {
+        "text": "Vous décidez quoi construire et pourquoi ; l’agent précise la solution, la réalise et la vérifie dans le cadre des exigences confirmées.",
+        "source": "You decide what to build and why; the agent develops the approach, implements and verifies it within confirmed requirements."
+      },
+      "es": {
+        "text": "Tú decides qué construir y por qué; el agente concreta la solución, la implementa y la verifica dentro de los requisitos confirmados.",
+        "source": "You decide what to build and why; the agent develops the approach, implements and verifies it within confirmed requirements."
+      },
+      "pt-BR": {
+        "text": "Você decide o que construir e por quê; o agente detalha a solução, implementa e verifica dentro dos requisitos confirmados.",
+        "source": "You decide what to build and why; the agent develops the approach, implements and verifies it within confirmed requirements."
+      }
+    }
+  },
+  "wf-legend-req": {
+    "en": "Requirements & confirmation",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "需求与确认",
+        "source": "Requirements & confirmation"
+      },
+      "ja": {
+        "text": "要件と確認",
+        "source": "Requirements & confirmation"
+      },
+      "ko": {
+        "text": "요구사항과 확인",
+        "source": "Requirements & confirmation"
+      },
+      "de": {
+        "text": "Anforderungen und Bestätigung",
+        "source": "Requirements & confirmation"
+      },
+      "fr": {
+        "text": "Exigences et confirmation",
+        "source": "Requirements & confirmation"
+      },
+      "es": {
+        "text": "Requisitos y confirmación",
+        "source": "Requirements & confirmation"
+      },
+      "pt-BR": {
+        "text": "Requisitos e confirmação",
+        "source": "Requirements & confirmation"
+      }
+    }
+  },
+  "wf-legend-flow": {
+    "en": "Specification & implementation",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "规格与实施",
+        "source": "Specification & implementation"
+      },
+      "ja": {
+        "text": "仕様と実装",
+        "source": "Specification & implementation"
+      },
+      "ko": {
+        "text": "명세와 구현",
+        "source": "Specification & implementation"
+      },
+      "de": {
+        "text": "Spezifikation und Umsetzung",
+        "source": "Specification & implementation"
+      },
+      "fr": {
+        "text": "Spécification et réalisation",
+        "source": "Specification & implementation"
+      },
+      "es": {
+        "text": "Especificación e implementación",
+        "source": "Specification & implementation"
+      },
+      "pt-BR": {
+        "text": "Especificação e implementação",
+        "source": "Specification & implementation"
+      }
+    }
+  },
+  "wf-legend-review": {
+    "en": "Review & repair",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "审查与修复",
+        "source": "Review & repair"
+      },
+      "ja": {
+        "text": "レビューと修正",
+        "source": "Review & repair"
+      },
+      "ko": {
+        "text": "검토와 수정",
+        "source": "Review & repair"
+      },
+      "de": {
+        "text": "Review und Korrektur",
+        "source": "Review & repair"
+      },
+      "fr": {
+        "text": "Revue et correction",
+        "source": "Review & repair"
+      },
+      "es": {
+        "text": "Revisión y corrección",
+        "source": "Review & repair"
+      },
+      "pt-BR": {
+        "text": "Revisão e correção",
+        "source": "Review & repair"
+      }
+    }
+  },
+  "wf-legend-knowledge": {
+    "en": "Learning & reuse",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "经验与复用",
+        "source": "Learning & reuse"
+      },
+      "ja": {
+        "text": "知識の蓄積と再利用",
+        "source": "Learning & reuse"
+      },
+      "ko": {
+        "text": "경험 축적과 재사용",
+        "source": "Learning & reuse"
+      },
+      "de": {
+        "text": "Erfahrung und Wiederverwendung",
+        "source": "Learning & reuse"
+      },
+      "fr": {
+        "text": "Expérience et réutilisation",
+        "source": "Learning & reuse"
+      },
+      "es": {
+        "text": "Experiencia y reutilización",
+        "source": "Learning & reuse"
+      },
+      "pt-BR": {
+        "text": "Experiência e reutilização",
+        "source": "Learning & reuse"
+      }
+    }
+  },
+  "wf-inquiry-kicker": {
+    "en": "REQUIREMENTS / INQUIRY",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "REQUIREMENTS / INQUIRY",
+        "source": "REQUIREMENTS / INQUIRY"
+      },
+      "ja": {
+        "text": "要件 / ヒアリング",
+        "source": "REQUIREMENTS / INQUIRY"
+      },
+      "ko": {
+        "text": "요구사항 / 질의",
+        "source": "REQUIREMENTS / INQUIRY"
+      },
+      "de": {
+        "text": "ANFORDERUNGEN / RÜCKFRAGEN",
+        "source": "REQUIREMENTS / INQUIRY"
+      },
+      "fr": {
+        "text": "EXIGENCES / QUESTIONS",
+        "source": "REQUIREMENTS / INQUIRY"
+      },
+      "es": {
+        "text": "REQUISITOS / PREGUNTAS",
+        "source": "REQUIREMENTS / INQUIRY"
+      },
+      "pt-BR": {
+        "text": "REQUISITOS / PERGUNTAS",
+        "source": "REQUIREMENTS / INQUIRY"
+      }
+    }
+  },
+  "wf-inquiry-title": {
+    "en": "Requirements reconciliation · Questions to resolve",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "需求对账清单 · 问询情况",
+        "source": "Requirements reconciliation · Questions to resolve"
+      },
+      "ja": {
+        "text": "要件の照合リスト · ヒアリングで確認すること",
+        "source": "Requirements reconciliation · Questions to resolve"
+      },
+      "ko": {
+        "text": "요구사항 대조 목록 · 질의 시 확인할 사항",
+        "source": "Requirements reconciliation · Questions to resolve"
+      },
+      "de": {
+        "text": "Anforderungsabgleich · Offene Fragen klären",
+        "source": "Requirements reconciliation · Questions to resolve"
+      },
+      "fr": {
+        "text": "Liste de rapprochement des exigences · Points à clarifier",
+        "source": "Requirements reconciliation · Questions to resolve"
+      },
+      "es": {
+        "text": "Lista de cotejo de requisitos · Cuestiones por aclarar",
+        "source": "Requirements reconciliation · Questions to resolve"
+      },
+      "pt-BR": {
+        "text": "Conferência de requisitos · Pontos a esclarecer",
+        "source": "Requirements reconciliation · Questions to resolve"
+      }
+    }
+  },
+  "wf-care": {
+    "en": "What matters to me",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "我关心的",
+        "source": "What matters to me"
+      },
+      "ja": {
+        "text": "自分で決めたいこと",
+        "source": "What matters to me"
+      },
+      "ko": {
+        "text": "직접 결정할 사항",
+        "source": "What matters to me"
+      },
+      "de": {
+        "text": "Was mir wichtig ist",
+        "source": "What matters to me"
+      },
+      "fr": {
+        "text": "Ce qui compte pour moi",
+        "source": "What matters to me"
+      },
+      "es": {
+        "text": "Lo que me importa",
+        "source": "What matters to me"
+      },
+      "pt-BR": {
+        "text": "O que importa para mim",
+        "source": "What matters to me"
+      }
+    }
+  },
+  "wf-care-action": {
+    "en": "Raise it during inquiry and clarify the details",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "提前到问询环节，并且聊清楚",
+        "source": "Raise it during inquiry and clarify the details"
+      },
+      "ja": {
+        "text": "ヒアリングの段階で取り上げ、詳しく確認する",
+        "source": "Raise it during inquiry and clarify the details"
+      },
+      "ko": {
+        "text": "질의 단계에서 미리 다루고 세부 내용을 명확히 확인",
+        "source": "Raise it during inquiry and clarify the details"
+      },
+      "de": {
+        "text": "Schon im Anforderungsgespräch ansprechen und im Detail klären",
+        "source": "Raise it during inquiry and clarify the details"
+      },
+      "fr": {
+        "text": "L’aborder dès les questions initiales et préciser les détails",
+        "source": "Raise it during inquiry and clarify the details"
+      },
+      "es": {
+        "text": "Plantearlo durante las preguntas iniciales y aclarar los detalles",
+        "source": "Raise it during inquiry and clarify the details"
+      },
+      "pt-BR": {
+        "text": "Abordar já nas perguntas iniciais e esclarecer os detalhes",
+        "source": "Raise it during inquiry and clarify the details"
+      }
+    }
+  },
+  "wf-not-care": {
+    "en": "What I leave open",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "我不关心的",
+        "source": "What I leave open"
+      },
+      "ja": {
+        "text": "任せられること",
+        "source": "What I leave open"
+      },
+      "ko": {
+        "text": "맡겨도 되는 사항",
+        "source": "What I leave open"
+      },
+      "de": {
+        "text": "Was ich offenlasse",
+        "source": "What I leave open"
+      },
+      "fr": {
+        "text": "Ce que je laisse au choix",
+        "source": "What I leave open"
+      },
+      "es": {
+        "text": "Lo que dejo abierto",
+        "source": "What I leave open"
+      },
+      "pt-BR": {
+        "text": "O que deixo em aberto",
+        "source": "What I leave open"
+      }
+    }
+  },
+  "wf-not-care-action": {
+    "en": "Define where the agent may choose independently",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "说明可由智能体自行选择的范围",
+        "source": "Define where the agent may choose independently"
+      },
+      "ja": {
+        "text": "エージェントが自律的に選べる範囲を明示する",
+        "source": "Define where the agent may choose independently"
+      },
+      "ko": {
+        "text": "에이전트가 스스로 선택할 수 있는 범위를 명시",
+        "source": "Define where the agent may choose independently"
+      },
+      "de": {
+        "text": "Festlegen, wo der Agent selbst entscheiden darf",
+        "source": "Define where the agent may choose independently"
+      },
+      "fr": {
+        "text": "Définir les choix que l’agent peut faire seul",
+        "source": "Define where the agent may choose independently"
+      },
+      "es": {
+        "text": "Definir qué puede elegir el agente por su cuenta",
+        "source": "Define where the agent may choose independently"
+      },
+      "pt-BR": {
+        "text": "Definir o que o agente pode escolher por conta própria",
+        "source": "Define where the agent may choose independently"
+      }
+    }
+  },
+  "wf-inquiry-detail": {
+    "en": "Confirm key details and expectations to avoid solutions that work but miss your intent.\nYour confirmation of the final summary establishes the authoritative requirements record.",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "确认关键细节与预期，避免采用可行但不符合预期的方案。\n最终需求摘要经用户确认后，形成权威需求记录。",
+        "source": "Confirm key details and expectations to avoid solutions that work but miss your intent.\nYour confirmation of the final summary establishes the authoritative requirements record."
+      },
+      "ja": {
+        "text": "重要な詳細と期待を確認し、実現可能でも意図に合わない案を避けます。\n最終的な要件のまとめをユーザーが確認すると、正式な要件記録になります。",
+        "source": "Confirm key details and expectations to avoid solutions that work but miss your intent.\nYour confirmation of the final summary establishes the authoritative requirements record."
+      },
+      "ko": {
+        "text": "핵심 세부사항과 기대를 확인해, 실행 가능하더라도 의도에 맞지 않는 방안을 피합니다.\n사용자가 최종 요구사항 요약을 확인하면 공식 요구사항 기록이 됩니다.",
+        "source": "Confirm key details and expectations to avoid solutions that work but miss your intent.\nYour confirmation of the final summary establishes the authoritative requirements record."
+      },
+      "de": {
+        "text": "Wichtige Details und Erwartungen klären, damit eine machbare Lösung auch zur Absicht passt.\nErst die Bestätigung der abschließenden Zusammenfassung macht den Anforderungsstand verbindlich.",
+        "source": "Confirm key details and expectations to avoid solutions that work but miss your intent.\nYour confirmation of the final summary establishes the authoritative requirements record."
+      },
+      "fr": {
+        "text": "Confirmer les détails essentiels et les attentes pour éviter une solution réalisable qui ne répond pas à votre intention.\nVotre confirmation du résumé final établit la référence faisant autorité pour les exigences.",
+        "source": "Confirm key details and expectations to avoid solutions that work but miss your intent.\nYour confirmation of the final summary establishes the authoritative requirements record."
+      },
+      "es": {
+        "text": "Confirma los detalles clave y las expectativas para evitar soluciones viables que no respondan a tu intención.\nTu confirmación del resumen final establece el registro de requisitos que sirve de referencia autorizada.",
+        "source": "Confirm key details and expectations to avoid solutions that work but miss your intent.\nYour confirmation of the final summary establishes the authoritative requirements record."
+      },
+      "pt-BR": {
+        "text": "Confirme os detalhes essenciais e as expectativas para evitar soluções viáveis que não atendam à sua intenção.\nA confirmação do resumo final pelo usuário estabelece o registro oficial dos requisitos.",
+        "source": "Confirm key details and expectations to avoid solutions that work but miss your intent.\nYour confirmation of the final summary establishes the authoritative requirements record."
+      }
+    }
+  },
+  "wf-responsibility-kicker": {
+    "en": "RESPONSIBILITIES / CONFIRMED INTENT",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "RESPONSIBILITIES / CONFIRMED INTENT",
+        "source": "RESPONSIBILITIES / CONFIRMED INTENT"
+      },
+      "ja": {
+        "text": "役割分担 / 確定した意図",
+        "source": "RESPONSIBILITIES / CONFIRMED INTENT"
+      },
+      "ko": {
+        "text": "역할 / 확정된 의도",
+        "source": "RESPONSIBILITIES / CONFIRMED INTENT"
+      },
+      "de": {
+        "text": "VERANTWORTUNG / BESTÄTIGTE ABSICHT",
+        "source": "RESPONSIBILITIES / CONFIRMED INTENT"
+      },
+      "fr": {
+        "text": "RESPONSABILITÉS / INTENTION CONFIRMÉE",
+        "source": "RESPONSIBILITIES / CONFIRMED INTENT"
+      },
+      "es": {
+        "text": "RESPONSABILIDADES / INTENCIÓN CONFIRMADA",
+        "source": "RESPONSIBILITIES / CONFIRMED INTENT"
+      },
+      "pt-BR": {
+        "text": "RESPONSABILIDADES / INTENÇÃO CONFIRMADA",
+        "source": "RESPONSIBILITIES / CONFIRMED INTENT"
+      }
+    }
+  },
+  "wf-responsibility-title": {
+    "en": "You confirm the goals; the approach and implementation become progressively more concrete",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "目标由你确认，方案与实现逐级细化",
+        "source": "You confirm the goals; the approach and implementation become progressively more concrete"
+      },
+      "ja": {
+        "text": "目標はあなたが確認し、方針と実装は段階的に具体化",
+        "source": "You confirm the goals; the approach and implementation become progressively more concrete"
+      },
+      "ko": {
+        "text": "목표는 사용자가 확인하고, 방안과 구현은 단계적으로 구체화",
+        "source": "You confirm the goals; the approach and implementation become progressively more concrete"
+      },
+      "de": {
+        "text": "Sie bestätigen die Ziele; Lösung und Umsetzung werden schrittweise konkretisiert",
+        "source": "You confirm the goals; the approach and implementation become progressively more concrete"
+      },
+      "fr": {
+        "text": "Vous confirmez les objectifs ; la solution et sa réalisation se précisent par étapes",
+        "source": "You confirm the goals; the approach and implementation become progressively more concrete"
+      },
+      "es": {
+        "text": "Tú confirmas los objetivos; la solución y la implementación se concretan por etapas",
+        "source": "You confirm the goals; the approach and implementation become progressively more concrete"
+      },
+      "pt-BR": {
+        "text": "Você confirma os objetivos; a solução e a implementação ganham detalhes a cada etapa",
+        "source": "You confirm the goals; the approach and implementation become progressively more concrete"
+      }
+    }
+  },
+  "wf-responsibility-user": {
+    "en": "You confirm\nWhat to build and why\nKey constraints, trade-offs and acceptance expectations",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "用户确认\n\n做什么、为什么做\n关键约束、取舍和验收预期",
+        "source": "You confirm\nWhat to build and why\nKey constraints, trade-offs and acceptance expectations"
+      },
+      "ja": {
+        "text": "ユーザーが確認\n何を、なぜ作るか\n重要な制約、トレードオフ、受け入れ時の期待",
+        "source": "You confirm\nWhat to build and why\nKey constraints, trade-offs and acceptance expectations"
+      },
+      "ko": {
+        "text": "사용자가 확인\n무엇을 왜 만들지\n핵심 제약, 절충 사항, 인수 시 기대하는 결과",
+        "source": "You confirm\nWhat to build and why\nKey constraints, trade-offs and acceptance expectations"
+      },
+      "de": {
+        "text": "Sie bestätigen\nWas entwickelt wird und warum\nWesentliche Einschränkungen, Abwägungen und Erwartungen an die Abnahme",
+        "source": "You confirm\nWhat to build and why\nKey constraints, trade-offs and acceptance expectations"
+      },
+      "fr": {
+        "text": "Vous confirmez\nQuoi construire et pourquoi\nContraintes essentielles, compromis et attentes pour la validation",
+        "source": "You confirm\nWhat to build and why\nKey constraints, trade-offs and acceptance expectations"
+      },
+      "es": {
+        "text": "Tú confirmas\nQué construir y por qué\nRestricciones clave, decisiones de compromiso y expectativas de aceptación",
+        "source": "You confirm\nWhat to build and why\nKey constraints, trade-offs and acceptance expectations"
+      },
+      "pt-BR": {
+        "text": "Você confirma\nO que construir e por quê\nRestrições essenciais, escolhas e concessões, expectativas de aceitação",
+        "source": "You confirm\nWhat to build and why\nKey constraints, trade-offs and acceptance expectations"
+      }
+    }
+  },
+  "wf-responsibility-agent": {
+    "en": "The agent elaborates and executes\nArchitecture and interfaces → plan and tasks\nImplementation, tests and defect fixes",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "智能体细化与执行\n\n架构与接口 → 计划与任务\n实现、测试与缺陷修复",
+        "source": "The agent elaborates and executes\nArchitecture and interfaces → plan and tasks\nImplementation, tests and defect fixes"
+      },
+      "ja": {
+        "text": "エージェントが具体化・実行\nアーキテクチャとインターフェース → 計画とタスク\n実装、テスト、不具合修正",
+        "source": "The agent elaborates and executes\nArchitecture and interfaces → plan and tasks\nImplementation, tests and defect fixes"
+      },
+      "ko": {
+        "text": "에이전트가 구체화하고 실행\n아키텍처와 인터페이스 → 계획과 작업\n구현, 테스트, 결함 수정",
+        "source": "The agent elaborates and executes\nArchitecture and interfaces → plan and tasks\nImplementation, tests and defect fixes"
+      },
+      "de": {
+        "text": "Der Agent konkretisiert und setzt um\nArchitektur und Schnittstellen → Plan und Aufgaben\nImplementierung, Tests und Fehlerbehebung",
+        "source": "The agent elaborates and executes\nArchitecture and interfaces → plan and tasks\nImplementation, tests and defect fixes"
+      },
+      "fr": {
+        "text": "L’agent précise et exécute\nArchitecture et interfaces → plan et tâches\nRéalisation, tests et correction des défauts",
+        "source": "The agent elaborates and executes\nArchitecture and interfaces → plan and tasks\nImplementation, tests and defect fixes"
+      },
+      "es": {
+        "text": "El agente concreta y ejecuta\nArquitectura e interfaces → plan y tareas\nImplementación, pruebas y corrección de defectos",
+        "source": "The agent elaborates and executes\nArchitecture and interfaces → plan and tasks\nImplementation, tests and defect fixes"
+      },
+      "pt-BR": {
+        "text": "O agente detalha e executa\nArquitetura e interfaces → plano e tarefas\nImplementação, testes e correção de defeitos",
+        "source": "The agent elaborates and executes\nArchitecture and interfaces → plan and tasks\nImplementation, tests and defect fixes"
+      }
+    }
+  },
+  "wf-responsibility-quality": {
+    "en": "Stage reviews\nFaithful requirements coverage\nGrounded decisions and verifiable results",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "阶段审查\n\n忠实于需求 · 覆盖完整\n决策有依据 · 结果可验证",
+        "source": "Stage reviews\nFaithful requirements coverage\nGrounded decisions and verifiable results"
+      },
+      "ja": {
+        "text": "各段階のレビュー\n要件への忠実さと網羅性\n判断の根拠と検証可能な結果",
+        "source": "Stage reviews\nFaithful requirements coverage\nGrounded decisions and verifiable results"
+      },
+      "ko": {
+        "text": "단계별 검토\n요구사항 충실도와 누락 없는 반영\n판단의 근거와 검증 가능한 결과",
+        "source": "Stage reviews\nFaithful requirements coverage\nGrounded decisions and verifiable results"
+      },
+      "de": {
+        "text": "Reviews je Phase\nAnforderungen vollständig und unverfälscht abdecken\nBegründete Entscheidungen und prüfbare Ergebnisse",
+        "source": "Stage reviews\nFaithful requirements coverage\nGrounded decisions and verifiable results"
+      },
+      "fr": {
+        "text": "Revues à chaque étape\nCouverture fidèle et complète des exigences\nDécisions étayées et résultats vérifiables",
+        "source": "Stage reviews\nFaithful requirements coverage\nGrounded decisions and verifiable results"
+      },
+      "es": {
+        "text": "Revisiones por etapa\nCobertura fiel y completa de los requisitos\nDecisiones fundamentadas y resultados verificables",
+        "source": "Stage reviews\nFaithful requirements coverage\nGrounded decisions and verifiable results"
+      },
+      "pt-BR": {
+        "text": "Revisões por etapa\nCobertura fiel e completa dos requisitos\nDecisões fundamentadas e resultados verificáveis",
+        "source": "Stage reviews\nFaithful requirements coverage\nGrounded decisions and verifiable results"
+      }
+    }
+  },
+  "wf-flow-heading": {
+    "en": "01  Standardized development workflow",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "01  标准化开发流程",
+        "source": "01  Standardized development workflow"
+      },
+      "ja": {
+        "text": "01  標準化された開発フロー",
+        "source": "01  Standardized development workflow"
+      },
+      "ko": {
+        "text": "01  표준화된 개발 절차",
+        "source": "01  Standardized development workflow"
+      },
+      "de": {
+        "text": "01  Standardisierter Entwicklungsablauf",
+        "source": "01  Standardized development workflow"
+      },
+      "fr": {
+        "text": "01  Processus de développement standardisé",
+        "source": "01  Standardized development workflow"
+      },
+      "es": {
+        "text": "01  Flujo de desarrollo estandarizado",
+        "source": "01  Standardized development workflow"
+      },
+      "pt-BR": {
+        "text": "01  Fluxo de desenvolvimento padronizado",
+        "source": "01  Standardized development workflow"
+      }
+    }
+  },
+  "wf-flow-description": {
+    "en": "Requirements establish the authoritative baseline. Specifications, designs, plans and tasks remain traceable; review findings are fixed before proceeding.",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "需求形成权威基线；规格、设计、计划和任务逐级可追溯。审查发现偏差，先修复再推进。",
+        "source": "Requirements establish the authoritative baseline. Specifications, designs, plans and tasks remain traceable; review findings are fixed before proceeding."
+      },
+      "ja": {
+        "text": "要件を正式な基準とし、仕様・設計・計画・タスクの追跡可能性を保ちます。レビューで問題が見つかったら、修正してから次へ進みます。",
+        "source": "Requirements establish the authoritative baseline. Specifications, designs, plans and tasks remain traceable; review findings are fixed before proceeding."
+      },
+      "ko": {
+        "text": "요구사항을 공식 기준으로 삼고 명세, 설계, 계획, 작업의 추적 관계를 유지합니다. 검토에서 발견한 문제는 수정한 뒤 다음 단계로 진행합니다.",
+        "source": "Requirements establish the authoritative baseline. Specifications, designs, plans and tasks remain traceable; review findings are fixed before proceeding."
+      },
+      "de": {
+        "text": "Anforderungen bilden die verbindliche Grundlage. Spezifikation, Entwurf, Plan und Aufgaben bleiben rückverfolgbar. Review-Befunde werden vor dem nächsten Schritt behoben.",
+        "source": "Requirements establish the authoritative baseline. Specifications, designs, plans and tasks remain traceable; review findings are fixed before proceeding."
+      },
+      "fr": {
+        "text": "Les exigences font autorité. Spécifications, conceptions, plans et tâches restent traçables. Les problèmes relevés en revue sont corrigés avant de poursuivre.",
+        "source": "Requirements establish the authoritative baseline. Specifications, designs, plans and tasks remain traceable; review findings are fixed before proceeding."
+      },
+      "es": {
+        "text": "Los requisitos fijan la referencia autorizada. Especificaciones, diseños, planes y tareas mantienen la trazabilidad. Los problemas detectados se corrigen antes de avanzar.",
+        "source": "Requirements establish the authoritative baseline. Specifications, designs, plans and tasks remain traceable; review findings are fixed before proceeding."
+      },
+      "pt-BR": {
+        "text": "Os requisitos estabelecem a referência oficial. Especificações, projetos técnicos, planos e tarefas mantêm a rastreabilidade. Problemas encontrados na revisão são corrigidos antes de avançar.",
+        "source": "Requirements establish the authoritative baseline. Specifications, designs, plans and tasks remain traceable; review findings are fixed before proceeding."
+      }
+    }
+  },
+  "wf-command-specify": {
+    "en": "specify",
+    "protected": [
+      "specify"
+    ],
+    "translations": {},
+    "literal": true
+  },
+  "wf-clarification": {
+    "en": "Clarify intent → user confirmation",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "澄清 → 用户确认",
+        "source": "Clarify intent → user confirmation"
+      },
+      "ja": {
+        "text": "意図の明確化 → ユーザー確認",
+        "source": "Clarify intent → user confirmation"
+      },
+      "ko": {
+        "text": "의도 명확화 → 사용자 확인",
+        "source": "Clarify intent → user confirmation"
+      },
+      "de": {
+        "text": "Absicht klären → Nutzerbestätigung",
+        "source": "Clarify intent → user confirmation"
+      },
+      "fr": {
+        "text": "Clarifier l’intention → confirmation utilisateur",
+        "source": "Clarify intent → user confirmation"
+      },
+      "es": {
+        "text": "Aclarar la intención → confirmación del usuario",
+        "source": "Clarify intent → user confirmation"
+      },
+      "pt-BR": {
+        "text": "Esclarecer a intenção → confirmação do usuário",
+        "source": "Clarify intent → user confirmation"
+      }
+    }
+  },
+  "wf-requirements": {
+    "en": "requirements.md\nRequirements reconciliation · authoritative source ★\nNeeds, constraints, decisions and scope boundaries",
+    "protected": [
+      "requirements.md"
+    ],
+    "translations": {
+      "zh-CN": {
+        "text": "requirements.md\n\n需求对账清单 · 权威源 ★\n需求、约束、决策与范围边界",
+        "source": "requirements.md\nRequirements reconciliation · authoritative source ★\nNeeds, constraints, decisions and scope boundaries"
+      },
+      "ja": {
+        "text": "requirements.md\n要件の照合リスト · 正式な根拠 ★\nニーズ、制約、決定事項、対象範囲",
+        "source": "requirements.md\nRequirements reconciliation · authoritative source ★\nNeeds, constraints, decisions and scope boundaries"
+      },
+      "ko": {
+        "text": "requirements.md\n요구사항 대조 목록 · 공식 기준 ★\n필요사항, 제약, 결정 사항, 범위",
+        "source": "requirements.md\nRequirements reconciliation · authoritative source ★\nNeeds, constraints, decisions and scope boundaries"
+      },
+      "de": {
+        "text": "requirements.md\nAnforderungsabgleich · verbindliche Quelle ★\nBedarf, Einschränkungen, Entscheidungen und Umfang",
+        "source": "requirements.md\nRequirements reconciliation · authoritative source ★\nNeeds, constraints, decisions and scope boundaries"
+      },
+      "fr": {
+        "text": "requirements.md\nRapprochement des exigences · source faisant autorité ★\nBesoins, contraintes, décisions et périmètre",
+        "source": "requirements.md\nRequirements reconciliation · authoritative source ★\nNeeds, constraints, decisions and scope boundaries"
+      },
+      "es": {
+        "text": "requirements.md\nCotejo de requisitos · fuente autorizada ★\nNecesidades, restricciones, decisiones y límites del alcance",
+        "source": "requirements.md\nRequirements reconciliation · authoritative source ★\nNeeds, constraints, decisions and scope boundaries"
+      },
+      "pt-BR": {
+        "text": "requirements.md\nConferência de requisitos · fonte oficial ★\nNecessidades, restrições, decisões e limites do escopo",
+        "source": "requirements.md\nRequirements reconciliation · authoritative source ★\nNeeds, constraints, decisions and scope boundaries"
+      }
+    }
+  },
+  "wf-command-spec": {
+    "en": "generate-spec",
+    "protected": [],
+    "translations": {},
+    "literal": true
+  },
+  "wf-spec": {
+    "en": "spec.md · Specification\nFunctional / non-functional requirements and acceptance criteria\nIncludes functional scenarios usable for human acceptance or automated acceptance by an Agent",
+    "protected": [
+      "spec.md"
+    ],
+    "translations": {
+      "zh-CN": {
+        "text": "spec.md\n\n需求规格\n功能 / 非功能需求与验收标准\n\n包含功能场景，可额外用于\n人工验收或者 Agent 自动化验收",
+        "source": "spec.md · Specification\nFunctional / non-functional requirements and acceptance criteria\nIncludes functional scenarios usable for human acceptance or automated acceptance by an Agent"
+      },
+      "ja": {
+        "text": "spec.md · 要件仕様\n機能・非機能要件と受け入れ基準\n人による受け入れや Agent の自動受け入れ検証にも使える機能シナリオを含む",
+        "source": "spec.md · Specification\nFunctional / non-functional requirements and acceptance criteria\nIncludes functional scenarios usable for human acceptance or automated acceptance by an Agent"
+      },
+      "ko": {
+        "text": "spec.md · 요구사항 명세\n기능·비기능 요구사항과 인수 기준\n사람의 인수 검증이나 Agent의 자동 인수 검증에도 활용할 수 있는 기능 시나리오 포함",
+        "source": "spec.md · Specification\nFunctional / non-functional requirements and acceptance criteria\nIncludes functional scenarios usable for human acceptance or automated acceptance by an Agent"
+      },
+      "de": {
+        "text": "spec.md · Spezifikation\nFunktionale und nichtfunktionale Anforderungen sowie Abnahmekriterien\nFunktionsszenarien auch für manuelle oder automatisierte Abnahme durch einen Agent",
+        "source": "spec.md · Specification\nFunctional / non-functional requirements and acceptance criteria\nIncludes functional scenarios usable for human acceptance or automated acceptance by an Agent"
+      },
+      "fr": {
+        "text": "spec.md · Spécification\nExigences fonctionnelles et non fonctionnelles, critères d’acceptation\nScénarios fonctionnels utilisables aussi pour une recette humaine ou automatisée par un Agent",
+        "source": "spec.md · Specification\nFunctional / non-functional requirements and acceptance criteria\nIncludes functional scenarios usable for human acceptance or automated acceptance by an Agent"
+      },
+      "es": {
+        "text": "spec.md · Especificación\nRequisitos funcionales y no funcionales, criterios de aceptación\nIncluye escenarios funcionales utilizables también para aceptación humana o automatizada por un Agent",
+        "source": "spec.md · Specification\nFunctional / non-functional requirements and acceptance criteria\nIncludes functional scenarios usable for human acceptance or automated acceptance by an Agent"
+      },
+      "pt-BR": {
+        "text": "spec.md · Especificação\nRequisitos funcionais e não funcionais, critérios de aceitação\nInclui cenários funcionais que também podem servir à aceitação humana ou automatizada por um Agent",
+        "source": "spec.md · Specification\nFunctional / non-functional requirements and acceptance criteria\nIncludes functional scenarios usable for human acceptance or automated acceptance by an Agent"
+      }
+    }
+  },
+  "wf-gate-spec": {
+    "en": "review-spec",
+    "protected": [],
+    "translations": {},
+    "literal": true
+  },
+  "wf-command-design": {
+    "en": "spec-to-design",
+    "protected": [],
+    "translations": {},
+    "literal": true
+  },
+  "wf-design": {
+    "en": "design.md · Technical design\nArchitecture, components, interfaces\nand key design decisions",
+    "protected": [
+      "design.md"
+    ],
+    "translations": {
+      "zh-CN": {
+        "text": "design.md\n\n技术设计\n\n架构、组件、接口\n以及关键设计决策",
+        "source": "design.md · Technical design\nArchitecture, components, interfaces\nand key design decisions"
+      },
+      "ja": {
+        "text": "design.md · 技術設計\nアーキテクチャ、コンポーネント、インターフェース\nおよび重要な設計判断",
+        "source": "design.md · Technical design\nArchitecture, components, interfaces\nand key design decisions"
+      },
+      "ko": {
+        "text": "design.md · 기술 설계\n아키텍처, 구성요소, 인터페이스\n및 주요 설계 결정",
+        "source": "design.md · Technical design\nArchitecture, components, interfaces\nand key design decisions"
+      },
+      "de": {
+        "text": "design.md · Technischer Entwurf\nArchitektur, Komponenten, Schnittstellen\nund wesentliche Entwurfsentscheidungen",
+        "source": "design.md · Technical design\nArchitecture, components, interfaces\nand key design decisions"
+      },
+      "fr": {
+        "text": "design.md · Conception technique\nArchitecture, composants, interfaces\net décisions de conception essentielles",
+        "source": "design.md · Technical design\nArchitecture, components, interfaces\nand key design decisions"
+      },
+      "es": {
+        "text": "design.md · Diseño técnico\nArquitectura, componentes, interfaces\ny decisiones clave de diseño",
+        "source": "design.md · Technical design\nArchitecture, components, interfaces\nand key design decisions"
+      },
+      "pt-BR": {
+        "text": "design.md · Projeto técnico\nArquitetura, componentes, interfaces\ne principais decisões de projeto",
+        "source": "design.md · Technical design\nArchitecture, components, interfaces\nand key design decisions"
+      }
+    }
+  },
+  "wf-gate-design": {
+    "en": "review-design",
+    "protected": [],
+    "translations": {},
+    "literal": true
+  },
+  "wf-command-plan": {
+    "en": "design-to-plan",
+    "protected": [],
+    "translations": {},
+    "literal": true
+  },
+  "wf-plan": {
+    "en": "plan.md · Implementation plan\nImplementation phases and ordering\nVerification for each phase",
+    "protected": [
+      "plan.md"
+    ],
+    "translations": {
+      "zh-CN": {
+        "text": "plan.md\n\n实施计划\n\n实施阶段与先后顺序\n各阶段的验证方式",
+        "source": "plan.md · Implementation plan\nImplementation phases and ordering\nVerification for each phase"
+      },
+      "ja": {
+        "text": "plan.md · 実装計画\n実装の段階と実施順序\n各段階の検証方法",
+        "source": "plan.md · Implementation plan\nImplementation phases and ordering\nVerification for each phase"
+      },
+      "ko": {
+        "text": "plan.md · 구현 계획\n구현 단계와 진행 순서\n각 단계의 검증 방법",
+        "source": "plan.md · Implementation plan\nImplementation phases and ordering\nVerification for each phase"
+      },
+      "de": {
+        "text": "plan.md · Umsetzungsplan\nUmsetzungsphasen und Reihenfolge\nPrüfung in jeder Phase",
+        "source": "plan.md · Implementation plan\nImplementation phases and ordering\nVerification for each phase"
+      },
+      "fr": {
+        "text": "plan.md · Plan de réalisation\nPhases de réalisation et ordre d’exécution\nVérifications propres à chaque phase",
+        "source": "plan.md · Implementation plan\nImplementation phases and ordering\nVerification for each phase"
+      },
+      "es": {
+        "text": "plan.md · Plan de implementación\nFases de implementación y orden de ejecución\nVerificación de cada fase",
+        "source": "plan.md · Implementation plan\nImplementation phases and ordering\nVerification for each phase"
+      },
+      "pt-BR": {
+        "text": "plan.md · Plano de implementação\nEtapas de implementação e ordem de execução\nVerificação de cada etapa",
+        "source": "plan.md · Implementation plan\nImplementation phases and ordering\nVerification for each phase"
+      }
+    }
+  },
+  "wf-gate-plan": {
+    "en": "review-plan",
+    "protected": [],
+    "translations": {},
+    "literal": true
+  },
+  "wf-command-tasks": {
+    "en": "plan-to-tasks",
+    "protected": [],
+    "translations": {},
+    "literal": true
+  },
+  "wf-tasks": {
+    "en": "tasks.md · Executable tasks\nTask outcomes, dependencies\nand corresponding verification requirements",
+    "protected": [
+      "tasks.md"
+    ],
+    "translations": {
+      "zh-CN": {
+        "text": "tasks.md\n\n可执行任务清单\n\n明确任务结果、依赖关系\n以及相应的验证要求",
+        "source": "tasks.md · Executable tasks\nTask outcomes, dependencies\nand corresponding verification requirements"
+      },
+      "ja": {
+        "text": "tasks.md · 実行可能なタスク\nタスクの成果、依存関係\nおよび対応する検証要件",
+        "source": "tasks.md · Executable tasks\nTask outcomes, dependencies\nand corresponding verification requirements"
+      },
+      "ko": {
+        "text": "tasks.md · 실행 가능한 작업\n작업 결과물, 의존 관계\n및 해당 검증 요건",
+        "source": "tasks.md · Executable tasks\nTask outcomes, dependencies\nand corresponding verification requirements"
+      },
+      "de": {
+        "text": "tasks.md · Ausführbare Aufgaben\nAufgabenergebnisse, Abhängigkeiten\nund zugehörige Prüfvorgaben",
+        "source": "tasks.md · Executable tasks\nTask outcomes, dependencies\nand corresponding verification requirements"
+      },
+      "fr": {
+        "text": "tasks.md · Tâches exécutables\nRésultats attendus, dépendances\net vérifications correspondantes",
+        "source": "tasks.md · Executable tasks\nTask outcomes, dependencies\nand corresponding verification requirements"
+      },
+      "es": {
+        "text": "tasks.md · Tareas ejecutables\nResultados de las tareas, dependencias\ny requisitos de verificación correspondientes",
+        "source": "tasks.md · Executable tasks\nTask outcomes, dependencies\nand corresponding verification requirements"
+      },
+      "pt-BR": {
+        "text": "tasks.md · Tarefas executáveis\nResultados das tarefas, dependências\ne requisitos de verificação correspondentes",
+        "source": "tasks.md · Executable tasks\nTask outcomes, dependencies\nand corresponding verification requirements"
+      }
+    }
+  },
+  "wf-gate-tasks": {
+    "en": "review-tasks",
+    "protected": [],
+    "translations": {},
+    "literal": true
+  },
+  "wf-review-loop-note": {
+    "en": "Each generated artifact is reviewed; findings are fixed and reviewed again.",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "各阶段生成后接受对应审查，发现问题则修复并复审。",
+        "source": "Each generated artifact is reviewed; findings are fixed and reviewed again."
+      },
+      "ja": {
+        "text": "生成した成果物を各段階でレビューし、問題を修正して再レビューします。",
+        "source": "Each generated artifact is reviewed; findings are fixed and reviewed again."
+      },
+      "ko": {
+        "text": "각 단계에서 생성한 산출물을 검토하고, 문제를 수정한 뒤 다시 검토합니다.",
+        "source": "Each generated artifact is reviewed; findings are fixed and reviewed again."
+      },
+      "de": {
+        "text": "Jedes erzeugte Artefakt wird geprüft; Befunde werden behoben und erneut geprüft.",
+        "source": "Each generated artifact is reviewed; findings are fixed and reviewed again."
+      },
+      "fr": {
+        "text": "Chaque livrable produit est relu ; les problèmes sont corrigés, puis soumis à une nouvelle revue.",
+        "source": "Each generated artifact is reviewed; findings are fixed and reviewed again."
+      },
+      "es": {
+        "text": "Cada artefacto generado se revisa; los problemas se corrigen y se revisan de nuevo.",
+        "source": "Each generated artifact is reviewed; findings are fixed and reviewed again."
+      },
+      "pt-BR": {
+        "text": "Cada artefato gerado passa por revisão; os problemas são corrigidos e revisados novamente.",
+        "source": "Each generated artifact is reviewed; findings are fixed and reviewed again."
+      }
+    }
+  },
+  "wf-implementation-title": {
+    "en": "Implement, verify and review",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "实现、验证与审查",
+        "source": "Implement, verify and review"
+      },
+      "ja": {
+        "text": "実装・検証・レビュー",
+        "source": "Implement, verify and review"
+      },
+      "ko": {
+        "text": "구현·검증·검토",
+        "source": "Implement, verify and review"
+      },
+      "de": {
+        "text": "Implementieren, prüfen und reviewen",
+        "source": "Implement, verify and review"
+      },
+      "fr": {
+        "text": "Réalisation, vérification et revue",
+        "source": "Implement, verify and review"
+      },
+      "es": {
+        "text": "Implementar, verificar y revisar",
+        "source": "Implement, verify and review"
+      },
+      "pt-BR": {
+        "text": "Implementar, verificar e revisar",
+        "source": "Implement, verify and review"
+      }
+    }
+  },
+  "wf-command-implement": {
+    "en": "implement-tasks",
+    "protected": [],
+    "translations": {},
+    "literal": true
+  },
+  "wf-execute": {
+    "en": "Execute the tasks in tasks.md\nCode: test first, then implement\nDocs / configuration: implement directly and verify as appropriate",
+    "protected": [
+      "tasks.md"
+    ],
+    "translations": {
+      "zh-CN": {
+        "text": "执行 tasks.md 中的任务\n\n代码：先测试再实现\n文档 / 配置等：直接实施，并做相应验证",
+        "source": "Execute the tasks in tasks.md\nCode: test first, then implement\nDocs / configuration: implement directly and verify as appropriate"
+      },
+      "ja": {
+        "text": "tasks.md のタスクを実行\nコード：テストを先に書いてから実装\n文書・設定：直接作成・変更し、適切に検証",
+        "source": "Execute the tasks in tasks.md\nCode: test first, then implement\nDocs / configuration: implement directly and verify as appropriate"
+      },
+      "ko": {
+        "text": "tasks.md의 작업 실행\n코드: 테스트를 먼저 작성한 뒤 구현\n문서·설정: 직접 작성·변경하고 적절히 검증",
+        "source": "Execute the tasks in tasks.md\nCode: test first, then implement\nDocs / configuration: implement directly and verify as appropriate"
+      },
+      "de": {
+        "text": "Aufgaben aus tasks.md ausführen\nCode: erst testen, dann implementieren\nDokumentation / Konfiguration: direkt umsetzen und angemessen prüfen",
+        "source": "Execute the tasks in tasks.md\nCode: test first, then implement\nDocs / configuration: implement directly and verify as appropriate"
+      },
+      "fr": {
+        "text": "Exécuter les tâches de tasks.md\nCode : écrire les tests avant de réaliser\nDocumentation / configuration : réaliser directement, puis vérifier selon le besoin",
+        "source": "Execute the tasks in tasks.md\nCode: test first, then implement\nDocs / configuration: implement directly and verify as appropriate"
+      },
+      "es": {
+        "text": "Ejecutar las tareas de tasks.md\nCódigo: escribir primero las pruebas y después implementar\nDocumentación / configuración: realizar directamente y verificar según corresponda",
+        "source": "Execute the tasks in tasks.md\nCode: test first, then implement\nDocs / configuration: implement directly and verify as appropriate"
+      },
+      "pt-BR": {
+        "text": "Executar as tarefas de tasks.md\nCódigo: escrever os testes antes de implementar\nDocumentação / configuração: executar diretamente e verificar conforme necessário",
+        "source": "Execute the tasks in tasks.md\nCode: test first, then implement\nDocs / configuration: implement directly and verify as appropriate"
+      }
+    }
+  },
+  "wf-code-review": {
+    "en": "review-code\nIndependently verify defects · fix · review again",
+    "protected": [
+      "review-code"
+    ],
+    "translations": {
+      "zh-CN": {
+        "text": "review-code\n独立核实缺陷 · 修复 · 复审",
+        "source": "review-code\nIndependently verify defects · fix · review again"
+      },
+      "ja": {
+        "text": "review-code\n不具合を独立に検証 · 修正 · 再レビュー",
+        "source": "review-code\nIndependently verify defects · fix · review again"
+      },
+      "ko": {
+        "text": "review-code\n결함을 독립적으로 확인 · 수정 · 재검토",
+        "source": "review-code\nIndependently verify defects · fix · review again"
+      },
+      "de": {
+        "text": "review-code\nDefekte unabhängig prüfen · beheben · erneut reviewen",
+        "source": "review-code\nIndependently verify defects · fix · review again"
+      },
+      "fr": {
+        "text": "review-code\nVérifier les défauts indépendamment · corriger · relire",
+        "source": "review-code\nIndependently verify defects · fix · review again"
+      },
+      "es": {
+        "text": "review-code\nVerificar los defectos de forma independiente · corregir · revisar de nuevo",
+        "source": "review-code\nIndependently verify defects · fix · review again"
+      },
+      "pt-BR": {
+        "text": "review-code\nVerificar defeitos de forma independente · corrigir · revisar novamente",
+        "source": "review-code\nIndependently verify defects · fix · review again"
+      }
+    }
+  },
+  "wf-execute-review-label": {
+    "en": "Review after implementation",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "实现完成后审查",
+        "source": "Review after implementation"
+      },
+      "ja": {
+        "text": "実装後にレビュー",
+        "source": "Review after implementation"
+      },
+      "ko": {
+        "text": "구현 완료 후 검토",
+        "source": "Review after implementation"
+      },
+      "de": {
+        "text": "Review nach der Umsetzung",
+        "source": "Review after implementation"
+      },
+      "fr": {
+        "text": "Revue après réalisation",
+        "source": "Review after implementation"
+      },
+      "es": {
+        "text": "Revisión tras implementar",
+        "source": "Review after implementation"
+      },
+      "pt-BR": {
+        "text": "Revisão após implementar",
+        "source": "Review after implementation"
+      }
+    }
+  },
+  "wf-implementation-repair-label": {
+    "en": "After fixing,\nverify again",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "修复后\n重新验证",
+        "source": "After fixing,\nverify again"
+      },
+      "ja": {
+        "text": "修正後に\n再検証",
+        "source": "After fixing,\nverify again"
+      },
+      "ko": {
+        "text": "수정 후\n다시 검증",
+        "source": "After fixing,\nverify again"
+      },
+      "de": {
+        "text": "Nach Korrektur\nerneut prüfen",
+        "source": "After fixing,\nverify again"
+      },
+      "fr": {
+        "text": "Après correction,\nvérifier à nouveau",
+        "source": "After fixing,\nverify again"
+      },
+      "es": {
+        "text": "Tras corregir,\nvolver a verificar",
+        "source": "After fixing,\nverify again"
+      },
+      "pt-BR": {
+        "text": "Após corrigir,\nverificar novamente",
+        "source": "After fixing,\nverify again"
+      }
+    }
+  },
+  "wf-implementation-done": {
+    "en": "Fresh review of the complete change: PASS\nCoverage and verification complete\nNo P0–P3 defects remain",
+    "protected": [
+      "PASS",
+      "P0–P3"
+    ],
+    "translations": {
+      "zh-CN": {
+        "text": "完整变更重新审查为 PASS\n覆盖与验证完成\nP0–P3 缺陷清零",
+        "source": "Fresh review of the complete change: PASS\nCoverage and verification complete\nNo P0–P3 defects remain"
+      },
+      "ja": {
+        "text": "変更全体を新たにレビューして PASS\n網羅性の確認と検証が完了\nP0–P3 の不具合が残っていない",
+        "source": "Fresh review of the complete change: PASS\nCoverage and verification complete\nNo P0–P3 defects remain"
+      },
+      "ko": {
+        "text": "전체 변경을 새로 검토해 PASS\n검토 범위 확인과 검증 완료\nP0–P3 결함이 남아 있지 않음",
+        "source": "Fresh review of the complete change: PASS\nCoverage and verification complete\nNo P0–P3 defects remain"
+      },
+      "de": {
+        "text": "Erneutes Review der gesamten Änderung: PASS\nAbdeckung und Prüfung vollständig\nKeine P0–P3-Defekte mehr offen",
+        "source": "Fresh review of the complete change: PASS\nCoverage and verification complete\nNo P0–P3 defects remain"
+      },
+      "fr": {
+        "text": "Nouvelle revue de l’ensemble des changements : PASS\nCouverture et vérifications complètes\nAucun défaut P0–P3 restant",
+        "source": "Fresh review of the complete change: PASS\nCoverage and verification complete\nNo P0–P3 defects remain"
+      },
+      "es": {
+        "text": "Nueva revisión del cambio completo: PASS\nCobertura y verificación completas\nNingún defecto P0–P3 pendiente",
+        "source": "Fresh review of the complete change: PASS\nCoverage and verification complete\nNo P0–P3 defects remain"
+      },
+      "pt-BR": {
+        "text": "Nova revisão de toda a alteração: PASS\nCobertura e verificação concluídas\nNenhum defeito P0–P3 pendente",
+        "source": "Fresh review of the complete change: PASS\nCoverage and verification complete\nNo P0–P3 defects remain"
+      }
+    }
+  },
+  "wf-implementation-debug": {
+    "en": "If repeated fixes do not converge, use debug to find the root cause.",
+    "protected": [
+      "debug"
+    ],
+    "translations": {
+      "zh-CN": {
+        "text": "修复反复不收敛时，通过 debug 定位根因。",
+        "source": "If repeated fixes do not converge, use debug to find the root cause."
+      },
+      "ja": {
+        "text": "修正を繰り返しても収束しない場合は、debug で根本原因を特定します。",
+        "source": "If repeated fixes do not converge, use debug to find the root cause."
+      },
+      "ko": {
+        "text": "수정을 반복해도 해결되지 않으면 debug로 근본 원인을 찾습니다.",
+        "source": "If repeated fixes do not converge, use debug to find the root cause."
+      },
+      "de": {
+        "text": "Wenn wiederholte Korrekturen nicht zum Ziel führen, mit debug die Grundursache ermitteln.",
+        "source": "If repeated fixes do not converge, use debug to find the root cause."
+      },
+      "fr": {
+        "text": "Si les corrections répétées n’aboutissent pas, utiliser debug pour trouver la cause racine.",
+        "source": "If repeated fixes do not converge, use debug to find the root cause."
+      },
+      "es": {
+        "text": "Si las correcciones repetidas no resuelven el problema, usar debug para localizar la causa raíz.",
+        "source": "If repeated fixes do not converge, use debug to find the root cause."
+      },
+      "pt-BR": {
+        "text": "Se correções repetidas não resolverem o problema, usar debug para encontrar a causa raiz.",
+        "source": "If repeated fixes do not converge, use debug to find the root cause."
+      }
+    }
+  },
+  "wf-traceability-title": {
+    "en": "Feature artifacts and traceability",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "功能工件与追溯链",
+        "source": "Feature artifacts and traceability"
+      },
+      "ja": {
+        "text": "機能の成果物と追跡関係",
+        "source": "Feature artifacts and traceability"
+      },
+      "ko": {
+        "text": "기능 산출물과 추적 관계",
+        "source": "Feature artifacts and traceability"
+      },
+      "de": {
+        "text": "Feature-Artefakte und Rückverfolgbarkeit",
+        "source": "Feature artifacts and traceability"
+      },
+      "fr": {
+        "text": "Livrables de la fonctionnalité et traçabilité",
+        "source": "Feature artifacts and traceability"
+      },
+      "es": {
+        "text": "Artefactos de la funcionalidad y trazabilidad",
+        "source": "Feature artifacts and traceability"
+      },
+      "pt-BR": {
+        "text": "Artefatos da funcionalidade e rastreabilidade",
+        "source": "Feature artifacts and traceability"
+      }
+    }
+  },
+  "wf-traceability-path": {
+    "en": ".codexspec/specs/<feature-id>/",
+    "protected": [
+      ".codexspec/specs/"
+    ],
+    "translations": {},
+    "literal": true
+  },
+  "wf-traceability-line": {
+    "en": "Requirements & decisions → spec → design → plan → tasks → implementation & verification",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "需求与决策 → 规格 → 设计 → 计划 → 任务 → 实现与验证",
+        "source": "Requirements & decisions → spec → design → plan → tasks → implementation & verification"
+      },
+      "ja": {
+        "text": "要件と決定 → 仕様 → 設計 → 計画 → タスク → 実装と検証",
+        "source": "Requirements & decisions → spec → design → plan → tasks → implementation & verification"
+      },
+      "ko": {
+        "text": "요구사항과 결정 → 명세 → 설계 → 계획 → 작업 → 구현과 검증",
+        "source": "Requirements & decisions → spec → design → plan → tasks → implementation & verification"
+      },
+      "de": {
+        "text": "Anforderungen und Entscheidungen → Spezifikation → Entwurf → Plan → Aufgaben → Umsetzung und Prüfung",
+        "source": "Requirements & decisions → spec → design → plan → tasks → implementation & verification"
+      },
+      "fr": {
+        "text": "Exigences et décisions → spécification → conception → plan → tâches → réalisation et vérification",
+        "source": "Requirements & decisions → spec → design → plan → tasks → implementation & verification"
+      },
+      "es": {
+        "text": "Requisitos y decisiones → especificación → diseño → plan → tareas → implementación y verificación",
+        "source": "Requirements & decisions → spec → design → plan → tasks → implementation & verification"
+      },
+      "pt-BR": {
+        "text": "Requisitos e decisões → especificação → projeto técnico → plano → tarefas → implementação e verificação",
+        "source": "Requirements & decisions → spec → design → plan → tasks → implementation & verification"
+      }
+    }
+  },
+  "wf-analyze-note": {
+    "en": "After task review, analyze checks end-to-end traceability\nAn informational check before implementation",
+    "protected": [
+      "analyze"
+    ],
+    "translations": {
+      "zh-CN": {
+        "text": "任务审查后由 analyze 核对全链路追溯\n信息性检查，供实现前核对",
+        "source": "After task review, analyze checks end-to-end traceability\nAn informational check before implementation"
+      },
+      "ja": {
+        "text": "タスクのレビュー後に analyze で全体の追跡関係を確認\n実装前の照合に使う参考情報",
+        "source": "After task review, analyze checks end-to-end traceability\nAn informational check before implementation"
+      },
+      "ko": {
+        "text": "작업 검토 후 analyze로 전체 추적 관계 확인\n구현 전 대조를 위한 참고용 점검",
+        "source": "After task review, analyze checks end-to-end traceability\nAn informational check before implementation"
+      },
+      "de": {
+        "text": "Nach dem Aufgabenreview prüft analyze die durchgängige Rückverfolgbarkeit\nInformative Prüfung vor der Umsetzung",
+        "source": "After task review, analyze checks end-to-end traceability\nAn informational check before implementation"
+      },
+      "fr": {
+        "text": "Après la revue des tâches, analyze vérifie la traçabilité de bout en bout\nContrôle informatif avant la réalisation",
+        "source": "After task review, analyze checks end-to-end traceability\nAn informational check before implementation"
+      },
+      "es": {
+        "text": "Tras revisar las tareas, analyze comprueba la trazabilidad de extremo a extremo\nComprobación informativa antes de implementar",
+        "source": "After task review, analyze checks end-to-end traceability\nAn informational check before implementation"
+      },
+      "pt-BR": {
+        "text": "Após a revisão das tarefas, analyze verifica a rastreabilidade de ponta a ponta\nVerificação informativa antes de implementar",
+        "source": "After task review, analyze checks end-to-end traceability\nAn informational check before implementation"
+      }
+    }
+  },
+  "wf-context-heading": {
+    "en": "02  Experience and history inform the next development cycle",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "02  经验与历史共同支持下一轮开发",
+        "source": "02  Experience and history inform the next development cycle"
+      },
+      "ja": {
+        "text": "02  経験と履歴を次の開発に生かす",
+        "source": "02  Experience and history inform the next development cycle"
+      },
+      "ko": {
+        "text": "02  경험과 이력을 다음 개발에 활용",
+        "source": "02  Experience and history inform the next development cycle"
+      },
+      "de": {
+        "text": "02  Erfahrung und Historie unterstützen den nächsten Entwicklungszyklus",
+        "source": "02  Experience and history inform the next development cycle"
+      },
+      "fr": {
+        "text": "02  L’expérience et l’historique alimentent le cycle suivant",
+        "source": "02  Experience and history inform the next development cycle"
+      },
+      "es": {
+        "text": "02  La experiencia y el historial orientan el siguiente ciclo",
+        "source": "02  Experience and history inform the next development cycle"
+      },
+      "pt-BR": {
+        "text": "02  Experiência e histórico orientam o próximo ciclo",
+        "source": "02  Experience and history inform the next development cycle"
+      }
+    }
+  },
+  "wf-context-kicker": {
+    "en": "PROJECT CONTEXT / REUSE",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "PROJECT CONTEXT / REUSE",
+        "source": "PROJECT CONTEXT / REUSE"
+      },
+      "ja": {
+        "text": "プロジェクトの文脈 / 再利用",
+        "source": "PROJECT CONTEXT / REUSE"
+      },
+      "ko": {
+        "text": "프로젝트 맥락 / 재사용",
+        "source": "PROJECT CONTEXT / REUSE"
+      },
+      "de": {
+        "text": "PROJEKTKONTEXT / WIEDERVERWENDUNG",
+        "source": "PROJECT CONTEXT / REUSE"
+      },
+      "fr": {
+        "text": "CONTEXTE DU PROJET / RÉUTILISATION",
+        "source": "PROJECT CONTEXT / REUSE"
+      },
+      "es": {
+        "text": "CONTEXTO DEL PROYECTO / REUTILIZACIÓN",
+        "source": "PROJECT CONTEXT / REUSE"
+      },
+      "pt-BR": {
+        "text": "CONTEXTO DO PROJETO / REUTILIZAÇÃO",
+        "source": "PROJECT CONTEXT / REUSE"
+      }
+    }
+  },
+  "wf-context-title": {
+    "en": "Retain decision rationale and accumulate reusable knowledge",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "保留决策依据，积累可复用知识",
+        "source": "Retain decision rationale and accumulate reusable knowledge"
+      },
+      "ja": {
+        "text": "判断の根拠を残し、再利用できる知識を蓄積",
+        "source": "Retain decision rationale and accumulate reusable knowledge"
+      },
+      "ko": {
+        "text": "결정 근거를 남기고 재사용할 지식을 축적",
+        "source": "Retain decision rationale and accumulate reusable knowledge"
+      },
+      "de": {
+        "text": "Entscheidungsgründe bewahren und wiederverwendbares Wissen sammeln",
+        "source": "Retain decision rationale and accumulate reusable knowledge"
+      },
+      "fr": {
+        "text": "Conserver les raisons des décisions et enrichir les connaissances réutilisables",
+        "source": "Retain decision rationale and accumulate reusable knowledge"
+      },
+      "es": {
+        "text": "Conservar las razones de las decisiones y acumular conocimiento reutilizable",
+        "source": "Retain decision rationale and accumulate reusable knowledge"
+      },
+      "pt-BR": {
+        "text": "Preservar os motivos das decisões e acumular conhecimento reutilizável",
+        "source": "Retain decision rationale and accumulate reusable knowledge"
+      }
+    }
+  },
+  "wf-principles-and-code": {
+    "en": "Project principles and implementation facts\nconstitution.md: principles and hard constraints\nExisting code and tests: evidence of current implementation",
+    "protected": [
+      "constitution.md"
+    ],
+    "translations": {
+      "zh-CN": {
+        "text": "项目原则与实现事实\n\nconstitution.md\n项目原则与硬约束\n\n现有代码与测试\n提供当前实现的事实依据",
+        "source": "Project principles and implementation facts\nconstitution.md: principles and hard constraints\nExisting code and tests: evidence of current implementation"
+      },
+      "ja": {
+        "text": "プロジェクト原則と実装の事実\nconstitution.md：原則と厳守する制約\n既存のコードとテスト：現在の実装を示す根拠",
+        "source": "Project principles and implementation facts\nconstitution.md: principles and hard constraints\nExisting code and tests: evidence of current implementation"
+      },
+      "ko": {
+        "text": "프로젝트 원칙과 구현 사실\nconstitution.md: 원칙과 필수 제약\n기존 코드와 테스트: 현재 구현 상태의 근거",
+        "source": "Project principles and implementation facts\nconstitution.md: principles and hard constraints\nExisting code and tests: evidence of current implementation"
+      },
+      "de": {
+        "text": "Projektgrundsätze und Implementierungsfakten\nconstitution.md: Grundsätze und zwingende Einschränkungen\nVorhandener Code und Tests: Belege zum aktuellen Implementierungsstand",
+        "source": "Project principles and implementation facts\nconstitution.md: principles and hard constraints\nExisting code and tests: evidence of current implementation"
+      },
+      "fr": {
+        "text": "Principes du projet et faits d’implémentation\nconstitution.md : principes et contraintes impératives\nCode et tests existants : preuves de l’état actuel de l’implémentation",
+        "source": "Project principles and implementation facts\nconstitution.md: principles and hard constraints\nExisting code and tests: evidence of current implementation"
+      },
+      "es": {
+        "text": "Principios del proyecto y hechos de implementación\nconstitution.md: principios y restricciones obligatorias\nCódigo y pruebas existentes: evidencia de la implementación actual",
+        "source": "Project principles and implementation facts\nconstitution.md: principles and hard constraints\nExisting code and tests: evidence of current implementation"
+      },
+      "pt-BR": {
+        "text": "Princípios do projeto e fatos da implementação\nconstitution.md: princípios e restrições obrigatórias\nCódigo e testes existentes: evidências da implementação atual",
+        "source": "Project principles and implementation facts\nconstitution.md: principles and hard constraints\nExisting code and tests: evidence of current implementation"
+      }
+    }
+  },
+  "wf-history": {
+    "en": "Feature history and evolving decisions\n.codexspec/specs/\nConfirmed requirements, specifications, designs, plans and tasks\nRelated review records and decision changes",
+    "protected": [
+      ".codexspec/specs/"
+    ],
+    "translations": {
+      "zh-CN": {
+        "text": "功能历史与决策演进\n\n.codexspec/specs/\n\n已确认需求、规格、设计、计划、任务\n以及相关审查记录与决策变更",
+        "source": "Feature history and evolving decisions\n.codexspec/specs/\nConfirmed requirements, specifications, designs, plans and tasks\nRelated review records and decision changes"
+      },
+      "ja": {
+        "text": "機能の履歴と決定の変遷\n.codexspec/specs/\n確定した要件、仕様、設計、計画、タスク\n関連するレビュー記録と決定の変更",
+        "source": "Feature history and evolving decisions\n.codexspec/specs/\nConfirmed requirements, specifications, designs, plans and tasks\nRelated review records and decision changes"
+      },
+      "ko": {
+        "text": "기능 이력과 결정의 변화\n.codexspec/specs/\n확정된 요구사항, 명세, 설계, 계획, 작업\n관련 검토 기록과 결정 변경 사항",
+        "source": "Feature history and evolving decisions\n.codexspec/specs/\nConfirmed requirements, specifications, designs, plans and tasks\nRelated review records and decision changes"
+      },
+      "de": {
+        "text": "Feature-Historie und Entscheidungsentwicklung\n.codexspec/specs/\nBestätigte Anforderungen, Spezifikationen, Entwürfe, Pläne und Aufgaben\nZugehörige Review-Protokolle und Entscheidungsänderungen",
+        "source": "Feature history and evolving decisions\n.codexspec/specs/\nConfirmed requirements, specifications, designs, plans and tasks\nRelated review records and decision changes"
+      },
+      "fr": {
+        "text": "Historique des fonctionnalités et évolution des décisions\n.codexspec/specs/\nExigences confirmées, spécifications, conceptions, plans et tâches\nComptes rendus de revue et modifications des décisions",
+        "source": "Feature history and evolving decisions\n.codexspec/specs/\nConfirmed requirements, specifications, designs, plans and tasks\nRelated review records and decision changes"
+      },
+      "es": {
+        "text": "Historial de funcionalidades y evolución de decisiones\n.codexspec/specs/\nRequisitos confirmados, especificaciones, diseños, planes y tareas\nRegistros de revisión y cambios de decisiones relacionados",
+        "source": "Feature history and evolving decisions\n.codexspec/specs/\nConfirmed requirements, specifications, designs, plans and tasks\nRelated review records and decision changes"
+      },
+      "pt-BR": {
+        "text": "Histórico das funcionalidades e evolução das decisões\n.codexspec/specs/\nRequisitos confirmados, especificações, projetos técnicos, planos e tarefas\nRegistros de revisão e mudanças de decisão relacionados",
+        "source": "Feature history and evolving decisions\n.codexspec/specs/\nConfirmed requirements, specifications, designs, plans and tasks\nRelated review records and decision changes"
+      }
+    }
+  },
+  "wf-profile": {
+    "en": "Reusable project knowledge\n.codexspec/profile/\nConstraints · conventions · pitfalls · decisions · strategies · runbooks\nHard constraints first; reuse candidate records cautiously\nvetted requires verified outcomes and human approval",
+    "protected": [
+      ".codexspec/profile/",
+      "candidate",
+      "vetted"
+    ],
+    "translations": {
+      "zh-CN": {
+        "text": "可复用项目经验\n\n.codexspec/profile/\n\n约束 · 约定 · 踩坑经验 · 决策 · 策略 · 操作规程\n硬约束优先；candidate 谨慎复用\nvetted 需结果验证与人工认可",
+        "source": "Reusable project knowledge\n.codexspec/profile/\nConstraints · conventions · pitfalls · decisions · strategies · runbooks\nHard constraints first; reuse candidate records cautiously\nvetted requires verified outcomes and human approval"
+      },
+      "ja": {
+        "text": "再利用できるプロジェクト知識\n.codexspec/profile/\n制約・規約・落とし穴・決定・戦略・手順書\n厳守する制約を優先。candidate は慎重に再利用\nvetted には結果の検証と人の承認が必要",
+        "source": "Reusable project knowledge\n.codexspec/profile/\nConstraints · conventions · pitfalls · decisions · strategies · runbooks\nHard constraints first; reuse candidate records cautiously\nvetted requires verified outcomes and human approval"
+      },
+      "ko": {
+        "text": "재사용 가능한 프로젝트 지식\n.codexspec/profile/\n제약 · 관례 · 함정 · 결정 · 전략 · 실행 절차\n필수 제약을 우선하고 candidate는 신중히 재사용\nvetted에는 결과 검증과 사람의 승인이 필요",
+        "source": "Reusable project knowledge\n.codexspec/profile/\nConstraints · conventions · pitfalls · decisions · strategies · runbooks\nHard constraints first; reuse candidate records cautiously\nvetted requires verified outcomes and human approval"
+      },
+      "de": {
+        "text": "Wiederverwendbares Projektwissen\n.codexspec/profile/\nEinschränkungen · Konventionen · Fallstricke · Entscheidungen · Strategien · Ablaufanleitungen\nZwingende Einschränkungen zuerst; candidate vorsichtig wiederverwenden\nvetted erfordert geprüfte Ergebnisse und menschliche Zustimmung",
+        "source": "Reusable project knowledge\n.codexspec/profile/\nConstraints · conventions · pitfalls · decisions · strategies · runbooks\nHard constraints first; reuse candidate records cautiously\nvetted requires verified outcomes and human approval"
+      },
+      "fr": {
+        "text": "Connaissances réutilisables du projet\n.codexspec/profile/\nContraintes · conventions · pièges · décisions · stratégies · procédures\nContraintes impératives prioritaires ; réutiliser candidate avec prudence\nvetted exige des résultats vérifiés et une approbation humaine",
+        "source": "Reusable project knowledge\n.codexspec/profile/\nConstraints · conventions · pitfalls · decisions · strategies · runbooks\nHard constraints first; reuse candidate records cautiously\nvetted requires verified outcomes and human approval"
+      },
+      "es": {
+        "text": "Conocimiento reutilizable del proyecto\n.codexspec/profile/\nRestricciones · convenciones · errores habituales · decisiones · estrategias · procedimientos\nPrimero las restricciones obligatorias; reutilizar candidate con cautela\nvetted exige resultados verificados y aprobación humana",
+        "source": "Reusable project knowledge\n.codexspec/profile/\nConstraints · conventions · pitfalls · decisions · strategies · runbooks\nHard constraints first; reuse candidate records cautiously\nvetted requires verified outcomes and human approval"
+      },
+      "pt-BR": {
+        "text": "Conhecimento reutilizável do projeto\n.codexspec/profile/\nRestrições · convenções · armadilhas · decisões · estratégias · procedimentos\nRestrições obrigatórias primeiro; reutilizar candidate com cautela\nvetted exige resultados verificados e aprovação humana",
+        "source": "Reusable project knowledge\n.codexspec/profile/\nConstraints · conventions · pitfalls · decisions · strategies · runbooks\nHard constraints first; reuse candidate records cautiously\nvetted requires verified outcomes and human approval"
+      }
+    }
+  },
+  "wf-history-save-label": {
+    "en": "Retain feature artifacts",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "保留功能工件",
+        "source": "Retain feature artifacts"
+      },
+      "ja": {
+        "text": "機能の成果物を保存",
+        "source": "Retain feature artifacts"
+      },
+      "ko": {
+        "text": "기능 산출물 보존",
+        "source": "Retain feature artifacts"
+      },
+      "de": {
+        "text": "Feature-Artefakte bewahren",
+        "source": "Retain feature artifacts"
+      },
+      "fr": {
+        "text": "Conserver les livrables",
+        "source": "Retain feature artifacts"
+      },
+      "es": {
+        "text": "Conservar los artefactos",
+        "source": "Retain feature artifacts"
+      },
+      "pt-BR": {
+        "text": "Preservar os artefatos",
+        "source": "Retain feature artifacts"
+      }
+    }
+  },
+  "wf-recall": {
+    "en": "Actively recall relevant context in later development\nCLAUDE.md / AGENTS.md guide recall; specify brings relevant knowledge into requirements discussion. Downstream work follows confirmed requirements.",
+    "protected": [
+      "CLAUDE.md",
+      "AGENTS.md",
+      "specify"
+    ],
+    "translations": {
+      "zh-CN": {
+        "text": "后续开发主动回顾相关上下文\n通过 CLAUDE.md / AGENTS.md 引导回顾；specify 将相关知识纳入需求讨论，下游以已确认需求为准。",
+        "source": "Actively recall relevant context in later development\nCLAUDE.md / AGENTS.md guide recall; specify brings relevant knowledge into requirements discussion. Downstream work follows confirmed requirements."
+      },
+      "ja": {
+        "text": "次の開発では関連する文脈を能動的に振り返る\nCLAUDE.md / AGENTS.md が参照を促し、specify が関連知識を要件の議論に取り込みます。以降は確定した要件に従います。",
+        "source": "Actively recall relevant context in later development\nCLAUDE.md / AGENTS.md guide recall; specify brings relevant knowledge into requirements discussion. Downstream work follows confirmed requirements."
+      },
+      "ko": {
+        "text": "후속 개발에서 관련 맥락을 능동적으로 검토\nCLAUDE.md / AGENTS.md가 회고를 안내하고, specify가 관련 지식을 요구사항 논의에 반영합니다. 이후 작업은 확정된 요구사항을 따릅니다.",
+        "source": "Actively recall relevant context in later development\nCLAUDE.md / AGENTS.md guide recall; specify brings relevant knowledge into requirements discussion. Downstream work follows confirmed requirements."
+      },
+      "de": {
+        "text": "Bei späterer Entwicklung relevanten Kontext aktiv heranziehen\nCLAUDE.md / AGENTS.md leiten den Rückblick an; specify bezieht relevantes Wissen in die Anforderungsdiskussion ein. Nachfolgende Schritte richten sich nach bestätigten Anforderungen.",
+        "source": "Actively recall relevant context in later development\nCLAUDE.md / AGENTS.md guide recall; specify brings relevant knowledge into requirements discussion. Downstream work follows confirmed requirements."
+      },
+      "fr": {
+        "text": "Consulter activement le contexte pertinent lors des développements suivants\nCLAUDE.md / AGENTS.md guident cette consultation ; specify intègre les connaissances pertinentes à la discussion des exigences. La suite repose sur les exigences confirmées.",
+        "source": "Actively recall relevant context in later development\nCLAUDE.md / AGENTS.md guide recall; specify brings relevant knowledge into requirements discussion. Downstream work follows confirmed requirements."
+      },
+      "es": {
+        "text": "Consultar activamente el contexto pertinente en desarrollos posteriores\nCLAUDE.md / AGENTS.md guían la consulta; specify incorpora el conocimiento pertinente al debate de requisitos. El trabajo posterior sigue los requisitos confirmados.",
+        "source": "Actively recall relevant context in later development\nCLAUDE.md / AGENTS.md guide recall; specify brings relevant knowledge into requirements discussion. Downstream work follows confirmed requirements."
+      },
+      "pt-BR": {
+        "text": "Consultar ativamente o contexto relevante nos próximos desenvolvimentos\nCLAUDE.md / AGENTS.md orientam a consulta; specify incorpora o conhecimento relevante à discussão dos requisitos. O trabalho seguinte se baseia nos requisitos confirmados.",
+        "source": "Actively recall relevant context in later development\nCLAUDE.md / AGENTS.md guide recall; specify brings relevant knowledge into requirements discussion. Downstream work follows confirmed requirements."
+      }
+    }
+  },
+  "wf-experience-kicker": {
+    "en": "DISTILL / REVIEW / REUSE",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "DISTILL / REVIEW / REUSE",
+        "source": "DISTILL / REVIEW / REUSE"
+      },
+      "ja": {
+        "text": "知識の抽出 / レビュー / 再利用",
+        "source": "DISTILL / REVIEW / REUSE"
+      },
+      "ko": {
+        "text": "경험 정리 / 검토 / 재사용",
+        "source": "DISTILL / REVIEW / REUSE"
+      },
+      "de": {
+        "text": "WISSEN EXTRAHIEREN / PRÜFEN / NUTZEN",
+        "source": "DISTILL / REVIEW / REUSE"
+      },
+      "fr": {
+        "text": "SYNTHÈSE / REVUE / RÉUTILISATION",
+        "source": "DISTILL / REVIEW / REUSE"
+      },
+      "es": {
+        "text": "EXTRAER / REVISAR / REUTILIZAR",
+        "source": "DISTILL / REVIEW / REUSE"
+      },
+      "pt-BR": {
+        "text": "EXTRAIR / REVISAR / REUTILIZAR",
+        "source": "DISTILL / REVIEW / REUSE"
+      }
+    }
+  },
+  "wf-experience-title": {
+    "en": "Distill experience and refine it through human review",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "提炼经验，并通过人工审阅完善",
+        "source": "Distill experience and refine it through human review"
+      },
+      "ja": {
+        "text": "経験から知識を抽出し、人のレビューで磨く",
+        "source": "Distill experience and refine it through human review"
+      },
+      "ko": {
+        "text": "경험에서 지식을 정리하고 사람의 검토로 개선",
+        "source": "Distill experience and refine it through human review"
+      },
+      "de": {
+        "text": "Erfahrungen aufbereiten und durch menschliches Review verbessern",
+        "source": "Distill experience and refine it through human review"
+      },
+      "fr": {
+        "text": "Tirer les enseignements de l’expérience et les affiner par une revue humaine",
+        "source": "Distill experience and refine it through human review"
+      },
+      "es": {
+        "text": "Extraer aprendizajes y afinarlos mediante revisión humana",
+        "source": "Distill experience and refine it through human review"
+      },
+      "pt-BR": {
+        "text": "Extrair aprendizados e aprimorá-los com revisão humana",
+        "source": "Distill experience and refine it through human review"
+      }
+    }
+  },
+  "wf-work-experience": {
+    "en": "Verified experience from implementation, tests and reviews\nGuidance and best practices for product, architecture, development and testing",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "来自实现、测试与审查的已验证经验\n产品、架构、开发、测试的指导经验与最佳实践",
+        "source": "Verified experience from implementation, tests and reviews\nGuidance and best practices for product, architecture, development and testing"
+      },
+      "ja": {
+        "text": "実装・テスト・レビューで検証された経験\nプロダクト、アーキテクチャ、開発、テストの指針とベストプラクティス",
+        "source": "Verified experience from implementation, tests and reviews\nGuidance and best practices for product, architecture, development and testing"
+      },
+      "ko": {
+        "text": "구현·테스트·검토에서 검증된 경험\n제품, 아키텍처, 개발, 테스트의 지침과 모범 사례",
+        "source": "Verified experience from implementation, tests and reviews\nGuidance and best practices for product, architecture, development and testing"
+      },
+      "de": {
+        "text": "Geprüfte Erfahrungen aus Implementierung, Tests und Reviews\nLeitlinien und bewährte Verfahren für Produkt, Architektur, Entwicklung und Tests",
+        "source": "Verified experience from implementation, tests and reviews\nGuidance and best practices for product, architecture, development and testing"
+      },
+      "fr": {
+        "text": "Expérience vérifiée issue de la réalisation, des tests et des revues\nConseils et bonnes pratiques pour le produit, l’architecture, le développement et les tests",
+        "source": "Verified experience from implementation, tests and reviews\nGuidance and best practices for product, architecture, development and testing"
+      },
+      "es": {
+        "text": "Experiencia verificada en implementación, pruebas y revisiones\nOrientaciones y buenas prácticas de producto, arquitectura, desarrollo y pruebas",
+        "source": "Verified experience from implementation, tests and reviews\nGuidance and best practices for product, architecture, development and testing"
+      },
+      "pt-BR": {
+        "text": "Experiência verificada na implementação, nos testes e nas revisões\nOrientações e boas práticas de produto, arquitetura, desenvolvimento e testes",
+        "source": "Verified experience from implementation, tests and reviews\nGuidance and best practices for product, architecture, development and testing"
+      }
+    }
+  },
+  "wf-distill": {
+    "en": "distill · Extract knowledge reusable across features\nRecord it in the project profile with provenance and applicability",
+    "protected": [
+      "distill"
+    ],
+    "translations": {
+      "zh-CN": {
+        "text": "distill · 提炼可跨功能复用的知识\n写入项目 profile，保留来源与适用条件",
+        "source": "distill · Extract knowledge reusable across features\nRecord it in the project profile with provenance and applicability"
+      },
+      "ja": {
+        "text": "distill · 機能をまたいで再利用できる知識を抽出\n出典と適用条件を添えてプロジェクトの profile に保存",
+        "source": "distill · Extract knowledge reusable across features\nRecord it in the project profile with provenance and applicability"
+      },
+      "ko": {
+        "text": "distill · 여러 기능에서 재사용할 지식을 정리\n출처와 적용 조건을 함께 프로젝트 profile에 기록",
+        "source": "distill · Extract knowledge reusable across features\nRecord it in the project profile with provenance and applicability"
+      },
+      "de": {
+        "text": "distill · Feature-übergreifend nutzbares Wissen gewinnen\nMit Herkunft und Anwendungsbedingungen im Projektprofil festhalten",
+        "source": "distill · Extract knowledge reusable across features\nRecord it in the project profile with provenance and applicability"
+      },
+      "fr": {
+        "text": "distill · Extraire des connaissances réutilisables entre fonctionnalités\nLes consigner dans le profil du projet avec leur origine et leurs conditions d’application",
+        "source": "distill · Extract knowledge reusable across features\nRecord it in the project profile with provenance and applicability"
+      },
+      "es": {
+        "text": "distill · Extraer conocimiento reutilizable entre funcionalidades\nGuardarlo en el perfil del proyecto con su origen y condiciones de aplicación",
+        "source": "distill · Extract knowledge reusable across features\nRecord it in the project profile with provenance and applicability"
+      },
+      "pt-BR": {
+        "text": "distill · Extrair conhecimento reutilizável entre funcionalidades\nRegistrar no profile do projeto com origem e condições de aplicação",
+        "source": "distill · Extract knowledge reusable across features\nRecord it in the project profile with provenance and applicability"
+      }
+    }
+  },
+  "wf-distill-timing": {
+    "en": "Capture knowledge during work and at successful wrap-up; skip when nothing new is learned.",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "工作过程中与成功收尾时均可沉淀；没有新知识时跳过。",
+        "source": "Capture knowledge during work and at successful wrap-up; skip when nothing new is learned."
+      },
+      "ja": {
+        "text": "作業中も正常な完了時も記録できます。新たな知識がなければ省略します。",
+        "source": "Capture knowledge during work and at successful wrap-up; skip when nothing new is learned."
+      },
+      "ko": {
+        "text": "작업 도중과 성공적으로 마무리할 때 모두 기록할 수 있으며, 새 지식이 없으면 건너뜁니다.",
+        "source": "Capture knowledge during work and at successful wrap-up; skip when nothing new is learned."
+      },
+      "de": {
+        "text": "Wissen während der Arbeit und beim erfolgreichen Abschluss erfassen; ohne neue Erkenntnisse überspringen.",
+        "source": "Capture knowledge during work and at successful wrap-up; skip when nothing new is learned."
+      },
+      "fr": {
+        "text": "Consigner les connaissances pendant le travail et à sa réussite ; passer cette étape s’il n’y a rien de nouveau.",
+        "source": "Capture knowledge during work and at successful wrap-up; skip when nothing new is learned."
+      },
+      "es": {
+        "text": "Registrar durante el trabajo y al finalizar con éxito; omitir si no hay conocimiento nuevo.",
+        "source": "Capture knowledge during work and at successful wrap-up; skip when nothing new is learned."
+      },
+      "pt-BR": {
+        "text": "Registrar durante o trabalho e ao concluí-lo com sucesso; pular se não houver conhecimento novo.",
+        "source": "Capture knowledge during work and at successful wrap-up; skip when nothing new is learned."
+      }
+    }
+  },
+  "wf-human-review": {
+    "en": "distill review · Human review when needed\nVerify outcomes; revise, merge or discard records; mark vetted after confirmation",
+    "protected": [
+      "vetted",
+      "distill review",
+      "distill"
+    ],
+    "translations": {
+      "zh-CN": {
+        "text": "distill review · 按需人工审阅\n核实验证结果，修订、合并或丢弃记录；确认后标记 vetted",
+        "source": "distill review · Human review when needed\nVerify outcomes; revise, merge or discard records; mark vetted after confirmation"
+      },
+      "ja": {
+        "text": "distill review · 必要に応じた人のレビュー\n検証結果を確認し、記録を修正・統合・破棄。確認後に vetted を付与",
+        "source": "distill review · Human review when needed\nVerify outcomes; revise, merge or discard records; mark vetted after confirmation"
+      },
+      "ko": {
+        "text": "distill review · 필요할 때 사람이 검토\n검증 결과를 확인하고 기록을 수정·통합·폐기하며, 확인 후 vetted로 표시",
+        "source": "distill review · Human review when needed\nVerify outcomes; revise, merge or discard records; mark vetted after confirmation"
+      },
+      "de": {
+        "text": "distill review · Menschliches Review bei Bedarf\nErgebnisse prüfen; Einträge überarbeiten, zusammenführen oder verwerfen; nach Bestätigung als vetted markieren",
+        "source": "distill review · Human review when needed\nVerify outcomes; revise, merge or discard records; mark vetted after confirmation"
+      },
+      "fr": {
+        "text": "distill review · Revue humaine selon le besoin\nVérifier les résultats ; réviser, fusionner ou supprimer les fiches ; les marquer vetted après confirmation",
+        "source": "distill review · Human review when needed\nVerify outcomes; revise, merge or discard records; mark vetted after confirmation"
+      },
+      "es": {
+        "text": "distill review · Revisión humana cuando sea necesaria\nVerificar resultados; revisar, combinar o descartar registros; marcar vetted tras la confirmación",
+        "source": "distill review · Human review when needed\nVerify outcomes; revise, merge or discard records; mark vetted after confirmation"
+      },
+      "pt-BR": {
+        "text": "distill review · Revisão humana quando necessária\nVerificar resultados; revisar, mesclar ou descartar registros; marcar como vetted após a confirmação",
+        "source": "distill review · Human review when needed\nVerify outcomes; revise, merge or discard records; mark vetted after confirmation"
+      }
+    }
+  },
+  "wf-footer": {
+    "en": "Reviewed against CodexSpec v0.7.24 · Requirements → implementation → learning → next requirements",
+    "protected": [
+      "v0.7.24"
+    ],
+    "translations": {
+      "zh-CN": {
+        "text": "基于 CodexSpec v0.7.24 校对 · 需求 → 实现 → 经验 → 下一轮需求",
+        "source": "Reviewed against CodexSpec v0.7.24 · Requirements → implementation → learning → next requirements"
+      },
+      "ja": {
+        "text": "CodexSpec v0.7.24 に照らして確認 · 要件 → 実装 → 知識の蓄積 → 次の要件",
+        "source": "Reviewed against CodexSpec v0.7.24 · Requirements → implementation → learning → next requirements"
+      },
+      "ko": {
+        "text": "CodexSpec v0.7.24 기준 검토 · 요구사항 → 구현 → 경험 축적 → 다음 요구사항",
+        "source": "Reviewed against CodexSpec v0.7.24 · Requirements → implementation → learning → next requirements"
+      },
+      "de": {
+        "text": "Mit CodexSpec v0.7.24 abgeglichen · Anforderungen → Umsetzung → Erfahrung → nächste Anforderungen",
+        "source": "Reviewed against CodexSpec v0.7.24 · Requirements → implementation → learning → next requirements"
+      },
+      "fr": {
+        "text": "Vérifié par rapport à CodexSpec v0.7.24 · Exigences → réalisation → expérience → exigences suivantes",
+        "source": "Reviewed against CodexSpec v0.7.24 · Requirements → implementation → learning → next requirements"
+      },
+      "es": {
+        "text": "Contrastado con CodexSpec v0.7.24 · Requisitos → implementación → aprendizaje → próximos requisitos",
+        "source": "Reviewed against CodexSpec v0.7.24 · Requirements → implementation → learning → next requirements"
+      },
+      "pt-BR": {
+        "text": "Conferido com o CodexSpec v0.7.24 · Requisitos → implementação → aprendizado → próximos requisitos",
+        "source": "Reviewed against CodexSpec v0.7.24 · Requirements → implementation → learning → next requirements"
+      }
+    }
+  },
+  "wf-completion-heading": {
+    "en": "Completion criteria",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "完成条件",
+        "source": "Completion criteria"
+      },
+      "ja": {
+        "text": "完了条件",
+        "source": "Completion criteria"
+      },
+      "ko": {
+        "text": "완료 조건",
+        "source": "Completion criteria"
+      },
+      "de": {
+        "text": "Abschlusskriterien",
+        "source": "Completion criteria"
+      },
+      "fr": {
+        "text": "Critères de fin",
+        "source": "Completion criteria"
+      },
+      "es": {
+        "text": "Criterios de finalización",
+        "source": "Completion criteria"
+      },
+      "pt-BR": {
+        "text": "Critérios de conclusão",
+        "source": "Completion criteria"
+      }
+    }
+  },
+  "wf-review-dimensions-heading": {
+    "en": "Seven review dimensions",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "七\n个\n审\n查\n维\n度",
+        "source": "Seven review dimensions"
+      },
+      "ja": {
+        "text": "レビューの七つの観点",
+        "source": "Seven review dimensions"
+      },
+      "ko": {
+        "text": "일곱 가지 검토 관점",
+        "source": "Seven review dimensions"
+      },
+      "de": {
+        "text": "Sieben Review-Aspekte",
+        "source": "Seven review dimensions"
+      },
+      "fr": {
+        "text": "Sept axes de revue",
+        "source": "Seven review dimensions"
+      },
+      "es": {
+        "text": "Siete ejes de revisión",
+        "source": "Seven review dimensions"
+      },
+      "pt-BR": {
+        "text": "Sete dimensões de revisão",
+        "source": "Seven review dimensions"
+      }
+    }
+  },
+  "wf-review-dimension-1": {
+    "en": "Logic and data flow",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "逻\n辑\n与\n数\n据\n流",
+        "source": "Logic and data flow"
+      },
+      "ja": {
+        "text": "ロジックとデータフロー",
+        "source": "Logic and data flow"
+      },
+      "ko": {
+        "text": "로직과 데이터 흐름",
+        "source": "Logic and data flow"
+      },
+      "de": {
+        "text": "Logik und Datenfluss",
+        "source": "Logic and data flow"
+      },
+      "fr": {
+        "text": "Logique et flux de données",
+        "source": "Logic and data flow"
+      },
+      "es": {
+        "text": "Lógica y flujo de datos",
+        "source": "Logic and data flow"
+      },
+      "pt-BR": {
+        "text": "Lógica e fluxo de dados",
+        "source": "Logic and data flow"
+      }
+    }
+  },
+  "wf-review-dimension-2": {
+    "en": "Business rules and state semantics",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "业\n务\n规\n则\n与\n状\n态\n语\n义",
+        "source": "Business rules and state semantics"
+      },
+      "ja": {
+        "text": "業務ルールと状態の意味",
+        "source": "Business rules and state semantics"
+      },
+      "ko": {
+        "text": "업무 규칙과 상태 의미",
+        "source": "Business rules and state semantics"
+      },
+      "de": {
+        "text": "Geschäftsregeln und Zustands-\nsemantik",
+        "source": "Business rules and state semantics"
+      },
+      "fr": {
+        "text": "Règles métier et sémantique des états",
+        "source": "Business rules and state semantics"
+      },
+      "es": {
+        "text": "Reglas de negocio y semántica de estados",
+        "source": "Business rules and state semantics"
+      },
+      "pt-BR": {
+        "text": "Regras de negócio e semântica de estados",
+        "source": "Business rules and state semantics"
+      }
+    }
+  },
+  "wf-review-dimension-3": {
+    "en": "Security and trust boundaries",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "安\n全\n与\n信\n任\n边\n界",
+        "source": "Security and trust boundaries"
+      },
+      "ja": {
+        "text": "セキュリティと信頼境界",
+        "source": "Security and trust boundaries"
+      },
+      "ko": {
+        "text": "보안과 신뢰 경계",
+        "source": "Security and trust boundaries"
+      },
+      "de": {
+        "text": "Sicherheit und Vertrauens-\ngrenzen",
+        "source": "Security and trust boundaries"
+      },
+      "fr": {
+        "text": "Sécurité et frontières de confiance",
+        "source": "Security and trust boundaries"
+      },
+      "es": {
+        "text": "Seguridad y límites de confianza",
+        "source": "Security and trust boundaries"
+      },
+      "pt-BR": {
+        "text": "Segurança e limites de confiança",
+        "source": "Security and trust boundaries"
+      }
+    }
+  },
+  "wf-review-dimension-4": {
+    "en": "Concurrency and lifecycle",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "并\n发\n与\n生\n命\n周\n期",
+        "source": "Concurrency and lifecycle"
+      },
+      "ja": {
+        "text": "並行処理とライフサイクル",
+        "source": "Concurrency and lifecycle"
+      },
+      "ko": {
+        "text": "동시성과 생명주기",
+        "source": "Concurrency and lifecycle"
+      },
+      "de": {
+        "text": "Nebenläufigkeit und Lebenszyklus",
+        "source": "Concurrency and lifecycle"
+      },
+      "fr": {
+        "text": "Concurrence et cycle de vie",
+        "source": "Concurrency and lifecycle"
+      },
+      "es": {
+        "text": "Concurrencia y ciclo de vida",
+        "source": "Concurrency and lifecycle"
+      },
+      "pt-BR": {
+        "text": "Concorrência e ciclo de vida",
+        "source": "Concurrency and lifecycle"
+      }
+    }
+  },
+  "wf-review-dimension-5": {
+    "en": "Robustness and resource ownership",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "健\n壮\n性\n与\n资\n源\n所\n有\n权",
+        "source": "Robustness and resource ownership"
+      },
+      "ja": {
+        "text": "堅牢性とリソースの所有権",
+        "source": "Robustness and resource ownership"
+      },
+      "ko": {
+        "text": "견고성과 자원 소유권",
+        "source": "Robustness and resource ownership"
+      },
+      "de": {
+        "text": "Robustheit und Ressourcen-\nverantwortung",
+        "source": "Robustness and resource ownership"
+      },
+      "fr": {
+        "text": "Robustesse et responsabilité des ressources",
+        "source": "Robustness and resource ownership"
+      },
+      "es": {
+        "text": "Robustez y propiedad de recursos",
+        "source": "Robustness and resource ownership"
+      },
+      "pt-BR": {
+        "text": "Robustez e responsabilidade pelos recursos",
+        "source": "Robustness and resource ownership"
+      }
+    }
+  },
+  "wf-review-dimension-6": {
+    "en": "Real performance impact",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "实\n际\n性\n能\n影\n响",
+        "source": "Real performance impact"
+      },
+      "ja": {
+        "text": "実際の性能への影響",
+        "source": "Real performance impact"
+      },
+      "ko": {
+        "text": "실제 성능 영향",
+        "source": "Real performance impact"
+      },
+      "de": {
+        "text": "Tatsächliche Leistungs-\nauswirkungen",
+        "source": "Real performance impact"
+      },
+      "fr": {
+        "text": "Effets réels sur les performances",
+        "source": "Real performance impact"
+      },
+      "es": {
+        "text": "Impacto real en el rendimiento",
+        "source": "Real performance impact"
+      },
+      "pt-BR": {
+        "text": "Impacto real no desempenho",
+        "source": "Real performance impact"
+      }
+    }
+  },
+  "wf-review-dimension-7": {
+    "en": "Incremental maintainability",
+    "protected": [],
+    "translations": {
+      "zh-CN": {
+        "text": "增\n量\n可\n维\n护\n性",
+        "source": "Incremental maintainability"
+      },
+      "ja": {
+        "text": "変更による保守性への影響",
+        "source": "Incremental maintainability"
+      },
+      "ko": {
+        "text": "변경에 따른 유지보수성",
+        "source": "Incremental maintainability"
+      },
+      "de": {
+        "text": "Wartbarkeit der Änderungen",
+        "source": "Incremental maintainability"
+      },
+      "fr": {
+        "text": "Maintenabilité des changements",
+        "source": "Incremental maintainability"
+      },
+      "es": {
+        "text": "Mantenibilidad de los cambios",
+        "source": "Incremental maintainability"
+      },
+      "pt-BR": {
+        "text": "Manutenibilidade das alterações",
+        "source": "Incremental maintainability"
+      }
+    }
+  }
+}

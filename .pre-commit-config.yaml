@@ -47,6 +47,11 @@ repos:
         args: [--unsafe]
       - id: check-added-large-files
         args: ['--maxkb=500']
+        exclude: '^assets/workflow/workflow-(en|zh-CN|ja|ko|de|fr|es|pt-BR)-(light|dark)\.png$'
+      - id: check-added-large-files
+        name: check-workflow-image-size
+        args: ['--maxkb=2500', '--enforce-all']
+        files: '^assets/workflow/workflow-(en|zh-CN|ja|ko|de|fr|es|pt-BR)-(light|dark)\.png$'
       - id: check-merge-conflict
       - id: debug-statements
       - id: requirements-txt-fixer

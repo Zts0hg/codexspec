@@ -89,6 +89,15 @@ automáticas verificam se os artefatos derivados correspondem a essa intenção.
 Quando ativada, a automação faz o trabalho avançar pelas etapas aprovadas. Ela
 não permite que o agente substitua silenciosamente os requisitos confirmados.
 
+<!-- workflow-diagram:start -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/workflow/workflow-pt-BR-dark.png">
+  <img alt="CodexSpec: desenvolvimento orientado por requisitos, revisões por etapa e reaproveitamento da experiência" src="assets/workflow/workflow-pt-BR-light.png">
+</picture>
+
+Ver em tamanho original: [☀️](assets/workflow/workflow-pt-BR-light.png) · [🌙](assets/workflow/workflow-pt-BR-dark.png)
+<!-- workflow-diagram:end -->
+
 ## Início rápido em 30 segundos
 
 Instale o CodexSpec e inicialize o projeto para o assistente que você usa:

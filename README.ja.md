@@ -81,6 +81,15 @@ Idea → Confirmed Requirements →     Spec    →     Design    →     Plan  
 自動レビューでは、作成した成果物がその意図に沿っているかを確認します。
 自動化を有効にすると、合格したステージから次へ進みます。エージェントが確認済み要件を無断で置き換えることはありません。
 
+<!-- workflow-diagram:start -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/workflow/workflow-ja-dark.png">
+  <img alt="CodexSpec：要件優先の開発フロー、各段階のレビューと経験を次に生かす循環" src="assets/workflow/workflow-ja-light.png">
+</picture>
+
+原寸で表示: [☀️](assets/workflow/workflow-ja-light.png) · [🌙](assets/workflow/workflow-ja-dark.png)
+<!-- workflow-diagram:end -->
+
 ## 30 秒クイックスタート
 
 CodexSpec をインストールし、使うアシスタントに合わせてプロジェクトを初期化します。

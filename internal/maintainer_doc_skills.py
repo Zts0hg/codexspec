@@ -1,4 +1,4 @@
-"""Generate/check the two repository-only Codex documentation skills."""
+"""Generate/check repository-only Codex documentation maintenance skills."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from typing import Mapping
 from codexspec.integrations.codex import CodexIntegration
 from internal.doc_translation import TranslationError, checked_path, checked_root
 
-COMMANDS = ("check-i18n-semantics", "translate-docs")
+COMMANDS = ("check-i18n-semantics", "translate-docs", "update-workflow-diagrams")
 
 
 class MaintainerSkillError(ValueError):
@@ -38,7 +38,7 @@ def sync(root: Path, *, write: bool = False) -> list[str]:
             sources[f"{name}.md"] = path.read_bytes()
         expected = expected_entries(sources)
         prepared = []
-        # Preflight every output and all parents before creating or changing either.
+        # Preflight every output and all parents before creating or changing any entry.
         for name, content in expected.items():
             path = checked_path(root, f".agents/skills/{name}/SKILL.md", missing=True)
             if path.exists() and not path.is_file():

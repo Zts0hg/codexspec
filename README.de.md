@@ -89,6 +89,15 @@ Vorgaben. Wird die Automatisierung aktiviert, setzt sie die Arbeit nach erfolgre
 geprüften Phasen fort. Sie berechtigt den Agenten nicht, bestätigte Anforderungen
 stillschweigend zu ersetzen.
 
+<!-- workflow-diagram:start -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/workflow/workflow-de-dark.png">
+  <img alt="CodexSpec: anforderungsorientierte Entwicklung, Reviews je Phase und Wiederverwendung von Erfahrungen" src="assets/workflow/workflow-de-light.png">
+</picture>
+
+In voller Größe ansehen: [☀️](assets/workflow/workflow-de-light.png) · [🌙](assets/workflow/workflow-de-dark.png)
+<!-- workflow-diagram:end -->
+
 ## Schnellstart in 30 Sekunden
 
 Installieren Sie CodexSpec und initialisieren Sie das Projekt für den Assistenten,

@@ -1,0 +1,827 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="Electron" type="device">
+  <diagram id="pt-BR-light" name="light">
+    <mxGraphModel dx="1600" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4000.0" pageHeight="2950.0" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="wf-title" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;CodexSpec · Desenvolvimento com IA padronizado e aprendizado contínuo&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=48;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="75.0" y="56.25" width="4406.25" height="92.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-subtitle" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Você decide o que construir e por quê; o agente detalha a solução, implementa e verifica dentro dos requisitos confirmados.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=26;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="80.0" y="162.5" width="4036.25" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-req" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Requisitos e confirmação&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=17;fontColor=#08788D;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#08788D;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2550.0" y="231.25" width="481.25" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-flow" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Especificação e implementação&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=17;fontColor=#047857;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="3106.25" y="231.25" width="600.0" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-review" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Revisão e correção&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=17;fontColor=#946200;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="3781.25" y="231.25" width="600.0" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-knowledge" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Experiência e reutilização&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=17;fontColor=#6D28D9;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="4456.25" y="231.25" width="725.0" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F0FBFD;strokeColor=#67A3B1;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="325" width="1250" height="487.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-kicker" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;REQUISITOS / PERGUNTAS&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=16;fontColor=#08788D;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="351.25" width="1125" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-title" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Conferência de requisitos · Pontos a esclarecer&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=30;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="400" width="1125" height="56.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-care" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;O que importa para mim&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#D8F2F8;strokeColor=#08788D;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="490" width="243.75" height="67.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-care-action" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Abordar já nas perguntas iniciais e esclarecer os detalhes&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#08788D;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="412.5" y="487.5" width="850" height="72.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-not-care" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;O que deixo em aberto&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=22;fontColor=#526178;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#BAC6D6;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="582.5" width="243.75" height="62.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-not-care-action" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Definir o que o agente pode escolher por conta própria&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=22;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="412.5" y="578.75" width="850" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-detail" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Confirme os detalhes essenciais e as expectativas para evitar soluções viáveis que não atendam à sua intenção.&lt;br&gt;A confirmação do resumo final pelo usuário estabelece o registro oficial dos requisitos.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=22;fontColor=#38586B;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="688.75" width="1150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F8FAFC;strokeColor=#C3CEDB;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1412.5" y="325" width="3768.75" height="487.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-kicker" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;RESPONSABILIDADES / INTENÇÃO CONFIRMADA&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=16;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1456.25" y="351.25" width="3537.5" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-title" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Você confirma os objetivos; a solução e a implementação ganham detalhes a cada etapa&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=30;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1456.25" y="400" width="3537.5" height="56.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-user" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Você confirma&lt;br&gt;O que construir e por quê&lt;br&gt;Restrições essenciais, escolhas e concessões, expectativas de aceitação&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=25;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#E6F8FC;strokeColor=#08788D;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1456.25" y="491.25" width="718.75" height="275" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-agent" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;O agente detalha e executa&lt;br&gt;Arquitetura e interfaces → plano e tarefas&lt;br&gt;Implementação, testes e correção de defeitos&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=25;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#EDFDF5;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2225.0" y="491.25" width="993.75" height="275" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-quality" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Revisões por etapa&lt;br&gt;Cobertura fiel e completa dos requisitos&lt;br&gt;Decisões fundamentadas e resultados verificáveis&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=25;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="3318.75" y="491.25" width="1775.0" height="275" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-flow-heading" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;01  Fluxo de desenvolvimento padronizado&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=33;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="75" y="890" width="1937.5" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-flow-description" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Os requisitos estabelecem a referência oficial. Especificações, projetos técnicos, planos e tarefas mantêm a rastreabilidade. Problemas encontrados na revisão são corrigidos antes de avançar.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="971.25" width="2487.5" height="52.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-command-specify" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;specify&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#08788D;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-requirements-stage" value="" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F0FBFD;strokeColor=#08788D;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-clarification" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Esclarecer a intenção → confirmação do usuário&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=22;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#D8F2F8;strokeColor=#08788D;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1153.75" width="387.5" height="57.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-requirements" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;requirements.md&lt;br&gt;Conferência de requisitos · fonte oficial ★&lt;br&gt;Necessidades, restrições, decisões e limites do escopo&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=22;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#E6F8FC;strokeColor=#08788D;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1253.75" width="387.5" height="156.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-clarify-to-record" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#08788D;fontColor=#08788D;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-clarification" target="wf-requirements">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-inquiry-to-clarify" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#08788D;fontColor=#08788D;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0;exitY=0.5;entryX=0;entryY=0.26;" source="wf-inquiry-panel" target="wf-clarification">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="56.25" y="568.75" />
+              <mxPoint x="56.25" y="1168.75" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-spec" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;generate-spec&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#047857;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="593.75" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-spec" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;spec.md · Especificação&lt;br&gt;Requisitos funcionais e não funcionais, critérios de aceitação&lt;br&gt;Inclui cenários funcionais que também podem servir à aceitação humana ou automatizada por um Agent&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#EDFDF5;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="593.75" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-spec" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;review-spec&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=19;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="593.75" y="1487.5" width="437.5" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-spec" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-spec" target="wf-gate-spec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-spec" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-spec" target="wf-spec">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1056.25" y="1515" />
+              <mxPoint x="1056.25" y="1387.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-design" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;spec-to-design&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#047857;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1112.5" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-design" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;design.md · Projeto técnico&lt;br&gt;Arquitetura, componentes, interfaces&lt;br&gt;e principais decisões de projeto&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#EDFDF5;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1112.5" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-design" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;review-design&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=19;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1112.5" y="1487.5" width="437.5" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-design" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-design" target="wf-gate-design">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-design" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-design" target="wf-design">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1575" y="1515" />
+              <mxPoint x="1575" y="1387.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-plan" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;design-to-plan&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#047857;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1631.25" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-plan" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;plan.md · Plano de implementação&lt;br&gt;Etapas de implementação e ordem de execução&lt;br&gt;Verificação de cada etapa&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#EDFDF5;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1631.25" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-plan" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;review-plan&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=19;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1631.25" y="1487.5" width="437.5" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-plan" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-plan" target="wf-gate-plan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-plan" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-plan" target="wf-plan">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2093.75" y="1515" />
+              <mxPoint x="2093.75" y="1387.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-tasks" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;plan-to-tasks&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#047857;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2150" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-tasks" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;tasks.md · Tarefas executáveis&lt;br&gt;Resultados das tarefas, dependências&lt;br&gt;e requisitos de verificação correspondentes&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#EDFDF5;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2150" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-tasks" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;review-tasks&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=19;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2150" y="1487.5" width="437.5" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-tasks" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-tasks" target="wf-gate-tasks">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-tasks" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-tasks" target="wf-tasks">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2612.5" y="1515" />
+              <mxPoint x="2612.5" y="1387.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-edge-flow-requirements-stage" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#64748B;fontColor=#64748B;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-requirements-stage" target="wf-spec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-flow-spec" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#64748B;fontColor=#64748B;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-spec" target="wf-design">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-flow-design" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#64748B;fontColor=#64748B;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-design" target="wf-plan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-flow-plan" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#64748B;fontColor=#64748B;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-plan" target="wf-tasks">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-loop-note" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Cada artefato gerado passa por revisão; os problemas são corrigidos e revisados novamente.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=20;fontColor=#946200;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1490" width="437.5" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F8FAFC;strokeColor=#67A3B1;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2668.75" y="1031.25" width="2512.5" height="843.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-title" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Implementar, verificar e revisar&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=29;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1060" width="2300.0" height="57.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-command-implement" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;implement-tasks&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=17;fontColor=#047857;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1145" width="900.0" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-execute" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Executar as tarefas de tasks.md&lt;br&gt;Código: escrever os testes antes de implementar&lt;br&gt;Documentação / configuração: executar diretamente e verificar conforme necessário&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=25;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#EDFDF5;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1218.75" width="1850.0" height="181.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-tasks-to-execute" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#047857;fontColor=#047857;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.345;" source="wf-tasks" target="wf-execute">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-code-review" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;review-code&lt;br&gt;Verificar defeitos de forma independente · corrigir · revisar novamente&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1462.5" width="1850.0" height="113.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-execute-to-review" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-execute" target="wf-code-review">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-execute-review-label" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Revisão após implementar&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=20;fontColor=#946200;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="3756.25" y="1410" width="800.0" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-implementation-repair" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" source="wf-code-review" target="wf-execute">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="4993.75" y="1518.75" />
+              <mxPoint x="4993.75" y="1307.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-implementation-repair-label" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Após corrigir,&lt;br&gt;verificar novamente&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=20;fontColor=#946200;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="4656.25" y="1375" width="475.0" height="82.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-done" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Nova revisão de toda a alteração: PASS&lt;br&gt;Cobertura e verificação concluídas&lt;br&gt;Nenhum defeito P0–P3 pendente&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=21;fontColor=#047857;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="4431.25" y="1650" width="675.0" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-debug" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Se correções repetidas não resolverem o problema, usar debug para encontrar a causa raiz.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=20;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1825.0" width="2300.0" height="37.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability" value="" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#BAC6D6;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1612.5" width="2512.5" height="156.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability-title" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Artefatos da funcionalidade e rastreabilidade&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="1631.25" width="1181.25" height="43.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability-path" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;.codexspec/specs/&amp;lt;feature-id&amp;gt;/&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=20;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1368.75" y="1631.25" width="1181.25" height="43.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability-line" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Requisitos e decisões → especificação → projeto técnico → plano → tarefas → implementação e verificação&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=21;fontColor=#36584B;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="1691.25" width="1181.25" height="62.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-analyze-note" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Após a revisão das tarefas, analyze verifica a rastreabilidade de ponta a ponta&lt;br&gt;Verificação informativa antes de implementar&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=21;fontColor=#946200;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1368.75" y="1691.25" width="1181.25" height="62.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-heading" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;02  Experiência e histórico orientam o próximo ciclo&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=33;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1825.0" width="2512.5" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FAF8FF;strokeColor=#C6B8E2;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1925.0" width="2512.5" height="662.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-kicker" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;CONTEXTO DO PROJETO / REUTILIZAÇÃO&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=16;fontColor=#6D28D9;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="1950.0" width="1625" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-title" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Preservar os motivos das decisões e acumular conhecimento reutilizável&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=28;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="1996.25" width="1625" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-principles-and-code" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Princípios do projeto e fatos da implementação&lt;br&gt;constitution.md: princípios e restrições obrigatórias&lt;br&gt;Código e testes existentes: evidências da implementação atual&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="2081.25" width="437.5" height="281.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-history" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Histórico das funcionalidades e evolução das decisões&lt;br&gt;.codexspec/specs/&lt;br&gt;Requisitos confirmados, especificações, projetos técnicos, planos e tarefas&lt;br&gt;Registros de revisão e mudanças de decisão relacionados&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=25;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="593.75" y="2081.25" width="812.5" height="281.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-profile" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Conhecimento reutilizável do projeto&lt;br&gt;.codexspec/profile/&lt;br&gt;Restrições · convenções · armadilhas · decisões · estratégias · procedimentos&lt;br&gt;Restrições obrigatórias primeiro; reutilizar candidate com cautela&lt;br&gt;vetted exige resultados verificados e aprovação humana&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=25;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1450" y="2081.25" width="1093.75" height="281.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-feature-artifacts-to-history" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0.99;exitY=1;entryX=0.5;entryY=0;" source="wf-traceability" target="wf-history">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2562.5" y="1812.5" />
+              <mxPoint x="2562.5" y="2060.0" />
+              <mxPoint x="1000.0" y="2060.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-history-save-label" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Preservar os artefatos&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=19;fontColor=#6D28D9;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2125" y="1780" width="400" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-recall" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Consultar ativamente o contexto relevante nos próximos desenvolvimentos&lt;br&gt;CLAUDE.md / AGENTS.md orientam a consulta; specify incorpora o conhecimento relevante à discussão dos requisitos. O trabalho seguinte se baseia nos requisitos confirmados.&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EEFC;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=9;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="2456.25" width="2431.25" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-recall-principles-and-code" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.09;entryY=0;" source="wf-principles-and-code" target="wf-recall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-recall-history" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.365;entryY=0;" source="wf-history" target="wf-recall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-recall-profile" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.775;entryY=0;" source="wf-profile" target="wf-recall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-knowledge-next-requirements" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0;exitY=0.5;entryX=0;entryY=0.78;" source="wf-recall" target="wf-clarification">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="30.0" y="2506.25" />
+              <mxPoint x="30.0" y="1198.75" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-experience-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FAF8FF;strokeColor=#C6B8E2;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2668.75" y="1925.0" width="2512.5" height="662.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-experience-kicker" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;EXTRAIR / REVISAR / REUTILIZAR&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=16;fontColor=#6D28D9;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1950.0" width="2325.0" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-experience-title" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Extrair aprendizados e aprimorá-los com revisão humana&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=28;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1996.25" width="2325.0" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-work-experience" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Experiência verificada na implementação, nos testes e nas revisões&lt;br&gt;Orientações e boas práticas de produto, arquitetura, desenvolvimento e testes&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="2081.25" width="2325.0" height="106.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-distill" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;distill · Extrair conhecimento reutilizável entre funcionalidades&lt;br&gt;Registrar no profile do projeto com origem e condições de aplicação&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="2243.75" width="2325.0" height="106.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-experience-to-distill" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-work-experience" target="wf-distill">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-distill-to-profile" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0;exitY=0.5;entryX=1;entryY=0.35;" source="wf-distill" target="wf-profile">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2625.0" y="2296.25" />
+              <mxPoint x="2625.0" y="2180.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-distill-timing" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Registrar durante o trabalho e ao concluí-lo com sucesso; pular se não houver conhecimento novo.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=20;fontColor=#63547A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="2377.5" width="2325.0" height="42.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-human-review" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;distill review · Revisão humana quando necessária&lt;br&gt;Verificar resultados; revisar, mesclar ou descartar registros; marcar como vetted após a confirmação&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="2450.0" width="2325.0" height="106.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-human-review-to-profile" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0;exitY=0.5;entryX=1;entryY=0.89;" source="wf-human-review" target="wf-profile">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2625.0" y="2502.5" />
+              <mxPoint x="2625.0" y="2331.25" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-edge-implementation-to-experience" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=1;exitY=0.955;entryX=1;entryY=0.5;" source="wf-implementation-panel" target="wf-work-experience">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="5256.25" y="1827.5" />
+              <mxPoint x="5256.25" y="2133.75" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-footer" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Conferido com o CodexSpec v0.7.24 · Requisitos → implementação → aprendizado → próximos requisitos&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=19;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="80.0" y="2662.5" width="4911.25" height="43.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-traceability-columns" edge="1" parent="1" style="edgeStyle=none;html=1;strokeColor=#BAC6D6;strokeWidth=1;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1331.25" y="1635" as="sourcePoint" />
+            <mxPoint x="1331.25" y="1747.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-completion-heading" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Critérios de conclusão&lt;/div&gt;" vertex="1" parent="1" style="text;html=1;whiteSpace=wrap;fontFamily=Arial;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontSize=24;fontColor=#047857;fontStyle=1;">
+          <mxGeometry x="4431.25" y="1600" width="675.0" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimensions-heading" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Sete dimensões de revisão&lt;/div&gt;" vertex="1" parent="1" style="text;html=1;whiteSpace=wrap;fontFamily=Arial;strokeColor=none;fillColor=none;align=center;verticalAlign=top;spacing=0;fontSize=24;fontColor=#946200;fontStyle=1;">
+          <mxGeometry x="2700" y="1651.75" width="180" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-1" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Lógica e fluxo de dados&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="2900" y="1643.75" width="180" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-2" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Regras de negócio e semântica de estados&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3100" y="1643.75" width="180" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-3" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Segurança e limites de confiança&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3300" y="1643.75" width="180" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-4" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Concorrência e ciclo de vida&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3500" y="1643.75" width="180" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-5" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Robustez e responsabilidade pelos recursos&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3700" y="1643.75" width="180" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-6" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Impacto real no desempenho&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3900" y="1643.75" width="180" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-7" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Manutenibilidade das alterações&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="4100" y="1643.75" width="180" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-completion-columns" edge="1" parent="1" style="edgeStyle=none;html=1;strokeColor=#BAC6D6;strokeWidth=1;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="4356.25" y="1603.75" as="sourcePoint" />
+            <mxPoint x="4356.25" y="1802.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-1" edge="1" parent="1" source="wf-review-dimension-1" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.0945945945945946;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-2" edge="1" parent="1" source="wf-review-dimension-2" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.20945945945945946;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-3" edge="1" parent="1" source="wf-review-dimension-3" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.32432432432432434;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-4" edge="1" parent="1" source="wf-review-dimension-4" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.4391891891891892;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-5" edge="1" parent="1" source="wf-review-dimension-5" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.5540540540540541;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-6" edge="1" parent="1" source="wf-review-dimension-6" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.668918918918919;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-7" edge="1" parent="1" source="wf-review-dimension-7" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.7837837837837838;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="pt-BR-dark" name="dark">
+    <mxGraphModel dx="1600" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4000.0" pageHeight="2950.0" math="0" shadow="0" background="#020617">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="wf-title" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;CodexSpec · Desenvolvimento com IA padronizado e aprendizado contínuo&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=48;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="75.0" y="56.25" width="4406.25" height="92.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-subtitle" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Você decide o que construir e por quê; o agente detalha a solução, implementa e verifica dentro dos requisitos confirmados.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=26;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="80.0" y="162.5" width="4036.25" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-req" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Requisitos e confirmação&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=17;fontColor=#22D3EE;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#020617;strokeColor=#22D3EE;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2550.0" y="231.25" width="481.25" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-flow" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Especificação e implementação&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=17;fontColor=#34D399;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#020617;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="3106.25" y="231.25" width="600.0" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-review" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Revisão e correção&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=17;fontColor=#FBBF24;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#020617;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="3781.25" y="231.25" width="600.0" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-knowledge" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Experiência e reutilização&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=17;fontColor=#A78BFA;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#020617;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="4456.25" y="231.25" width="725.0" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#071B27;strokeColor=#1C6474;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="325" width="1250" height="487.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-kicker" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;REQUISITOS / PERGUNTAS&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=16;fontColor=#22D3EE;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="351.25" width="1125" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-title" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Conferência de requisitos · Pontos a esclarecer&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=30;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="400" width="1125" height="56.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-care" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;O que importa para mim&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#092E3A;strokeColor=#22D3EE;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="490" width="243.75" height="67.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-care-action" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Abordar já nas perguntas iniciais e esclarecer os detalhes&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#22D3EE;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="412.5" y="487.5" width="850" height="72.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-not-care" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;O que deixo em aberto&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=22;fontColor=#94A3B8;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="582.5" width="243.75" height="62.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-not-care-action" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Definir o que o agente pode escolher por conta própria&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=22;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="412.5" y="578.75" width="850" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-detail" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Confirme os detalhes essenciais e as expectativas para evitar soluções viáveis que não atendam à sua intenção.&lt;br&gt;A confirmação do resumo final pelo usuário estabelece o registro oficial dos requisitos.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=22;fontColor=#C0D4E2;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="688.75" width="1150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0A1223;strokeColor=#253249;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1412.5" y="325" width="3768.75" height="487.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-kicker" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;RESPONSABILIDADES / INTENÇÃO CONFIRMADA&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=16;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1456.25" y="351.25" width="3537.5" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-title" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Você confirma os objetivos; a solução e a implementação ganham detalhes a cada etapa&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=30;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1456.25" y="400" width="3537.5" height="56.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-user" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Você confirma&lt;br&gt;O que construir e por quê&lt;br&gt;Restrições essenciais, escolhas e concessões, expectativas de aceitação&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=25;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#082C38;strokeColor=#22D3EE;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1456.25" y="491.25" width="718.75" height="275" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-agent" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;O agente detalha e executa&lt;br&gt;Arquitetura e interfaces → plano e tarefas&lt;br&gt;Implementação, testes e correção de defeitos&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=25;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C2726;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2225.0" y="491.25" width="993.75" height="275" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-quality" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Revisões por etapa&lt;br&gt;Cobertura fiel e completa dos requisitos&lt;br&gt;Decisões fundamentadas e resultados verificáveis&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=25;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="3318.75" y="491.25" width="1775.0" height="275" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-flow-heading" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;01  Fluxo de desenvolvimento padronizado&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=33;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="75" y="890" width="1937.5" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-flow-description" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Os requisitos estabelecem a referência oficial. Especificações, projetos técnicos, planos e tarefas mantêm a rastreabilidade. Problemas encontrados na revisão são corrigidos antes de avançar.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="971.25" width="2487.5" height="52.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-command-specify" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;specify&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#22D3EE;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-requirements-stage" value="" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#071B27;strokeColor=#22D3EE;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-clarification" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Esclarecer a intenção → confirmação do usuário&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=22;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#092E3A;strokeColor=#22D3EE;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1153.75" width="387.5" height="57.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-requirements" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;requirements.md&lt;br&gt;Conferência de requisitos · fonte oficial ★&lt;br&gt;Necessidades, restrições, decisões e limites do escopo&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=22;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#082C38;strokeColor=#22D3EE;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1253.75" width="387.5" height="156.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-clarify-to-record" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#22D3EE;fontColor=#22D3EE;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-clarification" target="wf-requirements">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-inquiry-to-clarify" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#22D3EE;fontColor=#22D3EE;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0;exitY=0.5;entryX=0;entryY=0.26;" source="wf-inquiry-panel" target="wf-clarification">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="56.25" y="568.75" />
+              <mxPoint x="56.25" y="1168.75" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-spec" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;generate-spec&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#34D399;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="593.75" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-spec" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;spec.md · Especificação&lt;br&gt;Requisitos funcionais e não funcionais, critérios de aceitação&lt;br&gt;Inclui cenários funcionais que também podem servir à aceitação humana ou automatizada por um Agent&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C2726;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="593.75" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-spec" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;review-spec&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=19;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="593.75" y="1487.5" width="437.5" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-spec" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-spec" target="wf-gate-spec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-spec" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-spec" target="wf-spec">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1056.25" y="1515" />
+              <mxPoint x="1056.25" y="1387.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-design" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;spec-to-design&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#34D399;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1112.5" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-design" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;design.md · Projeto técnico&lt;br&gt;Arquitetura, componentes, interfaces&lt;br&gt;e principais decisões de projeto&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C2726;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1112.5" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-design" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;review-design&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=19;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1112.5" y="1487.5" width="437.5" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-design" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-design" target="wf-gate-design">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-design" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-design" target="wf-design">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1575" y="1515" />
+              <mxPoint x="1575" y="1387.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-plan" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;design-to-plan&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#34D399;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1631.25" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-plan" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;plan.md · Plano de implementação&lt;br&gt;Etapas de implementação e ordem de execução&lt;br&gt;Verificação de cada etapa&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C2726;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1631.25" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-plan" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;review-plan&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=19;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1631.25" y="1487.5" width="437.5" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-plan" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-plan" target="wf-gate-plan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-plan" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-plan" target="wf-plan">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2093.75" y="1515" />
+              <mxPoint x="2093.75" y="1387.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-tasks" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;plan-to-tasks&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#34D399;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2150" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-tasks" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;tasks.md · Tarefas executáveis&lt;br&gt;Resultados das tarefas, dependências&lt;br&gt;e requisitos de verificação correspondentes&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C2726;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2150" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-tasks" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;review-tasks&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=19;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2150" y="1487.5" width="437.5" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-tasks" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-tasks" target="wf-gate-tasks">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-tasks" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-tasks" target="wf-tasks">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2612.5" y="1515" />
+              <mxPoint x="2612.5" y="1387.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-edge-flow-requirements-stage" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#8DA5BD;fontColor=#8DA5BD;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-requirements-stage" target="wf-spec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-flow-spec" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#8DA5BD;fontColor=#8DA5BD;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-spec" target="wf-design">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-flow-design" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#8DA5BD;fontColor=#8DA5BD;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-design" target="wf-plan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-flow-plan" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#8DA5BD;fontColor=#8DA5BD;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-plan" target="wf-tasks">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-loop-note" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Cada artefato gerado passa por revisão; os problemas são corrigidos e revisados novamente.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=20;fontColor=#FBBF24;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1490" width="437.5" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0A1223;strokeColor=#1C6474;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2668.75" y="1031.25" width="2512.5" height="843.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-title" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Implementar, verificar e revisar&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=29;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1060" width="2300.0" height="57.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-command-implement" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;implement-tasks&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=17;fontColor=#34D399;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#020617;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1145" width="900.0" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-execute" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Executar as tarefas de tasks.md&lt;br&gt;Código: escrever os testes antes de implementar&lt;br&gt;Documentação / configuração: executar diretamente e verificar conforme necessário&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=25;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C2726;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1218.75" width="1850.0" height="181.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-tasks-to-execute" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#34D399;fontColor=#34D399;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.345;" source="wf-tasks" target="wf-execute">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-code-review" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;review-code&lt;br&gt;Verificar defeitos de forma independente · corrigir · revisar novamente&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1462.5" width="1850.0" height="113.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-execute-to-review" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-execute" target="wf-code-review">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-execute-review-label" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Revisão após implementar&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=20;fontColor=#FBBF24;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="3756.25" y="1410" width="800.0" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-implementation-repair" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" source="wf-code-review" target="wf-execute">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="4993.75" y="1518.75" />
+              <mxPoint x="4993.75" y="1307.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-implementation-repair-label" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Após corrigir,&lt;br&gt;verificar novamente&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=20;fontColor=#FBBF24;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="4656.25" y="1375" width="475.0" height="82.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-done" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Nova revisão de toda a alteração: PASS&lt;br&gt;Cobertura e verificação concluídas&lt;br&gt;Nenhum defeito P0–P3 pendente&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=21;fontColor=#34D399;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="4431.25" y="1650" width="675.0" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-debug" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Se correções repetidas não resolverem o problema, usar debug para encontrar a causa raiz.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=20;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1825.0" width="2300.0" height="37.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability" value="" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1612.5" width="2512.5" height="156.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability-title" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Artefatos da funcionalidade e rastreabilidade&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="1631.25" width="1181.25" height="43.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability-path" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;.codexspec/specs/&amp;lt;feature-id&amp;gt;/&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=20;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1368.75" y="1631.25" width="1181.25" height="43.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability-line" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Requisitos e decisões → especificação → projeto técnico → plano → tarefas → implementação e verificação&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=21;fontColor=#BCD4D0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="1691.25" width="1181.25" height="62.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-analyze-note" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Após a revisão das tarefas, analyze verifica a rastreabilidade de ponta a ponta&lt;br&gt;Verificação informativa antes de implementar&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=21;fontColor=#FBBF24;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1368.75" y="1691.25" width="1181.25" height="62.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-heading" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;02  Experiência e histórico orientam o próximo ciclo&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=33;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1825.0" width="2512.5" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C1023;strokeColor=#3E365A;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1925.0" width="2512.5" height="662.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-kicker" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;CONTEXTO DO PROJETO / REUTILIZAÇÃO&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=16;fontColor=#A78BFA;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="1950.0" width="1625" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-title" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Preservar os motivos das decisões e acumular conhecimento reutilizável&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=28;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="1996.25" width="1625" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-principles-and-code" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Princípios do projeto e fatos da implementação&lt;br&gt;constitution.md: princípios e restrições obrigatórias&lt;br&gt;Código e testes existentes: evidências da implementação atual&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#211A38;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="2081.25" width="437.5" height="281.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-history" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Histórico das funcionalidades e evolução das decisões&lt;br&gt;.codexspec/specs/&lt;br&gt;Requisitos confirmados, especificações, projetos técnicos, planos e tarefas&lt;br&gt;Registros de revisão e mudanças de decisão relacionados&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=25;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#211A38;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="593.75" y="2081.25" width="812.5" height="281.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-profile" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Conhecimento reutilizável do projeto&lt;br&gt;.codexspec/profile/&lt;br&gt;Restrições · convenções · armadilhas · decisões · estratégias · procedimentos&lt;br&gt;Restrições obrigatórias primeiro; reutilizar candidate com cautela&lt;br&gt;vetted exige resultados verificados e aprovação humana&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=25;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#211A38;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1450" y="2081.25" width="1093.75" height="281.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-feature-artifacts-to-history" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0.99;exitY=1;entryX=0.5;entryY=0;" source="wf-traceability" target="wf-history">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2562.5" y="1812.5" />
+              <mxPoint x="2562.5" y="2060.0" />
+              <mxPoint x="1000.0" y="2060.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-history-save-label" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Preservar os artefatos&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=19;fontColor=#A78BFA;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2125" y="1780" width="400" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-recall" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Consultar ativamente o contexto relevante nos próximos desenvolvimentos&lt;br&gt;CLAUDE.md / AGENTS.md orientam a consulta; specify incorpora o conhecimento relevante à discussão dos requisitos. O trabalho seguinte se baseia nos requisitos confirmados.&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#14132B;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=9;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="2456.25" width="2431.25" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-recall-principles-and-code" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.09;entryY=0;" source="wf-principles-and-code" target="wf-recall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-recall-history" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.365;entryY=0;" source="wf-history" target="wf-recall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-recall-profile" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.775;entryY=0;" source="wf-profile" target="wf-recall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-knowledge-next-requirements" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0;exitY=0.5;entryX=0;entryY=0.78;" source="wf-recall" target="wf-clarification">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="30.0" y="2506.25" />
+              <mxPoint x="30.0" y="1198.75" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-experience-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C1023;strokeColor=#3E365A;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2668.75" y="1925.0" width="2512.5" height="662.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-experience-kicker" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;EXTRAIR / REVISAR / REUTILIZAR&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=16;fontColor=#A78BFA;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1950.0" width="2325.0" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-experience-title" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Extrair aprendizados e aprimorá-los com revisão humana&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=28;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1996.25" width="2325.0" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-work-experience" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Experiência verificada na implementação, nos testes e nas revisões&lt;br&gt;Orientações e boas práticas de produto, arquitetura, desenvolvimento e testes&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#211A38;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="2081.25" width="2325.0" height="106.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-distill" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;distill · Extrair conhecimento reutilizável entre funcionalidades&lt;br&gt;Registrar no profile do projeto com origem e condições de aplicação&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#211A38;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="2243.75" width="2325.0" height="106.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-experience-to-distill" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-work-experience" target="wf-distill">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-distill-to-profile" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0;exitY=0.5;entryX=1;entryY=0.35;" source="wf-distill" target="wf-profile">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2625.0" y="2296.25" />
+              <mxPoint x="2625.0" y="2180.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-distill-timing" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Registrar durante o trabalho e ao concluí-lo com sucesso; pular se não houver conhecimento novo.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=20;fontColor=#BDB4D8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="2377.5" width="2325.0" height="42.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-human-review" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;distill review · Revisão humana quando necessária&lt;br&gt;Verificar resultados; revisar, mesclar ou descartar registros; marcar como vetted após a confirmação&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#211A38;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="2450.0" width="2325.0" height="106.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-human-review-to-profile" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0;exitY=0.5;entryX=1;entryY=0.89;" source="wf-human-review" target="wf-profile">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2625.0" y="2502.5" />
+              <mxPoint x="2625.0" y="2331.25" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-edge-implementation-to-experience" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=1;exitY=0.955;entryX=1;entryY=0.5;" source="wf-implementation-panel" target="wf-work-experience">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="5256.25" y="1827.5" />
+              <mxPoint x="5256.25" y="2133.75" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-footer" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Conferido com o CodexSpec v0.7.24 · Requisitos → implementação → aprendizado → próximos requisitos&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Arial;fontSize=19;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="80.0" y="2662.5" width="4911.25" height="43.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-traceability-columns" edge="1" parent="1" style="edgeStyle=none;html=1;strokeColor=#334155;strokeWidth=1;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1331.25" y="1635" as="sourcePoint" />
+            <mxPoint x="1331.25" y="1747.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-completion-heading" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Critérios de conclusão&lt;/div&gt;" vertex="1" parent="1" style="text;html=1;whiteSpace=wrap;fontFamily=Arial;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontSize=24;fontColor=#34D399;fontStyle=1;">
+          <mxGeometry x="4431.25" y="1600" width="675.0" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimensions-heading" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Sete dimensões de revisão&lt;/div&gt;" vertex="1" parent="1" style="text;html=1;whiteSpace=wrap;fontFamily=Arial;strokeColor=none;fillColor=none;align=center;verticalAlign=top;spacing=0;fontSize=24;fontColor=#FBBF24;fontStyle=1;">
+          <mxGeometry x="2700" y="1651.75" width="180" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-1" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Lógica e fluxo de dados&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="2900" y="1643.75" width="180" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-2" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Regras de negócio e semântica de estados&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3100" y="1643.75" width="180" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-3" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Segurança e limites de confiança&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3300" y="1643.75" width="180" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-4" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Concorrência e ciclo de vida&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3500" y="1643.75" width="180" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-5" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Robustez e responsabilidade pelos recursos&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3700" y="1643.75" width="180" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-6" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Impacto real no desempenho&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3900" y="1643.75" width="180" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-7" value="&lt;div lang=&quot;pt-BR&quot; style=&quot;line-height:1.25&quot;&gt;Manutenibilidade das alterações&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Arial;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="4100" y="1643.75" width="180" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-completion-columns" edge="1" parent="1" style="edgeStyle=none;html=1;strokeColor=#334155;strokeWidth=1;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="4356.25" y="1603.75" as="sourcePoint" />
+            <mxPoint x="4356.25" y="1802.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-1" edge="1" parent="1" source="wf-review-dimension-1" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.0945945945945946;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-2" edge="1" parent="1" source="wf-review-dimension-2" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.20945945945945946;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-3" edge="1" parent="1" source="wf-review-dimension-3" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.32432432432432434;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-4" edge="1" parent="1" source="wf-review-dimension-4" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.4391891891891892;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-5" edge="1" parent="1" source="wf-review-dimension-5" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.5540540540540541;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-6" edge="1" parent="1" source="wf-review-dimension-6" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.668918918918919;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-7" edge="1" parent="1" source="wf-review-dimension-7" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.7837837837837838;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

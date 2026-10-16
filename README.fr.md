@@ -91,6 +91,15 @@ intention. Lorsque l'automatisation est activée, le travail avance à mesure qu
 les étapes sont validées ; l'agent ne peut pas remplacer les exigences
 confirmées sans le signaler.
 
+<!-- workflow-diagram:start -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/workflow/workflow-fr-dark.png">
+  <img alt="CodexSpec : développement guidé par les exigences, revues par étape et réutilisation de l’expérience" src="assets/workflow/workflow-fr-light.png">
+</picture>
+
+Afficher en taille réelle: [☀️](assets/workflow/workflow-fr-light.png) · [🌙](assets/workflow/workflow-fr-dark.png)
+<!-- workflow-diagram:end -->
+
 ## Démarrage rapide en 30 secondes
 
 Installez CodexSpec et initialisez le projet pour l'assistant que vous utilisez :

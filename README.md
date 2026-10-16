@@ -85,6 +85,15 @@ Human collaboration establishes and changes product intent. Automatic reviews
 check derived artifacts against it. Enabling automation advances work through
 passing stages; it does not let the agent silently replace confirmed requirements.
 
+<!-- workflow-diagram:start -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/workflow/workflow-en-dark.png">
+  <img alt="CodexSpec: requirements-first development, stage reviews and the experience feedback loop" src="assets/workflow/workflow-en-light.png">
+</picture>
+
+View full size: [☀️](assets/workflow/workflow-en-light.png) · [🌙](assets/workflow/workflow-en-dark.png)
+<!-- workflow-diagram:end -->
+
 ## 30-Second Quick Start
 
 Install CodexSpec and initialize for the assistant you use:

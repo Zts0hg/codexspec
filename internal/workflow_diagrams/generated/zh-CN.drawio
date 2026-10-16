@@ -1,0 +1,827 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="Electron" type="device">
+  <diagram id="zh-CN-light" name="light">
+    <mxGraphModel dx="1600" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3200.0" pageHeight="2360.0" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="wf-title" value="&lt;div lang=&quot;zh-CN&quot;&gt;CodexSpec · 标准化 AI 开发与经验迭代&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=48;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="45" width="2800" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-subtitle" value="&lt;div lang=&quot;zh-CN&quot;&gt;你决定做什么、为什么做；智能体在已确认需求的约束下，细化方案、实施并验证。&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=26;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="64" y="130" width="2650" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-req" value="&lt;div lang=&quot;zh-CN&quot;&gt;需求与确认&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=17;fontColor=#08788D;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#08788D;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2040" y="185" width="240" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-flow" value="&lt;div lang=&quot;zh-CN&quot;&gt;规格与实施&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=17;fontColor=#047857;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2310" y="185" width="240" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-review" value="&lt;div lang=&quot;zh-CN&quot;&gt;审查与修复&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=17;fontColor=#946200;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2580" y="185" width="240" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-knowledge" value="&lt;div lang=&quot;zh-CN&quot;&gt;经验与复用&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=17;fontColor=#6D28D9;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2850" y="185" width="290" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F0FBFD;strokeColor=#67A3B1;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="260" width="1000" height="390" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-kicker" value="&lt;div lang=&quot;zh-CN&quot;&gt;REQUIREMENTS / INQUIRY&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=16;fontColor=#08788D;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="95" y="281" width="900" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-title" value="&lt;div lang=&quot;zh-CN&quot;&gt;需求对账清单 · 问询情况&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=30;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="95" y="320" width="900" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-care" value="&lt;div lang=&quot;zh-CN&quot;&gt;我关心的&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#D8F2F8;strokeColor=#08788D;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="95" y="392" width="195" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-care-action" value="&lt;div lang=&quot;zh-CN&quot;&gt;提前到问询环节，并且聊清楚&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#08788D;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="330" y="390" width="680" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-not-care" value="&lt;div lang=&quot;zh-CN&quot;&gt;我不关心的&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=22;fontColor=#526178;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#BAC6D6;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="95" y="466" width="195" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-not-care-action" value="&lt;div lang=&quot;zh-CN&quot;&gt;说明可由智能体自行选择的范围&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=22;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="330" y="463" width="680" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-detail" value="&lt;div lang=&quot;zh-CN&quot;&gt;确认关键细节与预期，避免采用可行但不符合预期的方案。&lt;br&gt;最终需求摘要经用户确认后，形成权威需求记录。&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=22;fontColor=#38586B;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="95" y="551" width="920" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F8FAFC;strokeColor=#C3CEDB;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="260" width="2010" height="390" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-kicker" value="&lt;div lang=&quot;zh-CN&quot;&gt;RESPONSIBILITIES / CONFIRMED INTENT&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=16;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1165" y="281" width="1900" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-title" value="&lt;div lang=&quot;zh-CN&quot;&gt;目标由你确认，方案与实现逐级细化&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=30;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1165" y="320" width="1900" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-user" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;用户确认&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:22px&quot;&gt;做什么、为什么做&lt;br&gt;关键约束、取舍和验收预期&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=25;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#E6F8FC;strokeColor=#08788D;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1165" y="393" width="575" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-agent" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;智能体细化与执行&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:22px&quot;&gt;架构与接口 → 计划与任务&lt;br&gt;实现、测试与缺陷修复&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=25;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#EDFDF5;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1780" y="393" width="575" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-quality" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;阶段审查&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:22px&quot;&gt;忠实于需求 · 覆盖完整&lt;br&gt;决策有依据 · 结果可验证&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=25;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2395" y="393" width="710" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-flow-heading" value="&lt;div lang=&quot;zh-CN&quot;&gt;01  标准化开发流程&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=33;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="712" width="1550" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-flow-description" value="&lt;div lang=&quot;zh-CN&quot;&gt;需求形成权威基线；规格、设计、计划和任务逐级可追溯。审查发现偏差，先修复再推进。&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="64" y="777" width="1990" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-command-specify" value="&lt;div lang=&quot;zh-CN&quot;&gt;specify&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#08788D;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="850" width="350" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-requirements-stage" value="" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F0FBFD;strokeColor=#08788D;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="900" width="350" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-clarification" value="&lt;div lang=&quot;zh-CN&quot;&gt;澄清 → 用户确认&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=22;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#D8F2F8;strokeColor=#08788D;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="923" width="310" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-requirements" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;requirements.md&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:20px&quot;&gt;需求对账清单 · 权威源 ★&lt;br&gt;需求、约束、决策与范围边界&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=22;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#E6F8FC;strokeColor=#08788D;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1003" width="310" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-clarify-to-record" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#08788D;fontColor=#08788D;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-clarification" target="wf-requirements">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-inquiry-to-clarify" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#08788D;fontColor=#08788D;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0;exitY=0.5;entryX=0;entryY=0.26;" source="wf-inquiry-panel" target="wf-clarification">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="45" y="455" />
+              <mxPoint x="45" y="935" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-spec" value="&lt;div lang=&quot;zh-CN&quot;&gt;generate-spec&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#047857;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="475" y="850" width="350" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-spec" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;spec.md&lt;/b&gt;&lt;br&gt;&lt;br&gt;需求规格&lt;br&gt;&lt;font style=&quot;font-size:20px&quot;&gt;功能 / 非功能需求与验收标准&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:20px;color:#36584B&quot;&gt;包含功能场景，可额外用于&lt;br&gt;人工验收或者 Agent 自动化验收&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#EDFDF5;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="475" y="900" width="350" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-spec" value="&lt;div lang=&quot;zh-CN&quot;&gt;review-spec&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=19;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="475" y="1190" width="350" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-spec" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-spec" target="wf-gate-spec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-spec" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-spec" target="wf-spec">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="845" y="1212" />
+              <mxPoint x="845" y="1110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-design" value="&lt;div lang=&quot;zh-CN&quot;&gt;spec-to-design&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#047857;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="890" y="850" width="350" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-design" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;design.md&lt;/b&gt;&lt;br&gt;&lt;br&gt;技术设计&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:20px;color:#36584B&quot;&gt;架构、组件、接口&lt;br&gt;以及关键设计决策&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#EDFDF5;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="890" y="900" width="350" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-design" value="&lt;div lang=&quot;zh-CN&quot;&gt;review-design&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=19;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="890" y="1190" width="350" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-design" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-design" target="wf-gate-design">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-design" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-design" target="wf-design">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1260" y="1212" />
+              <mxPoint x="1260" y="1110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-plan" value="&lt;div lang=&quot;zh-CN&quot;&gt;design-to-plan&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#047857;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1305" y="850" width="350" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-plan" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;plan.md&lt;/b&gt;&lt;br&gt;&lt;br&gt;实施计划&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:20px;color:#36584B&quot;&gt;实施阶段与先后顺序&lt;br&gt;各阶段的验证方式&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#EDFDF5;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1305" y="900" width="350" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-plan" value="&lt;div lang=&quot;zh-CN&quot;&gt;review-plan&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=19;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1305" y="1190" width="350" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-plan" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-plan" target="wf-gate-plan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-plan" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-plan" target="wf-plan">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1675" y="1212" />
+              <mxPoint x="1675" y="1110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-tasks" value="&lt;div lang=&quot;zh-CN&quot;&gt;plan-to-tasks&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#047857;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1720" y="850" width="350" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-tasks" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;tasks.md&lt;/b&gt;&lt;br&gt;&lt;br&gt;可执行任务清单&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:20px;color:#36584B&quot;&gt;明确任务结果、依赖关系&lt;br&gt;以及相应的验证要求&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#EDFDF5;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1720" y="900" width="350" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-tasks" value="&lt;div lang=&quot;zh-CN&quot;&gt;review-tasks&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=19;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1720" y="1190" width="350" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-tasks" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-tasks" target="wf-gate-tasks">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-tasks" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-tasks" target="wf-tasks">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2090" y="1212" />
+              <mxPoint x="2090" y="1110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-edge-flow-requirements-stage" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#64748B;fontColor=#64748B;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-requirements-stage" target="wf-spec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-flow-spec" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#64748B;fontColor=#64748B;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-spec" target="wf-design">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-flow-design" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#64748B;fontColor=#64748B;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-design" target="wf-plan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-flow-plan" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#64748B;fontColor=#64748B;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-plan" target="wf-tasks">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-loop-note" value="&lt;div lang=&quot;zh-CN&quot;&gt;各阶段生成后接受对应审查，发现问题则修复并复审。&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=20;fontColor=#946200;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="64" y="1192" width="350" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F8FAFC;strokeColor=#67A3B1;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2135" y="825" width="1005" height="835" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-title" value="&lt;div lang=&quot;zh-CN&quot;&gt;实现、验证与审查&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=29;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="848" width="920" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-command-implement" value="&lt;div lang=&quot;zh-CN&quot;&gt;implement-tasks&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=17;fontColor=#047857;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="916" width="360" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-execute" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;执行 tasks.md 中的任务&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:20px;color:#36584B&quot;&gt;代码：先测试再实现&lt;br&gt;文档 / 配置等：直接实施，并做相应验证&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=25;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#EDFDF5;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="975" width="740" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-tasks-to-execute" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#047857;fontColor=#047857;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.345;" source="wf-tasks" target="wf-execute">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-code-review" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;review-code&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:21px;color:#685528&quot;&gt;独立核实缺陷 · 修复 · 复审&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="1170" width="740" height="91" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-execute-to-review" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-execute" target="wf-code-review">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-execute-review-label" value="&lt;div lang=&quot;zh-CN&quot;&gt;实现完成后审查&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=20;fontColor=#946200;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2570" y="1128" width="320" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-implementation-repair" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" source="wf-code-review" target="wf-execute">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3065" y="1215" />
+              <mxPoint x="3065" y="1046" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-implementation-repair-label" value="&lt;div lang=&quot;zh-CN&quot;&gt;修复后&lt;br&gt;重新验证&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=20;fontColor=#946200;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2930" y="1100" width="190" height="66" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-done" value="&lt;div lang=&quot;zh-CN&quot;&gt;完整变更重新审查为 PASS&lt;br&gt;覆盖与验证完成&lt;br&gt;P0–P3 缺陷清零&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=21;fontColor=#047857;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2840" y="1320" width="270" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-debug" value="&lt;div lang=&quot;zh-CN&quot;&gt;修复反复不收敛时，通过 debug 定位根因。&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=20;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="1620" width="920" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability" value="" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#BAC6D6;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1290" width="2010" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability-title" value="&lt;div lang=&quot;zh-CN&quot;&gt;功能工件与追溯链&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="1305" width="945" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability-path" value="&lt;div lang=&quot;zh-CN&quot;&gt;.codexspec/specs/&amp;lt;feature-id&amp;gt;/&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=20;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1095" y="1305" width="945" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability-line" value="&lt;div lang=&quot;zh-CN&quot;&gt;需求与决策 → 规格 → 设计 → 计划 → 任务 → 实现与验证&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=21;fontColor=#36584B;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="90" y="1353" width="945" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-analyze-note" value="&lt;div lang=&quot;zh-CN&quot;&gt;任务审查后由 analyze 核对全链路追溯&lt;br&gt;信息性检查，供实现前核对&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=21;fontColor=#946200;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1095" y="1353" width="945" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-heading" value="&lt;div lang=&quot;zh-CN&quot;&gt;02  经验与历史共同支持下一轮开发&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=33;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1620" width="2010" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FAF8FF;strokeColor=#C6B8E2;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1700" width="2010" height="530" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-kicker" value="&lt;div lang=&quot;zh-CN&quot;&gt;PROJECT CONTEXT / REUSE&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=16;fontColor=#6D28D9;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="1720" width="1300" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-title" value="&lt;div lang=&quot;zh-CN&quot;&gt;保留决策依据，积累可复用知识&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=28;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="1757" width="1300" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-principles-and-code" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;项目原则与实现事实&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:20px;color:#63547A&quot;&gt;constitution.md&lt;br&gt;项目原则与硬约束&lt;br&gt;&lt;br&gt;现有代码与测试&lt;br&gt;提供当前实现的事实依据&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="90" y="1825" width="350" height="225" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-history" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;功能历史与决策演进&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:22px;color:#63547A&quot;&gt;.codexspec/specs/&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:21px;color:#63547A&quot;&gt;已确认需求、规格、设计、计划、任务&lt;br&gt;以及相关审查记录与决策变更&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=25;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="475" y="1825" width="650" height="225" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-profile" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;可复用项目经验&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:22px;color:#63547A&quot;&gt;.codexspec/profile/&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:21px;color:#63547A&quot;&gt;约束 · 约定 · 踩坑经验 · 决策 · 策略 · 操作规程&lt;br&gt;硬约束优先；candidate 谨慎复用&lt;br&gt;vetted 需结果验证与人工认可&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=25;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="1825" width="875" height="225" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-feature-artifacts-to-history" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0.99;exitY=1;entryX=0.5;entryY=0;" source="wf-traceability" target="wf-history">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2050" y="1450" />
+              <mxPoint x="2050" y="1808" />
+              <mxPoint x="800" y="1808" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-history-save-label" value="&lt;div lang=&quot;zh-CN&quot;&gt;保留功能工件&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=19;fontColor=#6D28D9;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1700" y="1460" width="320" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-recall" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;后续开发主动回顾相关上下文&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:21px;color:#63547A&quot;&gt;通过 CLAUDE.md / AGENTS.md 引导回顾；specify 将相关知识纳入需求讨论，下游以已确认需求为准。&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EEFC;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=9;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="90" y="2125" width="1945" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-recall-principles-and-code" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.09;entryY=0;" source="wf-principles-and-code" target="wf-recall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-recall-history" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.365;entryY=0;" source="wf-history" target="wf-recall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-recall-profile" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.775;entryY=0;" source="wf-profile" target="wf-recall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-knowledge-next-requirements" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0;exitY=0.5;entryX=0;entryY=0.78;" source="wf-recall" target="wf-clarification">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="24" y="2165" />
+              <mxPoint x="24" y="959" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-experience-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FAF8FF;strokeColor=#C6B8E2;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2135" y="1700" width="1005" height="530" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-experience-kicker" value="&lt;div lang=&quot;zh-CN&quot;&gt;DISTILL / REVIEW / REUSE&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=16;fontColor=#6D28D9;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="1720" width="930" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-experience-title" value="&lt;div lang=&quot;zh-CN&quot;&gt;提炼经验，并通过人工审阅完善&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=28;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="1757" width="930" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-work-experience" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;来自实现、测试与审查的已验证经验&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:21px;color:#63547A&quot;&gt;产品、架构、开发、测试的指导经验与最佳实践&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="1825" width="930" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-distill" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;distill · 提炼可跨功能复用的知识&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:21px;color:#63547A&quot;&gt;写入项目 profile，保留来源与适用条件&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="1955" width="930" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-experience-to-distill" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-work-experience" target="wf-distill">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-distill-to-profile" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0;exitY=0.5;entryX=1;entryY=0.35;" source="wf-distill" target="wf-profile">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2100" y="1997" />
+              <mxPoint x="2100" y="1904" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-distill-timing" value="&lt;div lang=&quot;zh-CN&quot;&gt;工作过程中与成功收尾时均可沉淀；没有新知识时跳过。&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=20;fontColor=#63547A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="2062" width="930" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-human-review" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;distill review · 按需人工审阅&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:21px;color:#63547A&quot;&gt;核实验证结果，修订、合并或丢弃记录；确认后标记 vetted&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="2120" width="930" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-human-review-to-profile" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0;exitY=0.5;entryX=1;entryY=0.89;" source="wf-human-review" target="wf-profile">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2100" y="2162" />
+              <mxPoint x="2100" y="2025" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-edge-implementation-to-experience" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=1;exitY=0.955;entryX=1;entryY=0.5;" source="wf-implementation-panel" target="wf-work-experience">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3170" y="1622" />
+              <mxPoint x="3170" y="1867" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-footer" value="&lt;div lang=&quot;zh-CN&quot;&gt;基于 CodexSpec v0.7.24 校对 · 需求 → 实现 → 经验 → 下一轮需求&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=19;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="64" y="2290" width="3000" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-traceability-columns" edge="1" parent="1" style="edgeStyle=none;html=1;strokeColor=#BAC6D6;strokeWidth=1;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1065" y="1308" as="sourcePoint" />
+            <mxPoint x="1065" y="1398" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-completion-heading" value="&lt;div lang=&quot;zh-CN&quot;&gt;完成条件&lt;/div&gt;" vertex="1" parent="1" style="text;html=1;whiteSpace=wrap;fontFamily=PingFang SC;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontSize=24;fontColor=#047857;fontStyle=1;">
+          <mxGeometry x="2840" y="1280" width="270" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimensions-heading" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;div style=&quot;line-height:27px&quot;&gt;七&lt;br&gt;个&lt;br&gt;审&lt;br&gt;查&lt;br&gt;维&lt;br&gt;度&lt;/div&gt;&lt;/div&gt;" vertex="1" parent="1" style="text;html=1;whiteSpace=wrap;fontFamily=PingFang SC;strokeColor=none;fillColor=none;align=center;verticalAlign=top;spacing=0;fontSize=24;fontColor=#946200;fontStyle=1;">
+          <mxGeometry x="2160" y="1323" width="32" height="232" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-1" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;div style=&quot;line-height:23px&quot;&gt;逻&lt;br&gt;辑&lt;br&gt;与&lt;br&gt;数&lt;br&gt;据&lt;br&gt;流&lt;/div&gt;&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=PingFang SC;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="2210" y="1315" width="60" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-2" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;div style=&quot;line-height:23px&quot;&gt;业&lt;br&gt;务&lt;br&gt;规&lt;br&gt;则&lt;br&gt;与&lt;br&gt;状&lt;br&gt;态&lt;br&gt;语&lt;br&gt;义&lt;/div&gt;&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=PingFang SC;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="2295" y="1315" width="60" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-3" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;div style=&quot;line-height:23px&quot;&gt;安&lt;br&gt;全&lt;br&gt;与&lt;br&gt;信&lt;br&gt;任&lt;br&gt;边&lt;br&gt;界&lt;/div&gt;&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=PingFang SC;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="2380" y="1315" width="60" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-4" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;div style=&quot;line-height:23px&quot;&gt;并&lt;br&gt;发&lt;br&gt;与&lt;br&gt;生&lt;br&gt;命&lt;br&gt;周&lt;br&gt;期&lt;/div&gt;&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=PingFang SC;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="2465" y="1315" width="60" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-5" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;div style=&quot;line-height:23px&quot;&gt;健&lt;br&gt;壮&lt;br&gt;性&lt;br&gt;与&lt;br&gt;资&lt;br&gt;源&lt;br&gt;所&lt;br&gt;有&lt;br&gt;权&lt;/div&gt;&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=PingFang SC;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="2550" y="1315" width="60" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-6" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;div style=&quot;line-height:23px&quot;&gt;实&lt;br&gt;际&lt;br&gt;性&lt;br&gt;能&lt;br&gt;影&lt;br&gt;响&lt;/div&gt;&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=PingFang SC;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="2635" y="1315" width="60" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-7" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;div style=&quot;line-height:23px&quot;&gt;增&lt;br&gt;量&lt;br&gt;可&lt;br&gt;维&lt;br&gt;护&lt;br&gt;性&lt;/div&gt;&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=PingFang SC;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="2720" y="1315" width="60" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-completion-columns" edge="1" parent="1" style="edgeStyle=none;html=1;strokeColor=#BAC6D6;strokeWidth=1;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="2810" y="1283" as="sourcePoint" />
+            <mxPoint x="2810" y="1602" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-1" edge="1" parent="1" source="wf-review-dimension-1" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.0945945945945946;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-2" edge="1" parent="1" source="wf-review-dimension-2" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.20945945945945946;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-3" edge="1" parent="1" source="wf-review-dimension-3" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.32432432432432434;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-4" edge="1" parent="1" source="wf-review-dimension-4" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.4391891891891892;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-5" edge="1" parent="1" source="wf-review-dimension-5" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.5540540540540541;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-6" edge="1" parent="1" source="wf-review-dimension-6" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.668918918918919;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-7" edge="1" parent="1" source="wf-review-dimension-7" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.7837837837837838;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="zh-CN-dark" name="dark">
+    <mxGraphModel dx="1600" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3200.0" pageHeight="2360.0" math="0" shadow="0" background="#020617">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="wf-title" value="&lt;div lang=&quot;zh-CN&quot;&gt;CodexSpec · 标准化 AI 开发与经验迭代&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=48;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="45" width="2800" height="74" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-subtitle" value="&lt;div lang=&quot;zh-CN&quot;&gt;你决定做什么、为什么做；智能体在已确认需求的约束下，细化方案、实施并验证。&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=26;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="64" y="130" width="2650" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-req" value="&lt;div lang=&quot;zh-CN&quot;&gt;需求与确认&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=17;fontColor=#22D3EE;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#020617;strokeColor=#22D3EE;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2040" y="185" width="240" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-flow" value="&lt;div lang=&quot;zh-CN&quot;&gt;规格与实施&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=17;fontColor=#34D399;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#020617;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2310" y="185" width="240" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-review" value="&lt;div lang=&quot;zh-CN&quot;&gt;审查与修复&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=17;fontColor=#FBBF24;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#020617;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2580" y="185" width="240" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-knowledge" value="&lt;div lang=&quot;zh-CN&quot;&gt;经验与复用&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=17;fontColor=#A78BFA;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#020617;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2850" y="185" width="290" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#071B27;strokeColor=#1C6474;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="260" width="1000" height="390" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-kicker" value="&lt;div lang=&quot;zh-CN&quot;&gt;REQUIREMENTS / INQUIRY&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=16;fontColor=#22D3EE;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="95" y="281" width="900" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-title" value="&lt;div lang=&quot;zh-CN&quot;&gt;需求对账清单 · 问询情况&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=30;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="95" y="320" width="900" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-care" value="&lt;div lang=&quot;zh-CN&quot;&gt;我关心的&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#092E3A;strokeColor=#22D3EE;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="95" y="392" width="195" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-care-action" value="&lt;div lang=&quot;zh-CN&quot;&gt;提前到问询环节，并且聊清楚&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#22D3EE;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="330" y="390" width="680" height="58" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-not-care" value="&lt;div lang=&quot;zh-CN&quot;&gt;我不关心的&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=22;fontColor=#94A3B8;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="95" y="466" width="195" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-not-care-action" value="&lt;div lang=&quot;zh-CN&quot;&gt;说明可由智能体自行选择的范围&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=22;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="330" y="463" width="680" height="56" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-detail" value="&lt;div lang=&quot;zh-CN&quot;&gt;确认关键细节与预期，避免采用可行但不符合预期的方案。&lt;br&gt;最终需求摘要经用户确认后，形成权威需求记录。&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=22;fontColor=#C0D4E2;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="95" y="551" width="920" height="72" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0A1223;strokeColor=#253249;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1130" y="260" width="2010" height="390" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-kicker" value="&lt;div lang=&quot;zh-CN&quot;&gt;RESPONSIBILITIES / CONFIRMED INTENT&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=16;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1165" y="281" width="1900" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-title" value="&lt;div lang=&quot;zh-CN&quot;&gt;目标由你确认，方案与实现逐级细化&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=30;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1165" y="320" width="1900" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-user" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;用户确认&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:22px&quot;&gt;做什么、为什么做&lt;br&gt;关键约束、取舍和验收预期&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=25;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#082C38;strokeColor=#22D3EE;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1165" y="393" width="575" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-agent" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;智能体细化与执行&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:22px&quot;&gt;架构与接口 → 计划与任务&lt;br&gt;实现、测试与缺陷修复&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=25;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C2726;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1780" y="393" width="575" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-quality" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;阶段审查&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:22px&quot;&gt;忠实于需求 · 覆盖完整&lt;br&gt;决策有依据 · 结果可验证&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=25;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2395" y="393" width="710" height="220" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-flow-heading" value="&lt;div lang=&quot;zh-CN&quot;&gt;01  标准化开发流程&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=33;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="712" width="1550" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-flow-description" value="&lt;div lang=&quot;zh-CN&quot;&gt;需求形成权威基线；规格、设计、计划和任务逐级可追溯。审查发现偏差，先修复再推进。&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="64" y="777" width="1990" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-command-specify" value="&lt;div lang=&quot;zh-CN&quot;&gt;specify&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#22D3EE;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="850" width="350" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-requirements-stage" value="" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#071B27;strokeColor=#22D3EE;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="900" width="350" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-clarification" value="&lt;div lang=&quot;zh-CN&quot;&gt;澄清 → 用户确认&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=22;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#092E3A;strokeColor=#22D3EE;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="923" width="310" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-requirements" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;requirements.md&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:20px&quot;&gt;需求对账清单 · 权威源 ★&lt;br&gt;需求、约束、决策与范围边界&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=22;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#082C38;strokeColor=#22D3EE;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1003" width="310" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-clarify-to-record" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#22D3EE;fontColor=#22D3EE;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-clarification" target="wf-requirements">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-inquiry-to-clarify" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#22D3EE;fontColor=#22D3EE;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0;exitY=0.5;entryX=0;entryY=0.26;" source="wf-inquiry-panel" target="wf-clarification">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="45" y="455" />
+              <mxPoint x="45" y="935" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-spec" value="&lt;div lang=&quot;zh-CN&quot;&gt;generate-spec&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#34D399;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="475" y="850" width="350" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-spec" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;spec.md&lt;/b&gt;&lt;br&gt;&lt;br&gt;需求规格&lt;br&gt;&lt;font style=&quot;font-size:20px&quot;&gt;功能 / 非功能需求与验收标准&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:20px;color:#BCD4D0&quot;&gt;包含功能场景，可额外用于&lt;br&gt;人工验收或者 Agent 自动化验收&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C2726;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="475" y="900" width="350" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-spec" value="&lt;div lang=&quot;zh-CN&quot;&gt;review-spec&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=19;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="475" y="1190" width="350" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-spec" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-spec" target="wf-gate-spec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-spec" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-spec" target="wf-spec">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="845" y="1212" />
+              <mxPoint x="845" y="1110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-design" value="&lt;div lang=&quot;zh-CN&quot;&gt;spec-to-design&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#34D399;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="890" y="850" width="350" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-design" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;design.md&lt;/b&gt;&lt;br&gt;&lt;br&gt;技术设计&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:20px;color:#BCD4D0&quot;&gt;架构、组件、接口&lt;br&gt;以及关键设计决策&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C2726;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="890" y="900" width="350" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-design" value="&lt;div lang=&quot;zh-CN&quot;&gt;review-design&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=19;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="890" y="1190" width="350" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-design" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-design" target="wf-gate-design">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-design" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-design" target="wf-design">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1260" y="1212" />
+              <mxPoint x="1260" y="1110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-plan" value="&lt;div lang=&quot;zh-CN&quot;&gt;design-to-plan&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#34D399;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1305" y="850" width="350" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-plan" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;plan.md&lt;/b&gt;&lt;br&gt;&lt;br&gt;实施计划&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:20px;color:#BCD4D0&quot;&gt;实施阶段与先后顺序&lt;br&gt;各阶段的验证方式&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C2726;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1305" y="900" width="350" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-plan" value="&lt;div lang=&quot;zh-CN&quot;&gt;review-plan&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=19;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1305" y="1190" width="350" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-plan" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-plan" target="wf-gate-plan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-plan" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-plan" target="wf-plan">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1675" y="1212" />
+              <mxPoint x="1675" y="1110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-tasks" value="&lt;div lang=&quot;zh-CN&quot;&gt;plan-to-tasks&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#34D399;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1720" y="850" width="350" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-tasks" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;tasks.md&lt;/b&gt;&lt;br&gt;&lt;br&gt;可执行任务清单&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:20px;color:#BCD4D0&quot;&gt;明确任务结果、依赖关系&lt;br&gt;以及相应的验证要求&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C2726;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1720" y="900" width="350" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-tasks" value="&lt;div lang=&quot;zh-CN&quot;&gt;review-tasks&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=19;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1720" y="1190" width="350" height="44" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-tasks" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-tasks" target="wf-gate-tasks">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-tasks" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-tasks" target="wf-tasks">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2090" y="1212" />
+              <mxPoint x="2090" y="1110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-edge-flow-requirements-stage" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#8DA5BD;fontColor=#8DA5BD;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-requirements-stage" target="wf-spec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-flow-spec" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#8DA5BD;fontColor=#8DA5BD;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-spec" target="wf-design">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-flow-design" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#8DA5BD;fontColor=#8DA5BD;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-design" target="wf-plan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-flow-plan" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#8DA5BD;fontColor=#8DA5BD;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-plan" target="wf-tasks">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-loop-note" value="&lt;div lang=&quot;zh-CN&quot;&gt;各阶段生成后接受对应审查，发现问题则修复并复审。&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=20;fontColor=#FBBF24;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="64" y="1192" width="350" height="76" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0A1223;strokeColor=#1C6474;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2135" y="825" width="1005" height="835" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-title" value="&lt;div lang=&quot;zh-CN&quot;&gt;实现、验证与审查&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=29;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="848" width="920" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-command-implement" value="&lt;div lang=&quot;zh-CN&quot;&gt;implement-tasks&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=17;fontColor=#34D399;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#020617;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="916" width="360" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-execute" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;执行 tasks.md 中的任务&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:20px;color:#BCD4D0&quot;&gt;代码：先测试再实现&lt;br&gt;文档 / 配置等：直接实施，并做相应验证&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=25;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C2726;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="975" width="740" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-tasks-to-execute" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#34D399;fontColor=#34D399;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.345;" source="wf-tasks" target="wf-execute">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-code-review" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;review-code&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:21px;color:#DBD1B4&quot;&gt;独立核实缺陷 · 修复 · 复审&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="1170" width="740" height="91" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-execute-to-review" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-execute" target="wf-code-review">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-execute-review-label" value="&lt;div lang=&quot;zh-CN&quot;&gt;实现完成后审查&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=20;fontColor=#FBBF24;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2570" y="1128" width="320" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-implementation-repair" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" source="wf-code-review" target="wf-execute">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3065" y="1215" />
+              <mxPoint x="3065" y="1046" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-implementation-repair-label" value="&lt;div lang=&quot;zh-CN&quot;&gt;修复后&lt;br&gt;重新验证&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=20;fontColor=#FBBF24;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2930" y="1100" width="190" height="66" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-done" value="&lt;div lang=&quot;zh-CN&quot;&gt;完整变更重新审查为 PASS&lt;br&gt;覆盖与验证完成&lt;br&gt;P0–P3 缺陷清零&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=21;fontColor=#34D399;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2840" y="1320" width="270" height="112" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-debug" value="&lt;div lang=&quot;zh-CN&quot;&gt;修复反复不收敛时，通过 debug 定位根因。&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=20;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="1620" width="920" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability" value="" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1290" width="2010" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability-title" value="&lt;div lang=&quot;zh-CN&quot;&gt;功能工件与追溯链&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="1305" width="945" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability-path" value="&lt;div lang=&quot;zh-CN&quot;&gt;.codexspec/specs/&amp;lt;feature-id&amp;gt;/&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=20;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1095" y="1305" width="945" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability-line" value="&lt;div lang=&quot;zh-CN&quot;&gt;需求与决策 → 规格 → 设计 → 计划 → 任务 → 实现与验证&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=21;fontColor=#BCD4D0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="90" y="1353" width="945" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-analyze-note" value="&lt;div lang=&quot;zh-CN&quot;&gt;任务审查后由 analyze 核对全链路追溯&lt;br&gt;信息性检查，供实现前核对&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=21;fontColor=#FBBF24;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1095" y="1353" width="945" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-heading" value="&lt;div lang=&quot;zh-CN&quot;&gt;02  经验与历史共同支持下一轮开发&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=33;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1620" width="2010" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C1023;strokeColor=#3E365A;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1700" width="2010" height="530" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-kicker" value="&lt;div lang=&quot;zh-CN&quot;&gt;PROJECT CONTEXT / REUSE&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=16;fontColor=#A78BFA;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="1720" width="1300" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-title" value="&lt;div lang=&quot;zh-CN&quot;&gt;保留决策依据，积累可复用知识&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=28;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="90" y="1757" width="1300" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-principles-and-code" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;项目原则与实现事实&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:20px;color:#BDB4D8&quot;&gt;constitution.md&lt;br&gt;项目原则与硬约束&lt;br&gt;&lt;br&gt;现有代码与测试&lt;br&gt;提供当前实现的事实依据&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#211A38;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="90" y="1825" width="350" height="225" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-history" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;功能历史与决策演进&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:22px;color:#BDB4D8&quot;&gt;.codexspec/specs/&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:21px;color:#BDB4D8&quot;&gt;已确认需求、规格、设计、计划、任务&lt;br&gt;以及相关审查记录与决策变更&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=25;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#211A38;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="475" y="1825" width="650" height="225" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-profile" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;可复用项目经验&lt;/b&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:22px;color:#BDB4D8&quot;&gt;.codexspec/profile/&lt;/font&gt;&lt;br&gt;&lt;br&gt;&lt;font style=&quot;font-size:21px;color:#BDB4D8&quot;&gt;约束 · 约定 · 踩坑经验 · 决策 · 策略 · 操作规程&lt;br&gt;硬约束优先；candidate 谨慎复用&lt;br&gt;vetted 需结果验证与人工认可&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=25;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#211A38;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="1825" width="875" height="225" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-feature-artifacts-to-history" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0.99;exitY=1;entryX=0.5;entryY=0;" source="wf-traceability" target="wf-history">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2050" y="1450" />
+              <mxPoint x="2050" y="1808" />
+              <mxPoint x="800" y="1808" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-history-save-label" value="&lt;div lang=&quot;zh-CN&quot;&gt;保留功能工件&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=19;fontColor=#A78BFA;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1700" y="1460" width="320" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-recall" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;后续开发主动回顾相关上下文&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:21px;color:#BDB4D8&quot;&gt;通过 CLAUDE.md / AGENTS.md 引导回顾；specify 将相关知识纳入需求讨论，下游以已确认需求为准。&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#14132B;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=9;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="90" y="2125" width="1945" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-recall-principles-and-code" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.09;entryY=0;" source="wf-principles-and-code" target="wf-recall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-recall-history" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.365;entryY=0;" source="wf-history" target="wf-recall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-recall-profile" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.775;entryY=0;" source="wf-profile" target="wf-recall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-knowledge-next-requirements" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0;exitY=0.5;entryX=0;entryY=0.78;" source="wf-recall" target="wf-clarification">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="24" y="2165" />
+              <mxPoint x="24" y="959" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-experience-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C1023;strokeColor=#3E365A;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2135" y="1700" width="1005" height="530" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-experience-kicker" value="&lt;div lang=&quot;zh-CN&quot;&gt;DISTILL / REVIEW / REUSE&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=16;fontColor=#A78BFA;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="1720" width="930" height="28" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-experience-title" value="&lt;div lang=&quot;zh-CN&quot;&gt;提炼经验，并通过人工审阅完善&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=28;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="1757" width="930" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-work-experience" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;来自实现、测试与审查的已验证经验&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:21px;color:#BDB4D8&quot;&gt;产品、架构、开发、测试的指导经验与最佳实践&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#211A38;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="1825" width="930" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-distill" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;distill · 提炼可跨功能复用的知识&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:21px;color:#BDB4D8&quot;&gt;写入项目 profile，保留来源与适用条件&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#211A38;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="1955" width="930" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-experience-to-distill" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-work-experience" target="wf-distill">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-distill-to-profile" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0;exitY=0.5;entryX=1;entryY=0.35;" source="wf-distill" target="wf-profile">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2100" y="1997" />
+              <mxPoint x="2100" y="1904" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-distill-timing" value="&lt;div lang=&quot;zh-CN&quot;&gt;工作过程中与成功收尾时均可沉淀；没有新知识时跳过。&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=20;fontColor=#BDB4D8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="2062" width="930" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-human-review" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;b&gt;distill review · 按需人工审阅&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:21px;color:#BDB4D8&quot;&gt;核实验证结果，修订、合并或丢弃记录；确认后标记 vetted&lt;/font&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#211A38;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2170" y="2120" width="930" height="85" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-human-review-to-profile" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0;exitY=0.5;entryX=1;entryY=0.89;" source="wf-human-review" target="wf-profile">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2100" y="2162" />
+              <mxPoint x="2100" y="2025" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-edge-implementation-to-experience" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=1;exitY=0.955;entryX=1;entryY=0.5;" source="wf-implementation-panel" target="wf-work-experience">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3170" y="1622" />
+              <mxPoint x="3170" y="1867" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-footer" value="&lt;div lang=&quot;zh-CN&quot;&gt;基于 CodexSpec v0.7.24 校对 · 需求 → 实现 → 经验 → 下一轮需求&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=PingFang SC;fontSize=19;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="64" y="2290" width="3000" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-traceability-columns" edge="1" parent="1" style="edgeStyle=none;html=1;strokeColor=#334155;strokeWidth=1;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1065" y="1308" as="sourcePoint" />
+            <mxPoint x="1065" y="1398" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-completion-heading" value="&lt;div lang=&quot;zh-CN&quot;&gt;完成条件&lt;/div&gt;" vertex="1" parent="1" style="text;html=1;whiteSpace=wrap;fontFamily=PingFang SC;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontSize=24;fontColor=#34D399;fontStyle=1;">
+          <mxGeometry x="2840" y="1280" width="270" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimensions-heading" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;div style=&quot;line-height:27px&quot;&gt;七&lt;br&gt;个&lt;br&gt;审&lt;br&gt;查&lt;br&gt;维&lt;br&gt;度&lt;/div&gt;&lt;/div&gt;" vertex="1" parent="1" style="text;html=1;whiteSpace=wrap;fontFamily=PingFang SC;strokeColor=none;fillColor=none;align=center;verticalAlign=top;spacing=0;fontSize=24;fontColor=#FBBF24;fontStyle=1;">
+          <mxGeometry x="2160" y="1323" width="32" height="232" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-1" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;div style=&quot;line-height:23px&quot;&gt;逻&lt;br&gt;辑&lt;br&gt;与&lt;br&gt;数&lt;br&gt;据&lt;br&gt;流&lt;/div&gt;&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=PingFang SC;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="2210" y="1315" width="60" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-2" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;div style=&quot;line-height:23px&quot;&gt;业&lt;br&gt;务&lt;br&gt;规&lt;br&gt;则&lt;br&gt;与&lt;br&gt;状&lt;br&gt;态&lt;br&gt;语&lt;br&gt;义&lt;/div&gt;&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=PingFang SC;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="2295" y="1315" width="60" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-3" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;div style=&quot;line-height:23px&quot;&gt;安&lt;br&gt;全&lt;br&gt;与&lt;br&gt;信&lt;br&gt;任&lt;br&gt;边&lt;br&gt;界&lt;/div&gt;&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=PingFang SC;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="2380" y="1315" width="60" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-4" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;div style=&quot;line-height:23px&quot;&gt;并&lt;br&gt;发&lt;br&gt;与&lt;br&gt;生&lt;br&gt;命&lt;br&gt;周&lt;br&gt;期&lt;/div&gt;&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=PingFang SC;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="2465" y="1315" width="60" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-5" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;div style=&quot;line-height:23px&quot;&gt;健&lt;br&gt;壮&lt;br&gt;性&lt;br&gt;与&lt;br&gt;资&lt;br&gt;源&lt;br&gt;所&lt;br&gt;有&lt;br&gt;权&lt;/div&gt;&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=PingFang SC;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="2550" y="1315" width="60" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-6" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;div style=&quot;line-height:23px&quot;&gt;实&lt;br&gt;际&lt;br&gt;性&lt;br&gt;能&lt;br&gt;影&lt;br&gt;响&lt;/div&gt;&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=PingFang SC;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="2635" y="1315" width="60" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-7" value="&lt;div lang=&quot;zh-CN&quot;&gt;&lt;div style=&quot;line-height:23px&quot;&gt;增&lt;br&gt;量&lt;br&gt;可&lt;br&gt;维&lt;br&gt;护&lt;br&gt;性&lt;/div&gt;&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=PingFang SC;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="2720" y="1315" width="60" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-completion-columns" edge="1" parent="1" style="edgeStyle=none;html=1;strokeColor=#334155;strokeWidth=1;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="2810" y="1283" as="sourcePoint" />
+            <mxPoint x="2810" y="1602" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-1" edge="1" parent="1" source="wf-review-dimension-1" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.0945945945945946;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-2" edge="1" parent="1" source="wf-review-dimension-2" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.20945945945945946;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-3" edge="1" parent="1" source="wf-review-dimension-3" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.32432432432432434;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-4" edge="1" parent="1" source="wf-review-dimension-4" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.4391891891891892;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-5" edge="1" parent="1" source="wf-review-dimension-5" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.5540540540540541;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-6" edge="1" parent="1" source="wf-review-dimension-6" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.668918918918919;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-7" edge="1" parent="1" source="wf-review-dimension-7" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.7837837837837838;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

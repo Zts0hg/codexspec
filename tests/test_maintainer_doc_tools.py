@@ -10,11 +10,12 @@ import pytest
 import yaml
 
 from codexspec.commands.installer import get_commands_metadata
+from codexspec.integrations.claude import ClaudeIntegration
 from codexspec.integrations.codex import CodexIntegration
 from internal import doc_translation, maintainer_doc_skills
 from internal.command_template_fragments import FragmentError, check_self_bootstrap
 
-COMMANDS = ("translate-docs", "check-i18n-semantics")
+COMMANDS = ("translate-docs", "check-i18n-semantics", "update-workflow-diagrams")
 
 
 def seed_entries(root: Path) -> Path:
@@ -33,10 +34,11 @@ def files(root: Path) -> dict[str, bytes]:
     return {str(path.relative_to(root)): path.read_bytes() for path in root.rglob("*") if path.is_file()}
 
 
-def test_ts001_native_entries_use_existing_renderer_and_source_changes(tmp_path: Path) -> None:
+@pytest.mark.parametrize("changed_command", COMMANDS)
+def test_ts001_native_entries_use_existing_renderer_and_source_changes(tmp_path: Path, changed_command: str) -> None:
     root = seed_entries(tmp_path)
     changed = maintainer_doc_skills.sync(root, write=True)
-    assert len(changed) == 2
+    assert len(changed) == 3
     for name in COMMANDS:
         skill = root / ".agents" / "skills" / f"codexspec-{name}" / "SKILL.md"
         content = skill.read_text()
@@ -44,14 +46,14 @@ def test_ts001_native_entries_use_existing_renderer_and_source_changes(tmp_path:
         assert frontmatter["name"] == f"codexspec:{name}"
         assert f"$codexspec:{name} --readme" in content
         assert "$ARGUMENTS" not in content and "/codexspec:" not in content
-    source = root / ".claude/commands/codexspec/translate-docs.md"
+    source = root / f".claude/commands/codexspec/{changed_command}.md"
     source.write_text(source.read_text() + "\nNew source rule.\n")
     before = files(root)
     with pytest.raises(maintainer_doc_skills.MaintainerSkillError, match="stale"):
         maintainer_doc_skills.sync(root)
     assert files(root) == before
     assert len(maintainer_doc_skills.sync(root, write=True)) == 1
-    assert "New source rule." in (root / ".agents/skills/codexspec-translate-docs/SKILL.md").read_text()
+    assert "New source rule." in (root / f".agents/skills/codexspec-{changed_command}/SKILL.md").read_text()
 
 
 def test_ts002_missing_check_does_not_create_output(tmp_path: Path) -> None:
@@ -101,10 +103,14 @@ def test_ts004_public_install_stays_public_only(tmp_path: Path) -> None:
     count = CodexIntegration().install_skills(tmp_path, templates, force=True)
     names = {path.name for path in (tmp_path / ".agents/skills").iterdir()}
     assert count == len(get_commands_metadata()) == 28
-    assert "codexspec-translate-docs" not in names and "codexspec-check-i18n-semantics" not in names
+    assert not {f"codexspec-{name}" for name in COMMANDS} & names
+    ClaudeIntegration().install(tmp_path, templates, force=True, language="en")
+    claude_names = {path.stem for path in (tmp_path / ".claude/commands/codexspec").glob("*.md")}
+    assert not set(COMMANDS) & claude_names
 
 
-def test_ts004_self_bootstrap_verifies_maintainer_pair(tmp_path: Path) -> None:
+@pytest.mark.parametrize("changed_command", COMMANDS)
+def test_ts004_self_bootstrap_verifies_maintainer_entries(tmp_path: Path, changed_command: str) -> None:
     from tests.test_command_template_fragments import _self_bootstrap_fixture
 
     root = seed_entries(_self_bootstrap_fixture(tmp_path))
@@ -112,7 +118,7 @@ def test_ts004_self_bootstrap_verifies_maintainer_pair(tmp_path: Path) -> None:
         check_self_bootstrap(root, language="en")
     maintainer_doc_skills.sync(root, write=True)
     check_self_bootstrap(root, language="en")
-    skill = root / ".agents/skills/codexspec-translate-docs/SKILL.md"
+    skill = root / f".agents/skills/codexspec-{changed_command}/SKILL.md"
     skill.write_text("stale\n")
     with pytest.raises(FragmentError, match="Codex.*stale"):
         check_self_bootstrap(root, language="en")

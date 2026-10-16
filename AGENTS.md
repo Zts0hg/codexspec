@@ -37,7 +37,10 @@ The repo-only Codex skills `$codexspec:translate-docs` and
 Use `--readme --lang all` for all seven root README variants. Their shared rules
 live in `internal/references/doc-translation.md`.
 
-Author the two existing Claude maintenance commands in
+`$codexspec:update-workflow-diagrams` maintains the eight-language light/dark
+workflow diagrams using `internal/workflow_diagrams/README.md`.
+
+Author the repository-only Claude maintenance commands in
 `.claude/commands/codexspec/`, then derive native skills with
 `python -m internal.maintainer_doc_skills --write`. Use `--check` and the existing
 distribution check to verify them. Generated Codex entries are not hand-edited.

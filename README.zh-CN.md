@@ -74,6 +74,15 @@ Idea → Confirmed Requirements →     Spec    →     Design    →     Plan  
 
 产品要做什么、为什么做，由人与智能体协作讨论和调整；自动审查负责检查后续产物是否符合这些决定。启用自动化后，通过审查的阶段会继续向下推进，但智能体仍不能擅自改写已确认的需求。
 
+<!-- workflow-diagram:start -->
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/workflow/workflow-zh-CN-dark.png">
+  <img alt="CodexSpec：需求优先开发流程、阶段审查与经验迭代循环" src="assets/workflow/workflow-zh-CN-light.png">
+</picture>
+
+查看大图: [☀️](assets/workflow/workflow-zh-CN-light.png) · [🌙](assets/workflow/workflow-zh-CN-dark.png)
+<!-- workflow-diagram:end -->
+
 ## 30 秒快速入门
 
 安装 CodexSpec，并为你使用的助手初始化项目：

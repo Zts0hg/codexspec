@@ -1,0 +1,21 @@
+{
+  "source": "937bea7f570cb14ea6beb5a05dba054b7225c226d9491bf581ff202d74ea1b3b",
+  "assets": {
+    "workflow-en-light.png": "aab836c345bcfcc0b61d3d8cb84be2119977b123dd9b7c15f9d3da61e2509e53",
+    "workflow-en-dark.png": "83d123fb5418e3c0b56930f3c93d749d696946d1f264f1fda4cfd8ea0b7b42e1",
+    "workflow-zh-CN-light.png": "a33001d39931a3506ba2c135cc157f89df94cbcf8e8e1622d7ae71dce530587f",
+    "workflow-zh-CN-dark.png": "19ba88683f3ea4a80fd0b2371352b394bf77101337a5cf73b462cefdb704bc34",
+    "workflow-ja-light.png": "7adfdb85c4b41836d5e509b3c6dc18cc1c8e80e9bb24c2ce1d59db4a5fa925ec",
+    "workflow-ja-dark.png": "46db12bb17966f5704fc4a50a680359770658d280b6baea47f6e8315ce3e78d3",
+    "workflow-ko-light.png": "e639b02710c62a57fedd37c12cfe2c24cd61630dfd8658ab4c4c2dc149a98d71",
+    "workflow-ko-dark.png": "9bd27ba27b0c49250184c21184679847ab11b2f4507e509c3b2de171ecb75d09",
+    "workflow-de-light.png": "affb54a68b8673238e40172d4187f4346311e5f8f6550393ba85a327257e1767",
+    "workflow-de-dark.png": "e667b3ed5e569b7b35c660b03cb3e2b0113df09e883d24705bfe62ddfaefa7f2",
+    "workflow-fr-light.png": "0af43102b7c2a8f3a6f11d4995fddea36bfc696fb43bdaaa08d2d0ac1872e282",
+    "workflow-fr-dark.png": "5ed9ac79e0901891aacbac0e69e03e7b8dd42344a120b67bddd4c36e198b083c",
+    "workflow-es-light.png": "afc82515b8a301aa037a9fe86ddd3380e0949293167478dcc6a2e935061226fc",
+    "workflow-es-dark.png": "c02e269c5b989f7256edd7a932cc080d1c6a0395505dd7ee816d2203921eac78",
+    "workflow-pt-BR-light.png": "ed4a60f771ffe13fdf8bf5cf12b3719718d2d1f8c842d380e60f4c773a04e837",
+    "workflow-pt-BR-dark.png": "50912ce4a30749ed01e157626d32ef05085554352f58116cb92e12cc43702ff9"
+  }
+}

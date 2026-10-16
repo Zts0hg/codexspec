@@ -30,6 +30,7 @@ Keeping the two physically separated — and enforcing the boundary via explicit
 | `tests/` · `hooks/` · `.github/` | MAINTAINER | ❌ | ❌ | dev & CI |
 | `extensions/` | dev-facing | ❌ | ❌ | extension system (contributors) |
 | root `README*.md` · `LICENSE` · logo SVGs | USER-facing (repo) | README/LICENSE auto-added to sdist | — | README translations stay at **root** (GitHub convention) |
+| `assets/workflow/` | USER-facing (repository docs) | ❌ | ❌ | Generated light/dark README workflow PNGs and freshness manifest; editable sources/tooling live under `internal/workflow_diagrams/` |
 
 ## The Packaging Boundary (critical)
 
@@ -128,14 +129,16 @@ additional top-level scripts directory is shipped.
 
 ## Repository-only documentation maintenance entries
 
-The authored .claude/commands/codexspec/translate-docs.md and
-check-i18n-semantics.md are maintenance-source exceptions, rather than installed
-copies of public templates. They use shared instructions in
+The authored .claude/commands/codexspec/translate-docs.md,
+check-i18n-semantics.md and update-workflow-diagrams.md are maintenance-source
+exceptions, rather than installed copies of public templates. The first two use
 internal/references/doc-translation.md for root README and site documentation.
+Diagram maintenance uses internal/workflow_diagrams/README.md.
 
 internal/maintainer_doc_skills.py derives their native Codex SKILL.md counterparts
-under .agents/skills/codexspec-translate-docs/ and
-.agents/skills/codexspec-check-i18n-semantics/. Generate with
+under .agents/skills/codexspec-translate-docs/,
+.agents/skills/codexspec-check-i18n-semantics/ and
+.agents/skills/codexspec-update-workflow-diagrams/. Generate with
 python -m internal.maintainer_doc_skills --write and verify with --check.
 The existing command --check-distribution gate verifies the same source-derived
 bytes and retains rejection of unknown artifacts. Do not hand-edit these Codex
@@ -145,3 +148,13 @@ internal/doc_translation.py provides read-only inventory and Markdown checks;
 translation and semantic assessment remain agent work. Neither helper, shared
 instructions nor host entries is packaged or installed into user projects.
 The existing public command set and package allowlists remain unchanged.
+
+## Repository workflow diagrams
+
+`internal/workflow_diagrams.py`, `internal/measure_workflow_svg.py` and
+`internal/workflow_diagrams/` are maintainer-only authoring, translation,
+generation and validation resources. Generated editable draw.io files remain
+under the internal directory; the 16 display PNGs live in `assets/workflow/`.
+Root READMEs use locale-specific theme-aware links. Neither these tools nor
+assets enter the package or user-project initialization; packaging allowlists
+remain unchanged. See `internal/workflow_diagrams/README.md` for maintenance.

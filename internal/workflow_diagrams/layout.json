@@ -1,0 +1,473 @@
+{
+  "profiles": {
+    "expanded": {
+      "scale": [
+        1.25,
+        1.25
+      ],
+      "cells": {
+        "wf-title": {
+          "x": 75.0,
+          "width": 4406.25
+        },
+        "wf-subtitle": {
+          "x": 80.0,
+          "width": 4036.25
+        },
+        "wf-legend-req": {
+          "x": 2550.0,
+          "width": 481.25
+        },
+        "wf-legend-flow": {
+          "x": 3106.25,
+          "width": 600.0
+        },
+        "wf-legend-review": {
+          "x": 3781.25,
+          "width": 600.0
+        },
+        "wf-legend-knowledge": {
+          "x": 4456.25,
+          "width": 725.0
+        },
+        "wf-responsibility-panel": {
+          "x": 1412.5,
+          "width": 3768.75
+        },
+        "wf-responsibility-kicker": {
+          "x": 1456.25,
+          "width": 3537.5
+        },
+        "wf-responsibility-title": {
+          "x": 1456.25,
+          "width": 3537.5
+        },
+        "wf-responsibility-agent": {
+          "x": 2225.0,
+          "width": 993.75
+        },
+        "wf-responsibility-quality": {
+          "x": 3318.75,
+          "width": 1775.0
+        },
+        "wf-implementation-panel": {
+          "x": 2668.75,
+          "width": 2512.5,
+          "height": 843.75
+        },
+        "wf-implementation-title": {
+          "x": 2756.25,
+          "width": 2300.0
+        },
+        "wf-command-implement": {
+          "x": 2756.25,
+          "width": 900.0
+        },
+        "wf-execute": {
+          "x": 2756.25,
+          "width": 1850.0
+        },
+        "wf-code-review": {
+          "x": 2756.25,
+          "width": 1850.0
+        },
+        "wf-execute-review-label": {
+          "x": 3756.25,
+          "width": 800.0
+        },
+        "wf-implementation-repair-label": {
+          "x": 4656.25,
+          "width": 475.0
+        },
+        "wf-implementation-done": {
+          "x": 4431.25,
+          "width": 675.0
+        },
+        "wf-implementation-debug": {
+          "x": 2756.25,
+          "width": 2300.0,
+          "y": 1825.0
+        },
+        "wf-experience-panel": {
+          "x": 2668.75,
+          "width": 2512.5,
+          "y": 1925.0
+        },
+        "wf-experience-kicker": {
+          "x": 2756.25,
+          "width": 2325.0,
+          "y": 1950.0
+        },
+        "wf-experience-title": {
+          "x": 2756.25,
+          "width": 2325.0,
+          "y": 1996.25
+        },
+        "wf-work-experience": {
+          "x": 2756.25,
+          "width": 2325.0,
+          "y": 2081.25
+        },
+        "wf-distill": {
+          "x": 2756.25,
+          "width": 2325.0,
+          "y": 2243.75
+        },
+        "wf-distill-timing": {
+          "x": 2756.25,
+          "width": 2325.0,
+          "y": 2377.5
+        },
+        "wf-human-review": {
+          "x": 2756.25,
+          "width": 2325.0,
+          "y": 2450.0
+        },
+        "wf-footer": {
+          "x": 80.0,
+          "width": 4911.25,
+          "y": 2662.5
+        },
+        "wf-completion-heading": {
+          "x": 4431.25,
+          "width": 675.0
+        },
+        "wf-review-dimensions-heading": {
+          "x": 2700,
+          "width": 180,
+          "y": 1651.75,
+          "height": 132
+        },
+        "wf-review-dimension-1": {
+          "x": 2900,
+          "width": 180
+        },
+        "wf-review-dimension-2": {
+          "x": 3100,
+          "width": 180
+        },
+        "wf-review-dimension-3": {
+          "x": 3300,
+          "width": 180
+        },
+        "wf-review-dimension-4": {
+          "x": 3500,
+          "width": 180
+        },
+        "wf-review-dimension-5": {
+          "x": 3700,
+          "width": 180
+        },
+        "wf-review-dimension-6": {
+          "x": 3900,
+          "width": 180
+        },
+        "wf-review-dimension-7": {
+          "x": 4100,
+          "width": 180
+        },
+        "wf-context-heading": {
+          "y": 1825.0
+        },
+        "wf-context-panel": {
+          "y": 1925.0
+        },
+        "wf-context-kicker": {
+          "y": 1950.0
+        },
+        "wf-context-title": {
+          "y": 1996.25
+        },
+        "wf-principles-and-code": {
+          "y": 2081.25
+        },
+        "wf-history": {
+          "y": 2081.25
+        },
+        "wf-profile": {
+          "y": 2081.25
+        },
+        "wf-recall": {
+          "y": 2456.25
+        },
+        "wf-history-save-label": {
+          "y": 1780,
+          "height": 30
+        }
+      },
+      "points": {
+        "wf-edge-implementation-repair": [
+          [
+            4993.75,
+            1518.75
+          ],
+          [
+            4993.75,
+            1307.5
+          ]
+        ],
+        "wf-edge-implementation-to-experience": [
+          [
+            5256.25,
+            1827.5
+          ],
+          [
+            5256.25,
+            2133.75
+          ]
+        ],
+        "wf-edge-review-completion-columns": [
+          [
+            4356.25,
+            1603.75
+          ],
+          [
+            4356.25,
+            1802.5
+          ]
+        ],
+        "wf-edge-feature-artifacts-to-history": [
+          [
+            2562.5,
+            1812.5
+          ],
+          [
+            2562.5,
+            2060.0
+          ],
+          [
+            1000.0,
+            2060.0
+          ]
+        ],
+        "wf-edge-knowledge-next-requirements": [
+          [
+            30.0,
+            2506.25
+          ],
+          [
+            30.0,
+            1198.75
+          ]
+        ],
+        "wf-edge-distill-to-profile": [
+          [
+            2625.0,
+            2296.25
+          ],
+          [
+            2625.0,
+            2180.0
+          ]
+        ],
+        "wf-edge-human-review-to-profile": [
+          [
+            2625.0,
+            2502.5
+          ],
+          [
+            2625.0,
+            2331.25
+          ]
+        ]
+      }
+    },
+    "original": {
+      "cells": {
+        "wf-analyze-note": {
+          "height": 60
+        },
+        "wf-traceability-line": {
+          "height": 60
+        }
+      }
+    }
+  },
+  "locales": {
+    "en": {
+      "profile": "expanded",
+      "cells": {
+        "wf-review-dimension-1": {
+          "height": 108
+        },
+        "wf-review-dimension-2": {
+          "height": 108
+        },
+        "wf-review-dimension-3": {
+          "height": 108
+        },
+        "wf-review-dimension-4": {
+          "height": 108
+        },
+        "wf-review-dimension-5": {
+          "height": 108
+        },
+        "wf-review-dimension-6": {
+          "height": 108
+        },
+        "wf-review-dimension-7": {
+          "height": 108
+        }
+      }
+    },
+    "zh-CN": {
+      "profile": "original"
+    },
+    "ja": {
+      "profile": "expanded",
+      "cells": {
+        "wf-review-dimension-1": {
+          "height": 84
+        },
+        "wf-review-dimension-2": {
+          "height": 84
+        },
+        "wf-review-dimension-3": {
+          "height": 84
+        },
+        "wf-review-dimension-4": {
+          "height": 84
+        },
+        "wf-review-dimension-5": {
+          "height": 84
+        },
+        "wf-review-dimension-6": {
+          "height": 84
+        },
+        "wf-review-dimension-7": {
+          "height": 84
+        }
+      }
+    },
+    "ko": {
+      "profile": "expanded",
+      "cells": {
+        "wf-review-dimension-1": {
+          "height": 84
+        },
+        "wf-review-dimension-2": {
+          "height": 84
+        },
+        "wf-review-dimension-3": {
+          "height": 84
+        },
+        "wf-review-dimension-4": {
+          "height": 84
+        },
+        "wf-review-dimension-5": {
+          "height": 84
+        },
+        "wf-review-dimension-6": {
+          "height": 84
+        },
+        "wf-review-dimension-7": {
+          "height": 84
+        }
+      }
+    },
+    "de": {
+      "profile": "expanded",
+      "cells": {
+        "wf-review-dimension-1": {
+          "height": 108
+        },
+        "wf-review-dimension-2": {
+          "height": 108
+        },
+        "wf-review-dimension-3": {
+          "height": 108
+        },
+        "wf-review-dimension-4": {
+          "height": 108
+        },
+        "wf-review-dimension-5": {
+          "height": 108
+        },
+        "wf-review-dimension-6": {
+          "height": 108
+        },
+        "wf-review-dimension-7": {
+          "height": 108
+        }
+      }
+    },
+    "fr": {
+      "profile": "expanded",
+      "cells": {
+        "wf-review-dimension-1": {
+          "height": 108
+        },
+        "wf-review-dimension-2": {
+          "height": 108
+        },
+        "wf-review-dimension-3": {
+          "height": 108
+        },
+        "wf-review-dimension-4": {
+          "height": 108
+        },
+        "wf-review-dimension-5": {
+          "height": 108
+        },
+        "wf-review-dimension-6": {
+          "height": 108
+        },
+        "wf-review-dimension-7": {
+          "height": 108
+        }
+      }
+    },
+    "es": {
+      "profile": "expanded",
+      "cells": {
+        "wf-review-dimension-1": {
+          "height": 132
+        },
+        "wf-review-dimension-2": {
+          "height": 132
+        },
+        "wf-review-dimension-3": {
+          "height": 132
+        },
+        "wf-review-dimension-4": {
+          "height": 132
+        },
+        "wf-review-dimension-5": {
+          "height": 132
+        },
+        "wf-review-dimension-6": {
+          "height": 132
+        },
+        "wf-review-dimension-7": {
+          "height": 132
+        }
+      }
+    },
+    "pt-BR": {
+      "profile": "expanded",
+      "cells": {
+        "wf-review-dimension-1": {
+          "height": 132
+        },
+        "wf-review-dimension-2": {
+          "height": 132
+        },
+        "wf-review-dimension-3": {
+          "height": 132
+        },
+        "wf-review-dimension-4": {
+          "height": 132
+        },
+        "wf-review-dimension-5": {
+          "height": 132
+        },
+        "wf-review-dimension-6": {
+          "height": 132
+        },
+        "wf-review-dimension-7": {
+          "height": 132
+        }
+      }
+    }
+  }
+}

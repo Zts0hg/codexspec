@@ -850,6 +850,7 @@ def test_self_bootstrap_check_allows_documented_non_template_claude_commands(tmp
     commands = root / ".claude" / "commands" / "codexspec"
     (commands / "translate-docs.md").write_text("internal\n", encoding="utf-8")
     (commands / "check-i18n-semantics.md").write_text("internal\n", encoding="utf-8")
+    (commands / "update-workflow-diagrams.md").write_text("internal\n", encoding="utf-8")
     from internal.maintainer_doc_skills import sync
 
     sync(root, write=True)

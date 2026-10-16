@@ -1,25 +1,20 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version: 1.0.0 -> 1.1.0
-Bump Rationale: MINOR: extend repository-only documentation maintenance to Codex
+Version: 1.1.0 -> 1.2.0
+Bump Rationale: MINOR: add the repository-only workflow-diagram maintenance entry
 
 Changes:
-- Modified: Internal Maintenance Commands exception and maintenance workflow
-- Added: Derived native Codex entry generation/check rule
-- Removed: None
+- Extend the existing authored Claude / derived Codex maintenance exception with
+  update-workflow-diagrams and its single shared update handbook.
+- Preserve public templates, the installed command set and init/package boundaries.
 
-Template Consistency Check:
-- .codexspec/templates/docs/plan-template-*.md: aligned; generic principles
-- .codexspec/templates/docs/spec-template-*.md: aligned; no host-only restrictions
-- .codexspec/templates/docs/tasks-template-*.md: aligned; test policy unchanged
-- .claude/commands/codexspec/: internal sources retained; shared guide updated
-- README.md: aligned; public distribution remains unchanged
-- CLAUDE.md / AGENTS.md / repository-layout.md: aligned; dual-host maintainer
-  entries retain their authored/derived and non-distribution boundaries
+Consistency:
+- AGENTS.md, CLAUDE.md and docs/internal/repository-layout.md describe the entry.
+- internal/maintainer_doc_skills.py and the distribution checker include its exact name.
+- No downstream constitution or public command/template changes are required.
 
-Deferred TODOs:
-- None
+Deferred TODOs: None.
 -->
 
 > ⚠️ **SUPREME AUTHORITY**: This constitution defines the governing principles for this project. All code changes and decisions must comply with these principles.
@@ -39,9 +34,9 @@ Deferred TODOs:
 
 This document defines the governing principles and development guidelines for this project.
 
-- **Version**: 1.1.0
+- **Version**: 1.2.0
 - **Ratified**: 2026-04-10
-- **Last Amended**: 2026-10-13
+- **Last Amended**: 2026-10-17
 
 ## Core Principles
 
@@ -144,17 +139,20 @@ precise language reduces ambiguity and prevents terminology from obstructing req
 ### Internal Maintenance Commands (Exception)
 
 The following commands are **intentionally absent from templates/commands/**.
-They serve CodexSpec maintainers, using root README variants, the documentation
-site layout and docs/i18n/glossary.yml. Both Claude commands and native Codex
+They serve CodexSpec maintainers, using root README variants, workflow diagrams,
+the documentation site layout and docs/i18n/glossary.yml. Claude commands and native Codex
 skills MUST remain outside user-project installation through codexspec init.
 
 - translate-docs translates selected root README or site documentation.
 - check-i18n-semantics reviews the corresponding translations' fidelity.
+- update-workflow-diagrams maintains the shared diagram sources and all eight
+  languages in both themes using internal/workflow_diagrams/README.md.
 
 The authored entries remain .claude/commands/codexspec/{translate-docs,
-check-i18n-semantics}.md and MUST be edited there. Shared rules live in
-internal/references/doc-translation.md. Native Codex entries under
-.agents/skills/codexspec-{translate-docs,check-i18n-semantics}/SKILL.md MUST be
+check-i18n-semantics,update-workflow-diagrams}.md and MUST be edited there. Shared
+translation rules live in internal/references/doc-translation.md; the diagram
+procedure lives in internal/workflow_diagrams/README.md. Their native Codex entries
+under .agents/skills/codexspec-<command>/SKILL.md MUST be
 derived with python -m internal.maintainer_doc_skills --write, never hand-edited.
 The helper's --check mode and the repository's --check-distribution gate MUST
 detect missing/stale maintainer entries. No public command/template registration
@@ -175,7 +173,7 @@ The pre-existing plugin-only `review-python-code.md` and `review-react-code.md` 
 4. Commit the editable source and any changed complete distribution output together.
 5. Users receive only the complete templates when they reinstall or run `codexspec init`; fragment sources never ship and `init` never interprets them.
 
-**For internal maintenance commands** (the two listed above):
+**For internal maintenance commands** (listed above):
 
 1. Edit the authored Claude entries and shared internal documentation rules.
 2. Generate native Codex entries with `python -m internal.maintainer_doc_skills --write`.

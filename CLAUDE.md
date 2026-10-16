@@ -491,22 +491,27 @@ The development plugin bundle uses the repository root and explicitly selects `.
 
 ### Internal Maintenance Commands (NOT distributed to users)
 
-The two documentation maintenance tools are repository-only Claude commands
-and native Codex skills. They serve root README synchronization and the existing
-docs/en site workflow with docs/i18n/glossary.yml. They are not installed into
+The documentation maintenance tools are repository-only Claude commands
+and native Codex skills. They serve root README synchronization, the existing
+docs/en site workflow and multilingual README workflow diagrams. They are not installed into
 user projects by codexspec init, and remain outside the 28 distributed commands.
 
 | Operation | Claude Code | Codex |
 |-----------|-------------|-------|
 | Translate README/site docs | `/codexspec:translate-docs` | `$codexspec:translate-docs` |
 | Check translation fidelity | `/codexspec:check-i18n-semantics` | `$codexspec:check-i18n-semantics` |
+| Update workflow diagrams | `/codexspec:update-workflow-diagrams` | `$codexspec:update-workflow-diagrams` |
 
 Use --readme --lang all for the seven root README variants. Default site mode
 remains docs/en with docs/zh, ja, ko, es, fr, de and pt-BR destinations. Shared
 selection, translation, navigation and semantic rules live in
 internal/references/doc-translation.md.
 
-Authored entry sources are the two .claude/commands/codexspec/ Markdown files.
+Diagram updates use internal/workflow_diagrams/README.md as their single update
+procedure, including source selection, translation review, regeneration, rendered
+inspection and recovery. They retain eight languages and both themes.
+
+Authored entry sources are the three .claude/commands/codexspec/ Markdown files.
 Generate their native .agents/skills/codexspec-*/SKILL.md counterparts with
 python -m internal.maintainer_doc_skills --write; check with --check.
 The existing --check-distribution gate also compares these exact derived entries.
@@ -616,6 +621,7 @@ uv run pytest tests/scripts/powershell/ -v
 | `/codexspec:review-code` | ✅ Template | Review code in any language for idiomatic clarity, correctness, robustness, architecture, and constitution alignment |
 | `/codexspec:translate-docs`  | ✅ Internal | Maintainer-only Claude/Codex entries; not distributed via `init` |
 | `/codexspec:check-i18n-semantics` | ✅ Internal | Maintainer-only Claude/Codex entries; not distributed via `init` |
+| `/codexspec:update-workflow-diagrams` | ✅ Internal | Maintainer-only shared diagram update procedure; not distributed via `init` |
 
 ### Constitution Compliance Feature
 
@@ -755,7 +761,8 @@ def get_templates_dir() -> Path:
   2. Publish a new CodexSpec version (`publish.sh`)
   3. Re-run `codexspec init` (or `uv tool install --force .`) to sync `.claude/commands/codexspec/` from the updated templates
 
-**The authored exceptions** are translate-docs and check-i18n-semantics in
+**The authored exceptions** are translate-docs, check-i18n-semantics and
+update-workflow-diagrams in
 .claude/commands/codexspec/. Their shared instructions are internal, and their
 Codex entries are derived by internal.maintainer_doc_skills. They have no public
 templates counterpart. Fragment synchronization preserves these authored files;

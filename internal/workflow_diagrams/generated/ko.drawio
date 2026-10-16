@@ -1,0 +1,827 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="Electron" type="device">
+  <diagram id="ko-light" name="light">
+    <mxGraphModel dx="1600" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4000.0" pageHeight="2950.0" math="0" shadow="0" background="#FFFFFF">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="wf-title" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;CodexSpec · 표준화된 AI 개발과 지속적인 경험 축적&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=48;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="75.0" y="56.25" width="4406.25" height="92.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-subtitle" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;무엇을 왜 만들지는 사용자가 결정합니다. 에이전트는 확정된 요구사항 안에서 방안을 구체화하고 구현과 검증을 진행합니다.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=26;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="80.0" y="162.5" width="4036.25" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-req" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;요구사항과 확인&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=17;fontColor=#08788D;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#08788D;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2550.0" y="231.25" width="481.25" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-flow" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;명세와 구현&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=17;fontColor=#047857;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="3106.25" y="231.25" width="600.0" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-review" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;검토와 수정&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=17;fontColor=#946200;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="3781.25" y="231.25" width="600.0" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-knowledge" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;경험 축적과 재사용&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=17;fontColor=#6D28D9;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="4456.25" y="231.25" width="725.0" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F0FBFD;strokeColor=#67A3B1;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="325" width="1250" height="487.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-kicker" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;요구사항 / 질의&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=16;fontColor=#08788D;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="351.25" width="1125" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-title" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;요구사항 대조 목록 · 질의 시 확인할 사항&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=30;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="400" width="1125" height="56.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-care" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;직접 결정할 사항&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#D8F2F8;strokeColor=#08788D;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="490" width="243.75" height="67.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-care-action" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;질의 단계에서 미리 다루고 세부 내용을 명확히 확인&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#08788D;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="412.5" y="487.5" width="850" height="72.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-not-care" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;맡겨도 되는 사항&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=22;fontColor=#526178;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#BAC6D6;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="582.5" width="243.75" height="62.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-not-care-action" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;에이전트가 스스로 선택할 수 있는 범위를 명시&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=22;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="412.5" y="578.75" width="850" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-detail" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;핵심 세부사항과 기대를 확인해, 실행 가능하더라도 의도에 맞지 않는 방안을 피합니다.&lt;br&gt;사용자가 최종 요구사항 요약을 확인하면 공식 요구사항 기록이 됩니다.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=22;fontColor=#38586B;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="688.75" width="1150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F8FAFC;strokeColor=#C3CEDB;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1412.5" y="325" width="3768.75" height="487.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-kicker" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;역할 / 확정된 의도&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=16;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1456.25" y="351.25" width="3537.5" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-title" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;목표는 사용자가 확인하고, 방안과 구현은 단계적으로 구체화&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=30;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1456.25" y="400" width="3537.5" height="56.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-user" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;사용자가 확인&lt;br&gt;무엇을 왜 만들지&lt;br&gt;핵심 제약, 절충 사항, 인수 시 기대하는 결과&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=25;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#E6F8FC;strokeColor=#08788D;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1456.25" y="491.25" width="718.75" height="275" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-agent" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;에이전트가 구체화하고 실행&lt;br&gt;아키텍처와 인터페이스 → 계획과 작업&lt;br&gt;구현, 테스트, 결함 수정&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=25;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#EDFDF5;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2225.0" y="491.25" width="993.75" height="275" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-quality" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;단계별 검토&lt;br&gt;요구사항 충실도와 누락 없는 반영&lt;br&gt;판단의 근거와 검증 가능한 결과&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=25;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="3318.75" y="491.25" width="1775.0" height="275" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-flow-heading" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;01  표준화된 개발 절차&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=33;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="75" y="890" width="1937.5" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-flow-description" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;요구사항을 공식 기준으로 삼고 명세, 설계, 계획, 작업의 추적 관계를 유지합니다. 검토에서 발견한 문제는 수정한 뒤 다음 단계로 진행합니다.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="971.25" width="2487.5" height="52.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-command-specify" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;specify&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#08788D;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-requirements-stage" value="" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F0FBFD;strokeColor=#08788D;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-clarification" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;의도 명확화 → 사용자 확인&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=22;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#D8F2F8;strokeColor=#08788D;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1153.75" width="387.5" height="57.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-requirements" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;requirements.md&lt;br&gt;요구사항 대조 목록 · 공식 기준 ★&lt;br&gt;필요사항, 제약, 결정 사항, 범위&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=22;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#E6F8FC;strokeColor=#08788D;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1253.75" width="387.5" height="156.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-clarify-to-record" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#08788D;fontColor=#08788D;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-clarification" target="wf-requirements">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-inquiry-to-clarify" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#08788D;fontColor=#08788D;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0;exitY=0.5;entryX=0;entryY=0.26;" source="wf-inquiry-panel" target="wf-clarification">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="56.25" y="568.75" />
+              <mxPoint x="56.25" y="1168.75" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-spec" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;generate-spec&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#047857;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="593.75" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-spec" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;spec.md · 요구사항 명세&lt;br&gt;기능·비기능 요구사항과 인수 기준&lt;br&gt;사람의 인수 검증이나 Agent의 자동 인수 검증에도 활용할 수 있는 기능 시나리오 포함&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#EDFDF5;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="593.75" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-spec" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;review-spec&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=19;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="593.75" y="1487.5" width="437.5" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-spec" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-spec" target="wf-gate-spec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-spec" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-spec" target="wf-spec">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1056.25" y="1515" />
+              <mxPoint x="1056.25" y="1387.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-design" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;spec-to-design&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#047857;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1112.5" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-design" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;design.md · 기술 설계&lt;br&gt;아키텍처, 구성요소, 인터페이스&lt;br&gt;및 주요 설계 결정&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#EDFDF5;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1112.5" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-design" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;review-design&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=19;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1112.5" y="1487.5" width="437.5" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-design" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-design" target="wf-gate-design">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-design" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-design" target="wf-design">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1575" y="1515" />
+              <mxPoint x="1575" y="1387.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-plan" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;design-to-plan&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#047857;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1631.25" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-plan" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;plan.md · 구현 계획&lt;br&gt;구현 단계와 진행 순서&lt;br&gt;각 단계의 검증 방법&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#EDFDF5;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1631.25" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-plan" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;review-plan&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=19;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1631.25" y="1487.5" width="437.5" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-plan" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-plan" target="wf-gate-plan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-plan" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-plan" target="wf-plan">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2093.75" y="1515" />
+              <mxPoint x="2093.75" y="1387.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-tasks" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;plan-to-tasks&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#047857;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2150" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-tasks" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;tasks.md · 실행 가능한 작업&lt;br&gt;작업 결과물, 의존 관계&lt;br&gt;및 해당 검증 요건&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#EDFDF5;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2150" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-tasks" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;review-tasks&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=19;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2150" y="1487.5" width="437.5" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-tasks" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-tasks" target="wf-gate-tasks">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-tasks" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-tasks" target="wf-tasks">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2612.5" y="1515" />
+              <mxPoint x="2612.5" y="1387.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-edge-flow-requirements-stage" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#64748B;fontColor=#64748B;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-requirements-stage" target="wf-spec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-flow-spec" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#64748B;fontColor=#64748B;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-spec" target="wf-design">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-flow-design" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#64748B;fontColor=#64748B;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-design" target="wf-plan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-flow-plan" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#64748B;fontColor=#64748B;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-plan" target="wf-tasks">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-loop-note" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;각 단계에서 생성한 산출물을 검토하고, 문제를 수정한 뒤 다시 검토합니다.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=20;fontColor=#946200;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1490" width="437.5" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F8FAFC;strokeColor=#67A3B1;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2668.75" y="1031.25" width="2512.5" height="843.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-title" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;구현·검증·검토&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=29;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1060" width="2300.0" height="57.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-command-implement" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;implement-tasks&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=17;fontColor=#047857;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#FFFFFF;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1145" width="900.0" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-execute" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;tasks.md의 작업 실행&lt;br&gt;코드: 테스트를 먼저 작성한 뒤 구현&lt;br&gt;문서·설정: 직접 작성·변경하고 적절히 검증&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=25;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#EDFDF5;strokeColor=#047857;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1218.75" width="1850.0" height="181.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-tasks-to-execute" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#047857;fontColor=#047857;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.345;" source="wf-tasks" target="wf-execute">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-code-review" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;review-code&lt;br&gt;결함을 독립적으로 확인 · 수정 · 재검토&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1462.5" width="1850.0" height="113.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-execute-to-review" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-execute" target="wf-code-review">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-execute-review-label" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;구현 완료 후 검토&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=20;fontColor=#946200;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="3756.25" y="1410" width="800.0" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-implementation-repair" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#946200;fontColor=#946200;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" source="wf-code-review" target="wf-execute">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="4993.75" y="1518.75" />
+              <mxPoint x="4993.75" y="1307.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-implementation-repair-label" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;수정 후&lt;br&gt;다시 검증&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=20;fontColor=#946200;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="4656.25" y="1375" width="475.0" height="82.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-done" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;전체 변경을 새로 검토해 PASS&lt;br&gt;검토 범위 확인과 검증 완료&lt;br&gt;P0–P3 결함이 남아 있지 않음&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#047857;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="4431.25" y="1650" width="675.0" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-debug" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;수정을 반복해도 해결되지 않으면 debug로 근본 원인을 찾습니다.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=20;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1825.0" width="2300.0" height="37.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability" value="" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FFFFFF;strokeColor=#BAC6D6;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1612.5" width="2512.5" height="156.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability-title" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;기능 산출물과 추적 관계&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="1631.25" width="1181.25" height="43.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability-path" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;.codexspec/specs/&amp;lt;feature-id&amp;gt;/&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=20;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1368.75" y="1631.25" width="1181.25" height="43.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability-line" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;요구사항과 결정 → 명세 → 설계 → 계획 → 작업 → 구현과 검증&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#36584B;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="1691.25" width="1181.25" height="62.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-analyze-note" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;작업 검토 후 analyze로 전체 추적 관계 확인&lt;br&gt;구현 전 대조를 위한 참고용 점검&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#946200;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1368.75" y="1691.25" width="1181.25" height="62.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-heading" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;02  경험과 이력을 다음 개발에 활용&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=33;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1825.0" width="2512.5" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FAF8FF;strokeColor=#C6B8E2;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1925.0" width="2512.5" height="662.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-kicker" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;프로젝트 맥락 / 재사용&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=16;fontColor=#6D28D9;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="1950.0" width="1625" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-title" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;결정 근거를 남기고 재사용할 지식을 축적&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=28;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="1996.25" width="1625" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-principles-and-code" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;프로젝트 원칙과 구현 사실&lt;br&gt;constitution.md: 원칙과 필수 제약&lt;br&gt;기존 코드와 테스트: 현재 구현 상태의 근거&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="2081.25" width="437.5" height="281.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-history" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;기능 이력과 결정의 변화&lt;br&gt;.codexspec/specs/&lt;br&gt;확정된 요구사항, 명세, 설계, 계획, 작업&lt;br&gt;관련 검토 기록과 결정 변경 사항&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=25;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="593.75" y="2081.25" width="812.5" height="281.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-profile" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;재사용 가능한 프로젝트 지식&lt;br&gt;.codexspec/profile/&lt;br&gt;제약 · 관례 · 함정 · 결정 · 전략 · 실행 절차&lt;br&gt;필수 제약을 우선하고 candidate는 신중히 재사용&lt;br&gt;vetted에는 결과 검증과 사람의 승인이 필요&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=25;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1450" y="2081.25" width="1093.75" height="281.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-feature-artifacts-to-history" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0.99;exitY=1;entryX=0.5;entryY=0;" source="wf-traceability" target="wf-history">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2562.5" y="1812.5" />
+              <mxPoint x="2562.5" y="2060.0" />
+              <mxPoint x="1000.0" y="2060.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-history-save-label" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;기능 산출물 보존&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=19;fontColor=#6D28D9;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2125" y="1780" width="400" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-recall" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;후속 개발에서 관련 맥락을 능동적으로 검토&lt;br&gt;CLAUDE.md / AGENTS.md가 회고를 안내하고, specify가 관련 지식을 요구사항 논의에 반영합니다. 이후 작업은 확정된 요구사항을 따릅니다.&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EEFC;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=9;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="2456.25" width="2431.25" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-recall-principles-and-code" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.09;entryY=0;" source="wf-principles-and-code" target="wf-recall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-recall-history" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.365;entryY=0;" source="wf-history" target="wf-recall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-recall-profile" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.775;entryY=0;" source="wf-profile" target="wf-recall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-knowledge-next-requirements" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0;exitY=0.5;entryX=0;entryY=0.78;" source="wf-recall" target="wf-clarification">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="30.0" y="2506.25" />
+              <mxPoint x="30.0" y="1198.75" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-experience-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#FAF8FF;strokeColor=#C6B8E2;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2668.75" y="1925.0" width="2512.5" height="662.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-experience-kicker" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;경험 정리 / 검토 / 재사용&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=16;fontColor=#6D28D9;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1950.0" width="2325.0" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-experience-title" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;경험에서 지식을 정리하고 사람의 검토로 개선&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=28;fontColor=#0F172A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1996.25" width="2325.0" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-work-experience" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;구현·테스트·검토에서 검증된 경험&lt;br&gt;제품, 아키텍처, 개발, 테스트의 지침과 모범 사례&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="2081.25" width="2325.0" height="106.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-distill" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;distill · 여러 기능에서 재사용할 지식을 정리&lt;br&gt;출처와 적용 조건을 함께 프로젝트 profile에 기록&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="2243.75" width="2325.0" height="106.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-experience-to-distill" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-work-experience" target="wf-distill">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-distill-to-profile" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=0;exitY=0.5;entryX=1;entryY=0.35;" source="wf-distill" target="wf-profile">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2625.0" y="2296.25" />
+              <mxPoint x="2625.0" y="2180.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-distill-timing" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;작업 도중과 성공적으로 마무리할 때 모두 기록할 수 있으며, 새 지식이 없으면 건너뜁니다.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=20;fontColor=#63547A;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="2377.5" width="2325.0" height="42.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-human-review" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;distill review · 필요할 때 사람이 검토&lt;br&gt;검증 결과를 확인하고 기록을 수정·통합·폐기하며, 확인 후 vetted로 표시&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#0F172A;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#F3EFFF;strokeColor=#6D28D9;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="2450.0" width="2325.0" height="106.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-human-review-to-profile" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 5;exitX=0;exitY=0.5;entryX=1;entryY=0.89;" source="wf-human-review" target="wf-profile">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2625.0" y="2502.5" />
+              <mxPoint x="2625.0" y="2331.25" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-edge-implementation-to-experience" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#6D28D9;fontColor=#6D28D9;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#FFFFFF;dashed=0;dashPattern=6 5;exitX=1;exitY=0.955;entryX=1;entryY=0.5;" source="wf-implementation-panel" target="wf-work-experience">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="5256.25" y="1827.5" />
+              <mxPoint x="5256.25" y="2133.75" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-footer" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;CodexSpec v0.7.24 기준 검토 · 요구사항 → 구현 → 경험 축적 → 다음 요구사항&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=19;fontColor=#526178;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="80.0" y="2662.5" width="4911.25" height="43.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-traceability-columns" edge="1" parent="1" style="edgeStyle=none;html=1;strokeColor=#BAC6D6;strokeWidth=1;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1331.25" y="1635" as="sourcePoint" />
+            <mxPoint x="1331.25" y="1747.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-completion-heading" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;완료 조건&lt;/div&gt;" vertex="1" parent="1" style="text;html=1;whiteSpace=wrap;fontFamily=Apple SD Gothic Neo;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontSize=24;fontColor=#047857;fontStyle=1;">
+          <mxGeometry x="4431.25" y="1600" width="675.0" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimensions-heading" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;일곱 가지 검토 관점&lt;/div&gt;" vertex="1" parent="1" style="text;html=1;whiteSpace=wrap;fontFamily=Apple SD Gothic Neo;strokeColor=none;fillColor=none;align=center;verticalAlign=top;spacing=0;fontSize=24;fontColor=#946200;fontStyle=1;">
+          <mxGeometry x="2700" y="1651.75" width="180" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-1" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;로직과 데이터 흐름&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="2900" y="1643.75" width="180" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-2" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;업무 규칙과 상태 의미&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3100" y="1643.75" width="180" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-3" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;보안과 신뢰 경계&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3300" y="1643.75" width="180" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-4" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;동시성과 생명주기&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3500" y="1643.75" width="180" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-5" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;견고성과 자원 소유권&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3700" y="1643.75" width="180" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-6" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;실제 성능 영향&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3900" y="1643.75" width="180" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-7" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;변경에 따른 유지보수성&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#685528;fillColor=#FFFAE8;strokeColor=#946200;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="4100" y="1643.75" width="180" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-completion-columns" edge="1" parent="1" style="edgeStyle=none;html=1;strokeColor=#BAC6D6;strokeWidth=1;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="4356.25" y="1603.75" as="sourcePoint" />
+            <mxPoint x="4356.25" y="1802.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-1" edge="1" parent="1" source="wf-review-dimension-1" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.0945945945945946;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-2" edge="1" parent="1" source="wf-review-dimension-2" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.20945945945945946;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-3" edge="1" parent="1" source="wf-review-dimension-3" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.32432432432432434;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-4" edge="1" parent="1" source="wf-review-dimension-4" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.4391891891891892;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-5" edge="1" parent="1" source="wf-review-dimension-5" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.5540540540540541;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-6" edge="1" parent="1" source="wf-review-dimension-6" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.668918918918919;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-7" edge="1" parent="1" source="wf-review-dimension-7" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#946200;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.7837837837837838;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="ko-dark" name="dark">
+    <mxGraphModel dx="1600" dy="1050" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="4000.0" pageHeight="2950.0" math="0" shadow="0" background="#020617">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="wf-title" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;CodexSpec · 표준화된 AI 개발과 지속적인 경험 축적&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=48;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="75.0" y="56.25" width="4406.25" height="92.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-subtitle" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;무엇을 왜 만들지는 사용자가 결정합니다. 에이전트는 확정된 요구사항 안에서 방안을 구체화하고 구현과 검증을 진행합니다.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=26;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="80.0" y="162.5" width="4036.25" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-req" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;요구사항과 확인&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=17;fontColor=#22D3EE;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#020617;strokeColor=#22D3EE;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2550.0" y="231.25" width="481.25" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-flow" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;명세와 구현&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=17;fontColor=#34D399;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#020617;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="3106.25" y="231.25" width="600.0" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-review" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;검토와 수정&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=17;fontColor=#FBBF24;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#020617;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="3781.25" y="231.25" width="600.0" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-legend-knowledge" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;경험 축적과 재사용&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=17;fontColor=#A78BFA;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#020617;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="4456.25" y="231.25" width="725.0" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#071B27;strokeColor=#1C6474;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="325" width="1250" height="487.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-kicker" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;요구사항 / 질의&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=16;fontColor=#22D3EE;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="351.25" width="1125" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-title" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;요구사항 대조 목록 · 질의 시 확인할 사항&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=30;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="400" width="1125" height="56.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-care" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;직접 결정할 사항&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#092E3A;strokeColor=#22D3EE;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="490" width="243.75" height="67.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-care-action" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;질의 단계에서 미리 다루고 세부 내용을 명확히 확인&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#22D3EE;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="412.5" y="487.5" width="850" height="72.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-not-care" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;맡겨도 되는 사항&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=22;fontColor=#94A3B8;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="582.5" width="243.75" height="62.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-not-care-action" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;에이전트가 스스로 선택할 수 있는 범위를 명시&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=22;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="412.5" y="578.75" width="850" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-inquiry-detail" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;핵심 세부사항과 기대를 확인해, 실행 가능하더라도 의도에 맞지 않는 방안을 피합니다.&lt;br&gt;사용자가 최종 요구사항 요약을 확인하면 공식 요구사항 기록이 됩니다.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=22;fontColor=#C0D4E2;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="118.75" y="688.75" width="1150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0A1223;strokeColor=#253249;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1412.5" y="325" width="3768.75" height="487.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-kicker" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;역할 / 확정된 의도&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=16;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1456.25" y="351.25" width="3537.5" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-title" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;목표는 사용자가 확인하고, 방안과 구현은 단계적으로 구체화&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=30;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1456.25" y="400" width="3537.5" height="56.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-user" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;사용자가 확인&lt;br&gt;무엇을 왜 만들지&lt;br&gt;핵심 제약, 절충 사항, 인수 시 기대하는 결과&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=25;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#082C38;strokeColor=#22D3EE;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1456.25" y="491.25" width="718.75" height="275" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-agent" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;에이전트가 구체화하고 실행&lt;br&gt;아키텍처와 인터페이스 → 계획과 작업&lt;br&gt;구현, 테스트, 결함 수정&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=25;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C2726;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2225.0" y="491.25" width="993.75" height="275" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-responsibility-quality" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;단계별 검토&lt;br&gt;요구사항 충실도와 누락 없는 반영&lt;br&gt;판단의 근거와 검증 가능한 결과&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=25;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="3318.75" y="491.25" width="1775.0" height="275" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-flow-heading" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;01  표준화된 개발 절차&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=33;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="75" y="890" width="1937.5" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-flow-description" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;요구사항을 공식 기준으로 삼고 명세, 설계, 계획, 작업의 추적 관계를 유지합니다. 검토에서 발견한 문제는 수정한 뒤 다음 단계로 진행합니다.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="971.25" width="2487.5" height="52.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-command-specify" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;specify&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#22D3EE;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-requirements-stage" value="" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#071B27;strokeColor=#22D3EE;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-clarification" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;의도 명확화 → 사용자 확인&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=22;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#092E3A;strokeColor=#22D3EE;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1153.75" width="387.5" height="57.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-requirements" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;requirements.md&lt;br&gt;요구사항 대조 목록 · 공식 기준 ★&lt;br&gt;필요사항, 제약, 결정 사항, 범위&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=22;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#082C38;strokeColor=#22D3EE;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="1253.75" width="387.5" height="156.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-clarify-to-record" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#22D3EE;fontColor=#22D3EE;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-clarification" target="wf-requirements">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-inquiry-to-clarify" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#22D3EE;fontColor=#22D3EE;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0;exitY=0.5;entryX=0;entryY=0.26;" source="wf-inquiry-panel" target="wf-clarification">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="56.25" y="568.75" />
+              <mxPoint x="56.25" y="1168.75" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-spec" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;generate-spec&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#34D399;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="593.75" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-spec" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;spec.md · 요구사항 명세&lt;br&gt;기능·비기능 요구사항과 인수 기준&lt;br&gt;사람의 인수 검증이나 Agent의 자동 인수 검증에도 활용할 수 있는 기능 시나리오 포함&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C2726;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="593.75" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-spec" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;review-spec&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=19;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="593.75" y="1487.5" width="437.5" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-spec" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-spec" target="wf-gate-spec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-spec" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-spec" target="wf-spec">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1056.25" y="1515" />
+              <mxPoint x="1056.25" y="1387.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-design" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;spec-to-design&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#34D399;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1112.5" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-design" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;design.md · 기술 설계&lt;br&gt;아키텍처, 구성요소, 인터페이스&lt;br&gt;및 주요 설계 결정&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C2726;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1112.5" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-design" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;review-design&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=19;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1112.5" y="1487.5" width="437.5" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-design" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-design" target="wf-gate-design">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-design" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-design" target="wf-design">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1575" y="1515" />
+              <mxPoint x="1575" y="1387.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-plan" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;design-to-plan&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#34D399;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1631.25" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-plan" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;plan.md · 구현 계획&lt;br&gt;구현 단계와 진행 순서&lt;br&gt;각 단계의 검증 방법&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C2726;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1631.25" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-plan" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;review-plan&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=19;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1631.25" y="1487.5" width="437.5" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-plan" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-plan" target="wf-gate-plan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-plan" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-plan" target="wf-plan">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2093.75" y="1515" />
+              <mxPoint x="2093.75" y="1387.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-command-tasks" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;plan-to-tasks&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#34D399;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2150" y="1062.5" width="437.5" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-tasks" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;tasks.md · 실행 가능한 작업&lt;br&gt;작업 결과물, 의존 관계&lt;br&gt;및 해당 검증 요건&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C2726;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2150" y="1125" width="437.5" height="312.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-gate-tasks" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;review-tasks&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=19;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=5;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2150" y="1487.5" width="437.5" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-to-review-tasks" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-tasks" target="wf-gate-tasks">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-repair-tasks" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.84;" source="wf-gate-tasks" target="wf-tasks">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2612.5" y="1515" />
+              <mxPoint x="2612.5" y="1387.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-edge-flow-requirements-stage" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#8DA5BD;fontColor=#8DA5BD;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-requirements-stage" target="wf-spec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-flow-spec" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#8DA5BD;fontColor=#8DA5BD;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-spec" target="wf-design">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-flow-design" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#8DA5BD;fontColor=#8DA5BD;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-design" target="wf-plan">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-flow-plan" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#8DA5BD;fontColor=#8DA5BD;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" source="wf-plan" target="wf-tasks">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-loop-note" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;각 단계에서 생성한 산출물을 검토하고, 문제를 수정한 뒤 다시 검토합니다.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=20;fontColor=#FBBF24;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="80" y="1490" width="437.5" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0A1223;strokeColor=#1C6474;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2668.75" y="1031.25" width="2512.5" height="843.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-title" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;구현·검증·검토&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=29;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1060" width="2300.0" height="57.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-command-implement" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;implement-tasks&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=17;fontColor=#34D399;rounded=1;absoluteArcSize=1;arcSize=10;fillColor=#020617;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=6;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1145" width="900.0" height="47.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-execute" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;tasks.md의 작업 실행&lt;br&gt;코드: 테스트를 먼저 작성한 뒤 구현&lt;br&gt;문서·설정: 직접 작성·변경하고 적절히 검증&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=25;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C2726;strokeColor=#34D399;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1218.75" width="1850.0" height="181.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-tasks-to-execute" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#34D399;fontColor=#34D399;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=1;exitY=0.5;entryX=0;entryY=0.345;" source="wf-tasks" target="wf-execute">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-code-review" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;review-code&lt;br&gt;결함을 독립적으로 확인 · 수정 · 재검토&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1462.5" width="1850.0" height="113.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-execute-to-review" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-execute" target="wf-code-review">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-execute-review-label" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;구현 완료 후 검토&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=20;fontColor=#FBBF24;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="3756.25" y="1410" width="800.0" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-implementation-repair" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#FBBF24;fontColor=#FBBF24;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=1;exitY=0.5;entryX=1;entryY=0.5;" source="wf-code-review" target="wf-execute">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="4993.75" y="1518.75" />
+              <mxPoint x="4993.75" y="1307.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-implementation-repair-label" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;수정 후&lt;br&gt;다시 검증&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=20;fontColor=#FBBF24;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="4656.25" y="1375" width="475.0" height="82.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-done" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;전체 변경을 새로 검토해 PASS&lt;br&gt;검토 범위 확인과 검증 완료&lt;br&gt;P0–P3 결함이 남아 있지 않음&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#34D399;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="4431.25" y="1650" width="675.0" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-implementation-debug" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;수정을 반복해도 해결되지 않으면 debug로 근본 원인을 찾습니다.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=20;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1825.0" width="2300.0" height="37.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability" value="" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0F172A;strokeColor=#334155;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1612.5" width="2512.5" height="156.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability-title" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;기능 산출물과 추적 관계&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="1631.25" width="1181.25" height="43.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability-path" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;.codexspec/specs/&amp;lt;feature-id&amp;gt;/&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=20;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1368.75" y="1631.25" width="1181.25" height="43.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-traceability-line" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;요구사항과 결정 → 명세 → 설계 → 계획 → 작업 → 구현과 검증&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#BCD4D0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="1691.25" width="1181.25" height="62.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-analyze-note" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;작업 검토 후 analyze로 전체 추적 관계 확인&lt;br&gt;구현 전 대조를 위한 참고용 점검&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#FBBF24;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="1368.75" y="1691.25" width="1181.25" height="62.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-heading" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;02  경험과 이력을 다음 개발에 활용&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=33;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1825.0" width="2512.5" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C1023;strokeColor=#3E365A;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1925.0" width="2512.5" height="662.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-kicker" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;프로젝트 맥락 / 재사용&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=16;fontColor=#A78BFA;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="1950.0" width="1625" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-context-title" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;결정 근거를 남기고 재사용할 지식을 축적&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=28;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="1996.25" width="1625" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-principles-and-code" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;프로젝트 원칙과 구현 사실&lt;br&gt;constitution.md: 원칙과 필수 제약&lt;br&gt;기존 코드와 테스트: 현재 구현 상태의 근거&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#211A38;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="2081.25" width="437.5" height="281.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-history" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;기능 이력과 결정의 변화&lt;br&gt;.codexspec/specs/&lt;br&gt;확정된 요구사항, 명세, 설계, 계획, 작업&lt;br&gt;관련 검토 기록과 결정 변경 사항&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=25;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#211A38;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="593.75" y="2081.25" width="812.5" height="281.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-profile" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;재사용 가능한 프로젝트 지식&lt;br&gt;.codexspec/profile/&lt;br&gt;제약 · 관례 · 함정 · 결정 · 전략 · 실행 절차&lt;br&gt;필수 제약을 우선하고 candidate는 신중히 재사용&lt;br&gt;vetted에는 결과 검증과 사람의 승인이 필요&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=25;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#211A38;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="1450" y="2081.25" width="1093.75" height="281.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-feature-artifacts-to-history" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0.99;exitY=1;entryX=0.5;entryY=0;" source="wf-traceability" target="wf-history">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2562.5" y="1812.5" />
+              <mxPoint x="2562.5" y="2060.0" />
+              <mxPoint x="1000.0" y="2060.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-history-save-label" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;기능 산출물 보존&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=19;fontColor=#A78BFA;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2125" y="1780" width="400" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-recall" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;후속 개발에서 관련 맥락을 능동적으로 검토&lt;br&gt;CLAUDE.md / AGENTS.md가 회고를 안내하고, specify가 관련 지식을 요구사항 논의에 반영합니다. 이후 작업은 확정된 요구사항을 따릅니다.&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#14132B;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=9;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="112.5" y="2456.25" width="2431.25" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-recall-principles-and-code" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.09;entryY=0;" source="wf-principles-and-code" target="wf-recall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-recall-history" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.365;entryY=0;" source="wf-history" target="wf-recall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-recall-profile" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.775;entryY=0;" source="wf-profile" target="wf-recall">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-knowledge-next-requirements" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0;exitY=0.5;entryX=0;entryY=0.78;" source="wf-recall" target="wf-clarification">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="30.0" y="2506.25" />
+              <mxPoint x="30.0" y="1198.75" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-experience-panel" value="" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=23;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#0C1023;strokeColor=#3E365A;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=15;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2668.75" y="1925.0" width="2512.5" height="662.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-experience-kicker" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;경험 정리 / 검토 / 재사용&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=16;fontColor=#A78BFA;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1950.0" width="2325.0" height="35" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-experience-title" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;경험에서 지식을 정리하고 사람의 검토로 개선&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=28;fontColor=#F8FAFC;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="1996.25" width="2325.0" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-work-experience" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;구현·테스트·검토에서 검증된 경험&lt;br&gt;제품, 아키텍처, 개발, 테스트의 지침과 모범 사례&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#211A38;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="2081.25" width="2325.0" height="106.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-distill" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;distill · 여러 기능에서 재사용할 지식을 정리&lt;br&gt;출처와 적용 조건을 함께 프로젝트 profile에 기록&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#211A38;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="2243.75" width="2325.0" height="106.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-experience-to-distill" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" source="wf-work-experience" target="wf-distill">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-distill-to-profile" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=0;exitY=0.5;entryX=1;entryY=0.35;" source="wf-distill" target="wf-profile">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2625.0" y="2296.25" />
+              <mxPoint x="2625.0" y="2180.0" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-distill-timing" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;작업 도중과 성공적으로 마무리할 때 모두 기록할 수 있으며, 새 지식이 없으면 건너뜁니다.&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=20;fontColor=#BDB4D8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="2377.5" width="2325.0" height="42.5" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-human-review" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;distill review · 필요할 때 사람이 검토&lt;br&gt;검증 결과를 확인하고 기록을 수정·통합·폐기하며, 확인 후 vetted로 표시&lt;/div&gt;" style="whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=24;fontColor=#F8FAFC;rounded=1;absoluteArcSize=1;arcSize=16;fillColor=#211A38;strokeColor=#A78BFA;strokeWidth=1.6;align=center;verticalAlign=middle;spacing=10;shadow=0;" vertex="1" parent="1">
+          <mxGeometry x="2756.25" y="2450.0" width="2325.0" height="106.25" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-human-review-to-profile" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=1;dashPattern=6 5;exitX=0;exitY=0.5;entryX=1;entryY=0.89;" source="wf-human-review" target="wf-profile">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2625.0" y="2502.5" />
+              <mxPoint x="2625.0" y="2331.25" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-edge-implementation-to-experience" edge="1" parent="1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;arcSize=12;html=1;strokeWidth=2;strokeColor=#A78BFA;fontColor=#A78BFA;fontSize=19;fontFamily=PingFang SC;endArrow=block;endFill=1;labelBackgroundColor=#020617;dashed=0;dashPattern=6 5;exitX=1;exitY=0.955;entryX=1;entryY=0.5;" source="wf-implementation-panel" target="wf-work-experience">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="5256.25" y="1827.5" />
+              <mxPoint x="5256.25" y="2133.75" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-footer" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;CodexSpec v0.7.24 기준 검토 · 요구사항 → 구현 → 경험 축적 → 다음 요구사항&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;fontFamily=Apple SD Gothic Neo;fontSize=19;fontColor=#94A3B8;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacing=0;fontStyle=0;" vertex="1" parent="1">
+          <mxGeometry x="80.0" y="2662.5" width="4911.25" height="43.75" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-traceability-columns" edge="1" parent="1" style="edgeStyle=none;html=1;strokeColor=#334155;strokeWidth=1;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1331.25" y="1635" as="sourcePoint" />
+            <mxPoint x="1331.25" y="1747.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-completion-heading" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;완료 조건&lt;/div&gt;" vertex="1" parent="1" style="text;html=1;whiteSpace=wrap;fontFamily=Apple SD Gothic Neo;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacing=0;fontSize=24;fontColor=#34D399;fontStyle=1;">
+          <mxGeometry x="4431.25" y="1600" width="675.0" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimensions-heading" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;일곱 가지 검토 관점&lt;/div&gt;" vertex="1" parent="1" style="text;html=1;whiteSpace=wrap;fontFamily=Apple SD Gothic Neo;strokeColor=none;fillColor=none;align=center;verticalAlign=top;spacing=0;fontSize=24;fontColor=#FBBF24;fontStyle=1;">
+          <mxGeometry x="2700" y="1651.75" width="180" height="132" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-1" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;로직과 데이터 흐름&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="2900" y="1643.75" width="180" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-2" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;업무 규칙과 상태 의미&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3100" y="1643.75" width="180" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-3" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;보안과 신뢰 경계&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3300" y="1643.75" width="180" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-4" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;동시성과 생명주기&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3500" y="1643.75" width="180" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-5" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;견고성과 자원 소유권&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3700" y="1643.75" width="180" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-6" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;실제 성능 영향&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="3900" y="1643.75" width="180" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-review-dimension-7" value="&lt;div lang=&quot;ko&quot; style=&quot;line-height:1.25;word-break:keep-all&quot;&gt;변경에 따른 유지보수성&lt;/div&gt;" vertex="1" parent="1" style="rounded=1;absoluteArcSize=1;arcSize=12;html=1;whiteSpace=wrap;fontFamily=Apple SD Gothic Neo;fontSize=21;fontColor=#DBD1B4;fillColor=#292211;strokeColor=#FBBF24;strokeWidth=1.3;align=center;verticalAlign=top;spacing=8;shadow=0;">
+          <mxGeometry x="4100" y="1643.75" width="180" height="84" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-review-completion-columns" edge="1" parent="1" style="edgeStyle=none;html=1;strokeColor=#334155;strokeWidth=1;endArrow=none;startArrow=none;">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="4356.25" y="1603.75" as="sourcePoint" />
+            <mxPoint x="4356.25" y="1802.5" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-1" edge="1" parent="1" source="wf-review-dimension-1" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.0945945945945946;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-2" edge="1" parent="1" source="wf-review-dimension-2" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.20945945945945946;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-3" edge="1" parent="1" source="wf-review-dimension-3" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.32432432432432434;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-4" edge="1" parent="1" source="wf-review-dimension-4" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.4391891891891892;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-5" edge="1" parent="1" source="wf-review-dimension-5" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.5540540540540541;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-6" edge="1" parent="1" source="wf-review-dimension-6" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.668918918918919;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="wf-edge-dimension-to-review-7" edge="1" parent="1" source="wf-review-dimension-7" target="wf-code-review" style="edgeStyle=none;html=1;strokeColor=#FBBF24;strokeWidth=1.6;dashed=1;dashPattern=5 4;endArrow=block;endFill=1;startArrow=none;exitX=0.5;exitY=0;entryX=0.7837837837837838;entryY=1;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

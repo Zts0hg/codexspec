@@ -30,7 +30,7 @@ WINDOWS_DEVICE_NAME = re.compile(
     r"^(?:CON|PRN|AUX|NUL|CLOCK\$|CONIN\$|CONOUT\$|COM[1-9¹²³]|LPT[1-9¹²³])(?:\..*)?$",
     re.IGNORECASE,
 )
-INTERNAL_CLAUDE_COMMANDS = frozenset({"check-i18n-semantics.md", "translate-docs.md"})
+INTERNAL_CLAUDE_COMMANDS = frozenset({"check-i18n-semantics.md", "translate-docs.md", "update-workflow-diagrams.md"})
 # These pre-existing plugin-only commands are still advertised to maintainers.
 # Keep them outside template-derived comparison without deleting or rewriting them.
 COMPATIBILITY_CLAUDE_COMMANDS = frozenset({"review-python-code.md", "review-react-code.md"})
