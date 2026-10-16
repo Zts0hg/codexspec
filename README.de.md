@@ -75,8 +75,13 @@ Agent daraus Implementierungsartefakte ableitet, hält er Ziele, Einschränkunge
 Entscheidungen, Ausschlüsse, offene Fragen und die Belege für die Bestätigung fest.
 
 ```text
-Idea → Confirmed Requirements → Spec → Design → Plan → Tasks → Code
+Idea → Confirmed Requirements →     Spec    →     Design    →     Plan    →    Tasks     →     Code
+                 ↓                   ↓              ↓              ↓             ↓              ↓
+         User confirmation      review-spec   review-design   review-plan   review-tasks   review-code
 ```
+
+Sie bestätigen die Anforderungen. Jedes daraus abgeleitete Artefakt wird eigens
+geprüft – von der Spezifikation bis zum Code.
 
 In der Zusammenarbeit mit Menschen wird festgelegt und geändert, was das Produkt
 leisten soll. Automatische Reviews prüfen die abgeleiteten Artefakte anhand dieser
@@ -615,17 +620,41 @@ Weitere Hinweise finden Sie unter [Projektwissen](docs/en/user-guide/commands.md
 
 ### Frühere Entscheidungen wiederverwenden
 
-Vor inhaltlichen Urteilen zu Anforderungen, Entwurf, Implementierung, Debugging
-oder Reviews wird auch die relevante Historie unter `.codexspec/specs/`
-herangezogen. Das gilt für gewöhnliche Gespräche ebenso wie für SDD-Workflows.
-Bevor Agenten dem Benutzer Fragen stellen, rekonstruieren sie unveränderte
-Entscheidungen, spätere Ergänzungen und explizite Ersetzungen.
+Bevor der Agent Sie zu einer Änderung befragt, liest er unter
+`.codexspec/specs/` die Entwicklungsgeschichte der betroffenen Features nach.
+Er prüft die bestätigten Entscheidungen in `requirements.md`, verfolgt spätere
+Ergänzungen und ausdrücklich ersetzte Entscheidungen und zieht bei Bedarf
+Entwurfsbegründungen oder Belege aus der Implementierung heran. Diese Vorbereitung
+ist auch vor inhaltlichen Urteilen zu Entwurf, Implementierung, Debugging und
+Reviews erforderlich – in gewöhnlichen Gesprächen ebenso wie in SDD-Workflows.
 
-Ältere Anforderungen, die nicht geändert wurden, bleiben gültig. Die neueste
-explizite Entscheidung des Benutzers hat immer Vorrang. Offene Vorschläge werden
-nicht als bestätigte Zielsetzung behandelt. Die Recherche beschränkt sich auf die
-Aufgabe; bereits ausreichender Hintergrund wird wiederverwendet. Erneuern Sie
-bestehende Projektinstallationen, um diese Hinweise zu erhalten.
+Die Zeitstempel der Feature-Verzeichnisse helfen dabei, die Reihenfolge der
+Iterationen nachzuvollziehen. Ein neueres Dokument setzt eine ältere Entscheidung
+nicht automatisch außer Kraft. Frühere, unveränderte Anforderungen bleiben gültig;
+offene Vorschläge gelten nicht als bestätigte Zielsetzung. Die Recherche
+beschränkt sich auf die aktuelle Aufgabe und endet, sobald genügend Hintergrund
+vorliegt. Dieser wird in späteren Phasen weiterverwendet.
+
+Wenn etwa eine Schnittstelle geändert werden soll, könnte ein Agent ohne
+Kenntnis der Vorgeschichte fragen:
+
+> „Wie soll dieses Feature mit Abwärtskompatibilität umgehen?“
+
+Nach Prüfung der relevanten Entscheidungen und der aktuellen Implementierung
+kann er stattdessen gezielt fragen:
+
+> „Sie hatten bestätigt, dass die alte Schnittstelle erhalten bleiben soll.
+> Die aktuelle Implementierung unterstützt sie weiterhin. Ich schlage vor,
+> sie auch bei dieser Änderung beizubehalten. Soll es dabei bleiben?“
+
+Bereits geklärte Informationen, die eindeutig weiterhin gelten, können ohne
+erneute Nachfrage übernommen werden. Haben Sie bereits gesagt: „Entfernen Sie
+die alte Schnittstelle bei dieser Änderung“, folgt der Agent dieser Entscheidung
+und erläutert die Auswirkungen auf die Migration. **Ihre neueste explizite
+Entscheidung hat immer Vorrang.** Die Historie hilft, gezieltere Fragen zu stellen
+und Wiederholungen zu vermeiden.
+
+Erneuern Sie bestehende Projektinstallationen, um diese Hinweise zu erhalten.
 
 ## Git-Workflow
 

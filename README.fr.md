@@ -77,8 +77,13 @@ les contraintes, les décisions, les exclusions, les questions en suspens et les
 éléments attestant la confirmation des exigences.
 
 ```text
-Idea → Confirmed Requirements → Spec → Design → Plan → Tasks → Code
+Idea → Confirmed Requirements →     Spec    →     Design    →     Plan    →    Tasks     →     Code
+                 ↓                   ↓              ↓              ↓             ↓              ↓
+         User confirmation      review-spec   review-design   review-plan   review-tasks   review-code
 ```
+
+Vous confirmez les exigences ; chaque artefact dérivé fait ensuite l’objet
+d’une revue, de la spécification jusqu’au code.
 
 L'intention du produit se définit et évolue grâce à la collaboration humaine.
 Les revues automatiques vérifient que les artefacts dérivés respectent cette
@@ -604,16 +609,40 @@ pour les consignes détaillées.
 
 ### Réutiliser les décisions historiques
 
-Avant tout jugement substantiel sur les exigences, la conception, l'implémentation,
-le débogage ou la revue, l'agent consulte aussi l'historique pertinent dans
-`.codexspec/specs/`, aussi bien dans les conversations courantes que dans les
-flux SDD. Avant d'interroger l'utilisateur, il reconstitue les décisions toujours
-en vigueur, les ajouts ultérieurs et les remplacements explicites.
+Avant de vous interroger sur un changement, l’agent consulte l’historique des
+fonctionnalités concernées dans `.codexspec/specs/`. Il lit les décisions
+confirmées dans `requirements.md`, suit les ajouts ultérieurs et les remplacements
+explicites, puis consulte au besoin les raisons des choix de conception ou les
+éléments qui attestent l’état de l’implémentation. Cette préparation précède aussi
+tout jugement substantiel sur la conception, l’implémentation, le débogage ou la
+revue, dans les conversations courantes comme dans les flux SDD.
 
-Les exigences anciennes qui n'ont pas été modifiées restent applicables.
-La dernière décision explicite de l'utilisateur prévaut toujours ; les propositions
-en suspens ne valent pas intention confirmée. La recherche se limite aux éléments
-pertinents pour la tâche et le contexte suffisant déjà préparé est réutilisé.
+Les horodatages des dossiers de fonctionnalités aident à reconstituer l’ordre
+des itérations ; un document plus récent n’invalide pas à lui seul une décision
+antérieure. Les exigences anciennes qui n’ont pas été modifiées restent
+applicables, et les propositions en suspens ne valent pas intention confirmée.
+La recherche reste centrée sur la tâche en cours et s’arrête dès que le contexte
+est suffisant. Ce contexte est ensuite réutilisé aux étapes suivantes.
+
+Par exemple, pour modifier une interface, un agent qui n’a pas consulté
+l’historique pourrait demander :
+
+> « Comment cette fonctionnalité doit-elle gérer la rétrocompatibilité ? »
+
+Après avoir vérifié les décisions pertinentes et l’implémentation actuelle,
+il peut poser une question plus précise :
+
+> « Vous aviez confirmé le maintien de l’ancienne interface, qui est toujours
+> prise en charge par l’implémentation actuelle. Je propose de la conserver pour
+> ce changement. Souhaitez-vous maintenir ce choix ? »
+
+Une information déjà établie dont l’applicabilité ne fait aucun doute peut être
+réutilisée sans poser à nouveau la question. Si vous avez déjà dit « Supprimez
+l’ancienne interface dans ce changement », l’agent suit cette décision et
+explique les conséquences de la migration. **Votre dernière décision explicite
+prévaut toujours** ; l’historique permet de préparer des questions plus précises
+et d’éviter les répétitions.
+
 Actualisez les installations des projets existants pour recevoir ces consignes.
 
 ## Flux de travail Git

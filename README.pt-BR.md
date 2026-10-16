@@ -76,8 +76,13 @@ artefatos de implementação, o agente registra objetivos, restrições, decisõ
 exclusões, perguntas em aberto e evidências de confirmação.
 
 ```text
-Idea → Confirmed Requirements → Spec → Design → Plan → Tasks → Code
+Idea → Confirmed Requirements →     Spec    →     Design    →     Plan    →    Tasks     →     Code
+                 ↓                   ↓              ↓              ↓             ↓              ↓
+         User confirmation      review-spec   review-design   review-plan   review-tasks   review-code
 ```
+
+Você confirma os requisitos; cada artefato derivado passa por uma revisão própria,
+da especificação ao código.
 
 A colaboração com as pessoas define e altera a intenção do produto. As revisões
 automáticas verificam se os artefatos derivados correspondem a essa intenção.
@@ -603,17 +608,40 @@ Veja mais orientações em [Conhecimento do projeto](docs/en/user-guide/commands
 
 ### Reutilizar decisões anteriores
 
-O histórico relevante em `.codexspec/specs/` também é consultado antes de análises e
-decisões relevantes sobre requisitos, projeto técnico, implementação, depuração
-ou revisão. Isso vale tanto para conversas comuns quanto para os fluxos de trabalho
-SDD. Antes de perguntar ao usuário, os agentes reconstroem as decisões que
-permanecem inalteradas, os acréscimos posteriores e as substituições explícitas.
+Antes de fazer perguntas sobre uma mudança, o agente consulta o histórico das
+funcionalidades relacionadas em `.codexspec/specs/`. Ele lê as decisões confirmadas
+em `requirements.md`, acompanha os acréscimos posteriores e as substituições
+explícitas e, quando necessário, consulta as justificativas do projeto técnico
+ou as evidências da implementação. Essa preparação também deve preceder análises
+e decisões relevantes sobre projeto técnico, implementação, depuração ou revisão,
+tanto em conversas comuns quanto nos fluxos de trabalho SDD.
 
-Requisitos anteriores que não foram alterados continuam válidos. A decisão
-explícita mais recente do usuário sempre prevalece; propostas em aberto não são
-tratadas como intenção confirmada. A consulta se limita à tarefa e aproveita o
-contexto já suficiente. Atualize as instalações existentes dos projetos para
-receber essas orientações.
+Os registros de data e hora dos diretórios de funcionalidades ajudam a reconstruir
+a ordem das iterações; um documento mais recente não invalida automaticamente uma
+decisão anterior. Requisitos anteriores que não foram alterados continuam válidos,
+e propostas em aberto não são tratadas como intenção confirmada. A consulta se
+concentra na tarefa atual e termina quando há contexto suficiente, que será
+reaproveitado nas etapas seguintes.
+
+Por exemplo, ao alterar uma interface, um agente que não consultou o histórico
+poderia perguntar:
+
+> “Como esta funcionalidade deve lidar com a compatibilidade com versões anteriores?”
+
+Depois de verificar as decisões relevantes e a implementação atual, ele pode
+fazer uma pergunta mais específica:
+
+> “Você havia confirmado que a interface antiga deveria ser mantida, e a
+> implementação atual ainda oferece suporte a ela. Sugiro mantê-la nesta mudança.
+> Podemos seguir assim?”
+
+Informações já estabelecidas que claramente continuam válidas podem ser
+reutilizadas sem repetir a pergunta. Se você já disse “Remova a interface antiga
+nesta mudança”, o agente segue essa decisão e explica os impactos da migração.
+**Sua decisão explícita mais recente sempre prevalece**; o histórico ajuda a
+preparar perguntas mais precisas e evitar repetições.
+
+Atualize as instalações existentes dos projetos para receber essas orientações.
 
 ## Fluxo de trabalho Git
 

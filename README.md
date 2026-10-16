@@ -73,8 +73,13 @@ decisions, exclusions, open questions, and confirmation evidence before deriving
 the implementation artifacts.
 
 ```text
-Idea → Confirmed Requirements → Spec → Design → Plan → Tasks → Code
+Idea → Confirmed Requirements →     Spec    →     Design    →     Plan    →    Tasks     →     Code
+                 ↓                   ↓              ↓              ↓             ↓              ↓
+         User confirmation      review-spec   review-design   review-plan   review-tasks   review-code
 ```
+
+You confirm the requirements; each derived artifact has its own review, from
+specification through code.
 
 Human collaboration establishes and changes product intent. Automatic reviews
 check derived artifacts against it. Enabling automation advances work through
@@ -561,14 +566,37 @@ for detailed guidance.
 
 ### Reusing Historical Decisions
 
-Relevant history under `.codexspec/specs/` is also consulted before substantive
-requirements, design, implementation, debugging, or review judgments—in ordinary
-conversation as well as SDD workflows. Agents reconstruct unchanged decisions,
-later additions, and explicit replacements before asking the user.
+Before asking you about a change, the agent consults related feature histories
+under `.codexspec/specs/`. It reads confirmed decisions in `requirements.md`,
+follows later additions and explicit replacements, and consults design rationale
+or implementation evidence when needed. This preparation also applies before
+substantive design, implementation, debugging, or review judgments, in ordinary
+conversation as well as SDD workflows.
 
-Older unchanged requirements remain applicable. The user's latest explicit
-decision always takes precedence; open proposals are not treated as confirmed
-intent. Retrieval is scoped to the task and sufficient background is reused.
+Feature-directory timestamps help reconstruct the sequence of iterations;
+a newer document does not automatically invalidate an older decision. Older
+unchanged requirements remain applicable, and open proposals are not treated
+as confirmed intent. Retrieval stays focused on the current task and stops once
+the background is sufficient; that background is reused for later stages.
+
+For example, when changing an interface, an agent without historical context
+might ask:
+
+> “How should this feature handle backward compatibility?”
+
+After checking the relevant decisions and current implementation, it can instead
+ask a focused question:
+
+> “You previously confirmed that the old interface should be retained, and the
+> current implementation still supports it. I suggest keeping that behavior for
+> this change. Should we?”
+
+Established information that clearly still applies can be reused without asking
+again. If you have already said “Remove the old interface in this change,” the
+agent follows that decision and explains the migration impact. **Your latest
+explicit decision always takes precedence**; history helps prepare better
+questions and avoid repeated ones.
+
 Refresh existing project installations to receive this guidance.
 
 ## Git Workflow

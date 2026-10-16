@@ -77,8 +77,13 @@ objetivos, las restricciones, las decisiones, las exclusiones, las preguntas
 pendientes y las pruebas de que los requisitos se han confirmado.
 
 ```text
-Idea → Confirmed Requirements → Spec → Design → Plan → Tasks → Code
+Idea → Confirmed Requirements →     Spec    →     Design    →     Plan    →    Tasks     →     Code
+                 ↓                   ↓              ↓              ↓             ↓              ↓
+         User confirmation      review-spec   review-design   review-plan   review-tasks   review-code
 ```
+
+Tú confirmas los requisitos; cada artefacto derivado tiene su propia revisión,
+desde la especificación hasta el código.
 
 La intención del producto se define y se modifica mediante la colaboración
 humana. Las revisiones automáticas comprueban que los artefactos derivados
@@ -596,16 +601,39 @@ para obtener instrucciones detalladas.
 
 ### Reutilizar decisiones históricas
 
-Antes de emitir juicios sustantivos sobre requisitos, diseño, implementación,
-depuración o revisión, también se consulta el historial pertinente de
-`.codexspec/specs/`, tanto en conversaciones habituales como en flujos SDD.
-Antes de preguntar al usuario, el agente reconstruye las decisiones que siguen
-vigentes, las incorporaciones posteriores y las sustituciones explícitas.
+Antes de preguntarte por un cambio, el agente consulta el historial de las
+funcionalidades relacionadas en `.codexspec/specs/`. Lee las decisiones
+confirmadas en `requirements.md`, sigue las incorporaciones posteriores y las
+sustituciones explícitas y, cuando hace falta, consulta las razones del diseño
+o las pruebas de lo que está implementado. Esta preparación también precede
+a los juicios sustantivos sobre diseño, implementación, depuración o revisión,
+tanto en conversaciones habituales como en flujos SDD.
 
-Los requisitos anteriores que no se hayan modificado siguen siendo aplicables.
-La última decisión explícita del usuario siempre tiene prioridad; las propuestas
-pendientes no cuentan como intención confirmada. La búsqueda se limita a lo
-pertinente para la tarea y se reutiliza el contexto suficiente ya preparado.
+Las marcas de tiempo de los directorios de funcionalidades ayudan a reconstruir
+el orden de las iteraciones; un documento más reciente no invalida por sí solo
+una decisión anterior. Los requisitos anteriores que no se hayan modificado
+siguen siendo aplicables, y las propuestas pendientes no cuentan como intención
+confirmada. La búsqueda se centra en la tarea actual y termina cuando hay
+suficiente contexto, que se reutiliza en las etapas posteriores.
+
+Por ejemplo, al modificar una interfaz, un agente que no haya consultado el
+historial podría preguntar:
+
+> «¿Cómo debería gestionar esta funcionalidad la compatibilidad con versiones anteriores?»
+
+Tras comprobar las decisiones pertinentes y la implementación actual, puede
+plantear una pregunta más concreta:
+
+> «Antes confirmaste que debía conservarse la interfaz antigua, y la implementación
+> actual sigue admitiéndola. Propongo mantener ese comportamiento en este cambio.
+> ¿Lo mantenemos?»
+
+La información ya establecida que siga siendo claramente aplicable puede
+reutilizarse sin volver a preguntar. Si ya has dicho «Elimina la interfaz antigua
+en este cambio», el agente sigue esa decisión y explica las repercusiones de
+la migración. **Tu última decisión explícita siempre tiene prioridad**; el
+historial sirve para preparar preguntas más precisas y evitar las repetidas.
+
 Actualiza las instalaciones de los proyectos existentes para recibir estas
 instrucciones.
 
