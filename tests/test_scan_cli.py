@@ -160,7 +160,9 @@ def test_t07_s06_s07_empty_and_language(tmp_path, monkeypatch, language, expecte
     assert not (empty / ".codexspec").exists()
 
 
-def test_t07_s06_incomplete_and_content_mismatch(small_projects, monkeypatch):
+@pytest.mark.parametrize("columns", [64, 80, 120])
+def test_t07_s06_incomplete_and_content_mismatch(small_projects, monkeypatch, columns):
+    monkeypatch.setenv("COLUMNS", str(columns))
     root, _ = small_projects
     assert CliRunner().invoke(app, ["scan", str(root), "--upgrade", "--yes"]).exit_code == 0
     (root / "a/.codexspec/scripts/common.sh").write_bytes(b"discarded\n")
@@ -174,9 +176,10 @@ def test_t07_s06_incomplete_and_content_mismatch(small_projects, monkeypatch):
     monkeypatch.setattr(cli, "discover", incomplete)
     result = CliRunner().invoke(app, ["scan", str(root)])
     assert result.exit_code == 1
-    assert "Scan incomplete" in result.output
-    assert "missing or changed" in result.output
-    assert "codexspec scan <path> --upgrade" in result.output
+    output = " ".join(result.output.split())
+    assert "Scan incomplete" in output
+    assert "missing or changed" in output
+    assert "codexspec scan <path> --upgrade" in output
 
 
 def test_t07_s05_input_changed_during_render_is_not_applied(small_projects, monkeypatch):
@@ -228,7 +231,7 @@ def test_t07_s05_deep_project_input_does_not_abort_siblings(small_projects, boun
     root, _ = small_projects
     project = root / "a"
     name = METADATA if boundary == "metadata" else ".codexspec/config.yml"
-    (project / name).write_text("[" * 1500 + "0" + "]" * 1500)
+    (project / name).write_text("[" * 10_000 + "0" + "]" * 10_000)
     if boundary == "metadata":
         scan = CliRunner().invoke(app, ["scan", str(root)])
         assert scan.exception is None, repr(scan.exception)
@@ -238,7 +241,7 @@ def test_t07_s05_deep_project_input_does_not_abort_siblings(small_projects, boun
     assert result.exit_code == 1, result.output
     assert "1 skipped" in result.output
     assert "nesting" in result.output
-    assert (project / name).read_text() == "[" * 1500 + "0" + "]" * 1500
+    assert (project / name).read_text() == "[" * 10_000 + "0" + "]" * 10_000
     assert (project / ".codexspec/scripts/common.sh").read_bytes() == b"old\n"
     assert (root / "b" / METADATA).exists() and (root / "c" / METADATA).exists()
 

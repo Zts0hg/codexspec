@@ -171,7 +171,7 @@ def test_t06_s01_s02_s06_pinned_runtime_and_cleanup(tmp_path, monkeypatch, fail_
 def test_t06_s02_s05_deep_json_is_reportable(monkeypatch, boundary):
     import httpx
 
-    raw = b"[" * 1500 + b"0" + b"]" * 1500
+    raw = b"[" * 10_000 + b"0" + b"]" * 10_000
     if boundary == "worker":
         with pytest.raises(ValueError, match="nesting"):
             validate_worker_result(raw, "1.2.3")
