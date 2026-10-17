@@ -3,9 +3,10 @@ import sys
 from contextlib import contextmanager
 
 import pytest
+from rich.console import Console
 from typer.testing import CliRunner
 
-from codexspec import __version__, app
+from codexspec import __version__, app, get_scripts_dir
 from codexspec.installations import cli
 from codexspec.installations.metadata import METADATA, inspect_installation
 from codexspec.installations.release import Release
@@ -202,11 +203,15 @@ def test_t07_s05_input_changed_during_render_is_not_applied(small_projects, monk
     assert all(not (root / name / METADATA).exists() for name in ["a", "b", "c"])
 
 
-def test_t07_s06_long_installation_paths_remain_visible(tmp_path):
+@pytest.mark.parametrize("legacy_windows", [False, True])
+def test_t07_s06_long_installation_paths_remain_visible(tmp_path, monkeypatch, legacy_windows):
+    monkeypatch.setattr("codexspec.console", Console(width=80, legacy_windows=legacy_windows))
     project = tmp_path / ("long-parent-" * 6) / "installed-project"
     (project / ".codexspec").mkdir(parents=True)
     result = CliRunner().invoke(app, ["scan", str(tmp_path)])
-    path_column = "".join(line.split("│")[2].strip() for line in result.output.splitlines() if line.startswith("│"))
+    lines = result.output.splitlines()
+    body_start = next(i for i, line in enumerate(lines) if line.startswith(("├", "┡")))
+    path_column = "".join(line.split("│")[2].strip() for line in lines[body_start + 1 :] if line.startswith("│"))
     assert path_column == str(project), result.output
 
 
@@ -267,7 +272,11 @@ def test_t06_s04_t07_s03_valid_project_paths(small_projects, monkeypatch, path_f
     result = CliRunner().invoke(app, ["scan", argument, "--upgrade", "--yes"])
     assert result.exit_code == 0, result.output
     assert inspect_installation(project).state == "consistent", result.output
-    assert (project / ".codexspec/scripts/common.sh").read_bytes() != b"old\n"
+    platform_dir, script_name = ("powershell", "common.ps1") if sys.platform == "win32" else ("bash", "common.sh")
+    assert (project / ".codexspec/scripts" / script_name).read_bytes() == (
+        get_scripts_dir() / platform_dir / script_name
+    ).read_bytes()
+    assert (project / ".agents/skills/codexspec-specify/SKILL.md").is_file()
     for name in ["b", "c"]:
         assert not (root / name / METADATA).exists()
         assert (root / name / ".codexspec/scripts/common.sh").read_bytes() == b"old\n"
