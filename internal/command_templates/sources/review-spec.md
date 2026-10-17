@@ -57,6 +57,7 @@ Report only defects that can affect the user goal or technical planning:
 - Untestable required behavior
 - Missing expected behavior for relevant failure or boundary cases
 - Impossible or unverifiable requirements
+- When a diagram is present, compare it with linked scenarios, `REQ-*` entries, and prose. Treat mismatched names, directions, conditions, or happy/error/denial/recovery/race paths as a defect only when they create a concrete behavioral contradiction or ambiguity. The absence of an optional diagram is never a finding or score deduction.
 
 Do not require a section, metric, persona format, or example merely because a template contains it.
 
