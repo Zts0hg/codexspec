@@ -995,3 +995,18 @@ is insufficient for the judgment required. Reuse never makes incomplete evidence
 sufficient. Keep relevant source paths and decision relationships with the prepared
 background so later stages can reuse it without reconstructing the entire history.
 <!-- CODEXSPEC SPECS END -->
+
+## Project installation inventory and upgrade
+
+`src/codexspec/installations/` owns offline discovery, installation metadata, target
+release acquisition, temporary rendering, Git preflight and checked application.
+`scan` delegates from the CLI entry point; `init` publishes metadata only after
+comparing installed output with the shared release renderer. Metadata uses a
+versioned UTF-8/LF projection and hashes only managed context blocks.
+
+The private `python -m codexspec.installations.worker` protocol renders in temporary
+output using the target release's own installers. It receives no writable user-project
+destination. The calling CLI validates paths, preserves project settings, checks
+affected Git blobs (including hidden index-flag edits), and publishes metadata last.
+Do not add backup, Git mutation, global CLI replacement or safety-bypass behavior.
+Focused regressions live in `tests/test_installation_*.py` and `tests/test_scan_cli.py`.

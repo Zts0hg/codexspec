@@ -56,7 +56,8 @@
       "language_dimensions_hint": "Tip: control interaction, document, and commit languages separately with --interaction-lang, --document-lang, --commit-lang (or: codexspec config).",
       "error_dir_exists": "Error: Directory '{path}' already exists",
       "error_use_force": "Use --force to overwrite or choose a different name",
-      "error_no_project_name": "Error: Please provide a project name or use --here flag"
+      "error_no_project_name": "Error: Please provide a project name or use --here flag",
+      "metadata_not_recorded": "Installation version/checksums were not recorded: {reason}"
     },
     "list_commands": {
       "header": "CodexSpec Available Commands ({count})",
@@ -87,6 +88,38 @@
       "missing_blueprint": "The dedicated worktree does not contain .codexspec/blueprint.md.",
       "blueprint_read_failed": "The blueprint could not be read.",
       "unknown": "Unable to show the blueprint: {error}"
+    },
+    "scan": {
+      "title": "CodexSpec installations",
+      "repository": "Repository (Git common directory)",
+      "path": "Installation",
+      "version": "Recorded version",
+      "content": "Content check",
+      "no_git": "No Git identity",
+      "unknown": "Unknown",
+      "no_baseline": "No saved file list/checksums; historical content cannot be verified",
+      "consistent": "Matches saved checksums",
+      "inconsistent": "Missing or changed toolkit files",
+      "invalid": "Invalid or unreadable metadata/content",
+      "yes_requires_upgrade": "--yes requires --upgrade.",
+      "noninteractive": "Noninteractive upgrades require --upgrade --yes; use scan without --upgrade for inventory only.",
+      "error": "Cannot scan: {reason}",
+      "empty": "No CodexSpec installations found.",
+      "differences": "{path}: missing or changed: {files}",
+      "detail": "{path}: {reason}",
+      "incomplete": "Scan incomplete: {reason}",
+      "acquiring": "Obtaining the newest stable CodexSpec release in a temporary environment…",
+      "target": "Upgrade target: {version}",
+      "skipped": "Skipped {path}: {reason}. No project files changed. Review the affected files and Git state before retrying.",
+      "current": "Already matches target: {path}",
+      "prompt": "Upgrade {path}? y = yes, n = skip, a = all remaining eligible projects, q = quit",
+      "cancelled": "Upgrade cancelled; completed upgrades are retained.",
+      "declined": "Skipped by choice: {path}",
+      "failed": "Upgrade failed for {path}: {reason}. Inspect Git changes before retrying.",
+      "upgraded": "Upgraded: {path}",
+      "acquisition_failed": "Could not obtain or validate the target release: {reason}",
+      "summary": "{upgraded} upgraded; {current} already current; {skipped} skipped; {failed} failed.",
+      "upgrade_hint": "Check safe upgrades and repairs with: codexspec scan <path> --upgrade"
     }
   },
   "constitution": {

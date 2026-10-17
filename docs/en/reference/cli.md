@@ -7,6 +7,7 @@
 | Command | Purpose |
 |---------|---------|
 | `codexspec init` | Initialize or refresh a project for Claude, Codex, or both |
+| `codexspec scan <path>` | Find installed projects and optionally upgrade them safely |
 | `codexspec check` | Check installed tools and dependencies |
 | `codexspec version` | Display version and system information |
 | `codexspec config` | View or modify project configuration |
@@ -103,6 +104,46 @@ guidance is updated, and configuration keys you did not explicitly set are kept.
 
 The planning command is `design-to-plan`; installation updates retire the old
 `spec-to-plan` entry without an alias.
+
+### Discover and upgrade installed projects
+
+```bash
+codexspec scan ~/code                  # Offline, read-only inventory
+codexspec scan ~/code --upgrade        # Ask for each eligible project; choose all or quit
+codexspec scan ~/code --upgrade --yes  # Upgrade every eligible project without prompts
+```
+
+Upgrade mode obtains one newest stable release in a temporary environment; it does
+not require a separate CLI upgrade and does not replace the global CLI. It preserves
+each project's Claude/Codex integration, configuration, requirements, constitution,
+profile and custom context content. Linked Git worktrees are listed separately and
+grouped by repository; only directories under the chosen root are scanned, including
+hidden and nested projects. Symbolic links, `.git` and `.codexspec` internals are not
+traversed. Unreadable descendants are reported as an incomplete scan.
+
+The inventory separates recorded version from actual content verification. New
+installations save `.codexspec/installation.json` with a version, managed-file list
+and content checksums. A current version label does not hide missing or changed
+files. Older installations have unknown versions and no saved checksum baseline;
+this does not mean their directories are empty or corrupt. Upgrade compares their
+actual files with the target release and creates metadata after successful completion.
+No manual migration is required. The saved file list covers toolkit commands,
+helpers, templates, review resources and managed context blocks, not user documents.
+
+An upgrade skips a project if files it would change have staged, unstaged, untracked
+or ignored changes, or if Git/filesystem evidence cannot establish safe replacement.
+Unrelated business-file changes do not block it. `--yes` never bypasses these checks;
+no-Git projects remain report-only. The output names skipped/failed projects and their
+reasons. Inspect the reported files and Git changes, resolve the local edits as you
+choose, and rerun the same scan command. Same-version content mismatches can be
+repaired through this flow; newer recorded versions are never automatically downgraded.
+
+Use Git changes and history to inspect or recover updates. There is no separate backup
+or undo workflow. A failed application can leave partial changes; it is reported as
+failed and never records a successful new installation. Exit status is `0` for a
+complete successful run, `1` for incomplete scans, safety skips, upgrade failures or
+cancellation, and `2` for invalid arguments or an invalid scan root. Noninteractive
+upgrade requires `--yes`; choosing to skip an individual project is not an error.
 
 <details>
 <summary>CLI initialization options</summary>
