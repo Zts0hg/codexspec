@@ -149,7 +149,7 @@ Read:
 - `spec.md`
 - `design.md`
 - `.codexspec/memory/constitution.md` when present
-- Relevant repository files needed to verify existing patterns and constraints
+- Relevant repository files needed to verify implementation feasibility and constraints
 
 Design-stage compatibility: if `design.md` is absent (a legacy feature created before the design stage), plan directly from `spec.md` and state that no separate design artifact was available.
 
@@ -177,11 +177,11 @@ Stop and request a user decision when:
 
 ## Planning Rules
 
-- Consume `design.md`: the plan implements the confirmed design; it does not re-architect or introduce new components/interfaces beyond it. If the design is insufficient to plan against, stop and hand back to the design stage rather than designing here.
+- Consume `design.md`: the plan implements the confirmed design; it does not re-architect or introduce new components/interfaces beyond it. Reuse the evidence and decisions already recorded there instead of repeating component, dependency, or extension-point research. If a design premise is invalid, materially incomplete, or contradicted by verified repository facts, return it to the design stage with the evidence rather than designing around it here.
 - Every implementation phase and plan component must include `Covers: REQ-xxx; Design: <design component>` — trace both to the ultimate requirement and to the design component it builds. (When planning a legacy feature with no `design.md`, fall back to `Covers: REQ-xxx`.)
 - Record new implementation-level choices (build ordering, tooling, sequencing) as **Plan-Level Decisions** with evidence, rationale, alternatives considered when material, and accepted trade-offs. Architecture / interface / data-model decisions belong to `design.md`, not here.
 - Plan-level decisions may refine implementation but cannot redefine product intent or the confirmed design.
-- Reuse repository patterns before introducing new abstractions or dependencies.
+- Plan the recorded reuse, extension, dependency, or custom-code decision; do not redo a survey that belongs to the design stage.
 - Explicitly identify assumptions. Do not convert assumptions into requirements.
 - Prefer the smallest plan that delivers the confirmed design.
 

@@ -166,8 +166,11 @@ Report evidence-backed defects such as:
 - Missing design decisions that genuinely block planning
 - Invalid data, compatibility, security, or interface assumptions
 - Complexity that creates concrete risk without serving a confirmed requirement
+- For a material component, dependency, or self-built-logic decision, an inaccurate claim about reusable code, installed dependency capabilities, or official extension points; or custom code whose stated gap and scope/cost/maintenance trade-off do not support it
 
 Data models, API contracts, sequence diagrams, cross-cutting design sections, and explicit interfaces are required only when the feature or repository context makes them necessary.
+
+Review reuse claims against the decision's concrete paths or symbols, version-matched official capability evidence, and stated gaps. Scale scrutiny to the decision. Do not report a defect solely because a trivial change lacks broad research, a Key Design Decision lacks a comparison table, or the design does not include an unnecessary survey.
 
 ### 3. Advisories
 
@@ -187,7 +190,7 @@ Every defect must include:
 
 Merge findings with the same root cause. Do not deduct the same root cause under alignment, architecture, and decision-record planning separately.
 
-Reject findings that are only stylistic preference, generic best practice without applicability, or a demand to replace a confirmed trade-off.
+Reject findings that are only stylistic preference, generic best practice without applicability, a demand for a fixed research format, or a demand to replace a confirmed trade-off.
 
 Zero verified defects is a valid result.
 
