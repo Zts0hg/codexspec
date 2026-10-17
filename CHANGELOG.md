@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.25] - 2026-10-17
+
+### Added
+
+- Discover project installations with `codexspec scan <path>`. Offline, read-only
+  scanning includes hidden and nested projects and worktrees, reports recorded
+  versions and actual content consistency, and identifies incomplete scans.
+- Upgrade discovered projects with `--upgrade`, choosing each project or all
+  remaining projects; use `--upgrade --yes` for automatic selection. One latest
+  stable release is prepared in an isolated environment without replacing the
+  global CLI. Affected local modifications or uncertain preservation skip the
+  whole project with an explicit reason, including in automatic mode.
+- Successful verified installations record the version, managed-file list and
+  checksums. Legacy projects can upgrade without manual metadata migration;
+  same-version content mismatches remain repairable. Configuration and
+  project-owned content are preserved, and newer versions are not downgraded.
+
+### Changed
+
+- Refreshed English and seven translated READMEs and documentation sites with
+  current capabilities, Codex desktop installation, stage review behavior,
+  historical decision reuse and native-language explanations.
+- Added eight-language light/dark workflow diagrams shared by READMEs and the
+  documentation site.
+
+### For contributors
+
+- Added repository-only Codex documentation translation and semantic-review
+  skills, shared maintenance rules, and workflow-diagram generation and checks.
+  These maintenance tools remain outside user-project installation and packages.
+- Added installation discovery, migration, preservation and cross-platform CLI
+  tests, plus requirements, design and review records. Strengthened checks for
+  documentation paths, generated resources and package boundaries.
+- Updated marketplace metadata for the preceding v0.7.24 release and documented
+  guarded release commits and recovery procedures.
+
 ## [0.7.24] - 2026-10-12
 
 ### Added
