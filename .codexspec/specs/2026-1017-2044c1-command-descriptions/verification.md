@@ -64,3 +64,12 @@ The external review state retains verification evidence alongside its final resu
 These tasks only revise descriptive metadata; tasks.md contains no implementation
 scenario requiring a new runtime test. The existing installation and parsing
 checks above exercise both supported hosts and every supported language.
+
+## Pre-push package verification
+
+A fresh wheel and sdist exposed one additional packaging assertion that expected
+the old review-code description. The archive's command bytes already matched
+the current source. Updated only that assertion to the approved description.
+With `CODEXSPEC_DIST_DIR` set to the fresh build,
+`pytest tests/test_package_contents.py tests/test_distill_review_packaging.py -q`
+passes all 18 tests. The strict MkDocs build also passed in an isolated environment.
