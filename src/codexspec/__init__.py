@@ -1094,6 +1094,20 @@ def list_commands() -> None:
 
 
 @app.command()
+def scan(
+    start_dir: Path = typer.Argument(..., help="Root directory to scan recursively."),
+    upgrade: bool = typer.Option(False, "--upgrade", help="Ask which discovered projects to upgrade."),
+    yes: bool = typer.Option(
+        False, "--yes", help="Upgrade all eligible projects without prompting; requires --upgrade."
+    ),
+):
+    """Find CodexSpec installations; optionally upgrade them to the newest stable release."""
+    from .installations.cli import run_scan
+
+    raise typer.Exit(run_scan(start_dir, upgrade=upgrade, yes=yes, console=console))
+
+
+@app.command()
 def init(
     project_name: Optional[str] = typer.Argument(
         None,
@@ -1513,6 +1527,20 @@ def init(
             console.print(f"[green]{translate('cli.init.git_initialized', normalized_lang)}[/green]")
         except subprocess.CalledProcessError:
             console.print(f"[yellow]{translate('cli.init.git_failed', normalized_lang)}[/yellow]")
+
+    # Record only a verified installation, never bless files retained by nonforce init.
+    from .installations.metadata import publish_metadata
+    from .installations.render import render_installation
+
+    try:
+        expected = render_installation(target_dir, ai, normalized_lang)
+        publish_metadata(target_dir, __version__, ai, normalized_lang, expected)
+    except (OSError, ValueError, AutomationError) as exc:
+        key = "cli.init.metadata_not_recorded"
+        message = translate(key, normalized_lang, reason=str(exc))
+        if message == key:
+            message = translate(key, "en", reason=str(exc))
+        console.print(message, markup=False)
 
     # Print success message with command summary
     console.print()

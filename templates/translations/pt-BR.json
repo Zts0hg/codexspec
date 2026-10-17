@@ -56,7 +56,8 @@
       "language_dimensions_hint": "Dica: controle os idiomas de interação, documento e commit separadamente com --interaction-lang, --document-lang, --commit-lang (ou: codexspec config).",
       "error_dir_exists": "Erro: O diretório '{path}' já existe",
       "error_use_force": "Use --force para sobrescrever ou escolha um nome diferente",
-      "error_no_project_name": "Erro: Forneça um nome de projeto ou use o flag --here"
+      "error_no_project_name": "Erro: Forneça um nome de projeto ou use o flag --here",
+      "metadata_not_recorded": "A versão instalada e os checksums não foram registrados: {reason}"
     },
     "list_commands": {
       "header": "Comandos CodexSpec disponíveis ({count})",
@@ -87,6 +88,38 @@
       "missing_blueprint": "A worktree dedicada não contém .codexspec/blueprint.md.",
       "blueprint_read_failed": "Não foi possível ler o blueprint.",
       "unknown": "Não foi possível exibir o blueprint: {error}"
+    },
+    "scan": {
+      "title": "Instalações do CodexSpec",
+      "repository": "Repositório (diretório Git comum)",
+      "path": "Instalação",
+      "version": "Versão registrada",
+      "content": "Verificação do conteúdo",
+      "no_git": "Repositório Git não identificado",
+      "unknown": "Desconhecida",
+      "no_baseline": "Sem lista de arquivos ou checksums salvos; não é possível verificar o conteúdo histórico",
+      "consistent": "Corresponde aos checksums salvos",
+      "inconsistent": "Arquivos do kit ausentes ou alterados",
+      "invalid": "Metadados ou conteúdo inválidos ou ilegíveis",
+      "yes_requires_upgrade": "--yes requer --upgrade.",
+      "noninteractive": "Atualizações não interativas exigem --upgrade --yes. Para apenas consultar o inventário, omita --upgrade.",
+      "error": "Não foi possível examinar: {reason}",
+      "empty": "Nenhuma instalação do CodexSpec encontrada.",
+      "differences": "{path}: arquivos ausentes ou alterados: {files}",
+      "detail": "{path}: {reason}",
+      "incomplete": "Varredura incompleta: {reason}",
+      "acquiring": "Obtendo a versão estável mais recente do CodexSpec em um ambiente temporário…",
+      "target": "Versão de destino: {version}",
+      "skipped": "{path} ignorado: {reason}. Nenhum arquivo do projeto foi alterado. Confira os arquivos afetados e o estado do Git antes de tentar novamente.",
+      "current": "Já corresponde à versão de destino: {path}",
+      "prompt": "Atualizar {path}? y = sim, n = ignorar, a = todos os projetos restantes aprovados nas verificações, q = sair",
+      "cancelled": "Atualizações pendentes canceladas; as já concluídas foram mantidas.",
+      "declined": "Ignorado por escolha: {path}",
+      "failed": "Falha ao atualizar {path}: {reason}. Confira as alterações no Git antes de tentar novamente.",
+      "upgraded": "Atualizado: {path}",
+      "acquisition_failed": "Não foi possível obter ou verificar a versão de destino: {reason}",
+      "summary": "{upgraded} atualizados; {current} já atualizados; {skipped} ignorados; {failed} com falha.",
+      "upgrade_hint": "Para verificar atualizações e reparos seguros: codexspec scan <path> --upgrade"
     }
   },
   "constitution": {

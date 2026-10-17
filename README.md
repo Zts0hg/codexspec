@@ -277,6 +277,22 @@ it does not intercept manual Git commands.
 
 See [Installation](docs/en/getting-started/installation.md) for detailed setup.
 
+### Find and Upgrade Multiple Projects
+
+```bash
+codexspec scan ~/code                  # Offline inventory
+codexspec scan ~/code --upgrade        # Choose projects interactively
+codexspec scan ~/code --upgrade --yes  # Upgrade all eligible projects
+```
+
+Upgrade mode fetches the newest stable toolkit without replacing your global CLI.
+Projects with local changes to affected files, or without reliable Git evidence,
+are skipped and reported. `--yes` retains all safety checks. Existing configuration
+and project-authored content are preserved. The scan checks actual toolkit content
+separately from the recorded version; legacy installations migrate automatically on
+a safe successful upgrade. See the [CLI reference](docs/en/reference/cli.md#discover-and-upgrade-installed-projects)
+for worktree grouping, skip reasons, metadata and exit codes.
+
 ## Core Workflow
 
 The standard feature workflow preserves a source-linked chain:
@@ -651,6 +667,7 @@ The tables below use Claude's spelling for readability.
 | Command | Purpose |
 |---------|---------|
 | `codexspec init` | Initialize or refresh a project for Claude, Codex, or both |
+| `codexspec scan <path>` | Find installed projects and optionally upgrade them safely |
 | `codexspec check` | Check installed tools and dependencies |
 | `codexspec version` | Display version and system information |
 | `codexspec config` | View or modify project configuration |

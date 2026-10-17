@@ -19,7 +19,45 @@ SUPPORTED_LANGUAGES = ["zh-CN", "ja", "ko", "es", "fr", "de", "pt-BR"]
 
 # English baseline CLI messages (fallback when translation file is missing)
 _CLI_MESSAGES_EN = {
+    "scan": {
+        "upgrade_hint": "Check safe upgrades and repairs with: codexspec scan <path> --upgrade",
+        "title": "CodexSpec installations",
+        "repository": "Repository (Git common directory)",
+        "path": "Installation",
+        "version": "Recorded version",
+        "content": "Content check",
+        "no_git": "No Git identity",
+        "unknown": "Unknown",
+        "no_baseline": "No saved file list/checksums; historical content cannot be verified",
+        "consistent": "Matches saved checksums",
+        "inconsistent": "Missing or changed toolkit files",
+        "invalid": "Invalid or unreadable metadata/content",
+        "yes_requires_upgrade": "--yes requires --upgrade.",
+        "noninteractive": (
+            "Noninteractive upgrades require --upgrade --yes; use scan without --upgrade for inventory only."
+        ),
+        "error": "Cannot scan: {reason}",
+        "empty": "No CodexSpec installations found.",
+        "differences": "{path}: missing or changed: {files}",
+        "detail": "{path}: {reason}",
+        "incomplete": "Scan incomplete: {reason}",
+        "acquiring": "Obtaining the newest stable CodexSpec release in a temporary environment…",
+        "target": "Upgrade target: {version}",
+        "skipped": (
+            "Skipped {path}: {reason}. No project files changed. "
+            "Review the affected files and Git state before retrying."
+        ),
+        "current": "Already matches target: {path}",
+        "prompt": "Upgrade {path}? y = yes, n = skip, a = all remaining eligible projects, q = quit",
+        "cancelled": "Upgrade cancelled; completed upgrades are retained.",
+        "declined": "Skipped by choice: {path}",
+        "failed": "Upgrade failed for {path}: {reason}. Inspect Git changes before retrying.",
+        "upgraded": "Upgraded: {path}",
+        "acquisition_failed": "Could not obtain or validate the target release: {reason}",
+        "summary": "{upgraded} upgraded; {current} already current; {skipped} skipped; {failed} failed.",
+    },
     "init": {
+        "metadata_not_recorded": "Installation version/checksums were not recorded: {reason}",
         # Migration messages
         "migration_found": "Found {count} old structure command files",
         "migration_old_structure": "Old structure: .claude/commands/codexspec.*.md",

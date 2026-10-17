@@ -56,7 +56,8 @@
       "language_dimensions_hint": "提示：可用 --interaction-lang、--document-lang、--commit-lang 分别设置交互/文档/commit 语言（或使用 codexspec config）。",
       "error_dir_exists": "错误: 目录 '{path}' 已存在",
       "error_use_force": "使用 --force 覆盖或选择其他名称",
-      "error_no_project_name": "错误: 请提供项目名称或使用 --here 标志"
+      "error_no_project_name": "错误: 请提供项目名称或使用 --here 标志",
+      "metadata_not_recorded": "未记录安装版本和文件摘要：{reason}"
     },
     "list_commands": {
       "header": "CodexSpec 可用命令 ({count})",
@@ -87,6 +88,38 @@
       "missing_blueprint": "专用 worktree 中不存在 .codexspec/blueprint.md。",
       "blueprint_read_failed": "无法读取 blueprint。",
       "unknown": "无法显示 blueprint：{error}"
+    },
+    "scan": {
+      "title": "CodexSpec 项目安装情况",
+      "repository": "仓库（Git 公共目录）",
+      "path": "安装目录",
+      "version": "记录的版本",
+      "content": "内容校验",
+      "no_git": "无法确定 Git 仓库",
+      "unknown": "未知",
+      "no_baseline": "没有已保存的文件清单和摘要，无法验证历史安装内容",
+      "consistent": "与已保存摘要一致",
+      "inconsistent": "工具包文件缺失或内容有差异",
+      "invalid": "安装信息或文件无效、无法读取",
+      "yes_requires_upgrade": "--yes 必须与 --upgrade 一起使用。",
+      "noninteractive": "非交互升级必须指定 --upgrade --yes；仅查看安装情况请省略 --upgrade。",
+      "error": "无法扫描：{reason}",
+      "empty": "未发现安装 CodexSpec 的项目。",
+      "differences": "{path}：缺失或存在差异的文件：{files}",
+      "detail": "{path}：{reason}",
+      "incomplete": "扫描不完整：{reason}",
+      "acquiring": "正在临时环境中获取最新稳定版 CodexSpec…",
+      "target": "升级目标版本：{version}",
+      "skipped": "已跳过 {path}：{reason}。未修改项目文件。请检查相关文件和 Git 状态后重试。",
+      "current": "内容已与目标版本一致：{path}",
+      "prompt": "是否升级 {path}？y = 升级，n = 跳过，a = 升级其余通过安全检查的项目，q = 退出",
+      "cancelled": "已取消后续升级；已完成的升级会保留。",
+      "declined": "按用户选择跳过：{path}",
+      "failed": "{path} 升级失败：{reason}。请查看 Git 变更后重试。",
+      "upgraded": "已升级：{path}",
+      "acquisition_failed": "无法获取或验证目标版本：{reason}",
+      "summary": "已升级 {upgraded} 个；已是目标版本 {current} 个；跳过 {skipped} 个；失败 {failed} 个。",
+      "upgrade_hint": "如需安全升级或修复内容差异，请运行：codexspec scan <path> --upgrade"
     }
   },
   "constitution": {

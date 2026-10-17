@@ -56,7 +56,8 @@
       "language_dimensions_hint": "ヒント：--interaction-lang、--document-lang、--commit-lang で対話・ドキュメント・コミットの言語を個別に設定できます（または codexspec config）。",
       "error_dir_exists": "エラー: ディレクトリ '{path}' は既に存在します",
       "error_use_force": "--force を使用して上書きするか、別の名前を選択してください",
-      "error_no_project_name": "エラー: プロジェクト名を指定するか --here フラグを使用してください"
+      "error_no_project_name": "エラー: プロジェクト名を指定するか --here フラグを使用してください",
+      "metadata_not_recorded": "インストールのバージョンとチェックサムは記録されませんでした: {reason}"
     },
     "list_commands": {
       "header": "CodexSpec 利用可能なコマンド ({count})",
@@ -87,6 +88,38 @@
       "missing_blueprint": "専用 worktree に .codexspec/blueprint.md がありません。",
       "blueprint_read_failed": "blueprint を読み取れませんでした。",
       "unknown": "blueprint を表示できません: {error}"
+    },
+    "scan": {
+      "title": "CodexSpec のインストール状況",
+      "repository": "リポジトリ（Git 共通ディレクトリ）",
+      "path": "インストール先",
+      "version": "記録されたバージョン",
+      "content": "内容の検証",
+      "no_git": "Git リポジトリを特定できません",
+      "unknown": "不明",
+      "no_baseline": "保存されたファイル一覧とチェックサムがないため、過去のインストール内容は検証できません",
+      "consistent": "保存されたチェックサムと一致",
+      "inconsistent": "ツールキットのファイルに欠落または変更があります",
+      "invalid": "メタデータまたは内容が無効、または読み取れません",
+      "yes_requires_upgrade": "--yes は --upgrade と併用してください。",
+      "noninteractive": "非対話モードでの更新には --upgrade --yes が必要です。確認のみの場合は --upgrade を省略してください。",
+      "error": "スキャンできません: {reason}",
+      "empty": "CodexSpec がインストールされたプロジェクトは見つかりませんでした。",
+      "differences": "{path}: 欠落または変更のあるファイル: {files}",
+      "detail": "{path}: {reason}",
+      "incomplete": "スキャンが不完全です: {reason}",
+      "acquiring": "一時環境で最新の安定版 CodexSpec を取得しています…",
+      "target": "更新先バージョン: {version}",
+      "skipped": "{path} をスキップしました: {reason}。プロジェクトのファイルは変更していません。対象ファイルと Git の状態を確認してから再実行してください。",
+      "current": "対象バージョンと一致しています: {path}",
+      "prompt": "{path} を更新しますか？ y = 更新、n = スキップ、a = 安全確認を通過した残りすべて、q = 終了",
+      "cancelled": "以降の更新を中止しました。完了した更新は保持されます。",
+      "declined": "選択によりスキップ: {path}",
+      "failed": "{path} の更新に失敗しました: {reason}。再実行する前に Git の変更を確認してください。",
+      "upgraded": "更新済み: {path}",
+      "acquisition_failed": "対象バージョンを取得または検証できません: {reason}",
+      "summary": "更新 {upgraded} 件、一致 {current} 件、スキップ {skipped} 件、失敗 {failed} 件。",
+      "upgrade_hint": "安全な更新・修復を確認するには次を実行してください: codexspec scan <path> --upgrade"
     }
   },
   "constitution": {
