@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 
 import pytest
+import yaml
 from typer.testing import CliRunner
 
 from codexspec import app
@@ -84,7 +85,9 @@ def test_codex_integration_renders_review_code_contract() -> None:
     content = CodexIntegration().render_skill("review-code", template)
 
     assert "name: codexspec:review-code" in content
-    assert "description: Review a selected change as a strict defect gate" in content
+    assert yaml.safe_load(content.split("---", 2)[1])["description"] == (
+        "Review Git changes for merge readiness; use --audit to assess existing code quality."
+    )
     assert "argument-hint:" not in content
     assert "scripts:" not in content
     assert "allowed-tools:" not in content

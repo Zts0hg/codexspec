@@ -1,5 +1,5 @@
 ---
-description: Review a selected change as a strict defect gate, or audit paths with --audit
+description: Review Git changes for merge readiness; use --audit to assess existing code quality.
 argument-hint: |
   [defect-gate selectors | --audit [paths...]] (all arguments optional)
 

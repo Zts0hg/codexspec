@@ -392,7 +392,7 @@ class TestInstallCommandsToSubdir:
 
         assert result > 0
         content = (target_dir / "review-code.md").read_text(encoding="utf-8")
-        assert "description: Review a selected change as a strict defect gate" in content
+        assert "description: Review Git changes for merge readiness" in content
         assert "argument-hint:" in content
         assert "scripts:" in content
         assert "sh: .codexspec/scripts/review-context.sh" in content

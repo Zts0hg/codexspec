@@ -1,5 +1,5 @@
 ---
-description: 为小型变更运行精简的 Requirements-First SDD 流程
+description: 确认小范围需求后，自动完成规格、计划、任务、实现与审查。
 argument-hint: "描述一个小需求"
 ---
 

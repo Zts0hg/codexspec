@@ -1,5 +1,5 @@
 ---
-description: Analyze end-to-end traceability and consistency across SDD artifacts
+description: Check consistency from requirements through tasks and automatically fix downstream issues supported by confirmed requirements.
 argument-hint: "[feature directory]"
 ---
 

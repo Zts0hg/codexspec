@@ -1,6 +1,6 @@
 ---
 name: codexspec:auto-dev
-description: "自主开发共享蓝图中的每个待定需求"
+description: "按蓝图顺序自动开发已确认需求，完成从规格到实现、验证和提交的流程。"
 ---
 
 # Continuous Blueprint Development

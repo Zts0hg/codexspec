@@ -49,7 +49,9 @@ def test_t06_s03_s04_real_worker_renders_outside_project(tmp_path):
     release = Release(__version__, sys.executable)
     files = release.render(project, "codex", "zh-CN")
     assert b"My custom rules." in files["AGENTS.md"]
-    assert "讨论、确认并固化权威的需求记录" in files[".agents/skills/codexspec-specify/SKILL.md"].decode("utf-8")
+    assert "澄清功能目标、范围和约束，将确认的需求整理为 requirements.md。" in files[
+        ".agents/skills/codexspec-specify/SKILL.md"
+    ].decode("utf-8")
     assert sorted(p.name for p in project.iterdir()) == ["AGENTS.md"]
 
 

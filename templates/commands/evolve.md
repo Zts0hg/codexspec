@@ -1,5 +1,5 @@
 ---
-description: Compile vetted project-profile knowledge into a reusable command/skill and contribute it upstream via a reviewed PR
+description: Turn vetted, broadly useful project knowledge into commands or skills; open an upstream PR after your approval.
 argument-hint: "[what to evolve, or a profile area]"
 ---
 
