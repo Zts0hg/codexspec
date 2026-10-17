@@ -9,6 +9,9 @@ confirmed design — NOT what the system is. Architecture, components, interface
 decisions live in design.md; reference them here, do not restate them.
 -->
 
+Use the smallest structure that delivers the approved design. Add phases, decisions, or
+support work only when the design, repository policy, or verified implementation needs them.
+
 ## Context
 
 <!-- Background and current state; which design this plan delivers. -->
@@ -40,6 +43,17 @@ design decisions belong to design.md. -->
 
 - [ ] [Step] — **Covers**: REQ-xxx; Design: [component]
 
+## Verification Strategy
+
+- **Covers**: [requirement or acceptance criterion and planned step]
+- **Check and expected result**: [existing test, command, or deterministic inspection and observable outcome]
+- **Prerequisites**: [environment, fixtures, or dependencies only when needed]
+
+Keep this section about planned checks. Report actual commands, results, and the tested
+revision during implementation and review; a planned check is not evidence that it passed.
+Use test-first ordering only when required by the constitution, specification, plan, or
+established repository workflow.
+
 ## Risks / Trade-offs
 
 | Risk | Impact | Mitigation |
@@ -48,6 +62,6 @@ design decisions belong to design.md. -->
 
 ## Requirements Coverage
 
-| Spec Requirement | Design Component | Plan Coverage |
-|------------------|------------------|---------------|
-| REQ-xxx | [design component] | Decision/phase reference |
+| Spec Requirement | Design Component | Plan Coverage | Planned Verification |
+|------------------|------------------|---------------|----------------------|
+| REQ-xxx / NFR-xxx | [design component] | Decision/step reference | Check and expected result reference |

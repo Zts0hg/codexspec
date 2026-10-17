@@ -6,188 +6,81 @@ If not configured, use English.
 -->
 
 **Input**: Design documents from `.codexspec/specs/{feature-id}/`
-**Prerequisites**: plan.md (required), spec.md (required for user stories)
+**Prerequisites**: Approved plan.md and spec.md; requirements.md and design.md when available. Follow the command's legacy-compatibility rules when either is absent.
 
 **Tests**: Tests are required when the constitution, specification, plan, or established repository workflow requires them. Use test-first ordering only when that policy applies; otherwise include the verification work appropriate to the change.
 
-**Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
+**Organization**: Preserve the approved plan's grouping by user story, component, or technical phase. Add setup, foundation, documentation, monitoring, or hardening tasks only when the approved plan, repository policy, or a verified implementation need requires them. These headings and examples do not authorize extra scope.
 
 ## Format: `[ID] [P?] [Story] Description`
 
-- **[P]**: Can run in parallel (different files, no dependencies)
-- **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
-- Include exact file paths in descriptions
+- **[ID]**: Unique task ID, such as T001.
+- **[P]**: Parallel-safe after the declared prerequisites, with settled interfaces and no conflicting writes or shared-state dependencies. Different files alone do not establish independence.
+- **[Story]**: User story label when the plan groups work by story; omit it for component or phase groups.
+- Include exact file paths when known from the plan or repository; do not invent paths.
 - Each task must produce a single verifiable outcome. A task may touch multiple tightly related files when splitting them would make the result unverifiable or create artificial coordination.
 - Add `Covers: REQ-xxx; Plan: <component/phase>` to preserve traceability.
 
-## Path Conventions
+## [Group from the Approved Plan]
 
-- **Single project**: `src/`, `tests/` at repository root
-- **Web app**: `backend/src/`, `frontend/src/`
-- **Mobile**: `api/src/`, `ios/src/` or `android/src/`
-- Paths shown below assume single project - adjust based on plan.md structure
+**Goal**: [Observable result delivered by this group]
+**Upstream**: [Plan component/phase and its covered requirement or acceptance criteria]
+**Prerequisites**: [Necessary predecessor results, or none]
 
----
+### T001: [Verifiable Task Outcome]
 
-## Phase 1: Setup (Shared Infrastructure)
+- [ ] T001 [Story if applicable] [Outcome] — Covers: REQ-xxx; Plan: [component/phase]
+  - **Paths**: [Known implementation and verification paths]
+  - **Dependencies**: [Task IDs and the results they supply, or none]
+  - **Verification**: [Test/check and expected observable result]
 
-**Purpose**: Project initialization and basic structure
+#### Test Scenarios for T001
 
-- [ ] T001 Create project structure per implementation plan
-- [ ] T002 Initialize [language] project with [framework] dependencies
-- [ ] T003 [P] Configure linting and formatting tools
+For testable tasks, enumerate individually identifiable cases derived from the upstream
+acceptance criteria and behavior. Include the happy path and applicable boundary/error
+conditions. Repeat only for cases the behavior implies; stop for underspecified upstream
+behavior rather than inventing an expected result.
 
----
+| Scenario | Upstream Behavior | Input / Action | Expected Result |
+|----------|-------------------|----------------|-----------------|
+| T001-S1 | REQ-xxx / [acceptance criterion] | [Normal input/action] | [Observable result to assert] |
+| T001-S2 | REQ-xxx / [boundary/error behavior] | [Applicable boundary/error input] | [Observable result to assert] |
 
-## Phase 2: Foundational (Blocking Prerequisites)
+Documentation, configuration, assets, and infrastructure tasks omit this scenario section
+and retain their deterministic Verification. Do not manufacture code tests for non-code work.
 
-**Purpose**: Core infrastructure that MUST be complete before ANY user story can be implemented
-
-**CRITICAL**: No user story work can begin until this phase is complete
-
-- [ ] T004 Setup database schema and migrations framework
-- [ ] T005 [P] Implement authentication/authorization framework
-- [ ] T006 [P] Setup API routing and middleware structure
-- [ ] T007 Create base models/entities that all stories depend on
-- [ ] T008 Configure error handling and logging infrastructure
-- [ ] T009 Setup environment configuration management
-
-**Checkpoint**: Foundation ready - user story implementation can now begin in parallel
-
----
-
-## Phase 3: User Story 1 - [Title] (Priority: P1)
-
-**Goal**: [Brief description of what this story delivers]
-
-**Independent Test**: [How to verify this story works on its own]
-
-### Verification for User Story 1
-
-> **NOTE**: When test-first is required, write these tests first and verify the expected failure.
-
-- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
-
-### Implementation for User Story 1
-
-- [ ] T012 [P] [US1] Create [Entity1] model in src/models/[entity1].py
-- [ ] T013 [P] [US1] Create [Entity2] model in src/models/[entity2].py
-- [ ] T014 [US1] Implement [Service] in src/services/[service].py (depends on T012, T013)
-- [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T016 [US1] Add validation and error handling
-- [ ] T017 [US1] Add logging for user story 1 operations
-
-**Traceability**: Covers REQ-001, REQ-002; Plan: Core service and interface
-
-**Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
-
----
-
-## Phase 4: User Story 2 - [Title] (Priority: P2)
-
-**Goal**: [Brief description of what this story delivers]
-
-**Independent Test**: [How to verify this story works on its own]
-
-### Verification for User Story 2
-
-- [ ] T018 [P] [US2] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T019 [P] [US2] Integration test for [user journey] in tests/integration/test_[name].py
-
-### Implementation for User Story 2
-
-- [ ] T020 [P] [US2] Create [Entity] model in src/models/[entity].py
-- [ ] T021 [US2] Implement [Service] in src/services/[service].py
-- [ ] T022 [US2] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T023 [US2] Integrate with User Story 1 components (if needed)
-
-**Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
-
----
-
-## Phase 5: User Story 3 - [Title] (Priority: P3)
-
-**Goal**: [Brief description of what this story delivers]
-
-**Independent Test**: [How to verify this story works on its own]
-
-### Verification for User Story 3
-
-- [ ] T024 [P] [US3] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T025 [P] [US3] Integration test for [user journey] in tests/integration/test_[name].py
-
-### Implementation for User Story 3
-
-- [ ] T026 [P] [US3] Create [Entity] model in src/models/[entity].py
-- [ ] T027 [US3] Implement [Service] in src/services/[service].py
-- [ ] T028 [US3] Implement [endpoint/feature] in src/[location]/[file].py
-
-**Checkpoint**: All user stories should now be independently functional
-
----
-
-[Add more user story phases as needed, following the same pattern]
-
----
-
-## Phase N: Polish & Cross-Cutting Concerns
-
-**Purpose**: Improvements that affect multiple user stories
-
-- [ ] TXXX [P] Documentation updates in docs/
-- [ ] TXXX Code cleanup and refactoring
-- [ ] TXXX Performance optimization across all stories
-- [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
-- [ ] TXXX Security hardening
-
----
+Repeat this task structure for the actual deliverables. Verification may belong to the
+same task as implementation; create a separate task only when it has its own verifiable
+outcome and useful dependency boundary.
 
 ## Dependencies & Execution Order
 
-### Phase Dependencies
+| Task | Prerequisite | Required Result |
+|------|--------------|-----------------|
+| [Dependent task ID] | [Predecessor task ID] | [Contract, artifact, or verified outcome needed before starting] |
 
-- **Setup (Phase 1)**: No dependencies - can start immediately
-- **Foundational (Phase 2)**: Depends on Setup completion - BLOCKS all user stories
-- **User Stories (Phase 3+)**: All depend on Foundational phase completion
-  - User stories can then proceed in parallel (if staffed)
-  - Or sequentially in priority order (P1 -> P2 -> P3)
-- **Polish (Final Phase)**: Depends on all desired user stories being complete
+Keep dependencies acyclic and list predecessors before dependents. Do not make every
+story depend on a generic foundation phase unless the approved plan actually requires it.
 
 ### Parallel Opportunities
 
-- All Setup tasks marked [P] can run in parallel
-- All Foundational tasks marked [P] can run in parallel (within Phase 2)
-- Once Foundational phase completes, all user stories can start in parallel (if team capacity allows)
-- All tests for a user story marked [P] can run in parallel
-- Models within a story marked [P] can run in parallel
+- [Task IDs that may run concurrently, their satisfied prerequisites, and why their writes and shared-state use are independent]
+- Leave tasks sequential when an interface or dependency is unresolved. A `[P]` label is not permission to ignore a prerequisite.
 
----
+## Coverage
 
-## Execution Strategy
+| Requirement | Plan Component / Phase | Task | Scenario / Verification |
+|-------------|------------------------|------|-------------------------|
+| REQ-xxx / NFR-xxx | [plan reference] | T001 | T001-S1, T001-S2 / [deterministic check] |
 
-### MVP First (User Story 1 Only)
+Every plan deliverable needs task coverage. Explain any task that is necessary
+implementation support rather than direct requirement coverage; do not use that category
+to introduce unrelated work.
 
-1. Complete Phase 1: Setup
-2. Complete Phase 2: Foundational (CRITICAL - blocks all stories)
-3. Complete Phase 3: User Story 1
-4. **STOP and VALIDATE**: Test User Story 1 independently
-5. Deploy/demo if ready
+## Execution Notes
 
-### Incremental Delivery
-
-1. Complete Setup + Foundational -> Foundation ready
-2. Add User Story 1 -> Test independently -> Deploy/Demo (MVP!)
-3. Add User Story 2 -> Test independently -> Deploy/Demo
-4. Add User Story 3 -> Test independently -> Deploy/Demo
-
----
-
-## Notes
-
-- [P] tasks = different files, no dependencies
-- [Story] label maps task to specific user story for traceability
-- Each user story should be independently completable and testable
-- Verify tests fail before implementing
-- Commit after each task or logical group
-- Stop at any checkpoint to validate story independently
+- Execute the approved plan's order and delivery strategy; do not impose a fixed MVP or deployment sequence.
+- When test-first is required, verify the expected failure before implementation. Otherwise run the appropriate verification without imposing TDD.
+- Keep planned checks separate from actual results. During implementation, map each enumerated scenario to a test that asserts its expected outcome and report executed commands, results, and tested revision.
+- Mark a task complete only after its outcome and required verification are established. Missing scenario coverage remains subject to the existing implement-tasks self-check.
+- Git staging, commits, deployment, and other external actions follow existing workflow authorization; a task checkbox does not grant permission.

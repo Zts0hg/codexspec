@@ -15,6 +15,10 @@ data models, and API contracts live in design.md; reference them here, do not re
 **Created**: [DATE]
 **Status**: Draft
 
+Scale this template to the approved design. Use its organization rather than imposing a
+fixed set of phases. Include setup, migrations, documentation, or other support work only
+when required by that design, repository policy, or a verified implementation need.
+
 ## Context
 
 <!-- Background and current state. What does this plan deliver, and against which design? -->
@@ -31,13 +35,10 @@ data models, and API contracts live in design.md; reference them here, do not re
 - [What is explicitly out of scope]
 - [What will be deferred to future iterations]
 
-## Tech Stack
+## Relevant Repository Constraints
 
-- **Language**: [e.g., Python 3.11]
-- **Framework**: [e.g., FastAPI]
-- **Database**: [e.g., PostgreSQL]
-- **Frontend**: [e.g., React]
-- **Infrastructure**: [e.g., Docker, AWS]
+- [Verified implementation constraint, existing pattern, or reusable dependency and its source]
+- [Reference the approved design's technology choices; do not introduce a stack here]
 
 ## Plan-Level Decisions
 
@@ -73,29 +74,33 @@ duplicate them here.
 
 ## Implementation Phases
 
-<!-- Each phase/unit carries Covers: REQ-xxx; Design: <design component>. -->
+### [Phase or implementation unit from the approved design]
 
-### Phase 1: Foundation
+- **Outcome**: [One independently verifiable result]
+- **Covers**: REQ-xxx; Design: [component]
+- **Changes**: [Known paths and implementation steps; do not invent paths]
+- **Dependencies**: [Required predecessor and the result it supplies, or none]
+- **Verification**: [Reference the planned check below]
 
-- [ ] [Task] — **Covers**: REQ-xxx; Design: [component]
-- [ ] Configure dependencies / project structure
+Repeat only for the units the feature needs. Order verification with the work it checks;
+use test-first ordering only when required by the constitution, specification, plan, or
+established repository workflow.
 
-### Phase 2: Core Implementation
+## Verification Strategy
 
-- [ ] [Task] — **Covers**: REQ-xxx; Design: [component]
+| Requirement / Acceptance Criterion | Plan Unit | Check and Expected Result | Prerequisites |
+|------------------------------------|-----------|---------------------------|---------------|
+| REQ-xxx / NFR-xxx / [criterion] | [unit] | [Existing test, command, or deterministic inspection and observable outcome] | [Environment / fixture / dependency, or none] |
 
-### Phase 3: Testing
+Reference existing checks before planning new ones. Include applicable boundary, failure,
+compatibility, and recovery checks derived from the confirmed behavior. Documentation and
+configuration work use their appropriate deterministic checks rather than invented code tests.
 
-- [ ] Write unit tests
-- [ ] Write integration tests
-
-### Phase 4: Documentation & Polish
-
-- [ ] Update documentation
-- [ ] Final verification
+These are planned checks, not execution evidence. Actual commands, results, tested revision,
+and remaining coverage gaps are reported during implementation and review.
 
 ## Requirements Coverage
 
-| Spec Requirement | Design Component | Plan Coverage |
-|------------------|------------------|---------------|
-| REQ-001 | [design component] | Decision 1 / Phase 2 |
+| Spec Requirement | Design Component | Plan Coverage | Planned Verification |
+|------------------|------------------|---------------|----------------------|
+| REQ-xxx / NFR-xxx | [design component] | Decision / implementation unit reference | Check and expected result reference |
