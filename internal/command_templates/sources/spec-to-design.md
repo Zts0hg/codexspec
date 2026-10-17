@@ -87,6 +87,8 @@ Include:
 
 Do not force optional sections when they are irrelevant.
 
+When a graph would clarify material design behavior, prefer inline Mermaid when it suits an existing design section, such as `Architecture & Components`, `Data Models / Key Entities`, or `Sequence & Data Flow`: use a component diagram or flowchart for ownership, boundaries, or dependencies, and a sequence diagram for calls involving retries, timeouts, or concurrency. A graph is optional—use prose when it is clear, and never add one to meet a quota. Tie it to relevant `REQ-*` entries and interfaces; keep names, directions, and conditions aligned with prose, covering a representative happy path and important applicable error, recovery, or race paths. Keep `OPEN-*` entries open rather than inferring behavior in a diagram.
+
 ## Pre-Save Validation
 
 1. Every binding spec requirement has design coverage.

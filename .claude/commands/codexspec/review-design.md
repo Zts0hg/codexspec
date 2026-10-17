@@ -159,6 +159,7 @@ Authority order:
 - Verify each component, interface, data change, and design decision has `Covers:`.
 - Detect omitted behavior, semantic changes, scope expansion, and design decisions that override confirmed trade-offs.
 - Verify design-level assumptions remain labeled and do not become product requirements.
+- When a diagram is present, compare it with linked `REQ-*` entries, interfaces, and prose. Treat mismatched component or call names, directions, conditions, or happy/retry/timeout/error/recovery/concurrency paths as a defect only when they create a concrete behavioral contradiction or ambiguity. The absence of an optional diagram is never a finding or score deduction.
 
 ### 2. Feasibility and Internal Quality
 

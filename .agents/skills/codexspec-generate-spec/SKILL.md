@@ -184,6 +184,8 @@ The specification must include:
 
 Do not add sections merely to satisfy a template when they are irrelevant.
 
+When a graph would clarify material user-visible behavior, prefer inline Mermaid when it suits an existing user-story or related section: use a flowchart for business branches, failures, denials, or recovery and a state diagram for business states. A graph is optional—use prose when it is clear, and never add one to meet a quota. Link it to relevant scenarios or `REQ-*` entries; keep names, directions, and conditions aligned with prose, covering a representative happy path and important applicable error, denial, recovery, or race paths of the depicted behavior. Keep `OPEN-*` entries open rather than inferring behavior in a diagram.
+
 Save to `<feature-dir>/spec.md`.
 
 ## Pre-Save Validation
