@@ -1,5 +1,5 @@
 ---
-description: Expand an approved plan into traceable, executable tasks
+description: Break plan.md into tasks.md with concrete work, dependencies and verification, including scenarios for testable tasks.
 argument-hint: "[tasks feature directory, plan.md, or spec.md]"
 handoffs:
   - agent: claude

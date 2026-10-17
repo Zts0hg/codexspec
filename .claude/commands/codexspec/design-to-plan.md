@@ -1,5 +1,5 @@
 ---
-description: 将已确认的设计转换为可追溯的实现计划
+description: 将 design.md 转化为 plan.md，安排实现阶段、执行顺序和验证步骤。
 argument-hint: "[design.md、spec.md 或 功能目录]"
 handoffs:
   - agent: claude

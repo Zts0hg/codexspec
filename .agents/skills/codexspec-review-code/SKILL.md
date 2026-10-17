@@ -1,6 +1,6 @@
 ---
 name: codexspec:review-code
-description: "将所选变更作为严格缺陷门禁进行审查，或使用 --audit 审计路径"
+description: "审查 Git 改动并判断是否可合并；--audit 用于评估现有代码质量。"
 ---
 
 # Change Review Coordinator

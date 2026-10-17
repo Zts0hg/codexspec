@@ -1,5 +1,5 @@
 ---
-description: Debug a failure to its root cause before proposing any fix
+description: Reproduce a reported failure, trace its root cause, then apply and verify a minimal fix.
 argument-hint: "[error text | failing test | file:line | plain-language symptom]"
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 ---

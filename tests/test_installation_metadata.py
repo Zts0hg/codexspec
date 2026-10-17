@@ -18,7 +18,7 @@ def test_t01_s01_s02_render_and_verify(tmp_path, ai):
     files = render_installation(tmp_path, ai, "zh-CN")
     for name, content in files.items():
         if name.endswith("/specify.md") or name.endswith("codexspec-specify/SKILL.md"):
-            assert "讨论、确认并固化权威的需求记录" in content.decode("utf-8")
+            assert "澄清功能目标、范围和约束，将确认的需求整理为 requirements.md。" in content.decode("utf-8")
     assert any(name.startswith(".codexspec/scripts/") for name in files)
     install_files(tmp_path, files)
     publish_metadata(tmp_path, "1.2.3", ai, "zh-CN", files)

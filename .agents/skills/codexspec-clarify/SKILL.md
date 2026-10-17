@@ -1,6 +1,6 @@
 ---
 name: codexspec:clarify
-description: "解决需求歧义，并将 requirements.md 与 spec.md 同步"
+description: "通过问答澄清遗漏、歧义和矛盾，将确认结果同步到 requirements.md 和 spec.md。"
 ---
 
 # Requirements Clarifier

@@ -1,5 +1,5 @@
 ---
-description: Create or update the project constitution from interactive or provided principle inputs, ensuring all dependent templates stay in sync.
+description: Define or update project principles in constitution.md and check related documents for consistency.
 argument-hint: |
   [quick|deep | project principles] (optional)
 

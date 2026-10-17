@@ -1,5 +1,5 @@
 ---
-description: 先定位故障的根本原因，再着手修复
+description: 复现报错或异常现象，定位根本原因，再进行最小修复并验证结果。
 argument-hint: "[错误文本 | 失败测试 | 文件:行号 | 通俗症状描述]"
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 ---

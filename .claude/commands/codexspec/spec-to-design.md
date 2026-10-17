@@ -1,5 +1,5 @@
 ---
-description: 将已确认的规格转换为可追溯的设计文档
+description: 根据 spec.md 编写 design.md，定义组件、接口及关键技术决策。
 argument-hint: "[spec.md 或 功能目录]"
 handoffs:
   - agent: claude

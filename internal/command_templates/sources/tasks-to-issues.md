@@ -1,5 +1,5 @@
 ---
-description: Convert existing tasks into actionable GitHub issues for the feature
+description: Create GitHub issues from tasks.md, including relevant files, dependencies and available acceptance criteria.
 scripts:
   sh: .codexspec/scripts/check-prerequisites.sh --json --require-tasks --include-tasks
   ps: .codexspec/scripts/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks

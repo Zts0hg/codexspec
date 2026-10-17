@@ -123,115 +123,115 @@
     }
   },
   "constitution": {
-    "description": "Crear o actualizar la constitución del proyecto a partir de entradas interactivas o principios proporcionados, asegurando que todas las plantillas dependientes permanezcan sincronizadas.",
+    "description": "Definir o actualizar los principios del proyecto en constitution.md y comprobar la coherencia de los documentos relacionados.",
     "argument-hint": "[quick|deep | principios del proyecto] (opcional)\n\nEste comando crea/actualiza la constitución del proyecto en .codexspec/memory/constitution.md.\n\nTres formas de uso:\n1. Sin argumentos → Modo interactivo: elegir profundidad de exploración (quick/deep)\n2. quick → Exploración ligera: archivos de configuración + README + puntos de entrada principales (~5-10 archivos)\n3. deep → Exploración completa: todo lo anterior + análisis de código fuente + patrones de arquitectura\n4. <descripción> → Omitir exploración, usar tus principios directamente\n\nEjemplos:\n  /codexspec:constitution\n  /codexspec:constitution quick\n  /codexspec:constitution deep\n  /codexspec:constitution Python FastAPI backend con pytest, enfocado en seguridad de tipos"
   },
   "specify": {
-    "description": "Discutir, confirmar y persistir el registro autoritativo de requisitos",
+    "description": "Aclarar los objetivos, el alcance y las restricciones de una función, y guardar los requisitos confirmados en requirements.md.",
     "argument-hint": "Describe la idea inicial, o proporciona un directorio de característica existente"
   },
   "clarify": {
-    "description": "Resolver ambigüedades de requisitos y sincronizar requirements.md con spec.md",
+    "description": "Resolver lagunas, ambigüedades y contradicciones con preguntas concretas, y reflejar las decisiones confirmadas en requirements.md y spec.md.",
     "argument-hint": "[spec.md, requirements.md o directorio de característica]"
   },
   "analyze": {
-    "description": "Analizar la trazabilidad de extremo a extremo y la consistencia entre artefactos SDD",
+    "description": "Comprobar la coherencia documental desde los requisitos hasta las tareas y corregir automáticamente los problemas derivados según los requisitos confirmados.",
     "argument-hint": "[directorio de característica]"
   },
   "checklist": {
-    "description": "Generar listas de verificación de calidad personalizadas para validar completitud, claridad y consistencia de requisitos"
+    "description": "Crear una lista para comprobar la integridad, la claridad y la cobertura de escenarios de los requisitos, en lugar de probar el código."
   },
   "generate-spec": {
-    "description": "Compilar requisitos confirmados en un spec.md trazable",
+    "description": "Convertir los requisitos confirmados en spec.md con el comportamiento de la función, el manejo de errores y los criterios de aceptación.",
     "argument-hint": "[requirements.md o directorio de característica]"
   },
   "design-to-plan": {
-    "description": "Convertir un diseño confirmado en un plan de implementación trazable",
+    "description": "Convertir design.md en plan.md con las fases de implementación, el orden de ejecución y los pasos de verificación.",
     "argument-hint": "[design.md, spec.md o directorio de la funcionalidad]"
   },
   "plan-to-tasks": {
-    "description": "Expandir un plan aprobado en tareas trazables y ejecutables",
+    "description": "Desglosar plan.md en tasks.md con trabajos concretos, dependencias y verificación, incluidos escenarios para las tareas que admiten pruebas.",
     "argument-hint": "[directorio de característica de tasks, plan.md o spec.md]"
   },
   "review-spec": {
-    "description": "Revisar la fidelidad de la spec, la calidad interna y la preparación para planificar",
+    "description": "Revisar la cobertura de requisitos y la verificabilidad de los criterios de aceptación en spec.md para determinar si puede comenzar el diseño.",
     "argument-hint": "[spec.md o directorio de característica]"
   },
   "review-plan": {
-    "description": "Revisar la fidelidad del plan, la viabilidad y la preparación para implementar",
+    "description": "Revisar los pasos, el orden y la cobertura de requisitos de plan.md para determinar si puede dividirse el trabajo en tareas.",
     "argument-hint": "[plan.md o directorio de característica]"
   },
   "review-tasks": {
-    "description": "Revisar la fidelidad de las tareas, la ejecutabilidad, las dependencias y la verificación",
+    "description": "Revisar la cobertura, las dependencias y la verificación de tasks.md para determinar si puede comenzar la implementación.",
     "argument-hint": "[tasks.md o directorio de característica]"
   },
   "implement-tasks": {
-    "description": "Ejecutar tareas de implementación con flujo de trabajo TDD condicional (TDD para código, implementación directa para docs/config)",
+    "description": "Implementar tasks.md, ejecutar pruebas y una revisión independiente, y corregir los problemas verificados.",
     "argument-hint": "[ruta_tasks] | [ruta_spec ruta_plan ruta_tasks]"
   },
   "tasks-to-issues": {
-    "description": "Convertir tareas existentes en GitHub Issues accionables para esta funcionalidad"
+    "description": "Crear issues de GitHub a partir de tasks.md, con archivos relevantes, dependencias y criterios de aceptación disponibles."
   },
   "commit": {
     "description": "Generar y ejecutar mensajes de commit conformes a Conventional Commits basados en estado git y contexto de sesión",
     "argument-hint": "[-p] Usa -p para solo previsualizar el mensaje sin hacer commit"
   },
   "commit-staged": {
-    "description": "Analizar cambios git preparados y generar mensaje de commit conforme a Conventional Commits",
+    "description": "Generar un mensaje solo a partir de los cambios preparados y ejecutar el commit autorizado; -p muestra una vista previa sin crear el commit.",
     "argument-hint": "[-p] Usa -p para solo previsualizar el mensaje sin hacer commit"
   },
   "pr": {
-    "description": "Generar descripción estructurada de Pull Request (GitHub) o Merge Request (GitLab) basada en git diff e integración opcional de spec.md"
+    "description": "Redactar títulos, descripciones e indicaciones de verificación para PR de GitHub o MR de GitLab a partir de diferencias entre ramas."
   },
   "review-code": {
-    "description": "Revisar el cambio seleccionado como puerta de defectos estricta o auditar rutas con --audit",
+    "description": "Revisar cambios de Git para determinar si están listos para fusionarse; --audit evalúa la calidad del código existente.",
     "argument-hint": "[selectores de defect-gate | --audit [paths...]] (todos los argumentos son opcionales)\n\nEste comando revisa código en uno de dos modos mutuamente excluyentes.\n\nModo 1 - Defect gate (predeterminado): revisa un cambio de Git y decide si bloquea la fusión.\n  1. Sin argumentos → delta completo de la rama: merge-base → worktree (en la rama base: solo cambios sin confirmar)\n  2. --committed → solo merge-base → HEAD; excluye lo staged, unstaged y untracked\n  3. --uncommitted → solo staged + unstaged + untracked\n  4. --commit <sha> → exactamente ese commit; añade --parent <n> para elegir un padre de fusión\n  Los modificadores nunca cambian el objetivo por sí solos:\n  - --base <branch> → anula la resolución de la base; válido solo sin argumentos o con --committed\n  - --feature <feature-dir> → adjunta contexto de requisitos para la cobertura; nunca cambia el alcance de Git\n  - --focus <instructions> → añade obligaciones al Risk Pass; repetible, nunca reduce el alcance\n  - --decided-by reviewer|ask → Quién decide hallazgos fuera del contexto real de uso; anula review.decided_by\n  - --incremental-from <fingerprint> → Revisar solo el delta de reparación; solo sin argumentos o con --committed\n\nModo 2 - Audit (advisory): scorecard orientativo del contenido de los archivos (sin veredicto de gate ni envelope).\n  1. --audit → revisa el directorio principal de código (predeterminado: src/)\n  2. --audit <path> [<path>...] → revisa solo las rutas listadas, separadas por espacios\n\nUna ruta suelta como src/ no es un objetivo válido del defect gate: use --audit src/.\n\nEjemplos:\n  /codexspec:review-code\n  /codexspec:review-code --uncommitted\n  /codexspec:review-code --commit <sha> --parent 1\n  /codexspec:review-code --committed --base origin/main\n  /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus \"verificar el manejo de reintentos\"\n  /codexspec:review-code --audit src/api"
   },
   "quick": {
-    "description": "Ejecutar un flujo SDD compacto Requirements-First para un cambio pequeño",
+    "description": "Confirmar un requisito pequeño y bien delimitado, y automatizar la especificación, la planificación, las tareas, la implementación y la revisión.",
     "argument-hint": "Describe un requisito pequeño"
   },
   "auto-dev": {
-    "description": "Desarrollar autónomamente cada requisito pendiente del blueprint compartido",
+    "description": "Desarrollar automáticamente los requisitos confirmados del blueprint en orden, desde la especificación hasta la implementación verificada y los commits.",
     "argument-hint": "\"\""
   },
   "blueprint": {
-    "description": "Discutir y mantener los requisitos confirmados en el blueprint de producto compartido",
+    "description": "Planificar varias funciones en el blueprint compartido, registrar los requisitos confirmados y ordenar el trabajo pendiente para auto-dev.",
     "argument-hint": "Describe un requisito nuevo o identifica un requisito pendiente que haya que reemplazar, eliminar o mover"
   },
   "config": {
-    "description": "Gestionar interactivamente la configuración del proyecto CodexSpec",
+    "description": "Configurar de forma interactiva idiomas, automatización, worktrees y otras opciones del proyecto; --view solo consulta la configuración.",
     "argument-hint": "[--view] Ver la configuración actual sin modificarla"
   },
   "debug": {
-    "description": "Depurar un fallo hasta su causa raíz antes de proponer cualquier arreglo",
+    "description": "Reproducir un fallo comunicado, localizar su causa raíz y aplicar y verificar una corrección mínima.",
     "argument-hint": "[texto de error | test fallido | archivo:línea | síntoma en lenguaje llano]"
   },
   "distill": {
-    "description": "Destilar conocimiento reutilizable entre funciones de una interacción hacia el perfil del proyecto",
+    "description": "Guardar aprendizajes reutilizables de las interacciones en el perfil del proyecto, o revisar, modificar y consolidar los registros existentes.",
     "argument-hint": "[segmento de interacción o contexto a destilar]"
   },
   "evolve": {
-    "description": "Compilar conocimiento del perfil ya validado (vetted) en un comando/skill reutilizable y contribuirlo upstream mediante un PR revisado",
+    "description": "Convertir conocimientos verificados, aprobados y de utilidad general en comandos o skills, y abrir una PR en el repositorio original tras tu aprobación.",
     "argument-hint": "[qué evolucionar, o un área del perfil]"
   },
   "onboard": {
-    "description": "Crear el perfil del proyecto desde cero escaneando un código existente en busca de convenciones y restricciones",
+    "description": "Explorar el código existente para registrar convenciones y restricciones explícitas en el perfil del proyecto, guardando las restricciones tras tu revisión.",
     "argument-hint": "[ruta]"
   },
   "release-notes": {
-    "description": "Generar release notes del historial de git — mantiene una entrada CHANGELOG.md al estilo Keep a Changelog y emite un cuerpo de release orientado al usuario, sin decidir versiones ni mutar el estado de git"
+    "description": "Añadir una entrada a CHANGELOG.md y redactar notas de versión a partir del historial de Git, sin publicar una versión."
   },
   "reverse-spec": {
-    "description": "Derivar spec/design en sentido inverso desde código existente y reconciliar el código con la línea base confirmada",
+    "description": "Derivar del código existente una visión de la arquitectura o la especificación y el diseño de un módulo; informar de diferencias si hay una referencia confirmada.",
     "argument-hint": "[ruta]"
   },
   "review-design": {
-    "description": "Revisar la fidelidad del diseño, su viabilidad y la preparación para la planificación",
+    "description": "Revisar la cobertura de requisitos y la viabilidad técnica de design.md para determinar si puede planificarse la implementación.",
     "argument-hint": "[design.md o directorio de feature]"
   },
   "spec-to-design": {
-    "description": "Convertir una especificación confirmada en un documento de diseño trazable",
+    "description": "Crear design.md a partir de spec.md para definir componentes, interfaces y decisiones técnicas clave.",
     "argument-hint": "[spec.md o directorio de feature]"
   }
 }

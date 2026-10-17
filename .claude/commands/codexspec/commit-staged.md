@@ -1,5 +1,5 @@
 ---
-description: 分析暂存的 git 更改并生成符合 Conventional Commits 规范的提交信息
+description: 仅根据暂存改动生成提交信息并执行已授权的提交；-p 只预览，不执行提交。
 argument-hint: "[-p] 使用 -p 仅预览提交信息而不执行提交"
 allowed-tools: Bash(git diff:*), Bash(git status:*), Bash(git rev-parse:*), Bash(git write-tree:*), Bash(codexspec _commit-staged-helper:*), Bash(python3:*), Bash(python:*), Bash(py:*)
 forbidden-tools: Bash(git add:*), Bash(git reset:*), Bash(git checkout:*), Bash(git restore:*), Bash(git stash:*), Bash(git rm:*)

@@ -1,6 +1,6 @@
 ---
 name: codexspec:pr
-description: "基于 git diff 和可选的 spec.md 集成生成结构化的 Pull Request (GitHub) 或 Merge Request (GitLab) 描述"
+description: "根据分支差异生成 GitHub PR 或 GitLab MR 的标题、说明与验证指引。"
 ---
 
 ## Constitution Compliance (MANDATORY)

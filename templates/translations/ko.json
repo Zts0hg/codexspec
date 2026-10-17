@@ -123,115 +123,115 @@
     }
   },
   "constitution": {
-    "description": "대화형 또는 제공된 원칙 입력에서 프로젝트 헌법을 생성하거나 업데이트하며, 모든 종속 템플릿의 동기화를 유지합니다.",
+    "description": "constitution.md에 프로젝트 개발 원칙을 작성하거나 갱신하고 관련 문서와의 일관성을 확인합니다.",
     "argument-hint": "[quick|deep | 프로젝트 원칙] (선택사항)\n\n이 명령은 .codexspec/memory/constitution.md에 프로젝트 헌법을 생성/업데이트합니다.\n\n세 가지 사용 방법:\n1. 인수 없음 → 대화형 모드: 탐색 깊이 선택 (quick/deep)\n2. quick → 가벼운 탐색: 설정 파일 + README + 핵심 진입점 (~5-10개 파일)\n3. deep → 전체 탐색: 위 내용 + 소스 코드 분석 + 아키텍처 패턴\n4. <설명> → 탐색 건너뛰기, 원칙 직접 사용\n\n예시:\n  /codexspec:constitution\n  /codexspec:constitution quick\n  /codexspec:constitution deep\n  /codexspec:constitution Python FastAPI 백엔드에서 pytest 사용, 타입 안전성 중시"
   },
   "specify": {
-    "description": "공식 요구사항 기록을 논의·확인하고 저장합니다",
+    "description": "기능의 목표, 범위, 제약을 명확히 하고 확인된 요구사항을 requirements.md에 저장합니다.",
     "argument-hint": "초기 아이디어를 설명하거나 기존 기능 디렉터리를 제공하세요"
   },
   "clarify": {
-    "description": "요구사항 모호성을 해소하고 requirements.md와 spec.md를 동기화합니다",
+    "description": "핵심 질문으로 누락, 모호함, 모순을 해소하고 확인된 결정을 requirements.md와 spec.md에 반영합니다.",
     "argument-hint": "[spec.md, requirements.md 또는 기능 디렉터리]"
   },
   "analyze": {
-    "description": "SDD 산출물 간의 엔드투엔드 추적성과 일관성을 분석합니다",
+    "description": "요구사항부터 작업까지 문서의 일관성을 확인하고 확인된 요구사항으로 수정 방향이 정해지는 하위 문서의 문제를 자동 수정합니다.",
     "argument-hint": "[기능 디렉터리]"
   },
   "checklist": {
-    "description": "요구사항의 완전성, 명확성, 일관성을 검증하는 사용자 정의 품질 체크리스트 생성"
+    "description": "코드를 테스트하는 대신 요구사항의 완전성, 명확성, 시나리오 포괄성을 점검하는 체크리스트를 만듭니다."
   },
   "generate-spec": {
-    "description": "확인된 요구사항을 추적 가능한 spec.md로 정리합니다",
+    "description": "확인된 요구사항을 spec.md로 작성해 기능 동작, 오류 처리, 인수 기준을 명확히 합니다.",
     "argument-hint": "[requirements.md 또는 기능 디렉터리]"
   },
   "design-to-plan": {
-    "description": "확정된 설계를 추적 가능한 구현 계획으로 변환",
+    "description": "design.md를 plan.md로 구체화해 구현 단계, 실행 순서, 검증 절차를 정리합니다.",
     "argument-hint": "[design.md, spec.md 또는 기능 디렉터리]"
   },
   "plan-to-tasks": {
-    "description": "승인된 계획을 추적 가능하고 실행 가능한 작업으로 전개합니다",
+    "description": "plan.md를 tasks.md로 세분화해 구체적인 작업, 의존 관계, 검증 방법을 정하고 테스트 가능한 작업의 테스트 시나리오를 명시합니다.",
     "argument-hint": "[tasks 기능 디렉터리, plan.md 또는 spec.md]"
   },
   "review-spec": {
-    "description": "사양의 충실도, 내부 품질, 계획 준비도를 검토합니다",
+    "description": "spec.md의 요구사항 포괄성과 인수 기준의 검증 가능성을 검토해 설계 단계로 진행할 수 있는지 판단합니다.",
     "argument-hint": "[spec.md 또는 기능 디렉터리]"
   },
   "review-plan": {
-    "description": "계획의 충실도, 실현 가능성, 구현 준비도를 검토합니다",
+    "description": "plan.md의 구현 단계, 순서, 요구사항 포괄성을 검토해 작업을 세분화할 수 있는지 판단합니다.",
     "argument-hint": "[plan.md 또는 기능 디렉터리]"
   },
   "review-tasks": {
-    "description": "작업의 충실도, 실행 가능성, 의존성, 검증을 검토합니다",
+    "description": "tasks.md의 작업 포괄성, 의존 관계, 검증 방법을 검토해 구현을 시작할 수 있는지 판단합니다.",
     "argument-hint": "[tasks.md 또는 기능 디렉터리]"
   },
   "implement-tasks": {
-    "description": "조건부 TDD 워크플로로 구현 작업 실행 (코드는 TDD, 문서/구성은 직접 구현)",
+    "description": "tasks.md에 따라 구현하고 테스트와 독립적인 검토를 수행하며 검증된 문제를 수정합니다.",
     "argument-hint": "[tasks 경로] | [spec 경로 plan 경로 tasks 경로]"
   },
   "tasks-to-issues": {
-    "description": "기존 작업을 이 기능에 대한 실행 가능한 GitHub Issues로 변환"
+    "description": "tasks.md의 작업을 GitHub Issue로 만들고 관련 파일, 의존 관계, 기존 인수 기준을 포함합니다."
   },
   "commit": {
     "description": "git 상태와 세션 컨텍스트를 기반으로 Conventional Commits 준수 커밋 메시지 생성 및 실행",
     "argument-hint": "[-p] -p를 사용하면 커밋하지 않고 메시지만 미리보기"
   },
   "commit-staged": {
-    "description": "스테이징된 git 변경 사항을 분석하고 Conventional Commits 준수 커밋 메시지 생성",
+    "description": "스테이징된 변경만으로 메시지를 만들고 승인된 커밋을 실행하며, -p를 사용하면 커밋 없이 미리 보기만 제공합니다.",
     "argument-hint": "[-p] -p를 사용하면 커밋하지 않고 메시지만 미리보기"
   },
   "pr": {
-    "description": "git diff와 선택적 spec.md 통합을 기반으로 구조화된 Pull Request (GitHub) 또는 Merge Request (GitLab) 설명 생성"
+    "description": "브랜치 간 차이로 GitHub PR 또는 GitLab MR의 제목, 설명, 검증 안내를 작성합니다."
   },
   "review-code": {
-    "description": "선택한 변경을 엄격한 결함 게이트로 검토하거나 --audit로 경로 감사",
+    "description": "Git 변경을 검토해 병합 준비 여부를 판단하며, --audit는 기존 코드의 품질 평가에 사용합니다.",
     "argument-hint": "[결함 게이트 선택자 | --audit [paths...]] (모든 인자는 선택 사항)\n\n이 명령에는 서로 배타적인 두 가지 검토 모드가 있습니다.\n\n모드 1 - 결함 게이트 (기본값): Git 변경을 검토하고 병합 차단 여부를 판정합니다.\n  1. 인자 없음 → 전체 피처 브랜치 델타: merge-base → 작업 트리 (베이스 브랜치 자체인 경우: 커밋되지 않은 변경만)\n  2. --committed → merge-base → HEAD만. 스테이지됨, 스테이지 안 됨, 추적 안 됨 변경은 제외\n  3. --uncommitted → 스테이지됨 + 스테이지 안 됨 + 추적 안 됨 변경만\n  4. --commit <sha> → 해당 커밋만. --parent <n>을 추가하면 병합 부모 하나를 선택\n  수정자는 단독으로 검토 대상을 바꾸지 않습니다:\n  - --base <branch> → 베이스 해석을 재정의. 인자 없음 또는 --committed와만 사용 가능\n  - --feature <feature-dir> → 커버리지 확인용 요구사항 컨텍스트를 첨부. Git 범위는 변경하지 않음\n  - --focus <instructions> → 리스크 패스 의무를 추가. 반복 가능, 범위를 좁히지 않음\n  - --decided-by reviewer|ask → 실제 사용 범위 밖 결함의 결정 주체. review.decided_by 재정의 (기본값: reviewer)\n  - --incremental-from <fingerprint> → 수정 변경분만 재검토. 인수 없음 또는 --committed와만 사용 가능\n\n모드 2 - 감사 (advisory): 현재 파일 내용에 대한 참고용 품질 스코어카드 (게이트 판정 없음, envelope 없음).\n  1. --audit → 메인 소스 디렉터리를 검토 (기본값: src/)\n  2. --audit <path> [<path>...] → 나열된 경로만 검토 (공백으로 구분)\n\nsrc/처럼 경로만 지정하면 결함 게이트 대상이 될 수 없습니다. --audit src/를 사용하세요.\n\n예시:\n  /codexspec:review-code\n  /codexspec:review-code --uncommitted\n  /codexspec:review-code --commit <sha> --parent 1\n  /codexspec:review-code --committed --base origin/main\n  /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus \"재시도 처리 확인\"\n  /codexspec:review-code --audit src/api"
   },
   "quick": {
-    "description": "작은 변경을 위해 간결한 Requirements-First SDD 흐름을 실행합니다",
+    "description": "범위가 작은 요구사항을 확인한 뒤 명세, 계획, 작업, 구현, 검토를 자동으로 진행합니다.",
     "argument-hint": "작은 요구사항을 설명하세요"
   },
   "auto-dev": {
-    "description": "공유 블루프린트의 모든 보류 요구사항을 자율적으로 개발",
+    "description": "블루프린트의 확인된 요구사항을 순서대로 개발하며 명세부터 구현, 검증, 커밋까지 자동으로 진행합니다.",
     "argument-hint": "\"\""
   },
   "blueprint": {
-    "description": "공유 제품 블루프린트에서 확정된 요구사항을 논의하고 관리",
+    "description": "공유 블루프린트에서 여러 기능을 계획하고, 확인된 요구사항과 auto-dev가 수행할 미개발 작업 및 순서를 관리합니다.",
     "argument-hint": "새 요구사항을 설명하거나 대체·삭제·이동할 보류 요구사항을 지정"
   },
   "config": {
-    "description": "CodexSpec 프로젝트 구성을 대화형으로 관리",
+    "description": "언어, 자동화, worktree 등 프로젝트 옵션을 대화형으로 설정하며, --view는 설정 조회만 수행합니다.",
     "argument-hint": "[--view] 수정 없이 현재 구성 보기"
   },
   "debug": {
-    "description": "수정을 제안하기 전에 근본 원인부터 찾아냄",
+    "description": "보고된 오류나 이상 현상을 재현하고 근본 원인을 찾은 뒤 최소한의 수정을 적용하고 검증합니다.",
     "argument-hint": "[오류 텍스트 | 실패한 테스트 | 파일:줄 | 일반 언어 증상]"
   },
   "distill": {
-    "description": "상호작용에서 재사용 가능한 교차 기능 지식을 추려 프로젝트 프로필에 기록",
+    "description": "대화에서 재사용할 수 있는 경험을 추출해 프로젝트 지식으로 저장하거나 기존 기록을 검토, 수정, 통합합니다.",
     "argument-hint": "[추출할 상호작용 구간 또는 컨텍스트]"
   },
   "evolve": {
-    "description": "검증된(vetted) 프로필 지식을 재사용 가능한 명령/스킬로 편찬하고 리뷰된 PR로 업스트림에 기여",
+    "description": "검증과 승인을 마친 범용 프로젝트 지식을 명령이나 스킬로 만들고 사용자 승인 후 상위 저장소에 PR을 생성합니다.",
     "argument-hint": "[진화할 대상 또는 프로필 영역]"
   },
   "onboard": {
-    "description": "기존 코드베이스를 훑어 관례와 제약을 수집하고 프로젝트 프로필을 처음부터 구축",
+    "description": "기존 코드를 조사해 관례와 명시적 제약을 프로젝트 지식으로 기록하며, 제약은 사용자 검토 후 저장합니다.",
     "argument-hint": "[경로]"
   },
   "release-notes": {
-    "description": "git 히스토리에서 릴리스 노트 생성 — Keep a Changelog 형식의 CHANGELOG.md 항목을 유지하고 사용자용 릴리스 본문을 작성, 버전 결정이나 git 상태 변경은 하지 않음"
+    "description": "Git 이력으로 CHANGELOG.md에 항목을 추가하고 릴리스 노트를 작성하며 실제 배포는 수행하지 않습니다."
   },
   "reverse-spec": {
-    "description": "기존 코드로부터 spec/design을 역으로 유도하고, 코드를 확정된 베이스라인과 대조",
+    "description": "기존 코드에서 아키텍처 개요 또는 모듈 명세와 설계를 작성하며, 확인된 기준 문서가 있으면 차이를 보고합니다.",
     "argument-hint": "[경로]"
   },
   "review-design": {
-    "description": "설계의 충실도, 실현 가능성, 계획 준비도를 검토",
+    "description": "design.md의 요구사항 포괄성과 기술적 실현 가능성을 검토해 구현 계획을 세울 수 있는지 판단합니다.",
     "argument-hint": "[design.md 또는 기능 디렉터리]"
   },
   "spec-to-design": {
-    "description": "확정된 명세를 추적 가능한 설계 문서로 변환",
+    "description": "spec.md를 바탕으로 design.md를 작성해 구성 요소, 인터페이스, 주요 기술적 결정을 정의합니다.",
     "argument-hint": "[spec.md 또는 기능 디렉터리]"
   }
 }

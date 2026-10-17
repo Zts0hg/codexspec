@@ -1,5 +1,5 @@
 ---
-description: 生成自定义质量检查清单，用于验证需求完整性、清晰性和一致性
+description: 生成需求质量检查清单，检查完整性、清晰度与场景覆盖，而非测试代码。
 scripts:
   sh: .codexspec/scripts/check-prerequisites.sh --json
   ps: .codexspec/scripts/check-prerequisites.ps1 -Json

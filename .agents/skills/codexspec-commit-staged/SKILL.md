@@ -1,6 +1,6 @@
 ---
 name: codexspec:commit-staged
-description: "分析暂存的 git 更改并生成符合 Conventional Commits 规范的提交信息"
+description: "仅根据暂存改动生成提交信息并执行已授权的提交；-p 只预览，不执行提交。"
 ---
 
 ## Constitution Compliance (MANDATORY)
