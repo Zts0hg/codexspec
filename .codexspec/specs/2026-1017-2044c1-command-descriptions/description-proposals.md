@@ -4,7 +4,7 @@
 
 The user approved all 28 bilingual proposals: "确认，按照建议版本更新并同步到各个语言". Apply English and Chinese verbatim; translate their meaning naturally into the other existing languages.
 
-Baseline: `1c65183cb6f18bf57a4d252961b1e4be91b48474` (0.7.25). Original English comes from current authored frontmatter; original Chinese comes from the zh-CN catalog. Proposals summarize the command bodies examined during this feature.
+Baseline: `7d863964eddd4b34abf66cef3971959c7ff8bc0a` (0.7.25). Original English comes from current authored frontmatter; original Chinese comes from the zh-CN catalog. Proposals summarize the command bodies examined during this feature.
 
 Keep the core purpose and result first. Use one compact sentence where practical; retain only modes and boundaries that materially help users choose a command. Inputs, preconditions and procedures need not be enumerated in every description.
 
