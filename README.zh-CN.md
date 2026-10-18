@@ -109,6 +109,8 @@ codexspec init . --ai codex
 
 如需定制项目原则，可以使用 `constitution`。确认最终需求摘要后，在命令返回的功能目录和工作区中继续开发。后续步骤见[核心工作流](#核心工作流)。
 
+可以参考两个使用 CodexSpec 逐功能开发完成的开源示例：[Todo List](https://github.com/Zts0hg/codexspec-example-todo)（英文）和[个人记账](https://github.com/Zts0hg/codexspec-example-bookkeeping)（简体中文）。每个仓库都包含各功能的规格文档、按开发顺序编写的指南和可运行的软件。
+
 使用 Codex 桌面应用？可以[让 Codex 安装并初始化你的项目](#通过-codex-桌面应用安装)。
 
 ## 安装

@@ -119,6 +119,8 @@ codexspec init . --ai codex
 최종 요구사항 요약을 확인한 다음, 반환된 기능 디렉터리와 작업 공간에서 계속 진행합니다.
 이후에 사용할 명령어는 [핵심 워크플로우](#핵심-워크플로우)를 참고하세요.
 
+CodexSpec으로 기능을 하나씩 개발해 완성한 오픈 소스 예제로 [Todo List](https://github.com/Zts0hg/codexspec-example-todo)(영어)와 [개인 가계부](https://github.com/Zts0hg/codexspec-example-bookkeeping)(중국어 간체)를 살펴보세요. 각 저장소에는 기능별 명세, 개발 순서를 따라가는 안내서, 실행 가능한 앱이 들어 있습니다.
+
 Codex 데스크톱 앱에서는 [Codex에 설치와 프로젝트 초기화를 요청할 수 있습니다](#codex-데스크톱-앱에서-설치).
 
 ## 설치

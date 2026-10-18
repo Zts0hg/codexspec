@@ -119,6 +119,8 @@ codexspec init . --ai codex
 最終的な要件サマリーを確認したら、返された機能ディレクトリとワークスペースで作業を続けます。
 以降のコマンドについては、[基本ワークフロー](#基本ワークフロー)を参照してください。
 
+CodexSpec で機能を一つずつ開発して完成させたオープンソースの実例として、[Todo List](https://github.com/Zts0hg/codexspec-example-todo)（英語）と[個人家計簿](https://github.com/Zts0hg/codexspec-example-bookkeeping)（簡体字中国語）を参照できます。各リポジトリには機能ごとの仕様書、開発の時系列ガイド、実行できるアプリケーションが含まれています。
+
 Codex デスクトップアプリをお使いの場合は、[Codex にインストールとプロジェクトの初期化を依頼できます](#codex-デスクトップアプリでのインストール)。
 
 ## インストール
