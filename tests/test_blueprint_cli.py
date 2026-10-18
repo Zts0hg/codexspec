@@ -179,7 +179,7 @@ def _start_cli(cwd: Path, *args: str, input_text: str) -> subprocess.Popen[str]:
 
 
 def _finish_cli(process: subprocess.Popen[str]) -> tuple[int, str, str]:
-    return_code = process.wait(timeout=20)
+    return_code = process.wait(timeout=60)
     assert process.stdout is not None
     assert process.stderr is not None
     return return_code, process.stdout.read(), process.stderr.read()

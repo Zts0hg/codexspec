@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.27] - 2026-10-19
+
+### Changed
+
+- Running `$codexspec:config` without arguments now shows separate project
+  metadata and adjustable-setting tables before asking what to do. Each row
+  explains its purpose, default or fallback rule, and current value, including
+  effective defaults for settings absent from the configuration file.
+- Added links to the published Todo and bookkeeping example projects across
+  all eight root README languages.
+
+### For contributors
+
+- Synchronized the authored config command, public template, and Claude/Codex
+  installed copies; added focused tests and confirmed feature records.
+- Updated marketplace metadata for v0.7.26 and corrected the historical
+  command-description proposal baseline.
+- Allowed the concurrent blueprint CLI test more time for Git commands on
+  busy development machines.
+- Extended the guarded commit timeout for long running project hooks while
+  retaining the existing timeout for other Git commands.
+
 ## [0.7.26] - 2026-10-18
 
 ### Changed

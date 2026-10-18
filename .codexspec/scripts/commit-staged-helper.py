@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, Sequence
 
 GIT_TIMEOUT_SECONDS = 600
+GIT_COMMIT_TIMEOUT_SECONDS = 3600
 _FALLBACK_LOCAL_ENV_VARS = {
     "GIT_ALTERNATE_OBJECT_DIRECTORIES",
     "GIT_COMMON_DIR",
@@ -83,6 +84,7 @@ class GitRunner:
         input_text: str | None = None,
         index_file: Path | None = None,
         reflog_action: str | None = None,
+        timeout_seconds: int = GIT_TIMEOUT_SECONDS,
     ) -> subprocess.CompletedProcess[str]:
         environment = self.environment()
         if reflog_action is not None:
@@ -93,6 +95,7 @@ class GitRunner:
             ["git", "-C", str(repository), *args],
             input=input_text,
             env=environment,
+            timeout_seconds=timeout_seconds,
         )
         if check and result.returncode != 0:
             detail = result.stderr.strip() or result.stdout.strip()
@@ -105,6 +108,7 @@ def _run_git_with_timeout(
     *,
     input: str | None = None,
     env: Mapping[str, str] | None = None,
+    timeout_seconds: int = GIT_TIMEOUT_SECONDS,
 ) -> subprocess.CompletedProcess[str]:
     try:
         # Text-mode stdin rewrites LF to CRLF on Windows, changing prepared
@@ -113,7 +117,7 @@ def _run_git_with_timeout(
             command,
             capture_output=True,
             check=False,
-            timeout=GIT_TIMEOUT_SECONDS,
+            timeout=timeout_seconds,
             input=input.encode("utf-8") if input is not None else None,
             env=env,
         )
@@ -343,6 +347,7 @@ def guarded_commit(
             input_text=message,
             index_file=index_file,
             reflog_action="merge " + " ".join(merge_heads) if merge_hook else None,
+            timeout_seconds=GIT_COMMIT_TIMEOUT_SECONDS,
         )
     commit = git.run(repository, "rev-parse", "HEAD").stdout.strip()
     if git.run(repository, "rev-parse", "HEAD^{tree}").stdout.strip() != expected_tree:
