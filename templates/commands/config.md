@@ -1,5 +1,5 @@
 ---
-description: Manage CodexSpec project configuration interactively
+description: Interactively configure languages, automation, worktrees and other project options; use --view to inspect settings only.
 argument-hint: "[--view] View current configuration without modification"
 ---
 

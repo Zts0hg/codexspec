@@ -123,115 +123,115 @@
     }
   },
   "constitution": {
-    "description": "通过交互式或提供的原则输入创建或更新项目宪法，确保所有依赖模板保持同步。",
+    "description": "制定或更新项目开发原则，写入 constitution.md 并检查相关文档的一致性。",
     "argument-hint": "[quick|deep | 项目原则] (可选)\n\n此命令创建/更新位于 .codexspec/memory/constitution.md 的项目宪法。\n\n三种使用方式：\n1. 无参数 → 交互模式：选择探索深度 (quick/deep)\n2. quick → 轻量探索：配置文件 + README + 核心入口点 (~5-10 个文件)\n3. deep → 完整探索：以上内容 + 源代码分析 + 架构模式\n4. <描述> → 跳过探索，直接使用你的原则\n\n示例：\n  /codexspec:constitution\n  /codexspec:constitution quick\n  /codexspec:constitution deep\n  /codexspec:constitution Python FastAPI 后端使用 pytest，注重类型安全"
   },
   "specify": {
-    "description": "讨论、确认并固化权威的需求记录",
+    "description": "澄清功能目标、范围和约束，将确认的需求整理为 requirements.md。",
     "argument-hint": "描述初始想法，或提供已有的功能目录"
   },
   "clarify": {
-    "description": "解决需求歧义，并将 requirements.md 与 spec.md 同步",
+    "description": "通过问答澄清遗漏、歧义和矛盾，将确认结果同步到 requirements.md 和 spec.md。",
     "argument-hint": "[spec.md、requirements.md 或 功能目录]"
   },
   "analyze": {
-    "description": "分析 SDD 工件间的端到端可追溯性与一致性",
+    "description": "核对需求到任务的文档一致性，自动修复可由已确认需求确定的下游问题。",
     "argument-hint": "[功能目录]"
   },
   "checklist": {
-    "description": "生成自定义质量检查清单，用于验证需求完整性、清晰性和一致性"
+    "description": "生成需求质量检查清单，检查完整性、清晰度与场景覆盖，而非测试代码。"
   },
   "generate-spec": {
-    "description": "将已确认的需求编写为可追溯的 spec.md",
+    "description": "将已确认需求编写为 spec.md，明确功能行为、异常处理和验收标准。",
     "argument-hint": "[requirements.md 或 功能目录]"
   },
   "design-to-plan": {
-    "description": "将已确认的设计转换为可追溯的实现计划",
+    "description": "将 design.md 转化为 plan.md，安排实现阶段、执行顺序和验证步骤。",
     "argument-hint": "[design.md、spec.md 或 功能目录]"
   },
   "plan-to-tasks": {
-    "description": "将已批准的计划展开为可追溯、可执行的任务",
+    "description": "将 plan.md 拆分为 tasks.md，明确具体工作、依赖和验证方法，并列出可测试任务的测试场景。",
     "argument-hint": "[tasks 功能目录、plan.md 或 spec.md]"
   },
   "review-spec": {
-    "description": "审查规格的忠实度、内部质量与计划就绪度",
+    "description": "审查 spec.md 的需求覆盖和验收标准，判断是否可进入设计阶段。",
     "argument-hint": "[spec.md 或 功能目录]"
   },
   "review-plan": {
-    "description": "审查计划的忠实度、可行性与实现就绪度",
+    "description": "审查 plan.md 的实现步骤、顺序和需求覆盖，判断是否可拆分任务。",
     "argument-hint": "[plan.md 或 功能目录]"
   },
   "review-tasks": {
-    "description": "审查任务的忠实度、可执行性、依赖关系与验证",
+    "description": "审查 tasks.md 的任务覆盖、依赖和验证方法，判断是否可开始实现。",
     "argument-hint": "[tasks.md 或 功能目录]"
   },
   "implement-tasks": {
-    "description": "执行实现任务，支持条件 TDD 工作流（代码使用 TDD，文档/配置直接实现）",
+    "description": "按 tasks.md 实现功能，执行测试与独立审查，并修复经核实的问题。",
     "argument-hint": "[tasks 路径] | [spec 路径 plan 路径 tasks 路径]"
   },
   "tasks-to-issues": {
-    "description": "将现有任务转换为该功能的可操作 GitHub Issues"
+    "description": "将 tasks.md 中的任务创建为 GitHub Issue，附上相关文件、依赖及已有验收标准。"
   },
   "commit": {
     "description": "基于 git 状态和会话上下文生成并执行符合 Conventional Commits 规范的提交信息",
     "argument-hint": "[-p] 使用 -p 仅预览提交信息而不执行提交"
   },
   "commit-staged": {
-    "description": "分析暂存的 git 更改并生成符合 Conventional Commits 规范的提交信息",
+    "description": "仅根据暂存改动生成提交信息并执行已授权的提交；-p 只预览，不执行提交。",
     "argument-hint": "[-p] 使用 -p 仅预览提交信息而不执行提交"
   },
   "pr": {
-    "description": "基于 git diff 和可选的 spec.md 集成生成结构化的 Pull Request (GitHub) 或 Merge Request (GitLab) 描述"
+    "description": "根据分支差异生成 GitHub PR 或 GitLab MR 的标题、说明与验证指引。"
   },
   "review-code": {
-    "description": "将所选变更作为严格缺陷门禁进行审查，或使用 --audit 审计路径",
+    "description": "审查 Git 改动并判断是否可合并；--audit 用于评估现有代码质量。",
     "argument-hint": "[缺陷门禁选择器 | --audit [paths...]]（所有参数均可选）\n\n本命令提供两种互斥的使用模式。\n\n模式一 - 缺陷门禁（默认）：对 Git 变更裁定是否阻断合并。\n  1. 无参数 → 完整特性分支增量：merge-base → 工作区（若在基分支上：仅未提交变更）\n  2. --committed → 仅 merge-base → HEAD；排除已暂存、未暂存、未跟踪的变更\n  3. --uncommitted → 仅已暂存 + 未暂存 + 未跟踪的变更\n  4. --commit <sha> → 仅该提交；加 --parent <n> 选择一个合并父节点\n  修饰符不会改变审查对象：\n  - --base <branch> → 覆盖基分支解析；仅可与无参数或 --committed 搭配\n  - --feature <feature-dir> → 为覆盖检查附上需求上下文；绝不改变 Git 范围\n  - --focus <instructions> → 追加风险审查义务；可重复，绝不收窄范围\n  - --decided-by reviewer|ask → 超出实际使用场景的缺陷由谁决定；覆盖 review.decided_by（默认 reviewer）\n  - --incremental-from <fingerprint> → 仅复审该结果之后的修复增量；仅可与无参数或 --committed 搭配\n\n模式二 - 审计（advisory）：对现有文件内容给出建议性的质量评分（无门禁裁定、无 envelope）。\n  1. --audit → 审查主源码目录（默认：src/）\n  2. --audit <path> [<path>...] → 仅审查列出的路径，空格分隔\n\n裸路径（如 src/）不能作为缺陷门禁目标：请改用 --audit src/。\n\n示例：\n  /codexspec:review-code\n  /codexspec:review-code --uncommitted\n  /codexspec:review-code --commit <sha> --parent 1\n  /codexspec:review-code --committed --base origin/main\n  /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus \"检查重试处理\"\n  /codexspec:review-code --audit src/api"
   },
   "quick": {
-    "description": "为小型变更运行精简的 Requirements-First SDD 流程",
+    "description": "确认小范围需求后，自动完成规格、计划、任务、实现与审查。",
     "argument-hint": "描述一个小需求"
   },
   "auto-dev": {
-    "description": "自主开发共享蓝图中的每个待定需求",
+    "description": "按蓝图顺序自动开发已确认需求，完成从规格到实现、验证和提交的流程。",
     "argument-hint": "\"\""
   },
   "blueprint": {
-    "description": "讨论并维护共享产品蓝图中的已确认需求",
+    "description": "规划多个功能，将确认的需求写入共享蓝图，并管理供 auto-dev 执行的待开发内容和顺序。",
     "argument-hint": "描述新需求，或指定要替换、删除、移动的待定需求"
   },
   "config": {
-    "description": "以交互方式管理 CodexSpec 项目配置",
+    "description": "交互式设置语言、自动化和 worktree 等项目选项；--view 只查看配置。",
     "argument-hint": "[--view] 查看当前配置而不修改"
   },
   "debug": {
-    "description": "先定位故障的根本原因，再着手修复",
+    "description": "复现报错或异常现象，定位根本原因，再进行最小修复并验证结果。",
     "argument-hint": "[错误文本 | 失败测试 | 文件:行号 | 通俗症状描述]"
   },
   "distill": {
-    "description": "从工作交互中提炼跨功能的可复用知识，沉淀到项目 profile",
+    "description": "从工作交互中提取可复用经验，存入项目知识库，或审阅、修订和合并已有记录。",
     "argument-hint": "[要提炼的交互片段或上下文]"
   },
   "evolve": {
-    "description": "把已定稿（vetted）的项目知识整理成可复用的命令/技能，经人工评审的 PR 贡献回上游",
+    "description": "将已验证并认可的通用项目知识整理成命令或技能，经你确认后向上游提交 PR。",
     "argument-hint": "[要演化的内容或 profile 领域]"
   },
   "onboard": {
-    "description": "扫描既有代码库，提取约定与约束，冷启动项目 profile",
+    "description": "扫描已有代码，将项目约定和明确限制记录到知识库，限制类记录经你审阅后保存。",
     "argument-hint": "[路径]"
   },
   "release-notes": {
-    "description": "从 git 历史生成发布说明——维护 Keep a Changelog 风格的 CHANGELOG.md 条目并产出面向用户的发布正文，不决定版本号、不改动 git 状态"
+    "description": "根据 Git 历史增补 CHANGELOG.md 并生成发布说明，不执行发布。"
   },
   "reverse-spec": {
-    "description": "从既有代码逆向还原 spec/design，再核对代码与已确认基线的偏差",
+    "description": "从已有代码生成架构概览或模块规格与设计；已有确认基线时报告差异。",
     "argument-hint": "[路径]"
   },
   "review-design": {
-    "description": "审查设计的忠实度、可行性与规划就绪度",
+    "description": "审查 design.md 的需求覆盖与技术可行性，判断是否可制定实现计划。",
     "argument-hint": "[design.md 或 功能目录]"
   },
   "spec-to-design": {
-    "description": "将已确认的规格转换为可追溯的设计文档",
+    "description": "根据 spec.md 编写 design.md，定义组件、接口及关键技术决策。",
     "argument-hint": "[spec.md 或 功能目录]"
   }
 }

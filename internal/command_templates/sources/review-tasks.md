@@ -1,5 +1,5 @@
 ---
-description: Review task fidelity, executability, dependencies, and verification
+description: Review tasks.md for coverage, dependencies and verification, judging whether implementation can begin.
 argument-hint: "[tasks.md or feature directory]"
 handoffs:
   - agent: claude

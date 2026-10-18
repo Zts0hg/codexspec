@@ -1,6 +1,6 @@
 ---
 name: codexspec:distill
-description: "从工作交互中提炼跨功能的可复用知识，沉淀到项目 profile"
+description: "从工作交互中提取可复用经验，存入项目知识库，或审阅、修订和合并已有记录。"
 ---
 
 # Distill

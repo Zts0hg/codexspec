@@ -1,6 +1,6 @@
 ---
 name: codexspec:evolve
-description: "把已定稿（vetted）的项目知识整理成可复用的命令/技能，经人工评审的 PR 贡献回上游"
+description: "将已验证并认可的通用项目知识整理成命令或技能，经你确认后向上游提交 PR。"
 ---
 
 # Evolve

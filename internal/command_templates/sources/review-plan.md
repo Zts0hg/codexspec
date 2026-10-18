@@ -1,5 +1,5 @@
 ---
-description: Review plan fidelity, feasibility, and implementation readiness
+description: Review plan.md for implementation steps, ordering and requirement coverage, judging readiness for task breakdown.
 argument-hint: "[plan.md or feature directory]"
 handoffs:
   - agent: claude

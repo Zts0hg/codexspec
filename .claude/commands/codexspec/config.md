@@ -1,5 +1,5 @@
 ---
-description: 以交互方式管理 CodexSpec 项目配置
+description: 交互式设置语言、自动化和 worktree 等项目选项；--view 只查看配置。
 argument-hint: "[--view] 查看当前配置而不修改"
 ---
 

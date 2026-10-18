@@ -1,5 +1,5 @@
 ---
-description: Convert a confirmed specification into a traceable design document
+description: Create design.md from spec.md to define components, interfaces and key technical decisions.
 argument-hint: "[spec.md or feature directory]"
 handoffs:
   - agent: claude

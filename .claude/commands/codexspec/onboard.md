@@ -1,5 +1,5 @@
 ---
-description: 扫描既有代码库，提取约定与约束，冷启动项目 profile
+description: 扫描已有代码，将项目约定和明确限制记录到知识库，限制类记录经你审阅后保存。
 argument-hint: "[路径]"
 allowed-tools: Read, Grep, Glob, Bash(git:*), Bash(ls/cat/find:*), Edit, Write
 ---

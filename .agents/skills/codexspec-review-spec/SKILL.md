@@ -1,6 +1,6 @@
 ---
 name: codexspec:review-spec
-description: "审查规格的忠实度、内部质量与计划就绪度"
+description: "审查 spec.md 的需求覆盖和验收标准，判断是否可进入设计阶段。"
 ---
 
 # Specification Reviewer

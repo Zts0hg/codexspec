@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.26] - 2026-10-18
+
+### Changed
+
+- Clarified descriptions for all 28 workflow commands so users can identify each
+  command's purpose and result from compact, informative text in command pickers.
+  Descriptions reflect current behavior and distinguish neighboring workflow stages.
+- Synchronized descriptions in English, Simplified Chinese, Japanese, Korean,
+  German, French, Spanish and Brazilian Portuguese across Claude commands, Codex
+  skills and command listings.
+
+### For contributors
+
+- Recorded the approved wording and supporting requirements, design and
+  verification evidence; updated description assertions in integration and
+  packaging tests, including YAML parsing that accepts quoted descriptions.
+- Updated marketplace metadata for the preceding v0.7.25 release.
+
 ## [0.7.25] - 2026-10-17
 
 ### Added

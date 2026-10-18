@@ -1,5 +1,5 @@
 ---
-description: Run a compact requirements-first SDD flow for a small change
+description: Confirm a small, bounded requirement, then automate specification, planning, tasks, implementation and review.
 argument-hint: "Describe a small requirement"
 ---
 

@@ -123,115 +123,115 @@
     }
   },
   "constitution": {
-    "description": "対話型または提供された原則入力からプロジェクト憲法を作成または更新し、依存テンプレートの同期を保ちます。",
+    "description": "開発原則を constitution.md に定めるか更新し、関連文書との整合性を確認します。",
     "argument-hint": "[quick|deep | プロジェクト原則] (オプション)\n\nこのコマンドは .codexspec/memory/constitution.md にプロジェクト憲法を作成/更新します。\n\n3つの使用方法：\n1. 引数なし → 対話モード：探索深度を選択 (quick/deep)\n2. quick → 軽量探索：設定ファイル + README + コアエントリーポイント (~5-10ファイル)\n3. deep → 完全探索：上記 + ソースコード分析 + アーキテクチャパターン\n4. <説明> → 探索をスキップし、あなたの原則を直接使用\n\n例：\n  /codexspec:constitution\n  /codexspec:constitution quick\n  /codexspec:constitution deep\n  /codexspec:constitution Python FastAPI バックエンドで pytest 使用、型安全性重視"
   },
   "specify": {
-    "description": "権威ある要件記録を議論・確認し、永続化する",
+    "description": "機能の目標、範囲、制約を明確にし、確認済みの要件を requirements.md に保存します。",
     "argument-hint": "初期アイデアを記述、または既存の機能ディレクトリを指定"
   },
   "clarify": {
-    "description": "要件の曖昧さを解消し、requirements.md と spec.md を同期",
+    "description": "質問を通じて漏れ、曖昧さ、矛盾を解消し、確認した内容を requirements.md と spec.md に反映します。",
     "argument-hint": "[spec.md、requirements.md または 機能ディレクトリ]"
   },
   "analyze": {
-    "description": "SDDアーティファクト間のエンドツーエンドのトレーサビリティと整合性を分析",
+    "description": "要件からタスクまでの文書の整合性を確認し、確認済み要件から修正内容が決まる下流文書の問題を自動修正します。",
     "argument-hint": "[機能ディレクトリ]"
   },
   "checklist": {
-    "description": "要件の完全性、明確性、一貫性を検証するカスタム品質チェックリストを生成"
+    "description": "コードのテストではなく、要件の完全性、明確さ、シナリオの網羅性を確認するチェックリストを作成します。"
   },
   "generate-spec": {
-    "description": "確認済み要件をトレーサブルな spec.md にまとめる",
+    "description": "確認済み要件から spec.md を作成し、機能の動作、エラー処理、受け入れ基準を明確にします。",
     "argument-hint": "[requirements.md または 機能ディレクトリ]"
   },
   "design-to-plan": {
-    "description": "確認済みの設計をトレース可能な実装計画に変換",
+    "description": "design.md を plan.md に展開し、実装の各段階、実施順序、検証手順をまとめます。",
     "argument-hint": "[design.md、spec.md、または機能ディレクトリ]"
   },
   "plan-to-tasks": {
-    "description": "承認済み計画をトレーサブルで実行可能なタスクに展開",
+    "description": "plan.md を tasks.md に分解し、具体的な作業、依存関係、検証方法と、テスト可能なタスクのテストシナリオを明記します。",
     "argument-hint": "[tasks 機能ディレクトリ、plan.md または spec.md]"
   },
   "review-spec": {
-    "description": "仕様の忠実性、内部品質、計画準備性をレビュー",
+    "description": "spec.md の要件網羅性と受け入れ基準の検証可能性をレビューし、設計に進めるか判断します。",
     "argument-hint": "[spec.md または 機能ディレクトリ]"
   },
   "review-plan": {
-    "description": "計画の忠実性、実現可能性、実装準備性をレビュー",
+    "description": "plan.md の実装手順、順序、要件網羅性をレビューし、タスクに分解できるか判断します。",
     "argument-hint": "[plan.md または 機能ディレクトリ]"
   },
   "review-tasks": {
-    "description": "タスクの忠実性、実行可能性、依存関係、検証をレビュー",
+    "description": "tasks.md の網羅性、依存関係、検証方法をレビューし、実装を始められるか判断します。",
     "argument-hint": "[tasks.md または 機能ディレクトリ]"
   },
   "implement-tasks": {
-    "description": "条件付きTDDワークフローで実装タスクを実行（コードはTDD、ドキュメント/設定は直接実装）",
+    "description": "tasks.md に沿って実装し、テストと独立したレビューを行い、検証で裏付けられた問題を修正します。",
     "argument-hint": "[tasks へのパス] | [spec へのパス plan へのパス tasks へのパス]"
   },
   "tasks-to-issues": {
-    "description": "既存のタスクをこの機能の実行可能なGitHub Issuesに変換"
+    "description": "tasks.md のタスクを GitHub Issue にし、関連ファイル、依存関係、記載済みの受け入れ基準を添えます。"
   },
   "commit": {
     "description": "gitステータスとセッションコンテキストに基づいてConventional Commits準拠のコミットメッセージを生成・実行",
     "argument-hint": "[-p] -p を使用するとコミットせずにメッセージをプレビューのみ"
   },
   "commit-staged": {
-    "description": "ステージングされたgit変更を分析し、Conventional Commits準拠のコミットメッセージを生成",
+    "description": "ステージ済みの差分だけからメッセージを作成し、許可されたコミットを実行します。-p はコミットせずにプレビューします。",
     "argument-hint": "[-p] -p を使用するとコミットせずにメッセージをプレビューのみ"
   },
   "pr": {
-    "description": "git diffとオプションのspec.md統合に基づいて構造化されたPull Request (GitHub) またはMerge Request (GitLab) 説明を生成"
+    "description": "ブランチ間の差分から、GitHub PR または GitLab MR のタイトル、説明、検証手順を起草します。"
   },
   "review-code": {
-    "description": "選択した変更を厳格な欠陥ゲートとしてレビューするか、--audit でパスを監査",
+    "description": "Git の変更をレビューしてマージ可能か判断します。--audit は既存コードの品質評価に使います。",
     "argument-hint": "[欠陥ゲート選択子 | --audit [paths...]]（すべての引数は省略可能）\n\nこのコマンドには、互いに排他な 2 つのレビューモードがあります。\n\nモード 1 - 欠陥ゲート（デフォルト）：Git 変更をレビューし、マージ可否を判定します。\n  1. 引数なし → フィーチャーブランチ全体の差分：merge-base → ワークツリー（ベースブランチ上では：未コミットの変更のみ）\n  2. --committed → merge-base → HEAD のみ。ステージ済み・未ステージ・未追跡の変更は除外\n  3. --uncommitted → ステージ済み + 未ステージ + 未追跡の変更のみ\n  4. --commit <sha> → そのコミットのみ。--parent <n> を追加するとマージ親を 1 つ選択\n  修飾子は単独ではレビュー対象を切り替えません：\n  - --base <branch> → ベース解決を上書き。引数なしまたは --committed とのみ組み合わせ可能\n  - --feature <feature-dir> → カバレッジ確認のため要件コンテキストを添付。Git スコープは変更しない\n  - --focus <instructions> → リスクパスの義務を追加。繰り返し可能、スコープは狭めない\n  - --decided-by reviewer|ask → 実際の利用状況外で起きる欠陥の判断者。review.decided_by を上書き（既定：reviewer）\n  - --incremental-from <fingerprint> → 修正差分のみ再レビュー。引数なしか --committed とのみ併用可\n\nモード 2 - 監査（advisory）：現在のファイル内容について参考となる品質スコアを提示（ゲート判定なし、envelope なし）。\n  1. --audit → メインのソースディレクトリをレビュー（デフォルト：src/）\n  2. --audit <path> [<path>...] → 指定したパスのみをレビュー（スペース区切り）\n\nsrc/ のようなパスだけの指定は欠陥ゲートの対象にできません。--audit src/ を使用してください。\n\n例：\n  /codexspec:review-code\n  /codexspec:review-code --uncommitted\n  /codexspec:review-code --commit <sha> --parent 1\n  /codexspec:review-code --committed --base origin/main\n  /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus \"リトライ処理の確認\"\n  /codexspec:review-code --audit src/api"
   },
   "quick": {
-    "description": "小さな変更向けにコンパクトな Requirements-First SDD フローを実行",
+    "description": "小規模で範囲の明確な要件を確認してから、仕様、計画、タスク、実装、レビューを自動で進めます。",
     "argument-hint": "小さな要件を記述してください"
   },
   "auto-dev": {
-    "description": "共有ブループリント内のすべての未処理要件を自律的に開発",
+    "description": "ブループリントの確認済み要件を順に開発し、仕様作成から実装、検証、コミットまで自動で進めます。",
     "argument-hint": "\"\""
   },
   "blueprint": {
-    "description": "共有プロダクトブループリント内の確定済み要件を議論・管理",
+    "description": "複数の機能を共有ブループリントで計画し、確認済み要件と auto-dev が実行する未着手の作業・順序を管理します。",
     "argument-hint": "新しい要件を説明するか、置換・削除・移動する未処理要件を指定"
   },
   "config": {
-    "description": "CodexSpec プロジェクト設定を対話的に管理",
+    "description": "言語、自動化、worktree などのプロジェクト設定を対話式で管理します。--view は設定の表示のみ行います。",
     "argument-hint": "[--view] 設定を変更せずに現在の構成を表示"
   },
   "debug": {
-    "description": "根本原因を突き止めてから修正を提案",
+    "description": "報告された不具合を再現して根本原因を突き止め、最小限の修正を適用・検証します。",
     "argument-hint": "[エラー文 | 失敗テスト | ファイル:行 | 平易な言葉での症状]"
   },
   "distill": {
-    "description": "インタラクションから再利用可能なクロス機能の知識を汲み取り、プロジェクトプロフィールに蓄える",
+    "description": "やり取りから再利用できる知見をプロジェクトの知識として保存するか、既存の記録をレビュー・修正・統合します。",
     "argument-hint": "[抽出対象のインタラクション断片またはコンテキスト]"
   },
   "evolve": {
-    "description": "審査済み（vetted）のプロフィール知識を再利用可能なコマンド/スキルに取りまとめ、レビュー付き PR でアップストリームに還元",
+    "description": "検証と承認を済ませた汎用的なプロジェクト知識をコマンドやスキルにし、ユーザーの承認後に上流へ PR を作成します。",
     "argument-hint": "[進化対象、またはプロフィールの領域]"
   },
   "onboard": {
-    "description": "既存コードベースを走査して規約と制約を収集し、プロジェクトプロフィールをコールドスタート",
+    "description": "既存コードを調べて慣例と明示的な制約をプロジェクトの知識として記録し、制約はユーザーのレビュー後に保存します。",
     "argument-hint": "[パス]"
   },
   "release-notes": {
-    "description": "git 履歴からリリースノートを生成 — Keep a Changelog 形式の CHANGELOG.md エントリを維持し、ユーザー向けリリース本文を生成。バージョン決定や git 状態の変更は行わない"
+    "description": "Git 履歴から CHANGELOG.md に追記し、リリース説明を起草します。リリースの公開は行いません。"
   },
   "reverse-spec": {
-    "description": "既存コードから spec/design を逆引きし、コードを確定済みベースラインと突き合わせる",
+    "description": "既存コードからアーキテクチャの概観またはモジュールの仕様・設計を作成し、確認済みの基準文書があれば差分を報告します。",
     "argument-hint": "[パス]"
   },
   "review-design": {
-    "description": "設計の忠実度・実現可能性・計画準備性をレビュー",
+    "description": "design.md の要件網羅性と技術的な実現可能性をレビューし、実装計画に進めるか判断します。",
     "argument-hint": "[design.md または 機能ディレクトリ]"
   },
   "spec-to-design": {
-    "description": "確定済み仕様をトレーサブルな設計ドキュメントに変換",
+    "description": "spec.md から design.md を作成し、コンポーネント、インターフェース、主要な技術的判断を定義します。",
     "argument-hint": "[spec.md または 機能ディレクトリ]"
   }
 }

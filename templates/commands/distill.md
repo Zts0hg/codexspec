@@ -1,5 +1,5 @@
 ---
-description: Distill reusable, cross-feature knowledge from an interaction into the project profile
+description: Capture reusable lessons from interactions in the project profile, or review, revise and consolidate existing records.
 argument-hint: "[interaction segment or context to distill]"
 ---
 

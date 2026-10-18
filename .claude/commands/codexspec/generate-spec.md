@@ -1,5 +1,5 @@
 ---
-description: 将已确认的需求编写为可追溯的 spec.md
+description: 将已确认需求编写为 spec.md，明确功能行为、异常处理和验收标准。
 argument-hint: "[requirements.md 或 功能目录]"
 handoffs:
   - agent: claude

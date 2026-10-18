@@ -1,5 +1,5 @@
 ---
-description: Resolve requirement ambiguities and synchronize requirements.md with spec.md
+description: Resolve gaps, ambiguity and contradictions through focused questions, then synchronize confirmed decisions into requirements.md and spec.md.
 argument-hint: "[spec.md, requirements.md, or feature directory]"
 ---
 

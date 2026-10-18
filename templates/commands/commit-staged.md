@@ -1,5 +1,5 @@
 ---
-description: Analyze staged git changes and generate Conventional Commits compliant commit messages strictly from the staged diff
+description: Generate a message strictly from staged changes and execute the authorized commit; use -p to preview without committing.
 argument-hint: "[-p] Use -p to only preview the message without committing"
 allowed-tools: Bash(git diff:*), Bash(git status:*), Bash(git rev-parse:*), Bash(git write-tree:*), Bash(codexspec _commit-staged-helper:*), Bash(python3:*), Bash(python:*), Bash(py:*)
 forbidden-tools: Bash(git add:*), Bash(git reset:*), Bash(git checkout:*), Bash(git restore:*), Bash(git stash:*), Bash(git rm:*)
