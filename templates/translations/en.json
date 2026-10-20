@@ -123,115 +123,115 @@
     }
   },
   "constitution": {
-    "description": "Create or update the project constitution from interactive or provided principle inputs, ensuring all dependent templates stay in sync.",
+    "description": "Define or update project principles in constitution.md and check related documents for consistency.",
     "argument-hint": "[quick|deep | project principles] (optional)\n\nThis command creates/updates the project constitution at .codexspec/memory/constitution.md.\n\nThree ways to use:\n1. No arguments → Interactive mode: choose exploration depth (quick/deep)\n2. quick → Lightweight exploration: config files + README + core entry points (~5-10 files)\n3. deep → Full exploration: all of above + source code analysis + architecture patterns\n4. <description> → Skip exploration, use your principles directly\n\nExamples:\n  /codexspec:constitution\n  /codexspec:constitution quick\n  /codexspec:constitution deep\n  /codexspec:constitution Python FastAPI backend with pytest, focus on type safety"
   },
   "specify": {
-    "description": "Discuss, confirm, and persist the authoritative requirements record",
+    "description": "Clarify a feature’s goals, scope and constraints, then save confirmed requirements to requirements.md.",
     "argument-hint": "Describe the initial idea, or provide an existing feature directory"
   },
   "clarify": {
-    "description": "Resolve requirement ambiguities and synchronize requirements.md with spec.md",
+    "description": "Resolve gaps, ambiguity and contradictions through focused questions, then synchronize confirmed decisions into requirements.md and spec.md.",
     "argument-hint": "[spec.md, requirements.md, or feature directory]"
   },
   "analyze": {
-    "description": "Analyze end-to-end traceability and consistency across SDD artifacts",
+    "description": "Check consistency from requirements through tasks and automatically fix downstream issues supported by confirmed requirements.",
     "argument-hint": "[feature directory]"
   },
   "checklist": {
-    "description": "Generate a custom quality checklist for validating requirements completeness, clarity, and consistency"
+    "description": "Create a checklist for requirement completeness, clarity and scenario coverage, rather than testing code."
   },
   "generate-spec": {
-    "description": "Compile confirmed requirements into a traceable spec.md",
+    "description": "Turn confirmed requirements into spec.md with feature behavior, error handling and acceptance criteria.",
     "argument-hint": "[requirements.md or feature directory]"
   },
   "design-to-plan": {
-    "description": "Convert a confirmed design into a traceable implementation plan",
+    "description": "Turn design.md into plan.md with implementation phases, execution order and verification steps.",
     "argument-hint": "[design.md, spec.md, or feature directory]"
   },
   "plan-to-tasks": {
-    "description": "Expand an approved plan into traceable, executable tasks",
+    "description": "Break plan.md into tasks.md with concrete work, dependencies and verification, including scenarios for testable tasks.",
     "argument-hint": "[tasks feature directory, plan.md, or spec.md]"
   },
   "review-spec": {
-    "description": "Review spec fidelity, internal quality, and planning readiness",
+    "description": "Review spec.md for requirement coverage and verifiable acceptance criteria, judging readiness for design.",
     "argument-hint": "[spec.md or feature directory]"
   },
   "review-plan": {
-    "description": "Review plan fidelity, feasibility, and implementation readiness",
+    "description": "Review plan.md for implementation steps, ordering and requirement coverage, judging readiness for task breakdown.",
     "argument-hint": "[plan.md or feature directory]"
   },
   "review-tasks": {
-    "description": "Review task fidelity, executability, dependencies, and verification",
+    "description": "Review tasks.md for coverage, dependencies and verification, judging whether implementation can begin.",
     "argument-hint": "[tasks.md or feature directory]"
   },
   "implement-tasks": {
-    "description": "Execute implementation tasks with conditional TDD workflow (TDD for code, direct implementation for docs/config)",
+    "description": "Implement tasks.md, run tests and independent review, and repair verified issues.",
     "argument-hint": "[tasks_path] | [spec_path plan_path tasks_path]"
   },
   "tasks-to-issues": {
-    "description": "Convert existing tasks into actionable GitHub issues for the feature"
+    "description": "Create GitHub issues from tasks.md, including relevant files, dependencies and available acceptance criteria."
   },
   "commit": {
     "description": "Generate and execute Conventional Commits compliant commit messages based on git status and session context",
     "argument-hint": "[-p] Use -p to only preview the message without committing"
   },
   "commit-staged": {
-    "description": "Analyze staged git changes and generate Conventional Commits compliant commit messages strictly from the staged diff",
+    "description": "Generate a message strictly from staged changes and execute the authorized commit; use -p to preview without committing.",
     "argument-hint": "[-p] Use -p to only preview the message without committing"
   },
   "pr": {
-    "description": "Generate structured Pull Request (GitHub) or Merge Request (GitLab) descriptions based on git diff and optional spec.md integration"
+    "description": "Draft GitHub PR or GitLab MR titles, descriptions and verification guidance from branch differences."
   },
   "review-code": {
-    "description": "Review a selected change as a strict defect gate, or audit paths with --audit",
+    "description": "Review Git changes for merge readiness; use --audit to assess existing code quality.",
     "argument-hint": "[defect-gate selectors | --audit [paths...]] (all arguments optional)\n\nThis command reviews code in one of two mutually exclusive modes.\n\nMode 1 - Defect gate (default): merge-blocking verdict over a Git change.\n  1. No arguments → Full feature-branch delta: merge-base → worktree (on the base branch itself: uncommitted delta)\n  2. --committed → Merge-base to HEAD only; excludes staged, unstaged, untracked work\n  3. --uncommitted → Staged, unstaged, and untracked work only\n  4. --commit <sha> → Exactly that commit; add --parent <n> to select one merge parent\n  Modifiers never select a target by themselves:\n  - --base <branch> → Override base resolution; valid only with No arguments or --committed\n  - --feature <feature-dir> → Attach requirements context for coverage; never changes Git scope\n  - --focus <instructions> → Add Risk Pass obligations; repeatable, never narrows scope\n  - --decided-by reviewer|ask → Who decides out-of-context findings; overrides review.decided_by (default: reviewer)\n  - --incremental-from <fingerprint> → Re-review only the repair delta; valid only with No arguments or --committed\n\nMode 2 - Audit: advisory quality scorecard over current file contents (no gate verdict, no envelope).\n  1. --audit → Review the main source directory (default: src/)\n  2. --audit <path> [<path>...] → Review only the listed paths, space-separated\n\nA bare path such as src/ is not a valid defect target: migrate it with --audit src/.\n\nExamples:\n  /codexspec:review-code\n  /codexspec:review-code --uncommitted\n  /codexspec:review-code --commit <sha> --parent 1\n  /codexspec:review-code --committed --base origin/main\n  /codexspec:review-code --feature .codexspec/specs/2026-0714-1030ab-payment --focus \"verify retry handling\"\n  /codexspec:review-code --audit src/api"
   },
   "quick": {
-    "description": "Run a compact requirements-first SDD flow for a small change",
+    "description": "Confirm a small, bounded requirement, then automate specification, planning, tasks, implementation and review.",
     "argument-hint": "Describe a small requirement"
   },
   "auto-dev": {
-    "description": "Autonomously develop every pending requirement in the shared blueprint",
+    "description": "Develop confirmed blueprint requirements in order, from specification to verified implementation and commits.",
     "argument-hint": "\"\""
   },
   "blueprint": {
-    "description": "Discuss and maintain confirmed requirements in the shared product blueprint",
+    "description": "Plan multiple features in a shared blueprint, recording confirmed requirements and organizing pending work for auto-dev.",
     "argument-hint": "Describe a new requirement, or identify a pending requirement to replace, delete, or move"
   },
   "config": {
-    "description": "Manage CodexSpec project configuration interactively",
+    "description": "Interactively configure languages, automation, worktrees and other project options; use --view to inspect settings only.",
     "argument-hint": "[--view] View current configuration without modification"
   },
   "debug": {
-    "description": "Debug a failure to its root cause before proposing any fix",
+    "description": "Reproduce a reported failure, trace its root cause, then apply and verify a minimal fix.",
     "argument-hint": "[error text | failing test | file:line | plain-language symptom]"
   },
   "distill": {
-    "description": "Distill reusable, cross-feature knowledge from an interaction into the project profile",
+    "description": "Capture reusable lessons from interactions in the project profile, or review, revise and consolidate existing records.",
     "argument-hint": "[interaction segment or context to distill]"
   },
   "evolve": {
-    "description": "Compile vetted project-profile knowledge into a reusable command/skill and contribute it upstream via a reviewed PR",
+    "description": "Turn vetted, broadly useful project knowledge into commands or skills; open an upstream PR after your approval.",
     "argument-hint": "[what to evolve, or a profile area]"
   },
   "onboard": {
-    "description": "Cold-start the project profile by scanning an existing codebase for conventions and constraints",
+    "description": "Scan existing code to record conventions and explicit constraints in the project profile, saving constraints after your review.",
     "argument-hint": "[path]"
   },
   "release-notes": {
-    "description": "Generate release notes from git history — maintain a Keep a Changelog CHANGELOG.md entry and emit a user-facing release body, without deciding versions or mutating git state"
+    "description": "Add a CHANGELOG.md entry and draft release notes from Git history, without publishing a release."
   },
   "reverse-spec": {
-    "description": "Reverse-derive spec/design from existing code, then reconcile code against the confirmed baseline",
+    "description": "Derive an architecture overview or module spec and design from existing code; report differences when a confirmed baseline exists.",
     "argument-hint": "[path]"
   },
   "review-design": {
-    "description": "Review design fidelity, feasibility, and planning readiness",
+    "description": "Review design.md for requirement coverage and technical feasibility, judging readiness for implementation planning.",
     "argument-hint": "[design.md or feature directory]"
   },
   "spec-to-design": {
-    "description": "Convert a confirmed specification into a traceable design document",
+    "description": "Create design.md from spec.md to define components, interfaces and key technical decisions.",
     "argument-hint": "[spec.md or feature directory]"
   }
 }

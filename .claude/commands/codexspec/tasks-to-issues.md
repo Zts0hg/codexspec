@@ -1,5 +1,5 @@
 ---
-description: 将现有任务转换为该功能的可操作 GitHub Issues
+description: 将 tasks.md 中的任务创建为 GitHub Issue，附上相关文件、依赖及已有验收标准。
 scripts:
   sh: .codexspec/scripts/check-prerequisites.sh --json --require-tasks --include-tasks
   ps: .codexspec/scripts/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks

@@ -130,6 +130,8 @@ le résumé final des exigences, puis poursuivez dans le dossier de la
 fonctionnalité et l'espace de travail indiqués par la commande. Les étapes
 suivantes sont décrites dans [Flux de travail principal](#flux-de-travail-principal).
 
+Découvrez deux exemples open source complets, développés fonctionnalité par fonctionnalité avec CodexSpec : la [liste de tâches](https://github.com/Zts0hg/codexspec-example-todo) (en anglais) et la [comptabilité personnelle](https://github.com/Zts0hg/codexspec-example-bookkeeping) (en chinois simplifié). Chaque dépôt contient les spécifications de ses fonctionnalités, un guide chronologique du développement et une application exécutable.
+
 Vous utilisez l'application de bureau Codex ? [Demandez à Codex d'installer et d'initialiser votre projet](#installer-depuis-lapplication-de-bureau-codex).
 
 ## Installation

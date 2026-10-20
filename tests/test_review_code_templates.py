@@ -36,7 +36,7 @@ def test_frontmatter_declares_change_gate_and_platform_resolver() -> None:
     frontmatter, _ = split_template()
 
     assert frontmatter["description"] == (
-        "Review a selected change as a strict defect gate, or audit paths with --audit"
+        "Review Git changes for merge readiness; use --audit to assess existing code quality."
     )
     hint = str(frontmatter["argument-hint"])
     assert "\n" in hint  # multi-line block scalar: explains mode semantics, not just flag names

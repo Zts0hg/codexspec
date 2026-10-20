@@ -1,6 +1,6 @@
 ---
 name: codexspec:design-to-plan
-description: "将已确认的设计转换为可追溯的实现计划"
+description: "将 design.md 转化为 plan.md，安排实现阶段、执行顺序和验证步骤。"
 ---
 
 # Design to Plan Converter

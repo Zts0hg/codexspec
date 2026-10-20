@@ -128,6 +128,8 @@ Confirme o resumo final dos requisitos e continue no diretório da funcionalidad
 e no espaço de trabalho retornados. Consulte o [Fluxo de trabalho principal](#fluxo-de-trabalho-principal)
 para conhecer os comandos seguintes.
 
+Conheça dois exemplos completos e de código aberto, desenvolvidos funcionalidade por funcionalidade com o CodexSpec: a [lista de tarefas](https://github.com/Zts0hg/codexspec-example-todo) (em inglês) e o [controle financeiro pessoal](https://github.com/Zts0hg/codexspec-example-bookkeeping) (em chinês simplificado). Cada repositório inclui as especificações de cada funcionalidade, um guia cronológico de desenvolvimento e um aplicativo executável.
+
 Se você usa o aplicativo desktop do Codex, pode [pedir ao Codex para instalar e inicializar seu projeto](#instalação-pelo-aplicativo-desktop-do-codex).
 
 ## Instalação

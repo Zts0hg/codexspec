@@ -1,5 +1,5 @@
 ---
-description: Discuss, confirm, and persist the authoritative requirements record
+description: Clarify a feature’s goals, scope and constraints, then save confirmed requirements to requirements.md.
 argument-hint: "Describe the initial idea, or provide an existing feature directory"
 scripts:
   sh: .codexspec/scripts/create-new-feature.sh

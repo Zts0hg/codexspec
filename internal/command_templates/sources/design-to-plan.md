@@ -1,5 +1,5 @@
 ---
-description: Convert a confirmed design into a traceable implementation plan
+description: Turn design.md into plan.md with implementation phases, execution order and verification steps.
 argument-hint: "[design.md, spec.md, or feature directory]"
 handoffs:
   - agent: claude

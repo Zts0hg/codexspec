@@ -5,6 +5,46 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.27] - 2026-10-19
+
+### Changed
+
+- Running `$codexspec:config` without arguments now shows separate project
+  metadata and adjustable-setting tables before asking what to do. Each row
+  explains its purpose, default or fallback rule, and current value, including
+  effective defaults for settings absent from the configuration file.
+- Added links to the published Todo and bookkeeping example projects across
+  all eight root README languages.
+
+### For contributors
+
+- Synchronized the authored config command, public template, and Claude/Codex
+  installed copies; added focused tests and confirmed feature records.
+- Updated marketplace metadata for v0.7.26 and corrected the historical
+  command-description proposal baseline.
+- Allowed the concurrent blueprint CLI test more time for Git commands on
+  busy development machines.
+- Extended the guarded commit timeout for long running project hooks while
+  retaining the existing timeout for other Git commands.
+
+## [0.7.26] - 2026-10-18
+
+### Changed
+
+- Clarified descriptions for all 28 workflow commands so users can identify each
+  command's purpose and result from compact, informative text in command pickers.
+  Descriptions reflect current behavior and distinguish neighboring workflow stages.
+- Synchronized descriptions in English, Simplified Chinese, Japanese, Korean,
+  German, French, Spanish and Brazilian Portuguese across Claude commands, Codex
+  skills and command listings.
+
+### For contributors
+
+- Recorded the approved wording and supporting requirements, design and
+  verification evidence; updated description assertions in integration and
+  packaging tests, including YAML parsing that accepts quoted descriptions.
+- Updated marketplace metadata for the preceding v0.7.25 release.
+
 ## [0.7.25] - 2026-10-17
 
 ### Added

@@ -1,5 +1,5 @@
 ---
-description: Review design fidelity, feasibility, and planning readiness
+description: Review design.md for requirement coverage and technical feasibility, judging readiness for implementation planning.
 argument-hint: "[design.md or feature directory]"
 handoffs:
   - agent: claude

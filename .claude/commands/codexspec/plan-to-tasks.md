@@ -1,5 +1,5 @@
 ---
-description: 将已批准的计划展开为可追溯、可执行的任务
+description: 将 plan.md 拆分为 tasks.md，明确具体工作、依赖和验证方法，并列出可测试任务的测试场景。
 argument-hint: "[tasks 功能目录、plan.md 或 spec.md]"
 handoffs:
   - agent: claude

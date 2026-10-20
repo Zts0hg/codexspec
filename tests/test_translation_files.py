@@ -272,14 +272,23 @@ Exemplos:
   /codexspec:review-code --audit src/api""",
 }
 REVIEW_CODE_DESCRIPTIONS = {
-    "en": "Review a selected change as a strict defect gate, or audit paths with --audit",
-    "zh-CN": "将所选变更作为严格缺陷门禁进行审查，或使用 --audit 审计路径",
-    "ja": "選択した変更を厳格な欠陥ゲートとしてレビューするか、--audit でパスを監査",
-    "ko": "선택한 변경을 엄격한 결함 게이트로 검토하거나 --audit로 경로 감사",
-    "de": "Ausgewählte Änderungen als striktes Defekt-Gate prüfen oder Pfade mit --audit auditieren",
-    "es": "Revisar el cambio seleccionado como puerta de defectos estricta o auditar rutas con --audit",
-    "fr": "Examiner la modification sélectionnée comme contrôle strict des défauts ou auditer des chemins avec --audit",
-    "pt-BR": "Revisar a alteração selecionada como gate de defeitos estrito ou auditar caminhos com --audit",
+    "en": ("Review Git changes for merge readiness; use --audit to assess existing code quality."),
+    "zh-CN": ("审查 Git 改动并判断是否可合并；--audit 用于评估现有代码质量。"),
+    "ja": ("Git の変更をレビューしてマージ可能か判断します。--audit は既存コードの品質評価に使います。"),
+    "ko": ("Git 변경을 검토해 병합 준비 여부를 판단하며, --audit는 기존 코드의 품질 평가에 사용합니다."),
+    "de": ("Git-Änderungen auf Merge-Bereitschaft prüfen; --audit bewertet die Qualität bestehenden Codes."),
+    "es": (
+        "Revisar cambios de Git para determinar si están listos para fusionarse; --audi"
+        "t evalúa la calidad del código existente."
+    ),
+    "fr": (
+        "Examiner les changements Git pour juger s’ils peuvent être fusionnés ; --audit"
+        " évalue la qualité du code existant."
+    ),
+    "pt-BR": (
+        "Revisar alterações do Git para avaliar se estão prontas para merge; --audit av"
+        "alia a qualidade do código existente."
+    ),
 }
 
 

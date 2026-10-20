@@ -1,6 +1,6 @@
 ---
 name: codexspec:reverse-spec
-description: "从既有代码逆向还原 spec/design，再核对代码与已确认基线的偏差"
+description: "从已有代码生成架构概览或模块规格与设计；已有确认基线时报告差异。"
 ---
 
 # Reverse Specification

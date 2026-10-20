@@ -215,7 +215,7 @@ def test_built_archives_contain_resolvers_and_all_current_command_templates() ->
         _assert_packaged_commands(members, expected_commands)
         _assert_internal_authoring_absent(members)
         packaged_review = _archive_member(members, "/templates/commands/review-code.md")
-        assert b"strict defect gate" in packaged_review
+        assert b"Review Git changes for merge readiness" in packaged_review
         assert b"quality-assessment.md" in packaged_review
         resources = ROOT / "templates/review-code"
         expected_resources = {str(path.relative_to(resources)): path.read_bytes() for path in resources.rglob("*.md")}

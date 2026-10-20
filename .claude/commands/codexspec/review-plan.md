@@ -1,5 +1,5 @@
 ---
-description: 审查计划的忠实度、可行性与实现就绪度
+description: 审查 plan.md 的实现步骤、顺序和需求覆盖，判断是否可拆分任务。
 argument-hint: "[plan.md 或 功能目录]"
 handoffs:
   - agent: claude
