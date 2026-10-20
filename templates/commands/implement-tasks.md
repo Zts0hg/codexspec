@@ -1,5 +1,5 @@
 ---
-description: Execute implementation tasks with conditional TDD workflow (TDD for code, direct implementation for docs/config)
+description: Implement tasks.md, run tests and independent review, and repair verified issues.
 argument-hint: "[tasks_path] | [spec_path plan_path tasks_path]"
 handoffs:
   - agent: claude

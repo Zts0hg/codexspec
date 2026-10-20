@@ -1,6 +1,6 @@
 ---
 name: codexspec:release-notes
-description: "从 git 历史生成发布说明——维护 Keep a Changelog 风格的 CHANGELOG.md 条目并产出面向用户的发布正文，不决定版本号、不改动 git 状态"
+description: "根据 Git 历史增补 CHANGELOG.md 并生成发布说明，不执行发布。"
 ---
 
 ## Constitution Compliance (MANDATORY)

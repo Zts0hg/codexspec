@@ -1,5 +1,5 @@
 ---
-description: Autonomously develop every pending requirement in the shared blueprint
+description: Develop confirmed blueprint requirements in order, from specification to verified implementation and commits.
 argument-hint: ""
 ---
 

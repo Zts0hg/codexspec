@@ -1,5 +1,5 @@
 ---
-description: Reverse-derive spec/design from existing code, then reconcile code against the confirmed baseline
+description: Derive an architecture overview or module spec and design from existing code; report differences when a confirmed baseline exists.
 argument-hint: "[path]"
 allowed-tools: Read, Grep, Glob, Bash, Edit, Write
 ---

@@ -1,6 +1,6 @@
 ---
 name: codexspec:debug
-description: "先定位故障的根本原因，再着手修复"
+description: "复现报错或异常现象，定位根本原因，再进行最小修复并验证结果。"
 ---
 
 # Systematic Debugger

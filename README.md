@@ -123,6 +123,12 @@ Customize project principles with `constitution` when needed. Confirm the final
 requirements summary, then continue using the returned feature directory and
 workspace. See [Core Workflow](#core-workflow) for the remaining commands.
 
+Explore two complete open-source examples built feature by feature with CodexSpec:
+the [Todo List](https://github.com/Zts0hg/codexspec-example-todo) (English) and
+[Personal Bookkeeping](https://github.com/Zts0hg/codexspec-example-bookkeeping)
+(Simplified Chinese). Each repository includes its feature specifications, a
+chronological development guide, and a runnable application.
+
 Using the Codex desktop app? [Ask Codex to install and initialize your project](#install-with-the-codex-desktop-app).
 
 ## Installation

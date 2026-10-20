@@ -1,6 +1,6 @@
 ---
 name: codexspec:review-design
-description: "审查设计的忠实度、可行性与规划就绪度"
+description: "审查 design.md 的需求覆盖与技术可行性，判断是否可制定实现计划。"
 ---
 
 # Design Reviewer

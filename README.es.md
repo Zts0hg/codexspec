@@ -130,6 +130,8 @@ el resumen final de requisitos y continúa en el directorio de la funcionalidad
 y el espacio de trabajo que indique el comando. Los siguientes pasos se explican
 en [Flujo de trabajo principal](#flujo-de-trabajo-principal).
 
+Explora dos ejemplos completos y de código abierto desarrollados función a función con CodexSpec: la [lista de tareas](https://github.com/Zts0hg/codexspec-example-todo) (en inglés) y la [contabilidad personal](https://github.com/Zts0hg/codexspec-example-bookkeeping) (en chino simplificado). Cada repositorio incluye las especificaciones de sus funciones, una guía cronológica de desarrollo y una aplicación ejecutable.
+
 ¿Usas la aplicación de escritorio de Codex? [Pide a Codex que instale e inicialice tu proyecto](#instalar-desde-la-aplicación-de-escritorio-de-codex).
 
 ## Instalación

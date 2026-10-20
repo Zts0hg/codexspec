@@ -1,6 +1,6 @@
 ---
 name: codexspec:review-tasks
-description: "审查任务的忠实度、可执行性、依赖关系与验证"
+description: "审查 tasks.md 的任务覆盖、依赖和验证方法，判断是否可开始实现。"
 ---
 
 # Tasks Reviewer

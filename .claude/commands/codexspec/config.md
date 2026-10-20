@@ -1,5 +1,5 @@
 ---
-description: 以交互方式管理 CodexSpec 项目配置
+description: 交互式设置语言、自动化和 worktree 等项目选项；--view 只查看配置。
 argument-hint: "[--view] 查看当前配置而不修改"
 ---
 
@@ -165,30 +165,83 @@ To create a new configuration, run `/codexspec:config` without arguments.
 
 ### Step 3: Interactive Mode (Configuration Exists)
 
-If configuration exists and no `--view` flag, present the management menu using the host agent's structured-question tool (e.g., `AskUserQuestion` or `request_user_input`):
+If configuration exists and no `--view` flag, read the configuration from the invoking
+checkout and show the overview below **before** asking what to do. This display is
+read-only: do not create or route to a worktree merely to show it. Do not show raw
+YAML before the tables. Use `language.interaction` for headings, explanations, and
+choices; retain configuration field names and values verbatim.
+
+Compute each current setting from the YAML according to its own effective-value
+rule, even when the field is absent. Do not copy only the stored lines into the
+table. An unknown YAML key does not create an overview row. If the file cannot be
+read or parsed, follow Error Handling instead of inventing current values.
+
+#### Project metadata table
+
+Render this table first. Metadata current values are stored values, not runtime
+fallbacks. If a metadata key is absent, show not set as its current value. The
+creation date is the date of initialization, not a fixed calendar-date default.
+
+| Field | Meaning | Default or creation rule | Current value |
+|---|---|---|---|
+| `version` | Configuration format version | Initialized as `1.0` | {stored value or not set} |
+| `project.ai` | AI integration selected for the project | `codexspec init` defaults to `claude`; `--ai` can select another integration | {stored value or not set} |
+| `project.created` | Project configuration creation date | Generated on the creation date | {stored value or not set} |
+
+#### Adjustable settings table
+
+Render this table second. Replace each placeholder with the effective current
+value; do not display a missing key as if its default were explicitly stored.
+
+| Field | Meaning | Default or fallback rule | Current value |
+|---|---|---|---|
+| `language.output` | Base language for fallback | `en` | {effective value} |
+| `language.interaction` | Conversation and CLI output language | Explicit value → `language.output` → `en` | {effective value} |
+| `language.document` | Generated artifact language | Explicit value → `language.output` → `en` | {effective value} |
+| `language.commit` | Git commit message language | Explicit value → `language.output` → `en` | {effective value} |
+| `workflow.auto_next` | Automatically advance after a passing SDD stage | `false`; only literal `true` enables | {effective value} |
+| `workflow.auto_distill` | Automatically distill knowledge after wrap-up commands | `true`; only literal `false` disables | {effective value} |
+| `workflow.auto_maintenance` | Automatically apply substantiated incremental maintenance during repairs | `true` when absent; an explicit value must be a YAML boolean | {effective value or invalid value} |
+| `workflow.worktrees` | Isolate ordinary work in Git worktrees | `true`; only literal `false` disables | {effective value} |
+| `review.decided_by` | Who decides whether an out-of-context review finding applies | `reviewer`; valid values: `reviewer`, `ask` | {effective value or invalid value} |
+
+Apply these rules explicitly: interaction/document/commit: explicit value → language.output → en;
+workflow.auto_next: only literal true enables; workflow.auto_distill: only literal false disables;
+workflow.auto_maintenance: absent means true; workflow.worktrees: only literal false disables;
+review.decided_by: absent means reviewer. If an explicit `workflow.auto_maintenance`
+value is not a YAML boolean, or `review.decided_by` is not `reviewer` or `ask`, mark
+that current value invalid and explain the correction; do not silently replace it
+with a default. Do not add `language.templates` to either table.
+
+#### Choose an action
+
+After both tables, offer the three actions below using the host agent's
+structured-question tool (for example, `AskUserQuestion` or `request_user_input`)
+when available. If it is unavailable, show the same three choices in text and ask
+the user to select one. Do not ask before displaying the tables.
 
 ```json
 {
   "questions": [{
-    "question": "Configuration file found. What would you like to do?",
+    "question": "What would you like to do with the configuration?",
     "header": "Config Action",
     "options": [
-      {"label": "View current config", "description": "Display the current configuration settings"},
-      {"label": "Modify config", "description": "Change specific configuration values"},
+      {"label": "Modify config", "description": "Change a configuration setting"},
       {"label": "Reset to defaults", "description": "Reset all settings to default values"},
-      {"label": "Cancel", "description": "Exit without making changes"}
+      {"label": "View only", "description": "Finish without making changes"}
     ]
   }]
 }
 ```
 
-> **Note**: The field schema above follows the `AskUserQuestion` convention. Under `request_user_input`, each question additionally requires an `id` (snake_case) and accepts 2–3 options — follow the host tool's actual schema rather than copying this example verbatim.
+> **Note**: Follow the host tool's actual question schema. Codex
+> `request_user_input` requires an `id` and accepts 2–3 options.
 
 Then handle each option:
 
-#### Option: View current config
+#### Option: View only
 
-Display the configuration as in Step 2, then exit.
+View only: exit without writing or creating a worktree.
 
 #### Option: Modify config
 

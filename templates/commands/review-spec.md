@@ -1,5 +1,5 @@
 ---
-description: Review spec fidelity, internal quality, and planning readiness
+description: Review spec.md for requirement coverage and verifiable acceptance criteria, judging readiness for design.
 argument-hint: "[spec.md or feature directory]"
 handoffs:
   - agent: claude

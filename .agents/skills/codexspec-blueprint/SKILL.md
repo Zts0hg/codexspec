@@ -1,6 +1,6 @@
 ---
 name: codexspec:blueprint
-description: "讨论并维护共享产品蓝图中的已确认需求"
+description: "规划多个功能，将确认的需求写入共享蓝图，并管理供 auto-dev 执行的待开发内容和顺序。"
 ---
 
 # Blueprint Requirements Discovery

@@ -1,5 +1,5 @@
 ---
-description: Generate structured Pull Request (GitHub) or Merge Request (GitLab) descriptions based on git diff and optional spec.md integration
+description: Draft GitHub PR or GitLab MR titles, descriptions and verification guidance from branch differences.
 allowed-tools: Bash(git branch:*), Bash(git diff:*), Bash(git log:*), Bash(git remote:*), Bash(git rev-parse:*), Bash(ls:*), Bash(cat:*)
 ---
 

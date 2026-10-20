@@ -1,6 +1,6 @@
 ---
 name: codexspec:specify
-description: "讨论、确认并固化权威的需求记录"
+description: "澄清功能目标、范围和约束，将确认的需求整理为 requirements.md。"
 ---
 
 # Requirement Discovery

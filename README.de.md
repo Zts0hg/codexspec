@@ -129,6 +129,8 @@ die abschließende Zusammenfassung der Anforderungen. Arbeiten Sie anschließend
 im zurückgegebenen Feature-Verzeichnis und Arbeitsbereich weiter. Die weiteren
 Befehle finden Sie unter [Kern-Workflow](#kern-workflow).
 
+Entdecken Sie zwei vollständige Open-Source-Beispiele, die mit CodexSpec Funktion für Funktion entwickelt wurden: die [Todo-Liste](https://github.com/Zts0hg/codexspec-example-todo) (auf Englisch) und die [persönliche Buchführung](https://github.com/Zts0hg/codexspec-example-bookkeeping) (auf vereinfachtem Chinesisch). Jedes Repository enthält die Spezifikationen der einzelnen Funktionen, einen chronologischen Entwicklungsleitfaden und eine ausführbare Anwendung.
+
 Wenn Sie die Codex-Desktop-App verwenden, können Sie [Codex mit der Installation und Initialisierung Ihres Projekts beauftragen](#installation-mit-der-codex-desktop-app).
 
 ## Installation

@@ -1,6 +1,6 @@
 ---
 name: codexspec:constitution
-description: "通过交互式或提供的原则输入创建或更新项目宪法，确保所有依赖模板保持同步。"
+description: "制定或更新项目开发原则，写入 constitution.md 并检查相关文档的一致性。"
 ---
 
 ## Language Preference

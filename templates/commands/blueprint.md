@@ -1,5 +1,5 @@
 ---
-description: Discuss and maintain confirmed requirements in the shared product blueprint
+description: Plan multiple features in a shared blueprint, recording confirmed requirements and organizing pending work for auto-dev.
 argument-hint: "Describe a new requirement, or identify a pending requirement to replace, delete, or move"
 ---
 

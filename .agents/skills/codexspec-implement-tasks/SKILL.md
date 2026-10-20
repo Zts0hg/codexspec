@@ -1,6 +1,6 @@
 ---
 name: codexspec:implement-tasks
-description: "执行实现任务，支持条件 TDD 工作流（代码使用 TDD，文档/配置直接实现）"
+description: "按 tasks.md 实现功能，执行测试与独立审查，并修复经核实的问题。"
 ---
 
 # Task Implementer

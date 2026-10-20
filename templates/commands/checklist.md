@@ -1,5 +1,5 @@
 ---
-description: Generate a custom quality checklist for validating requirements completeness, clarity, and consistency
+description: Create a checklist for requirement completeness, clarity and scenario coverage, rather than testing code.
 scripts:
   sh: .codexspec/scripts/check-prerequisites.sh --json
   ps: .codexspec/scripts/check-prerequisites.ps1 -Json

@@ -1,5 +1,5 @@
 ---
-description: Compile confirmed requirements into a traceable spec.md
+description: Turn confirmed requirements into spec.md with feature behavior, error handling and acceptance criteria.
 argument-hint: "[requirements.md or feature directory]"
 handoffs:
   - agent: claude

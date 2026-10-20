@@ -1,5 +1,5 @@
 ---
-description: 分析 SDD 工件间的端到端可追溯性与一致性
+description: 核对需求到任务的文档一致性，自动修复可由已确认需求确定的下游问题。
 argument-hint: "[功能目录]"
 ---
 

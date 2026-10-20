@@ -1,5 +1,5 @@
 ---
-description: 讨论、确认并固化权威的需求记录
+description: 澄清功能目标、范围和约束，将确认的需求整理为 requirements.md。
 argument-hint: "描述初始想法，或提供已有的功能目录"
 scripts:
   sh: .codexspec/scripts/create-new-feature.sh

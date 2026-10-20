@@ -1,5 +1,5 @@
 ---
-description: Cold-start the project profile by scanning an existing codebase for conventions and constraints
+description: Scan existing code to record conventions and explicit constraints in the project profile, saving constraints after your review.
 argument-hint: "[path]"
 allowed-tools: Read, Grep, Glob, Bash(git:*), Bash(ls/cat/find:*), Edit, Write
 ---
