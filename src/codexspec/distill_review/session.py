@@ -219,9 +219,12 @@ class SessionStore:
             os.fsync(directory)
         finally:
             try:
-                os.unlink(temporary, dir_fd=directory)
-            except FileNotFoundError:
-                pass
+                os.close(descriptor)
+            finally:
+                try:
+                    os.unlink(temporary, dir_fd=directory)
+                except FileNotFoundError:
+                    pass
 
     def _write_runtime(self, name: str, content: bytes) -> None:
         with self._runtime_directory(create=True) as directory:

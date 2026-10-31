@@ -1,18 +1,23 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version: 1.1.0 -> 1.2.0
-Bump Rationale: MINOR: add the repository-only workflow-diagram maintenance entry
+Version: 1.2.0 -> 2.0.0
+Bump Rationale: MAJOR: replace the impossible pre-push remote-CI prerequisite
+with a local pre-push gate and post-push remote-CI observation.
 
 Changes:
-- Extend the existing authored Claude / derived Codex maintenance exception with
-  update-workflow-diagrams and its single shared update handbook.
-- Preserve public templates, the installed command set and init/package boundaries.
+- Modified: Remote Push Gate timing. Every push requires passing local checks
+  beforehand; triggered remote CI/CD is monitored to completion afterward.
+- Preserved: full required PR checks before merge and red-main recovery priority.
+- Removed: the requirement for remote CI on a commit before its first push.
 
-Consistency:
-- AGENTS.md, CLAUDE.md and docs/internal/repository-layout.md describe the entry.
-- internal/maintainer_doc_skills.py and the distribution checker include its exact name.
-- No downstream constitution or public command/template changes are required.
+Template Consistency Check:
+- .codexspec/templates/docs/plan-template-*.md: aligned; no conflicting push rule.
+- .codexspec/templates/docs/spec-template-*.md: aligned; no conflicting push rule.
+- .codexspec/templates/docs/tasks-template-*.md: aligned; no conflicting push rule.
+- .claude/commands/*.md: aligned; no conflicting push rule.
+- README.md: aligned; no conflicting project CI timing rule.
+- CLAUDE.md: aligned; no conflicting project CI timing rule.
 
 Deferred TODOs: None.
 -->
@@ -34,9 +39,9 @@ Deferred TODOs: None.
 
 This document defines the governing principles and development guidelines for this project.
 
-- **Version**: 1.2.0
+- **Version**: 2.0.0
 - **Ratified**: 2026-04-10
-- **Last Amended**: 2026-10-17
+- **Last Amended**: 2026-10-31
 
 ## Core Principles
 
@@ -99,10 +104,18 @@ precise language reduces ambiguity and prevents terminology from obstructing req
 
 ### 8. Remote Push Gate
 
-- Before pushing any branch to the remote, confirm that CI/CD fully passes for the exact commit being pushed: every required check green, including the full platform matrix.
-- Run and pass the equivalent local quality gates first (tests, lint, documentation checks) so the push is expected to be green; after pushing, watch the remote run to completion instead of assuming success.
-- When a remote check fails, stop: fix the defect, or rerun to rule out a proven flake before pushing again. A red `main` blocks all subsequent work and must be repaired or reverted with top priority.
-- A push is never "done" because the command returned; it is done when the remote pipeline is green.
+- Before **every** remote push, run and pass all applicable local quality gates
+  (tests, lint, documentation checks). Do not push a commit whose required local checks fail.
+- After a push triggers remote CI/CD, watch every required check for the pushed commit to
+  completion, including the full platform matrix where applicable. A successful push command
+  is not proof that CI/CD passed. If no workflow is triggered, report that fact rather than
+  claiming the commit passed remote checks.
+- Merge a pull request only after all its required remote checks pass for its exact current
+  head. If the head changes, verify the new head before merging. Do not force-merge around
+  failed or pending required checks.
+- When a remote check fails, stop: fix the defect, or rerun to rule out a proven flake
+  before merging. A red `main` blocks all subsequent work and must be repaired or
+  reverted with top priority.
 
 ## Development Workflow
 
