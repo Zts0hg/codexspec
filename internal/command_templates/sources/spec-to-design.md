@@ -69,7 +69,10 @@ Stop and request a user decision when:
 - Record material design choices as **Key Design Decisions** (ADR-lite) with context, the decision, alternatives considered when material, and accepted trade-offs.
 - Design-level decisions may refine implementation design but cannot redefine product intent.
 - **Scale to complexity.** The design template's fixed core (Architecture & Components, Key Design Decisions, Requirements Coverage) is always present; its optional sections (Data Models, API / Interface Contracts, Sequence & Data Flow, Cross-Cutting Design, Risks & Trade-offs) appear ONLY when the feature warrants them. A trivial feature may be a thin page whose Key Design Decisions section records "no significant design decisions". Do not add a section merely because the template contains it.
-- Reuse repository patterns before introducing new abstractions or dependencies.
+- **Make material reuse decisions evidence-based.** Before deciding to add a component, dependency, or self-built logic, first inspect relevant existing code and patterns, installed dependency versions and capabilities, and official extension points. Do this before broader searches. Scale the investigation to the decision: a typo or local configuration change does not need a broad survey.
+- For every such Key Design Decision, use its existing **Context**, **Decision**, **Alternatives**, **Trade-offs**, and **Covers** fields to make the reuse basis reviewable: cite relevant repository paths or symbols, or a version-matched official capability; state the relevant gap; identify the reuse, extension, or custom choice; compare material alternatives; explain scope, cost, and maintenance; and retain requirement traceability.
+- Reuse or extend a verified fit before adding a new abstraction or dependency. A genuine gap may justify custom code when its scope, cost, and maintenance trade-off are explicit. Preserve confirmed user decisions; if verified evidence shows a real incompatibility, raise it with that evidence rather than overriding the decision.
+- Do not require a fixed number of alternatives, a comparison table, or a separate research artifact.
 - Explicitly identify assumptions. Do not convert assumptions into requirements.
 - Prefer the smallest design that satisfies the confirmed requirements.
 
