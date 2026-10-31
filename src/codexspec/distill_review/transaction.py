@@ -487,9 +487,12 @@ class ProfileTransaction:
             os.fsync(directory)
         finally:
             try:
-                os.unlink(temporary_name, dir_fd=directory)
-            except FileNotFoundError:
-                pass
+                os.close(descriptor)
+            finally:
+                try:
+                    os.unlink(temporary_name, dir_fd=directory)
+                except FileNotFoundError:
+                    pass
 
     def _write_target(
         self,
