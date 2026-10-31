@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.28] - 2026-10-31
+
+### Fixed
+
+- Closed file descriptors after POSIX distill-review session writes and exclusive
+  profile installs, including failure paths, so repeated reviews no longer
+  accumulate open descriptors.
+
+### For contributors
+
+- Added descriptor-lifetime and fault-injection regression tests, with confirmed
+  requirements, design, and verification records for the distill-review fix.
+- Clarified the project's push policy: run applicable local checks before every
+  push and monitor any triggered remote CI/CD; require all checks on the current
+  PR head before merging.
+- Updated marketplace metadata for the preceding v0.7.27 release.
+
 ## [0.7.27] - 2026-10-19
 
 ### Changed

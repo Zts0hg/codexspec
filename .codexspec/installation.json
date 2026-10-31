@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "representation": "utf8-lf-managed-v1",
-  "installed_version": "0.7.27",
+  "installed_version": "0.7.28",
   "ai": "both",
   "interaction_language": "zh-CN",
   "files": {
