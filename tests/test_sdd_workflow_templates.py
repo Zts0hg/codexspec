@@ -57,6 +57,172 @@ def test_specify_creates_and_confirms_requirements_record():
     assert "Do not generate `spec.md`" in content
 
 
+@pytest.fixture(params=["template", "claude", "codex"])
+def specify_form(request):
+    """Apply discovery contracts to each form users actually receive."""
+    paths = {
+        "template": COMMANDS / "specify.md",
+        "claude": ROOT / ".claude/commands/codexspec/specify.md",
+        "codex": ROOT / ".agents/skills/codexspec-specify/SKILL.md",
+    }
+    return paths[request.param].read_text(encoding="utf-8")
+
+
+def _specify_section(content: str, heading: str) -> str:
+    assert f"\n## {heading}\n" in content, f"Missing specify instruction section: {heading}"
+    section = content.split(f"\n## {heading}\n", 1)[1].split("\n## ", 1)[0]
+    return " ".join(section.split())
+
+
+def test_specify_prepares_facts_and_automation_before_questions(specify_form):
+    """TS-001: establish setting and facts before substantive questioning."""
+    content = specify_form
+    preparation = _specify_section(content, "Prepare Discovery")
+    assert "Before substantive discovery or questioning" in preparation
+    assert (
+        content.index("## Consult Project Profile")
+        < content.index("## Prepare Discovery")
+        < content.index("## Select Questions for the Automation Mode")
+        < content.index("## Discussion Rules")
+    )
+    assert (
+        preparation.index("Read `workflow.auto_next`")
+        < preparation.index("Inspect the relevant current implementation")
+        < preparation.index("Independently obtain accessible factual information")
+    )
+
+
+def test_specify_verifies_question_premises_before_classifying_functionality(specify_form):
+    """TS-002: verify generic premises before selecting questions or classifying behavior."""
+    preparation = _specify_section(specify_form, "Prepare Discovery")
+    for obligation in (
+        "actual behavior, callers, callees, and dependencies",
+        "Before deciding whether a question or option is applicable, "
+        "verify the premises that determine its applicability",
+        "Do not infer the existence, implementation status, relationships, or impact of functionality "
+        "solely from surface descriptions in requests, interfaces, names, or documentation",
+        "Treat unverified premises as unknown",
+        "Classify content or behavior as placeholder, unused, or functional "
+        "only after inspection establishes that classification",
+        "Use verified facts to answer factual matters already established",
+        "Do not ask questions premised on functionality or relationships that inspection establishes do not exist",
+        "If a real dependency creates a material scope or outcome choice, explain the relationship and ask the user",
+    ):
+        assert obligation in preparation
+    assert (
+        preparation.index("Inspect the relevant current implementation")
+        < preparation.index("Before deciding whether a question or option is applicable, verify the premises")
+        < preparation.index("Classify content or behavior")
+    )
+    assert "Do not infer working backend functionality from a frontend label or placeholder" not in preparation
+
+
+def test_specify_obtains_accessible_facts_without_transferring_checks_to_users(specify_form):
+    """TS-003: accessible sources and checks supply facts autonomously."""
+    preparation = _specify_section(specify_form, "Prepare Discovery")
+    for obligation in (
+        "Independently obtain accessible factual information before requesting it from the user",
+        "code, documentation, configuration, history, logs, tests, and other available tools and sources",
+        "Within the task's scope and existing authorization, collect and investigate it first",
+        "Do not ask users to locate information or perform checks the agent can perform itself",
+    ):
+        assert obligation in preparation
+
+
+def test_specify_preserves_uncertainty_and_asks_only_necessary_gaps(specify_form):
+    """TS-004: missing evidence does not establish absence or user intent."""
+    preparation = _specify_section(specify_form, "Prepare Discovery")
+    for obligation in (
+        "Distinguish verified implementation facts, confirmed user intent, and unverified inferences",
+        "An unsuccessful search does not prove absence",
+        "If relevant code does not yet exist or cannot be inspected, state the available evidence and uncertainty",
+        "inaccessible, contradictory, or inconclusive after targeted investigation",
+        "briefly state what is known and the specific evidence gap",
+        "ask only for the missing information necessary to proceed",
+        "Collected facts do not substitute for user decisions",
+        "Existing behavior does not automatically become a requirement to preserve it",
+    ):
+        assert obligation in preparation
+
+
+def test_specify_bounds_investigation_and_reuses_evidence(specify_form):
+    """TS-005: collect sufficient evidence without exhaustive or repeated checks."""
+    preparation = _specify_section(specify_form, "Prepare Discovery")
+    for obligation in (
+        "Inspect only sources and execution paths needed for the current judgment",
+        "Do not require a repository-wide audit or exhaustive diagnosis",
+        "Stop when evidence is sufficient and reuse prepared evidence",
+        "Supplement it only when scope changes, new evidence appears, or existing evidence is insufficient",
+        "Do not repeatedly perform the same failed checks or indefinitely expand retrieval",
+    ):
+        assert obligation in preparation
+
+
+def test_specify_reads_the_applicable_literal_true_setting_during_preparation(specify_form):
+    """TS-006: read the checkout-local setting before deciding discovery depth."""
+    preparation = _specify_section(specify_form, "Prepare Discovery")
+    assert "Read `workflow.auto_next` from the applicable workspace's `.codexspec/config.yml`" in preparation
+    assert "Default to disabled; only the literal boolean `true` enables it" in preparation
+    assert "An absent setting, `false`, or any other value is disabled" in preparation
+
+
+def test_specify_frontloads_foreseeable_downstream_user_decisions_when_enabled(specify_form):
+    """TS-007: later-stage user decisions block enabled discovery completion."""
+    mode = _specify_section(specify_form, "Select Questions for the Automation Mode")
+    enabled = mode.split("**When enabled**", 1)[1].split("**When disabled**", 1)[0]
+    for obligation in (
+        "foreseeable specification, design, planning, and implementation consequences",
+        "Resolve the user decisions those stages would otherwise require before final confirmation",
+        "Explain verified facts and offer viable choices",
+        "An item is not non-blocking merely because specification generation can proceed",
+        "if a later automatic stage still needs a user decision, resolve it during discovery",
+    ):
+        assert obligation in enabled
+
+
+def test_specify_keeps_staged_clarification_when_disabled_and_fact_finding_in_both_modes(specify_form):
+    """TS-008: disabled mode avoids frontloading while factual duties remain shared."""
+    mode = _specify_section(specify_form, "Select Questions for the Automation Mode")
+    disabled = mode.split("**When disabled**", 1)[1]
+    assert "retain normal staged clarification without moving every later technical choice into specify" in disabled
+    assert "Current-state verification and autonomous fact-gathering apply in both modes" in mode
+    assert "Do not produce complete design or implementation plans during specify" in mode
+
+
+def test_specify_reserves_material_choices_for_users_and_equivalent_implementations_for_agents(specify_form):
+    """TS-009: judge technical decisions by their actual user consequences."""
+    mode = _specify_section(specify_form, "Select Questions for the Automation Mode")
+    for obligation in (
+        "The user decides choices affecting behavior, scope, compatibility, "
+        "or important cost or maintenance trade-offs",
+        "Independently select equivalent technical implementations that satisfy the same confirmed requirements",
+        "Judge architecture and dependency choices by their actual consequences",
+        "Do not require separate confirmation for every purely technical choice",
+        "Do not infer user goals or preferences from collected facts",
+    ):
+        assert obligation in mode
+
+
+def test_specify_requires_final_confirmation_and_resolved_downstream_choices_before_advancing(specify_form):
+    """TS-010: preserve explicit final confirmation, one advance, and later stop rules."""
+    mode = _specify_section(specify_form, "Select Questions for the Automation Mode")
+    completion = _specify_section(specify_form, "Completion")
+    advance = _specify_section(specify_form, "Auto-Next Chain Advance")
+    confirmation = _specify_section(specify_form, "Stage Summary Confirmation")
+    assert "all foreseeable downstream user decisions identified above are resolved" in completion
+    assert "they cannot remain open or be deferred as non-blocking" in completion
+    assert "Only after explicit confirmation" in confirmation
+    assert "Do not treat silence or lack of objection as confirmation" in confirmation
+    assert "user has explicitly confirmed the final stage summary (not each intermediate topic confirmation)" in advance
+    assert "Do not auto-advance on intermediate topic confirmations" in advance
+    assert "Emit exactly one notice line" in advance
+    successor = "$codexspec:generate-spec" if "name: codexspec:specify" in specify_form else "/codexspec:generate-spec"
+    assert f"Invoke `{successor} <feature-dir>` exactly once, then end this command" in advance
+    assert "does not modify the Completion report" in advance
+    assert "previously unforeseeable material decision appears downstream" in mode
+    assert "stop and ask the user under the existing downstream rules rather than guessing" in mode
+
+
 @pytest.mark.parametrize(
     ("command", "required_inputs", "trace_marker"),
     [

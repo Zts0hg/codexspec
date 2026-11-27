@@ -176,8 +176,30 @@ Before discussing and finalizing requirements, read the project profile under `.
 
 Each record carries a `status` (`candidate` or `vetted`); weight `candidate` entries with appropriate caution. Fold what is relevant into the discussion and the resulting entries; cite a profile record as evidence when it materially shapes a decision. This is the single point where the profile enters the SDD pipeline — downstream stages keep `requirements.md` as authority and do not re-read the profile. Degrade silently when the profile is absent or empty (nothing to apply); never block on it.
 
+## Prepare Discovery
+
+Before substantive discovery or questioning, prepare the setting and evidence below. Reuse sufficient background from historical specs and the project profile instead of repeating its retrieval.
+
+1. Read `workflow.auto_next` from the applicable workspace's `.codexspec/config.yml`. Default to disabled; only the literal boolean `true` enables it. An absent setting, `false`, or any other value is disabled. Use this setting to select the discovery depth below.
+2. Inspect the relevant current implementation: actual behavior, callers, callees, and dependencies needed to establish the question's premise. Before deciding whether a question or option is applicable, verify the premises that determine its applicability. Do not infer the existence, implementation status, relationships, or impact of functionality solely from surface descriptions in requests, interfaces, names, or documentation. Treat unverified premises as unknown. Classify content or behavior as placeholder, unused, or functional only after inspection establishes that classification. Use verified facts to answer factual matters already established and formulate applicable questions. Do not ask questions premised on functionality or relationships that inspection establishes do not exist. If a real dependency creates a material scope or outcome choice, explain the relationship and ask the user rather than assuming retention or removal.
+3. Independently obtain accessible factual information before requesting it from the user. Determine whether relevant code, documentation, configuration, history, logs, tests, and other available tools and sources can supply or establish it. Within the task's scope and existing authorization, collect and investigate it first. Do not ask users to locate information or perform checks the agent can perform itself.
+
+Distinguish verified implementation facts, confirmed user intent, and unverified inferences. An unsuccessful search does not prove absence. If relevant code does not yet exist or cannot be inspected, state the available evidence and uncertainty. If necessary information remains inaccessible, contradictory, or inconclusive after targeted investigation, briefly state what is known and the specific evidence gap, then ask only for the missing information necessary to proceed. Collected facts do not substitute for user decisions. Existing behavior does not automatically become a requirement to preserve it.
+
+Inspect only sources and execution paths needed for the current judgment. Do not require a repository-wide audit or exhaustive diagnosis. Stop when evidence is sufficient and reuse prepared evidence. Supplement it only when scope changes, new evidence appears, or existing evidence is insufficient. Do not repeatedly perform the same failed checks or indefinitely expand retrieval instead of identifying the remaining gap. This preparation does not require a fixed sequence of tool calls before every question.
+
+## Select Questions for the Automation Mode
+
+Current-state verification and autonomous fact-gathering apply in both modes. The user decides choices affecting behavior, scope, compatibility, or important cost or maintenance trade-offs. Independently select equivalent technical implementations that satisfy the same confirmed requirements. Judge architecture and dependency choices by their actual consequences. Do not require separate confirmation for every purely technical choice. Do not infer user goals or preferences from collected facts.
+
+- **When enabled**: Examine foreseeable specification, design, planning, and implementation consequences. Resolve the user decisions those stages would otherwise require before final confirmation. Explain verified facts and offer viable choices. An item is not non-blocking merely because specification generation can proceed; if a later automatic stage still needs a user decision, resolve it during discovery.
+- **When disabled**: retain normal staged clarification without moving every later technical choice into specify.
+
+Do not produce complete design or implementation plans during specify. If a previously unforeseeable material decision appears downstream, stop and ask the user under the existing downstream rules rather than guessing; early clarification does not authorize new product decisions.
+
 ## Discussion Rules
 
+- Base substantive questions on the prepared evidence; investigate necessary factual gaps before asking the user.
 - Ask one material question at a time.
 - Use structured choices when there are 2-4 meaningful options.
 - Explore user goals, workflows, constraints, error behavior, compatibility, scope boundaries, and important trade-offs.
@@ -225,6 +247,7 @@ Discovery is complete when:
 - Material constraints and exclusions are confirmed.
 - Important trade-offs are recorded.
 - Remaining open questions are either non-blocking or explicitly deferred.
+- When `workflow.auto_next` is enabled, all foreseeable downstream user decisions identified above are resolved; they cannot remain open or be deferred as non-blocking.
 
 Report:
 
